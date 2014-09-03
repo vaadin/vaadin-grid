@@ -1,0 +1,5 @@
+<module rename-to='WebComponents'>
+    <inherits name='com.google.gwt.query.Query'/>
+    <entry-point class='com.vaadin.prototype.wc.gwt.client.WebComponents'/>
+</module>
+
