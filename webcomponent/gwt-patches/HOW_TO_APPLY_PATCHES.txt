@@ -1,0 +1,20 @@
+
+Patches in this folder include stuff that is not in GWT trunk yet.
+
+To apply them, follow the next steps per patch in alphabetical order:
+
+ - step 1: go to latest GWT sources folder and execute:
+
+ $ git apply --check patch_name
+
+ - stpe 2: If there are no errors, apply the patch
+
+ $ git am --signoff <
+
+
+Finally you have to compile and deploy artifacts in your local maven repo:
+
+ $ ant clean dist-dev
+ $ echo -e "2.7.0-SNAPSHOT\n\n" | bash maven/push-gwt.sh
+
+

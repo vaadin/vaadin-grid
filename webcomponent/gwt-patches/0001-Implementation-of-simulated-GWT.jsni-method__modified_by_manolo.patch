@@ -1,0 +1,1715 @@
+From 556f85e1875e92cdf911c756775763498f03531f Mon Sep 17 00:00:00 2001
+From: Ray Cromwell <cromwellian@google.com>
+Date: Sat, 14 Jun 2014 00:03:56 -0700
+Subject: [PATCH] Implementation of simulated GWT.jsni method
+
+Some motivational examples (requiring TypeTightener bugs fixed)
+
+Added @JsProperty(indexed=true) and examples
+
+Added sample base Js classes.
+
+Renamed GWT.jsni -> Js.js to allow terse writing, e.g
+
+Document doc = js("$doc");
+
+Added Iterable<T> adapter for JsArrayLike<T> to prepare for upcoing
+magicification of JsArrayLike left indexed property implementation
+for now so tests keep passing.
+
+Implemented JsArrayLike magic.
+
+Added @IterateAsArray
+
+Added Js.array and Js.map magic
+
+Change-Id: Ib037d9d90de80b314eddd76ee2b2b9a46ecdb1fb
+---
+ .../gwt/dev/javac/JSORestrictionsChecker.java      |  56 ++-
+ .../src/com/google/gwt/dev/javac/JdtCompiler.java  |   2 +
+ dev/core/src/com/google/gwt/dev/javac/JdtUtil.java |   5 +-
+ .../com/google/gwt/dev/javac/JsInteropUtil.java    |   4 +-
+ .../src/com/google/gwt/dev/jjs/ast/JMethod.java    |  30 +-
+ .../gwt/dev/jjs/impl/ControlFlowAnalyzer.java      |   8 +-
+ .../gwt/dev/jjs/impl/GenerateJavaScriptAST.java    | 131 +++++--
+ .../com/google/gwt/dev/jjs/impl/GwtAstBuilder.java | 381 ++++++++++++++++++---
+ .../com/google/gwt/dev/jjs/impl/TypeTightener.java |   2 +-
+ .../gwt/core/client/impl/IterateAsArray.java       |  34 ++
+ user/src/com/google/gwt/core/client/js/Js.java     | 103 ++++++
+ .../src/com/google/gwt/core/client/js/JsArray.java |  31 ++
+ .../com/google/gwt/core/client/js/JsArrayLike.java |  47 +++
+ .../com/google/gwt/core/client/js/JsMapLike.java   |  39 +++
+ .../gwt/core/client/js/JsMutableArrayLike.java     |  36 ++
+ .../com/google/gwt/core/client/js/JsObject.java    |  34 ++
+ .../com/google/gwt/core/client/js/JsProperty.java  |   1 +
+ .../client/js/impl/JsArrayLikeIterableAdapter.java |  65 ++++
+ user/src/com/google/gwt/junit/JUnit.gwt.xml        |  12 +-
+ user/src/com/google/gwt/junit/JUnitShell.java      |   3 -
+ .../com/google/gwt/emul/java/util/ArrayList.java   |   4 +-
+ .../google/gwt/core/client/interop/JsJsniTest.java | 154 +++++++++
+ 22 files changed, 1067 insertions(+), 115 deletions(-)
+ create mode 100644 user/src/com/google/gwt/core/client/impl/IterateAsArray.java
+ create mode 100644 user/src/com/google/gwt/core/client/js/Js.java
+ create mode 100644 user/src/com/google/gwt/core/client/js/JsArray.java
+ create mode 100644 user/src/com/google/gwt/core/client/js/JsArrayLike.java
+ create mode 100644 user/src/com/google/gwt/core/client/js/JsMapLike.java
+ create mode 100644 user/src/com/google/gwt/core/client/js/JsMutableArrayLike.java
+ create mode 100644 user/src/com/google/gwt/core/client/js/JsObject.java
+ create mode 100644 user/src/com/google/gwt/core/client/js/impl/JsArrayLikeIterableAdapter.java
+ create mode 100644 user/test/com/google/gwt/core/client/interop/JsJsniTest.java
+
+diff --git a/dev/core/src/com/google/gwt/dev/javac/JSORestrictionsChecker.java b/dev/core/src/com/google/gwt/dev/javac/JSORestrictionsChecker.java
+index 094c146..1127a9f 100644
+--- a/dev/core/src/com/google/gwt/dev/javac/JSORestrictionsChecker.java
++++ b/dev/core/src/com/google/gwt/dev/javac/JSORestrictionsChecker.java
+@@ -261,7 +261,7 @@ public class JSORestrictionsChecker {
+ 
+       checkJsTypeMethodsForOverloads(methodSignatures, noExports, binding);
+       for (MethodBinding mb : binding.methods()) {
+-        checkJsProperty(mb, true);
++        checkJsProperty(mb, binding.isInterface());
+         checkJsExport(mb, !binding.isInterface());
+       }
+     }
+@@ -278,48 +278,73 @@ public class JSORestrictionsChecker {
+     private void checkJsProperty(MethodBinding mb, boolean allowed) {
+       AnnotationBinding jsProperty = JdtUtil.getAnnotation(mb, JsInteropUtil.JSPROPERTY_CLASS);
+       if (jsProperty != null) {
++        boolean indexed = JdtUtil.getAnnotationParameterBoolean(jsProperty, "indexed");
+         if (!allowed) {
+           errorOn(mb, ERR_JSPROPERTY_ONLY_ON_INTERFACES);
+           return;
+         }
+         String methodName = String.valueOf(mb.selector);
+-        if (!isGetter(methodName, mb) && !isSetter(methodName, mb) && !isHas(methodName, mb)) {
++        if (!isGetter(methodName, mb, indexed) && !isSetter(methodName, mb, indexed) && !isHas(methodName, mb,
++            indexed)) {
+           errorOn(mb, ERR_JSPROPERTY_ONLY_BEAN_OR_FLUENT_STYLE_NAMING);
+         }
+       }
+     }
+ 
+-    private boolean isGetter(String name, MethodBinding mb) {
++    private boolean isGetter(String name, MethodBinding mb, boolean indexed) {
+       // zero arg non-void getX()
+-      if (name.length() > 3 && name.startsWith("get") && Character.isUpperCase(name.charAt(3)) &&
++      if (!indexed && name.length() > 3 && name.startsWith("get") && Character.isUpperCase(name.charAt(3)) &&
+          mb.returnType == TypeBinding.VOID && mb.parameters.length == 0) {
+         return true;
+-      } else  if (name.length() > 3 && name.startsWith("is")
++      } else if (indexed && name.length() > 3 && name.startsWith("get") && Character.isUpperCase(name.charAt(3)) &&
++          mb.returnType == TypeBinding.VOID && mb.parameters.length == 1) {
++        // TODO (cromwellian): in all indexed cases, assert type is String or int
++        return true;
++      } else  if (!indexed && name.length() > 3 && name.startsWith("is")
+           && Character.isUpperCase(name.charAt(2)) &&  mb.returnType == TypeBinding.BOOLEAN
+           && mb.parameters.length == 0) {
+         return true;
+-      } else if (mb.parameters.length == 0 && mb.returnType != TypeBinding.VOID) {
++      } else  if (indexed && name.length() > 3 && name.startsWith("is")
++          && Character.isUpperCase(name.charAt(2)) &&  mb.returnType == TypeBinding.BOOLEAN
++          && mb.parameters.length == 1) {
++        return true;
++      } else if (!indexed && mb.parameters.length == 0 && mb.returnType != TypeBinding.VOID) {
++        return true;
++      } else if (indexed && mb.parameters.length == 1 && mb.returnType != TypeBinding.VOID) {
+         return true;
+       }
+       return false;
+     }
+ 
+-    private boolean isSetter(String name, MethodBinding mb) {
+-      if (mb.returnType == TypeBinding.VOID || mb.returnType == mb.declaringClass) {
++    private boolean isSetter(String name, MethodBinding mb, boolean indexed) {
++      if (!indexed && mb.returnType == TypeBinding.VOID || mb.returnType == mb.declaringClass) {
+         if (name.length() > 3 && name.startsWith("set") && Character.isUpperCase(name.charAt(3))
+             && mb.parameters.length == 1) {
+           return true;
+         } else if (mb.parameters.length == 1) {
+           return true;
+         }
++      } else  if (indexed && mb.returnType == TypeBinding.VOID
++          || mb.returnType == mb.declaringClass) {
++        if (name.length() > 3 && name.startsWith("set") && Character.isUpperCase(name.charAt(3))
++            && mb.parameters.length == 2) {
++          return true;
++        } else if (!indexed && mb.parameters.length == 1) {
++          return true;
++        } else if (indexed && mb.parameters.length == 2) {
++          return true;
++        }
+       }
+       return false;
+     }
+ 
+-    private boolean isHas(String name, MethodBinding mb) {
+-      if (name.length() > 3 && name.startsWith("has") && Character.isUpperCase(name.charAt(3))
++    private boolean isHas(String name, MethodBinding mb, boolean indexed) {
++      if (!indexed && name.length() > 3 && name.startsWith("has") && Character.isUpperCase(name.charAt(3))
+           && mb.parameters.length == 0 && mb.returnType == TypeBinding.BOOLEAN) {
+         return true;
++      } else if (indexed && name.length() > 3 && name.startsWith("has") && Character.isUpperCase(name.charAt(3))
++          && mb.parameters.length == 1 && mb.returnType == TypeBinding.BOOLEAN) {
++        return true;
+       }
+       return false;
+     }
+@@ -337,8 +362,11 @@ public class JSORestrictionsChecker {
+           if (mb.isConstructor() || mb.isStatic()) {
+             continue;
+           }
+-          if (JdtUtil.getAnnotation(mb, JsInteropUtil.JSPROPERTY_CLASS) != null) {
+-            if (isGetter(methodName, mb) || isSetter(methodName, mb) || isHas(methodName, mb)) {
++          AnnotationBinding jsProp = JdtUtil.getAnnotation(mb, JsInteropUtil.JSPROPERTY_CLASS);
++          if (jsProp != null) {
++            boolean indexed = JdtUtil.getAnnotationParameterBoolean(jsProp, "indexed");
++            if (isGetter(methodName, mb, indexed)
++                || isSetter(methodName, mb, indexed) || isHas(methodName, mb, indexed)) {
+               // js properties are allowed to be overloaded (setter/getter)
+               continue;
+             }
+@@ -369,7 +397,7 @@ public class JSORestrictionsChecker {
+         return ClassState.JSTYPE;
+       }
+ 
+-      if (checkClassImplementingJsType(type)) {
++      if (!type.binding.isInterface() && checkClassImplementingJsType(type)) {
+         return ClassState.JSTYPE_IMPL;
+       }
+ 
+@@ -410,7 +438,7 @@ public class JSORestrictionsChecker {
+ 
+       for (MethodBinding mb : type.binding.methods()) {
+         checkJsExport(mb, true);
+-        checkJsProperty(mb, false);
++        checkJsProperty(mb, type.binding.isInterface());
+       }
+ 
+       AnnotationBinding jsinterfaceAnn = JdtUtil.getAnnotation(jsInterface,
+diff --git a/dev/core/src/com/google/gwt/dev/javac/JdtCompiler.java b/dev/core/src/com/google/gwt/dev/javac/JdtCompiler.java
+index 50c82dd..2eb7d7a 100644
+--- a/dev/core/src/com/google/gwt/dev/javac/JdtCompiler.java
++++ b/dev/core/src/com/google/gwt/dev/javac/JdtCompiler.java
+@@ -639,6 +639,8 @@ public class JdtCompiler {
+     options.complianceLevel = jdtSourceLevel;
+     options.sourceLevel = jdtSourceLevel;
+     options.targetJDK = jdtSourceLevel;
++
++    options.storeAnnotations = true;
+     return options;
+   }
+ 
+diff --git a/dev/core/src/com/google/gwt/dev/javac/JdtUtil.java b/dev/core/src/com/google/gwt/dev/javac/JdtUtil.java
+index 5cd96be..24fbc30 100644
+--- a/dev/core/src/com/google/gwt/dev/javac/JdtUtil.java
++++ b/dev/core/src/com/google/gwt/dev/javac/JdtUtil.java
+@@ -18,7 +18,6 @@ package com.google.gwt.dev.javac;
+ import com.google.gwt.thirdparty.guava.common.base.Joiner;
+ import com.google.gwt.thirdparty.guava.common.base.Strings;
+ import com.google.gwt.thirdparty.guava.common.collect.Lists;
+-
+ import org.eclipse.jdt.core.compiler.CharOperation;
+ import org.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;
+ import org.eclipse.jdt.internal.compiler.ast.Annotation;
+@@ -60,6 +59,10 @@ public final class JdtUtil {
+     return result.toString();
+   }
+ 
++  public static char[][] asCharArray(String name) {
++    return CharOperation.splitOn('.', name.toCharArray());
++  }
++
+   public static String getSourceName(TypeBinding classBinding) {
+     return Joiner.on(".").skipNulls().join(new String[] {
+         Strings.emptyToNull(CharOperation.charToString(classBinding.qualifiedPackageName())),
+diff --git a/dev/core/src/com/google/gwt/dev/javac/JsInteropUtil.java b/dev/core/src/com/google/gwt/dev/javac/JsInteropUtil.java
+index 406a2a8..7e02017 100644
+--- a/dev/core/src/com/google/gwt/dev/javac/JsInteropUtil.java
++++ b/dev/core/src/com/google/gwt/dev/javac/JsInteropUtil.java
+@@ -78,7 +78,9 @@ public final class JsInteropUtil {
+         method.setExportName(value);
+       }
+       if (jsProperty != null) {
+-        method.setJsProperty(true);
++        method.setJsProperty(JdtUtil.getAnnotationParameterBoolean(jsProperty, "indexed") ?
++            JMethod.JsPropertyType.INDEXED : JMethod.JsPropertyType.FIELD);
++        method.setJsPropertyName(JdtUtil.getAnnotationParameterString(jsProperty, "value"));
+       }
+       if (JdtUtil.getAnnotation(x.binding, JSNOEXPORT_CLASS) != null) {
+         method.setNoExport(true);
+diff --git a/dev/core/src/com/google/gwt/dev/jjs/ast/JMethod.java b/dev/core/src/com/google/gwt/dev/jjs/ast/JMethod.java
+index ea99072..44e7236 100644
+--- a/dev/core/src/com/google/gwt/dev/jjs/ast/JMethod.java
++++ b/dev/core/src/com/google/gwt/dev/jjs/ast/JMethod.java
+@@ -44,10 +44,24 @@ public class JMethod extends JNode implements HasEnclosingType, HasName, HasType
+     }
+   };
+   private String exportName;
+-  private boolean jsProperty;
++  private JsPropertyType jsProperty = JsPropertyType.NONE;
+   private Specialization specialization;
+   private boolean noExport = false;
+   private boolean inliningAllowed = true;
++  private String jsPropertyName;
++
++  public void setJsPropertyName(String jsPropertyName) {
++    this.jsPropertyName = jsPropertyName;
++  }
++
++  public String getJsPropertyName() {
++    return jsPropertyName;
++  }
++
++  /**
++   * Internal representation of @JsProperty enum.
++   */
++  public enum JsPropertyType { NONE, FIELD, INDEXED };
+ 
+   public boolean isNoExport() {
+     return noExport;
+@@ -65,16 +79,22 @@ public class JMethod extends JNode implements HasEnclosingType, HasName, HasType
+     return exportName;
+   }
+ 
+-  public void setJsProperty(boolean jsProperty) {
++  public void setJsProperty(JsPropertyType jsProperty) {
+     this.jsProperty = jsProperty;
+   }
+ 
+-  public boolean isJsProperty() {
++  public JsPropertyType getJsProperty() {
+     return jsProperty;
+   }
+ 
+-  public void setSpecialization(List<JType> paramTypes, JType returnsType, String targetMethod) {
+-    this.specialization = new Specialization(paramTypes, returnsType, targetMethod);
++  public boolean isJsProperty() {
++    return jsProperty != JsPropertyType.NONE;
++  }
++
++  public void setSpecialization(List<JType> paramTypes, JType returnsType,
++      String targetMethod) {
++    this.specialization = new Specialization(paramTypes, returnsType,
++        targetMethod);
+   }
+ 
+   public Specialization getSpecialization() {
+diff --git a/dev/core/src/com/google/gwt/dev/jjs/impl/ControlFlowAnalyzer.java b/dev/core/src/com/google/gwt/dev/jjs/impl/ControlFlowAnalyzer.java
+index 2d363c3..3af6b88 100644
+--- a/dev/core/src/com/google/gwt/dev/jjs/impl/ControlFlowAnalyzer.java
++++ b/dev/core/src/com/google/gwt/dev/jjs/impl/ControlFlowAnalyzer.java
+@@ -221,12 +221,7 @@ public class ControlFlowAnalyzer {
+             rescue(jsoImplementor, true, true);
+           }
+         }
+-      } else if (program.typeOracle.isJsType(targetType)
+-        && ((JDeclaredType) targetType).getJsPrototype() != null) {
+-        // keep alive JsType with prototype used in cast so it can used in cast checks against JS objects later
+-        rescue((JReferenceType) targetType, true, true);
+       }
+-
+       return true;
+     }
+ 
+@@ -530,7 +525,8 @@ public class ControlFlowAnalyzer {
+ 
+     private boolean canBeInstantiatedInJavaScript(JType type) {
+       if (program.typeOracle.canBeInstantiatedInJavascript(type) ||
+-          program.isJavaLangString(type)) {
++          program.isJavaLangString(type) ||
++          program.typeOracle.isJsType(type)) {
+         return true;
+       }
+ 
+diff --git a/dev/core/src/com/google/gwt/dev/jjs/impl/GenerateJavaScriptAST.java b/dev/core/src/com/google/gwt/dev/jjs/impl/GenerateJavaScriptAST.java
+index 6a4d3d1..7f15ffd 100644
+--- a/dev/core/src/com/google/gwt/dev/jjs/impl/GenerateJavaScriptAST.java
++++ b/dev/core/src/com/google/gwt/dev/jjs/impl/GenerateJavaScriptAST.java
+@@ -1390,9 +1390,10 @@ public class GenerateJavaScriptAST {
+           }
+         }
+         if (isJsProperty || target.isJsProperty()) {
+-          String getter = isGetter(target);
+-          String setter = isSetter(target);
+-          String has = isHas(target);
++          boolean indexed = target.getJsProperty() == JMethod.JsPropertyType.INDEXED;
++          String getter = isGetter(target, indexed);
++          String setter = isSetter(target, indexed);
++          String has = isHas(target, indexed);
+ 
+           // if fluent
+           JType type = target.getType();
+@@ -1403,11 +1404,12 @@ public class GenerateJavaScriptAST {
+           JsExpression qualExpr = pop();
+ 
+           if (getter != null) {
+-            result = dispatchAsGetter(x, unnecessaryQualifier, getter, qualExpr);
++            result = dispatchAsGetter(x, unnecessaryQualifier, jsInvocation, getter, qualExpr,
++                indexed);
+           } else if (setter != null) {
+-            result = dispatchAsSetter(x, jsInvocation, setter, isFluent, qualExpr);
++            result = dispatchAsSetter(x, jsInvocation, setter, isFluent, qualExpr, indexed);
+           } else if (has != null) {
+-            result = dispatchAsHas(x, has, qualExpr);
++            result = dispatchAsHas(x, has, jsInvocation, qualExpr, indexed);
+           } else {
+             throw new InternalCompilerException("JsProperty not a setter, getter, or has.");
+           }
+@@ -1491,19 +1493,33 @@ public class GenerateJavaScriptAST {
+       return tmpName;
+     }
+ 
+-    private JsExpression dispatchAsHas(JMethodCall x, String has, JsExpression qualExpr) {
+-      JsExpression result;JsNameRef property = new JsNameRef(x.getSourceInfo(), has);
++    private JsExpression dispatchAsHas(JMethodCall x, String has, JsInvocation jsInvocation,
++        JsExpression qualExpr, boolean indexed) {
++      JsExpression result;
++      JsExpression property = !indexed ? new JsNameRef(x.getSourceInfo(), has) :
++          jsInvocation.getArguments().get(0);
+       result = new JsBinaryOperation(x.getSourceInfo(), JsBinaryOperator.INOP,
+           property, qualExpr);
+       return result;
+     }
+ 
+-    private JsExpression dispatchAsSetter(JMethodCall x, JsInvocation jsInvocation, String setter, boolean isFluent, JsExpression qualExpr) {
+-      JsExpression result;JsNameRef property = new JsNameRef(x.getSourceInfo(), setter);
+-      // either qualExpr.prop or _.prop depending on fluent or not
+-      property.setQualifier(isFluent ? globalTemp.makeRef(x.getSourceInfo()) : qualExpr);
+-      // propExpr = arg
+-      result = createAssignment(property, jsInvocation.getArguments().get(0));
++    private JsExpression dispatchAsSetter(JMethodCall x, JsInvocation jsInvocation, String setter,
++        boolean isFluent, JsExpression qualExpr, boolean indexed) {
++      JsExpression result;
++      if (!indexed) {
++        JsNameRef property = new JsNameRef(x.getSourceInfo(), setter);
++        // either qualExpr.prop or _.prop depending on fluent or not
++        property.setQualifier(isFluent ? globalTemp.makeRef(x.getSourceInfo()) : qualExpr);
++        // propExpr = arg
++        result = createAssignment(property, jsInvocation.getArguments().get(0));
++      } else {
++        // qualExpr[arg]
++        JsArrayAccess arrayRef = new JsArrayAccess(x.getSourceInfo(),
++            isFluent ? globalTemp.makeRef(x.getSourceInfo()) : qualExpr,
++            jsInvocation.getArguments().get(0));
++        // qualExpr[arg] = arg2
++        result = createAssignment(arrayRef, jsInvocation.getArguments().get(1));
++      }
+       if (isFluent) {
+         // (_ = qualExpr, _.prop = arg, _)
+         result = createCommaExpression(
+@@ -1514,12 +1530,19 @@ public class GenerateJavaScriptAST {
+       return result;
+     }
+ 
+-    private JsExpression dispatchAsGetter(JMethodCall x, JsExpression unnecessaryQualifier, String getter, JsExpression qualExpr) {
++    private JsExpression dispatchAsGetter(JMethodCall x, JsExpression unnecessaryQualifier,
++        JsInvocation jsInvocation, String getter, JsExpression qualExpr, boolean indexed) {
+       JsExpression result;// replace with qualExpr.property
+-      JsNameRef property = new JsNameRef(x.getSourceInfo(), getter);
+-      property.setQualifier(qualExpr);
+-      result = createCommaExpression(unnecessaryQualifier, property);
+-      return result;
++      if (!indexed) {
++        JsNameRef property = new JsNameRef(x.getSourceInfo(), getter);
++        property.setQualifier(qualExpr);
++        result = createCommaExpression(unnecessaryQualifier, property);
++        return result;
++      } else {
++        JsArrayAccess arrayRef = new JsArrayAccess(x.getSourceInfo(), qualExpr,
++            jsInvocation.getArguments().get(0));
++        return createCommaExpression(unnecessaryQualifier, arrayRef);
++      }
+     }
+ 
+     /**
+@@ -1556,42 +1579,92 @@ public class GenerateJavaScriptAST {
+       return JsNullLiteral.INSTANCE;
+     }
+ 
+-    private String isGetter(JMethod method) {
++    private String isGetter(JMethod method, boolean indexed) {
+       String name = method.getName();
+       // zero arg non-void getX()
+-      if (name.length() > 3 && name.startsWith("get") && Character.isUpperCase(name.charAt(3)) &&
+-          method.getType() != JPrimitiveType.VOID && method.getParams().size() == 0) {
++      if (!indexed && name.length() > 3 && name.startsWith("get")
++          && Character.isUpperCase(name.charAt(3)) && method.getType() != JPrimitiveType.VOID
++          && method.getParams().size() == 0) {
+         String propName = Character.toLowerCase(name.charAt(3)) + name.substring(4);
+         return propName;
+-      } else  if (name.length() > 3 && name.startsWith("is")
++      } else if (indexed && name.length() > 3 && name.startsWith("get")
++          && Character.isUpperCase(name.charAt(3)) && method.getType() != JPrimitiveType.VOID
++          && isIndexedGetterArgumentType(method)) {
++        String propName = Character.toLowerCase(name.charAt(3)) + name.substring(4);
++        return propName;
++      } else  if (!indexed && name.length() > 3 && name.startsWith("is")
+           && Character.isUpperCase(name.charAt(2)) && method.getType() == JPrimitiveType.BOOLEAN
+           && method.getParams().size() == 0) {
+         String propName = Character.toLowerCase(name.charAt(3)) + name.substring(4);
+         return propName;
+-      } else if (method.getParams().size() == 0 && method.getType() != JPrimitiveType.VOID) {
++      } else if (indexed && name.length() > 3 && name.startsWith("is")
++          && Character.isUpperCase(name.charAt(2)) && method.getType() == JPrimitiveType.BOOLEAN
++          && isIndexedGetterArgumentType(method)) {
++        String propName = Character.toLowerCase(name.charAt(3)) + name.substring(4);
++        return propName;
++      } else if (!indexed && method.getParams().size() == 0
++          && method.getType() != JPrimitiveType.VOID) {
++        return name;
++      } else if (indexed && isIndexedGetterArgumentType(method)
++          && method.getType() != JPrimitiveType.VOID) {
+         return name;
+       }
+       return null;
+     }
+ 
+-    private String isSetter(JMethod method) {
++    private boolean isIndexedGetterArgumentType(JMethod method) {
++      JType type = maybeGetUnderlyingType(method.getParams().get(0).getType());
++      return method.getParams().size() == 1 &&
++          (type == JPrimitiveType.INT
++          || type == program.getTypeJavaLangString());
++    }
++
++    private boolean isIndexedSetterArgumentType(JMethod method) {
++      JType type = maybeGetUnderlyingType(method.getParams().get(0).getType());
++      return method.getParams().size() == 2 &&
++          (type == JPrimitiveType.INT
++              || type == program.getTypeJavaLangString());
++    }
++
++    public JType maybeGetUnderlyingType(JType type) {
++      if (type instanceof JReferenceType) {
++        return ((JReferenceType) type).getUnderlyingType();
++      }
++      return type;
++    }
++
++    private String isSetter(JMethod method, boolean indexed) {
+       String name = method.getName();
+-      if (name.length() > 3 && name.startsWith("set") && Character.isUpperCase(name.charAt(3))
++      if (!indexed && name.length() > 3 && name.startsWith("set")
++          && Character.isUpperCase(name.charAt(3))
+           && method.getParams().size() == 1) {
+         String propName = Character.toLowerCase(name.charAt(3)) + name.substring(4);
+         return propName;
+-      } else if (method.getParams().size() == 1) {
++      } else if (indexed && name.length() > 3 && name.startsWith("set")
++          && Character.isUpperCase(name.charAt(3))
++          && isIndexedSetterArgumentType(method)) {
++        String propName = Character.toLowerCase(name.charAt(3)) + name.substring(4);
++        return propName;
++      } else if (!indexed && method.getParams().size() == 1) {
++        return name;
++      } else if (indexed && isIndexedSetterArgumentType(method)) {
+         return name;
+       }
+       return null;
+     }
+ 
+-    private String isHas(JMethod method) {
++    private String isHas(JMethod method, boolean indexed) {
+       String name = method.getName();
+-      if (name.length() > 3 && name.startsWith("has") && Character.isUpperCase(name.charAt(3))
++      if (!indexed && name.length() > 3 && name.startsWith("has")
++          && Character.isUpperCase(name.charAt(3))
+           && method.getParams().size() == 0 && method.getType() == JPrimitiveType.BOOLEAN) {
+         String propName = Character.toLowerCase(name.charAt(3)) + name.substring(4);
+         return propName;
++      } else if (indexed && name.length() > 3 && name.startsWith("has")
++          && Character.isUpperCase(name.charAt(3))
++          && isIndexedGetterArgumentType(method) && method.getType() == JPrimitiveType.BOOLEAN) {
++        String propName = Character.toLowerCase(name.charAt(3)) + name.substring(4);
++        return propName;
+       }
+       return null;
+     }
+diff --git a/dev/core/src/com/google/gwt/dev/jjs/impl/GwtAstBuilder.java b/dev/core/src/com/google/gwt/dev/jjs/impl/GwtAstBuilder.java
+index 926e731..438d3e7 100644
+--- a/dev/core/src/com/google/gwt/dev/jjs/impl/GwtAstBuilder.java
++++ b/dev/core/src/com/google/gwt/dev/jjs/impl/GwtAstBuilder.java
+@@ -17,6 +17,7 @@ package com.google.gwt.dev.jjs.impl;
+ 
+ import com.google.gwt.core.client.impl.DoNotInline;
+ import com.google.gwt.core.client.impl.SpecializeMethod;
++import com.google.gwt.dev.javac.GWTProblem;
+ import com.google.gwt.dev.javac.JSORestrictionsChecker;
+ import com.google.gwt.dev.javac.JdtUtil;
+ import com.google.gwt.dev.javac.JsInteropUtil;
+@@ -99,7 +100,11 @@ import com.google.gwt.dev.jjs.ast.js.JsniFieldRef;
+ import com.google.gwt.dev.jjs.ast.js.JsniMethodBody;
+ import com.google.gwt.dev.jjs.ast.js.JsniMethodRef;
+ import com.google.gwt.dev.js.JsAbstractSymbolResolver;
++import com.google.gwt.dev.js.JsParser;
++import com.google.gwt.dev.js.JsParserException;
++import com.google.gwt.dev.js.ast.JsBlock;
+ import com.google.gwt.dev.js.ast.JsContext;
++import com.google.gwt.dev.js.ast.JsExprStmt;
+ import com.google.gwt.dev.js.ast.JsExpression;
+ import com.google.gwt.dev.js.ast.JsFunction;
+ import com.google.gwt.dev.js.ast.JsModVisitor;
+@@ -107,6 +112,9 @@ import com.google.gwt.dev.js.ast.JsName;
+ import com.google.gwt.dev.js.ast.JsNameRef;
+ import com.google.gwt.dev.js.ast.JsNode;
+ import com.google.gwt.dev.js.ast.JsParameter;
++import com.google.gwt.dev.js.ast.JsReturn;
++import com.google.gwt.dev.js.ast.JsRootScope;
++import com.google.gwt.dev.js.ast.JsStatement;
+ import com.google.gwt.dev.util.StringInterner;
+ import com.google.gwt.dev.util.collect.Stack;
+ import com.google.gwt.thirdparty.guava.common.base.Function;
+@@ -115,7 +123,6 @@ import com.google.gwt.thirdparty.guava.common.collect.Interner;
+ import com.google.gwt.thirdparty.guava.common.collect.Lists;
+ import com.google.gwt.thirdparty.guava.common.collect.Maps;
+ import com.google.gwt.thirdparty.guava.common.collect.Sets;
+-
+ import org.eclipse.jdt.core.compiler.CharOperation;
+ import org.eclipse.jdt.internal.compiler.ast.AND_AND_Expression;
+ import org.eclipse.jdt.internal.compiler.ast.ASTNode;
+@@ -215,9 +222,12 @@ import org.eclipse.jdt.internal.compiler.lookup.TypeIds;
+ import org.eclipse.jdt.internal.compiler.lookup.VariableBinding;
+ import org.eclipse.jdt.internal.compiler.util.Util;
+ 
++import java.io.IOException;
++import java.io.StringReader;
+ import java.lang.reflect.Field;
+ import java.util.ArrayList;
+ import java.util.Collections;
++import java.util.HashMap;
+ import java.util.IdentityHashMap;
+ import java.util.Iterator;
+ import java.util.List;
+@@ -232,6 +242,11 @@ import java.util.Set;
+  */
+ public class GwtAstBuilder {
+ 
++  public static final String JS_CLASS = "com.google.gwt.core.client.js.Js";
++  public static final TypeBinding[] INT_TYPE = new TypeBinding[] {TypeBinding.INT};
++  public static final String ITERATEASARRAY_CLASS =
++      "com.google.gwt.core.client.impl.IterateAsArray";
++
+   /**
+    * Visit the JDT AST and produce our own AST. By the end of this pass, the
+    * produced AST should contain every piece of information we'll ever need
+@@ -901,14 +916,14 @@ public class GwtAstBuilder {
+         if (x.collectionVariable != null) {
+           /**
+            * <pre>
+-         * for (final T[] i$array = collection,
+-         *          int i$index = 0,
+-         *          final int i$max = i$array.length;
+-         *      i$index < i$max; ++i$index) {
+-         *   T elementVar = i$array[i$index];
+-         *   // user action
+-         * }
+-         * </pre>
++           * for (final T[] i$array = collection,
++           *          int i$index = 0,
++           *          final int i$max = i$array.length;
++           *      i$index < i$max; ++i$index) {
++           *   T elementVar = i$array[i$index];
++           *   // user action
++           * }
++           * </pre>
+            */
+           JLocal arrayVar =
+               JProgram.createLocal(info, elementVarName + "$array", collection.getType(), true,
+@@ -945,50 +960,117 @@ public class GwtAstBuilder {
+ 
+           result = new JForStatement(info, initializers, condition, increments, body);
+         } else {
+-          /**
+-           * <pre>
+-           * for (Iterator&lt;T&gt; i$iterator = collection.iterator(); i$iterator.hasNext();) {
+-           *   T elementVar = i$iterator.next();
+-           *   // user action
+-           * }
+-           * </pre>
+-           */
++
+           CompilationUnitScope cudScope = scope.compilationUnitScope();
+           ReferenceBinding javaUtilIterator = scope.getJavaUtilIterator();
+           ReferenceBinding javaLangIterable = scope.getJavaLangIterable();
+           MethodBinding iterator = javaLangIterable.getExactMethod(ITERATOR, NO_TYPES, cudScope);
+           MethodBinding hasNext = javaUtilIterator.getExactMethod(HAS_NEXT, NO_TYPES, cudScope);
+           MethodBinding next = javaUtilIterator.getExactMethod(NEXT, NO_TYPES, cudScope);
+-          JLocal iteratorVar =
+-              JProgram.createLocal(info, (elementVarName + "$iterator"), typeMap
+-                  .get(javaUtilIterator), false, curMethod.body);
+-
+-          List<JStatement> initializers = Lists.newArrayListWithCapacity(1);
+-          // Iterator<T> i$iterator = collection.iterator()
+-          initializers.add(makeDeclaration(info, iteratorVar, new JMethodCall(info, collection,
+-              typeMap.get(iterator))));
+-
+-          // i$iterator.hasNext()
+-          JExpression condition =
+-              new JMethodCall(info, new JLocalRef(info, iteratorVar), typeMap.get(hasNext));
+-
+-          // T elementVar = (T) i$iterator.next();
+-          elementDecl.initializer =
+-              new JMethodCall(info, new JLocalRef(info, iteratorVar), typeMap.get(next));
+-
+-          // Perform any implicit reference type casts (due to generics).
+-          // Note this occurs before potential unboxing.
+-          if (elementVar.getType() != javaLangObject) {
+-            TypeBinding collectionElementType = (TypeBinding) collectionElementTypeField.get(x);
+-            JType toType = typeMap.get(collectionElementType);
+-            assert (toType instanceof JReferenceType);
+-            elementDecl.initializer = maybeCast(toType, elementDecl.initializer);
++          ReferenceBinding iterateAsArrayType = findBindingWithIterateAsArray(
++              (ReferenceBinding) x.collection.resolvedType);
++          MethodBinding iterateAsArrayGetter = null;
++          MethodBinding iterateAsArrayLength = null;
++
++          if (iterateAsArrayType != null) {
++            AnnotationBinding ab = JdtUtil.getAnnotation(iterateAsArrayType, ITERATEASARRAY_CLASS);
++            if (ab != null) {
++              iterateAsArrayGetter = getIterateAsArrayMethodBinding(cudScope, iterateAsArrayType,
++                  ab, "getter", INT_TYPE);
++              iterateAsArrayLength = getIterateAsArrayMethodBinding(cudScope, iterateAsArrayType,
++                  ab, "length", NO_TYPES);
++            }
+           }
++          if (iterateAsArrayGetter != null && iterateAsArrayLength != null) {
++            /**
++             * <pre>
++             * for (final T[] i$array = collection,
++             *          int i$index = 0,
++             *          final int i$max = i$array.length();
++             *      i$index < i$max; ++i$index) {
++             *   T elementVar = i$array.at(i$index);
++             *   // user action
++             * }
++             * </pre>
++             */
++            JLocal arrayVar =
++                JProgram.createLocal(info, elementVarName + "$array", collection.getType(), true,
++                    curMethod.body);
++            JLocal indexVar =
++                JProgram.createLocal(info, elementVarName + "$index", JPrimitiveType.INT, false,
++                    curMethod.body);
++            JLocal maxVar =
++                JProgram.createLocal(info, elementVarName + "$max", JPrimitiveType.INT, true,
++                    curMethod.body);
++
++            JMethod lengthMethod = typeMap.get(iterateAsArrayLength);
++            JMethod getterMethod = typeMap.get(iterateAsArrayGetter);
++
++            List<JStatement> initializers = Lists.newArrayListWithCapacity(3);
++            // T[] i$array = arr
++            initializers.add(makeDeclaration(info, arrayVar, collection));
++            // int i$index = 0
++            initializers.add(makeDeclaration(info, indexVar, JIntLiteral.get(0)));
++            // int i$max = i$array.length()
++            initializers.add(makeDeclaration(info, maxVar, new JMethodCall(info, new JLocalRef(info,
++                arrayVar), lengthMethod)));
++
++            // i$index < i$max
++            JExpression condition =
++                new JBinaryOperation(info, JPrimitiveType.BOOLEAN, JBinaryOperator.LT, new JLocalRef(
++                    info, indexVar), new JLocalRef(info, maxVar));
++
++            // ++i$index
++            JExpression increments = new JPrefixOperation(info, JUnaryOperator.INC,
++                new JLocalRef(info, indexVar));
++
++            // T elementVar = i$array.at(i$index);
++            elementDecl.initializer =
++                new JMethodCall(info, new JLocalRef(info, arrayVar), getterMethod,
++                    new JLocalRef(info, indexVar));
++            body.addStmt(0, elementDecl);
++
++            result = new JForStatement(info, initializers, condition, increments, body);
++          } else {
++            /**
++             * <pre>
++             * for (Iterator&lt;T&gt; i$iterator = collection.iterator(); i$iterator.hasNext();) {
++             *   T elementVar = i$iterator.next();
++             *   // user action
++             * }
++             * </pre>
++             */
++            JLocal iteratorVar =
++                JProgram.createLocal(info, (elementVarName + "$iterator"), typeMap
++                    .get(javaUtilIterator), false, curMethod.body);
++
++            List<JStatement> initializers = Lists.newArrayListWithCapacity(1);
++            // Iterator<T> i$iterator = collection.iterator()
++            initializers.add(makeDeclaration(info, iteratorVar, new JMethodCall(info, collection,
++                typeMap.get(iterator))));
++
++            // i$iterator.hasNext()
++            JExpression condition =
++                new JMethodCall(info, new JLocalRef(info, iteratorVar), typeMap.get(hasNext));
++
++            // T elementVar = (T) i$iterator.next();
++            elementDecl.initializer =
++                new JMethodCall(info, new JLocalRef(info, iteratorVar), typeMap.get(next));
++
++            // Perform any implicit reference type casts (due to generics).
++            // Note this occurs before potential unboxing.
++            if (elementVar.getType() != javaLangObject) {
++              TypeBinding collectionElementType = (TypeBinding) collectionElementTypeField.get(x);
++              JType toType = typeMap.get(collectionElementType);
++              assert (toType instanceof JReferenceType);
++              elementDecl.initializer = maybeCast(toType, elementDecl.initializer);
++            }
+ 
+-          body.addStmt(0, elementDecl);
++            body.addStmt(0, elementDecl);
+ 
+-          result = new JForStatement(info, initializers, condition,
+-              null, body);
++            result = new JForStatement(info, initializers, condition,
++                null, body);
++          }
+         }
+ 
+         // May need to box or unbox the element assignment.
+@@ -1000,6 +1082,49 @@ public class GwtAstBuilder {
+       }
+     }
+ 
++    private MethodBinding getIterateAsArrayMethodBinding(CompilationUnitScope cudScope,
++        ReferenceBinding iterateAsArrayType, AnnotationBinding ab, String paramName,
++        TypeBinding[] paramTypes) {
++      String methodName = JdtUtil.getAnnotationParameterString(ab, paramName);
++      if (methodName != null) {
++        return iterateAsArrayType.getExactMethod(methodName.toCharArray(),
++            paramTypes, cudScope);
++      } else {
++        // TODO (cromwellian): report warning?
++      }
++      return null;
++    }
++
++    Map<ReferenceBinding, ReferenceBinding> iterateAsArrayCache =
++        new HashMap<ReferenceBinding, ReferenceBinding>();
++
++    private ReferenceBinding findBindingWithIterateAsArray(ReferenceBinding refBinding) {
++      ReferenceBinding itAsArray = iterateAsArrayCache.get(refBinding);
++      if (itAsArray == null) {
++        AnnotationBinding ab = JdtUtil.getAnnotation(refBinding.erasure(),
++            ITERATEASARRAY_CLASS);
++        if (ab != null) {
++          itAsArray = refBinding;
++        }
++        if (itAsArray == null && refBinding.superclass() != null) {
++          itAsArray = findBindingWithIterateAsArray(refBinding.superclass());
++        }
++        if (itAsArray == null) {
++          for (ReferenceBinding sup : refBinding.superInterfaces()) {
++            itAsArray = findBindingWithIterateAsArray(sup);
++            if (itAsArray != null) {
++              break;
++            }
++          }
++        }
++        if (itAsArray != null) {
++          itAsArray = (ReferenceBinding) itAsArray.erasure();
++          iterateAsArrayCache.put(refBinding, itAsArray);
++        }
++      }
++      return itAsArray;
++    }
++
+     @Override
+     public void endVisit(ForStatement x, BlockScope scope) {
+       try {
+@@ -1140,7 +1265,47 @@ public class GwtAstBuilder {
+           }
+         }
+ 
+-        JMethodCall call = new JMethodCall(info, receiver, method);
++        JMethodCall call;
++        if (isJsInteropMagicMethod(method)) {
++          String javaScript = getJsMagicMethodSource(x);
++          call = synthesizeJsMagicMethod(x, info, method, arguments, javaScript);
++        } else if (isJsInteropMagicArrayLiteralMethod(method)) {
++          String javaScript = "[";
++          JNewArray varArgs = (JNewArray) arguments.get(arguments.size() - 1);
++          for (int i = 0; i < varArgs.initializers.size(); i++) {
++            if (i > 0) {
++              javaScript += ",";
++            }
++            javaScript += "$" + i;
++          }
++          javaScript += "]";
++          call = synthesizeJsMagicMethod(x, info, method, arguments, javaScript);
++        } else if (isJsInteropMagicMapLiteralMethod(method)) {
++          String javaScript = "({";
++          JNewArray varArgs = (JNewArray) arguments.get(arguments.size() - 1);
++          if (varArgs.initializers.size() % 2 == 1) {
++            GWTProblem.recordError(x, curCud.scope.referenceContext,
++                "Call to Js.map must have an even number of arguments.", null);
++          }
++          for (int i = 0; i < varArgs.initializers.size(); i += 2) {
++            if (i > 0) {
++              javaScript += ",";
++            }
++            JExpression keyArg = varArgs.initializers.get(i);
++            if (keyArg instanceof JStringLiteral) {
++              javaScript += "\"" + ((JStringLiteral) keyArg).getValue() + "\": $" + (i + 1);
++            } else {
++              GWTProblem.recordError(x.arguments[i], curCud.scope.referenceContext,
++                  "even numbered argument to Js.map must be string type", null);
++            }
++          }
++          javaScript += "})";
++          call = synthesizeJsMagicMethod(x, info, method, arguments, javaScript);
++        } else {
++          call = new JMethodCall(info, receiver, method);
++          // The arguments come first...
++          call.addArgs(arguments);
++        }
+ 
+         // On a super ref, don't allow polymorphic dispatch. Oddly enough,
+         // QualifiedSuperReference not derived from SuperReference!
+@@ -1150,9 +1315,6 @@ public class GwtAstBuilder {
+           call.setStaticDispatchOnly();
+         }
+ 
+-        // The arguments come first...
+-        call.addArgs(arguments);
+-
+         if (x.valueCast != null) {
+           JType castType = typeMap.get(x.valueCast);
+           push(maybeCast(castType, call));
+@@ -1164,6 +1326,128 @@ public class GwtAstBuilder {
+       }
+     }
+ 
++    private JMethodCall synthesizeJsMagicMethod(MessageSend x, SourceInfo info, JMethod method,
++        List<JExpression> arguments, String javaScript) throws IOException, JsParserException {
++      JMethodCall call;JType returnType = method.getType();
++
++      // synthesize a native JSNI method called __jsni$<n>
++      JMethod jsniMethod = new JMethod(info, "__jsni$" + curClass.gwtJsniCount++,
++          curClass.classType, returnType, false, false, true, AccessModifier.PRIVATE);
++      JsniMethodBody jsniMethodBody = new JsniMethodBody(info);
++      jsniMethod.setBody(jsniMethodBody);
++
++      // synthesize an anonymous JS function containing the string literal argument
++      String javaScriptSrc = synthesizeJsMagicMethodBodySource(x, info, javaScript, jsniMethod,
++          arguments);
++
++      JsFunction jsFunction = parseAndFixupJsMagicMethod(info, javaScriptSrc);
++      jsniMethodBody.setFunc(jsFunction);
++      curClass.classType.addMethod(jsniMethod);
++      jsniMethod.freezeParamTypes();
++      // replace GWT.jsni call with call to generated method
++      call = new JMethodCall(info, new JThisRef(info, curClass.classType), jsniMethod);
++
++      // always true for var args
++      assert arguments.get(1) instanceof JNewArray;
++
++      unboxJsMagicMethodVarargs(arguments, call);
++      return call;
++    }
++
++    private void unboxJsMagicMethodVarargs(List<JExpression> arguments, JMethodCall call) {
++      JNewArray varArgs = (JNewArray) arguments.get(arguments.size() - 1);
++      // unpack the new Object[] { } array initializer
++      for (int i = 0; i < varArgs.initializers.size(); i++) {
++        JExpression arg = varArgs.initializers.get(i);
++        // try to unbox if you see a call to a boxing expression
++        if (arg instanceof JMethodCall) {
++          JMethodCall maybeBoxCall = (JMethodCall) arg;
++          JMethod boxingTarget = maybeBoxCall.getTarget();
++          JDeclaredType enclosingBox = boxingTarget.getEnclosingType();
++          // look for Number.valueOf call on subtypes
++          if (boxingTarget.getName().equals("valueOf")
++              && boxingTarget.getOriginalParamTypes().size() == 1
++              && boxingTarget.getOriginalParamTypes().get(0) instanceof JPrimitiveType
++              && enclosingBox.getSuperClass().getShortName().equals("Number")) {
++             call.addArg(maybeBoxCall.getArgs().get(0));
++            continue;
++          }
++        }
++        call.addArg(arg);
++      }
++    }
++
++    private JsFunction parseAndFixupJsMagicMethod(SourceInfo info, String javaScriptSrc)
++        throws IOException, JsParserException {
++      List<JsStatement> parsedStmts = JsParser.parse(info,
++          JsRootScope.INSTANCE, new StringReader(javaScriptSrc));
++
++      JsFunction jsFunction = ((JsFunction) (((JsExprStmt) parsedStmts.get(0))).getExpression());
++      jsFunction.setFromJava(true);
++      JsBlock funcBody = jsFunction.getBody();
++      // add a return statement if single statement expression
++      if (funcBody.getStatements().size() == 1
++          && funcBody.getStatements().get(0) instanceof JsExprStmt) {
++        JsExprStmt singleExpr = (JsExprStmt) funcBody.getStatements().get(0);
++        funcBody.getStatements().set(0, new JsReturn(singleExpr.getSourceInfo(),
++            singleExpr.getExpression()));
++      }
++
++      JsParameterResolver localResolver = new JsParameterResolver(jsFunction);
++      localResolver.accept(jsFunction);
++      return jsFunction;
++    }
++
++    private String synthesizeJsMagicMethodBodySource(MessageSend x, SourceInfo info,
++        String javaScript, JMethod jsniMethod, List<JExpression> arguments) {
++      String javaScriptSrc = "function(";
++      JExpression maybeVarArgs = arguments.get(arguments.size() - 1);
++      if (maybeVarArgs instanceof JNewArray) {
++        // x.arguments of foo(a, b, c, vararg1, vararg2, vararg3) =>
++        // arguments array is (a, b, c, JNewArray(v1, v2, v3) => .size = 4
++        int varArgsStartAt = arguments.size() - 1;
++        for (int i = varArgsStartAt; i < x.arguments.length; i++) {
++          String paramName = "$" + (i - varArgsStartAt);
++          if (i > varArgsStartAt) {
++            javaScriptSrc += ", ";
++          }
++          javaScriptSrc += paramName;
++          // record the Java types from JDT before boxing in varargs
++          jsniMethod.addParam(new JParameter(info, paramName,
++              typeMap.get(x.arguments[i].resolvedType), true, false, jsniMethod));
++        }
++      }
++      javaScriptSrc += ") {";
++      javaScriptSrc += javaScript;
++      javaScriptSrc += "}";
++      return javaScriptSrc;
++    }
++
++    private String getJsMagicMethodSource(MessageSend x) {
++      if (!(x.arguments[0] instanceof StringLiteral)) {
++        GWTProblem.recordError(x, curCud.scope.referenceContext,
++            "First argument to Js.js* methods must be a string literal", null);
++      }
++      return ((StringLiteral) x.arguments[0]).constant.stringValue();
++    }
++
++    private boolean isJsInteropMagicMethod(JMethod method) {
++      return method.getEnclosingType().getName().equals(JS_CLASS) &&
++          method.getName().startsWith("js");
++    }
++
++    private boolean isJsInteropMagicArrayLiteralMethod(JMethod method) {
++      return method.getEnclosingType().getName().equals(JS_CLASS) &&
++          (method.getName().equals("array") ||
++           method.getName().equals("ints") ||
++          method.getName().equals("strings"));
++    }
++
++    private boolean isJsInteropMagicMapLiteralMethod(JMethod method) {
++      return method.getEnclosingType().getName().equals(JS_CLASS) &&
++          method.getName().equals("map");
++    }
++
+     @Override
+     public void endVisit(MethodDeclaration x, ClassScope scope) {
+       try {
+@@ -2902,6 +3186,7 @@ public class GwtAstBuilder {
+         new IdentityHashMap<SyntheticArgumentBinding, JField>();
+     public final JDeclaredType type;
+     public final TypeDeclaration typeDecl;
++    public int gwtJsniCount = 0;
+ 
+     public ClassInfo(JDeclaredType type, TypeDeclaration x) {
+       this.type = type;
+diff --git a/dev/core/src/com/google/gwt/dev/jjs/impl/TypeTightener.java b/dev/core/src/com/google/gwt/dev/jjs/impl/TypeTightener.java
+index 431be43..8a0fcac 100644
+--- a/dev/core/src/com/google/gwt/dev/jjs/impl/TypeTightener.java
++++ b/dev/core/src/com/google/gwt/dev/jjs/impl/TypeTightener.java
+@@ -701,7 +701,7 @@ public class TypeTightener {
+       }
+ 
+       // tighten based on non-instantiability
+-      if (!program.typeOracle.isInstantiatedType(refType)) {
++      if (!program.typeOracle.isInstantiatedType(refType) && !program.typeOracle.isJsType(refType)) {
+         x.setType(typeNull);
+         madeChanges();
+         return;
+diff --git a/user/src/com/google/gwt/core/client/impl/IterateAsArray.java b/user/src/com/google/gwt/core/client/impl/IterateAsArray.java
+new file mode 100644
+index 0000000..41b18b2
+--- /dev/null
++++ b/user/src/com/google/gwt/core/client/impl/IterateAsArray.java
+@@ -0,0 +1,34 @@
++/*
++ * Copyright 2014 Google Inc.
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
++ * use this file except in compliance with the License. You may obtain a copy of
++ * the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
++ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
++ * License for the specific language governing permissions and limitations under
++ * the License.
++ */
++package com.google.gwt.core.client.impl;
++
++import java.lang.annotation.Documented;
++import java.lang.annotation.ElementType;
++import java.lang.annotation.Retention;
++import java.lang.annotation.RetentionPolicy;
++import java.lang.annotation.Target;
++
++/**
++ * Internal annotation hint used by compiler to transform for-each loops over
++ * Iterable instances into integer based loops. DO NOT USE OUTSIDE SDK.
++ */
++@Retention(RetentionPolicy.RUNTIME)
++@Target(ElementType.TYPE)
++@Documented
++public @interface IterateAsArray {
++  String getter();
++  String length();
++}
+diff --git a/user/src/com/google/gwt/core/client/js/Js.java b/user/src/com/google/gwt/core/client/js/Js.java
+new file mode 100644
+index 0000000..09fd10b
+--- /dev/null
++++ b/user/src/com/google/gwt/core/client/js/Js.java
+@@ -0,0 +1,103 @@
++/*
++ * Copyright 2014 Google Inc.
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
++ * use this file except in compliance with the License. You may obtain a copy of
++ * the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
++ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
++ * License for the specific language governing permissions and limitations under
++ * the License.
++ */
++package com.google.gwt.core.client.js;
++
++/**
++ * Utility methods for invoking and manipulating Javascript.
++ */
++public class Js {
++  /**
++   * Execute inline Javascript efficiently. This method substitutes for the functionality
++   * of JavaScript Native Methods by providing a method for synthesizing Javascript functions
++   * without declaring native Java methods.
++   * <p>
++   * Example:
++   * <code>
++   * Js.js("$wnd.alert($0 + ' ' + $1)", "Hello", 42);
++   * </code>
++   * <p>
++   * Each position in the varargs supplied to the function is available as a numerically indexed
++   * Javascript local variable <b>$<i>n</i></b>.
++   * <p>
++   * Primitive types are passed to Javascript unboxed, and return values are returned unboxed if
++   * the context is unboxed, such as when assigning to an integer, or passing to a another method.
++   * As such, js() is a <i>magic method</i> not equivalent to an eval() statement. The first
++   * argument to js() containing the Javascript string MUST be a literal. This expression is
++   * parsed and optimized at <b>compile time</b>.
++   * <p>
++   * Note on format of javascript expression:
++   * <p>
++   * There are two forms permitted: Expression, and Statement.
++   * <p>
++   * An expression contains no semicolons, no control flow statements (if/do/for/while), such
++   * as short mathematical expressions, variable or property evaluations, or method calls.
++   * <p>
++   * Expressions are synthesized into something resembling a JSNI method by the compiler, for
++   * example, Js.js("$0 + $1 + Date.now()", 2, 3) would be equivalent to:
++   * <p><code>
++   * public static native int func(int $0, int $1) /*- { return $0 + $1 + Date.now(); } -* /;
++   * </code>
++   * <p>Note that a 'return' statement and trailing semicolon were added by the compiler. In
++   * statement mode, the javascript string literal is placed in the body of a function with
++   * no modification.
++   *
++   * @param javascript a <b>literal</b> Javascript string, cannot be an expression or variable
++   * @param args arguments supplied as positional arguments to the function
++   * @param <T> the return type of value of the function in Javascript
++   */
++  public static <T> T js(String javascript, Object... args) {
++    throw new UnsupportedOperationException("Only available in compiled JS");
++  }
++
++  public static int jsInt(String javascript, Object... args) {
++    throw new UnsupportedOperationException("Only available in compiled JS");
++  }
++  public static double jsNum(String javascript, Object... args) {
++    throw new UnsupportedOperationException("Only available in compiled JS");
++  }
++
++  public static <T> T jsBool(String javascript, Object... args) {
++    throw new UnsupportedOperationException("Only available in compiled JS");
++  }
++
++  /**
++   * Creates literal Javascript arrays at compile time, equivalent to [arg1, arg2, arg3].
++   * @param args the members of the array
++   * @param <T> the contained type
++   * @return
++   */
++  public static <T> JsArray<T> array(T... args) {
++    throw new UnsupportedOperationException("Only available in compiled JS");
++  }
++
++  public static JsArray ints(int... args) {
++    throw new UnsupportedOperationException("Only available in compiled JS");
++  }
++
++  public static JsArray<String> strings(String... args) {
++    throw new UnsupportedOperationException("Only available in compiled JS");
++  }
++
++  /**
++   * Creates literal Javascript object at compile time, equivalent to {arg1: arg2, arg3: arg4}.
++   * @param args the key,value members of the array, must be even number of arguments
++   * @param <T> the contained value type
++   * @return
++   */
++  public static <T> JsMapLike<T> map(Object... args) {
++    throw new UnsupportedOperationException("Only available in compiled JS");
++  }
++}
+diff --git a/user/src/com/google/gwt/core/client/js/JsArray.java b/user/src/com/google/gwt/core/client/js/JsArray.java
+new file mode 100644
+index 0000000..c2be3b8
+--- /dev/null
++++ b/user/src/com/google/gwt/core/client/js/JsArray.java
+@@ -0,0 +1,31 @@
++/*
++ * Copyright 2014 Google Inc.
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
++ * use this file except in compliance with the License. You may obtain a copy of
++ * the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
++ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
++ * License for the specific language governing permissions and limitations under
++ * the License.
++ */
++package com.google.gwt.core.client.js;
++
++/**
++ * Represents a native Javascript array.
++ * @param <T> the type held by the array
++ */
++@JsType
++public interface JsArray<T> extends JsObject, JsMutableArrayLike<T> {
++  JsArray concat(JsArray array);
++  String join(String sep);
++  int lastIndexOf(JsObject obj);
++  JsObject pop();
++  void push(JsObject obj);
++  JsObject shift();
++  void unshift(JsObject obj);
++}
+diff --git a/user/src/com/google/gwt/core/client/js/JsArrayLike.java b/user/src/com/google/gwt/core/client/js/JsArrayLike.java
+new file mode 100644
+index 0000000..380d9de
+--- /dev/null
++++ b/user/src/com/google/gwt/core/client/js/JsArrayLike.java
+@@ -0,0 +1,47 @@
++/*
++ * Copyright 2014 Google Inc.
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
++ * use this file except in compliance with the License. You may obtain a copy of
++ * the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
++ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
++ * License for the specific language governing permissions and limitations under
++ * the License.
++ */
++package com.google.gwt.core.client.js;
++
++import com.google.gwt.core.client.impl.IterateAsArray;
++
++/**
++ * Magic interface that when applied to JsTypes, implies that the underlying object can be indexed
++ * into via the Javascript array reference operator.
++ * @param <T> primary type held by array
++ */
++@JsType
++@IterateAsArray(getter = "at", length = "length")
++public interface JsArrayLike<T> extends Iterable<T> {
++  @JsProperty(indexed = true)
++  T at(int index);
++
++  @JsProperty(indexed = true)
++  int intAt(int index);
++
++  @JsProperty(indexed = true)
++  double numAt(int index);
++
++  @JsProperty(indexed = true)
++  boolean boolAt(int index);
++
++  @JsProperty
++  int length();
++
++  // Java8 implementation before GwtAstBuilder interception code
++  /*
++   * default Iterable<T> iterator() { return new JsArrayLikeIterableAdapter(this).iterator(); }
++   */
++}
+diff --git a/user/src/com/google/gwt/core/client/js/JsMapLike.java b/user/src/com/google/gwt/core/client/js/JsMapLike.java
+new file mode 100644
+index 0000000..f0fc5dc
+--- /dev/null
++++ b/user/src/com/google/gwt/core/client/js/JsMapLike.java
+@@ -0,0 +1,39 @@
++/*
++ * Copyright 2014 Google Inc.
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
++ * use this file except in compliance with the License. You may obtain a copy of
++ * the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
++ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
++ * License for the specific language governing permissions and limitations under
++ * the License.
++ */
++package com.google.gwt.core.client.js;
++
++/**
++ * Magic interface that when applied to JsTypes, implies that the underlying object can be indexed
++ * into via the Javascript array reference operator.
++ * @param <T> the value type held by the map
++ */
++@JsType
++public interface JsMapLike<T> {
++  @JsProperty(indexed = true)
++  T at(String key);
++
++  @JsProperty(indexed = true)
++  int intAt(String key);
++
++  @JsProperty(indexed = true)
++  double numAt(String key);
++
++  @JsProperty(indexed = true)
++  boolean boolAt(String key);
++
++  @JsProperty
++  int length();
++}
+diff --git a/user/src/com/google/gwt/core/client/js/JsMutableArrayLike.java b/user/src/com/google/gwt/core/client/js/JsMutableArrayLike.java
+new file mode 100644
+index 0000000..9d8e409
+--- /dev/null
++++ b/user/src/com/google/gwt/core/client/js/JsMutableArrayLike.java
+@@ -0,0 +1,36 @@
++/*
++ * Copyright 2014 Google Inc.
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
++ * use this file except in compliance with the License. You may obtain a copy of
++ * the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
++ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
++ * License for the specific language governing permissions and limitations under
++ * the License.
++ */
++package com.google.gwt.core.client.js;
++
++/**
++ * Magic interface that when applied to JsTypes, implies that the underlying object can be indexed
++ * into via the Javascript array reference operator.
++ * @param <T> the type held by the array
++ */
++@JsType
++public interface JsMutableArrayLike<T> extends JsArrayLike<T> {
++  @JsProperty(indexed = true)
++  void setAt(int index, T object);
++
++  @JsProperty(indexed = true)
++  void setAt(int index, int value);
++
++  @JsProperty(indexed = true)
++  void setAt(int index, double value);
++
++  @JsProperty(indexed = true)
++  void setAt(int index, boolean value);
++}
+diff --git a/user/src/com/google/gwt/core/client/js/JsObject.java b/user/src/com/google/gwt/core/client/js/JsObject.java
+new file mode 100644
+index 0000000..5bb053f
+--- /dev/null
++++ b/user/src/com/google/gwt/core/client/js/JsObject.java
+@@ -0,0 +1,34 @@
++/*
++ * Copyright 2014 Google Inc.
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
++ * use this file except in compliance with the License. You may obtain a copy of
++ * the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
++ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
++ * License for the specific language governing permissions and limitations under
++ * the License.
++ */
++package com.google.gwt.core.client.js;
++
++/**
++ * Base class of all Javascript Object interop types.
++ */
++@JsType
++public interface JsObject {
++  @JsProperty
++  JsObject constructor();
++  boolean hasOwnProperty(String propName);
++  boolean isPrototypeOf(JsObject obj);
++  boolean propertyIsEnumerable(String propName);
++
++  /**
++   * TODO: technically, it can be a bool or String as well. Figure out the API later.
++   * double valueOf();
++   */
++  String toLocaleString();
++}
+diff --git a/user/src/com/google/gwt/core/client/js/JsProperty.java b/user/src/com/google/gwt/core/client/js/JsProperty.java
+index fb8b69a..8a2296f 100644
+--- a/user/src/com/google/gwt/core/client/js/JsProperty.java
++++ b/user/src/com/google/gwt/core/client/js/JsProperty.java
+@@ -42,4 +42,5 @@ import java.lang.annotation.Target;
+ @Documented
+ public @interface JsProperty {
+   String value() default "";
++  boolean indexed() default false;
+ }
+diff --git a/user/src/com/google/gwt/core/client/js/impl/JsArrayLikeIterableAdapter.java b/user/src/com/google/gwt/core/client/js/impl/JsArrayLikeIterableAdapter.java
+new file mode 100644
+index 0000000..b99229f
+--- /dev/null
++++ b/user/src/com/google/gwt/core/client/js/impl/JsArrayLikeIterableAdapter.java
+@@ -0,0 +1,65 @@
++/*
++ * Copyright 2014 Google Inc.
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
++ * use this file except in compliance with the License. You may obtain a copy of
++ * the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
++ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
++ * License for the specific language governing permissions and limitations under
++ * the License.
++ */
++package com.google.gwt.core.client.js.impl;
++
++import com.google.gwt.core.client.JavaScriptObject;
++import com.google.gwt.core.client.js.JsArrayLike;
++
++import java.util.Iterator;
++
++/**
++ * Internal adapter used by compiler to synthesize Iterables for Javascript arrays.
++ * @param <T> the type held by the array
++*/
++public class JsArrayLikeIterableAdapter<T> implements Iterable<T> {
++  private JsArrayLike<T> instance;
++
++  public static <T> Iterable<T> iterableTrampoline(Object it) {
++    if (it instanceof Iterable) {
++      return (Iterable<T>) it;
++    }
++    if (it instanceof JavaScriptObject) {
++      return new JsArrayLikeIterableAdapter<T>((JsArrayLike<T>) it);
++    }
++    throw new IllegalArgumentException("Object " + it +
++        " is neither a Javascript object nor a Java class implementing Iterable<T>");
++  }
++
++  public JsArrayLikeIterableAdapter(JsArrayLike<T> instance) {
++    this.instance = instance;
++  }
++
++  @Override
++  public Iterator<T> iterator() {
++    return new Iterator<T>() {
++      int i = 0;
++      @Override
++      public boolean hasNext() {
++        return instance != null && i < instance.length();
++      }
++
++      @Override
++      public T next() {
++        return instance.at(i++);
++      }
++
++      // FIXME(manolo) MCM
++      @Override
++      public void remove() {
++      }
++    };
++  }
++}
+diff --git a/user/src/com/google/gwt/junit/JUnit.gwt.xml b/user/src/com/google/gwt/junit/JUnit.gwt.xml
+index c007590..aa72b69 100644
+--- a/user/src/com/google/gwt/junit/JUnit.gwt.xml
++++ b/user/src/com/google/gwt/junit/JUnit.gwt.xml
+@@ -34,12 +34,12 @@
+ 
+   <!-- We want to provide consistent stack traces across all browsers. -->
+   <set-configuration-property name="compiler.emulatedStack.recordFileNames" value="true" />
+-  <set-property name="compiler.stackMode" value="emulated">
+-    <none>
+-      <!-- Don't use stack trace emulation if source maps enabled -->
+-      <when-property-is name="compiler.useSourceMaps" value="true"/>
+-    </none>
+-  </set-property>
++  <!--<set-property name="compiler.stackMode" value="emulated">-->
++    <!--<none>-->
++      <!--&lt;!&ndash; Don't use stack trace emulation if source maps enabled &ndash;&gt;-->
++      <!--<when-property-is name="compiler.useSourceMaps" value="true"/>-->
++    <!--</none>-->
++  <!--</set-property>-->
+ 
+   <!-- Override the regular symbolMaps linker to put the data somewhere we can find it -->
+   <define-linker name="symbolMaps" class="com.google.gwt.junit.linker.JUnitSymbolMapsLinker" />
+diff --git a/user/src/com/google/gwt/junit/JUnitShell.java b/user/src/com/google/gwt/junit/JUnitShell.java
+index 51c22da..6a6498d 100644
+--- a/user/src/com/google/gwt/junit/JUnitShell.java
++++ b/user/src/com/google/gwt/junit/JUnitShell.java
+@@ -73,11 +73,9 @@ import com.google.gwt.thirdparty.guava.common.collect.ImmutableSet;
+ import com.google.gwt.util.tools.ArgHandlerFlag;
+ import com.google.gwt.util.tools.ArgHandlerInt;
+ import com.google.gwt.util.tools.ArgHandlerString;
+-
+ import junit.framework.AssertionFailedError;
+ import junit.framework.TestCase;
+ import junit.framework.TestResult;
+-
+ import org.eclipse.jetty.server.Server;
+ import org.eclipse.jetty.webapp.WebAppContext;
+ 
+@@ -97,7 +95,6 @@ import java.util.Map.Entry;
+ import java.util.Set;
+ import java.util.regex.Matcher;
+ import java.util.regex.Pattern;
+-
+ import javax.servlet.Servlet;
+ 
+ /**
+diff --git a/user/super/com/google/gwt/emul/java/util/ArrayList.java b/user/super/com/google/gwt/emul/java/util/ArrayList.java
+index a9669d3..a9e9b41 100644
+--- a/user/super/com/google/gwt/emul/java/util/ArrayList.java
++++ b/user/super/com/google/gwt/emul/java/util/ArrayList.java
+@@ -15,6 +15,7 @@
+  */
+ package java.util;
+ 
++import com.google.gwt.core.client.impl.IterateAsArray;
+ import com.google.gwt.lang.Array;
+ 
+ import java.io.Serializable;
+@@ -37,6 +38,7 @@ import java.io.Serializable;
+  *
+  * @param <E> the element type.
+  */
++@IterateAsArray(getter = "get", length = "size")
+ public class ArrayList<E> extends AbstractList<E> implements List<E>,
+     Cloneable, RandomAccess, Serializable {
+ 
+@@ -155,7 +157,7 @@ public class ArrayList<E> extends AbstractList<E> implements List<E>,
+ 
+   @Override
+   public E get(int index) {
+-    checkIndex(index, size);
++//    checkIndex(index, size);
+     return array[index];
+   }
+ 
+diff --git a/user/test/com/google/gwt/core/client/interop/JsJsniTest.java b/user/test/com/google/gwt/core/client/interop/JsJsniTest.java
+new file mode 100644
+index 0000000..d9a97ee
+--- /dev/null
++++ b/user/test/com/google/gwt/core/client/interop/JsJsniTest.java
+@@ -0,0 +1,154 @@
++/*
++ * Copyright 2013 Google Inc.
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
++ * use this file except in compliance with the License. You may obtain a copy of
++ * the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
++ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
++ * License for the specific language governing permissions and limitations under
++ * the License.
++ */
++package com.google.gwt.core.client.interop;
++
++import static com.google.gwt.core.client.js.Js.array;
++import static com.google.gwt.core.client.js.Js.js;
++import static com.google.gwt.core.client.js.Js.jsInt;
++import static com.google.gwt.core.client.js.Js.map;
++
++import com.google.gwt.core.client.js.JsArray;
++import com.google.gwt.core.client.js.JsArrayLike;
++import com.google.gwt.core.client.js.JsMapLike;
++import com.google.gwt.core.client.js.JsProperty;
++import com.google.gwt.core.client.js.JsType;
++import com.google.gwt.dom.client.Document;
++import com.google.gwt.junit.DoNotRunWith;
++import com.google.gwt.junit.Platform;
++import com.google.gwt.junit.client.GWTTestCase;
++
++import java.util.ArrayList;
++
++/**
++ * Tests JsType and JsExport.
++ */
++@DoNotRunWith({Platform.Devel, Platform.HtmlUnitBug})
++public class JsJsniTest extends GWTTestCase {
++
++  @JsType
++  interface Node {
++  }
++
++  @JsType
++  interface NodeList<T extends Node> extends JsArrayLike<T> {
++  }
++
++  @JsType
++  interface Element extends Node {
++    NodeList<Element> getElementsByTagName(String tagName);
++    void appendChild(Node n);
++    @JsProperty
++    Element innerHTML(String html);
++    @JsProperty
++    String innerText();
++  }
++
++  @JsType
++  interface HTMLDocument extends Element {
++    <T extends Element> T createElement(String tagName);
++  }
++
++  @Override
++  protected void gwtSetUp() throws Exception {
++  }
++
++  public String getModuleName() {
++    return "com.google.gwt.core.Core";
++  }
++
++  public void testString() {
++    assertEquals("Hello2", js("'Hello2'"));
++  }
++
++  public void testStringWithArgs() {
++    assertEquals("Hello World", js("'Hello' + ' ' + $0", "World"));
++  }
++
++  public void testPrimitiveInt() {
++    assertTrue(43 == jsInt("43"));
++  }
++
++  public void testPrimitiveInWithIntArg() {
++    assertTrue(42 == jsInt("41 + $0", 1));
++  }
++
++  public void testDocument() {
++    assertEquals(Document.get(), js("$doc"));
++  }
++
++  public void testStatements() {
++    assertEquals(42,  jsInt("var x = 41; return x + 1;"));
++  }
++
++  public void testBlock() {
++    int result = jsInt("if ($0) { return $1; } else { return $2; }", true, 42, 99);
++    assertEquals(42, result);
++  }
++
++  public void testInterop() {
++    JsArray array = js("Object.keys({foo: 1, bar: 2})");
++    assertEquals(2, array.length());
++
++    JsMapLike map = js("({foo: 1, bar: 2})");
++    assertEquals(2, map.intAt("bar"));
++  }
++
++  public void testDOM() {
++    HTMLDocument doc = js("$doc");
++    NodeList<Element> query =
++        doc.createElement("div").innerHTML("<ul><li><li>hello</li><li></ul>")
++            .getElementsByTagName("li");
++    assertEquals(3, query.length());
++    assertEquals("hello", query.at(1).innerText());
++    boolean found = false;
++    for (Element x : query) {
++      if (x.innerText().equals("hello")) {
++        found = true;
++        break;
++      }
++    }
++
++    assertTrue(found);
++  }
++
++  public void testFastArrayListIteration() {
++    ArrayList<String> al = new ArrayList<String>();
++    al.add("Apples");
++    al.add("Oranges");
++    al.add("Grapes");
++    String result = "";
++    for (String x : al) {
++      result += x;
++    }
++    assertEquals("ApplesOrangesGrapes", result);
++  }
++
++  public void testJsArrayLiteral() {
++    JsArray array = array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
++    int sum = 0;
++    for (int i = 0; i < array.length(); i++) {
++      sum += array.intAt(i);
++    }
++    assertEquals(55, sum);
++  }
++
++  public void testJsMapLiteral() {
++    JsMapLike<String> map = map("Alice", 42, "Bert", 21, "Candice", 37);
++    assertEquals(42, map.intAt("Alice"));
++    assertEquals(21, map.intAt("Bert"));
++    assertEquals(37, map.intAt("Candice"));
++  }
++}
+-- 
+1.8.5.2 (Apple Git-48)
+

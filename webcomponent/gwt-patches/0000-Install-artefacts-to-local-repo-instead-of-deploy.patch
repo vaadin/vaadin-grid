@@ -1,0 +1,34 @@
+From d804c779e669ce26afb2690884f6ec80c5f28fcf Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Manuel=20Carrasco=20Mo=C3=B1ino?= <manolo@vaadin.com>
+Date: Wed, 3 Sep 2014 21:14:00 +0200
+Subject: [PATCH] Install artefacts to local repo instead of deploy
+
+Change-Id: Ib1b0635871b8b99c921503af39a96c30208906a7
+---
+ maven/lib-maven-deploy.sh | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/maven/lib-maven-deploy.sh b/maven/lib-maven-deploy.sh
+index f3c90d7..d376035 100644
+--- a/maven/lib-maven-deploy.sh
++++ b/maven/lib-maven-deploy.sh
+@@ -46,7 +46,15 @@ function maven-deploy-file() {
+   fi
+ 
+   local cmd="";
+-  if [[ "$gpgPassphrase" != "" ]]; then
++  if [ "$mavenRepoUrl" = "$localRepoUrl" ]; then
++    echo "Installing $curFile in local repository cache"
++    cmd="$MAVEN_BIN \
++           install:install-file
++            -Dfile=$curFile \
++            -DrepositoryId=$mavenRepoId \
++            -DpomFile=$pomFile \
++            -q"
++  elif [[ "$gpgPassphrase" != "" ]]; then
+     cmd="$MAVEN_BIN \
+            org.apache.maven.plugins:maven-gpg-plugin:1.4:sign-and-deploy-file \
+             -Dfile=$curFile \
+-- 
+1.8.5.2 (Apple Git-48)
+
