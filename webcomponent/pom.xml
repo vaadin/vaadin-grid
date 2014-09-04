@@ -15,7 +15,8 @@
       <gQueryVersion>1.4.3-SNAPSHOT</gQueryVersion>
       <gwtversion>2.7.0-SNAPSHOT</gwtversion>
       <gwtmaven>2.6.1</gwtmaven>
-      <gwt.outputstyle>PRETTY</gwt.outputstyle>
+      <!-- A hack in the meanwhile we have this argument in gwt-maven plugin -->
+      <gwt.outputstyle>PRETTY' '-XjsInteropMode' 'JS</gwt.outputstyle>
       <maven.test.skip>true</maven.test.skip>
     </properties>
 
@@ -24,6 +25,11 @@
         <id>prod</id>
         <properties>
           <gwt.outputstyle>OBF</gwt.outputstyle>
+        </properties>
+      </profile>
+      <profile>
+        <id>test</id>
+        <properties>
           <maven.test.skip>false</maven.test.skip>
         </properties>
       </profile>
@@ -178,11 +184,11 @@
                  <systemProperties>
                    <property>
                      <name>gwt.args</name>
-                     <value>-out target/gwt-tests</value>
+                     <value>-logLevel INFO -style OBF -war target/war-tests -notHeadless -web -XjsInteropMode JS</value>
                    </property>
                    <property>
                      <name>java.awt.headless</name>
-                     <value>true</value>
+                     <value>false</value>
                    </property>
                  </systemProperties>
                </configuration>
