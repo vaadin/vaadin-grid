@@ -15,7 +15,19 @@
       <gQueryVersion>1.4.3-SNAPSHOT</gQueryVersion>
       <gwtversion>2.7.0-SNAPSHOT</gwtversion>
       <gwtmaven>2.6.1</gwtmaven>
+      <gwt.outputstyle>PRETTY</gwt.outputstyle>
+      <maven.test.skip>true</maven.test.skip>
     </properties>
+
+    <profiles>
+      <profile>
+        <id>prod</id>
+        <properties>
+          <gwt.outputstyle>OBF</gwt.outputstyle>
+          <maven.test.skip>false</maven.test.skip>
+        </properties>
+      </profile>
+    </profiles>
 
     <repositories>
        <repository>
