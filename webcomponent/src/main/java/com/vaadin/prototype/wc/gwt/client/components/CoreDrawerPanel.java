@@ -1,0 +1,66 @@
+package com.vaadin.prototype.wc.gwt.client.components;
+
+import com.google.gwt.core.client.js.JsProperty;
+import com.google.gwt.core.client.js.JsType;
+import com.google.gwt.core.client.js.JsArray;
+import com.google.gwt.core.client.js.JsObject;
+import com.google.gwt.dom.client.BodyElement;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.HeadElement;
+import com.google.gwt.user.client.EventListener;
+
+@JsType(prototype = "HTMLElement", isNative = true)
+public interface CoreDrawerPanel {
+
+  /**
+   * Fired when the narrow layout changes.
+   * 
+   * @event core-responsive-change
+   * @param {Object} detail
+   * @param {boolean} detail.narrow true if the panel is in narrow layout.
+   */
+  void addEventListener(String event, EventListener listener);
+
+  /**
+   * Max-width when the panel changes to narrow layout.
+   *
+   * @attribute responsiveWidth
+   * @type string
+   * @default '640px'
+   */
+  @JsProperty CoreDrawerPanel responsiveWidth(String val);
+  @JsProperty String responsiveWidth();
+
+  /**
+   * The panel that is being selected. `drawer` for the drawer panel and
+   * `main` for the main panel.
+   *
+   * @attribute selected
+   * @type string
+   * @default null
+   */
+  @JsProperty CoreDrawerPanel selected(String val);
+  @JsProperty String selected();
+
+  /**
+   * The panel to be selected when `core-drawer-panel` changes to narrow 
+   * layout.
+   *
+   * @attribute defaultSelected
+   * @type string
+   * @default 'main'
+   */
+  @JsProperty CoreDrawerPanel defaultSelected(String val);
+  @JsProperty String defaultSelected();
+
+  /**
+   * Returns true if the panel is in narrow layout.  This is useful if you
+   * need to show/hide elements based on the layout.
+   *
+   * @attribute narrow
+   * @type boolean
+   * @default false
+   */
+  @JsProperty CoreDrawerPanel narrow(boolean val);
+  @JsProperty boolean narrow();
+}

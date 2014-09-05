@@ -23,5 +23,5 @@
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.vaadin.prototype.wc.gwt.client.WebComponentsTest"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="web-components"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.m2e.launchconfig.sourcepathProvider"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dgwt.args=&quot;-logLevel INFO -style OBFUSCATED -war target/war-tests -notHeadless -web -XjsInteropMode JS&quot;"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dgwt.args=&quot;-logLevel INFO -style PRETTY -war target/war-tests -notHeadless -web -XjsInteropMode JS&quot;"/>
 </launchConfiguration>

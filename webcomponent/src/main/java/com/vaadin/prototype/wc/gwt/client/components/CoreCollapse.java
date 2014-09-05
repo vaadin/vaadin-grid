@@ -1,0 +1,82 @@
+package com.vaadin.prototype.wc.gwt.client.components;
+
+import com.google.gwt.core.client.js.JsProperty;
+import com.google.gwt.core.client.js.JsType;
+import com.google.gwt.core.client.js.JsArray;
+import com.google.gwt.core.client.js.JsObject;
+import com.google.gwt.dom.client.BodyElement;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.HeadElement;
+import com.google.gwt.user.client.EventListener;
+
+@JsType(prototype = "HTMLElement", isNative = true)
+public interface CoreCollapse {
+
+  /**
+   * Fired when the target element has been resized as a result of the opened
+   * state changing.
+   * 
+   * @event core-resize
+   */
+  void addEventListener(String event, EventListener listener);
+
+  /**
+   * The target element.
+   *
+   * @attribute target
+   * @type object
+   * @default null
+   */
+  @JsProperty CoreCollapse target(JsObject val);
+  @JsProperty JsObject target();
+
+  /**
+   * If true, the orientation is horizontal; otherwise is vertical.
+   *
+   * @attribute horizontal
+   * @type boolean
+   * @default false
+   */
+  @JsProperty CoreCollapse horizontal(boolean val);
+  @JsProperty boolean horizontal();
+
+  /**
+   * Set opened to true to show the collapse element and to false to hide it.
+   *
+   * @attribute opened
+   * @type boolean
+   * @default false
+   */
+  @JsProperty CoreCollapse opened(boolean val);
+  @JsProperty boolean opened();
+
+  /**
+   * Collapsing/expanding animation duration in second.
+   *
+   * @attribute duration
+   * @type number
+   * @default 0.33
+   */
+  @JsProperty CoreCollapse duration(double val);
+  @JsProperty double duration();
+
+  /**
+   * If true, the size of the target element is fixed and is set
+   * on the element.  Otherwise it will try to 
+   * use auto to determine the natural size to use
+   * for collapsing/expanding.
+   *
+   * @attribute fixedSize
+   * @type boolean
+   * @default false
+   */
+  @JsProperty CoreCollapse fixedSize(boolean val);
+  @JsProperty boolean fixedSize();
+
+  /**
+   * Toggle the opened state.
+   *
+   * @method toggle
+   */
+  void toggle();
+}
