@@ -8,9 +8,12 @@ import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.HeadElement;
 import com.google.gwt.user.client.EventListener;
+import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface CoreMeta {
+public interface CoreMeta extends HTMLElement {
+
+  Class<?>[] dependencies = new Class<?>[]{};
 
   /**
    * The type of meta-data.  All meta-data with the same type with be
@@ -40,5 +43,5 @@ public interface CoreMeta {
    * @param {String} id The ID of the meta-data to be returned.
    * @returns Returns meta-data.
    */
-  void byId();
+  JsObject byId(String arg0);
 }

@@ -8,9 +8,12 @@ import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.HeadElement;
 import com.google.gwt.user.client.EventListener;
+import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface PaperButton extends PaperFocusable {
+public interface PaperButton extends HTMLElement, PaperFocusable {
+
+  Class<?>[] dependencies = new Class<?>[]{};
 
   /**
    * The label of the button.

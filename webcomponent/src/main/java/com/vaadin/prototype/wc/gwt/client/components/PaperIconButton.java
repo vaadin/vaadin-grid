@@ -8,9 +8,12 @@ import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.HeadElement;
 import com.google.gwt.user.client.EventListener;
+import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface PaperIconButton extends PaperButton {
+public interface PaperIconButton extends HTMLElement, PaperButton {
+
+  Class<?>[] dependencies = new Class<?>[]{};
 
   /**
    * If true, the ripple expands to a square to fill the containing box.

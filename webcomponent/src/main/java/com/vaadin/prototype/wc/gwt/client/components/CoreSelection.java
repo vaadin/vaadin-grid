@@ -8,9 +8,12 @@ import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.HeadElement;
 import com.google.gwt.user.client.EventListener;
+import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface CoreSelection {
+public interface CoreSelection extends HTMLElement {
+
+  Class<?>[] dependencies = new Class<?>[]{};
 
   /**
    * If true, multiple selections are allowed.
@@ -29,7 +32,7 @@ public interface CoreSelection {
    * getSelection will return an array, otherwise it will return 
    * the selected item or undefined if there is no selection.
    */
-  void getSelection();
+  JsObject getSelection();
 
   /**
    * Indicates if a given item is selected.
@@ -37,7 +40,7 @@ public interface CoreSelection {
    * @param {any} item The item whose selection state should be checked.
    * @returns Returns true if `item` is selected.
    */
-  void isSelected();
+  JsObject isSelected(JsObject arg0);
 
   /**
    * Set the selection state for a given `item`. If the multi property
@@ -46,12 +49,12 @@ public interface CoreSelection {
    * @method select
    * @param {any} item: The item to select.
    */
-  void select();
+  void select(JsObject arg0);
 
   /**
    * Toggles the selection state for `item`.
    * @method toggle
    * @param {any} item: The item to toggle.
    */
-  void toggle();
+  void toggle(JsObject arg0);
 }

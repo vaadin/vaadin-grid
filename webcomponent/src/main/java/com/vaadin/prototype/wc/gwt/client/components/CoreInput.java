@@ -8,6 +8,7 @@ import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.HeadElement;
 import com.google.gwt.user.client.EventListener;
+import com.vaadin.prototype.wc.gwt.client.html.*;
 
 /**
  * core-input is an unstyled single- or multi-line text field where user can
@@ -46,7 +47,9 @@ import com.google.gwt.user.client.EventListener;
  * @homepage github.io
  */
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface CoreInput {
+public interface CoreInput extends HTMLElement {
+
+  Class<?>[] dependencies = new Class<?>[]{};
 /**
  * Fired when the inputValue of this text input changes and fails validation.
  *

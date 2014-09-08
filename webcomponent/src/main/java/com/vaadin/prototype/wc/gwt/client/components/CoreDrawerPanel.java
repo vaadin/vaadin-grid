@@ -8,9 +8,12 @@ import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.HeadElement;
 import com.google.gwt.user.client.EventListener;
+import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface CoreDrawerPanel {
+public interface CoreDrawerPanel extends HTMLElement {
+
+  Class<?>[] dependencies = new Class<?>[]{CoreMediaQuery.class, CoreSelector.class};
 
   /**
    * Fired when the narrow layout changes.
@@ -63,4 +66,22 @@ public interface CoreDrawerPanel {
    */
   @JsProperty CoreDrawerPanel narrow(boolean val);
   @JsProperty boolean narrow();
+
+  /**
+   * Toggle the panel.
+   * @method togglePanel
+   */
+  void togglePanel();
+
+  /**
+   * Open Drawer.
+   * @method openDrawer
+   */
+  void openDrawer();
+
+  /**
+   * Close Drawer.
+   * @method closeDrawer
+   */
+  void closeDrawer();
 }

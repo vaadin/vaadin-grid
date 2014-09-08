@@ -8,9 +8,12 @@ import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.HeadElement;
 import com.google.gwt.user.client.EventListener;
+import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface PaperSlider extends CoreRange {
+public interface PaperSlider extends HTMLElement, CoreRange {
+
+  Class<?>[] dependencies = new Class<?>[]{PaperProgress.class, PaperInput.class};
 
   /**
    * Fired when the slider's value changes.

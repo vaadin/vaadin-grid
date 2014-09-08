@@ -8,9 +8,12 @@ import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.HeadElement;
 import com.google.gwt.user.client.EventListener;
+import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface CoreIcon {
+public interface CoreIcon extends HTMLElement {
+
+  Class<?>[] dependencies = new Class<?>[]{CoreIconset.class};
 
   /**
    * The URL of an image for the icon. If the src property is specified,

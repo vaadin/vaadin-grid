@@ -8,9 +8,12 @@ import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.HeadElement;
 import com.google.gwt.user.client.EventListener;
+import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface CoreOverlay {
+public interface CoreOverlay extends HTMLElement {
+
+  Class<?>[] dependencies = new Class<?>[]{CoreTransition.class, CoreKeyHelper.class, CoreOverlayLayer.class};
 
   /**
    * The target element that will be shown when the overlay is 

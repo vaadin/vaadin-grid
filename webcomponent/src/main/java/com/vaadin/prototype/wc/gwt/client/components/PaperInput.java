@@ -8,9 +8,12 @@ import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.HeadElement;
 import com.google.gwt.user.client.EventListener;
+import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface PaperInput extends CoreInput {
+public interface PaperInput extends HTMLElement, CoreInput {
+
+  Class<?>[] dependencies = new Class<?>[]{};
 
   /**
    * The label for this input. It normally appears as grey text inside

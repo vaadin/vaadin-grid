@@ -8,9 +8,12 @@ import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.HeadElement;
 import com.google.gwt.user.client.EventListener;
+import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface CoreSelector {
+public interface CoreSelector extends HTMLElement {
+
+  Class<?>[] dependencies = new Class<?>[]{CoreSelection.class};
 
   /**
    * Gets or sets the selected element.  Default to use the index

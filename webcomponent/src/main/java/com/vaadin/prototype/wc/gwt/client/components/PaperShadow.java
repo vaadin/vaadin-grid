@@ -8,9 +8,12 @@ import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.HeadElement;
 import com.google.gwt.user.client.EventListener;
+import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface PaperShadow {
+public interface PaperShadow extends HTMLElement {
+
+  Class<?>[] dependencies = new Class<?>[]{};
 
   /**
    * If set, the shadow is applied to this node.

@@ -11,8 +11,9 @@
 use File::Basename;
 use strict;
 
-my $head = 'package com.vaadin.prototype.wc.gwt.client.components;
+my $package = "package com.vaadin.prototype.wc.gwt.client.components;\n";
 
+my $head = "$package
 import com.google.gwt.core.client.js.JsProperty;
 import com.google.gwt.core.client.js.JsType;
 import com.google.gwt.core.client.js.JsArray;
@@ -21,31 +22,44 @@ import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.HeadElement;
 import com.google.gwt.user.client.EventListener;
+import com.vaadin.prototype.wc.gwt.client.html.*;
 
-';
+";
+
+sub getJavaType {
+  my $a = shift;
+  return "String" if ($a =~ /string/i );
+  return "boolean" if ($a =~ /boolean/i );
+  return "JsArray" if ($a =~ /array/i );
+  return "Element" if ($a =~ /element/i );
+  return "JsObject" if ($a =~ /object/i );
+  return "double" if ($a =~ /number/i );
+  return "JsObject";
+}
 
 sub readFile {
   my ($file, $super) = @_;
   return if (!-f $file);
+
   my $tag = basename($file, '.html');
+
   my $clz = $tag;
   $clz =~ s/(^|-)(.)/uc($2)/eg;
+ 
   my $java = "$clz.java";
   return if (!$super && -f $java);
+ 
   print "$tag $clz\n";
-  my $interface = "\@JsType(prototype = \"HTMLElement\", isNative = true)\npublic interface $clz";
+  my $interface = "\@JsType(prototype = \"HTMLElement\", isNative = true)\npublic interface $clz extends HTMLElement";
   # if ($super) {
   #  $interface .= "<T extends $clz<?>>";
   # }
-  my $event = "";
-  my $body = "";
-  open(my $f, $file) || die "$! -> $file";
-  my %done;
-  my $inCom;
-  my $comment;
-  my $case;
-  my $attr;
+  
+  my ($event, $body, $inCom, $comment, $case, $attr, $load, %done, @params);
   my $javatype = "Object";
+  my $rtype = "void";
+
+  open(my $f, $file) || die "$! -> $file";
   while(<$f>) {
     if ($inCom && /^\s*\*\/\s*$/ ) {
       $comment .= $_;
@@ -53,13 +67,18 @@ sub readFile {
       $comment =~ s/^\s+\//\n  \//;
       my $ret = $super ? 'T' : $clz;
       $ret = $clz;
-      print "$case\n";
       if ($case eq 'attribute' && $done{$attr}) {
       } elsif ($case eq 'element') {
         $interface = "$comment$interface";
       } elsif ($case eq 'method') {
         $body .= $comment;
-        $body .= "  void $attr();\n";
+        my $sign = "";
+        my $i = 0;
+        foreach my $p (@params) {
+          $sign .= ", " if ($sign ne '');
+          $sign .= getJavaType($p) . " arg" . ($i++);
+        }
+        $body .= "  $rtype $attr($sign);\n";
       } elsif ($case eq 'event') {
         $event = "  void addEventListener(String event, EventListener listener);\n" if ("$event" eq '');
         $event = "$comment$event";
@@ -70,42 +89,50 @@ sub readFile {
         $body .= "  \@JsProperty $ret $attr($javatype val);\n";
         $body .= "  \@JsProperty $javatype $attr();\n";
       } else {
-        print "Unknown Case: $case\n$comment";
+        # print "Unknown Case: $case\n$comment";
       }
       $inCom = 0;
       $comment = "";
-    } elsif ($inCom && /^\s*\*\s*\@(attribute|event|element|method)\s+(.*)\s*$/) {
+    } elsif ($inCom && /^\s*\*\s*\@(attribute|event|element|method)\s+([^\s\r]+)/) {
       $comment .= $_;
       $case = "";
       $case = $1;
       $attr = $2;
     } elsif ($inCom && /^\s*\*\s*\@type\s+(.*)\s*$/) {
       $comment .= $_;
-      $javatype = "String" if ($1 =~ /string/i );
-      $javatype = "boolean" if ($1 =~ /boolean/i );
-      $javatype = "JsArray" if ($1 =~ /array/i );
-      $javatype = "Element" if ($1 =~ /element/i );
-      $javatype = "JsObject" if ($1 =~ /object/i );
-      $javatype = "double" if ($1 =~ /number/i );
+      $javatype = getJavaType($1);
+    } elsif ($inCom && /^\s*\*\s*\@param\s+\{*([^ \}]+).*$/) {
+      $comment .= $_;
+      push @params, $1;
+    } elsif ($inCom && /^\s*\*\s*\@returns\s+\{*([^ \}]+).*$/) {
+      $comment .= $_;
+      $rtype = getJavaType($1);
     } elsif ($inCom && /^\s*\*\s*.*$/) {
       $comment .= $_;
     } elsif (!$inCom && /^\s*\/\*\*\s*$/ ) {
       $comment .= $_;
+      @params = ();
+      $rtype = "void";
       $inCom = 1;
     } elsif (/^\s*$/) {
-    } elsif (/^.*extends="([^"]+)".*attributes="([^"]+)".*$/) {
+    } elsif (/"(import)".*href="[^"]*?([^\/"]+\-[^\/"]+).html"/
+          || /^.*(extends)="([^"]+)".*attributes="([^"]+)".*$/
+          || /^\s*\@(extends)\s+([^\s]+)/
+          ){
       my $dir = dirname($file);
-      my $nfile = $1;
+      my ($oper, $nfile) = ($1, $2);
       my $iface = $nfile;
-
       $iface =~ s/(^|-)(.)/uc($2)/eg;
-      next if ($interface =~ / $iface(,$)/);
 
-      if ($interface =~ /$clz extends /) {
-        $interface = "$interface, $iface";
-      } else {
-        $interface = "$interface extends $iface";
+      if ($oper eq 'import') {
+        $load .= ", " if ($load ne '');
+        $load .= "$iface.class";
+        next;
       }
+      
+      next if ($interface =~ /, $iface/);
+      $interface = "$interface, $iface";
+    
       # $interface .= "<$clz>";
 
       $nfile = "$dir/../$nfile/$nfile.html";
@@ -117,15 +144,50 @@ sub readFile {
     }
   }
   close($f);
-  return if ($body eq '');
+  # return if ($body eq '');
   open(my $f, ">$clz.java");
-  print $f "$head$interface \{\n$event$body\}\n";
+  $load = "\n  Class<?>[] dependencies = new Class<?>[]{$load};\n";
+  print $f "$head$interface \{\n$load$event$body\}\n";
   close($f);
 }
 
 foreach (@ARGV) {
   readFile $_;
 }
+
+my $icons = "$package\npublic interface Icons {\n";
+my $allicons = "  public static String[] ALL = new String[]{";
+sub readIcons {
+  my $file = shift;
+  my $name = basename($file, ".html");
+  $name =~ s/icons$//;
+  $name =~ s/-/:/;
+  open(my $f, $file) || die "$! -> $file";
+  while(<$f>) {
+    if (/^\s*<g\s+id="([^"]+)"/) {
+      my $icon = "$name$1";
+      my $var = uc($icon);
+      $var =~ s/[^\w]+/_/g;
+      $icons.= "  public static final String $var = \"$icon\";\n";
+      $allicons .= "\n   $var,";
+    }
+  }
+  close($f);
+}
+
+my $icondir = "core-icons/iconsets/";
+opendir(my $dh, $icondir) || die "$! -> $icondir";
+while(readdir $dh) {
+  readIcons("$icondir$_") if (/.html$/);
+}
+close($dh);
+
+open(my $f, ">Icons.java");
+$allicons =~ s/,$//;
+print $f "$icons$allicons};\n}\n";
+close($f);
+
+
 
 # @group Polymer Core Elements
 # @element core-input

@@ -8,6 +8,7 @@ import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.HeadElement;
 import com.google.gwt.user.client.EventListener;
+import com.vaadin.prototype.wc.gwt.client.html.*;
 
 /**
  * @group Polymer Core Elements
@@ -47,7 +48,9 @@ import com.google.gwt.user.client.EventListener;
  * @homepage github.io
  */
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface CoreIconsetSvg extends CoreMeta {
+public interface CoreIconsetSvg extends HTMLElement, CoreMeta {
+
+  Class<?>[] dependencies = new Class<?>[]{CoreIconset.class};
 
   /**
    * The size of an individual icon. Note that icons must be square.
@@ -68,7 +71,7 @@ public interface CoreIconsetSvg extends CoreMeta {
    * applied.
    * @param {String|Number} icon The name the icon to apply.
    */
-  void applyIcon();
+  void applyIcon(Element arg0, String arg1);
 
   /**
    * Tell users of the iconset, that the set has loaded.
@@ -80,5 +83,5 @@ public interface CoreIconsetSvg extends CoreMeta {
    * @param method {string} method to call on found elements, 
    * defaults to 'updateIcon'
    */
-  void updateIcons();
+  void updateIcons(JsObject arg0, JsObject arg1);
 }

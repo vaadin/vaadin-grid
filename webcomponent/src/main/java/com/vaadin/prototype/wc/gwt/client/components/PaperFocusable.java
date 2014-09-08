@@ -8,6 +8,7 @@ import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.HeadElement;
 import com.google.gwt.user.client.EventListener;
+import com.vaadin.prototype.wc.gwt.client.html.*;
 
 /**
  * @group Paper Elements
@@ -19,7 +20,9 @@ import com.google.gwt.user.client.EventListener;
  * @homepage github.io
  */
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface PaperFocusable {
+public interface PaperFocusable extends HTMLElement {
+
+  Class<?>[] dependencies = new Class<?>[]{};
 
   /**
    * If true, the button is currently active either because the

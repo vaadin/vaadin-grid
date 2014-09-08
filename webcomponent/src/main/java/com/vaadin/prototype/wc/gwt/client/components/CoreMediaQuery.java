@@ -8,6 +8,7 @@ import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.HeadElement;
 import com.google.gwt.user.client.EventListener;
+import com.vaadin.prototype.wc.gwt.client.html.*;
 
 /**
  * @group Polymer Core Elements
@@ -28,7 +29,9 @@ import com.google.gwt.user.client.EventListener;
  *
  */
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface CoreMediaQuery {
+public interface CoreMediaQuery extends HTMLElement {
+
+  Class<?>[] dependencies = new Class<?>[]{};
 
   /**
    * Fired when the media query state changes

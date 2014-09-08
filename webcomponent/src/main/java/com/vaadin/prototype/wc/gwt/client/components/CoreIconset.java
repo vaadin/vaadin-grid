@@ -8,6 +8,7 @@ import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.HeadElement;
 import com.google.gwt.user.client.EventListener;
+import com.vaadin.prototype.wc.gwt.client.html.*;
 
 /**
  * @group Polymer Core Elements
@@ -58,7 +59,9 @@ import com.google.gwt.user.client.EventListener;
  * @homepage github.io
  */
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface CoreIconset extends CoreMeta {
+public interface CoreIconset extends HTMLElement, CoreMeta {
+
+  Class<?>[] dependencies = new Class<?>[]{CoreMeta.class};
 
   /**
    * The URL of the iconset image.
@@ -142,7 +145,7 @@ public interface CoreIconset extends CoreMeta {
    * within the icon resource file; `offsetX` is the horizontal offset and
    * `offsetY` is the vertical offset. Both values are in pixel units.
    */
-  void getOffset();
+  JsObject getOffset(String arg0, String arg1);
 
   /**
    * Applies an icon to the given element as a css background image. This
@@ -157,5 +160,5 @@ public interface CoreIconset extends CoreMeta {
    * @param {Number} scale (optional, defaults to 1) A scaling factor 
    * with which the icon can be magnified.
    */
-  void applyIcon();
+  void applyIcon(Element arg0, String arg1, String arg2, double arg3);
 }

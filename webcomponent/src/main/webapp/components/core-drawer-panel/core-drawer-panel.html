@@ -116,15 +116,26 @@ Example:
         this.transition = true;
       });
     },
-
+    /**
+     * Toggle the panel.
+     * @method togglePanel
+     */
     togglePanel: function() {
       this.selected = this.selected === 'main' ? 'drawer' : 'main';
     },
     
+    /**
+     * Open Drawer.
+     * @method openDrawer
+     */
     openDrawer: function() {
       this.selected = 'drawer';
     },
     
+    /**
+     * Close Drawer.
+     * @method closeDrawer
+     */
     closeDrawer: function() {
       this.selected = 'main';
     },

@@ -22,7 +22,7 @@ public class WebComponentsTest extends GWTTestCase {
   }
 
   public void disabled_testOnModuleLoad() {
-    WebComponents a = new WebComponents();
+    Demo a = new Demo();
     a.onModuleLoad();
     assertFalse($("#hi").isEmpty());
   }

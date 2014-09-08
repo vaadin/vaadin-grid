@@ -8,6 +8,7 @@ import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.HeadElement;
 import com.google.gwt.user.client.EventListener;
+import com.vaadin.prototype.wc.gwt.client.html.*;
 
 /**
  * @group Polymer Core Elements
@@ -106,7 +107,9 @@ import com.google.gwt.user.client.EventListener;
  * @homepage github.io
  */
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface CoreComponentPage extends CoreMeta {
+public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware, CoreSelector {
+
+  Class<?>[] dependencies = new Class<?>[]{};
 
   /**
    * Fired whenever a response or an error is received.
@@ -191,7 +194,7 @@ public interface CoreComponentPage extends CoreMeta {
    * @param {String} id The ID of the meta-data to be returned.
    * @returns Returns meta-data.
    */
-  void byId();
+  JsObject byId(String arg0);
 
   /**
    * The URL of the iconset image.
@@ -275,7 +278,7 @@ public interface CoreComponentPage extends CoreMeta {
    * within the icon resource file; `offsetX` is the horizontal offset and
    * `offsetY` is the vertical offset. Both values are in pixel units.
    */
-  void getOffset();
+  JsObject getOffset(String arg0, String arg1);
 
   /**
    * Applies an icon to the given element as a css background image. This
@@ -290,6 +293,7 @@ public interface CoreComponentPage extends CoreMeta {
    * @param {Number} scale (optional, defaults to 1) A scaling factor 
    * with which the icon can be magnified.
    */
+  void applyIcon(Element arg0, String arg1, String arg2, double arg3);
 
   /**
    * Applies an icon to the given element. The svg icon is added to the
@@ -300,7 +304,7 @@ public interface CoreComponentPage extends CoreMeta {
    * applied.
    * @param {String|Number} icon The name the icon to apply.
    */
-  void applyIcon();
+  void applyIcon(Element arg0, String arg1);
 
   /**
    * Specifies the size of the icon in pixel units.
@@ -420,7 +424,7 @@ public interface CoreComponentPage extends CoreMeta {
    *    @param {Object} inOptions.callback Called when request is completed.
    * @returns {Object} XHR object.
    */
-  void request();
+  JsObject request(JsObject arg0, String arg1, String arg2, boolean arg3, JsObject arg4, JsObject arg5, JsObject arg6, String arg7, boolean arg8, JsObject arg9);
 
   /**
    * The URL target of the request.
@@ -577,7 +581,7 @@ public interface CoreComponentPage extends CoreMeta {
    * getSelection will return an array, otherwise it will return 
    * the selected item or undefined if there is no selection.
    */
-  void getSelection();
+  JsObject getSelection();
 
   /**
    * Indicates if a given item is selected.
@@ -585,7 +589,7 @@ public interface CoreComponentPage extends CoreMeta {
    * @param {any} item The item whose selection state should be checked.
    * @returns Returns true if `item` is selected.
    */
-  void isSelected();
+  JsObject isSelected(JsObject arg0);
 
   /**
    * Set the selection state for a given `item`. If the multi property
@@ -594,14 +598,14 @@ public interface CoreComponentPage extends CoreMeta {
    * @method select
    * @param {any} item: The item to select.
    */
-  void select();
+  void select(JsObject arg0);
 
   /**
    * Toggles the selection state for `item`.
    * @method toggle
    * @param {any} item: The item to toggle.
    */
-  void toggle();
+  void toggle(JsObject arg0);
 
   /**
    * Gets or sets the selected element.  Default to use the index
@@ -764,4 +768,13 @@ public interface CoreComponentPage extends CoreMeta {
   @JsProperty CoreComponentPage label(String val);
   @JsProperty String label();
 
+  /**
+   * Files to parse for docs
+   *
+   * @attribute sources
+   * @type Array
+   * @default []
+   */
+  @JsProperty CoreComponentPage sources(JsArray val);
+  @JsProperty JsArray sources();
 }
