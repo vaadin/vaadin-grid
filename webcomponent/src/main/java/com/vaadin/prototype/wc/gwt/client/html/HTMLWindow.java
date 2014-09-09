@@ -7,7 +7,7 @@ import com.google.gwt.core.client.js.JsType;
 
 @JsType(prototype = "Window", isNative = true)
 public interface HTMLWindow {
-    public static HTMLWindow window = (HTMLWindow)ScriptInjector.TOP_WINDOW;
+    static HTMLWindow window = (HTMLWindow)ScriptInjector.TOP_WINDOW;
 
     void alert(String msg);
     boolean confirm(String msg);
