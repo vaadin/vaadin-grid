@@ -1,9 +1,9 @@
 package com.vaadin.prototype.wc.gwt.client.components;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.js.JsProperty;
 import com.google.gwt.core.client.js.JsType;
-import com.google.gwt.core.client.js.JsArray;
-import com.google.gwt.core.client.js.JsObject;
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.HeadElement;
@@ -22,8 +22,8 @@ public interface CoreDropdown extends HTMLElement {
    * @attribute relatedTarget
    * @type Node
    */
-  @JsProperty CoreDropdown relatedTarget(JsObject val);
-  @JsProperty JsObject relatedTarget();
+  @JsProperty CoreDropdown relatedTarget(JavaScriptObject val);
+  @JsProperty JavaScriptObject relatedTarget();
 
   /**
    * If true, the menu is currently visible.
@@ -44,8 +44,8 @@ public interface CoreDropdown extends HTMLElement {
    * @type 'left' | 'right'
    * @default 'left'
    */
-  @JsProperty CoreDropdown halign(JsObject val);
-  @JsProperty JsObject halign();
+  @JsProperty CoreDropdown halign(JavaScriptObject val);
+  @JsProperty JavaScriptObject halign();
 
   /**
    * The vertical alignment of the popup relative to `relatedTarget`. `top` means
@@ -56,8 +56,8 @@ public interface CoreDropdown extends HTMLElement {
    * @type 'top' | 'bottom'
    * @default 'top'
    */
-  @JsProperty CoreDropdown valign(JsObject val);
-  @JsProperty JsObject valign();
+  @JsProperty CoreDropdown valign(JavaScriptObject val);
+  @JsProperty JavaScriptObject valign();
 
   /**
    * A pixel amount around the dropdown that will be reserved. It's useful for

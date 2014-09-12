@@ -2,8 +2,11 @@
 
 This is the project WebComponents for Vaadin R&D with GWT 2.7.0 + WebComponents.
 
-- Assuming you have installed maven, compile and install it just running:
-$ mvn clean install
+- Assuming you have installed maven, compile and package it just running:
+$ mvn clean package
+
+- To generate JsInterop interfaces, run
+$ mvn compile -Pgenerate
 
 - Run it in development mode:
 $ mvn gwt:run

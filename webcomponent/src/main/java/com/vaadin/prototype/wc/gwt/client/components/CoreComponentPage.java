@@ -1,9 +1,9 @@
 package com.vaadin.prototype.wc.gwt.client.components;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.js.JsProperty;
 import com.google.gwt.core.client.js.JsType;
-import com.google.gwt.core.client.js.JsArray;
-import com.google.gwt.core.client.js.JsObject;
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.HeadElement;
@@ -194,7 +194,7 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    * @param {String} id The ID of the meta-data to be returned.
    * @returns Returns meta-data.
    */
-  JsObject byId(String arg0);
+  JavaScriptObject byId(String arg0);
 
   /**
    * The URL of the iconset image.
@@ -278,7 +278,7 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    * within the icon resource file; `offsetX` is the horizontal offset and
    * `offsetY` is the vertical offset. Both values are in pixel units.
    */
-  JsObject getOffset(String arg0, String arg1);
+  JavaScriptObject getOffset(String arg0, String arg1);
 
   /**
    * Applies an icon to the given element as a css background image. This
@@ -424,7 +424,7 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    *    @param {Object} inOptions.callback Called when request is completed.
    * @returns {Object} XHR object.
    */
-  JsObject request(JsObject arg0, String arg1, String arg2, boolean arg3, JsObject arg4, JsObject arg5, JsObject arg6, String arg7, boolean arg8, JsObject arg9);
+  JavaScriptObject request(JavaScriptObject arg0, String arg1, String arg2, boolean arg3, JavaScriptObject arg4, JavaScriptObject arg5, JavaScriptObject arg6, String arg7, boolean arg8, JavaScriptObject arg9);
 
   /**
    * The URL target of the request.
@@ -488,8 +488,8 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    * @type Object
    * @default null
    */
-  @JsProperty CoreComponentPage response(JsObject val);
-  @JsProperty JsObject response();
+  @JsProperty CoreComponentPage response(JavaScriptObject val);
+  @JsProperty JavaScriptObject response();
 
   /**
    * The HTTP method to use such as 'GET', 'POST', 'PUT', or 'DELETE'.
@@ -518,8 +518,8 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    * @type Object
    * @default null
    */
-  @JsProperty CoreComponentPage headers(JsObject val);
-  @JsProperty JsObject headers();
+  @JsProperty CoreComponentPage headers(JavaScriptObject val);
+  @JsProperty JavaScriptObject headers();
 
   /**
    * Optional raw body content to send when method === "POST".
@@ -534,8 +534,8 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    * @type Object
    * @default null
    */
-  @JsProperty CoreComponentPage body(JsObject val);
-  @JsProperty JsObject body();
+  @JsProperty CoreComponentPage body(JavaScriptObject val);
+  @JsProperty JavaScriptObject body();
 
   /**
    * Content type to use when sending data.
@@ -581,7 +581,7 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    * getSelection will return an array, otherwise it will return 
    * the selected item or undefined if there is no selection.
    */
-  JsObject getSelection();
+  JavaScriptObject getSelection();
 
   /**
    * Indicates if a given item is selected.
@@ -589,7 +589,7 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    * @param {any} item The item whose selection state should be checked.
    * @returns Returns true if `item` is selected.
    */
-  JsObject isSelected(JsObject arg0);
+  JavaScriptObject isSelected(JavaScriptObject arg0);
 
   /**
    * Set the selection state for a given `item`. If the multi property
@@ -598,14 +598,14 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    * @method select
    * @param {any} item: The item to select.
    */
-  void select(JsObject arg0);
+  void select(JavaScriptObject arg0);
 
   /**
    * Toggles the selection state for `item`.
    * @method toggle
    * @param {any} item: The item to toggle.
    */
-  void toggle(JsObject arg0);
+  void toggle(JavaScriptObject arg0);
 
   /**
    * Gets or sets the selected element.  Default to use the index
@@ -638,8 +638,8 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    * @type Object
    * @default null
    */
-  @JsProperty CoreComponentPage selected(JsObject val);
-  @JsProperty JsObject selected();
+  @JsProperty CoreComponentPage selected(JavaScriptObject val);
+  @JsProperty JavaScriptObject selected();
 
   /**
    * Specifies the attribute to be used for "selected" attribute.
@@ -680,8 +680,8 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    * @type Object
    * @default null
    */
-  @JsProperty CoreComponentPage selectedItem(JsObject val);
-  @JsProperty JsObject selectedItem();
+  @JsProperty CoreComponentPage selectedItem(JavaScriptObject val);
+  @JsProperty JavaScriptObject selectedItem();
 
   /**
    * In single selection, this returns the model associated with the
@@ -691,8 +691,8 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    * @type Object
    * @default null
    */
-  @JsProperty CoreComponentPage selectedModel(JsObject val);
-  @JsProperty JsObject selectedModel();
+  @JsProperty CoreComponentPage selectedModel(JavaScriptObject val);
+  @JsProperty JavaScriptObject selectedModel();
 
   /**
    * In single selection, this returns the selected index.
@@ -712,8 +712,8 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    * @type Object
    * @default null
    */
-  @JsProperty CoreComponentPage target(JsObject val);
-  @JsProperty JsObject target();
+  @JsProperty CoreComponentPage target(JavaScriptObject val);
+  @JsProperty JavaScriptObject target();
 
   /**
    * This can be used to query nodes from the target node to be used for 

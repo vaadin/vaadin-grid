@@ -33,6 +33,43 @@
           <maven.test.skip>false</maven.test.skip>
         </properties>
       </profile>
+      <profile>
+        <id>generate</id>
+        <build><plugins>
+          <plugin>
+              <artifactId>maven-antrun-plugin</artifactId>
+              <executions>
+                <execution>
+                  <id>generate-wrappers</id>
+                  <configuration>
+                    <tasks>
+                      <exec dir="./src/main/webapp/components" executable="sh">
+                        <arg value="-c"/>
+                        <arg value="rm -f *.java" />
+                      </exec>
+                      <exec dir="./src/main/webapp/components" executable="perl">
+                        <arg line="../../scripts/generateInterfaces.pl" />
+                      </exec>
+                      <exec dir="./src/main/webapp/components" executable="sh">
+                        <arg value="-c"/>
+                        <arg value="mv *.java ../../java/com/vaadin/prototype/wc/gwt/client/components/" />
+                      </exec>
+                      <exec dir="./src/main/webapp/components" executable="perl">
+                        <arg line="../../scripts/generateStyles.pl" />
+                      </exec>
+                      <exec dir="./src/main/webapp/components" executable="sh">
+                        <arg value="-c"/>
+                        <arg value="mv *.java ../../java/com/vaadin/prototype/wc/gwt/client/html/" />
+                      </exec>
+                    </tasks>
+                  </configuration>
+                  <phase>generate-sources</phase>
+                  <goals><goal>run</goal></goals>
+                </execution>
+              </executions>
+            </plugin>
+         </plugins></build>
+      </profile>
     </profiles>
 
     <repositories>
@@ -95,7 +132,7 @@
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-servlet</artifactId>
             <version>${gwtversion}</version>
-            <scope>runtime</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.googlecode.gwtquery</groupId>
@@ -108,12 +145,42 @@
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
             <version>1.0.0.GA</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
             <version>1.0.0.GA</version>
             <classifier>sources</classifier>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>com.vaadin</groupId>
+          <artifactId>vaadin-shared</artifactId>
+          <version>7.3.0</version>
+        </dependency>
+        <dependency>
+          <groupId>com.vaadin</groupId>
+          <artifactId>vaadin-server</artifactId>
+          <version>7.3.0</version>
+        </dependency>
+        <dependency>
+          <groupId>com.vaadin</groupId>
+          <artifactId>vaadin-client</artifactId>
+          <version>7.3.0</version>
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>com.vaadin</groupId>
+          <artifactId>vaadin-client-compiler</artifactId>
+          <version>7.3.0</version>
+          <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>com.vaadin</groupId>
+          <artifactId>vaadin-client-compiler-deps</artifactId>
+          <version>1.1.0</version>
+          <scope>provided</scope>
         </dependency>
     </dependencies>
     <build>
@@ -136,6 +203,10 @@
                     <compileReport>true</compileReport>
                     <runTarget>WebComponents/WebComponents.html</runTarget>
                     <hostedWebApp>${project.build.directory}/${project.build.finalName}</hostedWebApp>
+                    <webappDirectory>${project.build.directory}/${project.build.finalName}/VAADIN/widgetsets</webappDirectory>
+                    <draftCompile>true</draftCompile>
+                    <disableCastChecking>true</disableCastChecking>
+                    <disableClassMetadata>false</disableClassMetadata>
                 </configuration>
                 <executions>
                     <execution>
@@ -225,6 +296,7 @@
                        <groupId>org.eclipse.jetty</groupId>
                        <artifactId>jetty-continuation</artifactId>
                        <version>9.2.2.v20140723</version>
+                       <scope>compile</scope>
                   </dependency>
                 </dependencies>
                 <configuration>

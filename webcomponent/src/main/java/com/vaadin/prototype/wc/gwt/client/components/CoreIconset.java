@@ -1,9 +1,9 @@
 package com.vaadin.prototype.wc.gwt.client.components;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.js.JsProperty;
 import com.google.gwt.core.client.js.JsType;
-import com.google.gwt.core.client.js.JsArray;
-import com.google.gwt.core.client.js.JsObject;
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.HeadElement;
@@ -145,7 +145,7 @@ public interface CoreIconset extends HTMLElement, CoreMeta {
    * within the icon resource file; `offsetX` is the horizontal offset and
    * `offsetY` is the vertical offset. Both values are in pixel units.
    */
-  JsObject getOffset(String arg0, String arg1);
+  JavaScriptObject getOffset(String arg0, String arg1);
 
   /**
    * Applies an icon to the given element as a css background image. This

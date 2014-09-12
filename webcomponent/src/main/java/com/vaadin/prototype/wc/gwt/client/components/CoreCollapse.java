@@ -1,9 +1,9 @@
 package com.vaadin.prototype.wc.gwt.client.components;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.js.JsProperty;
 import com.google.gwt.core.client.js.JsType;
-import com.google.gwt.core.client.js.JsArray;
-import com.google.gwt.core.client.js.JsObject;
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.HeadElement;
@@ -30,8 +30,8 @@ public interface CoreCollapse extends HTMLElement {
    * @type object
    * @default null
    */
-  @JsProperty CoreCollapse target(JsObject val);
-  @JsProperty JsObject target();
+  @JsProperty CoreCollapse target(JavaScriptObject val);
+  @JsProperty JavaScriptObject target();
 
   /**
    * If true, the orientation is horizontal; otherwise is vertical.

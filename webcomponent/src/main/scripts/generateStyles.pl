@@ -413,8 +413,7 @@ foreach my $a (split(/\s+/, $attrs)) {
   }
 }
 
+print "Generated HTMLStyle.java\n";
 open(my $f, ">HTMLStyle.java");
 print $f "$head$body\n}\n";
 close($f);
-
-

@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.ajax.Ajax;
 import com.google.gwt.user.client.EventListener;
@@ -29,22 +30,22 @@ public abstract class WC {
     public static HTMLElement head = document.head();
     public static HTMLElement body = document.body();
     
-    private static boolean platformLoaded = false;
     private static final String WC = "components/";
     
     /*
      * Load platform polyfills, for non WC capable browsers 
      */
     private static void loadPlatform() {
-        // Run once
-        if (!platformLoaded) {
-            String url = WC + "/platform/platform.js";
+        if (!platformLoaded()) {
+            String url = WC + "platform/platform.js";
             console.log("Loaded Platform: " + url);
             Ajax.loadScript(url);
-
-            monkeyPatchHTMLElement();
-            platformLoaded = true;
         }
+        monkeyPatchHTMLElement();
+    }
+    
+    private static boolean platformLoaded() {
+        return ((Element)window).getPropertyJSO("Platform") != null;
     }
     
     /*
@@ -52,13 +53,14 @@ public abstract class WC {
      * patching addEventListener so as we can handle GWT EventListener instances.
      */
     private static native void monkeyPatchHTMLElement() /*-{
-        var org = $wnd.HTMLElement.prototype.addEventListener;
+        if ($wnd.__addEventListener_org) return;
+        $wnd.__addEventListener_org = $wnd.HTMLElement.prototype.addEventListener;
         $wnd.HTMLElement.prototype.addEventListener = function(name, obj, bol) {
             var fnc = @com.vaadin.prototype.wc.gwt.client.WC::isEventListener(*)(obj) ?
                 function(e) {
                     obj.@com.google.gwt.user.client.EventListener::onBrowserEvent(*)(e);
                 } : obj;
-            org.call(this, name, fnc, bol);
+            $wnd.__addEventListener_org.call(this, name, fnc, bol);
         }
     }-*/;
 
@@ -94,7 +96,6 @@ public abstract class WC {
      * Import the WebComponent of the provided class if it wasn't done already.
      */
     public static <T extends HTMLElement> String load(Class<T> clazz) {
-
         String tag = getTag(clazz);
         String path = tag;
         

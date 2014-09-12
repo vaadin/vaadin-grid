@@ -1,9 +1,9 @@
 package com.vaadin.prototype.wc.gwt.client.components;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.js.JsProperty;
 import com.google.gwt.core.client.js.JsType;
-import com.google.gwt.core.client.js.JsArray;
-import com.google.gwt.core.client.js.JsObject;
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.HeadElement;
@@ -83,5 +83,5 @@ public interface CoreIconsetSvg extends HTMLElement, CoreMeta {
    * @param method {string} method to call on found elements, 
    * defaults to 'updateIcon'
    */
-  void updateIcons(JsObject arg0, JsObject arg1);
+  void updateIcons(JavaScriptObject arg0, JavaScriptObject arg1);
 }

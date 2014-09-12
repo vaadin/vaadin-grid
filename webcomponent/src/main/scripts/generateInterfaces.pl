@@ -13,11 +13,14 @@ use strict;
 
 my $package = "package com.vaadin.prototype.wc.gwt.client.components;\n";
 
+#import com.google.gwt.core.client.js.JsArray;
+#import com.google.gwt.core.client.js.JsObject;
+
 my $head = "$package
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.js.JsProperty;
 import com.google.gwt.core.client.js.JsType;
-import com.google.gwt.core.client.js.JsArray;
-import com.google.gwt.core.client.js.JsObject;
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.HeadElement;
@@ -32,9 +35,9 @@ sub getJavaType {
   return "boolean" if ($a =~ /boolean/i );
   return "JsArray" if ($a =~ /array/i );
   return "Element" if ($a =~ /element/i );
-  return "JsObject" if ($a =~ /object/i );
   return "double" if ($a =~ /number/i );
-  return "JsObject";
+  #return "JsObject" if ($a =~ /object/i );
+  return "JavaScriptObject";
 }
 
 sub readFile {
@@ -49,7 +52,7 @@ sub readFile {
   my $java = "$clz.java";
   return if (!$super && -f $java);
  
-  print "$tag $clz\n";
+  print "Generated element: $tag -> $clz.java\n";
   my $interface = "\@JsType(prototype = \"HTMLElement\", isNative = true)\npublic interface $clz extends HTMLElement";
   # if ($super) {
   #  $interface .= "<T extends $clz<?>>";
@@ -151,11 +154,23 @@ sub readFile {
   close($f);
 }
 
-foreach (@ARGV) {
-  readFile $_;
+### Go through */*-*.html files in current folder
+my $basedir = ".";
+opendir(my $dh, $basedir) || die "$! -> $basedir";
+while(readdir $dh) {
+  if (-d $_) {
+     my $folder = $_;
+     opendir(my $sd, $folder);
+     while (readdir $sd) {
+       readFile "$folder/$_" if (/.*-.*\.html$/);
+     }
+     closedir($sd);
+  }
 }
+closedir($dh);
 
-my $icons = "$package\npublic interface Icons {\n";
+### Generate Icons interface
+my $icons = "$package\npublic interface Icon {\n";
 my $allicons = "  public static String[] ALL = new String[]{";
 sub readIcons {
   my $file = shift;
@@ -180,14 +195,13 @@ opendir(my $dh, $icondir) || die "$! -> $icondir";
 while(readdir $dh) {
   readIcons("$icondir$_") if (/.html$/);
 }
-close($dh);
+closedir($dh);
 
-open(my $f, ">Icons.java");
+print "Generated Icon.java\n";
+open(my $f, ">Icon.java");
 $allicons =~ s/,$//;
 print $f "$icons$allicons};\n}\n";
 close($f);
-
-
 
 # @group Polymer Core Elements
 # @element core-input

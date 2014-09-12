@@ -1,9 +1,9 @@
 package com.vaadin.prototype.wc.gwt.client.components;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.js.JsProperty;
 import com.google.gwt.core.client.js.JsType;
-import com.google.gwt.core.client.js.JsArray;
-import com.google.gwt.core.client.js.JsObject;
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.HeadElement;
@@ -22,8 +22,8 @@ public interface CoreDropdownOverlay extends HTMLElement, CoreOverlay {
    * @attribute relatedTarget
    * @type Node
    */
-  @JsProperty CoreDropdownOverlay relatedTarget(JsObject val);
-  @JsProperty JsObject relatedTarget();
+  @JsProperty CoreDropdownOverlay relatedTarget(JavaScriptObject val);
+  @JsProperty JavaScriptObject relatedTarget();
 
   /**
    * The horizontal alignment of the overlay relative to the `relatedTarget`.
@@ -34,8 +34,8 @@ public interface CoreDropdownOverlay extends HTMLElement, CoreOverlay {
    * @type 'left' | 'right'
    * @default 'auto'
    */
-  @JsProperty CoreDropdownOverlay halign(JsObject val);
-  @JsProperty JsObject halign();
+  @JsProperty CoreDropdownOverlay halign(JavaScriptObject val);
+  @JsProperty JavaScriptObject halign();
 
   /**
    * The vertical alignment of the overlay relative to the `relatedTarget`. `top`
@@ -46,8 +46,8 @@ public interface CoreDropdownOverlay extends HTMLElement, CoreOverlay {
    * @type 'top' | 'bottom'
    * @default 'top'
    */
-  @JsProperty CoreDropdownOverlay valign(JsObject val);
-  @JsProperty JsObject valign();
+  @JsProperty CoreDropdownOverlay valign(JavaScriptObject val);
+  @JsProperty JavaScriptObject valign();
 
   /**
    * A pixel amount around the overlay that will be reserved. It's useful for

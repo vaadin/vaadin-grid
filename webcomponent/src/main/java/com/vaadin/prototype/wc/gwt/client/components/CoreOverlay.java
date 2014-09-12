@@ -1,9 +1,9 @@
 package com.vaadin.prototype.wc.gwt.client.components;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.js.JsProperty;
 import com.google.gwt.core.client.js.JsType;
-import com.google.gwt.core.client.js.JsArray;
-import com.google.gwt.core.client.js.JsObject;
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.HeadElement;
@@ -23,8 +23,8 @@ public interface CoreOverlay extends HTMLElement {
    * @type Object
    * @default the overlay element
    */
-  @JsProperty CoreOverlay target(JsObject val);
-  @JsProperty JsObject target();
+  @JsProperty CoreOverlay target(JavaScriptObject val);
+  @JsProperty JavaScriptObject target();
 
   /**
    * A `core-overlay`'s size is guaranteed to be 
@@ -38,8 +38,8 @@ public interface CoreOverlay extends HTMLElement {
    * @type Object
    * @default the target element
    */
-  @JsProperty CoreOverlay sizingTarget(JsObject val);
-  @JsProperty JsObject sizingTarget();
+  @JsProperty CoreOverlay sizingTarget(JavaScriptObject val);
+  @JsProperty JavaScriptObject sizingTarget();
 
   /**
    * Set opened to true to show an overlay and to false to hide it.

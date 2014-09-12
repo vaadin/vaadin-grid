@@ -88,8 +88,15 @@ public class SuperDevListener implements CodeServerListener {
       args.add("-logLevel");
       args.add(String.valueOf(options.getLogLevel()));
     }
-    args.add("-XjsInteropMode");
-    args.add("JS");
+
+    // Use a System Property to pass extra arguments to codeserver.
+    String sdmExtraArgs = System.getProperty("gwt.sdm.extra.args");
+    if (sdmExtraArgs != null) {
+        for (String arg : sdmExtraArgs.split(" +")) {
+            args.add(arg);
+        }
+    }
+
     for (String mod : options.getModuleNames()) {
       args.add(mod);
     }
@@ -151,7 +158,7 @@ public class SuperDevListener implements CodeServerListener {
           Utility.getFileFromClassPath("com/google/gwt/dev/codeserver/stub.nocache.js");
 
       File file =
-          new File(options.getWarDir() + "/" + module.getName() + "/" + module.getName()
+          new File(options.getWarDir() + "/VAADIN/widgetsets/" + module.getName() + "/" + module.getName()
               + ".nocache.js");
 
       file.deleteOnExit();

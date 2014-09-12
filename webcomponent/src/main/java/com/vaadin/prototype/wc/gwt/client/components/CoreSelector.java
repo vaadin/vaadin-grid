@@ -1,9 +1,9 @@
 package com.vaadin.prototype.wc.gwt.client.components;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.js.JsProperty;
 import com.google.gwt.core.client.js.JsType;
-import com.google.gwt.core.client.js.JsArray;
-import com.google.gwt.core.client.js.JsObject;
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.HeadElement;
@@ -46,8 +46,8 @@ public interface CoreSelector extends HTMLElement {
    * @type Object
    * @default null
    */
-  @JsProperty CoreSelector selected(JsObject val);
-  @JsProperty JsObject selected();
+  @JsProperty CoreSelector selected(JavaScriptObject val);
+  @JsProperty JavaScriptObject selected();
 
   /**
    * If true, multiple selections are allowed.
@@ -109,8 +109,8 @@ public interface CoreSelector extends HTMLElement {
    * @type Object
    * @default null
    */
-  @JsProperty CoreSelector selectedItem(JsObject val);
-  @JsProperty JsObject selectedItem();
+  @JsProperty CoreSelector selectedItem(JavaScriptObject val);
+  @JsProperty JavaScriptObject selectedItem();
 
   /**
    * In single selection, this returns the model associated with the
@@ -120,8 +120,8 @@ public interface CoreSelector extends HTMLElement {
    * @type Object
    * @default null
    */
-  @JsProperty CoreSelector selectedModel(JsObject val);
-  @JsProperty JsObject selectedModel();
+  @JsProperty CoreSelector selectedModel(JavaScriptObject val);
+  @JsProperty JavaScriptObject selectedModel();
 
   /**
    * In single selection, this returns the selected index.
@@ -141,8 +141,8 @@ public interface CoreSelector extends HTMLElement {
    * @type Object
    * @default null
    */
-  @JsProperty CoreSelector target(JsObject val);
-  @JsProperty JsObject target();
+  @JsProperty CoreSelector target(JavaScriptObject val);
+  @JsProperty JavaScriptObject target();
 
   /**
    * This can be used to query nodes from the target node to be used for 

@@ -1,9 +1,9 @@
 package com.vaadin.prototype.wc.gwt.client.components;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.js.JsProperty;
 import com.google.gwt.core.client.js.JsType;
-import com.google.gwt.core.client.js.JsArray;
-import com.google.gwt.core.client.js.JsObject;
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.HeadElement;
@@ -32,7 +32,7 @@ public interface CoreSelection extends HTMLElement {
    * getSelection will return an array, otherwise it will return 
    * the selected item or undefined if there is no selection.
    */
-  JsObject getSelection();
+  JavaScriptObject getSelection();
 
   /**
    * Indicates if a given item is selected.
@@ -40,7 +40,7 @@ public interface CoreSelection extends HTMLElement {
    * @param {any} item The item whose selection state should be checked.
    * @returns Returns true if `item` is selected.
    */
-  JsObject isSelected(JsObject arg0);
+  JavaScriptObject isSelected(JavaScriptObject arg0);
 
   /**
    * Set the selection state for a given `item`. If the multi property
@@ -49,12 +49,12 @@ public interface CoreSelection extends HTMLElement {
    * @method select
    * @param {any} item: The item to select.
    */
-  void select(JsObject arg0);
+  void select(JavaScriptObject arg0);
 
   /**
    * Toggles the selection state for `item`.
    * @method toggle
    * @param {any} item: The item to toggle.
    */
-  void toggle(JsObject arg0);
+  void toggle(JavaScriptObject arg0);
 }

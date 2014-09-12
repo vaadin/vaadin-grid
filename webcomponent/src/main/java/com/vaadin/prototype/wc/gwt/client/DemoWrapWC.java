@@ -64,6 +64,10 @@ public class DemoWrapWC implements EntryPoint {
         demoChessBoard();
     }
     
+    private native void export(String name, Object o) /*-{
+        $wnd[name] = o;
+    }-*/;
+    
     private void demoCreateCoreDrawer() {
         WC.load(CoreIcon.class);
         
@@ -144,9 +148,9 @@ public class DemoWrapWC implements EntryPoint {
     }
     
     private void demoCoreIcon() {
-        WC.load(CoreIcon.class);
         final PaperButton button = WC.create(PaperButton.class);
-        button.icon(Icon.POLYMER).label(Icon.POLYMER).raisedButton(false);
+        button.icon(Icon.POLYMER).label(Icon.POLYMER).raisedButton(true)
+                .style().background("#8BACE2");
         button.addEventListener("click", new EventListener() {
             int cont = 0;
             public void onBrowserEvent(Event event) {
@@ -241,7 +245,7 @@ public class DemoWrapWC implements EntryPoint {
         CoreIconButton refresh = WC.create(CoreIconButton.class);
         refresh.icon(Icon.REFRESH);
         CoreIconButton add = WC.create(CoreIconButton.class);
-        add.icon(Icon.ADD);
+        add.icon(Icon.AV_WEB);
         final HTMLElement div = WC.create("div");
         div.innerText("Demo");
         div.setAttribute("flex", "");
@@ -251,7 +255,7 @@ public class DemoWrapWC implements EntryPoint {
         toolbar.appendChild(add);
         menu.addEventListener("core-select", new EventListener() {
             public void onBrowserEvent(Event event) {
-                toast.text("Item: " + menu.selected() + " selected").show();
+                toast.text("Itemaa: " + menu.selected() + " selected").show();
             }
         });
         
@@ -263,12 +267,17 @@ public class DemoWrapWC implements EntryPoint {
             public void run() {
                 $(menu.shadowRoot()).find("#dropdown").css("background", "#6EA754");
             }
-        }.schedule(300);
+        }.schedule(2000);
         
         demoDialog();
         add.addEventListener("click", new EventListener() {
             public void onBrowserEvent(Event event) {
                 dialog.toggle();
+            }
+        });
+        refresh.addEventListener("click", new EventListener() {
+            public void onBrowserEvent(Event event) {
+                toast.text("Nothing to do yet").show();
             }
         });
       }
@@ -356,8 +365,8 @@ public class DemoWrapWC implements EntryPoint {
         chess.setAttribute("unicode", "");
         chess.setAttribute("frame", "");
         left.appendChild(chess);
-
         HTMLElement b = WC.create("button");
+        b.innerText("move");
         b.addEventListener("click", new EventListener() {
             int c = 0;
             public void onBrowserEvent(Event event) {

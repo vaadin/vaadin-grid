@@ -15,12 +15,19 @@
  */
 package com.google.gwt.dev.shell.jetty;
 
-import com.google.gwt.core.ext.ServletContainer;
-import com.google.gwt.core.ext.ServletContainerLauncher;
-import com.google.gwt.core.ext.TreeLogger;
-import com.google.gwt.core.ext.UnableToCompleteException;
-import com.google.gwt.dev.util.InstalledHelpInfo;
-import com.google.gwt.dev.util.Util;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import javax.imageio.ImageIO;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.tools.ant.taskdefs.Javac;
 import org.eclipse.jdt.core.JDTCompilerAdapter;
@@ -42,17 +49,12 @@ import org.eclipse.jetty.webapp.ClasspathPattern;
 import org.eclipse.jetty.webapp.WebAppClassLoader;
 import org.eclipse.jetty.webapp.WebAppContext;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-
-import javax.imageio.ImageIO;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+import com.google.gwt.core.ext.ServletContainer;
+import com.google.gwt.core.ext.ServletContainerLauncher;
+import com.google.gwt.core.ext.TreeLogger;
+import com.google.gwt.core.ext.UnableToCompleteException;
+import com.google.gwt.dev.util.InstalledHelpInfo;
+import com.google.gwt.dev.util.Util;
 
 /**
  * A {@link ServletContainerLauncher} for an embedded Jetty server.
@@ -527,10 +529,6 @@ public class JettyLauncher extends ServletContainerLauncher {
       super(webApp, contextPath);
       this.logger = logger;
 
-      // Avoid that getWebInf() returns null when it's used in
-      // AnnotationConfiguration.parseWebInfClasses (issue #8472)
-      setResourceBase(webApp);
-
       // Prevent file locking on Windows; pick up file changes.
       getInitParams().put(
           "org.eclipse.jetty.servlet.Default.useFileMappedBuffer", "false");
@@ -736,6 +734,20 @@ public class JettyLauncher extends ServletContainerLauncher {
 
     // Create a new web app in the war directory.
     WebAppContext wac = createWebAppContext(logger, appRootDir);
+
+    // to avoid context.getWebInf() == null in AnnotationConfiguration.parseWebInfClasses 
+    wac.setResourceBase(appRootDir.getAbsolutePath());
+    try {
+      // Allow Servlet 3.0 configuration via annotations (issue #8472)
+      String className = "org.eclipse.jetty.annotations.AnnotationConfiguration";
+      Class.forName(className, false, this.getClass().getClassLoader());
+
+      ArrayList<String> confs = new ArrayList<String>(Arrays.asList(wac.getConfigurationClasses()));
+      confs.add(className);
+      wac.setConfigurationClasses(confs.toArray(new String[confs.size()]));
+    } catch (ClassNotFoundException ignored) {
+      branch.log(TreeLogger.INFO, "To enable Servlet 3.0 configuration via annotations add jetty-annotations to your classpath.");
+    }
 
     RequestLogHandler logHandler = new RequestLogHandler();
     logHandler.setRequestLog(new JettyRequestLogger(logger, getBaseLogLevel()));
