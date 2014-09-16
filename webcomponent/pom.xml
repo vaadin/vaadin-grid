@@ -14,7 +14,7 @@
       <maven.compiler.target>1.7</maven.compiler.target>
       <gQueryVersion>1.4.3-SNAPSHOT</gQueryVersion>
       <gwtversion>2.7.0-SNAPSHOT</gwtversion>
-      <gwtmaven>2.6.1</gwtmaven>
+      <gwtmaven>2.7.0-SNAPSHOT</gwtmaven>
       <!-- A hack in the meanwhile we have this argument in gwt-maven plugin -->
       <gwt.outputstyle>PRETTY' '-XjsInteropMode' 'JS</gwt.outputstyle>
       <maven.test.skip>true</maven.test.skip>
@@ -96,6 +96,14 @@
          <releases><enabled>false</enabled></releases>
        </repository>
     </repositories>
+    <pluginRepositories>
+       <pluginRepository>
+         <id>codehaus-snapshots</id>
+         <url>https://nexus.codehaus.org/content/repositories/snapshots/</url>
+         <snapshots><enabled>true</enabled></snapshots>
+         <releases><enabled>false</enabled></releases>
+       </pluginRepository>
+    </pluginRepositories>
 
     <dependencies>
         <dependency>
@@ -207,6 +215,7 @@
                     <draftCompile>true</draftCompile>
                     <disableCastChecking>true</disableCastChecking>
                     <disableClassMetadata>false</disableClassMetadata>
+                    <superDevMode>true</superDevMode>
                 </configuration>
                 <executions>
                     <execution>

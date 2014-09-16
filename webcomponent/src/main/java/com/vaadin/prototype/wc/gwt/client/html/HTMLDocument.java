@@ -7,6 +7,7 @@ import com.google.gwt.dom.client.Document;
 @JsType(prototype = "Document", isNative = true)
 public interface HTMLDocument {
     static HTMLDocument $doc = (HTMLDocument)Document.get();
+    Object registerElement(String tag, Object o);
 
     @JsProperty HTMLElement head();
     @JsProperty HTMLElement body();
