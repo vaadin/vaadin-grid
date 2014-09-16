@@ -15,8 +15,7 @@
       <gQueryVersion>1.4.3-SNAPSHOT</gQueryVersion>
       <gwtversion>2.7.0-SNAPSHOT</gwtversion>
       <gwtmaven>2.7.0-SNAPSHOT</gwtmaven>
-      <!-- A hack in the meanwhile we have this argument in gwt-maven plugin -->
-      <gwt.outputstyle>PRETTY' '-XjsInteropMode' 'JS</gwt.outputstyle>
+      <gwt.outputstyle>PRETTY</gwt.outputstyle>
       <maven.test.skip>true</maven.test.skip>
     </properties>
 
@@ -209,13 +208,15 @@
                     <style>${gwt.outputstyle}</style>
                     <gwtVersion>${gwtversion}</gwtVersion>
                     <compileReport>true</compileReport>
-                    <runTarget>WebComponents/WebComponents.html</runTarget>
+                    <runTarget>/index.html</runTarget>
                     <hostedWebApp>${project.build.directory}/${project.build.finalName}</hostedWebApp>
                     <webappDirectory>${project.build.directory}/${project.build.finalName}/VAADIN/widgetsets</webappDirectory>
                     <draftCompile>true</draftCompile>
                     <disableCastChecking>true</disableCastChecking>
                     <disableClassMetadata>false</disableClassMetadata>
                     <superDevMode>true</superDevMode>
+                    <jsInteropMode>JS</jsInteropMode>
+                    <extraJvmArgs>-Dgwt.sdm.extra.args='-XjsInteropMode JS'</extraJvmArgs>
                 </configuration>
                 <executions>
                     <execution>
