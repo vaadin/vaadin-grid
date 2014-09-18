@@ -49,7 +49,7 @@ public abstract class WC {
     public static HTMLElement head = document.head();
     public static HTMLElement body = document.body();
 
-    private static final String WC = "components/";
+    private static final String WC = "/components/";
 
     static {
         monkeyPatchHTMLElement();

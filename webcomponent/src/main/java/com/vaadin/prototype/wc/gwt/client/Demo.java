@@ -13,7 +13,6 @@ public class Demo implements EntryPoint {
         $("body").css("font-family", "arial");
 
         new DemoWrapWC().onModuleLoad();
-
         new DemoExportWC().onModuleLoad();
     }
 

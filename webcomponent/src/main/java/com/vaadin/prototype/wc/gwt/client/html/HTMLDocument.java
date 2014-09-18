@@ -12,5 +12,7 @@ public interface HTMLDocument {
     @JsProperty HTMLElement head();
     @JsProperty HTMLElement body();
     HTMLElement createElement(String tagName);
+    HTMLEvents createEvent(String HTMLEvents);
+    void dispatchEvent(HTMLEvents ev);
     void register(String tag, Object jso);
 }

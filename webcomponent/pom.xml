@@ -179,6 +179,11 @@
         </dependency>
         <dependency>
           <groupId>com.vaadin</groupId>
+          <artifactId>vaadin-themes</artifactId>
+          <version>7.3.0</version>
+        </dependency>
+        <dependency>
+          <groupId>com.vaadin</groupId>
           <artifactId>vaadin-client-compiler</artifactId>
           <version>7.3.0</version>
           <scope>provided</scope>

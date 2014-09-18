@@ -11,6 +11,8 @@ import com.vaadin.prototype.wc.gwt.client.html.HTMLElement;
 public class WCButton extends HTMLElement.Prototype implements
         HTMLElement.LifeCycle.Created, HTMLElement.LifeCycle.Attached {
 
+    public static final String TAG = "x-button";
+
     public WCButton() {
         // FIXME: If there is no default constructor JsInterop does not export anything
     }

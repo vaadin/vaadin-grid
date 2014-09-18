@@ -19,7 +19,6 @@ public interface HTMLElement {
             return (HTMLElement) this;
         }
         @Override public void addEventListener(String event, EventListener listener) {
-            console.log("ADDINF....");
             element().addEventListener(event, listener);
         }
         @Override public void appendChild(HTMLElement element) {
@@ -52,6 +51,10 @@ public interface HTMLElement {
         @Override public void innerText(String string) {
             element().innerText(string);
         }
+        @Override
+        public void dispatchEvent(HTMLEvents ev) {
+            element().dispatchEvent(ev);
+        }
     }
 
     public interface LifeCycle {
@@ -82,6 +85,7 @@ public interface HTMLElement {
     }
 
     void addEventListener(String event, EventListener listener);
+    void dispatchEvent(HTMLEvents ev);
     void appendChild(HTMLElement element);
     void setAttribute(String name, String value);
     String getAttribute(String name);
