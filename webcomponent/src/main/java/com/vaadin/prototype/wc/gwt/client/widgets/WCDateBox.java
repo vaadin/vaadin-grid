@@ -4,17 +4,25 @@ import static com.google.gwt.query.client.GQuery.$;
 import static com.google.gwt.query.client.GQuery.Widgets;
 import static com.google.gwt.query.client.GQuery.console;
 
+import java.util.Date;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.js.JsExport;
 import com.google.gwt.core.client.js.JsType;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.event.logical.shared.AttachEvent.Handler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import com.vaadin.client.ui.VSlider;
+import com.google.gwt.user.datepicker.client.DateBox;
 import com.vaadin.prototype.wc.gwt.client.WC;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLElement;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLEvents;
@@ -22,23 +30,23 @@ import com.vaadin.prototype.wc.gwt.client.html.HTMLShadow;
 
 @JsExport
 @JsType
-public class WCVSlider extends HTMLElement.Prototype implements
+public class WCDateBox extends HTMLElement.Prototype implements
         HTMLElement.LifeCycle.Created,
         HTMLElement.LifeCycle.Attached,
         HTMLElement.LifeCycle.Changed,
-        ValueChangeHandler<Double>, Handler {
+        Handler, ValueChangeHandler<Date> {
 
-    public static final String TAG = "v-slider";
+    public static final String TAG = "x-date-box";
 
-    private VSlider slider;
+    private DateBox datebox;
     private HTMLEvents changeEvent;
     private HTMLElement container;
     private HTMLElement style;
     private Panel shadowPanel;
     private boolean initialized = false;
-    private String theme = "valo";
+    private String theme = "clean";
 
-    public WCVSlider() {
+    public WCDateBox() {
         // FIXME: If there is no default constructor JsInterop does not export anything
     }
 
@@ -47,8 +55,8 @@ public class WCVSlider extends HTMLElement.Prototype implements
         style = WC.create("style");
         style.setAttribute("language", "text/css");
 
-        slider = new VSlider();
-        slider.addValueChangeHandler(this);
+        datebox = new DateBox();
+        datebox.addValueChangeHandler(this);
 
         changeEvent = WC.document.createEvent("HTMLEvents");
         changeEvent.initEvent("change", false, false);
@@ -56,7 +64,7 @@ public class WCVSlider extends HTMLElement.Prototype implements
         container = WC.create("div");
         readAttributes();
     }
-
+    
     /*
      * TODO: common stuff for exporting other widgets
      */
@@ -74,23 +82,13 @@ public class WCVSlider extends HTMLElement.Prototype implements
             shadow.appendChild(container);
 
             Panel shadowPanel = $(container).as(Widgets).panel().widget();
-            shadowPanel.add(slider);
+            shadowPanel.add(datebox);
         }
     }
 
     @Override
     public void attachedCallback() {
         initWidgetSystem();
-        slider.buildBase();
-    }
-
-    @Override
-    public void onValueChange(ValueChangeEvent<Double> ev) {
-        String val = ev.getValue().toString();
-        if (!val.equals(getAttribute("value"))) {
-            setAttribute("value", val);
-            dispatchEvent(changeEvent);
-        }
     }
 
     @Override
@@ -99,11 +97,9 @@ public class WCVSlider extends HTMLElement.Prototype implements
     }
 
     private void readAttributes() {
-        slider.setMinValue(getAttrDoubleValue("min", 0));
-        slider.setMaxValue(getAttrDoubleValue("max", 100));
-        slider.setValue(getAttrDoubleValue("value", 0));
-        theme = getAttrValue("theme", "valo");
-        style.innerText("@import url('" + GWT.getModuleBaseForStaticFiles() + "../../themes/" + theme + "/styles.css')");
+        theme = getAttrValue("theme", "chrome");
+        String url = GWT.getModuleBaseForStaticFiles() + "gwt/" + theme + "/" + theme + ".css";
+        style.innerText("@import url('" + url + "')");
         container.setAttribute("class", theme);
     }
 
@@ -124,5 +120,14 @@ public class WCVSlider extends HTMLElement.Prototype implements
         // gQuery creates a new root-panel so it does not
         // have any parent, but we should maintain the widget
         // hierarchy someway.
+    }
+
+    @Override
+    public void onValueChange(ValueChangeEvent<Date> ev) {
+        String val = ev.getValue().toString();
+        if (!val.equals(getAttribute("value"))) {
+            setAttribute("value", val);
+            dispatchEvent(changeEvent);
+        }
     }
 }

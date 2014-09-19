@@ -17,13 +17,10 @@ public class WCButton extends HTMLElement.Prototype implements
         // FIXME: If there is no default constructor JsInterop does not export anything
     }
 
-    static int top = 0;
-
     @Override
     public void createdCallback() {
         innerHTML("<button>Click Me</button>");
-        style().position("absolute").zIndex("400").padding("5px").right("0px").top(top + "px");
-        top += 40;
+        style().padding("5px");
     }
 
     @Override

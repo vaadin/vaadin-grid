@@ -6,6 +6,7 @@ import static com.google.gwt.query.client.GQuery.console;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
@@ -49,7 +50,9 @@ public abstract class WC {
     public static HTMLElement head = document.head();
     public static HTMLElement body = document.body();
 
-    private static final String WC = "/components/";
+    private static final String WC = GWT.getModuleBaseForStaticFiles() + "components/";
+
+    private static boolean platformLoaded = ((Element)window).getPropertyJSO("Platform") != null;
 
     static {
         monkeyPatchHTMLElement();
@@ -59,15 +62,12 @@ public abstract class WC {
      * Load platform polyfills, for non WC capable browsers
      */
     private static void loadPlatform() {
-        if (!platformLoaded()) {
+        if (!platformLoaded) {
             String url = WC + "platform/platform.js";
             console.log("Loaded Platform polyfills: " + url);
             Ajax.loadScript(url);
+            platformLoaded = true;
         }
-    }
-
-    private static boolean platformLoaded() {
-        return ((Element)window).getPropertyJSO("Platform") != null;
     }
 
     /*

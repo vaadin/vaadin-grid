@@ -222,6 +222,7 @@
                     <superDevMode>true</superDevMode>
                     <jsInteropMode>JS</jsInteropMode>
                     <extraJvmArgs>-Dgwt.sdm.extra.args='-XjsInteropMode JS'</extraJvmArgs>
+                    <persistentunitcachedir>${project.build.directory}</persistentunitcachedir>
                 </configuration>
                 <executions>
                     <execution>

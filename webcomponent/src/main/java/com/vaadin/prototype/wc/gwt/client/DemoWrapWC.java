@@ -13,8 +13,9 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Panel;
 import com.vaadin.prototype.wc.gwt.client.components.ChessBoard;
 import com.vaadin.prototype.wc.gwt.client.components.CoreCollapse;
 import com.vaadin.prototype.wc.gwt.client.components.CoreDrawerPanel;
@@ -48,6 +49,8 @@ public class DemoWrapWC implements EntryPoint {
     HTMLElement left = WC.create("div");
     HTMLElement right = WC.create("div");
     PaperDialog dialog;
+    Panel gwtPanel;
+    PaperToast toast;
     
     LoremIpsum lorem = new LoremIpsum();
     
@@ -60,8 +63,9 @@ public class DemoWrapWC implements EntryPoint {
         demoCoreMenu();
         demoShadow();
         demoSpliter();
-        demoWidgetPaperToggleButton();
         demoChessBoard();
+        demoWidgetPanel();
+        demoWidgetPaperToggleButton();
     }
     
     private native void export(String name, Object o) /*-{
@@ -103,7 +107,6 @@ public class DemoWrapWC implements EntryPoint {
             }
         });
         fab.style().position("absolute").right("5px").top("5px");
-        
     }
     
     private void demoCoreCollapse() {
@@ -239,7 +242,7 @@ public class DemoWrapWC implements EntryPoint {
             menu.appendChild(item);
         }
         
-        final PaperToast toast = WC.create(PaperToast.class);
+        toast = WC.create(PaperToast.class);
         WC.body.appendChild(toast);
         
         CoreIconButton refresh = WC.create(CoreIconButton.class);
@@ -343,22 +346,6 @@ public class DemoWrapWC implements EntryPoint {
         right.appendChild(container);
     }
     
-    private void demoWidgetPaperToggleButton() {
-        FlowPanel h = new FlowPanel();
-        h.getElement().getStyle().setMargin(10, Unit.PX);
-        h.getElement().setAttribute("center", "");
-        h.getElement().setAttribute("layout", "");
-        h.getElement().setAttribute("horizontal", "");
-        Label l = new Label("Toggle");
-        l.getElement().setAttribute("flex", "");
-        h.add(l);
-        PaperToggleButtonWidget b = new PaperToggleButtonWidget();
-        h.add(b);
-        
-        HTMLPanel p = $(left).as(Widgets).panel().widget();
-        p.add(h);
-    }
-    
     private void demoChessBoard() {
         final ChessBoard chess = WC.create(ChessBoard.class);
         chess.innerText("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
@@ -374,5 +361,26 @@ public class DemoWrapWC implements EntryPoint {
             }
         });
         left.appendChild(b);
+    }
+    
+    private void demoWidgetPanel() {
+        Panel rightPanel = $(right).as(Widgets).panel().widget();
+        gwtPanel = new FlowPanel();
+        rightPanel.add(gwtPanel);
+        gwtPanel.getElement().getStyle().setBackgroundColor("white");
+        gwtPanel.getElement().getStyle().setMargin(10, Unit.PX);
+        gwtPanel.getElement().getStyle().setPadding(8, Unit.PX);
+        gwtPanel.add(new HTML("<h2>This is a gwt widget panel.</h2>"));
+    }
+    
+    private void demoWidgetPaperToggleButton() {
+        gwtPanel.add(new Label("This is a <paper-toggle-button> promoted to widget:"));
+        final PaperToggleButtonWidget b = new PaperToggleButtonWidget();
+        gwtPanel.add(b);
+        b.addChangeHandler(new EventListener() {
+            public void onBrowserEvent(Event event) {
+                toast.text("Toggled, enabled=" + b.isChecked()).show();
+            }
+        });
     }
 }

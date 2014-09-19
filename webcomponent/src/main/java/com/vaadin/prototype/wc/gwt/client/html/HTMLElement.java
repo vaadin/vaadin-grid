@@ -1,8 +1,5 @@
 package com.vaadin.prototype.wc.gwt.client.html;
 
-import static com.google.gwt.query.client.GQuery.console;
-
-import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.js.JsProperty;
 import com.google.gwt.core.client.js.JsType;
 import com.google.gwt.dom.client.Node;
@@ -30,7 +27,7 @@ public interface HTMLElement {
         @Override public String getAttribute(String name) {
             return element().getAttribute(name);
         }
-        @Override public JavaScriptObject createShadowRoot() {
+        @Override public HTMLShadow createShadowRoot() {
             return element().createShadowRoot();
         }
         @Override public Node shadowRoot() {
@@ -89,7 +86,7 @@ public interface HTMLElement {
     void appendChild(HTMLElement element);
     void setAttribute(String name, String value);
     String getAttribute(String name);
-    JavaScriptObject createShadowRoot();
+    HTMLShadow createShadowRoot();
     @JsProperty Node shadowRoot();
     @JsProperty String className();
     @JsProperty HTMLElement className(String string);
