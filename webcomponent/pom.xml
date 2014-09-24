@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project>
+<?xml version="1.0" encoding="UTF-8"?> <project>
     <modelVersion>4.0.0</modelVersion>
 
     <name>WebComponents gwtquery project</name>
@@ -17,6 +16,8 @@
       <gwtmaven>2.7.0-SNAPSHOT</gwtmaven>
       <gwt.outputstyle>PRETTY</gwt.outputstyle>
       <maven.test.skip>true</maven.test.skip>
+      <jetty.version>8.1.12.v20130726</jetty.version>
+      <!-- <jetty.version>9.2.3.v20140905</jetty.version> -->
     </properties>
 
     <profiles>
@@ -105,6 +106,38 @@
     </pluginRepositories>
 
     <dependencies>
+<!--
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-annotations</artifactId>
+            <version>${jetty.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-server</artifactId>
+            <version>${jetty.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-http</artifactId>
+            <version>${jetty.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-continuation</artifactId>
+            <version>${jetty.version}</version>
+            <scope>compile</scope>
+        </dependency>
+-->
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-dev</artifactId>
+            <version>${gwtversion}</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -120,12 +153,6 @@
         <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-codeserver</artifactId>
-            <version>${gwtversion}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.gwt</groupId>
-            <artifactId>gwt-dev</artifactId>
             <version>${gwtversion}</version>
             <scope>provided</scope>
         </dependency>
@@ -221,8 +248,9 @@
                     <disableClassMetadata>false</disableClassMetadata>
                     <superDevMode>true</superDevMode>
                     <jsInteropMode>JS</jsInteropMode>
-                    <extraJvmArgs>-Dgwt.sdm.extra.args='-XjsInteropMode JS'</extraJvmArgs>
                     <persistentunitcachedir>${project.build.directory}</persistentunitcachedir>
+                    <!-- Remove this and DevMode.java when gwt-maven supports these args -->
+                    <extraJvmArgs>-Dgwt.dm.extra.args='-modulePathPrefix VAADIN/widgetsets -XjsInteropMode JS'</extraJvmArgs>
                 </configuration>
                 <executions>
                     <execution>
@@ -302,22 +330,6 @@
                   </configuration>
                 </execution>
               </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-maven-plugin</artifactId>
-                <version>9.2.2.v20140723</version>
-                <dependencies>
-                   <dependency>
-                       <groupId>org.eclipse.jetty</groupId>
-                       <artifactId>jetty-continuation</artifactId>
-                       <version>9.2.2.v20140723</version>
-                       <scope>compile</scope>
-                  </dependency>
-                </dependencies>
-                <configuration>
-                   <scanIntervalSeconds>2</scanIntervalSeconds>
-                </configuration>
             </plugin>
         </plugins>
         <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>

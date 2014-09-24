@@ -2,8 +2,28 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1" />
 <!--     <script src="WebComponents/WebComponents.nocache.js"></script> -->
   </head>
+  <style>
+   v-slider::shadow *:focus {
+     outline: 0;
+   }
+   /* TODO: Hack to add v-slider to body in demos */
+   body > v-slider::shadow div:not(.valo) > .v-slider > .v-slider-base {
+     position: absolute;
+     right: 10px;
+     left: 2px;
+   }
+   /* TODO: popups should be attached to shadow root */
+   .v-slider-feedback {
+     background: black;
+     color: white;
+     border-radius: 3px;
+     font-size: 9px;
+     padding: 3px;
+   }
+  </style>
   <body>
       <script src="VAADIN/widgetsets/WebComponents/WebComponents.nocache.js"></script>
   </body>

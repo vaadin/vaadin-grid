@@ -103,7 +103,7 @@ public class WCVSlider extends HTMLElement.Prototype implements
         slider.setMaxValue(getAttrDoubleValue("max", 100));
         slider.setValue(getAttrDoubleValue("value", 0));
         theme = getAttrValue("theme", "valo");
-        style.innerText("@import url('" + GWT.getModuleBaseForStaticFiles() + "../../themes/" + theme + "/styles.css')");
+        style.innerText("@import url('" + GWT.getModuleBaseURL() + "../../themes/" + theme + "/styles.css')");
         container.setAttribute("class", theme);
     }
 

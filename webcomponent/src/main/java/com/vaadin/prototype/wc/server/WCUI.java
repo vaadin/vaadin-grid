@@ -16,13 +16,12 @@ public class WCUI extends UI{
     
     // http://localhost:8888/vaadin/ should load the app through
     // vaadin servlet and execute this UI code. 
-    @WebServlet(urlPatterns = {"/vaadin/*", "/VAADIN/*"})
+    @WebServlet(urlPatterns = {"/vaadin/*", "/VAADIN/themes/*"})
     @VaadinServletConfiguration(productionMode = false, ui = WCUI.class)
     public static class WCServlet extends VaadinServlet {
     }
 
     @Override
     protected void init(VaadinRequest request) {
-        // TODO: Some code to consume WC from vaadin
     }
 }

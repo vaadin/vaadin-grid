@@ -90,6 +90,7 @@ public class WCDatepicker extends HTMLElement.Prototype implements
 
     private void readAttributes() {
         theme = getAttrValue("theme", "chrome");
+        widget.setYearAndMonthDropdownVisible(Boolean.valueOf(getAttribute("dropdown")));
         String url = GWT.getModuleBaseForStaticFiles() + "gwt/" + theme + "/" + theme + ".css";
         style.innerText("@import url('" + url + "')");
         container.setAttribute("class", theme);
@@ -98,6 +99,10 @@ public class WCDatepicker extends HTMLElement.Prototype implements
     // TODO: Make this part of the API of a utils class.
     private double getAttrDoubleValue(String attr, double def) {
         return Double.valueOf(getAttrValue(attr, String.valueOf(def)));
+    }
+    // TODO: Make this part of the API of a utils class.
+    private boolean getAttrBooleanValue(String attr) {
+        return Boolean.valueOf(getAttrValue(attr, "false"));
     }
 
     // TODO: Make this part of the API of a utils class.

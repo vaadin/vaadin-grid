@@ -15,6 +15,15 @@
  */
 package com.google.gwt.dev;
 
+import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.net.BindException;
+import java.net.URL;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.regex.Pattern;
+
 import com.google.gwt.core.ext.ServletContainer;
 import com.google.gwt.core.ext.ServletContainerLauncher;
 import com.google.gwt.core.ext.TreeLogger;
@@ -35,25 +44,21 @@ import com.google.gwt.dev.util.Util;
 import com.google.gwt.dev.util.arg.ArgHandlerDeployDir;
 import com.google.gwt.dev.util.arg.ArgHandlerDisableUpdateCheck;
 import com.google.gwt.dev.util.arg.ArgHandlerExtraDir;
+import com.google.gwt.dev.util.arg.ArgHandlerIncrementalCompile;
+import com.google.gwt.dev.util.arg.ArgHandlerJsInteropMode;
 import com.google.gwt.dev.util.arg.ArgHandlerModuleName;
+import com.google.gwt.dev.util.arg.ArgHandlerModulePathPrefix;
 import com.google.gwt.dev.util.arg.ArgHandlerSourceLevel;
 import com.google.gwt.dev.util.arg.ArgHandlerWarDir;
 import com.google.gwt.dev.util.arg.ArgHandlerWorkDirOptional;
+import com.google.gwt.dev.util.arg.OptionModulePathPrefix;
 import com.google.gwt.dev.util.log.speedtracer.DevModeEventType;
 import com.google.gwt.dev.util.log.speedtracer.SpeedTracerLogger;
 import com.google.gwt.dev.util.log.speedtracer.SpeedTracerLogger.Event;
+import com.google.gwt.thirdparty.guava.common.collect.ObjectArrays;
 import com.google.gwt.util.tools.ArgHandlerFlag;
 import com.google.gwt.util.tools.ArgHandlerString;
 import com.google.gwt.util.tools.Utility;
-
-import java.io.File;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.net.BindException;
-import java.net.URL;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.regex.Pattern;
 
 /**
  * The main executable class for the hosted mode shell. NOTE: the public API for
@@ -65,7 +70,8 @@ public class DevMode extends DevModeBase implements RestartServerCallback {
   /**
    * Handles the -superDevMode command line flag.
    */
-  public interface HostedModeOptions extends HostedModeBaseOptions, CompilerOptions, OptionSuperDevMode {
+  public interface HostedModeOptions extends HostedModeBaseOptions, CompilerOptions,
+      OptionSuperDevMode, OptionModulePathPrefix {
     ServletContainerLauncher getServletContainerLauncher();
 
     String getServletContainerLauncherArgs();
@@ -230,9 +236,12 @@ public class DevMode extends DevModeBase implements RestartServerCallback {
       registerHandler(new ArgHandlerWarDir(options));
       registerHandler(new ArgHandlerDeployDir(options));
       registerHandler(new ArgHandlerExtraDir(options));
+      registerHandler(new ArgHandlerModulePathPrefix(options));
       registerHandler(new ArgHandlerWorkDirOptional(options));
       registerHandler(new ArgHandlerDisableUpdateCheck(options));
       registerHandler(new ArgHandlerSourceLevel(options));
+      registerHandler(new ArgHandlerIncrementalCompile(options));
+      registerHandler(new ArgHandlerJsInteropMode(options));
       registerHandler(new ArgHandlerModuleName(options) {
         @Override
         public String getPurpose() {
@@ -259,6 +268,8 @@ public class DevMode extends DevModeBase implements RestartServerCallback {
     private ServletContainerLauncher scl;
     private String sclArgs;
     private boolean sdm;
+    private File moduleBaseDir;
+    private String modulePathPrefix = "";
     private File warDir;
 
     @Override
@@ -284,6 +295,11 @@ public class DevMode extends DevModeBase implements RestartServerCallback {
     @Override
     public ServletContainerLauncher getServletContainerLauncher() {
       return scl;
+    }
+
+    @Override
+    public File getModuleBaseDir() {
+      return moduleBaseDir;
     }
 
     @Override
@@ -316,9 +332,17 @@ public class DevMode extends DevModeBase implements RestartServerCallback {
       this.localWorkers = localWorkers;
     }
 
+    @Override
+    public void setModulePathPrefix(String prefix) {
+      if (!prefix.equals(modulePathPrefix)) {
+        modulePathPrefix = prefix;
+        updateModuleBaseDir();
+      }
+    }
+
     @Deprecated
     public void setOutDir(File outDir) {
-      this.warDir = outDir;
+      setWarDir(outDir);
     }
 
     @Override
@@ -344,6 +368,11 @@ public class DevMode extends DevModeBase implements RestartServerCallback {
     @Override
     public void setWarDir(File warDir) {
       this.warDir = warDir;
+      updateModuleBaseDir();
+    }
+
+    private void updateModuleBaseDir() {
+      this.moduleBaseDir = new File(warDir, modulePathPrefix);
     }
   }
 
@@ -375,6 +404,13 @@ public class DevMode extends DevModeBase implements RestartServerCallback {
      * still implementation-dependent.
      */
     DevMode hostedMode = new DevMode();
+    
+    // TODO(manolo): Remove this whenever gwt-maven supports -modulePathPrefix and -XjsInteropMode 
+    String sdmExtraArgs = System.getProperty("gwt.dm.extra.args");
+    if (sdmExtraArgs != null) {
+       args = ObjectArrays.concat(sdmExtraArgs.split(" +"), args, String.class);
+    }    
+
     if (new ArgProcessor(hostedMode.options).processArgs(args)) {
       hostedMode.run();
       // Exit w/ success code.
