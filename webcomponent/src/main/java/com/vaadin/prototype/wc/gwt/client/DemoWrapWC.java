@@ -45,15 +45,15 @@ import com.vaadin.prototype.wc.gwt.client.html.HTMLElement;
 /**
  */
 public class DemoWrapWC implements EntryPoint {
-    
+
     HTMLElement left = WC.create("div");
     HTMLElement right = WC.create("div");
     PaperDialog dialog;
     Panel gwtPanel;
     PaperToast toast;
-    
+
     LoremIpsum lorem = new LoremIpsum();
-    
+
     public void onModuleLoad() {
         demoCreateCoreDrawer();
         demoCoreToolbar();
@@ -67,25 +67,25 @@ public class DemoWrapWC implements EntryPoint {
         demoWidgetPanel();
         demoWidgetPaperToggleButton();
     }
-    
+
     private native void export(String name, Object o) /*-{
         $wnd[name] = o;
     }-*/;
-    
+
     private void demoCreateCoreDrawer() {
         WC.load(CoreIcon.class);
-        
+
         final CoreDrawerPanel drawer = WC.create(CoreDrawerPanel.class);
         drawer.setAttribute("rightDrawer", "");
         left.setAttribute("drawer", "");
         left.style().backgroundColor("#FFC9B5");
         right.setAttribute("main", "");
         right.style().backgroundColor("#4F7DC9");
-        
+
         drawer.appendChild(left);
         drawer.appendChild(right);
         WC.body.appendChild(drawer);
-        
+
         final PaperFab fab = WC.create(PaperFab.class);
         fab.icon(Icon.MORE_HORIZ);
         right.appendChild(fab);
@@ -108,7 +108,7 @@ public class DemoWrapWC implements EntryPoint {
         });
         fab.style().position("absolute").right("5px").top("5px");
     }
-    
+
     private void demoCoreCollapse() {
         final CoreCollapse collapse = WC.create(CoreCollapse.class);
         collapse.innerText(lorem.getParagraphs());
@@ -120,16 +120,16 @@ public class DemoWrapWC implements EntryPoint {
                 collapse.toggle();
             }
         });
-        
+
         HTMLElement section = WC.create("section");
         section.appendChild(button);
         section.appendChild(collapse);
-        
+
         right.appendChild(section);
         section.style().background("#E2E1A5").padding("10px");
         collapse.style().background("#CFA0E9").padding("10px");
     }
-    
+
     private void demoPaperSlider() {
         final PaperSlider slider = WC.create(PaperSlider.class);
         final HTMLElement span = WC.create("span");
@@ -139,7 +139,7 @@ public class DemoWrapWC implements EntryPoint {
                 }
             });
         slider.pin(true).max(80).value(20);
-        
+
         PaperSlider slider2 = WC.create(PaperSlider.class);
         slider2.max(100);
         slider2.step(10);
@@ -149,9 +149,10 @@ public class DemoWrapWC implements EntryPoint {
         left.appendChild(span);
         left.appendChild(slider2);
     }
-    
+
     private void demoCoreIcon() {
         final PaperButton button = WC.create(PaperButton.class);
+
         button.icon(Icon.POLYMER).label(Icon.POLYMER).raisedButton(true)
                 .style().background("#8BACE2");
         button.addEventListener("click", new EventListener() {
@@ -161,7 +162,7 @@ public class DemoWrapWC implements EntryPoint {
                 button.icon(icon).label(icon);
             }
         });
-        
+
         CoreTooltip tip = WC.create(CoreTooltip.class);
         tip.label("Switch the icon");
         tip.appendChild(button);
@@ -169,7 +170,7 @@ public class DemoWrapWC implements EntryPoint {
 
         right.appendChild(tip);
     }
-    
+
     private void demoShadow() {
         HTMLElement div = WC.create("div");
         div.style().margin("10px").padding("10px").backgroundColor("white").maxWidth("70%");
@@ -177,42 +178,42 @@ public class DemoWrapWC implements EntryPoint {
         PaperShadow shadow = WC.create(PaperShadow.class).z(2);
         div.appendChild(shadow);
         right.appendChild(div);
-        
+
         PaperRipple riple = WC.create(PaperRipple.class);
         riple.setAttribute("fit", "");
         div.appendChild(riple);
     }
-    
+
     private void demoCoreMenu() {
       CoreMenu menu = WC.create(CoreMenu.class);
       CoreSubmenu submenu1 = WC.create(CoreSubmenu.class);
       submenu1.icon(Icon.SETTINGS).label("Settings");
       CoreSubmenu submenu2 = WC.create(CoreSubmenu.class);
       submenu2.icon(Icon.FAVORITE).label("Favorite");
-      
+
       CoreItem item = WC.create(CoreItem.class);
       item.icon(Icon.SOCIAL_CAKE).label("Like");
       submenu1.appendChild(item);
       item = WC.create(CoreItem.class);
       item.icon(Icon.ANDROID).label("Android");
       submenu1.appendChild(item);
-      
+
       item = WC.create(CoreItem.class);
       item.icon(Icon.APPS).label("Apps");
       submenu2.appendChild(item);
       item = WC.create(CoreItem.class);
       item.icon(Icon.AV_MIC).label("Sound");
       submenu2.appendChild(item);
-      
+
       menu.appendChild(submenu1);
       menu.appendChild(submenu2);
-      
+
       $(menu).addClass("paper-shadow-top-z-3");
-      
+
       left.appendChild(menu);
       menu.style().backgroundColor("antiquewhite");
     }
-    
+
     private void demoCoreMenuHtml() {
         WC.load(CoreIcon.class, CoreIcons.class, CoreMenu.class, CoreSubmenu.class, CoreItem.class);
         String html = "<core-menu selected='0'>" +
@@ -228,23 +229,23 @@ public class DemoWrapWC implements EntryPoint {
                 "    </core-menu>";
         $(left).append(html);
     }
-    
+
     private void demoCoreToolbar() {
-        
+
         WC.load(CoreIcon.class, CoreSubmenu.class, CoreItem.class);
         final CoreToolbar toolbar = WC.create(CoreToolbar.class);
         final CoreMenuButton menu = WC.create(CoreMenuButton.class);
         menu.icon(Icon.MENU);
-        
+
         final List<String> items = Arrays.asList(Icon.ARCHIVE, Icon.REPLY, Icon.AV_MOVIE, Icon.AV_VIDEO_YOUTUBE, Icon.CHECK_BOX_OUTLINE, Icon.COMMUNICATION_GMAIL);
         for (int i = 0; i < items.size(); i++) {
             CoreItem item = WC.create(CoreItem.class).icon(items.get(i)).label("Item " + i);
             menu.appendChild(item);
         }
-        
+
         toast = WC.create(PaperToast.class);
         WC.body.appendChild(toast);
-        
+
         CoreIconButton refresh = WC.create(CoreIconButton.class);
         refresh.icon(Icon.REFRESH);
         CoreIconButton add = WC.create(CoreIconButton.class);
@@ -261,7 +262,7 @@ public class DemoWrapWC implements EntryPoint {
                 toast.text("Itemaa: " + menu.selected() + " selected").show();
             }
         });
-        
+
         left.appendChild(toolbar);
         $(toolbar).css($$("bottom: 0px, color: white, fill: white, background: #7D25AC"));
 
@@ -271,7 +272,7 @@ public class DemoWrapWC implements EntryPoint {
                 $(menu.shadowRoot()).find("#dropdown").css("background", "#6EA754");
             }
         }.schedule(2000);
-        
+
         demoDialog();
         add.addEventListener("click", new EventListener() {
             public void onBrowserEvent(Event event) {
@@ -284,16 +285,16 @@ public class DemoWrapWC implements EntryPoint {
             }
         });
       }
-    
+
     private void demoDialog() {
         WC.load(CoreTransition.class, CoreTransitionCss.class);
         dialog = WC.create(PaperDialog.class);
         dialog.heading("Dialog").transition("core-transition-bottom");
-        
+
         HTMLElement div = WC.create("div");
         div.innerText(lorem.getParagraphs(1));
         dialog.appendChild(div);
-        
+
         PaperButton more = WC.create(PaperButton.class).label("More Info ...");
         more.setAttribute("dismissive", "");
         dialog.appendChild(more);
@@ -306,7 +307,7 @@ public class DemoWrapWC implements EntryPoint {
         dialog.appendChild(accept);
         WC.body.appendChild(dialog);
     }
-    
+
     private void demoSpliter() {
         HTMLElement container = WC.create("div");
         container.setAttribute("horizontal", "");
@@ -327,14 +328,14 @@ public class DemoWrapWC implements EntryPoint {
         container.appendChild(div1);
         container.appendChild(spl1);
         container.appendChild(div2);
-        
+
         HTMLElement div3 = WC.create("div");
         div3.innerText(lorem.getParagraphs(1));
         div3.style().backgroundColor("#D8F7A2");
         CoreSplitter spl2 = WC.create(CoreSplitter.class);
         spl2.minSize("100px");
         spl2.direction("up");
-        
+
         HTMLElement div4 = WC.create("div");
         div4.innerText(lorem.getParagraphs(1));
         div4.setAttribute("flex", "");
@@ -342,10 +343,10 @@ public class DemoWrapWC implements EntryPoint {
         div2.appendChild(div3);
         div2.appendChild(spl2);
         div2.appendChild(div4);
-        
+
         right.appendChild(container);
     }
-    
+
     private void demoChessBoard() {
         final ChessBoard chess = WC.create(ChessBoard.class);
         chess.innerText("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
@@ -362,7 +363,7 @@ public class DemoWrapWC implements EntryPoint {
         });
         left.appendChild(b);
     }
-    
+
     private void demoWidgetPanel() {
         Panel rightPanel = $(right).as(Widgets).panel().widget();
         gwtPanel = new FlowPanel();
@@ -372,7 +373,7 @@ public class DemoWrapWC implements EntryPoint {
         gwtPanel.getElement().getStyle().setPadding(8, Unit.PX);
         gwtPanel.add(new HTML("<h2>This is a gwt widget panel.</h2>"));
     }
-    
+
     private void demoWidgetPaperToggleButton() {
         gwtPanel.add(new Label("This is a <paper-toggle-button> promoted to widget:"));
         final PaperToggleButtonWidget b = new PaperToggleButtonWidget();
