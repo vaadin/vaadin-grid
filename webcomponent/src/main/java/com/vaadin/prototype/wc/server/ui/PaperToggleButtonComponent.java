@@ -15,5 +15,6 @@ public class PaperToggleButtonComponent extends AbstractComponent {
 
     public void setChecked(boolean b) {
         getState().checked = b;
+        System.out.println("ADFAsdfsaf");
     }
 }

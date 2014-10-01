@@ -242,15 +242,14 @@
                     <compileReport>true</compileReport>
                     <runTarget>/index.html</runTarget>
                     <hostedWebApp>${project.build.directory}/${project.build.finalName}</hostedWebApp>
-                    <webappDirectory>${project.build.directory}/${project.build.finalName}/VAADIN/widgetsets</webappDirectory>
+                    <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
                     <draftCompile>true</draftCompile>
                     <disableCastChecking>true</disableCastChecking>
                     <disableClassMetadata>false</disableClassMetadata>
                     <superDevMode>true</superDevMode>
                     <jsInteropMode>JS</jsInteropMode>
                     <persistentunitcachedir>${project.build.directory}</persistentunitcachedir>
-                    <!-- Remove this and DevMode.java when gwt-maven supports these args -->
-                    <extraJvmArgs>-Dgwt.dm.extra.args='-modulePathPrefix VAADIN/widgetsets -XjsInteropMode JS'</extraJvmArgs>
+                    <modulePathPrefix>VAADIN/widgetsets</modulePathPrefix>
                 </configuration>
                 <executions>
                     <execution>

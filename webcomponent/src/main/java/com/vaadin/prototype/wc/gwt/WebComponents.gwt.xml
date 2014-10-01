@@ -19,5 +19,7 @@
     <add-linker name="xsiframe"/>
 
     <collapse-all-properties/>
+
+    <stylesheet src="demo.css" />
 </module>
 
