@@ -7,7 +7,6 @@ import static com.google.gwt.query.client.GQuery.console;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayMixed;
@@ -17,7 +16,6 @@ import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.event.logical.shared.AttachEvent.Handler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQ;
 import com.google.gwt.query.client.GQuery;
@@ -29,7 +27,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.data.AbstractRemoteDataSource;
-import com.vaadin.client.ui.grid.Escalator;
 import com.vaadin.client.ui.grid.Grid;
 import com.vaadin.client.ui.grid.GridColumn;
 import com.vaadin.client.ui.grid.datasources.ListDataSource;
@@ -46,10 +43,9 @@ import com.vaadin.shared.ui.grid.HeightMode;
 @JsExport
 @JsType
 public class WCVGrid extends HTMLElement.Prototype implements
-        HTMLElement.LifeCycle.Created,
-        HTMLElement.LifeCycle.Attached,
-        HTMLElement.LifeCycle.Changed,
-        ValueChangeHandler<Double>, Handler, EventListener {
+        HTMLElement.LifeCycle.Created, HTMLElement.LifeCycle.Attached,
+        HTMLElement.LifeCycle.Changed, ValueChangeHandler<Double>, Handler,
+        EventListener {
 
     public static final String TAG = "v-grid";
 
@@ -67,7 +63,8 @@ public class WCVGrid extends HTMLElement.Prototype implements
     private boolean changed = true;
 
     public WCVGrid() {
-        // FIXME: If there is no default constructor JsInterop does not export anything
+        // FIXME: If there is no default constructor JsInterop does not export
+        // anything
     }
 
     @Override
@@ -93,7 +90,7 @@ public class WCVGrid extends HTMLElement.Prototype implements
             }
             elementWidget.addAttachHandler(this);
 
-            HTMLShadow shadow = this.createShadowRoot();
+            HTMLShadow shadow = createShadowRoot();
             shadow.appendChild(style);
             shadow.appendChild(container);
 
@@ -107,31 +104,33 @@ public class WCVGrid extends HTMLElement.Prototype implements
         readAttributes();
         addEventListener("DOMSubtreeModified", this);
     }
-    
+
     private void loadExternalDataSource() {
         final String dsource = getAttribute("dataSource");
         console.log("loadData " + dsource + " " + dataSource);
         if (dsource != null && !dsource.equals(dataSource)) {
-            Ajax.get(dsource).done(new Function(){
+            Ajax.get(dsource).done(new Function() {
+                @Override
                 public void f() {
                     dataSource = dsource;
                     String json = arguments(0);
                     parseJso(JsUtils.parseJSON(json));
                 }
-            }).fail(new Function(){
+            }).fail(new Function() {
+                @Override
                 public void f() {
                     console.log("Error loading data: " + dsource);
                 }
             });
         }
     }
-    
+
     private void initGrid() {
         if (!changed) {
             return;
         }
         changed = false;
-        
+
         if (grid != null) {
             grid.removeFromParent();
         }
@@ -143,6 +142,7 @@ public class WCVGrid extends HTMLElement.Prototype implements
                 GridColumn<String, JsArrayMixed> col;
                 final int idx = i;
                 col = new GridColumn<String, JsArrayMixed>(new TextRenderer()) {
+                    @Override
                     public String getValue(JsArrayMixed row) {
                         return row.getString(idx);
                     }
@@ -151,12 +151,36 @@ public class WCVGrid extends HTMLElement.Prototype implements
                 grid.addColumn(col);
             }
         }
+        initValsFromContents();
         if (vals != null && !vals.isEmpty()) {
-            ListDataSource<JsArrayMixed> dataSource = new ListDataSource<JsArrayMixed>(vals);
+            ListDataSource<JsArrayMixed> dataSource = new ListDataSource<JsArrayMixed>(
+                    vals);
             grid.setDataSource(dataSource);
         }
     }
-    
+
+    private void initValsFromContents() {
+        GQuery body = GQuery.$(this).children("tbody");
+        if (body == null || body.isEmpty()) {
+            return;
+        }
+        GQuery rows = body.children("tr");
+
+        if (rows != null && !rows.isEmpty()) {
+            List<JsArrayMixed> list = new ArrayList<JsArrayMixed>();
+            for (int i = 0; i < rows.size(); ++i) {
+                JsArrayMixed array = (JsArrayMixed) JsArrayMixed
+                        .createArray(cols.size());
+                GQuery row = GQuery.$(rows.get(i)).children();
+                for (int j = 0; j < row.size(); ++j) {
+                    array.set(j, row.get(j).getInnerText());
+                }
+                list.add(array);
+            }
+            vals = list;
+        }
+    }
+
     @Override
     public void onValueChange(ValueChangeEvent<Double> ev) {
     }
@@ -169,16 +193,18 @@ public class WCVGrid extends HTMLElement.Prototype implements
     private void readAttributes() {
         console.log("readAttributes");
         theme = getAttrValue("theme", "reindeer");
-//        style.innerText("@import url('" + GWT.getModuleBaseURL() + "../../themes/" + theme + "/styles.css')");
+        // style.innerText("@import url('" + GWT.getModuleBaseURL() +
+        // "../../themes/" + theme + "/styles.css')");
         style.innerText("@import url('VAADIN/themes/" + theme + "/styles.css')");
         container.setAttribute("class", theme);
-        
+
         loadExternalDataSource();
         loadHeaders();
         initGrid();
     }
-    
+
     private String lastHeaders = null;
+
     private void loadHeaders() {
         GQuery $th = $(this).find("thead th");
         if (!$th.isEmpty()) {
@@ -218,9 +244,18 @@ public class WCVGrid extends HTMLElement.Prototype implements
         console.log(event.getType());
         if (event.getType().equals("DOMSubtreeModified")) {
             readAttributes();
+
+            if (grid != null) {
+                initValsFromContents();
+                if (vals != null && !vals.isEmpty()) {
+                    ListDataSource<JsArrayMixed> dataSource = new ListDataSource<JsArrayMixed>(
+                            vals);
+                    grid.setDataSource(dataSource);
+                }
+            }
         }
     }
-    
+
     public void setCols(List<GColumn> cols) {
         changed = true;
         this.cols = cols;
@@ -230,12 +265,12 @@ public class WCVGrid extends HTMLElement.Prototype implements
         changed = true;
         this.vals = vals;
     }
-    
+
     public void dataSource(JavaScriptObject function) {
         assert JsUtils.isFunction(function);
         grid.setDataSource(new FunctionAbstractRemoteDataSource(function));
     }
-    
+
     private GData parseJso(JavaScriptObject o) {
         GData r = GQ.create(GData.class);
         if (JsUtils.isArray(o)) {
@@ -256,42 +291,48 @@ public class WCVGrid extends HTMLElement.Prototype implements
     private List<JsArrayMixed> JsArrayToList(JavaScriptObject o) {
         List<JsArrayMixed> vals = new ArrayList<JsArrayMixed>();
         JsArray<JsArrayMixed> arr = o.cast();
-        for (int i = 0 ; i < arr.length(); i++) {
+        for (int i = 0; i < arr.length(); i++) {
             vals.add(arr.get(i));
         }
         return vals;
     }
-    
+
     private int rowsize = 0;
+
     public void rowCount(double rows) {
-        rowsize = (int)rows;
+        rowsize = (int) rows;
         grid.setHeightMode(HeightMode.ROW);
         grid.setHeightByRows(Math.min(rows, GridState.DEFAULT_HEIGHT_BY_ROWS));
     }
-    
-    private native JavaScriptObject exec(JavaScriptObject f, int idx, int count, AsyncCallback<JavaScriptObject> cb) /*-{
-      return f(idx, count, function(r) {
-        cb.@com.google.gwt.user.client.rpc.AsyncCallback::onSuccess(*)(r);
-      });
+
+    private native JavaScriptObject exec(JavaScriptObject f, int idx,
+            int count, AsyncCallback<JavaScriptObject> cb) /*-{
+        return f(idx, count, function(r) {
+            cb.@com.google.gwt.user.client.rpc.AsyncCallback::onSuccess(*)(r);
+        });
     }-*/;
-    
-    private class FunctionAbstractRemoteDataSource extends AbstractRemoteDataSource {
+
+    private class FunctionAbstractRemoteDataSource extends
+            AbstractRemoteDataSource {
         private JavaScriptObject f;
+
         public FunctionAbstractRemoteDataSource(JavaScriptObject jso) {
             assert JsUtils.isFunction(jso);
             f = jso;
             setEstimatedSize(rowsize);
         }
-        
+
         @Override
         protected void requestRows(final int idx, int count) {
-            JavaScriptObject o = exec(f, idx, count, new AsyncCallback<JavaScriptObject>() {
-                public void onFailure(Throwable caught) {
-                }
-                public void onSuccess(JavaScriptObject result) {
-                    setRowData(idx, JsArrayToList(result));
-                }
-            });
+            JavaScriptObject o = exec(f, idx, count,
+                    new AsyncCallback<JavaScriptObject>() {
+                        public void onFailure(Throwable caught) {
+                        }
+
+                        public void onSuccess(JavaScriptObject result) {
+                            setRowData(idx, JsArrayToList(result));
+                        }
+                    });
             if (o != null) {
                 setRowData(idx, JsArrayToList(o));
             }
