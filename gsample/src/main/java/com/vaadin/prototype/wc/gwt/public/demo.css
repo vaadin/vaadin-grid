@@ -1,0 +1,17 @@
+   v-slider::shadow div[tabindex]:focus, .v-grid *[tabindex]:focus {
+     outline: 0;
+   }
+   /* TODO: Hack to add v-slider to body in demos */
+   body > v-slider::shadow div:not(.valo) > .v-slider > .v-slider-base {
+     position: absolute;
+     right: 10px;
+     left: 2px;
+   }
+   /* TODO: popups should be attached to shadow root */
+   .v-slider-feedback {
+     background: black;
+     color: white;
+     border-radius: 3px;
+     font-size: 9px;
+     padding: 3px;
+   }
