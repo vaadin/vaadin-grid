@@ -12,15 +12,14 @@ import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.core.client.js.JsExport;
 import com.google.gwt.core.client.js.JsType;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.event.logical.shared.AttachEvent.Handler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQ;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.js.JsUtils;
-import com.google.gwt.query.client.plugins.ajax.Ajax;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -30,6 +29,7 @@ import com.vaadin.client.data.AbstractRemoteDataSource;
 import com.vaadin.client.ui.grid.Grid;
 import com.vaadin.client.ui.grid.GridColumn;
 import com.vaadin.client.ui.grid.datasources.ListDataSource;
+import com.vaadin.client.ui.grid.renderers.HtmlRenderer;
 import com.vaadin.client.ui.grid.renderers.TextRenderer;
 import com.vaadin.prototype.wc.gwt.client.WC;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLElement;
@@ -105,26 +105,6 @@ public class WCVGrid extends HTMLElement.Prototype implements
         addEventListener("DOMSubtreeModified", this);
     }
 
-    private void loadExternalDataSource() {
-        final String dsource = getAttribute("dataSource");
-        console.log("loadData " + dsource + " " + dataSource);
-        if (dsource != null && !dsource.equals(dataSource)) {
-            Ajax.get(dsource).done(new Function() {
-                @Override
-                public void f() {
-                    dataSource = dsource;
-                    String json = arguments(0);
-                    parseJso(JsUtils.parseJSON(json));
-                }
-            }).fail(new Function() {
-                @Override
-                public void f() {
-                    console.log("Error loading data: " + dsource);
-                }
-            });
-        }
-    }
-
     private void initGrid() {
         if (!changed) {
             return;
@@ -141,7 +121,7 @@ public class WCVGrid extends HTMLElement.Prototype implements
                 GColumn c = cols.get(i);
                 GridColumn<String, JsArrayMixed> col;
                 final int idx = i;
-                col = new GridColumn<String, JsArrayMixed>(new TextRenderer()) {
+                col = new GridColumn<String, JsArrayMixed>(new HtmlRenderer()) {
                     @Override
                     public String getValue(JsArrayMixed row) {
                         return row.getString(idx);
@@ -198,9 +178,10 @@ public class WCVGrid extends HTMLElement.Prototype implements
         style.innerText("@import url('VAADIN/themes/" + theme + "/styles.css')");
         container.setAttribute("class", theme);
 
-        loadExternalDataSource();
         loadHeaders();
+        loadRows();
         initGrid();
+        adjustHeight(vals.size());
     }
 
     private String lastHeaders = null;
@@ -215,6 +196,21 @@ public class WCVGrid extends HTMLElement.Prototype implements
                 setCols(new ArrayList<GColumn>());
                 for (int i = 0; i < $th.size(); i++) {
                     cols.add(GQ.create(GColumn.class).setName($th.eq(i).text()));
+                }
+            }
+        }
+    }
+
+    private void loadRows() {
+        GQuery $tr = $(this).find("tbody tr");
+        if (!$tr.isEmpty()) {
+            setVals(new ArrayList<JsArrayMixed>());
+            for (Element tr : $tr.elements()) {
+                JsArrayMixed a = JsArrayMixed.createArray().cast();
+                vals.add(a);
+                GQuery $td = $(tr).find("td");
+                for (int i = 0; i < $td.size(); i++) {
+                    a.push($td.eq(i).html());
                 }
             }
         }
@@ -301,8 +297,12 @@ public class WCVGrid extends HTMLElement.Prototype implements
 
     public void rowCount(double rows) {
         rowsize = (int) rows;
+        adjustHeight(rowsize);
+    }
+
+    private void adjustHeight(int size) {
         grid.setHeightMode(HeightMode.ROW);
-        grid.setHeightByRows(Math.min(rows, GridState.DEFAULT_HEIGHT_BY_ROWS));
+        grid.setHeightByRows(Math.min(size, GridState.DEFAULT_HEIGHT_BY_ROWS));
     }
 
     private native JavaScriptObject exec(JavaScriptObject f, int idx,

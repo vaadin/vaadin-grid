@@ -7,8 +7,68 @@
 <!--      <script src="VAADIN/widgetsets/Sample/Sample.nocache.js"></script> -->
   </head>
   <body>
-  <v-slider></v-slider>
-  
+
+
+  <h3> Other web-elements </h3>
+  <div style='width: 30%'>
+  V-slider
+  <v-slider min='0' max='100' value='45'></v-slider>
+  V-progress
+  <v-progress value='0.3'></v-progress>
+  </div>
+
+  <h3> Simplest possible with inline data </h3>
+  <v-grid>
+      <!-- TODO: extend Table prototype: requires a customised version of the WC.getWCConstructor hack -->
+	  <table>
+		  <thead>
+		    <tr>
+		      <th>Name</th>
+		      <th>Value</th>
+		      <th>Progress</th>
+		    </tr>
+		  </thead>
+		  <tbody>
+		    <tr>
+		      <td>Grid</td>
+		      <td>10000</td>
+		      <td>0.8</td>
+		    </tr>
+		    <tr>
+		      <td>Vaadin X </td>
+		      <td>999999</td>
+		      <td>0.8</td>
+		    </tr>
+		  </tbody>
+	  </table>
+  </v-grid>
+
+  <h3>Simplest possible with explicitly formatted inline data (i.e. children in cells)</h3>
+  <v-grid>
+    <table>
+	  <thead>
+	    <tr>
+	      <th>Name</th>
+	      <th>Value</th>
+	      <th>Progress</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	    <tr>
+	      <td>Grid</td>
+	      <td>10 000€</td>
+	      <td><v-progress value="0.8" /></td>
+	    </tr>
+	    <tr>
+	      <td>Vaadin X </td>
+	      <td>999 999€</td>
+	      <td><v-progress value="0.01" /></td>
+	    </tr>
+	  </tbody>
+	</table>
+  </v-grid>
+
+  <h3> Simplest possible with data source (all data available, no formatting)</h3>
   <v-grid id='myGrid'>
 	  <table>
 	    <thead>
@@ -20,9 +80,9 @@
 	  </thead>
 	  </table>
   </v-grid>
-  
+
   <script>
-  
+
   function waitUntil(check, exec) {
     var id = setInterval(function() {
       if (check()) {
@@ -31,9 +91,9 @@
       }
     }, 500);
   }
-  
+
   </script>
-  
+
    <script>
 	  myData = [
 	    [ "Grid", 10000, 0.8 ],
@@ -42,7 +102,7 @@
 	  ];
 
       var grid = document.getElementById("myGrid");
-      
+
       // We need to wait until the WC has been initialized
       // It could take a long if we are compiling SDM
       waitUntil(function(){
@@ -55,8 +115,8 @@
         });
       });
     </script>
-    
-    <hr />
+
+    <h3> Simplest possible with lazy data source (no formatting)</h3>
     <v-grid id='myBigGrid'>
 	  <table>
 	    <thead>
@@ -68,10 +128,10 @@
 	  </thead>
 	  </table>
     </v-grid>
-  
+
    <script>
       var bigGrid = document.getElementById("myBigGrid");
-      
+
       waitUntil(function(){
         return bigGrid && bigGrid.dataSource;
       }, function(){
@@ -83,8 +143,15 @@
           }, 800);
         });
       });
-      
-  	  myBigData = 
+
+      // myBigData is defined at the end of the page
+   </script>
+
+   <h3>Below grids inserted programatically </h3>
+
+
+   <script>
+  	  myBigData =
   	    [
   	     [
   	       "Patrik",
@@ -2102,9 +2169,9 @@
   	       "Fix",
   	       "Vaadin"
   	     ]
-  	   ];    
-      
+  	   ];
+
     </script>
-  
+
   </body>
 </html>

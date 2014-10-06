@@ -14,6 +14,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
+import com.vaadin.client.ui.VProgressBar;
 import com.vaadin.client.ui.VSlider;
 import com.vaadin.prototype.wc.gwt.client.WC;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLElement;
@@ -22,15 +23,15 @@ import com.vaadin.prototype.wc.gwt.client.html.HTMLShadow;
 
 @JsExport
 @JsType
-public class WCVSlider extends HTMLElement.Prototype implements
+public class WCVProgress extends HTMLElement.Prototype implements
         HTMLElement.LifeCycle.Created,
         HTMLElement.LifeCycle.Attached,
         HTMLElement.LifeCycle.Changed,
-        ValueChangeHandler<Double>, Handler {
+        Handler {
 
-    public static final String TAG = "v-slider";
+    public static final String TAG = "v-progress";
 
-    private VSlider slider;
+    private VProgressBar widget;
     private HTMLEvents changeEvent;
     private HTMLElement container;
     private HTMLElement style;
@@ -38,7 +39,7 @@ public class WCVSlider extends HTMLElement.Prototype implements
     private boolean initialized = false;
     private String theme = "valo";
 
-    public WCVSlider() {
+    public WCVProgress() {
         // FIXME: If there is no default constructor JsInterop does not export anything
     }
 
@@ -46,8 +47,7 @@ public class WCVSlider extends HTMLElement.Prototype implements
     public void createdCallback() {
         style = WC.create("style");
 
-        slider = new VSlider();
-        slider.addValueChangeHandler(this);
+        widget = new VProgressBar();
 
         changeEvent = WC.document.createEvent("HTMLEvents");
         changeEvent.initEvent("change", false, false);
@@ -73,24 +73,15 @@ public class WCVSlider extends HTMLElement.Prototype implements
             shadow.appendChild(container);
 
             Panel shadowPanel = $(container).as(Widgets).panel().widget();
-            shadowPanel.add(slider);
+            shadowPanel.add(widget);
         }
     }
 
     @Override
     public void attachedCallback() {
         initWidgetSystem();
-        slider.buildBase();
     }
 
-    @Override
-    public void onValueChange(ValueChangeEvent<Double> ev) {
-        String val = ev.getValue().toString();
-        if (!val.equals(getAttribute("value"))) {
-            setAttribute("value", val);
-            dispatchEvent(changeEvent);
-        }
-    }
 
     @Override
     public void attributeChangedCallback() {
@@ -98,9 +89,7 @@ public class WCVSlider extends HTMLElement.Prototype implements
     }
 
     private void readAttributes() {
-        slider.setMinValue(getAttrDoubleValue("min", 0));
-        slider.setMaxValue(getAttrDoubleValue("max", 100));
-        slider.setValue(getAttrDoubleValue("value", 0));
+        widget.setState(getAttrFloatValue("value", 0));
         theme = getAttrValue("theme", "valo");
         style.innerText("@import url('" + GWT.getModuleBaseURL() + "../../themes/" + theme + "/styles.css')");
         style.innerText("@import url('VAADIN/themes/" + theme + "/styles.css')");
@@ -108,8 +97,8 @@ public class WCVSlider extends HTMLElement.Prototype implements
     }
 
     // TODO: Make this part of the API of a utils class.
-    private double getAttrDoubleValue(String attr, double def) {
-        return Double.valueOf(getAttrValue(attr, String.valueOf(def)));
+    private float getAttrFloatValue(String attr, float def) {
+        return Float.valueOf(getAttrValue(attr, String.valueOf(def)));
     }
 
     // TODO: Make this part of the API of a utils class.

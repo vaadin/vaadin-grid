@@ -11,6 +11,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLElement;
 import com.vaadin.prototype.wc.gwt.client.widgets.WCVGrid;
+import com.vaadin.prototype.wc.gwt.client.widgets.WCVProgress;
 import com.vaadin.prototype.wc.gwt.client.widgets.WCVSlider;
 
 /**
@@ -23,6 +24,7 @@ public class Demo implements EntryPoint {
         demoHeikki();
 
         WC.register(WCVGrid.TAG, WCVGrid.class);
+        WC.register(WCVProgress.TAG, WCVProgress.class);
         WC.register(WCVSlider.TAG, WCVSlider.class);
 
     }
