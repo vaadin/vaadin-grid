@@ -6,15 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import com.google.gwt.core.client.Callback;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQ;
 import com.google.gwt.query.client.builders.JsonBuilder;
-import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.ajax.Ajax;
-import com.google.gwt.user.client.Command;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLElement;
 
 public interface GData extends JsonBuilder {
@@ -85,6 +82,4 @@ public interface GData extends JsonBuilder {
             }
         }
     }
-
-
 }

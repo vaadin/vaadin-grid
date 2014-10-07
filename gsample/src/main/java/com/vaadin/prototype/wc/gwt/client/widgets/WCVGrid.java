@@ -5,6 +5,7 @@ import static com.google.gwt.query.client.GQuery.Widgets;
 import static com.google.gwt.query.client.GQuery.console;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import com.google.gwt.core.client.JavaScriptObject;
@@ -32,6 +33,8 @@ import com.vaadin.client.ui.grid.Grid;
 import com.vaadin.client.ui.grid.GridColumn;
 import com.vaadin.client.ui.grid.Renderer;
 import com.vaadin.client.ui.grid.datasources.ListDataSource;
+import com.vaadin.client.ui.grid.selection.SelectionChangeEvent;
+import com.vaadin.client.ui.grid.selection.SelectionChangeHandler;
 import com.vaadin.prototype.wc.gwt.client.WC;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLElement;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLEvents;
@@ -46,13 +49,13 @@ import com.vaadin.shared.ui.grid.HeightMode;
 public class WCVGrid extends HTMLElement.Prototype implements
         HTMLElement.LifeCycle.Created, HTMLElement.LifeCycle.Attached,
         HTMLElement.LifeCycle.Changed, ValueChangeHandler<Double>, Handler,
-        EventListener {
+        EventListener, SelectionChangeHandler<JsArrayMixed> {
 
     public static final String TAG = "v-grid";
 
     // FIXME: figure out a way to reuse grid.
-    private Grid grid;
-    private HTMLEvents changeEvent;
+    private Grid<JsArrayMixed> grid;
+    private HTMLEvents selectEvent;
     private HTMLElement container;
     private HTMLElement style;
     private Panel shadowPanel;
@@ -73,8 +76,8 @@ public class WCVGrid extends HTMLElement.Prototype implements
     public void createdCallback() {
         style = WC.create("style");
         style.setAttribute("language", "text/css");
-        changeEvent = WC.document.createEvent("HTMLEvents");
-        changeEvent.initEvent("change", false, false);
+        selectEvent = WC.document.createEvent("HTMLEvents");
+        selectEvent.initEvent("select", false, false);
         container = WC.create("div");
         cols = new ArrayList<GColumn>();
         vals = new ArrayList<JsArrayMixed>();
@@ -130,7 +133,8 @@ public class WCVGrid extends HTMLElement.Prototype implements
         if (grid != null) {
             grid.removeFromParent();
         }
-        grid = new Grid();
+        grid = new Grid<JsArrayMixed>();
+        grid.addSelectionChangeHandler(this);
         shadowPanel.add(grid);
         if (cols != null) {
             for (int i = 0, l = cols.size(); i < l; i++) {
@@ -345,8 +349,11 @@ public class WCVGrid extends HTMLElement.Prototype implements
     }-*/;
 
     private class FunctionAbstractRemoteDataSource extends
-            AbstractRemoteDataSource {
+            AbstractRemoteDataSource<JsArrayMixed> {
         private JavaScriptObject f;
+
+        // TODO: make a feature request to grid team so as they implement indexOf(row)
+        private HashMap<Object, Integer> idx = new HashMap<Object, Integer>();
 
         public FunctionAbstractRemoteDataSource(JavaScriptObject jso) {
             assert JsUtils.isFunction(jso);
@@ -371,8 +378,39 @@ public class WCVGrid extends HTMLElement.Prototype implements
         }
 
         @Override
-        public Object getRowKey(Object row) {
+        protected void setRowData(int firstRowIndex, List<JsArrayMixed> rowData) {
+            for (int i = 0; i < rowData.size(); i++) {
+                idx.put(getRowKey(rowData.get(i)), firstRowIndex + i);
+            }
+            super.setRowData(firstRowIndex, rowData);
+        }
+
+        @Override
+        public Object getRowKey(JsArrayMixed row) {
             return row.toString();
         }
+
+        public int indexOf(JsArrayMixed row) {
+            return row == null ? -1 : idx.get(getRowKey(row));
+        }
+
+        @Override
+        public JsArrayMixed getRow(int rowIndex) {
+            return super.getRow(rowIndex);
+        }
+    }
+
+    @Override
+    public void onSelectionChange(SelectionChangeEvent<JsArrayMixed> ev) {
+        dispatchEvent(selectEvent);
+    }
+
+    public int selectedRow() {
+        return ((FunctionAbstractRemoteDataSource) grid.getDataSource())
+                .indexOf(grid.getSelectedRow());
+    }
+
+    public void selectRow(int idx) {
+       grid.select(grid.getDataSource().getRow(idx));
     }
 }
