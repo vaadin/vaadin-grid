@@ -13,22 +13,47 @@ import com.google.gwt.query.client.GQ;
 import com.google.gwt.query.client.builders.JsonBuilder;
 import com.google.gwt.query.client.plugins.ajax.Ajax;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLElement;
+import com.vaadin.prototype.wc.gwt.client.widgets.grid.GData.GColumn.GHeader;
 
 public interface GData extends JsonBuilder {
     public interface GColumn extends JsonBuilder {
-        String name();
-        GColumn setName(String s);
+
+        public interface GHeader extends JsonBuilder {
+            public static enum Format {
+                TEXT, HTML, WIDGET
+            }
+
+            Object content();
+
+            GHeader setContent(Object content);
+
+            Format format();
+
+            GHeader setFormat(Format format);
+
+            int colSpan();
+
+            GHeader setColSpan(int colSpans);
+        }
+
         String type();
         GColumn setType(String s);
-        String format();
-        GColumn setFormat(String s);
+        
         JavaScriptObject renderer();
+
+        List<GHeader> headerData();
+        GColumn setHeaderData(List<GHeader> headers);
     }
 
     List<GColumn> columns();
+
     GData setColumns(List<GColumn> l);
+
     List<JsArrayMixed> values();
+
     GData setValues(List<JsArrayMixed> l);
+
+    int defaultRowIndex = 0;
 
     public static class MockData {
         private static String[] actions = { "Fix", "Implement", "Disable",
@@ -51,10 +76,26 @@ public interface GData extends JsonBuilder {
 
             GData ret = GQ.create(GData.class);
             List<GColumn> cols = new ArrayList<GColumn>();
-            cols.add(GQ.create(GColumn.class).setName("Name").setType("string"));
-            cols.add(GQ.create(GColumn.class).setName("Surname").setType("string"));
-            cols.add(GQ.create(GColumn.class).setName("Action").setType("string"));
-            cols.add(GQ.create(GColumn.class).setName("Target").setType("string"));
+            List<GHeader> header = new ArrayList<GHeader>();
+            header.add(GQ.create(GHeader.class).setColSpan(1)
+                    .setContent("Name").setFormat(GHeader.Format.TEXT));
+            cols.add(GQ.create(GColumn.class).setHeaderData(header)
+                    .setType("string"));
+            header = new ArrayList<GHeader>();
+            header.add(GQ.create(GHeader.class).setColSpan(1)
+                    .setContent("Surname").setFormat(GHeader.Format.TEXT));
+            cols.add(GQ.create(GColumn.class).setHeaderData(header)
+                    .setType("string"));
+            header = new ArrayList<GHeader>();
+            header.add(GQ.create(GHeader.class).setColSpan(1)
+                    .setContent("Action").setFormat(GHeader.Format.TEXT));
+            cols.add(GQ.create(GColumn.class).setHeaderData(header)
+                    .setType("string"));
+            header = new ArrayList<GHeader>();
+            header.add(GQ.create(GHeader.class).setColSpan(1)
+                    .setContent("Target").setFormat(GHeader.Format.TEXT));
+            cols.add(GQ.create(GColumn.class).setHeaderData(header)
+                    .setType("string"));
 
             List<JsArrayMixed> vals = new ArrayList<JsArrayMixed>();
             for (int i = 0, l = random.nextInt(100) + 300; i < l; i++) {

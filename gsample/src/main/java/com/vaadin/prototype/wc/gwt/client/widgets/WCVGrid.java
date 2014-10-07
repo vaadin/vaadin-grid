@@ -7,6 +7,7 @@ import static com.google.gwt.query.client.GQuery.console;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
@@ -32,6 +33,8 @@ import com.vaadin.client.ui.grid.FlyweightCell;
 import com.vaadin.client.ui.grid.Grid;
 import com.vaadin.client.ui.grid.GridColumn;
 import com.vaadin.client.ui.grid.Renderer;
+import com.vaadin.client.ui.grid.GridHeader.HeaderCell;
+import com.vaadin.client.ui.grid.GridHeader.HeaderRow;
 import com.vaadin.client.ui.grid.datasources.ListDataSource;
 import com.vaadin.client.ui.grid.selection.SelectionChangeEvent;
 import com.vaadin.client.ui.grid.selection.SelectionChangeHandler;
@@ -41,6 +44,8 @@ import com.vaadin.prototype.wc.gwt.client.html.HTMLEvents;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLShadow;
 import com.vaadin.prototype.wc.gwt.client.widgets.grid.GData;
 import com.vaadin.prototype.wc.gwt.client.widgets.grid.GData.GColumn;
+import com.vaadin.prototype.wc.gwt.client.widgets.grid.GData.GColumn.GHeader;
+import com.vaadin.prototype.wc.gwt.client.widgets.grid.GData.GColumn.GHeader.Format;
 import com.vaadin.shared.ui.grid.GridState;
 import com.vaadin.shared.ui.grid.HeightMode;
 
@@ -66,6 +71,8 @@ public class WCVGrid extends HTMLElement.Prototype implements
     private List<JsArrayMixed> vals;
     private boolean changed = true;
     private Timer deferRefresh;
+
+    private int headerDefaultRowIndex = 0;
 
     public WCVGrid() {
         // FIXME: If there is no default constructor JsInterop does not export
@@ -164,10 +171,41 @@ public class WCVGrid extends HTMLElement.Prototype implements
                         return row.getString(idx);
                     }
                 };
-
-                col.setHeader(c.name());
+                
                 grid.addColumn(col);
+                for (int j = 0; j < c.headerData().size(); j++) {
+                    if (grid.getHeader().getRowCount() < c
+                            .headerData().size()) {
+                        grid.getHeader().appendRow();
+                    }
+                    GHeader header = c.headerData().get(j);
+
+                    int offset = 0;
+                    for (int k = 0; k <= j + offset; k++) {
+                        HeaderRow row = grid.getHeader().getRow(k);
+                        if (row.getCell(grid.getColumn(i)).getColspan() != 1) {
+                            offset++;
+                        }
+                    }
+                    HeaderCell cell = grid.getHeader().getRow(j + offset)
+                            .getCell(col);
+                    cell.setColspan(header.colSpan());
+                    Object content = header.content();
+                    switch (header.format()) {
+                    case HTML:
+                        cell.setHtml((String) content);
+                        break;
+                    case WIDGET:
+                        cell.setWidget((Widget) content);
+                        break;
+                    case TEXT:
+                        cell.setText((String) content);
+                        break;
+                    }
+                }
             }
+            grid.getHeader().setDefaultRow(
+                    grid.getHeader().getRow(headerDefaultRowIndex));
         }
         initValsFromContents();
         if (vals != null && !vals.isEmpty()) {
@@ -224,17 +262,68 @@ public class WCVGrid extends HTMLElement.Prototype implements
     private String lastHeaders = null;
 
     private void loadHeaders() {
-        GQuery $th = $(this).find("thead th");
-        if (!$th.isEmpty()) {
-            String txt = $th.toString();
-            if (!txt.equals(lastHeaders)) {
-                lastHeaders = txt;
-                setCols(new ArrayList<GColumn>());
-                for (int i = 0; i < $th.size(); i++) {
-                    cols.add(GQ.create(GColumn.class).setName($th.eq(i).text()));
-                }
+        GQuery $theadRows = $(this).find("thead tr");
+        String txt = $theadRows.toString();
+        if ($theadRows.isEmpty() || txt.equals(lastHeaders)) {
+            return;
+        }
+        lastHeaders = txt;
+
+        console.log("We have headers: " + $theadRows);
+        List<GColumn> colList = new ArrayList<GColumn>();
+
+        Map<GColumn, List<GHeader>> contentsMap = new HashMap<GColumn, List<GHeader>>();
+
+        headerDefaultRowIndex = $theadRows.index($(this).find("tr[default]")
+                .get(0));
+        if (headerDefaultRowIndex == -1) {
+            headerDefaultRowIndex = 0;
+        }
+        for (int i = 0; i < $theadRows.size(); i++) {
+            GQuery $th = $theadRows.eq(i).children("th");
+            while (colList.size() < $th.size()) {
+                GColumn column = GQ.create(GColumn.class);
+                contentsMap.put(column, new ArrayList<GHeader>());
+                colList.add(column);
             }
         }
+
+        for (int i = 0; i < $theadRows.size(); i++) {
+            GQuery $row = $theadRows.eq(i).children("th");
+
+            int colOffset = 0;
+            for (int j = 0; j < $row.size(); j++) {
+                GColumn column = colList.get(j + colOffset);
+
+                GHeader header = GQ.create(GHeader.class);
+
+                GQuery $th = $row.eq(j);
+
+                int colSpan = 1;
+                String colString = $th.attr("colspan");
+                if (!colString.isEmpty()) {
+                    colSpan = Integer.parseInt(colString);
+                    colOffset += colSpan - 1;
+                }
+
+                // FIXME: Assuming format to be HTML, should we detect
+                // between simple text and HTML contents?
+                header.setColSpan(colSpan).setContent($th.html())
+                        .setFormat(Format.HTML);
+                contentsMap.get(column).add(header);
+            }
+        }
+
+        for (GColumn key : contentsMap.keySet()) {
+            key.setHeaderData(contentsMap.get(key));
+        }
+
+        setCols(colList);
+    }
+
+    // TODO: Make this part of the API of a utils class.
+    private int getAttrIntValue(String attr, int def) {
+        return Integer.parseInt(getAttrValue(attr, String.valueOf(def)));
     }
 
     private void loadRows() {
@@ -314,7 +403,8 @@ public class WCVGrid extends HTMLElement.Prototype implements
             setVals(r.values());
         }
         if (!r.columns().isEmpty()) {
-            setCols(r.columns());
+            List<GColumn> colRows = r.columns();
+            setCols(colRows);
         }
         initGrid();
         return r;

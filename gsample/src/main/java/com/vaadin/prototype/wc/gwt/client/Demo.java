@@ -32,7 +32,7 @@ public class Demo implements EntryPoint {
     void demoHeikki() {
         GQuery gridElement = $("<v-grid></v-grid>");
         gridElement
-                .append("<thead><tr><th>Name</th><th>Value</th><th>Progress</th></tr></thead><tbody id='append-test-body'><tr><td>Grid</td><td>10000</td><td>0.8</td></tr><tr><td>Vaadin X </td><td>999999</td><td>0.8</td></tr></tbody></v-grid>");
+                .append("<thead><tr><th><button>I'm a button</button></th><th colspan='2'>I'm spanned</th></tr><tr><th colspan='2'>Double span</th><th>Whee</th></tr><tr default><th>Name</th><th>Value</th><th>Progress</th></tr><tr><th>1</th><th>2</th><th>3</th></tr></thead><tbody id='append-test-body'><tr><td>Grid</td><td>10000</td><td>0.8</td></tr><tr><td>Vaadin X </td><td>999999</td><td>0.8</td></tr></tbody></v-grid>");
 
         WCVGrid grid = (WCVGrid) (HTMLElement) gridElement.appendTo(document)
                 .get(0);
