@@ -98,7 +98,13 @@ public class WCVProgress extends HTMLElement.Prototype implements
 
     // TODO: Make this part of the API of a utils class.
     private float getAttrFloatValue(String attr, float def) {
-        return Float.valueOf(getAttrValue(attr, String.valueOf(def)));
+        String val = getAttrValue(attr, String.valueOf(def));
+        try {
+            return Float.valueOf(val);
+        } catch (NumberFormatException e) {
+            console.log("Error parsing '" + val + "to float." + e.getMessage() + " " + $(this));
+            return 0;
+        }
     }
 
     // TODO: Make this part of the API of a utils class.

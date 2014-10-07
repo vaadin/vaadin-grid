@@ -25,6 +25,7 @@ public interface GData extends JsonBuilder {
         GColumn setType(String s);
         String format();
         GColumn setFormat(String s);
+        JavaScriptObject renderer();
     }
 
     List<GColumn> columns();

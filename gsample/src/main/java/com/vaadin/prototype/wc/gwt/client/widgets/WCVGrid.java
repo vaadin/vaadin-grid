@@ -22,15 +22,16 @@ import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.data.AbstractRemoteDataSource;
+import com.vaadin.client.ui.grid.FlyweightCell;
 import com.vaadin.client.ui.grid.Grid;
 import com.vaadin.client.ui.grid.GridColumn;
+import com.vaadin.client.ui.grid.Renderer;
 import com.vaadin.client.ui.grid.datasources.ListDataSource;
-import com.vaadin.client.ui.grid.renderers.HtmlRenderer;
-import com.vaadin.client.ui.grid.renderers.TextRenderer;
 import com.vaadin.prototype.wc.gwt.client.WC;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLElement;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLEvents;
@@ -61,6 +62,7 @@ public class WCVGrid extends HTMLElement.Prototype implements
     private List<GColumn> cols;
     private List<JsArrayMixed> vals;
     private boolean changed = true;
+    private Timer deferRefresh;
 
     public WCVGrid() {
         // FIXME: If there is no default constructor JsInterop does not export
@@ -76,6 +78,14 @@ public class WCVGrid extends HTMLElement.Prototype implements
         container = WC.create("div");
         cols = new ArrayList<GColumn>();
         vals = new ArrayList<JsArrayMixed>();
+        deferRefresh = new Timer() {
+            public void run() {
+                if (vals != null && !vals.isEmpty()) {
+                    adjustHeight(vals != null ? vals.size() : 100);
+                    initGrid();
+                }
+            }
+        };
     }
 
     /*
@@ -105,6 +115,12 @@ public class WCVGrid extends HTMLElement.Prototype implements
         addEventListener("DOMSubtreeModified", this);
     }
 
+    public JavaScriptObject columns(int n) {
+        changed = true;
+        deferRefresh.schedule(200);
+        return cols.get(Math.min(cols.size() - 1, Math.max(0, n))).getDataImpl();
+    }
+
     private void initGrid() {
         if (!changed) {
             return;
@@ -118,15 +134,33 @@ public class WCVGrid extends HTMLElement.Prototype implements
         shadowPanel.add(grid);
         if (cols != null) {
             for (int i = 0, l = cols.size(); i < l; i++) {
-                GColumn c = cols.get(i);
+                final GColumn c = cols.get(i);
                 GridColumn<String, JsArrayMixed> col;
                 final int idx = i;
-                col = new GridColumn<String, JsArrayMixed>(new HtmlRenderer()) {
-                    @Override
+                col = new GridColumn<String, JsArrayMixed>(new Renderer<String>() {
+                    public void render(FlyweightCell cell, String data) {
+                        Object o = c.renderer();
+                        Element elm = cell.getElement();
+                        if (o instanceof JavaScriptObject) {
+                            if (JsUtils.isFunction((JavaScriptObject)o)) {
+                                JsUtils.runJavascriptFunction((JavaScriptObject)o, "call", o, elm, data, cell.getRow());
+                            } else {
+                                if ($(elm).data("init") == null) {
+                                    $(elm).data("init", true);
+                                    JsUtils.runJavascriptFunction((JavaScriptObject)o, "init", elm);
+                                }
+                                JsUtils.runJavascriptFunction((JavaScriptObject)o, "render", elm, data);
+                            }
+                        } else {
+                            elm.setInnerHTML(data);
+                        }
+                    }
+                }){
                     public String getValue(JsArrayMixed row) {
                         return row.getString(idx);
                     }
                 };
+
                 col.setHeader(c.name());
                 grid.addColumn(col);
             }
@@ -171,7 +205,6 @@ public class WCVGrid extends HTMLElement.Prototype implements
     }
 
     private void readAttributes() {
-        console.log("readAttributes");
         theme = getAttrValue("theme", "reindeer");
         // style.innerText("@import url('" + GWT.getModuleBaseURL() +
         // "../../themes/" + theme + "/styles.css')");
@@ -192,7 +225,6 @@ public class WCVGrid extends HTMLElement.Prototype implements
             String txt = $th.toString();
             if (!txt.equals(lastHeaders)) {
                 lastHeaders = txt;
-                console.log("We have headers: " + $th.size());
                 setCols(new ArrayList<GColumn>());
                 for (int i = 0; i < $th.size(); i++) {
                     cols.add(GQ.create(GColumn.class).setName($th.eq(i).text()));
