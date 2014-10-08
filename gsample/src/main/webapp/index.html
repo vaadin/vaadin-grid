@@ -238,6 +238,55 @@
       });
     </script>
 
+  <h3>9.- Multi selection</h3>
+  
+  <v-grid id="myMultiSelGrid" selectionMode="multi">
+  <table>
+    <head>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Value</th>
+        <th>Progress</th>
+      </tr>
+    </thead>
+    </head>
+  </table>
+  </v-grid>
+  <button id="myMultiSelButton">Random select</button>
+  Selected: <span id="myMultiSelLabel">-1</span>
+  
+  <script>
+      myMultiSelData = [ [ "Gridddd", 10000, 0.8 ], [ "Vaadin X", 999999, 0.01 ],
+          [ "designer", 43256, 0.01 ], [ "TK", 1967, 0.05 ] ];
+
+      var myMultiSelGrid = document.getElementById("myMultiSelGrid");
+      var myMultiSelButton = document.getElementById("myMultiSelButton");
+      var myMultiSelLabel = document.getElementById("myMultiSelLabel");
+
+      waitUntil(function() {
+        return myMultiSelGrid && myMultiSelGrid.dataSource;
+      }, function() {
+        myMultiSelGrid.rowCount(myMultiSelData.length);
+        myMultiSelGrid.dataSource(function(index, count) {
+          return myMultiSelData.slice(index, index + count);
+        });
+
+        myMultiSelGrid.addEventListener("select", function(event) {
+          //TODO: console.log("Selected row indices:", grid.selectedRows);
+          myMultiSelLabel.innerText = myMultiSelGrid.selectedRows();
+        });
+
+        myMultiSelButton.addEventListener("click", function(event) {
+          //TODO: mySelGrid.selectedRow = 3;
+          myMultiSelGrid.selectedRows().clear();
+          var a = Math.floor(Math.random() * myMultiSelData.length);
+          var b = Math.floor(Math.random() * myMultiSelData.length);
+          myMultiSelGrid.selectedRows().push(a, b);
+        });
+      });
+    </script>
+
   <h3>Below grids inserted programatically</h3>
 
 
