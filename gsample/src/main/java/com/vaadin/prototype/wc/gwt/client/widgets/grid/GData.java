@@ -24,23 +24,17 @@ public interface GData extends JsonBuilder {
             }
 
             Object content();
-
             GHeader setContent(Object content);
-
             Format format();
-
             GHeader setFormat(Format format);
-
             int colSpan();
-
             GHeader setColSpan(int colSpans);
         }
 
         String type();
         GColumn setType(String s);
-        
         JavaScriptObject renderer();
-
+        Object value();
         List<GHeader> headerData();
         GColumn setHeaderData(List<GHeader> headers);
     }

@@ -187,7 +187,17 @@ public class WCVGrid extends HTMLElement.Prototype implements
                         }) {
                     @Override
                     public String getValue(JsArrayMixed row) {
-                        return row.getString(idx);
+                        Object o = c.value();
+                        if (o instanceof JavaScriptObject) {
+                            o = JsUtils.runJavascriptFunction(
+                                            (JavaScriptObject) o, "call", o,
+                                            row, idx);
+                        } else if (o instanceof String) {
+                            o = JsUtils.prop(row, o);
+                        } else {
+                            o = row.getObject(idx);
+                        }
+                        return String.valueOf(o);
                     }
                 };
 
@@ -287,7 +297,6 @@ public class WCVGrid extends HTMLElement.Prototype implements
         }
         lastHeaders = txt;
 
-        console.log("We have headers: " + $theadRows);
         List<GColumn> colList = new ArrayList<GColumn>();
 
         Map<GColumn, List<GHeader>> contentsMap = new HashMap<GColumn, List<GHeader>>();

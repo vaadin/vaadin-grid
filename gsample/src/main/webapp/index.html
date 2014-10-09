@@ -28,7 +28,8 @@
   </div>
 
   <h3>1.- Simplest possible with inline data</h3>
-  <v-grid> <!-- TODO: extend Table prototype: requires a customised version of the WC.getWCConstructor hack -->
+  <v-grid>
+  <!-- TODO: extend Table prototype: requires a customised version of the WC.getWCConstructor hack -->
   <table>
     <thead>
       <tr>
@@ -128,7 +129,6 @@
       waitUntil(function() {
         return bigGrid && bigGrid.dataSource;
       }, function() {
-        // we should set data size before setting the data source (grid bug)
         bigGrid.rowCount(myBigData.length);
         bigGrid.dataSource(function(index, count, callback) {
           setTimeout(function() {
@@ -137,7 +137,7 @@
         });
       });
 
-      // myBigData is defined at the end of the page
+      // Note: myBigData is defined at the end of the page
     </script>
 
   <h3>5.- Simplest possible with data source and formatting</h3>
@@ -186,11 +186,80 @@
           }
         }
 
-        // TODO: columns[0] uses default renderer that just sets the value as innerText
+        // columns[0] uses default renderer that just sets the value as innerText
+        // TODO: myFormatGrid.columns[1].renderer = valueRenderer;
         myFormatGrid.columns(1).renderer = valueRenderer;
         myFormatGrid.columns(2).renderer = progressRenderer;
       });
     </script>
+
+  <h3>6.- Mapping data from a JS object into columns</h3>
+
+  <v-grid id="myMapGrid">
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Value</th>
+        <th>Progress</th>
+      </tr>
+    </thead>
+  </table>
+  </v-grid>
+  <script>
+      myMapData = [{ name: "Grid", value: 10000, progress: 0.8 },
+                   { name: "Vaadin X", value: 999999, progress: 0.01 }];
+
+      var myMapGrid = document.getElementById("myMapGrid");
+
+      waitUntil(function() {
+        return myMapGrid && myMapGrid.dataSource;
+      }, function() {
+        myMapGrid.rowCount(myMapData.length);
+        myMapGrid.dataSource(function(index, count) {
+          return myMapData.slice(index, index + count);
+        });
+
+        // Corresponds to GridColumn.getValue()
+        myMapGrid.columns(0).value = function(rowObject, columnIndex) {
+          return "> " + rowObject.name;
+        }
+
+        // Shorthand for using rowObject[value]
+        myMapGrid.columns(1).value = "value";
+        myMapGrid.columns(2).value = "progress";
+      });
+    </script>
+
+  <h3>7. Complex headers</h3>
+  <v-grid>
+  <table>
+    <thead>
+      <tr>
+        <th><button>I'm a button</button></th>
+        <th colspan="2">Status</th>
+      </tr>
+      <tr default>
+        <th>Name</th>
+        <th>Value</th>
+        <th>Progress</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Grid</td>
+        <td>10000</td>
+        <td>0.8</td>
+      </tr>
+      <tr>
+        <td>Vaadin X</td>
+        <td>999999</td>
+        <td>0.8</td>
+      </tr>
+    </tbody>
+  </table>
+  </v-grid>
+
 
   <h3>8.- Single selection</h3>
 
@@ -239,7 +308,7 @@
     </script>
 
   <h3>9.- Multi selection</h3>
-  
+
   <v-grid id="myMultiSelGrid" selectionMode="multi">
   <table>
     <head>
@@ -255,7 +324,7 @@
   </v-grid>
   <button id="myMultiSelButton">Random select</button>
   Selected: <span id="myMultiSelLabel">-1</span>
-  
+
   <script>
       myMultiSelData = [ [ "Gridddd", 10000, 0.8 ], [ "Vaadin X", 999999, 0.01 ],
           [ "designer", 43256, 0.01 ], [ "TK", 1967, 0.05 ] ];
@@ -286,9 +355,6 @@
         });
       });
     </script>
-
-  <h3>Below grids inserted programatically</h3>
-
 
   <script>
   myBigData =

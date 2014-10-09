@@ -1,9 +1,11 @@
 package com.vaadin.prototype.wc.gwt.client;
 
 import static com.google.gwt.query.client.GQuery.$;
+import static com.google.gwt.query.client.GQuery.console;
 import static com.google.gwt.query.client.GQuery.document;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.query.client.GQuery;
@@ -21,25 +23,31 @@ public class Demo implements EntryPoint {
 
     public void onModuleLoad() {
         $("body").css("font-family", "arial").css("font-size", "12px");
+
         demoHeikki();
 
         WC.register(WCVGrid.TAG, WCVGrid.class);
         WC.register(WCVProgress.TAG, WCVProgress.class);
         WC.register(WCVSlider.TAG, WCVSlider.class);
-
     }
 
     void demoHeikki() {
-        GQuery gridElement = $("<v-grid></v-grid>");
-        gridElement
-                .append("<thead><tr><th><button>I'm a button</button></th><th colspan='2'>I'm spanned</th></tr><tr><th colspan='2'>Double span</th><th>Whee</th></tr><tr default><th>Name</th><th>Value</th><th>Progress</th></tr><tr><th>1</th><th>2</th><th>3</th></tr></thead><tbody id='append-test-body'><tr><td>Grid</td><td>10000</td><td>0.8</td></tr><tr><td>Vaadin X </td><td>999999</td><td>0.8</td></tr></tbody></v-grid>");
+        GQuery $grid = $("<v-grid></v-grid>");
+        $grid
+                .append("<table><thead>"
+                        + "<tr><th><button>I'm a button</button></th><th colspan='2'>I'm spanned</th></tr>"
+                        + "<tr><th colspan='2'>Double span</th><th>Whee</th></tr>"
+                        + "<tr default><th>Name</th><th>Value</th><th>Progress</th></tr>"
+                        + "<tr><th>1</th><th>2</th><th>3</th></tr></thead>"
+                        + "<tbody id='append-test-body'>"
+                        + "<tr><td>Grid</td><td>10000</td><td>0.8</td></tr>"
+                        + "<tr><td>Vaadin X </td><td>999999</td><td>0.8</td></tr>"
+                        + "</tbody></table>");
 
-        WCVGrid grid = (WCVGrid) (HTMLElement) gridElement.appendTo(document)
-                .get(0);
+        $(document).append("<h3>Below grids inserted programatically</h3>").append($grid);
 
-        Button appendButton = new Button("append data", new ClickHandler() {
+        Button button = new Button("append data", new ClickHandler() {
             int value = 0;
-
             @Override
             public void onClick(ClickEvent event) {
                 GQuery row = $("<tr></tr>");
@@ -49,7 +57,8 @@ public class Demo implements EntryPoint {
                 row.appendTo($("#append-test-body"));
             }
         });
-        RootPanel.get().add(appendButton);
+
+        RootPanel.get().add(button);
     }
 
 }
