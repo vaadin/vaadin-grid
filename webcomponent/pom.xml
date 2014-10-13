@@ -49,15 +49,9 @@
                         <arg value="src/main/java/com/vaadin/prototype/wc/gwt/public/components"/>
                         <arg value="src/main/java/com/vaadin/prototype/wc/"/>
                       </exec>
-<!--
-                      <exec dir="./src/main/webapp/components" executable="perl">
-                        <arg line="../../scripts/generateStyles.pl" />
+                      <exec dir="./src/main/java/com/vaadin/prototype/wc/gwt/client/html/" executable="perl">
+                        <arg line="../../../../../../../../scripts/generateStyles.pl" />
                       </exec>
-                      <exec dir="./src/main/webapp/components" executable="sh">
-                        <arg value="-c"/>
-                        <arg value="mv *.java ../../java/com/vaadin/prototype/wc/gwt/client/html/" />
-                      </exec>
--->
                     </tasks>
                   </configuration>
                   <phase>generate-sources</phase>
@@ -122,6 +116,7 @@
             <version>${jetty.version}</version>
             <scope>compile</scope>
         </dependency>
+-->
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
@@ -140,12 +135,10 @@
             <version>${jetty.version}</version>
             <scope>compile</scope>
         </dependency>
--->
         <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-dev</artifactId>
-        <!-- <version>${gwtversion}</version> -->
-      <version>2.7.0-20141009.090548-9</version>
+            <version>${gwtversion}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
