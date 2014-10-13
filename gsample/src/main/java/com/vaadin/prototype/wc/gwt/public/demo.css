@@ -1,6 +1,10 @@
    v-slider::shadow div[tabindex]:focus, .v-grid *[tabindex]:focus {
      outline: 0;
    }
+   body {
+     font-family: arial;
+     font-size: 12px;
+   }
    /* TODO: Hack to add v-slider to body in demos */
    body > v-slider::shadow div:not(.valo) > .v-slider > .v-slider-base {
      position: absolute;

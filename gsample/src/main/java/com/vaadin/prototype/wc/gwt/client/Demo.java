@@ -22,8 +22,6 @@ import com.vaadin.prototype.wc.gwt.client.widgets.WCVSlider;
 public class Demo implements EntryPoint {
 
     public void onModuleLoad() {
-        $("body").css("font-family", "arial").css("font-size", "12px");
-
         demoHeikki();
 
         WC.register(WCVGrid.TAG, WCVGrid.class);
