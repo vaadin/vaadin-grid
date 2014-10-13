@@ -1,0 +1,21 @@
+package com.example.webcomponentwrapper.element;
+
+public class TextNode extends NodeImpl {
+
+    private String text;
+
+    public TextNode(String text) {
+        this.text = text;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    @Override
+    public String asHtml() {
+        // TODO html encode?
+        return text;
+    }
+
+}

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ivysettings>
+	<settings defaultResolver="default" />
+	<resolvers>
+		<chain name="default">
+			<!-- Public Maven repository -->
+			<ibiblio name="public" m2compatible="true" />
+
+			<!-- Vaadin Add-on repository -->
+			<ibiblio name="vaadin-addons" usepoms="true" m2compatible="true"
+				root="http://maven.vaadin.com/vaadin-addons" />
+
+			<!-- Vaadin snapshots repository -->
+			<ibiblio name="vaadin-snapshots" usepoms="true" m2compatible="true"
+				root="https://oss.sonatype.org/content/repositories/vaadin-snapshots" />
+			<!-- Repository used for Vaadin modified smartsprites library -->
+			<dual name="custom-smartsprites">
+				<filesystem name="smartsprites-ivy">
+					<ivy pattern="${basedir}/ivymodule/[module]-ivy-[revision].xml" />
+				</filesystem>
+				<url name="smartsprites-artifact">
+					<artifact
+						pattern="http://dev.vaadin.com/svn/versions/6.8/build/smartsprites/lib/[artifact](-[revision]).[ext]" />
+				</url>
+			</dual>
+		</chain>
+	</resolvers>
+	<modules>
+		<!-- Vaadin patched SmartSprites -->
+		<module organisation="com.carrotsearch" name="smartsprites"
+			revision="0.2.3-itmill" resolver="custom-smartsprites" />
+	</modules>
+
+
+</ivysettings>
