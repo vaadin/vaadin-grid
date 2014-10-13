@@ -11,9 +11,9 @@ import com.google.gwt.user.client.EventListener;
 import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface CoreDropdownOverlay extends HTMLElement, CoreOverlay {
-
+public interface CoreDropdownOverlay extends HTMLElement , CoreOverlay {
   Class<?>[] dependencies = new Class<?>[]{CoreOverlay.class};
+
 
   /**
    * The `relatedTarget` is an element used to position the overlay. It should have
@@ -32,7 +32,6 @@ public interface CoreDropdownOverlay extends HTMLElement, CoreOverlay {
    *
    * @attribute halign
    * @type 'left' | 'right'
-   * @default 'auto'
    */
   @JsProperty CoreDropdownOverlay halign(JavaScriptObject val);
   @JsProperty JavaScriptObject halign();
@@ -44,7 +43,6 @@ public interface CoreDropdownOverlay extends HTMLElement, CoreOverlay {
    *
    * @attribute valign
    * @type 'top' | 'bottom'
-   * @default 'top'
    */
   @JsProperty CoreDropdownOverlay valign(JavaScriptObject val);
   @JsProperty JavaScriptObject valign();
@@ -56,8 +54,8 @@ public interface CoreDropdownOverlay extends HTMLElement, CoreOverlay {
    *
    * @attribute margin
    * @type number
-   * @default 0
    */
   @JsProperty CoreDropdownOverlay margin(double val);
   @JsProperty double margin();
+
 }

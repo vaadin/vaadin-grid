@@ -1,5 +1,4 @@
 package com.vaadin.prototype.wc.gwt.client.components;
-
 public interface Icon {
   public static final String AV_CLOSED_CAPTION = "av:closed-caption";
   public static final String AV_FAST_FORWARD = "av:fast-forward";

@@ -11,8 +11,7 @@ import com.google.gwt.user.client.EventListener;
 import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface CoreDrawerPanel extends HTMLElement {
-
+public interface CoreDrawerPanel extends HTMLElement  {
   Class<?>[] dependencies = new Class<?>[]{CoreMediaQuery.class, CoreSelector.class};
 
   /**
@@ -24,12 +23,12 @@ public interface CoreDrawerPanel extends HTMLElement {
    */
   void addEventListener(String event, EventListener listener);
 
+
   /**
    * Max-width when the panel changes to narrow layout.
    *
    * @attribute responsiveWidth
    * @type string
-   * @default '640px'
    */
   @JsProperty CoreDrawerPanel responsiveWidth(String val);
   @JsProperty String responsiveWidth();
@@ -40,7 +39,6 @@ public interface CoreDrawerPanel extends HTMLElement {
    *
    * @attribute selected
    * @type string
-   * @default null
    */
   @JsProperty CoreDrawerPanel selected(String val);
   @JsProperty String selected();
@@ -51,7 +49,6 @@ public interface CoreDrawerPanel extends HTMLElement {
    *
    * @attribute defaultSelected
    * @type string
-   * @default 'main'
    */
   @JsProperty CoreDrawerPanel defaultSelected(String val);
   @JsProperty String defaultSelected();
@@ -62,7 +59,6 @@ public interface CoreDrawerPanel extends HTMLElement {
    *
    * @attribute narrow
    * @type boolean
-   * @default false
    */
   @JsProperty CoreDrawerPanel narrow(boolean val);
   @JsProperty boolean narrow();
@@ -84,4 +80,5 @@ public interface CoreDrawerPanel extends HTMLElement {
    * @method closeDrawer
    */
   void closeDrawer();
+
 }

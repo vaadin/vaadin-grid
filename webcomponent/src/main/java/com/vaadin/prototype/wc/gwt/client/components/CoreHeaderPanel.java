@@ -11,9 +11,9 @@ import com.google.gwt.user.client.EventListener;
 import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface CoreHeaderPanel extends HTMLElement {
-
+public interface CoreHeaderPanel extends HTMLElement  {
   Class<?>[] dependencies = new Class<?>[]{};
+
 
   /**
    * Controls header and scrolling behavior. Options are
@@ -58,7 +58,6 @@ public interface CoreHeaderPanel extends HTMLElement {
    *
    * @attribute mode
    * @type string
-   * @default ''
    */
   @JsProperty CoreHeaderPanel mode(String val);
   @JsProperty String mode();
@@ -69,7 +68,6 @@ public interface CoreHeaderPanel extends HTMLElement {
    *
    * @attribute tallClass
    * @type string
-   * @default 'tall'
    */
   @JsProperty CoreHeaderPanel tallClass(String val);
   @JsProperty String tallClass();
@@ -79,8 +77,8 @@ public interface CoreHeaderPanel extends HTMLElement {
    *
    * @attribute shadow
    * @type boolean
-   * @default false
    */
   @JsProperty CoreHeaderPanel shadow(boolean val);
   @JsProperty boolean shadow();
+
 }

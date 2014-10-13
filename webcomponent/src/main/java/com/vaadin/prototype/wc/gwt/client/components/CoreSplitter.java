@@ -11,16 +11,15 @@ import com.google.gwt.user.client.EventListener;
 import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface CoreSplitter extends HTMLElement {
-
+public interface CoreSplitter extends HTMLElement  {
   Class<?>[] dependencies = new Class<?>[]{};
+
 
   /**
    * Possible values are `left`, `right`, `up` and `down`.
    *
    * @attribute direction
    * @type string
-   * @default 'left'
    */
   @JsProperty CoreSplitter direction(String val);
   @JsProperty String direction();
@@ -31,7 +30,6 @@ public interface CoreSplitter extends HTMLElement {
    *
    * @attribute minSize
    * @type string
-   * @default ''
    */
   @JsProperty CoreSplitter minSize(String val);
   @JsProperty String minSize();
@@ -41,7 +39,6 @@ public interface CoreSplitter extends HTMLElement {
    *
    * @attribute locked
    * @type boolean
-   * @default false
    */
   @JsProperty CoreSplitter locked(boolean val);
   @JsProperty boolean locked();
@@ -53,8 +50,8 @@ public interface CoreSplitter extends HTMLElement {
    *
    * @attribute allowOverflow
    * @type boolean
-   * @default false
    */
   @JsProperty CoreSplitter allowOverflow(boolean val);
   @JsProperty boolean allowOverflow();
+
 }

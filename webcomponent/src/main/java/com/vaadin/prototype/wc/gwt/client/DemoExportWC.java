@@ -6,12 +6,14 @@ import static com.google.gwt.query.client.GQuery.console;
 import java.util.Arrays;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.vaadin.prototype.wc.gwt.client.components.PaperToast;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLElement;
 import com.vaadin.prototype.wc.gwt.client.widgets.WCButton;
@@ -24,18 +26,28 @@ import com.vaadin.prototype.wc.gwt.client.widgets.WCVSlider;
  */
 public class DemoExportWC implements EntryPoint {
 
-    Panel gwtPanel;
+    private Panel gwtPanel;
+    private PaperToast toast;
+    
     public void onModuleLoad() {
+        
+//        loadMainPageStyle();
+
         // Use sexy gQuery for finding any widget or element in the dom
         // so as we can have decoupled views.
-        gwtPanel = $("div").widgets(FlowPanel.class).get(0);
-        if (gwtPanel == null) {
-            console.log("Seems that DemoWrap was not run.");
-            return;
+        if ($("div").widgets(FlowPanel.class).isEmpty()) {
+            gwtPanel = RootPanel.get();
+        } else {
+            gwtPanel = $("div").widgets(FlowPanel.class).get(0);
         }
-
-        final PaperToast toast = (PaperToast)$("paper-toast").get(0);
-
+        
+        if ($("paper-toast").isEmpty()) {
+            toast =  WC.create(PaperToast.class);
+            WC.body.appendChild(toast);
+        } else {
+            toast = (PaperToast)$("paper-toast").get(0);
+        }
+        
         // Register web components so as we can use those tags from html
         WC.register(WCButton.TAG, WCButton.class);
         WC.register(WCVSlider.TAG, WCVSlider.class);
@@ -43,6 +55,7 @@ public class DemoExportWC implements EntryPoint {
         WC.register(WCDatepicker.TAG, WCDatepicker.class);
 
         gwtPanel.add(new Label("HTML button exported as <x-button> web component:"));
+        console.log(gwtPanel);
         // We can create elements adding the tag with gQuery or Js
         final GQuery g = $("<x-button message='WebComponents Rock'/>")
                 .appendTo($(gwtPanel));
@@ -57,9 +70,11 @@ public class DemoExportWC implements EntryPoint {
         });
         
         gwtPanel.add(new Label("Vaadin widget exported as <v-slider> web component, note that each one has a different theme and is in a different shadow root."));
+        FlowPanel p = new FlowPanel();
+        gwtPanel.add(p);
         for (String theme : Arrays.asList("valo", "reindeer", "runo", "chameleon")) {
             final WCVSlider sld = (WCVSlider)(HTMLElement)
-                    $("<v-slider style='display:inline-block; margin-right:15px' min=0 max=100 value=30 theme='" + theme + "' />").appendTo($(gwtPanel)).get(0);
+                 $("<v-slider style='display:inline-block; margin-right:15px' min=0 max=100 value=30 theme='" + theme + "' />").appendTo($(p)).get(0);
                 sld.addEventListener("change", new EventListener() {
                     @Override
                     public void onBrowserEvent(Event event) {
@@ -87,5 +102,13 @@ public class DemoExportWC implements EntryPoint {
                     }
                 });        
         }
+    }
+    
+    private void loadMainPageStyle() {
+      HTMLElement style = WC.create("style");
+      style.setAttribute("language", "text/css");
+      String url = GWT.getModuleBaseForStaticFiles() + "gwt/clean/clean.css";
+      style.innerText("@import url('" + url + "')");
+      WC.head.appendChild(style);
     }
 }

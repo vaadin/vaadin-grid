@@ -11,8 +11,7 @@ import com.google.gwt.user.client.EventListener;
 import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface CoreScrollHeaderPanel extends HTMLElement {
-
+public interface CoreScrollHeaderPanel extends HTMLElement  {
   Class<?>[] dependencies = new Class<?>[]{};
 
   /**
@@ -24,13 +23,13 @@ public interface CoreScrollHeaderPanel extends HTMLElement {
    */
   void addEventListener(String event, EventListener listener);
 
+
   /**
    * If true, the header's height will condense to `condensedHeaderHeight`
    * as the user scrolls down from the top of the content area.
    *
    * @attribute condenses
    * @type boolean
-   * @default false
    */
   @JsProperty CoreScrollHeaderPanel condenses(boolean val);
   @JsProperty boolean condenses();
@@ -40,7 +39,6 @@ public interface CoreScrollHeaderPanel extends HTMLElement {
    *
    * @attribute noDissolve
    * @type boolean
-   * @default false
    */
   @JsProperty CoreScrollHeaderPanel noDissolve(boolean val);
   @JsProperty boolean noDissolve();
@@ -50,7 +48,6 @@ public interface CoreScrollHeaderPanel extends HTMLElement {
    *
    * @attribute noReveal
    * @type boolean
-   * @default false
    */
   @JsProperty CoreScrollHeaderPanel noReveal(boolean val);
   @JsProperty boolean noReveal();
@@ -60,7 +57,6 @@ public interface CoreScrollHeaderPanel extends HTMLElement {
    *
    * @attribute fixed
    * @type boolean
-   * @default false
    */
   @JsProperty CoreScrollHeaderPanel fixed(boolean val);
   @JsProperty boolean fixed();
@@ -70,7 +66,6 @@ public interface CoreScrollHeaderPanel extends HTMLElement {
    *
    * @attribute keepCondensedHeader
    * @type boolean
-   * @default false
    */
   @JsProperty CoreScrollHeaderPanel keepCondensedHeader(boolean val);
   @JsProperty boolean keepCondensedHeader();
@@ -98,4 +93,5 @@ public interface CoreScrollHeaderPanel extends HTMLElement {
    */
   @JsProperty CoreScrollHeaderPanel condensedHeaderHeight(double val);
   @JsProperty double condensedHeaderHeight();
+
 }

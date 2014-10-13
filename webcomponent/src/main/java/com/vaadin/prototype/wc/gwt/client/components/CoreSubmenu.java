@@ -11,7 +11,8 @@ import com.google.gwt.user.client.EventListener;
 import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface CoreSubmenu extends HTMLElement, CoreItem {
-
+public interface CoreSubmenu extends HTMLElement , CoreItem {
   Class<?>[] dependencies = new Class<?>[]{CoreItem.class, CoreMenu.class, CoreCollapse.class};
+
+
 }

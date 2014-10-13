@@ -11,9 +11,9 @@ import com.google.gwt.user.client.EventListener;
 import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface CoreTooltip extends HTMLElement {
-
+public interface CoreTooltip extends HTMLElement  {
   Class<?>[] dependencies = new Class<?>[]{};
+
 
   /**
    * A simple string label for the tooltip to display. To display a rich
@@ -22,7 +22,6 @@ public interface CoreTooltip extends HTMLElement {
    *
    * @attribute label
    * @type string
-   * @default null
    */
   @JsProperty CoreTooltip label(String val);
   @JsProperty String label();
@@ -32,7 +31,6 @@ public interface CoreTooltip extends HTMLElement {
    *
    * @attribute show
    * @type boolean
-   * @default false
    */
   @JsProperty CoreTooltip show(boolean val);
   @JsProperty boolean show();
@@ -42,7 +40,6 @@ public interface CoreTooltip extends HTMLElement {
    *
    * @attribute position
    * @type string
-   * @default 'bottom'
    */
   @JsProperty CoreTooltip position(String val);
   @JsProperty String position();
@@ -52,7 +49,6 @@ public interface CoreTooltip extends HTMLElement {
    *
    * @attribute noarrow
    * @type boolean
-   * @default false
    */
   @JsProperty CoreTooltip noarrow(boolean val);
   @JsProperty boolean noarrow();
@@ -63,8 +59,8 @@ public interface CoreTooltip extends HTMLElement {
    *
    * @attribute tipAttribute
    * @type string
-   * @default 'tip'
    */
   @JsProperty CoreTooltip tipAttribute(String val);
   @JsProperty String tipAttribute();
+
 }

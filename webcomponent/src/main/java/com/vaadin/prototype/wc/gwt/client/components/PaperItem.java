@@ -11,16 +11,15 @@ import com.google.gwt.user.client.EventListener;
 import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface PaperItem extends HTMLElement {
-
+public interface PaperItem extends HTMLElement  {
   Class<?>[] dependencies = new Class<?>[]{};
+
 
   /**
    * The label for the item.
    *
    * @attribute label
    * @type string
-   * @default ''
    */
   @JsProperty PaperItem label(String val);
   @JsProperty String label();
@@ -31,7 +30,6 @@ public interface PaperItem extends HTMLElement {
    *
    * @attribute iconSrc
    * @type string
-   * @default ''
    */
   @JsProperty PaperItem iconSrc(String val);
   @JsProperty String iconSrc();
@@ -44,8 +42,8 @@ public interface PaperItem extends HTMLElement {
    *
    * @attribute icon
    * @type string
-   * @default ''
    */
   @JsProperty PaperItem icon(String val);
   @JsProperty String icon();
+
 }

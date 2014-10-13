@@ -11,16 +11,15 @@ import com.google.gwt.user.client.EventListener;
 import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface CoreSelection extends HTMLElement {
-
+public interface CoreSelection extends HTMLElement  {
   Class<?>[] dependencies = new Class<?>[]{};
+
 
   /**
    * If true, multiple selections are allowed.
    *
    * @attribute multi
    * @type boolean
-   * @default false
    */
   @JsProperty CoreSelection multi(boolean val);
   @JsProperty boolean multi();
@@ -57,4 +56,5 @@ public interface CoreSelection extends HTMLElement {
    * @param {any} item: The item to toggle.
    */
   void toggle(JavaScriptObject arg0);
+
 }

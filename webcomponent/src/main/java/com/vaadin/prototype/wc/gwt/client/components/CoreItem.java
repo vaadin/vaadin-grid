@@ -11,16 +11,15 @@ import com.google.gwt.user.client.EventListener;
 import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface CoreItem extends HTMLElement {
-
+public interface CoreItem extends HTMLElement  {
   Class<?>[] dependencies = new Class<?>[]{CoreIcon.class};
+
 
   /**
    * The URL of an image for the icon.
    *
    * @attribute src
    * @type string
-   * @default ''
    */
   @JsProperty CoreItem src(String val);
   @JsProperty String src();
@@ -30,7 +29,6 @@ public interface CoreItem extends HTMLElement {
    *
    * @attribute icon
    * @type string
-   * @default ''
    */
   @JsProperty CoreItem icon(String val);
   @JsProperty String icon();
@@ -40,8 +38,8 @@ public interface CoreItem extends HTMLElement {
    *
    * @attribute label
    * @type string
-   * @default ''
    */
   @JsProperty CoreItem label(String val);
   @JsProperty String label();
+
 }

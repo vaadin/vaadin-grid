@@ -10,7 +10,8 @@ import com.google.gwt.dom.client.HeadElement;
 import com.google.gwt.user.client.EventListener;
 import com.vaadin.prototype.wc.gwt.client.html.*;
 
-/**
+@JsType(prototype = "HTMLElement", isNative = true)
+public interface CoreMediaQuery extends HTMLElement /**
  * @group Polymer Core Elements
  * @element core-media-query
  * @status beta
@@ -28,9 +29,7 @@ import com.vaadin.prototype.wc.gwt.client.html.*;
  *      <core-media-query query="max-width: 640px" queryMatches="{{phoneScreen}}"></core-media-query>
  *
  */
-@JsType(prototype = "HTMLElement", isNative = true)
-public interface CoreMediaQuery extends HTMLElement {
-
+ {
   Class<?>[] dependencies = new Class<?>[]{};
 
   /**
@@ -40,12 +39,12 @@ public interface CoreMediaQuery extends HTMLElement {
    */
   void addEventListener(String event, EventListener listener);
 
+
   /**
    * The Boolean return value of the media query
    *
    * @attribute queryMatches
    * @type Boolean
-   * @default false
    */
   @JsProperty CoreMediaQuery queryMatches(boolean val);
   @JsProperty boolean queryMatches();
@@ -55,8 +54,8 @@ public interface CoreMediaQuery extends HTMLElement {
    *
    * @attribute query
    * @type string
-   * @default ''
    */
   @JsProperty CoreMediaQuery query(String val);
   @JsProperty String query();
+
 }

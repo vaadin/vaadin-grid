@@ -11,9 +11,9 @@ import com.google.gwt.user.client.EventListener;
 import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface PaperInput extends HTMLElement, CoreInput {
-
+public interface PaperInput extends HTMLElement , CoreInput {
   Class<?>[] dependencies = new Class<?>[]{};
+
 
   /**
    * The label for this input. It normally appears as grey text inside
@@ -21,7 +21,6 @@ public interface PaperInput extends HTMLElement, CoreInput {
    *
    * @attribute label
    * @type string
-   * @default ''
    */
   @JsProperty PaperInput label(String val);
   @JsProperty String label();
@@ -32,7 +31,6 @@ public interface PaperInput extends HTMLElement, CoreInput {
    *
    * @attribute floatingLabel
    * @type boolean
-   * @default false
    */
   @JsProperty PaperInput floatingLabel(boolean val);
   @JsProperty boolean floatingLabel();
@@ -45,8 +43,8 @@ public interface PaperInput extends HTMLElement, CoreInput {
    *
    * @attribute maxRows
    * @type number
-   * @default 0
    */
   @JsProperty PaperInput maxRows(double val);
   @JsProperty double maxRows();
+
 }

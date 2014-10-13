@@ -380,7 +380,7 @@ public class DemoWrapWC implements EntryPoint {
         gwtPanel.add(b);
         b.addChangeHandler(new EventListener() {
             public void onBrowserEvent(Event event) {
-                toast.text("Toggled, enabled=" + b.isChecked()).show();
+                toast.text("Toggled, enabled=" + b.checked()).show();
             }
         });
     }

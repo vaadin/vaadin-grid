@@ -13,6 +13,7 @@
       <maven.compiler.target>1.7</maven.compiler.target>
       <gQueryVersion>1.4.3-SNAPSHOT</gQueryVersion>
       <gwtversion>2.7.0-SNAPSHOT</gwtversion>
+      <gwtmaven>${gwtversion}</gwtmaven>
       <gwtmaven>2.7.0-SNAPSHOT</gwtmaven>
       <gwt.outputstyle>PRETTY</gwt.outputstyle>
       <maven.test.skip>true</maven.test.skip>
@@ -43,17 +44,12 @@
                   <id>generate-wrappers</id>
                   <configuration>
                     <tasks>
-                      <exec dir="./src/main/webapp/components" executable="sh">
-                        <arg value="-c"/>
-                        <arg value="rm -f *.java" />
+                      <exec dir="." executable="perl">
+                        <arg value="src/main/scripts/generateInterfaces.pl"/>
+                        <arg value="src/main/java/com/vaadin/prototype/wc/gwt/public/components"/>
+                        <arg value="src/main/java/com/vaadin/prototype/wc/"/>
                       </exec>
-                      <exec dir="./src/main/webapp/components" executable="perl">
-                        <arg line="../../scripts/generateInterfaces.pl" />
-                      </exec>
-                      <exec dir="./src/main/webapp/components" executable="sh">
-                        <arg value="-c"/>
-                        <arg value="mv *.java ../../java/com/vaadin/prototype/wc/gwt/client/components/" />
-                      </exec>
+<!--
                       <exec dir="./src/main/webapp/components" executable="perl">
                         <arg line="../../scripts/generateStyles.pl" />
                       </exec>
@@ -61,6 +57,7 @@
                         <arg value="-c"/>
                         <arg value="mv *.java ../../java/com/vaadin/prototype/wc/gwt/client/html/" />
                       </exec>
+-->
                     </tasks>
                   </configuration>
                   <phase>generate-sources</phase>
@@ -87,7 +84,7 @@
          <id>google-snapshots</id>
          <url>http://oss.sonatype.org/content/repositories/google-snapshots</url>
          <snapshots><enabled>true</enabled></snapshots>
-         <releases><enabled>false</enabled></releases>
+         <releases><enabled>true</enabled></releases>
        </repository>
        <repository>
          <id>vaadin-snapshots</id>
@@ -104,6 +101,18 @@
          <releases><enabled>false</enabled></releases>
        </pluginRepository>
     </pluginRepositories>
+
+  <dependencyManagement>
+    <dependencies>
+      <!-- ensure all GWT deps use the same version (unless overridden) -->
+      <dependency>
+        <groupId>com.google.gwt</groupId>
+        <artifactId>gwt</artifactId>
+        <version>${gwtversion}</version>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
     <dependencies>
 <!--
@@ -135,7 +144,8 @@
         <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-dev</artifactId>
-            <version>${gwtversion}</version>
+        <!-- <version>${gwtversion}</version> -->
+      <version>2.7.0-20141009.090548-9</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -147,7 +157,7 @@
         <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-user</artifactId>
-            <version>${gwtversion}</version>
+        <version>${gwtversion}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -159,14 +169,14 @@
         <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-elemental</artifactId>
-            <version>${gwtversion}</version>
+        <version>${gwtversion}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-servlet</artifactId>
-            <version>${gwtversion}</version>
-            <scope>provided</scope>
+        <version>${gwtversion}</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>com.googlecode.gwtquery</groupId>
@@ -175,6 +185,7 @@
             <scope>provided</scope>
         </dependency>
         <!-- GWT 2.3.0 depends on these -->
+<!--
         <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
@@ -188,6 +199,7 @@
             <classifier>sources</classifier>
             <scope>provided</scope>
         </dependency>
+-->
         <dependency>
           <groupId>com.vaadin</groupId>
           <artifactId>vaadin-shared</artifactId>

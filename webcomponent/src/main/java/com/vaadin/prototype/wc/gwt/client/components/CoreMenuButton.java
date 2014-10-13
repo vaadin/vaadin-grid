@@ -11,9 +11,9 @@ import com.google.gwt.user.client.EventListener;
 import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface CoreMenuButton extends HTMLElement {
-
+public interface CoreMenuButton extends HTMLElement  {
   Class<?>[] dependencies = new Class<?>[]{};
+
 
   /**
    * The icon to display.
@@ -69,4 +69,5 @@ public interface CoreMenuButton extends HTMLElement {
    * @method toggle
    */
   void toggle();
+
 }

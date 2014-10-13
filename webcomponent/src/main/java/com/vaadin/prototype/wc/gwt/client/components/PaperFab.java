@@ -11,17 +11,17 @@ import com.google.gwt.user.client.EventListener;
 import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface PaperFab extends HTMLElement, PaperIconButton {
-
+public interface PaperFab extends HTMLElement , PaperIconButton {
   Class<?>[] dependencies = new Class<?>[]{};
+
 
   /**
    * See [`<paper-button>`](../paper-button).
    *
    * @attribute raisedButton
    * @type boolean
-   * @default true
    */
   @JsProperty PaperFab raisedButton(boolean val);
   @JsProperty boolean raisedButton();
+
 }

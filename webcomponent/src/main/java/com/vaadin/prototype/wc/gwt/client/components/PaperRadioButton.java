@@ -11,8 +11,7 @@ import com.google.gwt.user.client.EventListener;
 import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface PaperRadioButton extends HTMLElement {
-
+public interface PaperRadioButton extends HTMLElement  {
   Class<?>[] dependencies = new Class<?>[]{PaperRipple.class};
 
   /**
@@ -22,12 +21,12 @@ public interface PaperRadioButton extends HTMLElement {
    */
   void addEventListener(String event, EventListener listener);
 
+
   /**
    * Gets or sets the state, `true` is checked and `false` is unchecked.
    *
    * @attribute checked
    * @type boolean
-   * @default false
    */
   @JsProperty PaperRadioButton checked(boolean val);
   @JsProperty boolean checked();
@@ -37,7 +36,6 @@ public interface PaperRadioButton extends HTMLElement {
    *
    * @attribute label
    * @type string
-   * @default ''
    */
   @JsProperty PaperRadioButton label(String val);
   @JsProperty String label();
@@ -49,7 +47,6 @@ public interface PaperRadioButton extends HTMLElement {
    *
    * @attribute toggles
    * @type boolean
-   * @default false
    */
   @JsProperty PaperRadioButton toggles(boolean val);
   @JsProperty boolean toggles();
@@ -59,8 +56,8 @@ public interface PaperRadioButton extends HTMLElement {
    *
    * @attribute disabled
    * @type boolean
-   * @default false
    */
   @JsProperty PaperRadioButton disabled(boolean val);
   @JsProperty boolean disabled();
+
 }

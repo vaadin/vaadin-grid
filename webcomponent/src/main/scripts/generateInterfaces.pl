@@ -9,14 +9,21 @@
 # @author Manolo Carrasco.
 #
 use File::Basename;
+use File::Path qw/make_path/;
 use strict;
 
-my $package = "package com.vaadin.prototype.wc.gwt.client.components;\n";
+my $ns = "com.vaadin.prototype.wc";
+
+my $basedir = shift || ".";
+my $bdir= shift || ".";
+
+print "B $bdir BS $basedir\n";
 
 #import com.google.gwt.core.client.js.JsArray;
 #import com.google.gwt.core.client.js.JsObject;
 
-my $head = "$package
+my $interface_tpl = 'package __PKG__;
+
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.js.JsProperty;
 import com.google.gwt.core.client.js.JsType;
@@ -25,9 +32,122 @@ import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.HeadElement;
 import com.google.gwt.user.client.EventListener;
-import com.vaadin.prototype.wc.gwt.client.html.*;
+import __NS__.gwt.client.html.*;
 
-";
+@JsType(prototype = "HTMLElement", isNative = true)
+public interface __CLZ__ extends HTMLElement __INTERFACES__ {
+  Class<?>[] dependencies = new Class<?>[]{__LOAD__};
+__EVENT__
+__CONTENT__
+}
+';
+
+my $state_tpl = 'package __PKG__;
+
+import com.vaadin.shared.AbstractFieldState;
+
+@SuppressWarnings("serial")
+public class __CLZ__State extends __EXTENDS__ {
+__CONTENT__
+}
+';
+
+my $connector_tpl = 'package __PKG__;
+
+import com.google.gwt.query.client.IsProperties;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.EventListener;
+import com.vaadin.client.communication.StateChangeEvent;
+import com.vaadin.client.ui.AbstractComponentConnector;
+import __NS__.gwt.client.components.__CLZ__Widget;
+import __NS__.server.ui.__CLZ__Component;
+import com.vaadin.shared.ui.Connect;
+
+
+@SuppressWarnings("serial")
+@Connect(__CLZ__Component.class)
+public class __CLZ__Connector extends __EXTENDS__ {
+
+    public IsProperties stateProperties() {
+__SET_STATES__
+      
+      IsProperties p = super.stateProperties();
+__SET_PROPS__
+      return p;
+    }
+
+    @Override
+    public __CLZ__Widget getWidget() {
+        return (__CLZ__Widget) super.getWidget();
+    }
+
+    @Override
+    public void onStateChanged(StateChangeEvent stateChangeEvent) {
+        super.onStateChanged(stateChangeEvent);
+__SET_WIDGET__
+    }
+
+    @Override
+    public __CLZ__State getState() {
+        return (__CLZ__State)super.getState();
+    }
+}
+';
+
+my $widget_tpl = 'package __PKG__;
+
+import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.js.JsProperty;
+import com.google.gwt.core.client.js.JsType;
+import com.google.gwt.core.client.JsArray;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.user.client.ui.Widget;
+import __NS__.gwt.client.*;
+
+public class __CLZ__Widget extends __EXTENDS__  {
+  
+    protected String[] events() {
+      return new String[]{__EVENTS__};
+    }
+    
+    public __CLZ__Widget() {
+      super(WC.create(__CLZ__.class));
+    }
+    
+    public __CLZ__Widget(__CLZ__ element) {
+      super(element);
+    }
+    
+    protected __CLZ__ element() {
+      return (__CLZ__)super.getElement();
+    }
+
+__CONTENT__
+}
+';
+
+my $component_tpl = 'package __PKG__;
+
+import __NS__.gwt.client.ui.__CLZ__State;
+import com.vaadin.ui.AbstractComponent;
+
+@SuppressWarnings("serial")
+public class __CLZ__Component extends __EXTENDS__ {
+    protected String[] events() {
+      return concat(super.events(), new String[]{__EVENTS__});
+    }
+  
+    protected String[] attributes() {
+      return concat(super.attributes(),new String[]{__ATTRS__});
+    }
+  
+    @Override
+    protected __CLZ__State getState() {
+        return (__CLZ__State) super.getState();
+    }
+
+__CONTENT__
+}';
 
 sub getJavaType {
   my $a = shift;
@@ -38,6 +158,23 @@ sub getJavaType {
   return "double" if ($a =~ /number/i );
   #return "JsObject" if ($a =~ /object/i );
   return "JavaScriptObject";
+}
+
+sub getDefault {
+  my $t = shift;
+  my $d = shift;
+  if ($t eq 'String') {
+    $d =~ s/[\"\']+//g;
+    return "\"$d\"";
+  }
+  if ($t eq 'boolean') {
+    return ($d ne '') ? "$d" : "false";
+  }
+  if ($t eq 'double') {
+    $d =~ s/[^\d\.\-\+]//g;
+    return ($d ne '') ? "$d" : "0";
+  }
+  return "null";
 }
 
 sub readFile {
@@ -53,14 +190,15 @@ sub readFile {
   return if (!$super && -f $java);
  
   print "Generated element: $tag -> $clz.java\n";
-  my $interface = "\@JsType(prototype = \"HTMLElement\", isNative = true)\npublic interface $clz extends HTMLElement";
+  my $interface = "";
   # if ($super) {
   #  $interface .= "<T extends $clz<?>>";
   # }
   
-  my ($event, $body, $inCom, $comment, $case, $attr, $load, %done, @params);
+  my ($event, $attrs, $elemcontent, $statecontent, $setstates, $setprops, $setwidget, $wgevents, $wgcontent, $wextend, $compcontent, $inCom, $comment, $case, $attr, $load, $default, %done, @params);
   my $javatype = "Object";
   my $rtype = "void";
+  my $state = $state_tpl;
 
   open(my $f, $file) || die "$! -> $file";
   while(<$f>) {
@@ -74,23 +212,37 @@ sub readFile {
       } elsif ($case eq 'element') {
         $interface = "$comment$interface";
       } elsif ($case eq 'method') {
-        $body .= $comment;
+        $elemcontent .= $comment;
         my $sign = "";
         my $i = 0;
         foreach my $p (@params) {
           $sign .= ", " if ($sign ne '');
           $sign .= getJavaType($p) . " arg" . ($i++);
         }
-        $body .= "  $rtype $attr($sign);\n";
+        $elemcontent .= "  $rtype $attr($sign);\n";
       } elsif ($case eq 'event') {
         $event = "  void addEventListener(String event, EventListener listener);\n" if ("$event" eq '');
         $event = "$comment$event";
         $event =~ s/\s*\*\/\s*\/\*\*\s*\n//smg;
+        $wgevents .= "," if($wgevents ne '');
+        $wgevents .= "\"$attr\"";        
       } elsif ($case eq 'attribute') {
         $done{$attr} = 1;
-        $body .= $comment;
-        $body .= "  \@JsProperty $ret $attr($javatype val);\n";
-        $body .= "  \@JsProperty $javatype $attr();\n";
+        $elemcontent .= $comment;
+        $elemcontent .= "  \@JsProperty $ret $attr($javatype val);\n";
+        $elemcontent .= "  \@JsProperty $javatype $attr();\n";
+        $wgcontent .= "    public void $attr($javatype val) {\n        element().$attr(val);\n    }\n";
+        $wgcontent .= "    public $javatype $attr() {\n        return element().$attr();\n    }\n";
+        $attrs .= "," if($attrs ne '');
+        $attrs .= "\"$attr\"";
+        if ($javatype !~ /^Element|JavaScriptObject|JsArray$/) {
+          $setstates .= "                getState().$attr = getWidget().$attr();\n";
+          $setwidget .= "            getWidget().$attr(getState().$attr);\n";
+          $statecontent .= "  public $javatype $attr = " . getDefault ($javatype, $default) . ";\n";
+          $compcontent .= "$comment    public void $attr($javatype val) {\n        getState().$attr = val;\n    }\n";
+          $compcontent .= "$comment    public $javatype $attr() {\n        return getState().$attr;\n    }\n";
+          $setprops .= "    p.set(\"$attr\", getState().$attr);\n";
+        }
       } else {
         # print "Unknown Case: $case\n$comment";
       }
@@ -98,12 +250,13 @@ sub readFile {
       $comment = "";
     } elsif ($inCom && /^\s*\*\s*\@(attribute|event|element|method)\s+([^\s\r]+)/) {
       $comment .= $_;
-      $case = "";
       $case = $1;
       $attr = $2;
     } elsif ($inCom && /^\s*\*\s*\@type\s+(.*)\s*$/) {
       $comment .= $_;
       $javatype = getJavaType($1);
+    } elsif ($inCom && /^\s*\*\s*\@default\s+(.*)\s*$/) {
+      $default = $1;
     } elsif ($inCom && /^\s*\*\s*\@param\s+\{*([^ \}]+).*$/) {
       $comment .= $_;
       push @params, $1;
@@ -133,8 +286,9 @@ sub readFile {
         next;
       }
       
-      next if ($interface =~ /, $iface/);
+      next if ($iface eq 'CoreThemeAware' || $interface =~ /, $iface/);
       $interface = "$interface, $iface";
+      $wextend = "$iface" if ($wextend eq '');
     
       # $interface .= "<$clz>";
 
@@ -146,23 +300,100 @@ sub readFile {
       $case = "";
     }
   }
+  
+  my ($body, $dir);
+  
   close($f);
-  # return if ($body eq '');
-  open(my $f, ">$clz.java");
-  $load = "\n  Class<?>[] dependencies = new Class<?>[]{$load};\n";
-  print $f "$head$interface \{\n$load$event$body\}\n";
+  # return if ($elemcontent eq '');
+  
+  $dir = "$bdir/gwt/client/components/";
+  make_path("$dir");
+  open(my $f, ">$dir$clz.java");
+  $body = $interface_tpl;
+  $body =~ s/__PKG__/$ns.gwt.client.components/g;
+  $body =~ s/__NS__/$ns/g;
+  $body =~ s/__CLZ__/$clz/g;
+  $body =~ s/__INTERFACES__/$interface/g;
+  $body =~ s/__LOAD__/$load/g;
+  $body =~ s/__EVENT__/$event/g;
+  $body =~ s/__CONTENT__/$elemcontent/g;
+  print $f "$body";
+  close($f);
+  
+  open(my $f, ">$dir${clz}Widget.java");
+  $body = $widget_tpl;
+  $body =~ s/__NS__/$ns/g;
+  $body =~ s/__PKG__/$ns.gwt.client.components/g;
+  $body =~ s/__CLZ__/$clz/g;
+  if ($wextend ne '') {
+    $body =~ s/__EXTENDS__/${wextend}Widget/g ;
+  } else {
+    $body =~ s/__EXTENDS__/BaseWidget/g ;
+  }
+  $body =~ s/__EVENTS__/$wgevents/g;
+  $body =~ s/__CONTENT__/$wgcontent/g;
+  print $f "$body";
+  close($f);
+  
+  $dir = "$bdir/gwt/client/ui/";
+  make_path("$dir");
+  open(my $f, ">$dir${clz}State.java");
+  $body = $state_tpl;
+  $body =~ s/__PKG__/$ns.gwt.client.ui/g;
+  $body =~ s/__CLZ__/$clz/g;
+  $body =~ s/__CONTENT__/$statecontent/g;
+  if ($wextend ne '') {
+    $body =~ s/__EXTENDS__/${wextend}State/g ;
+  } else {
+    $body =~ s/__EXTENDS__/AbstractFieldState/g ;
+  }
+  print $f "$body";
+  close($f);
+  
+  open(my $f, ">$dir${clz}Connector.java");
+  $body = $connector_tpl;
+  $body =~ s/__PKG__/$ns.gwt.client.ui/g;
+  $body =~ s/__NS__/$ns/g;
+  $body =~ s/__CLZ__/$clz/g;
+  $body =~ s/__SET_STATES__/$setstates/g;
+  $body =~ s/__SET_WIDGET__/$setwidget/g;
+  $body =~ s/__SET_PROPS__/$setprops/g;
+  if ($wextend ne '') {
+    $body =~ s/__EXTENDS__/${wextend}Connector/g ;
+  } else {
+    $body =~ s/__EXTENDS__/BaseConnector/g ;
+  }
+  print $f "$body";
+  close($f);
+  
+  $dir = "$bdir/server/ui/";
+  make_path("$dir");
+  open(my $f, ">$dir${clz}Component.java");
+  $body = $component_tpl;
+  $body =~ s/__PKG__/$ns.server.ui/g;
+  $body =~ s/__NS__/$ns/g;
+  $body =~ s/__CLZ__/$clz/g;
+  $body =~ s/__EVENTS__/$wgevents/g;
+  $body =~ s/__ATTRS__/$attrs/g;
+  $body =~ s/__CONTENT__/$compcontent/g;
+  if ($wextend ne '') {
+    $body =~ s/__EXTENDS__/${wextend}Component/g ;
+  } else {
+    $body =~ s/__EXTENDS__/BaseComponent/g ;
+  }
+  print $f "$body";
   close($f);
 }
 
 ### Go through */*-*.html files in current folder
-my $basedir = ".";
+print "Searching for WC in $basedir ...\n";
 opendir(my $dh, $basedir) || die "$! -> $basedir";
 while(readdir $dh) {
-  if (-d $_) {
+  if (-d "$basedir/$_") {
      my $folder = $_;
-     opendir(my $sd, $folder);
+     opendir(my $sd, "$basedir/$folder");
      while (readdir $sd) {
-       readFile "$folder/$_" if (/.*-.*\.html$/);
+       readFile "$basedir/$folder/$_" if (/.*-.*\.html$/);
      }
      closedir($sd);
   }
@@ -170,7 +401,7 @@ while(readdir $dh) {
 closedir($dh);
 
 ### Generate Icons interface
-my $icons = "$package\npublic interface Icon {\n";
+my $icons = "package $ns.gwt.client.components;\npublic interface Icon {\n";
 my $allicons = "  public static String[] ALL = new String[]{";
 sub readIcons {
   my $file = shift;
@@ -190,15 +421,17 @@ sub readIcons {
   close($f);
 }
 
-my $icondir = "core-icons/iconsets/";
+my $icondir = "$basedir/core-icons/iconsets/";
 opendir(my $dh, $icondir) || die "$! -> $icondir";
 while(readdir $dh) {
   readIcons("$icondir$_") if (/.html$/);
 }
 closedir($dh);
 
-print "Generated Icon.java\n";
-open(my $f, ">Icon.java");
+my $dir = "$bdir/gwt/client/components/";
+make_path($dir);
+print "Generated ${dir}Icon.java\n";
+open(my $f, ">${dir}Icon.java");
 $allicons =~ s/,$//;
 print $f "$icons$allicons};\n}\n";
 close($f);

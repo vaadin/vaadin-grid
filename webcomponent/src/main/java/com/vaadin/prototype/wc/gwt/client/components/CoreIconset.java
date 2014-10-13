@@ -10,7 +10,8 @@ import com.google.gwt.dom.client.HeadElement;
 import com.google.gwt.user.client.EventListener;
 import com.vaadin.prototype.wc.gwt.client.html.*;
 
-/**
+@JsType(prototype = "HTMLElement", isNative = true)
+public interface CoreIconset extends HTMLElement /**
  * @group Polymer Core Elements
  *
  * The `core-iconset` element allows users to define their own icon sets. 
@@ -58,17 +59,15 @@ import com.vaadin.prototype.wc.gwt.client.html.*;
  * @extends core-meta
  * @homepage github.io
  */
-@JsType(prototype = "HTMLElement", isNative = true)
-public interface CoreIconset extends HTMLElement, CoreMeta {
-
+, CoreMeta {
   Class<?>[] dependencies = new Class<?>[]{CoreMeta.class};
+
 
   /**
    * The URL of the iconset image.
    *
    * @attribute src
    * @type string
-   * @default ''
    */
   @JsProperty CoreIconset src(String val);
   @JsProperty String src();
@@ -79,7 +78,6 @@ public interface CoreIconset extends HTMLElement, CoreMeta {
    *
    * @attribute width
    * @type number
-   * @default 0
    */
   @JsProperty CoreIconset width(double val);
   @JsProperty double width();
@@ -91,7 +89,6 @@ public interface CoreIconset extends HTMLElement, CoreMeta {
    *
    * @attribute icons
    * @type string
-   * @default ''
    */
   @JsProperty CoreIconset icons(String val);
   @JsProperty String icons();
@@ -101,7 +98,6 @@ public interface CoreIconset extends HTMLElement, CoreMeta {
    *
    * @attribute iconSize
    * @type number
-   * @default 24
    */
   @JsProperty CoreIconset iconSize(double val);
   @JsProperty double iconSize();
@@ -113,7 +109,6 @@ public interface CoreIconset extends HTMLElement, CoreMeta {
    *
    * @attribute offsetX
    * @type number
-   * @default 0
    */
   @JsProperty CoreIconset offsetX(double val);
   @JsProperty double offsetX();
@@ -125,7 +120,6 @@ public interface CoreIconset extends HTMLElement, CoreMeta {
    *
    * @attribute offsetY
    * @type number
-   * @default 0
    */
   @JsProperty CoreIconset offsetY(double val);
   @JsProperty double offsetY();
@@ -161,4 +155,5 @@ public interface CoreIconset extends HTMLElement, CoreMeta {
    * with which the icon can be magnified.
    */
   void applyIcon(Element arg0, String arg1, String arg2, double arg3);
+
 }

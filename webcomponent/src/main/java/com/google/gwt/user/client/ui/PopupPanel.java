@@ -15,9 +15,6 @@
  */
 package com.google.gwt.user.client.ui;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
@@ -46,6 +43,9 @@ import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.impl.PopupImpl;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A panel that can "pop up" over other widgets. It overlays the browser's
@@ -219,7 +219,6 @@ public class PopupPanel extends SimplePanel implements SourcesPopupEvents,
           }
           impl.setClip(curPanel.getElement(), getRectString(0, 0, 0, 0));
           parentPanel.add(curPanel);
-          impl.onShow(curPanel.getElement());
 
           // Wait for the popup panel and iframe to be attached before running
           // the animation. We use a Timer instead of a DeferredCommand so we
@@ -247,7 +246,6 @@ public class PopupPanel extends SimplePanel implements SourcesPopupEvents,
         if (!isUnloading) {
           parentPanel.remove(curPanel);
         }
-        impl.onHide(curPanel.getElement());
       }
       impl.setClip(curPanel.getElement(), "rect(auto, auto, auto, auto)");
       curPanel.getElement().getStyle().setProperty("overflow", "visible");
@@ -313,7 +311,6 @@ public class PopupPanel extends SimplePanel implements SourcesPopupEvents,
       if (showing) {
         if (curPanel.isGlassEnabled) {
           Document.get().getBody().appendChild(curPanel.glass);
-          impl.onShow(curPanel.glass);
 
           resizeRegistration = Window.addResizeHandler(curPanel.glassResizer);
           curPanel.glassResizer.onResize(null);
@@ -322,7 +319,6 @@ public class PopupPanel extends SimplePanel implements SourcesPopupEvents,
         }
       } else if (glassShowing) {
         Document.get().getBody().removeChild(curPanel.glass);
-        impl.onHide(curPanel.glass);
 
         resizeRegistration.removeHandler();
         resizeRegistration = null;
@@ -337,17 +333,15 @@ public class PopupPanel extends SimplePanel implements SourcesPopupEvents,
         // Set the position attribute, and then attach to the DOM. Otherwise,
         // the PopupPanel will appear to 'jump' from its static/relative
         // position to its absolute position (issue #1231).
-        curPanel.getElement().getStyle().setProperty("position", "fixed");
+        curPanel.getElement().getStyle().setProperty("position", "absolute");
         if (curPanel.topPosition != -1) {
           curPanel.setPopupPosition(curPanel.leftPosition, curPanel.topPosition);
         }
         parentPanel.add(curPanel);
-        impl.onShow(curPanel.getElement());
       } else {
         if (!isUnloading) {
           parentPanel.remove(curPanel);
         }
-        impl.onHide(curPanel.getElement());
       }
       curPanel.getElement().getStyle().setProperty("overflow", "visible");
     }
@@ -433,8 +427,6 @@ public class PopupPanel extends SimplePanel implements SourcesPopupEvents,
 
   // The top style attribute in pixels
   private int topPosition = -1;
-  
-  private HasWidgets parentPanel = RootPanel.get();
 
   /**
    * Creates an empty popup panel. A child widget must be added to it before it
@@ -961,9 +953,7 @@ public class PopupPanel extends SimplePanel implements SourcesPopupEvents,
 
     // If the PopupImpl creates an iframe shim, it's also necessary to hide it
     // as well.
-    impl.setVisible(getElement(), visible);
     if (glass != null) {
-      impl.setVisible(glass, visible);
       glass.getStyle().setProperty("visibility", visible ? "visible" : "hidden");
     }
   }
@@ -1036,7 +1026,7 @@ public class PopupPanel extends SimplePanel implements SourcesPopupEvents,
                 }
             } while (w != null);
         }
-    }
+    }      
     // Set the position of the popup right before it is shown.
     setPopupPositionAndShow(new PositionCallback() {
       public void setPosition(int offsetWidth, int offsetHeight) {
@@ -1184,13 +1174,14 @@ public class PopupPanel extends SimplePanel implements SourcesPopupEvents,
    */
   private boolean eventTargetsPopup(NativeEvent event) {
     EventTarget target = event.getEventTarget();
-    if (Element.is(target) ) {
+    if (Element.is(target)) {
       return getElement().isOrHasChild(Element.as(target)) ||
              isInShadowRoot(Element.as(target), getElement());
     }
     return false;
   }
   
+  private HasWidgets parentPanel = RootPanel.get();
   private native boolean isInShadowRoot(Element wc, Element popup) /*-{
     return !!wc.shadowRoot && wc.shadowRoot.contains(popup);
   }-*/;
@@ -1363,7 +1354,6 @@ public class PopupPanel extends SimplePanel implements SourcesPopupEvents,
     Event nativeEvent = Event.as(event.getNativeEvent());
     boolean eventTargetsPopupOrPartner = eventTargetsPopup(nativeEvent)
         || eventTargetsPartner(nativeEvent);
-    
     if (eventTargetsPopupOrPartner) {
       event.consume();
     }

@@ -10,7 +10,8 @@ import com.google.gwt.dom.client.HeadElement;
 import com.google.gwt.user.client.EventListener;
 import com.vaadin.prototype.wc.gwt.client.html.*;
 
-/**
+@JsType(prototype = "HTMLElement", isNative = true)
+public interface CoreInput extends HTMLElement /**
  * core-input is an unstyled single- or multi-line text field where user can
  * enter input.
  *
@@ -46,9 +47,7 @@ import com.vaadin.prototype.wc.gwt.client.html.*;
  * @element core-input
  * @homepage github.io
  */
-@JsType(prototype = "HTMLElement", isNative = true)
-public interface CoreInput extends HTMLElement {
-
+ {
   Class<?>[] dependencies = new Class<?>[]{};
 /**
  * Fired when the inputValue of this text input changes and fails validation.
@@ -66,13 +65,13 @@ public interface CoreInput extends HTMLElement {
  */
   void addEventListener(String event, EventListener listener);
 
+
   /**
    * Placeholder text that hints to the user what can be entered in
    * the input.
    *
    * @attribute placeholder
    * @type string
-   * @default ''
    */
   @JsProperty CoreInput placeholder(String val);
   @JsProperty String placeholder();
@@ -83,7 +82,6 @@ public interface CoreInput extends HTMLElement {
    *
    * @attribute disabled
    * @type boolean
-   * @default false
    */
   @JsProperty CoreInput disabled(boolean val);
   @JsProperty boolean disabled();
@@ -93,7 +91,6 @@ public interface CoreInput extends HTMLElement {
    *
    * @attribute type
    * @type string
-   * @default text
    */
   @JsProperty CoreInput type(String val);
   @JsProperty String type();
@@ -103,7 +100,6 @@ public interface CoreInput extends HTMLElement {
    *
    * @attribute multiline
    * @type boolean
-   * @default false
    */
   @JsProperty CoreInput multiline(boolean val);
   @JsProperty boolean multiline();
@@ -117,7 +113,6 @@ public interface CoreInput extends HTMLElement {
    *
    * @attribute rows
    * @type number|'fit'
-   * @default 'fit'
    */
   @JsProperty CoreInput rows(double val);
   @JsProperty double rows();
@@ -127,7 +122,6 @@ public interface CoreInput extends HTMLElement {
    *
    * @attribute inputValue
    * @type string
-   * @default ''
    */
   @JsProperty CoreInput inputValue(String val);
   @JsProperty String inputValue();
@@ -138,7 +132,6 @@ public interface CoreInput extends HTMLElement {
    *
    * @attribute value
    * @type string
-   * @default ''
    */
   @JsProperty CoreInput value(String val);
   @JsProperty String value();
@@ -169,7 +162,6 @@ public interface CoreInput extends HTMLElement {
    *
    * @attribute validate
    * @type string|RegExp|Function(value)
-   * @default null
    */
   @JsProperty CoreInput validate(String val);
   @JsProperty String validate();
@@ -179,8 +171,8 @@ public interface CoreInput extends HTMLElement {
    *
    * @attribute invalid
    * @type boolean
-   * @default false
    */
   @JsProperty CoreInput invalid(boolean val);
   @JsProperty boolean invalid();
+
 }

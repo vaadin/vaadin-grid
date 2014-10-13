@@ -11,8 +11,7 @@ import com.google.gwt.user.client.EventListener;
 import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface PaperSlider extends HTMLElement, CoreRange {
-
+public interface PaperSlider extends HTMLElement , CoreRange {
   Class<?>[] dependencies = new Class<?>[]{PaperProgress.class, PaperInput.class};
 
   /**
@@ -22,13 +21,13 @@ public interface PaperSlider extends HTMLElement, CoreRange {
    */
   void addEventListener(String event, EventListener listener);
 
+
   /**
    * If true, the slider thumb snaps to tick marks evenly spaced based
    * on the `step` property value.
    *
    * @attribute snaps
    * @type boolean
-   * @default false
    */
   @JsProperty PaperSlider snaps(boolean val);
   @JsProperty boolean snaps();
@@ -40,7 +39,6 @@ public interface PaperSlider extends HTMLElement, CoreRange {
    *
    * @attribute pin
    * @type boolean
-   * @default false
    */
   @JsProperty PaperSlider pin(boolean val);
   @JsProperty boolean pin();
@@ -51,7 +49,6 @@ public interface PaperSlider extends HTMLElement, CoreRange {
    *
    * @attribute disabled
    * @type boolean
-   * @default false
    */
   @JsProperty PaperSlider disabled(boolean val);
   @JsProperty boolean disabled();
@@ -61,7 +58,6 @@ public interface PaperSlider extends HTMLElement, CoreRange {
    *
    * @attribute secondaryProgress
    * @type number
-   * @default 0
    */
   @JsProperty PaperSlider secondaryProgress(double val);
   @JsProperty double secondaryProgress();
@@ -71,7 +67,6 @@ public interface PaperSlider extends HTMLElement, CoreRange {
    *
    * @attribute editable
    * @type boolean
-   * @default false
    */
   @JsProperty PaperSlider editable(boolean val);
   @JsProperty boolean editable();
@@ -82,8 +77,8 @@ public interface PaperSlider extends HTMLElement, CoreRange {
    *
    * @attribute immediateValue
    * @type number
-   * @default 0
    */
   @JsProperty PaperSlider immediateValue(double val);
   @JsProperty double immediateValue();
+
 }

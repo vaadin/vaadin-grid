@@ -87,6 +87,7 @@ public class WCVSlider extends HTMLElement.Prototype implements
     @Override
     public void onValueChange(ValueChangeEvent<Double> ev) {
         String val = ev.getValue().toString();
+        console.log("CAMBIA " + val + " " + getAttribute("value"));
         if (!val.equals(getAttribute("value"))) {
             setAttribute("value", val);
             dispatchEvent(changeEvent);
@@ -103,7 +104,11 @@ public class WCVSlider extends HTMLElement.Prototype implements
         slider.setMaxValue(getAttrDoubleValue("max", 100));
         slider.setValue(getAttrDoubleValue("value", 0));
         theme = getAttrValue("theme", "valo");
-        style.innerText("@import url('" + GWT.getModuleBaseURL() + "../../themes/" + theme + "/styles.css')");
+        console.log(GWT.getModuleBaseURL() + "../../themes/" + theme + "/styles.css");
+        style.innerText(
+                "@import url('" + GWT.getModuleBaseURL() + "../../themes/" + theme + "/styles.css');\n" +
+                "@import url('/VAADIN/themes/" + theme + "/styles.css');\n"
+                );
         container.setAttribute("class", theme);
     }
 

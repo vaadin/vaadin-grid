@@ -11,16 +11,15 @@ import com.google.gwt.user.client.EventListener;
 import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface PaperShadow extends HTMLElement {
-
+public interface PaperShadow extends HTMLElement  {
   Class<?>[] dependencies = new Class<?>[]{};
+
 
   /**
    * If set, the shadow is applied to this node.
    *
    * @attribute target
    * @type Element
-   * @default null
    */
   @JsProperty PaperShadow target(Element val);
   @JsProperty Element target();
@@ -30,7 +29,6 @@ public interface PaperShadow extends HTMLElement {
    *
    * @attribute z
    * @type number
-   * @default 1
    */
   @JsProperty PaperShadow z(double val);
   @JsProperty double z();
@@ -40,7 +38,6 @@ public interface PaperShadow extends HTMLElement {
    *
    * @attribute animated
    * @type boolean
-   * @default false
    */
   @JsProperty PaperShadow animated(boolean val);
   @JsProperty boolean animated();
@@ -52,8 +49,8 @@ public interface PaperShadow extends HTMLElement {
    *
    * @attribute hasPosition
    * @type boolean
-   * @default false
    */
   @JsProperty PaperShadow hasPosition(boolean val);
   @JsProperty boolean hasPosition();
+
 }

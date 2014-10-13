@@ -11,16 +11,15 @@ import com.google.gwt.user.client.EventListener;
 import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface PaperDialog extends HTMLElement {
-
+public interface PaperDialog extends HTMLElement  {
   Class<?>[] dependencies = new Class<?>[]{};
+
 
   /**
    * Set opened to true to show the dialog and to false to hide it.
    * A dialog may be made intially opened by setting its opened attribute.
    * @attribute opened
    * @type boolean
-   * @default false
    */
   @JsProperty PaperDialog opened(boolean val);
   @JsProperty boolean opened();
@@ -28,7 +27,6 @@ public interface PaperDialog extends HTMLElement {
   /**
    * @attribute heading
    * @type string
-   * @default ''
    */
   @JsProperty PaperDialog heading(String val);
   @JsProperty String heading();
@@ -39,7 +37,6 @@ public interface PaperDialog extends HTMLElement {
    *
    * @attribute transition
    * @type string
-   * @default ''
    */
   @JsProperty PaperDialog transition(String val);
   @JsProperty String transition();
@@ -49,4 +46,5 @@ public interface PaperDialog extends HTMLElement {
    * @method toggle
    */
   void toggle();
+
 }

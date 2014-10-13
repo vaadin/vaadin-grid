@@ -11,7 +11,8 @@ import com.google.gwt.user.client.EventListener;
 import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface PaperRadioGroup extends HTMLElement, CoreSelector {
-
+public interface PaperRadioGroup extends HTMLElement , CoreSelector {
   Class<?>[] dependencies = new Class<?>[]{CoreSelector.class, PaperRadioButton.class};
+
+
 }

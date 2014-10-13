@@ -11,8 +11,7 @@ import com.google.gwt.user.client.EventListener;
 import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface PaperToggleButton extends HTMLElement {
-
+public interface PaperToggleButton extends HTMLElement  {
   Class<?>[] dependencies = new Class<?>[]{PaperRadioButton.class};
 
   /**
@@ -22,13 +21,14 @@ public interface PaperToggleButton extends HTMLElement {
    */
   void addEventListener(String event, EventListener listener);
 
+
   /**
    * Gets or sets the state, `true` is checked and `false` is unchecked.
    *
    * @attribute checked
    * @type boolean
-   * @default false
    */
   @JsProperty PaperToggleButton checked(boolean val);
   @JsProperty boolean checked();
+
 }

@@ -11,17 +11,17 @@ import com.google.gwt.user.client.EventListener;
 import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface PaperIconButton extends HTMLElement, PaperButton {
-
+public interface PaperIconButton extends HTMLElement , PaperButton {
   Class<?>[] dependencies = new Class<?>[]{};
+
 
   /**
    * If true, the ripple expands to a square to fill the containing box.
    *
    * @attribute fill
    * @type boolean
-   * @default false
    */
   @JsProperty PaperIconButton fill(boolean val);
   @JsProperty boolean fill();
+
 }

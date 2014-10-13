@@ -10,7 +10,8 @@ import com.google.gwt.dom.client.HeadElement;
 import com.google.gwt.user.client.EventListener;
 import com.vaadin.prototype.wc.gwt.client.html.*;
 
-/**
+@JsType(prototype = "HTMLElement", isNative = true)
+public interface CoreIconsetSvg extends HTMLElement /**
  * @group Polymer Core Elements
  *
  * The `core-iconset-svg` element allows users to define their own icon sets
@@ -47,17 +48,15 @@ import com.vaadin.prototype.wc.gwt.client.html.*;
  * @extends core-meta
  * @homepage github.io
  */
-@JsType(prototype = "HTMLElement", isNative = true)
-public interface CoreIconsetSvg extends HTMLElement, CoreMeta {
-
+, CoreMeta {
   Class<?>[] dependencies = new Class<?>[]{CoreIconset.class};
+
 
   /**
    * The size of an individual icon. Note that icons must be square.
    *
    * @attribute iconSize
    * @type number
-   * @default 24
    */
   @JsProperty CoreIconsetSvg iconSize(double val);
   @JsProperty double iconSize();
@@ -84,4 +83,5 @@ public interface CoreIconsetSvg extends HTMLElement, CoreMeta {
    * defaults to 'updateIcon'
    */
   void updateIcons(JavaScriptObject arg0, JavaScriptObject arg1);
+
 }

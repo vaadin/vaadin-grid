@@ -11,7 +11,8 @@ import com.google.gwt.user.client.EventListener;
 import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface CoreKeyHelper extends HTMLElement {
-
+public interface CoreKeyHelper extends HTMLElement  {
   Class<?>[] dependencies = new Class<?>[]{};
+
+
 }

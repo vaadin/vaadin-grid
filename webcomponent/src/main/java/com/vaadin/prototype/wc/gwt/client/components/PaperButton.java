@@ -11,16 +11,22 @@ import com.google.gwt.user.client.EventListener;
 import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface PaperButton extends HTMLElement, PaperFocusable {
-
+public interface PaperButton extends HTMLElement , PaperFocusable {
   Class<?>[] dependencies = new Class<?>[]{};
+
+  /**
+   * Fired when the clicked.
+   *
+   * @event click
+   */
+  void addEventListener(String event, EventListener listener);
+
 
   /**
    * The label of the button.
    *
    * @attribute label
    * @type string
-   * @default ''
    */
   @JsProperty PaperButton label(String val);
   @JsProperty String label();
@@ -30,7 +36,6 @@ public interface PaperButton extends HTMLElement, PaperFocusable {
    *
    * @attribute raisedButton
    * @type boolean
-   * @default false
    */
   @JsProperty PaperButton raisedButton(boolean val);
   @JsProperty boolean raisedButton();
@@ -41,7 +46,6 @@ public interface PaperButton extends HTMLElement, PaperFocusable {
    *
    * @attribute iconSrc
    * @type string
-   * @default ''
    */
   @JsProperty PaperButton iconSrc(String val);
   @JsProperty String iconSrc();
@@ -54,8 +58,8 @@ public interface PaperButton extends HTMLElement, PaperFocusable {
    *
    * @attribute icon
    * @type string
-   * @default ''
    */
   @JsProperty PaperButton icon(String val);
   @JsProperty String icon();
+
 }

@@ -11,9 +11,9 @@ import com.google.gwt.user.client.EventListener;
 import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface CoreMeta extends HTMLElement {
-
+public interface CoreMeta extends HTMLElement  {
   Class<?>[] dependencies = new Class<?>[]{};
+
 
   /**
    * The type of meta-data.  All meta-data with the same type with be
@@ -21,7 +21,6 @@ public interface CoreMeta extends HTMLElement {
    * 
    * @attribute type
    * @type string
-   * @default 'default'
    */
   @JsProperty CoreMeta type(String val);
   @JsProperty String type();
@@ -31,7 +30,6 @@ public interface CoreMeta extends HTMLElement {
    * 
    * @attribute list
    * @type array
-   * @default []
    */
   @JsProperty CoreMeta list(JsArray val);
   @JsProperty JsArray list();
@@ -44,4 +42,5 @@ public interface CoreMeta extends HTMLElement {
    * @returns Returns meta-data.
    */
   JavaScriptObject byId(String arg0);
+
 }

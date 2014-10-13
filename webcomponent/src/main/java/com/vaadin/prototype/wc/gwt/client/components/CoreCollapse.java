@@ -11,8 +11,7 @@ import com.google.gwt.user.client.EventListener;
 import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface CoreCollapse extends HTMLElement {
-
+public interface CoreCollapse extends HTMLElement  {
   Class<?>[] dependencies = new Class<?>[]{};
 
   /**
@@ -23,12 +22,12 @@ public interface CoreCollapse extends HTMLElement {
    */
   void addEventListener(String event, EventListener listener);
 
+
   /**
    * The target element.
    *
    * @attribute target
    * @type object
-   * @default null
    */
   @JsProperty CoreCollapse target(JavaScriptObject val);
   @JsProperty JavaScriptObject target();
@@ -38,7 +37,6 @@ public interface CoreCollapse extends HTMLElement {
    *
    * @attribute horizontal
    * @type boolean
-   * @default false
    */
   @JsProperty CoreCollapse horizontal(boolean val);
   @JsProperty boolean horizontal();
@@ -48,7 +46,6 @@ public interface CoreCollapse extends HTMLElement {
    *
    * @attribute opened
    * @type boolean
-   * @default false
    */
   @JsProperty CoreCollapse opened(boolean val);
   @JsProperty boolean opened();
@@ -58,7 +55,6 @@ public interface CoreCollapse extends HTMLElement {
    *
    * @attribute duration
    * @type number
-   * @default 0.33
    */
   @JsProperty CoreCollapse duration(double val);
   @JsProperty double duration();
@@ -71,7 +67,6 @@ public interface CoreCollapse extends HTMLElement {
    *
    * @attribute fixedSize
    * @type boolean
-   * @default false
    */
   @JsProperty CoreCollapse fixedSize(boolean val);
   @JsProperty boolean fixedSize();
@@ -82,4 +77,5 @@ public interface CoreCollapse extends HTMLElement {
    * @method toggle
    */
   void toggle();
+
 }

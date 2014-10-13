@@ -35,10 +35,12 @@ import com.vaadin.prototype.wc.gwt.client.widgets.WCVSlider;
 public class Demo implements EntryPoint {
 
     public void onModuleLoad() {
-        $("body").css("font-family", "arial");
-
         if (Window.Location.getPath().contains("index.html")) {
             new DemoWrapWC().onModuleLoad();
+            new DemoExportWC().onModuleLoad();
+        } else if (Window.Location.getPath().contains("polymer.html")) {
+            new DemoWrapWC().onModuleLoad();
+        } else if (Window.Location.getPath().contains("gwt.html")) {
             new DemoExportWC().onModuleLoad();
         } else {
             loadPolymerElement();

@@ -11,9 +11,9 @@ import com.google.gwt.user.client.EventListener;
 import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface CoreOverlay extends HTMLElement {
-
+public interface CoreOverlay extends HTMLElement  {
   Class<?>[] dependencies = new Class<?>[]{CoreTransition.class, CoreKeyHelper.class, CoreOverlayLayer.class};
+
 
   /**
    * The target element that will be shown when the overlay is 
@@ -21,7 +21,6 @@ public interface CoreOverlay extends HTMLElement {
    *
    * @attribute target
    * @type Object
-   * @default the overlay element
    */
   @JsProperty CoreOverlay target(JavaScriptObject val);
   @JsProperty JavaScriptObject target();
@@ -36,7 +35,6 @@ public interface CoreOverlay extends HTMLElement {
    *
    * @attribute sizingTarget
    * @type Object
-   * @default the target element
    */
   @JsProperty CoreOverlay sizingTarget(JavaScriptObject val);
   @JsProperty JavaScriptObject sizingTarget();
@@ -47,7 +45,6 @@ public interface CoreOverlay extends HTMLElement {
    * `opened` attribute.
    * @attribute opened
    * @type boolean
-   * @default false
    */
   @JsProperty CoreOverlay opened(boolean val);
   @JsProperty boolean opened();
@@ -60,7 +57,6 @@ public interface CoreOverlay extends HTMLElement {
    *
    * @attribute backdrop
    * @type boolean
-   * @default false
    */    
   @JsProperty CoreOverlay backdrop(boolean val);
   @JsProperty boolean backdrop();
@@ -70,7 +66,6 @@ public interface CoreOverlay extends HTMLElement {
    *
    * @attribute layered
    * @type boolean
-   * @default false
    */
   @JsProperty CoreOverlay layered(boolean val);
   @JsProperty boolean layered();
@@ -81,7 +76,6 @@ public interface CoreOverlay extends HTMLElement {
    * behavior by setting the `autoCloseDisabled` property to true.
    * @attribute autoCloseDisabled
    * @type boolean
-   * @default false
    */
   @JsProperty CoreOverlay autoCloseDisabled(boolean val);
   @JsProperty boolean autoCloseDisabled();
@@ -93,7 +87,6 @@ public interface CoreOverlay extends HTMLElement {
    *
    * @attribute closeAttribute
    * @type string
-   * @default "core-overlay-toggle"
    */
   @JsProperty CoreOverlay closeAttribute(String val);
   @JsProperty String closeAttribute();
@@ -105,7 +98,6 @@ public interface CoreOverlay extends HTMLElement {
    *
    * @attribute closeSelector
    * @type string
-   * @default ""
    */
   @JsProperty CoreOverlay closeSelector(String val);
   @JsProperty String closeSelector();
@@ -118,7 +110,6 @@ public interface CoreOverlay extends HTMLElement {
    *
    * @attribute margin
    * @type number
-   * @default 0
    */
   @JsProperty CoreOverlay margin(double val);
   @JsProperty double margin();
@@ -131,7 +122,6 @@ public interface CoreOverlay extends HTMLElement {
    *
    * @attribute transition
    * @type string
-   * @default 'core-transition-fade'
    */
   @JsProperty CoreOverlay transition(String val);
   @JsProperty String transition();
@@ -163,4 +153,5 @@ public interface CoreOverlay extends HTMLElement {
    * @method resizeHandler
    */
   void resizeHandler();
+
 }

@@ -11,9 +11,9 @@ import com.google.gwt.user.client.EventListener;
 import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface ChessBoard extends HTMLElement {
-
+public interface ChessBoard extends HTMLElement  {
   Class<?>[] dependencies = new Class<?>[]{};
+
 
   /**
    * Example: Move the white queen on the a4 square
@@ -67,4 +67,5 @@ public interface ChessBoard extends HTMLElement {
    */
   @JsProperty ChessBoard frame(boolean val);
   @JsProperty boolean frame();
+
 }

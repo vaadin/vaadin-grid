@@ -11,16 +11,15 @@ import com.google.gwt.user.client.EventListener;
 import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface PaperTabs extends HTMLElement, CoreSelector {
-
+public interface PaperTabs extends HTMLElement , CoreSelector {
   Class<?>[] dependencies = new Class<?>[]{CoreSelector.class, PaperTab.class};
+
 
   /**
    * If true, ink effect is disabled.
    *
    * @attribute noink
    * @type boolean
-   * @default false
    */
   @JsProperty PaperTabs noink(boolean val);
   @JsProperty boolean noink();
@@ -30,8 +29,8 @@ public interface PaperTabs extends HTMLElement, CoreSelector {
    *
    * @attribute nobar
    * @type boolean
-   * @default false
    */
   @JsProperty PaperTabs nobar(boolean val);
   @JsProperty boolean nobar();
+
 }

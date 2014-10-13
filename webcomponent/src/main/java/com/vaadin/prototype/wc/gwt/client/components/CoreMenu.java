@@ -11,7 +11,8 @@ import com.google.gwt.user.client.EventListener;
 import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface CoreMenu extends HTMLElement, CoreSelector {
-
+public interface CoreMenu extends HTMLElement , CoreSelector {
   Class<?>[] dependencies = new Class<?>[]{CoreSelector.class};
+
+
 }

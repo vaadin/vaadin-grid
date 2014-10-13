@@ -11,16 +11,15 @@ import com.google.gwt.user.client.EventListener;
 import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface PaperRipple extends HTMLElement {
-
+public interface PaperRipple extends HTMLElement  {
   Class<?>[] dependencies = new Class<?>[]{};
+
 
   /**
    * The initial opacity set on the wave.
    *
    * @attribute initialOpacity
    * @type number
-   * @default 0.25
    */
   @JsProperty PaperRipple initialOpacity(double val);
   @JsProperty double initialOpacity();
@@ -30,8 +29,8 @@ public interface PaperRipple extends HTMLElement {
    *
    * @attribute opacityDecayVelocity
    * @type number
-   * @default 0.8
    */
   @JsProperty PaperRipple opacityDecayVelocity(double val);
   @JsProperty double opacityDecayVelocity();
+
 }

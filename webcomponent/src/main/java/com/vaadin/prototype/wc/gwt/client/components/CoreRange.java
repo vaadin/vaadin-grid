@@ -11,16 +11,15 @@ import com.google.gwt.user.client.EventListener;
 import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface CoreRange extends HTMLElement {
-
+public interface CoreRange extends HTMLElement  {
   Class<?>[] dependencies = new Class<?>[]{};
+
 
   /**
    * The number that represents the current value.
    *
    * @attribute value
    * @type number
-   * @default 0
    */
   @JsProperty CoreRange value(double val);
   @JsProperty double value();
@@ -30,7 +29,6 @@ public interface CoreRange extends HTMLElement {
    *
    * @attribute min
    * @type number
-   * @default 0
    */
   @JsProperty CoreRange min(double val);
   @JsProperty double min();
@@ -40,7 +38,6 @@ public interface CoreRange extends HTMLElement {
    *
    * @attribute max
    * @type number
-   * @default 100
    */
   @JsProperty CoreRange max(double val);
   @JsProperty double max();
@@ -50,7 +47,6 @@ public interface CoreRange extends HTMLElement {
    *
    * @attribute step
    * @type number
-   * @default 1
    */
   @JsProperty CoreRange step(double val);
   @JsProperty double step();
@@ -60,8 +56,8 @@ public interface CoreRange extends HTMLElement {
    *
    * @attribute ratio
    * @type number
-   * @default 0
    */
   @JsProperty CoreRange ratio(double val);
   @JsProperty double ratio();
+
 }

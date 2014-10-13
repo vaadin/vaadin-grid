@@ -11,9 +11,9 @@ import com.google.gwt.user.client.EventListener;
 import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface CoreDropdown extends HTMLElement {
-
+public interface CoreDropdown extends HTMLElement  {
   Class<?>[] dependencies = new Class<?>[]{};
+
 
   /**
    * The element associated with this dropdown, usually the element that triggers
@@ -30,7 +30,6 @@ public interface CoreDropdown extends HTMLElement {
    *
    * @attribute opened
    * @type boolean
-   * @default false
    */
   @JsProperty CoreDropdown opened(boolean val);
   @JsProperty boolean opened();
@@ -42,7 +41,6 @@ public interface CoreDropdown extends HTMLElement {
    *
    * @attribute halign
    * @type 'left' | 'right'
-   * @default 'left'
    */
   @JsProperty CoreDropdown halign(JavaScriptObject val);
   @JsProperty JavaScriptObject halign();
@@ -54,7 +52,6 @@ public interface CoreDropdown extends HTMLElement {
    *
    * @attribute valign
    * @type 'top' | 'bottom'
-   * @default 'top'
    */
   @JsProperty CoreDropdown valign(JavaScriptObject val);
   @JsProperty JavaScriptObject valign();
@@ -66,7 +63,6 @@ public interface CoreDropdown extends HTMLElement {
    *
    * @attribute margin
    * @type number
-   * @default 0
    */
   @JsProperty CoreDropdown margin(double val);
   @JsProperty double margin();
@@ -79,8 +75,8 @@ public interface CoreDropdown extends HTMLElement {
    *
    * @attribute transition
    * @type string
-   * @default null
    */
   @JsProperty CoreDropdown transition(String val);
   @JsProperty String transition();
+
 }

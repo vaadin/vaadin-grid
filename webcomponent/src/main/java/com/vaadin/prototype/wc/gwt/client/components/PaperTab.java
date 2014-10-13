@@ -11,17 +11,17 @@ import com.google.gwt.user.client.EventListener;
 import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface PaperTab extends HTMLElement {
-
+public interface PaperTab extends HTMLElement  {
   Class<?>[] dependencies = new Class<?>[]{PaperRipple.class};
+
 
   /**
    * If true, ink ripple effect is disabled.
    *
    * @attribute noink
    * @type boolean
-   * @default false
    */
   @JsProperty PaperTab noink(boolean val);
   @JsProperty boolean noink();
+
 }

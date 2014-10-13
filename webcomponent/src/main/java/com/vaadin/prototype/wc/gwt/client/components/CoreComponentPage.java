@@ -10,7 +10,8 @@ import com.google.gwt.dom.client.HeadElement;
 import com.google.gwt.user.client.EventListener;
 import com.vaadin.prototype.wc.gwt.client.html.*;
 
-/**
+@JsType(prototype = "HTMLElement", isNative = true)
+public interface CoreComponentPage extends HTMLElement /**
  * @group Polymer Core Elements
  *
  * core-xhr can be used to perform XMLHttpRequests.
@@ -106,9 +107,7 @@ import com.vaadin.prototype.wc.gwt.client.html.*;
  * @extends core-meta
  * @homepage github.io
  */
-@JsType(prototype = "HTMLElement", isNative = true)
-public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware, CoreSelector {
-
+, CoreMeta, CoreSelector {
   Class<?>[] dependencies = new Class<?>[]{};
 
   /**
@@ -122,12 +121,12 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    */
   void addEventListener(String event, EventListener listener);
 
+
   /**
    * Controls if the element lays out vertically or not.
    *
    * @attribute vertical
    * @type boolean
-   * @default false
    */
   @JsProperty CoreComponentPage vertical(boolean val);
   @JsProperty boolean vertical();
@@ -139,7 +138,6 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    *
    * @attribute justify
    * @type string start|center|end|between
-   * @default ''
    */
   @JsProperty CoreComponentPage justify(String val);
   @JsProperty String justify();
@@ -151,7 +149,6 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    *
    * @attribute align
    * @type string start|center|end
-   * @default ''
    */
   @JsProperty CoreComponentPage align(String val);
   @JsProperty String align();
@@ -161,7 +158,6 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    *
    * @attribute reverse
    * @type boolean
-   * @default false
    */
   @JsProperty CoreComponentPage reverse(boolean val);
   @JsProperty boolean reverse();
@@ -172,7 +168,6 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    * 
    * @attribute type
    * @type string
-   * @default 'default'
    */
   @JsProperty CoreComponentPage type(String val);
   @JsProperty String type();
@@ -182,7 +177,6 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    * 
    * @attribute list
    * @type array
-   * @default []
    */
   @JsProperty CoreComponentPage list(JsArray val);
   @JsProperty JsArray list();
@@ -201,7 +195,6 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    *
    * @attribute src
    * @type string
-   * @default ''
    */
   @JsProperty CoreComponentPage src(String val);
   @JsProperty String src();
@@ -212,7 +205,6 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    *
    * @attribute width
    * @type string
-   * @default ''
    */
   @JsProperty CoreComponentPage width(String val);
   @JsProperty String width();
@@ -224,7 +216,6 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    *
    * @attribute icons
    * @type string
-   * @default ''
    */
   @JsProperty CoreComponentPage icons(String val);
   @JsProperty String icons();
@@ -234,7 +225,6 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    *
    * @attribute iconSize
    * @type number
-   * @default 24
    */
   @JsProperty CoreComponentPage iconSize(double val);
   @JsProperty double iconSize();
@@ -246,7 +236,6 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    *
    * @attribute offsetX
    * @type number
-   * @default 0
    */
   @JsProperty CoreComponentPage offsetX(double val);
   @JsProperty double offsetX();
@@ -258,7 +247,6 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    *
    * @attribute offsetY
    * @type number
-   * @default 0
    */
   @JsProperty CoreComponentPage offsetY(double val);
   @JsProperty double offsetY();
@@ -311,7 +299,6 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    *
    * @attribute size
    * @type string
-   * @default 24
    */
   @JsProperty CoreComponentPage size(String val);
   @JsProperty String size();
@@ -323,7 +310,6 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    *
    * @attribute icon
    * @type string
-   * @default ''
    */
   @JsProperty CoreComponentPage icon(String val);
   @JsProperty String icon();
@@ -334,7 +320,6 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    *
    * @attribute active
    * @type boolean
-   * @default false
    */
   @JsProperty CoreComponentPage active(boolean val);
   @JsProperty boolean active();
@@ -382,7 +367,6 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    *
    * @attribute mode
    * @type string
-   * @default ''
    */
   @JsProperty CoreComponentPage mode(String val);
   @JsProperty String mode();
@@ -393,7 +377,6 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    *
    * @attribute tallClass
    * @type string
-   * @default 'tall'
    */
   @JsProperty CoreComponentPage tallClass(String val);
   @JsProperty String tallClass();
@@ -403,7 +386,6 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    *
    * @attribute shadow
    * @type boolean
-   * @default false
    */
   @JsProperty CoreComponentPage shadow(boolean val);
   @JsProperty boolean shadow();
@@ -431,7 +413,6 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    * 
    * @attribute url
    * @type string
-   * @default ''
    */
   @JsProperty CoreComponentPage url(String val);
   @JsProperty String url();
@@ -456,7 +437,6 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    *  
    * @attribute handleAs
    * @type string
-   * @default 'text'
    */
   @JsProperty CoreComponentPage handleAs(String val);
   @JsProperty String handleAs();
@@ -466,7 +446,6 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    *
    * @attribute auto
    * @type boolean
-   * @default false
    */
   @JsProperty CoreComponentPage auto(boolean val);
   @JsProperty boolean auto();
@@ -476,7 +455,6 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    *  
    * @attribute params
    * @type string (JSON)
-   * @default ''
    */
   @JsProperty CoreComponentPage params(String val);
   @JsProperty String params();
@@ -486,7 +464,6 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    *
    * @attribute response
    * @type Object
-   * @default null
    */
   @JsProperty CoreComponentPage response(JavaScriptObject val);
   @JsProperty JavaScriptObject response();
@@ -497,7 +474,6 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    *
    * @attribute method
    * @type string
-   * @default ''
    */
   @JsProperty CoreComponentPage method(String val);
   @JsProperty String method();
@@ -516,7 +492,6 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    *  
    * @attribute headers
    * @type Object
-   * @default null
    */
   @JsProperty CoreComponentPage headers(JavaScriptObject val);
   @JsProperty JavaScriptObject headers();
@@ -532,7 +507,6 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    *  
    * @attribute body
    * @type Object
-   * @default null
    */
   @JsProperty CoreComponentPage body(JavaScriptObject val);
   @JsProperty JavaScriptObject body();
@@ -542,7 +516,6 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    *
    * @attribute contentType
    * @type string
-   * @default 'application/x-www-form-urlencoded'
    */
   @JsProperty CoreComponentPage contentType(String val);
   @JsProperty String contentType();
@@ -552,7 +525,6 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    * 
    * @attribute withCredentials
    * @type boolean
-   * @default false
    */
   @JsProperty CoreComponentPage withCredentials(boolean val);
   @JsProperty boolean withCredentials();
@@ -569,7 +541,6 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    *
    * @attribute multi
    * @type boolean
-   * @default false
    */
   @JsProperty CoreComponentPage multi(boolean val);
   @JsProperty boolean multi();
@@ -636,7 +607,6 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    *
    * @attribute selected
    * @type Object
-   * @default null
    */
   @JsProperty CoreComponentPage selected(JavaScriptObject val);
   @JsProperty JavaScriptObject selected();
@@ -646,7 +616,6 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    *
    * @attribute valueattr
    * @type string
-   * @default 'name'
    */
   @JsProperty CoreComponentPage valueattr(String val);
   @JsProperty String valueattr();
@@ -656,7 +625,6 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    * 
    * @attribute selectedClass
    * @type string
-   * @default 'core-selected'
    */
   @JsProperty CoreComponentPage selectedClass(String val);
   @JsProperty String selectedClass();
@@ -667,7 +635,6 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    *
    * @attribute selectedProperty
    * @type string
-   * @default ''
    */
   @JsProperty CoreComponentPage selectedProperty(String val);
   @JsProperty String selectedProperty();
@@ -678,7 +645,6 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    * 
    * @attribute selectedItem
    * @type Object
-   * @default null
    */
   @JsProperty CoreComponentPage selectedItem(JavaScriptObject val);
   @JsProperty JavaScriptObject selectedItem();
@@ -689,7 +655,6 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    * 
    * @attribute selectedModel
    * @type Object
-   * @default null
    */
   @JsProperty CoreComponentPage selectedModel(JavaScriptObject val);
   @JsProperty JavaScriptObject selectedModel();
@@ -699,7 +664,6 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    *
    * @attribute selectedIndex
    * @type number
-   * @default -1
    */
   @JsProperty CoreComponentPage selectedIndex(double val);
   @JsProperty double selectedIndex();
@@ -710,7 +674,6 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    * 
    * @attribute target
    * @type Object
-   * @default null
    */
   @JsProperty CoreComponentPage target(JavaScriptObject val);
   @JsProperty JavaScriptObject target();
@@ -731,7 +694,6 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    * 
    * @attribute itemSelector
    * @type string
-   * @default ''
    */
   @JsProperty CoreComponentPage itemSelector(String val);
   @JsProperty String itemSelector();
@@ -742,7 +704,6 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    *
    * @attribute activateEvent
    * @type string
-   * @default 'tap'
    */
   @JsProperty CoreComponentPage activateEvent(String val);
   @JsProperty String activateEvent();
@@ -753,7 +714,6 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    *
    * @attribute notap
    * @type boolean
-   * @default false
    */
   @JsProperty CoreComponentPage notap(boolean val);
   @JsProperty boolean notap();
@@ -763,7 +723,6 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    *
    * @attribute label
    * @type string
-   * @default ''
    */
   @JsProperty CoreComponentPage label(String val);
   @JsProperty String label();
@@ -773,8 +732,8 @@ public interface CoreComponentPage extends HTMLElement, CoreMeta, CoreThemeAware
    *
    * @attribute sources
    * @type Array
-   * @default []
    */
   @JsProperty CoreComponentPage sources(JsArray val);
   @JsProperty JsArray sources();
+
 }

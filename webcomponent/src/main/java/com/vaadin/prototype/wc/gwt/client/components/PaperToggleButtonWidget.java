@@ -1,42 +1,36 @@
 package com.vaadin.prototype.wc.gwt.client.components;
 
+import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.js.JsProperty;
+import com.google.gwt.core.client.js.JsType;
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.ui.Widget;
-import com.vaadin.prototype.wc.gwt.client.WC;
+import com.vaadin.prototype.wc.gwt.client.*;
 
-public class PaperToggleButtonWidget extends Widget  {
-    private PaperToggleButton element;
-    // TODO: a list with
-    private EventListener listener;
+public class PaperToggleButtonWidget extends BaseWidget  {
+  
+    protected String[] events() {
+      return new String[]{"change"};
+    }
     
     public PaperToggleButtonWidget() {
-        element = WC.create(PaperToggleButton.class);
-        setElement((Element) element);
-        element.addEventListener("change", this);
-    }
-
-    public void setChecked(boolean val) {
-        element.checked(val);
-    }
-
-    public boolean isChecked() {
-        return element.checked();
+      super(WC.create(PaperToggleButton.class));
     }
     
-    @Override
-    public void onBrowserEvent(Event event) {
-        if ("change".equals(event.getType())) {
-            if (listener != null) {
-                listener.onBrowserEvent(event);
-            }
-        } else {
-            super.onBrowserEvent(event);
-        }
+    public PaperToggleButtonWidget(PaperToggleButton element) {
+      super(element);
     }
     
-    public void addChangeHandler(EventListener arg) {
-        listener = arg;
+    protected PaperToggleButton element() {
+      return (PaperToggleButton)super.getElement();
     }
+
+    public void checked(boolean val) {
+        element().checked(val);
+    }
+    public boolean checked() {
+        return element().checked();
+    }
+
 }

@@ -11,17 +11,17 @@ import com.google.gwt.user.client.EventListener;
 import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface PaperProgress extends HTMLElement, CoreRange {
-
+public interface PaperProgress extends HTMLElement , CoreRange {
   Class<?>[] dependencies = new Class<?>[]{CoreRange.class};
+
 
   /**
    * The number that represents the current secondary progress.
    *
    * @attribute secondaryProgress
    * @type number
-   * @default 0
    */
   @JsProperty PaperProgress secondaryProgress(double val);
   @JsProperty double secondaryProgress();
+
 }

@@ -11,9 +11,9 @@ import com.google.gwt.user.client.EventListener;
 import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface CoreIconButton extends HTMLElement, CoreThemeAware {
-
+public interface CoreIconButton extends HTMLElement  {
   Class<?>[] dependencies = new Class<?>[]{CoreIcon.class, CoreIcons.class};
+
 
   /**
    * The URL of an image for the icon.  Should not use `icon` property
@@ -21,7 +21,6 @@ public interface CoreIconButton extends HTMLElement, CoreThemeAware {
    *
    * @attribute src
    * @type string
-   * @default ''
    */
   @JsProperty CoreIconButton src(String val);
   @JsProperty String src();
@@ -32,7 +31,6 @@ public interface CoreIconButton extends HTMLElement, CoreThemeAware {
    *
    * @attribute active
    * @type boolean
-   * @default false
    */
   @JsProperty CoreIconButton active(boolean val);
   @JsProperty boolean active();
@@ -44,8 +42,8 @@ public interface CoreIconButton extends HTMLElement, CoreThemeAware {
    *
    * @attribute icon
    * @type string
-   * @default ''
    */
   @JsProperty CoreIconButton icon(String val);
   @JsProperty String icon();
+
 }

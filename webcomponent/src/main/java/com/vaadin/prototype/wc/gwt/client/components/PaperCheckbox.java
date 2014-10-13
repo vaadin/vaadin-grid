@@ -11,8 +11,7 @@ import com.google.gwt.user.client.EventListener;
 import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface PaperCheckbox extends HTMLElement, PaperRadioButton {
-
+public interface PaperCheckbox extends HTMLElement , PaperRadioButton {
   Class<?>[] dependencies = new Class<?>[]{PaperRadioButton.class};
 
   /**
@@ -21,4 +20,6 @@ public interface PaperCheckbox extends HTMLElement, PaperRadioButton {
    * @event change
    */
   void addEventListener(String event, EventListener listener);
+
+
 }

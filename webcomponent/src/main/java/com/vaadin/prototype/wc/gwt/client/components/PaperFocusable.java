@@ -10,7 +10,8 @@ import com.google.gwt.dom.client.HeadElement;
 import com.google.gwt.user.client.EventListener;
 import com.vaadin.prototype.wc.gwt.client.html.*;
 
-/**
+@JsType(prototype = "HTMLElement", isNative = true)
+public interface PaperFocusable extends HTMLElement /**
  * @group Paper Elements
  *
  * paper-focusable is a base class for paper elements that can be focused.
@@ -19,10 +20,9 @@ import com.vaadin.prototype.wc.gwt.client.html.*;
  * @status beta
  * @homepage github.io
  */
-@JsType(prototype = "HTMLElement", isNative = true)
-public interface PaperFocusable extends HTMLElement {
-
+ {
   Class<?>[] dependencies = new Class<?>[]{};
+
 
   /**
    * If true, the button is currently active either because the
@@ -31,7 +31,6 @@ public interface PaperFocusable extends HTMLElement {
    *
    * @attribute active
    * @type boolean
-   * @default false
    */
   @JsProperty PaperFocusable active(boolean val);
   @JsProperty boolean active();
@@ -42,7 +41,6 @@ public interface PaperFocusable extends HTMLElement {
    *
    * @attribute focused
    * @type boolean
-   * @default false
    */
   @JsProperty PaperFocusable focused(boolean val);
   @JsProperty boolean focused();
@@ -52,7 +50,6 @@ public interface PaperFocusable extends HTMLElement {
    *
    * @attribute pressed
    * @type boolean
-   * @default false
    */
   @JsProperty PaperFocusable pressed(boolean val);
   @JsProperty boolean pressed();
@@ -62,7 +59,6 @@ public interface PaperFocusable extends HTMLElement {
    *
    * @attribute disabled
    * @type boolean
-   * @default false
    */
   @JsProperty PaperFocusable disabled(boolean val);
   @JsProperty boolean disabled();
@@ -74,8 +70,8 @@ public interface PaperFocusable extends HTMLElement {
    *
    * @attribute isToggle
    * @type boolean
-   * @default false
    */
   @JsProperty PaperFocusable isToggle(boolean val);
   @JsProperty boolean isToggle();
+
 }

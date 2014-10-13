@@ -11,9 +11,9 @@ import com.google.gwt.user.client.EventListener;
 import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface CoreIcon extends HTMLElement {
-
+public interface CoreIcon extends HTMLElement  {
   Class<?>[] dependencies = new Class<?>[]{CoreIconset.class};
+
 
   /**
    * The URL of an image for the icon. If the src property is specified,
@@ -21,7 +21,6 @@ public interface CoreIcon extends HTMLElement {
    *
    * @attribute src
    * @type string
-   * @default ''
    */
   @JsProperty CoreIcon src(String val);
   @JsProperty String src();
@@ -31,7 +30,6 @@ public interface CoreIcon extends HTMLElement {
    *
    * @attribute size
    * @type string
-   * @default 24
    */
   @JsProperty CoreIcon size(String val);
   @JsProperty String size();
@@ -43,8 +41,8 @@ public interface CoreIcon extends HTMLElement {
    *
    * @attribute icon
    * @type string
-   * @default ''
    */
   @JsProperty CoreIcon icon(String val);
   @JsProperty String icon();
+
 }

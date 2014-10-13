@@ -11,16 +11,15 @@ import com.google.gwt.user.client.EventListener;
 import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface PaperToast extends HTMLElement {
-
+public interface PaperToast extends HTMLElement  {
   Class<?>[] dependencies = new Class<?>[]{CoreOverlay.class, CoreTransitionCss.class, CoreMediaQuery.class};
+
 
   /**
    * The text shows in a toast.
    *
    * @attribute text
    * @type string
-   * @default ''
    */
   @JsProperty PaperToast text(String val);
   @JsProperty String text();
@@ -30,7 +29,6 @@ public interface PaperToast extends HTMLElement {
    *
    * @attribute duration
    * @type number
-   * @default 3000
    */
   @JsProperty PaperToast duration(double val);
   @JsProperty double duration();
@@ -40,7 +38,6 @@ public interface PaperToast extends HTMLElement {
    *
    * @attribute opened
    * @type boolean
-   * @default false
    */
   @JsProperty PaperToast opened(boolean val);
   @JsProperty boolean opened();
@@ -51,7 +48,6 @@ public interface PaperToast extends HTMLElement {
    *
    * @attribute responsiveWidth
    * @type string
-   * @default '480px'
    */
   @JsProperty PaperToast responsiveWidth(String val);
   @JsProperty String responsiveWidth();
@@ -61,7 +57,6 @@ public interface PaperToast extends HTMLElement {
    *
    * @attribute swipeDisabled
    * @type boolean
-   * @default false
    */
   @JsProperty PaperToast swipeDisabled(boolean val);
   @JsProperty boolean swipeDisabled();
@@ -83,4 +78,5 @@ public interface PaperToast extends HTMLElement {
    * @method dismiss
    */
   void dismiss();
+
 }

@@ -11,7 +11,8 @@ import com.google.gwt.user.client.EventListener;
 import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface CoreTransitionCss extends HTMLElement, CoreTransition {
-
+public interface CoreTransitionCss extends HTMLElement , CoreTransition {
   Class<?>[] dependencies = new Class<?>[]{CoreTransition.class};
+
+
 }

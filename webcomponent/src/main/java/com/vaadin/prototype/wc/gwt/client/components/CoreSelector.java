@@ -11,9 +11,9 @@ import com.google.gwt.user.client.EventListener;
 import com.vaadin.prototype.wc.gwt.client.html.*;
 
 @JsType(prototype = "HTMLElement", isNative = true)
-public interface CoreSelector extends HTMLElement {
-
+public interface CoreSelector extends HTMLElement  {
   Class<?>[] dependencies = new Class<?>[]{CoreSelection.class};
+
 
   /**
    * Gets or sets the selected element.  Default to use the index
@@ -44,7 +44,6 @@ public interface CoreSelector extends HTMLElement {
    *
    * @attribute selected
    * @type Object
-   * @default null
    */
   @JsProperty CoreSelector selected(JavaScriptObject val);
   @JsProperty JavaScriptObject selected();
@@ -54,7 +53,6 @@ public interface CoreSelector extends HTMLElement {
    *
    * @attribute multi
    * @type boolean
-   * @default false
    */
   @JsProperty CoreSelector multi(boolean val);
   @JsProperty boolean multi();
@@ -64,7 +62,6 @@ public interface CoreSelector extends HTMLElement {
    *
    * @attribute valueattr
    * @type string
-   * @default 'name'
    */
   @JsProperty CoreSelector valueattr(String val);
   @JsProperty String valueattr();
@@ -74,7 +71,6 @@ public interface CoreSelector extends HTMLElement {
    * 
    * @attribute selectedClass
    * @type string
-   * @default 'core-selected'
    */
   @JsProperty CoreSelector selectedClass(String val);
   @JsProperty String selectedClass();
@@ -85,7 +81,6 @@ public interface CoreSelector extends HTMLElement {
    *
    * @attribute selectedProperty
    * @type string
-   * @default ''
    */
   @JsProperty CoreSelector selectedProperty(String val);
   @JsProperty String selectedProperty();
@@ -96,7 +91,6 @@ public interface CoreSelector extends HTMLElement {
    *
    * @attribute selectedAttribute
    * @type string
-   * @default 'active'
    */
   @JsProperty CoreSelector selectedAttribute(String val);
   @JsProperty String selectedAttribute();
@@ -107,7 +101,6 @@ public interface CoreSelector extends HTMLElement {
    * 
    * @attribute selectedItem
    * @type Object
-   * @default null
    */
   @JsProperty CoreSelector selectedItem(JavaScriptObject val);
   @JsProperty JavaScriptObject selectedItem();
@@ -118,7 +111,6 @@ public interface CoreSelector extends HTMLElement {
    * 
    * @attribute selectedModel
    * @type Object
-   * @default null
    */
   @JsProperty CoreSelector selectedModel(JavaScriptObject val);
   @JsProperty JavaScriptObject selectedModel();
@@ -128,7 +120,6 @@ public interface CoreSelector extends HTMLElement {
    *
    * @attribute selectedIndex
    * @type number
-   * @default -1
    */
   @JsProperty CoreSelector selectedIndex(double val);
   @JsProperty double selectedIndex();
@@ -139,7 +130,6 @@ public interface CoreSelector extends HTMLElement {
    * 
    * @attribute target
    * @type Object
-   * @default null
    */
   @JsProperty CoreSelector target(JavaScriptObject val);
   @JsProperty JavaScriptObject target();
@@ -160,7 +150,6 @@ public interface CoreSelector extends HTMLElement {
    * 
    * @attribute itemSelector
    * @type string
-   * @default ''
    */
   @JsProperty CoreSelector itemSelector(String val);
   @JsProperty String itemSelector();
@@ -171,7 +160,6 @@ public interface CoreSelector extends HTMLElement {
    *
    * @attribute activateEvent
    * @type string
-   * @default 'tap'
    */
   @JsProperty CoreSelector activateEvent(String val);
   @JsProperty String activateEvent();
@@ -182,8 +170,8 @@ public interface CoreSelector extends HTMLElement {
    *
    * @attribute notap
    * @type boolean
-   * @default false
    */
   @JsProperty CoreSelector notap(boolean val);
   @JsProperty boolean notap();
+
 }
