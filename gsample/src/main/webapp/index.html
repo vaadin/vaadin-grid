@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1" />
 <script src="VAADIN/widgetsets/Demo/Demo.nocache.js"></script>
-<!--      <script src="VAADIN/widgetsets/Sample/Sample.nocache.js"></script> -->
+<!-- <script src="VAADIN/widgetsets/Sample/Sample.nocache.js"></script> -->
 </head>
 <body>
 
@@ -103,10 +103,10 @@
         return grid && grid.dataSource;
       }, function() {
         // we should set data size before setting the data source (grid bug)
-        grid.rowCount(myData.length);
-        grid.dataSource(function(index, count) {
+        grid.rowCount = myData.length;
+        grid.dataSource = function(index, count) {
           return myData.slice(index, index + count);
-        });
+        };
       });
     </script>
 
@@ -129,12 +129,12 @@
       waitUntil(function() {
         return bigGrid && bigGrid.dataSource;
       }, function() {
-        bigGrid.rowCount(myBigData.length);
-        bigGrid.dataSource(function(index, count, callback) {
+        bigGrid.rowCount = myBigData.length;
+        bigGrid.dataSource = function(index, count, callback) {
           setTimeout(function() {
             callback(myBigData.slice(index, index + count));
           }, 800);
-        });
+        };
       });
 
       // Note: myBigData is defined at the end of the page
@@ -161,10 +161,10 @@
       waitUntil(function() {
         return grid && grid.dataSource;
       }, function() {
-        myFormatGrid.rowCount(myFormatData.length);
-        myFormatGrid.dataSource(function(index, count) {
+        myFormatGrid.rowCount = myFormatData.length;
+        myFormatGrid.dataSource = function(index, count) {
           return myFormatData.slice(index, index + count);
-        });
+        };
 
         // Maps to simple Renderer interface instance in GWT
         var valueRenderer = function(element, data, rowIndex) {
@@ -188,8 +188,8 @@
 
         // columns[0] uses default renderer that just sets the value as innerText
         // TODO: myFormatGrid.columns[1].renderer = valueRenderer;
-        myFormatGrid.columns(1).renderer = valueRenderer;
-        myFormatGrid.columns(2).renderer = progressRenderer;
+        myFormatGrid.columns[1].renderer = valueRenderer;
+        myFormatGrid.columns[2].renderer = progressRenderer;
       });
     </script>
 
@@ -215,19 +215,19 @@
       waitUntil(function() {
         return myMapGrid && myMapGrid.dataSource;
       }, function() {
-        myMapGrid.rowCount(myMapData.length);
-        myMapGrid.dataSource(function(index, count) {
+        myMapGrid.rowCount = myMapData.length;
+        myMapGrid.dataSource = function(index, count) {
           return myMapData.slice(index, index + count);
-        });
+        };
 
         // Corresponds to GridColumn.getValue()
-        myMapGrid.columns(0).value = function(rowObject, columnIndex) {
+        myMapGrid.columns[0].value = function(rowObject, columnIndex) {
           return "> " + rowObject.name;
         }
 
         // Shorthand for using rowObject[value]
-        myMapGrid.columns(1).value = "value";
-        myMapGrid.columns(2).value = "progress";
+        myMapGrid.columns[1].value = "value";
+        myMapGrid.columns[2].value = "progress";
       });
     </script>
 
@@ -290,19 +290,17 @@
       waitUntil(function() {
         return mySelGrid && mySelGrid.dataSource;
       }, function() {
-        mySelGrid.rowCount(mySelData.length);
-        mySelGrid.dataSource(function(index, count) {
+        mySelGrid.rowCount = mySelData.length;
+        mySelGrid.dataSource = function(index, count) {
           return mySelData.slice(index, index + count);
-        });
+        };
 
         mySelGrid.addEventListener("select", function(event) {
-          //TODO: console.log("Selected row index:", mySelGrid.selectedRow);
-          myLabel.innerText = mySelGrid.selectedRow();
+          myLabel.innerText = mySelGrid.selectedRow;
         });
 
         myButton.addEventListener("click", function(event) {
-          //TODO: mySelGrid.selectedRow = 3;
-          mySelGrid.selectRow(Math.floor(Math.random() * mySelData.length));
+          mySelGrid.selectedRow = Math.floor(Math.random() * mySelData.length);
         });
       });
     </script>
@@ -333,25 +331,24 @@
       var myMultiSelButton = document.getElementById("myMultiSelButton");
       var myMultiSelLabel = document.getElementById("myMultiSelLabel");
 
+      window.aa = myMultiSelGrid;
+
       waitUntil(function() {
         return myMultiSelGrid && myMultiSelGrid.dataSource;
       }, function() {
-        myMultiSelGrid.rowCount(myMultiSelData.length);
-        myMultiSelGrid.dataSource(function(index, count) {
+        myMultiSelGrid.rowCount = myMultiSelData.length;
+        myMultiSelGrid.dataSource = function(index, count) {
           return myMultiSelData.slice(index, index + count);
-        });
+        };
 
         myMultiSelGrid.addEventListener("select", function(event) {
-          //TODO: console.log("Selected row indices:", grid.selectedRows);
-          myMultiSelLabel.innerText = myMultiSelGrid.selectedRows();
+          myMultiSelLabel.innerText = myMultiSelGrid.selectedRows;
         });
 
         myMultiSelButton.addEventListener("click", function(event) {
-          //TODO: mySelGrid.selectedRow = 3;
-          myMultiSelGrid.selectedRows().clear();
           var a = Math.floor(Math.random() * myMultiSelData.length);
           var b = Math.floor(Math.random() * myMultiSelData.length);
-          myMultiSelGrid.selectedRows().push(a, b);
+          myMultiSelGrid.selectedRows = [a, b];
         });
       });
     </script>

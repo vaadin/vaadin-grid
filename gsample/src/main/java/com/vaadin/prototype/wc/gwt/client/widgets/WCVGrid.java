@@ -5,16 +5,17 @@ import static com.google.gwt.query.client.GQuery.Widgets;
 import static com.google.gwt.query.client.GQuery.console;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.client.JsArray;
+import com.google.gwt.core.client.JsArrayInteger;
 import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.core.client.js.JsExport;
+import com.google.gwt.core.client.js.JsProperty;
 import com.google.gwt.core.client.js.JsType;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.logical.shared.AttachEvent;
@@ -27,10 +28,8 @@ import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
-import com.vaadin.client.data.AbstractRemoteDataSource;
 import com.vaadin.client.ui.grid.FlyweightCell;
 import com.vaadin.client.ui.grid.Grid;
 import com.vaadin.client.ui.grid.Grid.SelectionMode;
@@ -45,16 +44,18 @@ import com.vaadin.prototype.wc.gwt.client.WC;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLElement;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLEvents;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLShadow;
+import com.vaadin.prototype.wc.gwt.client.html.HTMLTableElement;
 import com.vaadin.prototype.wc.gwt.client.widgets.grid.GData;
 import com.vaadin.prototype.wc.gwt.client.widgets.grid.GData.GColumn;
 import com.vaadin.prototype.wc.gwt.client.widgets.grid.GData.GColumn.GHeader;
 import com.vaadin.prototype.wc.gwt.client.widgets.grid.GData.GColumn.GHeader.Format;
+import com.vaadin.prototype.wc.gwt.client.widgets.grid.GDataSource;
 import com.vaadin.shared.ui.grid.GridState;
 import com.vaadin.shared.ui.grid.HeightMode;
 
 @JsExport
 @JsType
-public class WCVGrid extends HTMLElement.Prototype implements
+public class WCVGrid extends HTMLTableElement.Prototype implements
         HTMLElement.LifeCycle.Created, HTMLElement.LifeCycle.Attached,
         HTMLElement.LifeCycle.Changed, ValueChangeHandler<Double>, Handler,
         EventListener, SelectionChangeHandler<JsArrayMixed> {
@@ -69,11 +70,14 @@ public class WCVGrid extends HTMLElement.Prototype implements
     private Panel shadowPanel;
     private boolean initialized = false;
     private String theme = "valo";
-    private String dataSource;
-    private List<GColumn> cols;
+    public List<GColumn> cols;
     private List<JsArrayMixed> vals;
     private boolean changed = true;
     private Timer deferRefresh;
+
+    // TODO: we should set this from JS among the datasource.
+    private int size = 0;
+
 
     private int headerDefaultRowIndex = 0;
 
@@ -129,13 +133,6 @@ public class WCVGrid extends HTMLElement.Prototype implements
         addEventListener("DOMSubtreeModified", this);
     }
 
-    public JavaScriptObject columns(int n) {
-        changed = true;
-        deferRefresh.schedule(200);
-        return cols.get(Math.min(cols.size() - 1, Math.max(0, n)))
-                .getDataImpl();
-    }
-
     private void initGrid() {
         if (!changed) {
             return;
@@ -151,7 +148,8 @@ public class WCVGrid extends HTMLElement.Prototype implements
 
         if ($(this).attr("selectionMode").equals("multi")) {
             grid.setSelectionMode(SelectionMode.MULTI);
-            selectionProxy = new SelectionProxy(grid);
+        } else {
+            grid.setSelectionMode(SelectionMode.SINGLE);
         }
         if (cols != null) {
             for (int i = 0, l = cols.size(); i < l; i++) {
@@ -404,119 +402,20 @@ public class WCVGrid extends HTMLElement.Prototype implements
         }
     }
 
-    public void setCols(List<GColumn> cols) {
+    private void setCols(List<GColumn> cols) {
         changed = true;
         this.cols = cols;
     }
 
-    public void setVals(List<JsArrayMixed> vals) {
+    private void setVals(List<JsArrayMixed> vals) {
         changed = true;
         this.vals = vals;
     }
 
-    public void dataSource(JavaScriptObject function) {
-        assert JsUtils.isFunction(function);
-        grid.setDataSource(new FunctionAbstractRemoteDataSource(function));
-    }
-
-    private GData parseJso(JavaScriptObject o) {
-        GData r = GQ.create(GData.class);
-        if (JsUtils.isArray(o)) {
-            r.setValues(JsArrayToList(o));
-        } else {
-            r.load(o);
-        }
-        if (!r.values().isEmpty()) {
-            setVals(r.values());
-        }
-        if (!r.columns().isEmpty()) {
-            List<GColumn> colRows = r.columns();
-            setCols(colRows);
-        }
-        initGrid();
-        return r;
-    }
-
-    private List<JsArrayMixed> JsArrayToList(JavaScriptObject o) {
-        List<JsArrayMixed> vals = new ArrayList<JsArrayMixed>();
-        JsArray<JsArrayMixed> arr = o.cast();
-        for (int i = 0; i < arr.length(); i++) {
-            vals.add(arr.get(i));
-        }
-        return vals;
-    }
-
-    private int rowsize = 0;
-
-    private SelectionProxy selectionProxy;
-
-    public void rowCount(double rows) {
-        rowsize = (int) rows;
-        adjustHeight(rowsize);
-    }
-
     private void adjustHeight(int size) {
-        grid.setHeightMode(HeightMode.ROW);
-        grid.setHeightByRows(Math.min(size, GridState.DEFAULT_HEIGHT_BY_ROWS));
-    }
-
-    private native JavaScriptObject exec(JavaScriptObject f, int idx,
-            int count, AsyncCallback<JavaScriptObject> cb) /*-{
-        return f(idx, count, function(r) {
-            cb.@com.google.gwt.user.client.rpc.AsyncCallback::onSuccess(*)(r);
-        });
-    }-*/;
-
-    private class FunctionAbstractRemoteDataSource extends
-            AbstractRemoteDataSource<JsArrayMixed> {
-        private JavaScriptObject f;
-
-        // TODO: make a feature request to grid team so as they implement
-        // indexOf(row)
-        private HashMap<Object, Integer> idx = new HashMap<Object, Integer>();
-
-        public FunctionAbstractRemoteDataSource(JavaScriptObject jso) {
-            assert JsUtils.isFunction(jso);
-            f = jso;
-            setEstimatedSize(rowsize);
-        }
-
-        @Override
-        protected void requestRows(final int idx, int count) {
-            JavaScriptObject o = exec(f, idx, count,
-                    new AsyncCallback<JavaScriptObject>() {
-                        public void onFailure(Throwable caught) {
-                        }
-
-                        public void onSuccess(JavaScriptObject result) {
-                            setRowData(idx, JsArrayToList(result));
-                        }
-                    });
-            if (o != null) {
-                setRowData(idx, JsArrayToList(o));
-            }
-        }
-
-        @Override
-        protected void setRowData(int firstRowIndex, List<JsArrayMixed> rowData) {
-            for (int i = 0; i < rowData.size(); i++) {
-                idx.put(getRowKey(rowData.get(i)), firstRowIndex + i);
-            }
-            super.setRowData(firstRowIndex, rowData);
-        }
-
-        @Override
-        public Object getRowKey(JsArrayMixed row) {
-            return row.toString();
-        }
-
-        public int indexOf(JsArrayMixed row) {
-            return row == null ? -1 : idx.get(getRowKey(row));
-        }
-
-        @Override
-        public JsArrayMixed getRow(int rowIndex) {
-            return super.getRow(rowIndex);
+        if (size > 0) {
+            grid.setHeightMode(HeightMode.ROW);
+            grid.setHeightByRows(Math.min(size, GridState.DEFAULT_HEIGHT_BY_ROWS));
         }
     }
 
@@ -524,62 +423,63 @@ public class WCVGrid extends HTMLElement.Prototype implements
     public void onSelectionChange(SelectionChangeEvent<JsArrayMixed> ev) {
         dispatchEvent(selectEvent);
     }
-
-    public int selectedRow() {
-        return ((FunctionAbstractRemoteDataSource) grid.getDataSource())
-                .indexOf(grid.getSelectedRow());
+    
+    // TODO: 
+    // @JsProperty seems not exporting these methods right now.
+    // We use a magic function name 'jsProperty...' to mark these methods as
+    // JS properties when mixing the prototype in WC.
+    public void jsPropertyRowCount() {};
+    @JsProperty public void setRowCount(double rows) {
+        size = (int) rows;
+        adjustHeight(size);
+    }
+    @JsProperty public double getRowCount() {
+        return size;
     }
 
-    public SelectionProxy selectedRows() {
-        return selectionProxy;
+    public void jsPropertyDataSource() {};
+    @JsProperty public void setDataSource(JavaScriptObject function) {
+        assert JsUtils.isFunction(function);
+        grid.setDataSource(new GDataSource(function, size));
     }
-
-    public void selectRow(int idx) {
+    @JsProperty public JavaScriptObject getDataSource() {
+        return JavaScriptObject.createFunction();
+    }
+    
+    public void jsPropertyColumns() {};
+    @JsProperty public JavaScriptObject getColumns() {
+        // TODO: use observable
+        deferRefresh.schedule(200);
+        // Using GQuery data-binding magic to convert list to js arrays.
+        return GQ.create(GData.class).setColumns(cols).get("columns");
+    }
+    @JsProperty public void setColumns(JavaScriptObject newCols) {
+        cols = GQ.create(GData.class).<GData>set("columns", newCols).columns();
+    }
+    
+    public void jsPropertySelectedRow() {};
+    @JsProperty public int getSelectedRow() {
+        return grid.getDataSource().indexOf(grid.getSelectedRow());
+    }
+    @JsProperty public void setSelectedRow(int idx) {
         grid.select(grid.getDataSource().getRow(idx));
     }
 
-    @JsType
-    // TODO: add more data manipulation methods
-    private class SelectionProxy {
-        private Grid<JsArrayMixed> grid;
-
-        public SelectionProxy(Grid<JsArrayMixed> grid) {
-            this.grid = grid;
+    public void jsPropertySelectedRows() {};
+    @JsProperty public void setSelectedRows (JsArrayInteger arr) {
+        grid.getSelectionModel().reset();
+        for (int i = 0, l = arr.length(); i < l; i++) {
+            grid.select(grid.getDataSource().getRow(arr.get(i)));
         }
-
-        public native int push(int... args) /*-{
-            var grid = this.@com.vaadin.prototype.wc.gwt.client.widgets.WCVGrid.SelectionProxy::grid;
-            var selectionModel = grid.@com.vaadin.client.ui.grid.Grid::getSelectionModel()();
-            var dataSource = grid.@com.vaadin.client.ui.grid.Grid::getDataSource()();
-            for (var i = 0; i < arguments.length; i++) {
-                var rowId = arguments[i];
-                var row = dataSource.@com.vaadin.client.data.DataSource::getRow(I)(rowId);
-                selectionModel.@com.vaadin.client.ui.grid.selection.SelectionModelMulti::select([Ljava/lang/Object;)([row]);
-            }
-            var selectedRows = grid.@com.vaadin.client.ui.grid.Grid::getSelectedRows()();
-            return selectedRows.@java.util.Collection::size()();
-        }-*/;
-
-        public void clear() {
-            grid.getSelectionModel().reset();
+    }
+    @JsProperty public JsArrayInteger getSelectedRows() {
+        JsArrayInteger ret = JsArrayInteger.createArray().cast();
+        Collection<JsArrayMixed> c = grid.getSelectedRows();
+        for (Iterator<JsArrayMixed> i = c.iterator(); i.hasNext();) {
+            ret.push(grid.getDataSource().indexOf(i.next()));
         }
-
-        public int[] getSelection() {
-            FunctionAbstractRemoteDataSource dataSource = ((FunctionAbstractRemoteDataSource) grid
-                    .getDataSource());
-            int[] selection = new int[grid.getSelectedRows().size()];
-            Iterator<JsArrayMixed> rowIterator = grid.getSelectedRows()
-                    .iterator();
-            for (int i = 0; i < selection.length; i++) {
-                selection[i] = dataSource.indexOf(rowIterator.next());
-            }
-            return selection;
-        }
-
-        @Override
-        public String toString() {
-            int[] selection = getSelection();
-            return Arrays.toString(selection);
-        }
+        // TODO: use observable
+        deferRefresh.schedule(200);
+        return ret;
     }
 }

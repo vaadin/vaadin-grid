@@ -10,7 +10,7 @@ import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.UI;
 
 @SuppressWarnings("serial")
-@Widgetset("WebComponents")
+@Widgetset("Demo")
 @Theme("valo")
 public class DemoUI extends UI{
 

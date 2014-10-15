@@ -7,10 +7,12 @@ import java.util.List;
 import java.util.Random;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQ;
 import com.google.gwt.query.client.builders.JsonBuilder;
+import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.ajax.Ajax;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLElement;
 import com.vaadin.prototype.wc.gwt.client.widgets.grid.GData.GColumn.GHeader;
@@ -115,6 +117,16 @@ public interface GData extends JsonBuilder {
                     }
                 });
             }
+        }
+        
+        public static GData parseJso(JavaScriptObject o) {
+            GData r = GQ.create(GData.class);
+            if (JsUtils.isArray(o)) {
+                r.set("values", o);
+            } else {
+                r.load(o);
+            }
+            return r;
         }
     }
 }

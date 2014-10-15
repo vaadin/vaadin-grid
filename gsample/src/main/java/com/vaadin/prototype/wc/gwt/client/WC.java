@@ -9,6 +9,7 @@ import java.util.Set;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.ajax.Ajax;
 import com.google.gwt.user.client.EventListener;
@@ -18,17 +19,17 @@ import com.vaadin.prototype.wc.gwt.client.html.HTMLWindow;
 
 /**
  * This is the helper class to create, import or register web components.
- * 
+ *
  * This should produce a public API in Vaadin framework, and it should
  * be discussed.
- * 
+ *
  * Righ now we can do:
- * 
+ *
  * WC.load(ImportedWebComponent.class)
  * WC.create(ImportedWebComponent.class)
  * WC.create("a-tag")
  * WC.register(ExportedWebComponent.class)
- * 
+ *
  * @author manolo
  *
  */
@@ -124,27 +125,53 @@ public abstract class WC {
     }
 
     private static JavaScriptObject getWCConstructor(Class<?> clz) {
-        return getWCConstructor(NS_WC, clz.getSimpleName());
+        // Using a convention HTML<tag>Element$Prototype as super class name
+        Class<?> sup = clz.getSuperclass() != null ? clz.getSuperclass() : HTMLElement.class;
+        String prt = sup.getSimpleName().replace("$Prototype", "");
+        return getWCConstructor(NS_WC, clz.getSimpleName(), prt);
     }
 
     /**
      * FIXME: extending HTMLElement.Prototype we should be able to merge
      * HTMLElement with our widget, but JsInterop fails.
      */
-    private static native JavaScriptObject getWCConstructor(String namespace, String classname) /*-{
+    private static native JavaScriptObject getWCConstructor(String namespace, String classname, String protoName) /*-{
         // TODO: this is a trivial way to extend, maybe we need something
         // more sophisticated, but hopefully JsInterop works as expected soon.
         function mixin(dest, src) {
-          for (var k in src)
-            if (src.hasOwnProperty(k))
-              dest[k] = src[k];
+          for (var k in src) {
+            if (src.hasOwnProperty(k)) {
+              // TODO: This is a hack to define js properties calling
+              // java functions, should be automatic with @JsProperty annotation
+              // Our workaround uses a magic method jsProperty to mark the
+              // attribute and calls the corresponding setter and getter
+              var r = /^jsProperty([A-Z].+)$/.exec(k);
+              if (r) {
+                // descapitalize
+                var prpName = r[1].charAt(0).toLowerCase() + r[1].slice(1);
+                var getName = "get" + r[1];
+                var setName = "set" + r[1];
+                // don't set twice
+                if (src[prpName] === undefined) {
+                  Object.defineProperty(dest, prpName, {
+                      get: src[getName] || function(){},
+                      set: src[setName] || function(){},
+                      enumerable: true,
+                      configurable: true
+                  });
+                }
+                // We don't want getters and setters of defined properties
+                delete dest[getName];
+                delete dest[setName];
+              } else {
+                dest[k] = src[k];
+              }
+            }
+          }
         }
-        
-        console.log(namespace  + "." + classname);
 
-        // TODO: investigate a way to get the object constructor someway, there is a way
-        // to get the prototype JavaClassHierarchySetupUtil.getClassPrototype but not
-        // the exported Class function.
+        console.log("Mixing prototypes of : " + protoName + " + " + namespace  + "." + classname);
+
         var widget = eval(namespace + "." + classname);
         function Wc() {
            // Call HTMLElement constructor
@@ -153,7 +180,7 @@ public abstract class WC {
            widget.call(this);
         }
 
-        Wc.prototype = Object.create(HTMLElement.prototype);
+        Wc.prototype = Object.create($wnd[protoName].prototype);
         mixin(Wc.prototype, widget.prototype);
 
         // TODO: Why do we need to monkey patch again?
@@ -162,18 +189,13 @@ public abstract class WC {
 
         return Wc;
     }-*/;
-    
-    private static HTMLElement vaadinStyle;
+
+    private static GQuery vaadinStyle;
     public static void importVaadinTheme(String theme) {
         if (vaadinStyle == null) {
-            vaadinStyle = document.createElement("style");
-            vaadinStyle.setAttribute("language", "text/css");
-            document.head().appendChild(vaadinStyle);
+            vaadinStyle = $("<style language='text/css'></style>").appendTo($(head));
         }
-        
-        $(vaadinStyle).text("@import url('VAADIN/themes/" + theme + "/styles.css')");
-//        vaadinStyle.innerText("@import url('VAADIN/themes/" + theme + "/styles.css')");
+        vaadinStyle.text("@import url('VAADIN/themes/" + theme + "/styles.css')");
         $(body).attr("class", theme);
-        
     }
 }

@@ -2,7 +2,6 @@ package com.vaadin.prototype.wc.gwt.client.widgets;
 
 import static com.google.gwt.query.client.GQuery.$;
 import static com.google.gwt.query.client.GQuery.Widgets;
-import static com.google.gwt.query.client.GQuery.console;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.js.JsExport;
@@ -11,7 +10,6 @@ import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.event.logical.shared.AttachEvent.Handler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.ui.VSlider;
