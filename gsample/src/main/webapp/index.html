@@ -353,6 +353,49 @@
       });
     </script>
 
+<h2>Declarative syntax</h2>
+<h3>1. data array</h3>
+<script>
+  myData = [
+    [ "Grid", 10000, 0.8 ],
+    [ "Vaadin X", 999999, 0.01 ],
+  ];
+</script>
+<v-grid dataSource=”{{myData}}”>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Value</th>
+        <th>Progress</th>
+      </tr>
+    </thead>
+  </table>
+</v-grid>
+
+<h3>2. data function</h3>
+<script>
+  myData = [
+    [ "Grid", 10000, 0.8 ],
+    [ "Vaadin X", 999999, 0.01 ],
+  ];
+  myDataProvider = function(index, count) {
+    return myData.slice(index, index + count);
+  };
+</script>
+<v-grid rowCount="2" dataSource=”{{myDataProvider}}”>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Value</th>
+        <th>Progress</th>
+      </tr>
+    </thead>
+  </table>
+</v-grid>
+
+
   <script>
   myBigData =
     [

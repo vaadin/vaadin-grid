@@ -25,6 +25,8 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.query.client.GQ;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.js.JsUtils;
+import com.google.gwt.regexp.shared.MatchResult;
+import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Timer;
@@ -77,7 +79,6 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
 
     // TODO: we should set this from JS among the datasource.
     private int size = 0;
-
 
     private int headerDefaultRowIndex = 0;
 
@@ -188,8 +189,7 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
                         Object o = c.value();
                         if (o instanceof JavaScriptObject) {
                             o = JsUtils.runJavascriptFunction(
-                                            (JavaScriptObject) o, "call", o,
-                                            row, idx);
+                                    (JavaScriptObject) o, "call", o, row, idx);
                         } else if (o instanceof String) {
                             o = JsUtils.prop(row, o);
                         } else {
@@ -233,33 +233,11 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
             grid.getHeader().setDefaultRow(
                     grid.getHeader().getRow(headerDefaultRowIndex));
         }
-        initValsFromContents();
+        loadRows();
         if (vals != null && !vals.isEmpty()) {
             ListDataSource<JsArrayMixed> dataSource = new ListDataSource<JsArrayMixed>(
                     vals);
             grid.setDataSource(dataSource);
-        }
-    }
-
-    private void initValsFromContents() {
-        GQuery body = GQuery.$(this).children("tbody");
-        if (body == null || body.isEmpty()) {
-            return;
-        }
-        GQuery rows = body.children("tr");
-
-        if (rows != null && !rows.isEmpty()) {
-            List<JsArrayMixed> list = new ArrayList<JsArrayMixed>();
-            for (int i = 0; i < rows.size(); ++i) {
-                JsArrayMixed array = (JsArrayMixed) JsArrayMixed
-                        .createArray(cols.size());
-                GQuery row = GQuery.$(rows.get(i)).children();
-                for (int j = 0; j < row.size(); ++j) {
-                    array.set(j, row.get(j).getInnerText());
-                }
-                list.add(array);
-            }
-            vals = list;
         }
     }
 
@@ -282,7 +260,33 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
         loadHeaders();
         loadRows();
         initGrid();
+        parseAttributeDeclarations();
+
         adjustHeight(vals.size());
+    }
+
+    private void parseAttributeDeclarations() {
+        String dataPath = getAttribute("dataSource");
+        RegExp regex = RegExp.compile("\\{\\{([^}]+)\\}\\}");
+        MatchResult match = regex.exec(dataPath);
+        if (match != null && match.getGroup(1) != null
+                && !match.getGroup(1).isEmpty()) {
+            JavaScriptObject object = JsUtils.prop(GQuery.window,
+                    match.getGroup(1));
+            if (JsUtils.isFunction(object)) {
+                setRowCount(getAttrIntValue("rowCount", 0));
+                setDataSource(object);
+            } else if (JsUtils.isArray(object)) {
+                GData data = GQ.create(GData.class);
+                data.set("values", object);
+                vals = data.values();
+                ListDataSource<JsArrayMixed> dataSource = new ListDataSource<JsArrayMixed>(
+                        vals);
+                grid.setDataSource(dataSource);
+            } else {
+                console.log("Unknown type of datasource: " + object.toString());
+            }
+        }
     }
 
     private String lastHeaders = null;
@@ -392,7 +396,7 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
             readAttributes();
 
             if (grid != null) {
-                initValsFromContents();
+                loadRows();
                 if (vals != null && !vals.isEmpty()) {
                     ListDataSource<JsArrayMixed> dataSource = new ListDataSource<JsArrayMixed>(
                             vals);
@@ -415,7 +419,8 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
     private void adjustHeight(int size) {
         if (size > 0) {
             grid.setHeightMode(HeightMode.ROW);
-            grid.setHeightByRows(Math.min(size, GridState.DEFAULT_HEIGHT_BY_ROWS));
+            grid.setHeightByRows(Math.min(size,
+                    GridState.DEFAULT_HEIGHT_BY_ROWS));
         }
     }
 
@@ -423,56 +428,81 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
     public void onSelectionChange(SelectionChangeEvent<JsArrayMixed> ev) {
         dispatchEvent(selectEvent);
     }
-    
-    // TODO: 
+
+    // TODO:
     // @JsProperty seems not exporting these methods right now.
     // We use a magic function name 'jsProperty...' to mark these methods as
     // JS properties when mixing the prototype in WC.
-    public void jsPropertyRowCount() {};
-    @JsProperty public void setRowCount(double rows) {
+    public void jsPropertyRowCount() {
+    };
+
+    @JsProperty
+    public void setRowCount(double rows) {
         size = (int) rows;
         adjustHeight(size);
     }
-    @JsProperty public double getRowCount() {
+
+    @JsProperty
+    public double getRowCount() {
         return size;
     }
 
-    public void jsPropertyDataSource() {};
-    @JsProperty public void setDataSource(JavaScriptObject function) {
+    public void jsPropertyDataSource() {
+    };
+
+    @JsProperty
+    public void setDataSource(JavaScriptObject function) {
         assert JsUtils.isFunction(function);
         grid.setDataSource(new GDataSource(function, size));
     }
-    @JsProperty public JavaScriptObject getDataSource() {
+
+    @JsProperty
+    public JavaScriptObject getDataSource() {
         return JavaScriptObject.createFunction();
     }
-    
-    public void jsPropertyColumns() {};
-    @JsProperty public JavaScriptObject getColumns() {
+
+    public void jsPropertyColumns() {
+    };
+
+    @JsProperty
+    public JavaScriptObject getColumns() {
         // TODO: use observable
         deferRefresh.schedule(200);
         // Using GQuery data-binding magic to convert list to js arrays.
         return GQ.create(GData.class).setColumns(cols).get("columns");
     }
-    @JsProperty public void setColumns(JavaScriptObject newCols) {
-        cols = GQ.create(GData.class).<GData>set("columns", newCols).columns();
+
+    @JsProperty
+    public void setColumns(JavaScriptObject newCols) {
+        cols = GQ.create(GData.class).<GData> set("columns", newCols).columns();
     }
-    
-    public void jsPropertySelectedRow() {};
-    @JsProperty public int getSelectedRow() {
+
+    public void jsPropertySelectedRow() {
+    };
+
+    @JsProperty
+    public int getSelectedRow() {
         return grid.getDataSource().indexOf(grid.getSelectedRow());
     }
-    @JsProperty public void setSelectedRow(int idx) {
+
+    @JsProperty
+    public void setSelectedRow(int idx) {
         grid.select(grid.getDataSource().getRow(idx));
     }
 
-    public void jsPropertySelectedRows() {};
-    @JsProperty public void setSelectedRows (JsArrayInteger arr) {
+    public void jsPropertySelectedRows() {
+    };
+
+    @JsProperty
+    public void setSelectedRows(JsArrayInteger arr) {
         grid.getSelectionModel().reset();
         for (int i = 0, l = arr.length(); i < l; i++) {
             grid.select(grid.getDataSource().getRow(arr.get(i)));
         }
     }
-    @JsProperty public JsArrayInteger getSelectedRows() {
+
+    @JsProperty
+    public JsArrayInteger getSelectedRows() {
         JsArrayInteger ret = JsArrayInteger.createArray().cast();
         Collection<JsArrayMixed> c = grid.getSelectedRows();
         for (Iterator<JsArrayMixed> i = c.iterator(); i.hasNext();) {
