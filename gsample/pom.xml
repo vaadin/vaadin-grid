@@ -12,8 +12,8 @@
       <maven.compiler.source>1.7</maven.compiler.source>
       <maven.compiler.target>1.7</maven.compiler.target>
       <gQueryVersion>1.4.3-SNAPSHOT</gQueryVersion>
-      <gwtversion>2.7.0-SNAPSHOT</gwtversion>
-      <gwtmaven>2.7.0-SNAPSHOT</gwtmaven>
+      <gwtversion>2.7.0-beta1</gwtversion>
+      <gwtmaven>2.7.0-beta1</gwtmaven>
       <gwt.outputstyle>PRETTY</gwt.outputstyle>
       <maven.test.skip>true</maven.test.skip>
       <jetty.version>9.1.3.v20140225</jetty.version>
