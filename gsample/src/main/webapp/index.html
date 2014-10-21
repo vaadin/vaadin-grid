@@ -389,7 +389,25 @@
   </table>
   </v-grid>
 
-
+  <h3>6. renderers</h3>
+  <v-grid id="myRendererDeclaration" dataSource={{myData}}>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Value</th>
+        <th>Progress</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr template>
+        <td>{{data}}</td>
+        <td>{{data}} €</td>
+        <td><v-progress value="{{data}}" /></td>
+      </tr>
+    </tbody>
+  </table>
+  </v-grid>
 
   <script>
   myBigData =

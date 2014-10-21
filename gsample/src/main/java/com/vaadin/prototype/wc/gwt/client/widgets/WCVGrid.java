@@ -155,6 +155,8 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
             grid.setSelectionMode(SelectionMode.SINGLE);
         }
         if (cols != null) {
+            final RegExp templateRegexp = RegExp.compile("\\{\\{data\\}\\}",
+                    "ig");
             for (int i = 0, l = cols.size(); i < l; i++) {
                 final GColumn c = cols.get(i);
                 GridColumn<String, JsArrayMixed> col;
@@ -182,7 +184,15 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
                                                 elm, data);
                                     }
                                 } else {
-                                    elm.setInnerHTML(data);
+                                    if (c.template() != null) {
+                                        // FIXME: this implementation doesn't
+                                        // reuse any of the possible HTML tags
+                                        // included in the template.
+                                        elm.setInnerHTML(templateRegexp
+                                                .replace(c.template(), data));
+                                    } else {
+                                        elm.setInnerHTML(data);
+                                    }
                                 }
                             }
                         }) {
@@ -348,8 +358,16 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
             }
         }
 
-        for (GColumn key : contentsMap.keySet()) {
-            key.setHeaderData(contentsMap.get(key));
+        Iterator<GColumn> iterator = contentsMap.keySet().iterator();
+        GQuery $templateRow = $(this).find("tr[template] td");
+        for (int i = 0; iterator.hasNext(); i++) {
+            GColumn column = iterator.next();
+            column.setHeaderData(contentsMap.get(column));
+
+            if (i < $templateRow.size()) {
+                String html = $templateRow.eq(i).html();
+                column.setTemplate(html);
+            }
         }
 
         setCols(colList);
@@ -361,7 +379,7 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
     }
 
     private void loadRows() {
-        GQuery $tr = $(this).find("tbody tr");
+        GQuery $tr = $(this).find("tbody tr:not([template])");
         if (!$tr.isEmpty()) {
             setVals(new ArrayList<JsArrayMixed>());
             for (Element tr : $tr.elements()) {
