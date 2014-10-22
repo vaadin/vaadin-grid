@@ -18,5 +18,5 @@
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.google.gwt.dev.DevMode"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-superDevMode -XjsInteropMode JS -incremental -modulePathPrefix VAADIN/widgetsets -war /Users/manolo/vaadin/gerrit/webcomponents-prototype/gsample/target/demo1-1.0-SNAPSHOT -workDir /Users/manolo/vaadin/gerrit/webcomponents-prototype/gsample/target -gen /Users/manolo/vaadin/gerrit/webcomponents-prototype/gsample/target/gen -remoteUI &quot;${gwt_remote_ui_server_port}:${unique_id}&quot; -startupUrl index.html -logLevel INFO -codeServerPort 9997 -port 8888 com.vaadin.prototype.wc.gwt.Demo com.vaadin.prototype.wc.gwt.Sample"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="demo1"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx512m -Dgwt.persistentunitcachedir=/Users/manolo/vaadin/gerrit/webcomponents-prototype/gsample/target"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx2g -Dgwt.persistentunitcachedir=/Users/manolo/vaadin/gerrit/webcomponents-prototype/gsample/target"/>
 </launchConfiguration>

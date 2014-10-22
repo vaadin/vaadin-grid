@@ -3,6 +3,7 @@ package com.vaadin.prototype.wc.gwt.client.widgets;
 import static com.google.gwt.query.client.GQuery.$;
 import static com.google.gwt.query.client.GQuery.Widgets;
 import static com.google.gwt.query.client.GQuery.console;
+import static com.google.gwt.query.client.GQuery.window;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,6 +43,7 @@ import com.vaadin.client.ui.grid.Renderer;
 import com.vaadin.client.ui.grid.datasources.ListDataSource;
 import com.vaadin.client.ui.grid.selection.SelectionChangeEvent;
 import com.vaadin.client.ui.grid.selection.SelectionChangeHandler;
+import com.vaadin.client.ui.grid.selection.SelectionModel;
 import com.vaadin.prototype.wc.gwt.client.WC;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLElement;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLEvents;
@@ -271,22 +273,23 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
         String dataPath = getAttribute("dataSource");
         RegExp regex = RegExp.compile("\\{\\{\\s*(\\w+)\\s*\\}\\}");
         MatchResult match = regex.exec(dataPath);
-        if (match != null && match.getGroup(1) != null
-                && !match.getGroup(1).isEmpty()) {
-            JavaScriptObject object = JsUtils.prop(GQuery.window,
-                    match.getGroup(1));
-            if (JsUtils.isFunction(object)) {
-                setRowCount(getAttrIntValue("rowCount", 0));
-                setDataSource(object);
-            } else if (JsUtils.isArray(object)) {
-                GData data = GQ.create(GData.class);
-                data.set("values", object);
-                vals = data.values();
-                ListDataSource<JsArrayMixed> dataSource = new ListDataSource<JsArrayMixed>(
-                        vals);
-                grid.setDataSource(dataSource);
+        if (match != null) {
+            JavaScriptObject jso = JsUtils.prop(window, match.getGroup(1));
+            if (JsUtils.isFunction(jso)) {
+                String count = getAttribute("rowCount");
+                match = regex.exec(count);
+                if (match != null) {
+                    count = "" + JsUtils.prop(window, match.getGroup(1));
+                }
+                if (count != null && count.matches("[\\d\\.\\+]+")) {
+                    setRowCount(Integer.valueOf(count));
+                }
+                setDataSource(jso);
+            } else if (JsUtils.isArray(jso)) {
+                vals = GQ.create(GData.class).<GData>set("values", jso).values();
+                loadData();
             } else {
-                console.log("Unknown type of datasource: " + object.toString());
+                console.log("Unknown type of datasource: " + jso);
             }
         }
     }
@@ -396,15 +399,16 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
         console.log(event.getType());
         if (event.getType().equals("DOMSubtreeModified")) {
             readAttributes();
-
             if (grid != null) {
                 loadRows();
-                if (vals != null && !vals.isEmpty()) {
-                    ListDataSource<JsArrayMixed> dataSource = new ListDataSource<JsArrayMixed>(
-                            vals);
-                    grid.setDataSource(dataSource);
-                }
+                loadData();
             }
+        }
+    }
+
+    private void loadData() {
+        if (vals != null && !vals.isEmpty()) {
+            grid.setDataSource(new ListDataSource<JsArrayMixed>(vals));
         }
     }
 
@@ -485,7 +489,8 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
 
     @JsProperty
     public int getSelectedRow() {
-        return grid.getSelectedRow() == null ? -1 : grid.getDataSource()
+        return !(grid.getSelectionModel() instanceof SelectionModel.Single<?>)
+                || grid.getSelectedRow() == null ? -1 : grid.getDataSource()
                 .indexOf(grid.getSelectedRow());
     }
 
