@@ -1,0 +1,41 @@
+<!DOCTYPE  html>
+<html>
+<head>
+<title>Empezando con angularjs</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1" />
+
+<!-- VaadinX web components -->
+<script src="VAADIN/widgetsets/Demo/Demo.nocache.js"></script>
+<!-- Angular library -->
+<script src="angular.js"></script>
+<!-- VaadinX directives, TODO: make this be done in Demo.nocache.js -->
+<script src="ng-vaadin.js"></script>
+
+</head>
+<body>
+
+  <h3>Use AngularJS with v-slider (attribute binding)</h3>
+
+  <div ng-app="Slider" ng-controller="SliderController">
+    <v-slider value="{{slider}}"></v-slider>
+    <pre ng-bind="slider"></pre>
+    <input type="text" ng-model="slider" />
+    <p ng-click="changeSlider()">Set to 80</p>
+  </div>
+
+  <script>
+      // Create an application module for our demo, inheriting vaadin-x directives
+      var app = angular.module("Slider", [ 'vaadin-x' ]);
+
+      // Define the root-level controller for the application.
+      app.controller("SliderController", function($scope) {
+        $scope.slider = 30;
+        $scope.changeSlider = function() {
+          $scope.slider = 80;
+        }
+      });
+    </script>
+
+</body>
+</html>

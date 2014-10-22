@@ -2,11 +2,13 @@ package com.vaadin.prototype.wc.gwt.client;
 
 import static com.google.gwt.query.client.GQuery.$;
 import static com.google.gwt.query.client.GQuery.document;
+import static com.google.gwt.query.client.GQuery.window;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.query.client.GQuery;
+import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.vaadin.prototype.wc.gwt.client.widgets.WCVGrid;
@@ -24,6 +26,8 @@ public class Demo implements EntryPoint {
         WC.register(WCVGrid.TAG, WCVGrid.class);
         WC.register(WCVProgress.TAG, WCVProgress.class);
         WC.register(WCVSlider.TAG, WCVSlider.class);
+
+        JsUtils.runJavascriptFunction(window, "onVaadinX");
     }
 
     void demoHeikki() {
