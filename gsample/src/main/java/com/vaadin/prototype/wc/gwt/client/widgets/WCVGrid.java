@@ -485,13 +485,16 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
 
     @JsProperty
     public int getSelectedRow() {
-        return grid.getDataSource().indexOf(grid.getSelectedRow());
+        return grid.getSelectedRow() == null ? -1 : grid.getDataSource()
+                .indexOf(grid.getSelectedRow());
     }
 
     @JsProperty
     public void setSelectedRow(int idx) {
-        if (idx < 0 || idx >= grid.getDataSource().size() && getSelectedRow() >= 0) {
-            grid.deselect(grid.getDataSource().getRow(getSelectedRow()));
+        if (idx < 0 || idx >= grid.getDataSource().size()) {
+            if (getSelectedRow() > 0) {
+                grid.deselect(grid.getDataSource().getRow(getSelectedRow()));
+            }
         } else {
             grid.select(grid.getDataSource().getRow(idx));
         }
