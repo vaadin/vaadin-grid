@@ -71,7 +71,7 @@
         <tr ng-repeat="row in model.data">
           <td>{{ row[0] }}</td>
           <td>{{ row[1] }}</td>
-          <td>{{ row[2] }}</td>
+          <td><v-progress value='{{ row[2] }}'></v-progress></td>
         </tr>
       </tbody>
     </table>
@@ -98,8 +98,8 @@
 
         $scope.model = {};
         $scope.model.data = [ [ "Gridddd", 10000, 0.8 ],
-            [ "Vaadin X", 999999, 0.01 ], [ "designer", 43256, 0.01 ],
-            [ "TK", 1967, 0.05 ] ];
+            [ "Vaadin X", 999999, 0.1 ], [ "designer", 43256, 0.9 ],
+            [ "TK", 1967, 0.5 ] ];
 
       });
     </script>
