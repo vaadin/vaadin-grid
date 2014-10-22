@@ -263,11 +263,13 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
         parseAttributeDeclarations();
 
         adjustHeight(vals.size());
+
+        setSelectedRow(getAttrIntValue("selectedRow", -1));
     }
 
     private void parseAttributeDeclarations() {
         String dataPath = getAttribute("dataSource");
-        RegExp regex = RegExp.compile("\\{\\{([^}]+)\\}\\}");
+        RegExp regex = RegExp.compile("\\{\\{\\s*(\\w+)\\s*\\}\\}");
         MatchResult match = regex.exec(dataPath);
         if (match != null && match.getGroup(1) != null
                 && !match.getGroup(1).isEmpty()) {
@@ -426,6 +428,7 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
 
     @Override
     public void onSelectionChange(SelectionChangeEvent<JsArrayMixed> ev) {
+        setAttribute("selectedRow", "" + getSelectedRow());
         dispatchEvent(selectEvent);
     }
 
@@ -487,7 +490,11 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
 
     @JsProperty
     public void setSelectedRow(int idx) {
-        grid.select(grid.getDataSource().getRow(idx));
+        if (idx < 0 || idx >= grid.getDataSource().size() && getSelectedRow() >= 0) {
+            grid.deselect(grid.getDataSource().getRow(getSelectedRow()));
+        } else {
+            grid.select(grid.getDataSource().getRow(idx));
+        }
     }
 
     public void jsPropertySelectedRows() {

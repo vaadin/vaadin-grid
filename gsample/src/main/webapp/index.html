@@ -396,43 +396,6 @@
   </table>
 </v-grid>
 
-
-<h3>Use AngularJS with @JsProperty</h3>
-<script>
-angular.module("bindExample", []).controller("ExampleController", ["$scope", function($scope) {
-    $scope.row = 0;
-}]);
-</script>
-<div ng-app="bindExample">
-<div ng-controller="ExampleController">
-<input type="number" ng-model="row"/>
-<v-grid selectionMode="single" id="myAngularGrid" selectedRow="{{row}}">
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Value</th>
-        <th>Progress</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Grid</td>
-        <td>10000</td>
-        <td>0.8</td>
-      </tr>
-      <tr>
-        <td>Vaadin X</td>
-        <td>999999</td>
-        <td>0.8</td>
-      </tr>
-    </tbody>
-  </table>
-</v-grid>
-<p>Selected row: {{row}}</p>
-</div>
-</div>
-
   <script>
   myBigData =
     [

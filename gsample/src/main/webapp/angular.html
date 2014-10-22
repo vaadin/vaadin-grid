@@ -15,25 +15,66 @@
 </head>
 <body>
 
-  <h3>Use AngularJS with v-slider (attribute binding)</h3>
+  <div id='demo' ng-app='demoApp' ng-controller='demoAppCtrl'>
 
-  <div ng-app="Slider" ng-controller="SliderController">
-    <v-slider value="{{slider}}"></v-slider>
-    <pre ng-bind="slider"></pre>
-    <input type="text" ng-model="slider" />
-    <p ng-click="changeSlider()">Set to 80</p>
+    <h3>Use AngularJS with v-slider (attribute binding)</h3>
+    <v-slider value="{{slider.value}}"></v-slider>
+    <pre ng-bind="slider.value"></pre>
+    <input type="text" ng-model="slider.value" />
+    <button ng-click="slider.changeSlider()">Set to 80</button>
+
+    <h3>Use AngularJS with v-grid single selection via attributes</h3>
+    <div>
+      <v-grid selectionMode="single" selectedRow="{{grid.row}}">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Value</th>
+            <th>Progress</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Grid</td>
+            <td>10000</td>
+            <td>0.8</td>
+          </tr>
+          <tr>
+            <td>Vaadin X</td>
+            <td>999999</td>
+            <td>0.3</td>
+          </tr>
+          <tr>
+            <td>TK</td>
+            <td>5555</td>
+            <td>0.5</td>
+          </tr>
+        </tbody>
+      </table>
+      </v-grid>
+      <p>Selected row: {{grid.row}}</p>
+      <input ng-model="grid.row" />
+    </div>
   </div>
 
   <script>
       // Create an application module for our demo, inheriting vaadin-x directives
-      var app = angular.module("Slider", [ 'vaadin-x' ]);
+      var app = angular.module("demoApp", [ 'vaadin-x' ]);
 
       // Define the root-level controller for the application.
-      app.controller("SliderController", function($scope) {
-        $scope.slider = 30;
-        $scope.changeSlider = function() {
-          $scope.slider = 80;
+      app.controller("demoAppCtrl", function($scope) {
+
+        // Slider demo data binding
+        $scope.slider = {};
+        $scope.slider.value = 30;
+        $scope.slider.changeSlider = function() {
+          $scope.slider.value = 80;
         }
+
+        // Grid demo data binding
+        $scope.grid = {};
+        $scope.grid.row = -1;
       });
     </script>
 

@@ -1,12 +1,14 @@
 (function(angular) {
 
   'use strict';
+
   var vModule = angular.module('vaadin-x', []);
 
-  vModule.directive('vSlider', function() {
+  function attrFnc() {
     return {
       restrict : 'E',
       link : function(scope, element, attrs) {
+
         var attrMap = {};
         for ( var prop in attrs.$attr) {
           var _attr = attrs.$attr[prop];
@@ -39,6 +41,9 @@
         });
       }
     };
-  });
+  }
+
+  vModule.directive('vSlider', attrFnc);
+  vModule.directive('vGrid', attrFnc);
 
 })(angular);
