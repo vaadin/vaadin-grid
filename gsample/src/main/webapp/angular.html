@@ -56,6 +56,26 @@
       <p>Selected row: {{grid.row}}</p>
       <input ng-model="grid.row" />
     </div>
+
+    <h3>Implement demo with AngularJS model used as the source of data for v-grid</h3>
+    <v-grid>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Value</th>
+          <th>Progress</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="row in model.data">
+          <td>{{ row[0] }}</td>
+          <td>{{ row[1] }}</td>
+          <td>{{ row[2] }}</td>
+        </tr>
+      </tbody>
+    </table>
+    </v-grid>
   </div>
 
   <script>
@@ -75,6 +95,12 @@
         // Grid demo data binding
         $scope.grid = {};
         $scope.grid.row = -1;
+
+        $scope.model = {};
+        $scope.model.data = [ [ "Gridddd", 10000, 0.8 ],
+            [ "Vaadin X", 999999, 0.01 ], [ "designer", 43256, 0.01 ],
+            [ "TK", 1967, 0.05 ] ];
+
       });
     </script>
 
