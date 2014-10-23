@@ -1,17 +1,17 @@
 package com.vaadin.prototype.wc.server;
 
-import javax.servlet.annotation.WebServlet;
-
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.annotations.Widgetset;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
+import com.vaadin.tests.components.grid.tutorials.AbstractGridSample;
+import com.vaadin.tests.components.grid.tutorials.AllClientSamplesComponent;
 import com.vaadin.ui.UI;
 
 @SuppressWarnings("serial")
 @Widgetset("Demo")
-@Theme("valo")
+@Theme("reindeer")
 public class DemoUI extends UI{
 
     // http://localhost:8888/vaadin/ should load the app through
@@ -23,6 +23,8 @@ public class DemoUI extends UI{
 
     @Override
     protected void init(VaadinRequest request) {
-        System.out.println("AFDA");
+        AbstractGridSample s = new AbstractGridSample();
+        AllClientSamplesComponent a = new AllClientSamplesComponent();
+        setContent(s);
     }
 }
