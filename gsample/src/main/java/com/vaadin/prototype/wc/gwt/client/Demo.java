@@ -21,12 +21,14 @@ import com.vaadin.prototype.wc.gwt.client.widgets.WCVSlider;
 public class Demo implements EntryPoint {
 
     public void onModuleLoad() {
-//        demoHeikki();
-
         WC.register(WCVGrid.TAG, WCVGrid.class);
         WC.register(WCVProgress.TAG, WCVProgress.class);
         WC.register(WCVSlider.TAG, WCVSlider.class);
 
+        // TODO: When we figure out a way to add lazy directives
+        // NgVaadin.loadNgVaadin();
+
+        // Call a vaadin callback function when vaadinX is ready.
         JsUtils.runJavascriptFunction(window, "onVaadinX");
     }
 

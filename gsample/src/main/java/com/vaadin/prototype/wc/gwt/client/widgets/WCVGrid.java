@@ -4,6 +4,8 @@ import static com.google.gwt.query.client.GQuery.$;
 import static com.google.gwt.query.client.GQuery.Widgets;
 import static com.google.gwt.query.client.GQuery.console;
 import static com.google.gwt.query.client.GQuery.window;
+import static com.vaadin.prototype.wc.gwt.client.widgets.WCUtils.getAttrIntValue;
+import static com.vaadin.prototype.wc.gwt.client.widgets.WCUtils.getAttrValue;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -263,7 +265,7 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
     }
 
     private void readAttributes() {
-        theme = getAttrValue("theme", "reindeer");
+        theme = getAttrValue(this, "theme", "reindeer");
         // style.innerText("@import url('" + GWT.getModuleBaseURL() +
         // "../../themes/" + theme + "/styles.css')");
         style.innerText("@import url('VAADIN/themes/" + theme + "/styles.css')");
@@ -276,7 +278,7 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
 
         adjustHeight(vals.size());
 
-        setSelectedRow(getAttrIntValue("selectedRow", -1));
+        setSelectedRow(getAttrIntValue(this, "selectedRow", -1));
     }
 
     private void parseAttributeDeclarations() {
@@ -373,11 +375,6 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
         setCols(colList);
     }
 
-    // TODO: Make this part of the API of a utils class.
-    private int getAttrIntValue(String attr, int def) {
-        return Integer.parseInt(getAttrValue(attr, String.valueOf(def)));
-    }
-
     private void loadRows() {
         GQuery $tr = $(this).find("tbody tr:not([template])");
         if (!$tr.isEmpty()) {
@@ -391,17 +388,6 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
                 }
             }
         }
-    }
-
-    // TODO: Make this part of the API of a utils class.
-    private double getAttrDoubleValue(String attr, double def) {
-        return Double.valueOf(getAttrValue(attr, String.valueOf(def)));
-    }
-
-    // TODO: Make this part of the API of a utils class.
-    private String getAttrValue(String attr, String def) {
-        String val = getAttribute(attr);
-        return val == null || val.isEmpty() ? def : val;
     }
 
     @Override

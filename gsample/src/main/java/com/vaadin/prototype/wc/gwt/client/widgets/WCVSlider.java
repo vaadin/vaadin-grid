@@ -2,6 +2,8 @@ package com.vaadin.prototype.wc.gwt.client.widgets;
 
 import static com.google.gwt.query.client.GQuery.$;
 import static com.google.gwt.query.client.GQuery.Widgets;
+import static com.vaadin.prototype.wc.gwt.client.widgets.WCUtils.getAttrDoubleValue;
+import static com.vaadin.prototype.wc.gwt.client.widgets.WCUtils.getAttrValue;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.js.JsExport;
@@ -17,7 +19,6 @@ import com.vaadin.prototype.wc.gwt.client.WC;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLElement;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLEvents;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLShadow;
-
 @JsExport
 @JsType
 public class WCVSlider extends HTMLElement.Prototype implements
@@ -96,24 +97,13 @@ public class WCVSlider extends HTMLElement.Prototype implements
     }
 
     private void readAttributes() {
-        slider.setMinValue(getAttrDoubleValue("min", 0));
-        slider.setMaxValue(getAttrDoubleValue("max", 100));
-        slider.setValue(getAttrDoubleValue("value", 0));
-        theme = getAttrValue("theme", "valo");
+        slider.setMinValue(getAttrDoubleValue(this, "min", 0));
+        slider.setMaxValue(getAttrDoubleValue(this, "max", 100));
+        slider.setValue(getAttrDoubleValue(this, "value", 0));
+        theme = getAttrValue(this, "theme", "valo");
         style.innerText("@import url('" + GWT.getModuleBaseURL() + "../../themes/" + theme + "/styles.css')");
         style.innerText("@import url('VAADIN/themes/" + theme + "/styles.css')");
         container.setAttribute("class", theme);
-    }
-
-    // TODO: Make this part of the API of a utils class.
-    private double getAttrDoubleValue(String attr, double def) {
-        return Double.valueOf(getAttrValue(attr, String.valueOf(def)));
-    }
-
-    // TODO: Make this part of the API of a utils class.
-    private String getAttrValue(String attr, String def) {
-        String val = getAttribute(attr);
-        return val == null || val.isEmpty() ? def : val;
     }
 
     @Override

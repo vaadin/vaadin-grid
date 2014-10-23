@@ -2,20 +2,17 @@ package com.vaadin.prototype.wc.gwt.client.widgets;
 
 import static com.google.gwt.query.client.GQuery.$;
 import static com.google.gwt.query.client.GQuery.Widgets;
-import static com.google.gwt.query.client.GQuery.console;
+import static com.vaadin.prototype.wc.gwt.client.widgets.WCUtils.getAttrFloatValue;
+import static com.vaadin.prototype.wc.gwt.client.widgets.WCUtils.getAttrValue;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.js.JsExport;
 import com.google.gwt.core.client.js.JsType;
 import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.event.logical.shared.AttachEvent.Handler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.ui.VProgressBar;
-import com.vaadin.client.ui.VSlider;
 import com.vaadin.prototype.wc.gwt.client.WC;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLElement;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLEvents;
@@ -89,28 +86,11 @@ public class WCVProgress extends HTMLElement.Prototype implements
     }
 
     private void readAttributes() {
-        widget.setState(getAttrFloatValue("value", 0));
-        theme = getAttrValue("theme", "valo");
+        widget.setState(getAttrFloatValue(this, "value", 0));
+        theme = getAttrValue(this, "theme", "valo");
         style.innerText("@import url('" + GWT.getModuleBaseURL() + "../../themes/" + theme + "/styles.css')");
         style.innerText("@import url('VAADIN/themes/" + theme + "/styles.css')");
         container.setAttribute("class", theme);
-    }
-
-    // TODO: Make this part of the API of a utils class.
-    private float getAttrFloatValue(String attr, float def) {
-        String val = getAttrValue(attr, String.valueOf(def));
-        try {
-            return Float.valueOf(val);
-        } catch (NumberFormatException e) {
-            console.log("Error parsing '" + val + "to float." + e.getMessage() + " " + $(this));
-            return 0;
-        }
-    }
-
-    // TODO: Make this part of the API of a utils class.
-    private String getAttrValue(String attr, String def) {
-        String val = getAttribute(attr);
-        return val == null || val.isEmpty() ? def : val;
     }
 
     @Override

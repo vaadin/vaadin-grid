@@ -1,8 +1,13 @@
-(function(angular) {'use strict';
+
+(function(angular) {
+
+  if (!angular) return;
+
+  console.log("Initialised VaadinX angular module");
 
   var vModule = angular.module('vaadin-x', []);
 
-  function attrFnc() {
+  var attrFnc = function() {
     return {
       restrict : 'E',
       link : function(scope, element, attrs) {
@@ -39,12 +44,22 @@
         });
       }
     };
-  }
+  };
 
   var vaadinComponents = ['vSlider', 'vProgress', 'vGrid'];
 
   angular.forEach(vaadinComponents, function(tag) {
     vModule.directive(tag, attrFnc);
+
+    angular.forEach(document.querySelectorAll('[ng-app]'), function(element) {
+      var app = element.getAttribute('ng-app');
+      // TODO: This causes a lot of errors when starting angular requiring 'vaadin-x'
+      angular.bootstrap(element, [ app ]);
+
+      // TODO: This should be a way to add behavior to a module but does not work
+      // var module = angular.module(app);
+      // vModule.directive(tag, attrFnc);
+    });
   });
 
-})(angular);
+})(window.angular);
