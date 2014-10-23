@@ -159,7 +159,7 @@
       var myFormatGrid = document.getElementById("myFormatGrid");
 
       waitUntil(function() {
-        return grid && grid.dataSource;
+        return myFormatGrid && myFormatGrid.dataSource;
       }, function() {
         myFormatGrid.rowCount = myFormatData.length;
         myFormatGrid.dataSource = function(index, count) {

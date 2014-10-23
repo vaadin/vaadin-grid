@@ -32,9 +32,9 @@ import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
+import com.vaadin.client.JsArrayObject;
 import com.vaadin.client.ui.grid.FlyweightCell;
 import com.vaadin.client.ui.grid.Grid;
 import com.vaadin.client.ui.grid.Grid.SelectionMode;
@@ -79,7 +79,6 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
     public List<GColumn> cols;
     private List<JsArrayMixed> vals;
     private boolean changed = true;
-    private Timer deferRefresh;
 
     // TODO: we should set this from JS among the datasource.
     private int size = 0;
@@ -100,15 +99,6 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
         container = WC.create("div");
         cols = new ArrayList<GColumn>();
         vals = new ArrayList<JsArrayMixed>();
-        deferRefresh = new Timer() {
-            @Override
-            public void run() {
-                if (vals != null && !vals.isEmpty()) {
-                    adjustHeight(vals != null ? vals.size() : 100);
-                    initGrid();
-                }
-            }
-        };
     }
 
     /*
@@ -277,8 +267,10 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
         parseAttributeDeclarations();
 
         adjustHeight(vals.size());
-
         setSelectedRow(getAttrIntValue(this, "selectedRow", -1));
+
+        // TODO be able to change the selection mode if
+        // attribute selectionMode change
     }
 
     private void parseAttributeDeclarations() {
@@ -475,12 +467,31 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
     public void jsPropertyColumns() {
     };
 
+    // Array of JSO representing column configuration
+    // used in JS to change renderers.
+    private JsArrayObject<JavaScriptObject> columnsJso;
+
     @JsProperty
     public JavaScriptObject getColumns() {
-        // TODO: use observable
-        deferRefresh.schedule(200);
+        // remove old observers
+        if (columnsJso != null) {
+            for (int i = 0, l = columnsJso.size(); i < l; i++) {
+                WCUtils.unobserve(columnsJso.get(i));
+            }
+        }
         // Using GQuery data-binding magic to convert list to js arrays.
-        return GQ.create(GData.class).setColumns(cols).get("columns");
+        columnsJso =  GQ.create(GData.class).setColumns(cols).get("columns");
+
+        // Add observers to any column configuration object so as
+        for (int i = 0, l = columnsJso.size(); i < l ; i++) {
+            WCUtils.observe(columnsJso.get(i), new EventListener() {
+                public void onBrowserEvent(Event event) {
+                    // TODO: a better way to refresh?
+                    grid.setDataSource(grid.getDataSource());
+                }
+            });
+        }
+        return columnsJso;
     }
 
     @JsProperty
