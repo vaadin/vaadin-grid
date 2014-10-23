@@ -7,6 +7,7 @@ import static com.vaadin.prototype.wc.gwt.client.widgets.WCUtils.getAttrValue;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.js.JsExport;
+import com.google.gwt.core.client.js.JsProperty;
 import com.google.gwt.core.client.js.JsType;
 import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.event.logical.shared.AttachEvent.Handler;
@@ -99,5 +100,16 @@ public class WCVProgress extends HTMLElement.Prototype implements
         // gQuery creates a new root-panel so it does not
         // have any parent, but we should maintain the widget
         // hierarchy someway.
+    }
+
+    public void jsPropertyValue() {
+    }
+
+    @JsProperty public void setValue(double value) {
+        widget.setState((float)value);
+    }
+
+    @JsProperty public double getValue() {
+        return widget.getState();
     }
 }

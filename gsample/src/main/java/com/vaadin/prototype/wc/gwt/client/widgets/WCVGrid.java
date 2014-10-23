@@ -493,9 +493,10 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
 
     @JsProperty
     public int getSelectedRow() {
-        return !(grid.getSelectionModel() instanceof SelectionModel.Single<?>)
-                || grid.getSelectedRow() == null ? -1 : grid.getDataSource()
-                .indexOf(grid.getSelectedRow());
+        return grid == null || grid.getSelectionModel() == null
+                || !(grid.getSelectionModel() instanceof SelectionModel.Single<?>)
+                || grid.getSelectedRow() == null ? -1
+                        : grid.getDataSource().indexOf(grid.getSelectedRow());
     }
 
     @JsProperty
@@ -512,23 +513,44 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
     public void jsPropertySelectedRows() {
     };
 
+    // Array of selected indexed returned to JS
+    // We observe it so as when JS makes changes we update
+    // grid selection.
+    private JsArrayInteger selectedJso;
+    private boolean selectedLock;
+
     @JsProperty
     public void setSelectedRows(JsArrayInteger arr) {
-        grid.getSelectionModel().reset();
-        for (int i = 0, l = arr.length(); i < l; i++) {
-            grid.select(grid.getDataSource().getRow(arr.get(i)));
+        if (arr != selectedJso) {
+            WCUtils.unobserve(selectedJso);
         }
+        selectedJso = arr;
+        selectedLock = true;
+        grid.getSelectionModel().reset();
+        for (int i = 0, l = selectedJso.length(); i < l; i++) {
+            grid.select(grid.getDataSource().getRow(selectedJso.get(i)));
+        }
+        selectedLock = false;
     }
 
     @JsProperty
     public JsArrayInteger getSelectedRows() {
-        JsArrayInteger ret = JsArrayInteger.createArray().cast();
-        Collection<JsArrayMixed> c = grid.getSelectedRows();
-        for (Iterator<JsArrayMixed> i = c.iterator(); i.hasNext();) {
-            ret.push(grid.getDataSource().indexOf(i.next()));
+        if (!selectedLock) {
+            if (selectedJso == null) {
+                selectedJso = JsArrayInteger.createArray().cast();
+            }
+            selectedJso.setLength(0);
+            Collection<JsArrayMixed> c = grid.getSelectedRows();
+            for (Iterator<JsArrayMixed> i = c.iterator(); i.hasNext();) {
+                selectedJso.push(grid.getDataSource().indexOf(i.next()));
+            }
+            WCUtils.unobserve(selectedJso);
+            WCUtils.observe(selectedJso, new EventListener() {
+                public void onBrowserEvent(Event event) {
+                    setSelectedRows(selectedJso);
+                }
+            });
         }
-        // TODO: use observable
-        deferRefresh.schedule(200);
-        return ret;
+        return selectedJso;
     }
 }

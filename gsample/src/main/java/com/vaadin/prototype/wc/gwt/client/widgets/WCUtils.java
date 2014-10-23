@@ -1,7 +1,9 @@
 package com.vaadin.prototype.wc.gwt.client.widgets;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.js.JsExport;
 import com.google.gwt.i18n.client.NumberFormat;
+import com.google.gwt.user.client.EventListener;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLElement;
 
 @JsExport
@@ -32,4 +34,19 @@ public class WCUtils {
             return 0;
         }
     }
+
+    public static native void observe(JavaScriptObject jso, EventListener ev) /*-{
+        var fnc = function(changes) {
+          ev.@com.google.gwt.user.client.EventListener::onBrowserEvent(*)(null);
+        };
+        jso.__fnc = fnc;
+        Object.observe(jso, fnc);
+    }-*/;
+
+    public static native void unobserve(JavaScriptObject jso) /*-{
+        if (jso && jso.__fnc) {
+          Object.unobserve(jso, jso.__fnc);
+          jso.__fnc = undefined;
+        }
+    }-*/;
 }
