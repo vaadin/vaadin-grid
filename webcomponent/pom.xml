@@ -12,12 +12,13 @@
       <maven.compiler.source>1.7</maven.compiler.source>
       <maven.compiler.target>1.7</maven.compiler.target>
       <gQueryVersion>1.4.3-SNAPSHOT</gQueryVersion>
-      <gwtversion>2.7.0-SNAPSHOT</gwtversion>
+      <gwtversion>2.7.0-beta1</gwtversion>
       <gwtmaven>${gwtversion}</gwtmaven>
-      <gwtmaven>2.7.0-SNAPSHOT</gwtmaven>
+      <gwtmaven>2.7.0-beta1</gwtmaven>
       <gwt.outputstyle>PRETTY</gwt.outputstyle>
       <maven.test.skip>true</maven.test.skip>
       <jetty.version>8.1.12.v20130726</jetty.version>
+      <vaadin.version>7.4.0.alpha11</vaadin.version>
       <!-- <jetty.version>9.2.3.v20140905</jetty.version> -->
     </properties>
 
@@ -162,20 +163,19 @@
         <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-elemental</artifactId>
-        <version>${gwtversion}</version>
+            <version>${gwtversion}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-servlet</artifactId>
-        <version>${gwtversion}</version>
+            <version>${gwtversion}</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>com.googlecode.gwtquery</groupId>
             <artifactId>gwtquery</artifactId>
             <version>${gQueryVersion}</version>
-            <scope>provided</scope>
         </dependency>
         <!-- GWT 2.3.0 depends on these -->
 <!--
@@ -196,28 +196,28 @@
         <dependency>
           <groupId>com.vaadin</groupId>
           <artifactId>vaadin-shared</artifactId>
-          <version>7.3.0</version>
+          <version>${vaadin.version}</version>
         </dependency>
         <dependency>
           <groupId>com.vaadin</groupId>
           <artifactId>vaadin-server</artifactId>
-          <version>7.3.0</version>
+          <version>${vaadin.version}</version>
         </dependency>
         <dependency>
           <groupId>com.vaadin</groupId>
           <artifactId>vaadin-client</artifactId>
-          <version>7.3.0</version>
+          <version>${vaadin.version}</version>
           <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>com.vaadin</groupId>
           <artifactId>vaadin-themes</artifactId>
-          <version>7.3.0</version>
+          <version>${vaadin.version}</version>
         </dependency>
         <dependency>
           <groupId>com.vaadin</groupId>
           <artifactId>vaadin-client-compiler</artifactId>
-          <version>7.3.0</version>
+          <version>${vaadin.version}</version>
           <scope>provided</scope>
         </dependency>
         <dependency>
@@ -225,6 +225,11 @@
           <artifactId>vaadin-client-compiler-deps</artifactId>
           <version>1.1.0</version>
           <scope>provided</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.commons</groupId>
+          <artifactId>commons-lang3</artifactId>
+          <version>3.0</version>
         </dependency>
     </dependencies>
     <build>
