@@ -1000,8 +1000,8 @@ if (WebComponents.flags.shadow) {
         }
       }
       eventPhaseTable.set(event, NONE);
-      currentTargetTable.delete(event, null);
-      currentlyDispatchingEvents.delete(event);
+      currentTargetTable['delete'](event, null);
+      currentlyDispatchingEvents['delete'](event);
       return event.defaultPrevented;
     }
     function dispatchCapturing(event, eventPath, win, overrideTarget) {
@@ -6214,7 +6214,7 @@ CustomElements.addModule(function(scope) {
   document.createElementNS = createElementNS;
   Node.prototype.cloneNode = cloneNode;
   scope.registry = registry;
-  scope.instanceof = isInstance;
+  scope['instanceof'] = isInstance;
   scope.reservedTagList = reservedTagList;
   scope.getRegisteredDefinition = getRegisteredDefinition;
   document.register = document.registerElement;
@@ -6231,7 +6231,7 @@ CustomElements.addModule(function(scope) {
     scope.upgradeDocumentTree = nop;
     scope.upgradeSubtree = nop;
     scope.takeRecords = nop;
-    scope.instanceof = function(obj, base) {
+    scope['instanceof'] = function(obj, base) {
       return obj instanceof base;
     };
   } else {

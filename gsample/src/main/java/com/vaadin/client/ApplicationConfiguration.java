@@ -15,6 +15,8 @@
  */
 package com.vaadin.client;
 
+import static com.google.gwt.query.client.GQuery.console;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -34,6 +36,7 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.core.client.ScriptInjector;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.shared.UmbrellaException;
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
@@ -599,6 +602,12 @@ public class ApplicationConfiguration implements EntryPoint {
     private boolean vaadinBootstrapLoaded() {
         Element window = ScriptInjector.TOP_WINDOW.cast();
         return window.getPropertyJSO("vaadin") != null;
+    }
+
+    public static boolean superDevModeRunning() {
+        Element window = ScriptInjector.TOP_WINDOW.cast();
+        String hookName = "__gwtDevModeHook:" + GWT.getModuleName() + ":moduleBase";
+        return window.getPropertyJSO(hookName) != null;
     }
 
     @Override
