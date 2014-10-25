@@ -46,8 +46,6 @@ public class DemoUI extends UI {
 
     @Override
     protected void init(VaadinRequest request) {
-        System.out.println("Initing");
-
         WebComponentWrapper wrapper = new WebComponentWrapper();
         setContent(wrapper);
 
