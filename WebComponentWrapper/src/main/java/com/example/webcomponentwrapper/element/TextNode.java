@@ -12,6 +12,10 @@ public class TextNode extends NodeImpl {
         return text;
     }
 
+    public void setText(String text) {
+        this.text = text;
+    }
+
     @Override
     public String asHtml() {
         // TODO html encode?

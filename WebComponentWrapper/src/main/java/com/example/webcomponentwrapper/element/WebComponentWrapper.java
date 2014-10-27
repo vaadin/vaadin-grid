@@ -19,7 +19,7 @@ public class WebComponentWrapper extends AbstractJavaScriptComponent {
         addFunction("callback", arguments -> document.handleCallback(arguments));
     }
 
-    public Element getRoot() {
+    public Document getRoot() {
         return document;
     }
 

@@ -64,6 +64,15 @@ public class Document extends ElementImpl {
         }
     }
 
+    public void importComponent(Class<?> iface) {
+        Import annotation = iface.getAnnotation(Import.class);
+        if (annotation != null) {
+            for (String a : annotation.value()){
+                addImport(a);
+            }
+        }
+    }
+
     void setChildAdded(Node parent, Node child) {
         assert parent.getDocument() == this;
 
@@ -78,11 +87,7 @@ public class Document extends ElementImpl {
         idToNode.put(id, child);
 
         for (Class<?> iface : child.getClass().getInterfaces()) {
-            Import annotation = iface.getAnnotation(Import.class);
-            if (annotation != null) {
-                addImport(annotation.value());
-                break;
-            }
+            importComponent(iface);
         }
 
         // Attach child

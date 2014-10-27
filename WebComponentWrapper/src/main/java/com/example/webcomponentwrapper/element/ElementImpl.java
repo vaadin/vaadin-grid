@@ -67,8 +67,12 @@ public class ElementImpl extends NodeImpl implements Element {
 
     @Override
     public void setInnerText(String text) {
-        removeAllChildren();
-
+        for (Node n : this.getChildren()) {
+            if (n instanceof TextNode) {
+                ((TextNode) n).setText(text);
+                return;
+            }
+        }
         appendChild(new TextNode(text));
     }
 

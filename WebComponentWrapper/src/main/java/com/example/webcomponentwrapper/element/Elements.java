@@ -24,12 +24,13 @@ public class Elements {
         registeredElements.put(getElementTag(type), type);
     }
 
-    public static Element create(String tag) {
+    @SuppressWarnings("unchecked")
+    public static <T extends Element> T create(String tag) {
         Class<? extends Element> type = registeredElements.get(tag);
         if (type == null) {
-            return new ElementImpl(tag);
+            return (T)new ElementImpl(tag);
         } else {
-            return create(type);
+            return (T)create(type);
         }
     }
 
@@ -94,6 +95,7 @@ public class Elements {
         Object instance = enhancer.create(new Class[] { String.class },
                 new Object[] { tagName });
 
+        registeredElements.put(tagName, type);
         return type.cast(instance);
     }
 
