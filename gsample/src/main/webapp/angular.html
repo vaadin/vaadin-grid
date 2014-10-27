@@ -57,7 +57,7 @@
     </div>
 
     <h3>Implement demo with AngularJS model used as the source of data for v-grid</h3>
-    <v-grid>
+    <v-grid selectedRow="{{model.idx}}">
     <table>
       <thead>
         <tr>
@@ -75,7 +75,19 @@
       </tbody>
     </table>
     </v-grid>
+
+    <h3>Implement simple crud editor with AngularJS for v-grid</h3>
+       <span v={{model.idx}}>
+       <input type="text" placeholder='Name' ng-model="model.current[0]"><br/>
+       <input type="text" placeholder='Value' ng-model="model.current[1]"><br/>
+       <input type="text" placeholder='Progress' ng-model="model.current[2]"><br/>
+
+       <button ng-click="model.update()">Update</button>
+       <button ng-click="model.remove()">Remove</button>
+       <button ng-click="model.insert()">Insert</button>
+
   </div>
+
 
   <script>
       // Create an application module for our demo, inheriting vaadin-x directives
@@ -96,9 +108,26 @@
         $scope.grid.row = -1;
 
         $scope.model = {};
+        $scope.model.idx = -1;
         $scope.model.data = [ [ "Gridddd", 10000, 0.8 ],
             [ "Vaadin X", 999999, 0.1 ], [ "designer", 43256, 0.9 ],
             [ "TK", 1967, 0.5 ] ];
+        $scope.model.current = []
+
+        $scope.$watch('model.idx', function(newValue, oldValue) {
+          console.log("change " + $scope.model.idx);
+          angular.copy($scope.model.data[$scope.model.idx], $scope.model.current);
+        });
+
+        $scope.model.update = function() {
+          angular.copy($scope.model.current, $scope.model.data[$scope.model.idx]);
+        }
+        $scope.model.remove = function() {
+          $scope.model.data.splice($scope.model.idx, 1);
+        }
+        $scope.model.insert = function() {
+          $scope.model.data.push(angular.copy($scope.model.current));
+        }
 
       });
     </script>
