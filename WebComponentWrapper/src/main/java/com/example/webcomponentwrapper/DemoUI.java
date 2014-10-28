@@ -41,6 +41,7 @@ public class DemoUI extends UI {
     @Import("https://www.polymer-project.org/components/paper-button/paper-button.html")
     public interface PaperButtonElement extends Element {
         void setRaised(boolean b);
+        // Doesn't work it seems we have to call the set property instead of the attribute
         void setIcon(String icon);
     }
 
@@ -99,9 +100,6 @@ public class DemoUI extends UI {
             }
         });
         root.appendChild(button);
-
-
-
 
         Element input = Elements.create("input");
         input.setAttribute("type", "date");
