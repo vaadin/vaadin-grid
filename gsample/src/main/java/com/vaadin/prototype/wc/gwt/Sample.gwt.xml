@@ -6,13 +6,15 @@
     <inherits name="com.google.gwt.user.theme.dark.DarkResources"/>
     <inherits name="com.google.gwt.user.theme.standard.StandardResources"/>
 
-    <entry-point class='com.vaadin.prototype.wc.gwt.client.Sample'/>
+<!--     <entry-point class='com.vaadin.prototype.wc.gwt.client.Sample'/> -->
 
     <set-property name="user.agent" value="safari,gecko1_8,ie10,ie9,ie8" />
 
-    <add-linker name="xsiframe"/>
+<!--     <add-linker name="xsiframe"/> -->
+    <define-linker name="wclinker" class="com.vaadin.prototype.wc.WCLinker" />
+    <add-linker name="wclinker" />
 
     <collapse-all-properties/>
-    
+
 </module>
 

@@ -15,6 +15,8 @@
       <gwtversion>2.7.0-beta1</gwtversion>
       <gwtmaven>2.7.0-beta1</gwtmaven>
       <gwt.outputstyle>PRETTY</gwt.outputstyle>
+      <gwt.draftCompile>NONE</gwt.draftCompile>
+      <gwt.jsInteropMode>JS</gwt.jsInteropMode>
       <maven.test.skip>true</maven.test.skip>
       <jetty.version>9.1.3.v20140225</jetty.version>
       <jetty.version>9.1.0.v20131115</jetty.version>
@@ -28,6 +30,8 @@
         <id>prod</id>
         <properties>
           <gwt.outputstyle>OBF</gwt.outputstyle>
+          <gwt.draftCompile>false</gwt.draftCompile>
+          <gwt.jsInteropMode>NONE</gwt.jsInteropMode>
         </properties>
       </profile>
       <profile>
@@ -241,15 +245,16 @@
                     <style>${gwt.outputstyle}</style>
                     <gwtVersion>${gwtversion}</gwtVersion>
                     <compileReport>true</compileReport>
+                    <compilerMetrics>true</compilerMetrics>
                     <runTarget>/index.html</runTarget>
                     <hostedWebApp>${project.build.directory}/${project.build.finalName}</hostedWebApp>
                     <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
-                    <draftCompile>true</draftCompile>
+                    <draftCompile>${gwt.draftCompile}</draftCompile>
                     <disableCastChecking>true</disableCastChecking>
                     <disableClassMetadata>false</disableClassMetadata>
                     <superDevMode>true</superDevMode>
                     <XprecompilePerFile>true</XprecompilePerFile>
-                    <jsInteropMode>JS</jsInteropMode>
+                    <jsInteropMode>${gwt.jsInteropMode}</jsInteropMode>
                     <modulePathPrefix>VAADIN/widgetsets</modulePathPrefix>
                     <persistentunitcachedir>${project.build.directory}</persistentunitcachedir>
                 </configuration>
