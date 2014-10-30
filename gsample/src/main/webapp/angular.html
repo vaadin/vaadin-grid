@@ -18,7 +18,7 @@
 
     <h3>Use AngularJS with v-slider (attribute binding)</h3>
     <v-slider value="{{slider.value}}"></v-slider>
-    <pre ng-bind="slider.value"></pre>
+    Slider Value: <span ng-bind="slider.value"></span>
     <input type="text" ng-model="slider.value" />
     <button ng-click="slider.changeSlider()">Set to 80</button>
 
@@ -80,7 +80,7 @@
        <span v={{model.idx}}>
        <input type="text" placeholder='Name' ng-model="model.current[0]"><br/>
        <input type="text" placeholder='Value' ng-model="model.current[1]"><br/>
-       <input type="text" placeholder='Progress' ng-model="model.current[2]"><br/>
+       <input type="text" placeholder='Progress' ng-model="model.current[2]"><br/><br/>
 
        <button ng-click="model.update()">Update</button>
        <button ng-click="model.remove()">Remove</button>

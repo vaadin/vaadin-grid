@@ -1,5 +1,6 @@
 package com.vaadin.prototype.wc.gwt.client.js;
 
+import static com.google.gwt.query.client.GQuery.console;
 import static com.google.gwt.query.client.GQuery.window;
 
 import com.google.gwt.core.client.GWT;
@@ -17,9 +18,10 @@ public abstract class NgVaadin implements JsniBundle {
     }
 
     public static void loadNgVaadin() {
-        if (instance == null && isAngularLoaded()) {
+        if (instance == null) {
             instance = GWT.<NgVaadin>create(NgVaadin.class);
             instance.initialize();
+            console.log("Initialized Angular Vaadin X directives.");
         }
     }
 
