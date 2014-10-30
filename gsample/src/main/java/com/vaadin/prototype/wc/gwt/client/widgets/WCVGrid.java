@@ -4,6 +4,7 @@ import static com.google.gwt.query.client.GQuery.$;
 import static com.google.gwt.query.client.GQuery.Widgets;
 import static com.google.gwt.query.client.GQuery.console;
 import static com.google.gwt.query.client.GQuery.window;
+import static com.vaadin.prototype.wc.gwt.client.WC.document;
 import static com.vaadin.prototype.wc.gwt.client.widgets.WCUtils.getAttrIntValue;
 import static com.vaadin.prototype.wc.gwt.client.widgets.WCUtils.getAttrValue;
 
@@ -34,7 +35,9 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.datepicker.client.DatePicker;
 import com.vaadin.client.JsArrayObject;
+import com.vaadin.client.ui.VSlider;
 import com.vaadin.client.ui.grid.FlyweightCell;
 import com.vaadin.client.ui.grid.Grid;
 import com.vaadin.client.ui.grid.Grid.SelectionMode;
@@ -118,6 +121,7 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
             shadow.appendChild(container);
 
             shadowPanel = $(container).as(Widgets).panel().widget();
+
         }
     }
 
@@ -135,7 +139,14 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
         changed = false;
 
         if (grid != null) {
-            grid.removeFromParent();
+            Element e = grid.getElement();
+            try {
+                grid.removeFromParent();
+                console.log("initGrid OK");
+            } catch (Exception ex) {
+                console.log("initGrid Error: " + ex.getMessage());
+                e.removeFromParent();
+            }
         }
         grid = new Grid<JsArrayMixed>();
         grid.addSelectionChangeHandler(this);
