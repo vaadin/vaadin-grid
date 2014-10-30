@@ -41,8 +41,6 @@ public class DemoUI extends UI {
     @Import("https://www.polymer-project.org/components/paper-button/paper-button.html")
     public interface PaperButtonElement extends Element {
         void setRaised(boolean b);
-        // Doesn't work it seems we have to call the set property instead of the attribute
-        void setIcon(String icon);
     }
 
     @Tag("core-icon")
@@ -82,33 +80,25 @@ public class DemoUI extends UI {
         root.setAttribute("style", "overflow: visible;");
 
         PaperButtonElement button = Elements.create(PaperButtonElement.class);
+        root.appendChild(button);
         button.setRaised(true);
         button.setInnerHtml("Hello <b>world</b>");
+
+        CoreIconElement icon = Elements.create(CoreIconElement.class);
+        icon.setIcon("bug-report");
+        button.appendChild(icon);
+
         button.addEventListener(new PaperRpc() {
             @Override
             public void click(double x) {
                 Notification.show("Clicked at " + x);
-                PaperButtonElement button = Elements.create("paper-button");
-
-                CoreIconElement icon = Elements.create(CoreIconElement.class);
-                icon.setIcon("bug-report");
-                button.appendChild(icon);
-
-                button.setInnerText("Vaadin-X");
-                button.setAttribute("raised", true);
-                root.appendChild(button);
             }
         });
-        root.appendChild(button);
+
 
         Element input = Elements.create("input");
         input.setAttribute("type", "date");
         root.appendChild(input);
-
-        button = Elements.create(PaperButtonElement.class);
-        button.setRaised(true);
-        button.setInnerHtml("Hello <b>world 2</b>");
-        root.appendChild(button);
     }
 
 }
