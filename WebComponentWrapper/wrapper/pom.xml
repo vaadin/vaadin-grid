@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
-  <name>WebComponents Wrapper project</name>
-  <groupId>com.vaadin.prototype.wc</groupId>
+  <parent>
+    <groupId>com.vaadin.prototype.wc.wc-wrapper</groupId>
+    <artifactId>parent</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+  <name>Vaadin X web components wrapper (server side) API and implementation</name>
   <artifactId>wc-wrapper</artifactId>
   <packaging>war</packaging>
-  <version>1.0-SNAPSHOT</version>
-
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
@@ -22,7 +24,6 @@
     <jetty.version>9.2.3.v20140905</jetty.version>
     <vaadin.version>7.4.0.alpha11</vaadin.version>
   </properties>
-
   <profiles>
     <profile>
       <id>prod</id>
@@ -68,7 +69,6 @@
       </build>
     </profile>
   </profiles>
-
   <repositories>
     <repository>
       <id>central</id>
@@ -117,7 +117,6 @@
       </releases>
     </pluginRepository>
   </pluginRepositories>
-
   <dependencies>
     <dependency>
       <groupId>org.ow2.asm</groupId>
