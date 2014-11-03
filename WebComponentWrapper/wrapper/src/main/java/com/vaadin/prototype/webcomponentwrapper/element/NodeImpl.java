@@ -1,4 +1,4 @@
-package com.example.webcomponentwrapper.element;
+package com.vaadin.prototype.webcomponentwrapper.element;
 
 import java.util.ArrayList;
 import java.util.Collections;

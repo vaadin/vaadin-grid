@@ -10,7 +10,6 @@
 	</parent>
 	<name>Vaadin X web components wrapper (server side) API and implementation</name>
 	<artifactId>wc-wrapper</artifactId>
-	<packaging>war</packaging>
 
 	<profiles>
 		<profile>

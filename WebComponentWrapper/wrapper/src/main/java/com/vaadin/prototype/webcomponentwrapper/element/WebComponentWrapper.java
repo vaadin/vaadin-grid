@@ -1,4 +1,4 @@
-package com.example.webcomponentwrapper.element;
+package com.vaadin.prototype.webcomponentwrapper.element;
 
 import com.vaadin.annotations.JavaScript;
 import com.vaadin.server.BootstrapFragmentResponse;
@@ -42,7 +42,7 @@ public class WebComponentWrapper extends AbstractJavaScriptComponent {
         super.beforeClientResponse(initial);
     }
 
-    public static void initBootsrap(VaadinService service) {
+    public static void initBootstrap(VaadinService service) {
         BootstrapListener l = new BootstrapListener() {
             @Override
             public void modifyBootstrapPage(BootstrapPageResponse response) {

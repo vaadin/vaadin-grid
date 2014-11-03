@@ -1,4 +1,4 @@
-package com.example.webcomponentwrapper.element;
+package com.vaadin.prototype.webcomponentwrapper.element;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

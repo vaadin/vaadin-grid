@@ -1,9 +1,11 @@
-package com.example.webcomponentwrapper.element;
+package com.vaadin.prototype.webcomponentwrapper.element;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Tag {
-    public String value();
+public @interface EventParam {
+
+    String value();
+
 }

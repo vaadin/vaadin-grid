@@ -1,4 +1,4 @@
-package com.example.webcomponentwrapper.element;
+package com.vaadin.prototype.webcomponentwrapper.element;
 
 public class TextNode extends NodeImpl {
 

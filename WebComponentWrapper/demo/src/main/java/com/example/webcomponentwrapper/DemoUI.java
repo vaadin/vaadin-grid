@@ -1,19 +1,18 @@
 package com.example.webcomponentwrapper;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 
-import com.example.webcomponentwrapper.element.Document;
-import com.example.webcomponentwrapper.element.Element;
-import com.example.webcomponentwrapper.element.Elements;
-import com.example.webcomponentwrapper.element.EventParam;
-import com.example.webcomponentwrapper.element.Import;
-import com.example.webcomponentwrapper.element.Tag;
-import com.example.webcomponentwrapper.element.WebComponentWrapper;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
+import com.vaadin.prototype.webcomponentwrapper.WebComponentVaadinServlet;
+import com.vaadin.prototype.webcomponentwrapper.element.Document;
+import com.vaadin.prototype.webcomponentwrapper.element.Element;
+import com.vaadin.prototype.webcomponentwrapper.element.Elements;
+import com.vaadin.prototype.webcomponentwrapper.element.EventParam;
+import com.vaadin.prototype.webcomponentwrapper.element.Import;
+import com.vaadin.prototype.webcomponentwrapper.element.Tag;
+import com.vaadin.prototype.webcomponentwrapper.element.WebComponentWrapper;
 import com.vaadin.server.VaadinRequest;
-import com.vaadin.server.VaadinServlet;
 import com.vaadin.shared.communication.ServerRpc;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Label;
@@ -23,23 +22,16 @@ import com.vaadin.ui.UI;
 @SuppressWarnings("serial")
 @Theme("valo")
 public class DemoUI extends UI {
-
-    @WebServlet(value = "/*", asyncSupported = true)
-    @VaadinServletConfiguration(productionMode = false, ui = DemoUI.class)
-    public static class Servlet extends VaadinServlet {
-
-        // All this just to include a script in the head in the generated HTML
-        @Override
-        protected void servletInitialized() throws ServletException {
-            super.servletInitialized();
-
-            WebComponentWrapper.initBootsrap(getService());
-        }
-    }
+	
+	@WebServlet(value = "/*", asyncSupported = true)
+	@VaadinServletConfiguration(productionMode = false, ui = DemoUI.class)
+	public static class Servlet extends WebComponentVaadinServlet {
+		
+	}
 
     @Tag("paper-button")
     @Import("https://www.polymer-project.org/components/paper-button/paper-button.html")
-    public interface PaperButtonElement extends Element {
+    public static interface PaperButtonElement extends Element {
         void setRaised(boolean b);
     }
 
@@ -57,11 +49,11 @@ public class DemoUI extends UI {
         "https://www.polymer-project.org/components/core-icons/notifiacation-icons.html",
         "https://www.polymer-project.org/components/core-icons/social-icons.html",
     })
-    public interface CoreIconElement extends Element {
+    public static interface CoreIconElement extends Element {
         void setIcon(String icon);
     }
 
-    public interface PaperRpc extends ServerRpc {
+    public static interface PaperRpc extends ServerRpc {
         public void click(@EventParam("clientX") double x);
     }
 
