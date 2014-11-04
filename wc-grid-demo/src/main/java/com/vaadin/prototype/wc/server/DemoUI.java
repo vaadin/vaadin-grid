@@ -5,8 +5,6 @@ import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.annotations.Widgetset;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
-import com.vaadin.tests.components.grid.tutorials.AbstractGridSample;
-import com.vaadin.tests.components.grid.tutorials.AllClientSamplesComponent;
 import com.vaadin.ui.UI;
 
 @SuppressWarnings("serial")
@@ -23,8 +21,5 @@ public class DemoUI extends UI{
 
     @Override
     protected void init(VaadinRequest request) {
-        AbstractGridSample s = new AbstractGridSample();
-        AllClientSamplesComponent a = new AllClientSamplesComponent();
-        setContent(s);
     }
 }
