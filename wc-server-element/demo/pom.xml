@@ -9,12 +9,12 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>demo</artifactId>
-    <packaging>pom</packaging>
+    <packaging>war</packaging>
     <name>Vaadin X web components wrapper (server side) demo</name>
     <dependencies>
         <dependency>
             <groupId>com.vaadin.prototype.wc.wc-wrapper</groupId>
-            <artifactId>wc-wrapper</artifactId>
+            <artifactId>wc-element-api</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
