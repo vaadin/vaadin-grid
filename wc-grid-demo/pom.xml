@@ -8,7 +8,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <name>WebComponents gwtquery project</name>
+    <name>WebComponents Exported Grid Demo project</name>
     <groupId>com.vaadin.prototype.wc</groupId>
     <artifactId>wc-grid-demo</artifactId>
     <packaging>war</packaging>
