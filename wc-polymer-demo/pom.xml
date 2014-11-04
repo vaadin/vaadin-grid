@@ -30,9 +30,11 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
                         <arg value="src/main/java/com/vaadin/prototype/wc/gwt/public/components"/>
                         <arg value="src/main/java/com/vaadin/prototype/wc/"/>
                       </exec>
+                      <!--
                       <exec dir="./src/main/java/com/vaadin/prototype/wc/gwt/client/html/" executable="perl">
                         <arg line="../../../../../../../../scripts/generateStyles.pl" />
                       </exec>
+                      -->
                     </tasks>
                   </configuration>
                   <phase>generate-sources</phase>

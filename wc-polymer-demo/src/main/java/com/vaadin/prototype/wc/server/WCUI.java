@@ -6,7 +6,7 @@ import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.annotations.Widgetset;
 import com.vaadin.prototype.wc.gwt.client.components.Icon;
-import com.vaadin.prototype.wc.gwt.client.components.BaseComponent.EventListener;
+import com.vaadin.prototype.wc.server.ui.BaseComponent.EventListener;
 import com.vaadin.prototype.wc.server.ui.PaperButtonComponent;
 import com.vaadin.prototype.wc.server.ui.PaperSliderComponent;
 import com.vaadin.prototype.wc.server.ui.PaperToggleButtonComponent;

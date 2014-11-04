@@ -103,6 +103,7 @@ import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.Widget;
 import __NS__.gwt.client.*;
+import __NS__.gwt.client.util.*;
 
 public class __CLZ__Widget extends __EXTENDS__  {
   
