@@ -2,7 +2,7 @@ package com.vaadin.prototype.wc.gwt.client.widgets;
 
 import static com.google.gwt.query.client.GQuery.$;
 import static com.google.gwt.query.client.GQuery.Widgets;
-import static com.vaadin.prototype.wc.gwt.client.widgets.WCUtils.getAttrDoubleValue;
+import static com.vaadin.prototype.wc.gwt.client.widgets.WCUtils.getAttrFloatValue;
 import static com.vaadin.prototype.wc.gwt.client.widgets.WCUtils.getAttrValue;
 
 import com.google.gwt.core.client.GWT;
@@ -11,26 +11,25 @@ import com.google.gwt.core.client.js.JsProperty;
 import com.google.gwt.core.client.js.JsType;
 import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.event.logical.shared.AttachEvent.Handler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
-import com.vaadin.client.ui.VSlider;
+import com.vaadin.client.ui.VProgressBar;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLElement;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLEvents;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLShadow;
 import com.vaadin.prototype.wc.gwt.client.util.Elements;
+
 @JsExport
 @JsType
-public class WCVSlider extends HTMLElement.Prototype implements
+public class WCVProgress extends HTMLElement.Prototype implements
         HTMLElement.LifeCycle.Created,
         HTMLElement.LifeCycle.Attached,
         HTMLElement.LifeCycle.Changed,
-        ValueChangeHandler<Double>, Handler {
+        Handler {
 
-    public static final String TAG = "v-slider";
+    public static final String TAG = "v-progress";
 
-    private VSlider slider;
+    private VProgressBar widget;
     private HTMLEvents changeEvent;
     private HTMLElement container;
     private HTMLElement style;
@@ -38,7 +37,7 @@ public class WCVSlider extends HTMLElement.Prototype implements
     private boolean initialized = false;
     private String theme = "valo";
 
-    public WCVSlider() {
+    public WCVProgress() {
         // FIXME: If there is no default constructor JsInterop does not export anything
     }
 
@@ -46,8 +45,7 @@ public class WCVSlider extends HTMLElement.Prototype implements
     public void createdCallback() {
         style = Elements.create("style");
 
-        slider = new VSlider();
-        slider.addValueChangeHandler(this);
+        widget = new VProgressBar();
 
         changeEvent = Elements.document.createEvent("HTMLEvents");
         changeEvent.initEvent("change", false, false);
@@ -73,24 +71,15 @@ public class WCVSlider extends HTMLElement.Prototype implements
             shadow.appendChild(container);
 
             Panel shadowPanel = $(container).as(Widgets).panel().widget();
-            shadowPanel.add(slider);
+            shadowPanel.add(widget);
         }
     }
 
     @Override
     public void attachedCallback() {
         initWidgetSystem();
-        slider.buildBase();
     }
 
-    @Override
-    public void onValueChange(ValueChangeEvent<Double> ev) {
-        String val = ev.getValue().toString();
-        if (!val.equals(getAttribute("value"))) {
-            setAttribute("value", val);
-            dispatchEvent(changeEvent);
-        }
-    }
 
     @Override
     public void attributeChangedCallback() {
@@ -98,9 +87,7 @@ public class WCVSlider extends HTMLElement.Prototype implements
     }
 
     private void readAttributes() {
-        slider.setMinValue(getAttrDoubleValue(this, "min", 0));
-        slider.setMaxValue(getAttrDoubleValue(this, "max", 100));
-        slider.setValue(getAttrDoubleValue(this, "value", 0));
+        widget.setState(getAttrFloatValue(this, "value", 0));
         theme = getAttrValue(this, "theme", "valo");
         style.innerText("@import url('" + GWT.getModuleBaseURL() + "../../themes/" + theme + "/styles.css')");
         style.innerText("@import url('VAADIN/themes/" + theme + "/styles.css')");
@@ -119,10 +106,10 @@ public class WCVSlider extends HTMLElement.Prototype implements
     }
 
     @JsProperty public void setValue(double value) {
-        slider.setValue(value);
+        widget.setState((float)value);
     }
 
     @JsProperty public double getValue() {
-        return slider.getValue();
+        return widget.getState();
     }
 }

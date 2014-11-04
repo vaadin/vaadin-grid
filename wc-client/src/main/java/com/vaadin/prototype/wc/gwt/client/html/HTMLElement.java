@@ -56,7 +56,7 @@ public interface HTMLElement {
         @Override
         public NodeList<?> children() {
             return element().children();
-        }        
+        }
     }
 
     public interface LifeCycle {

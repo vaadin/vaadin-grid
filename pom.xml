@@ -310,5 +310,6 @@
       <module>wc-server</module>
       <module>wc-client</module>
       <module>wc-polymer-demo</module>
+      <module>wc-grid-demo</module>
     </modules>
 </project>

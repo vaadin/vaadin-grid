@@ -186,8 +186,8 @@ public interface HTMLStyle {
   @JsProperty HTMLStyle flexShrink(String arg);
   @JsProperty String flexWrap();
   @JsProperty HTMLStyle flexWrap(String arg);
-  @JsProperty String getFloat();
-  @JsProperty HTMLStyle setFloat(String arg);
+  @JsProperty String float_();
+  @JsProperty HTMLStyle float_(String arg);
   @JsProperty String floodColor();
   @JsProperty HTMLStyle floodColor(String arg);
   @JsProperty String floodOpacity();
