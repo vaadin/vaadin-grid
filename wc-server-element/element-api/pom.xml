@@ -9,7 +9,7 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<name>Vaadin X web components wrapper (server side) API and implementation</name>
-	<artifactId>wc-wrapper</artifactId>
+	<artifactId>wc-element-api</artifactId>
 
 	<profiles>
 		<profile>

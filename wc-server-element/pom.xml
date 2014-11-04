@@ -8,7 +8,7 @@
 	<name>Vaadin X web components wrapper (server side)</name>
 	<modules>
 		<module>demo</module>
-		<module>wrapper</module>
+		<module>element-api</module>
 	</modules>
 
 	<properties>
