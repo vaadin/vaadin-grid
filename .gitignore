@@ -1,6 +1,10 @@
-#ignore eclipse files, wherever they are
-.project
-.settings/
+/target
+/gwt-unitCache
+/.gwt
+/www-test
+.settings
 .classpath
-#ignore maven target directory, wherever it is
-target/
+.project
+war
+.DS_Store
+
