@@ -4,13 +4,13 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.vaadin.prototype.wc.wc-wrapper</groupId>
-        <artifactId>parent</artifactId>
+        <artifactId>wc-element-api-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>wc-element-api-demo</artifactId>
     <packaging>war</packaging>
-    <name>Vaadin X web components wrapper (server side) demo</name>
+    <name>Vaadin X Element API, Demo</name>
     <dependencies>
         <dependency>
             <groupId>com.vaadin.prototype.wc.wc-wrapper</groupId>
@@ -27,4 +27,50 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
+    <build>
+        <resources>
+            <resource>
+                <directory>${basedir}/src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>${basedir}/src/main/java</directory>
+                <excludes>
+                    <exclude>**/*.java</exclude>
+                </excludes>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                </configuration>
+            </plugin>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-eclipse-plugin</artifactId>
+               <version>2.7</version>
+               <configuration>
+                   <downloadSources>true</downloadSources>
+                   <downloadJavadocs>false</downloadJavadocs>
+                   <additionalBuildcommands>
+                       <buildcommand>org.eclipse.wst.common.modulecore.ComponentStructuralBuilder</buildcommand>
+                       <buildcommand>org.eclipse.jdt.core.javabuilder</buildcommand>
+                       <buildcommand>org.eclipse.wst.common.modulecore.ComponentStructuralBuilderDependencyResolver</buildcommand>
+                   </additionalBuildcommands>
+               </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <configuration>
+                    <scanIntervalSeconds>2</scanIntervalSeconds>
+                    <stopKey>foo</stopKey>
+                    <stopPort>9999</stopPort>
+                </configuration>
+            </plugin>
+        </plugins>
+        <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
+    </build>
 </project>

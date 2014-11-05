@@ -5,7 +5,7 @@
     <artifactId>wc-element-api-parent</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>Vaadin X web components wrapper (server side)</name>
+    <name>Vaadin X Element API, Parent</name>
     <modules>
         <module>demo</module>
         <module>element-api</module>
