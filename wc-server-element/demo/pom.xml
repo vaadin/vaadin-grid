@@ -8,7 +8,7 @@
         <version>0.0.1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>demo</artifactId>
+    <artifactId>wc-element-api-demo</artifactId>
     <packaging>war</packaging>
     <name>Vaadin X web components wrapper (server side) demo</name>
     <dependencies>
