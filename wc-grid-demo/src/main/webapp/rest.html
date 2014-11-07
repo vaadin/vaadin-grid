@@ -8,31 +8,28 @@
 <body>
 
   <script>
-      function waitUntil(check, exec) {
-        var id = setInterval(function() {
-          if (check()) {
-            clearInterval(id);
-            exec()
+      function waitUntil(id, exec) {
+        var interval = setInterval(function() {
+          var grid = document.getElementById(id);
+          if (grid && grid.dataSource) {
+            clearInterval(interval);
+            exec(grid)
           }
-        }, 500);
+        }, 100);
       }
-    </script>
+  </script>
 
 
   <h3>1.- Rest data has column info in the object array</h3>
   <v-grid id='myGrid1'>
   </v-grid>
   <script>
-  (function() {
       var grid = document.getElementById("myGrid1");
-      waitUntil(function() {
-        return grid && grid.dataSource;
-      }, function() {
+      waitUntil("myGrid1", function(grid) {
         grid.dataSource = {
             url: 'rest/list_object_names_{START}_{LENGTH}.json'
         };
       });
-  })();
   </script>
 
   <h3>2.- Rest data has column info in headers</h3>
@@ -48,32 +45,24 @@
    </table>
   </v-grid>
   <script>
-  (function() {
-      var grid = document.getElementById("myGrid2");
-      waitUntil(function() {
-        return grid && grid.dataSource;
-      }, function() {
-        grid.dataSource = {
-            url: 'rest/list_object_names_{START}_{LENGTH}.json'
-        };
-      });
-  })();
+    var grid = document.getElementById("myGrid1");
+    waitUntil("myGrid2", function(grid) {
+      grid.dataSource = {
+          url: 'rest/list_object_names_{START}_{LENGTH}.json'
+      };
+    });
   </script>
 
  <h3>3.- Rest data has column info in a columns object definition</h3>
   <v-grid id='myGrid3'>
   </v-grid>
   <script>
-  (function() {
-      var grid = document.getElementById("myGrid3");
-      waitUntil(function() {
-        return grid && grid.dataSource;
-      }, function() {
-        grid.dataSource = {
-            url: 'rest/list_objects_{START}_{LENGTH}.json'
-        };
-      });
-  })();
+    var grid = document.getElementById("myGrid3");
+    waitUntil("myGrid3", function(grid) {
+      grid.dataSource = {
+          url: 'rest/list_objects_{START}_{LENGTH}.json'
+      };
+    });
   </script>
 
  <h3>4.- Table has column info in dom and data is array</h3>
@@ -89,32 +78,24 @@
    </table>
   </v-grid>
   <script>
-  (function() {
-      var grid = document.getElementById("myGrid4");
-      waitUntil(function() {
-        return grid && grid.dataSource;
-      }, function() {
-        grid.dataSource = {
-            url: 'rest/list_arrays_{START}_{LENGTH}.json'
-        };
-      });
-  })();
+    var grid = document.getElementById("myGrid3");
+    waitUntil("myGrid4", function(grid) {
+      grid.dataSource = {
+          url: 'rest/list_arrays_{START}_{LENGTH}.json'
+      };
+    });
   </script>
 
  <h3>5.- Rest returns column info and data is array</h3>
   <v-grid id='myGrid5'>
   </v-grid>
   <script>
-  (function() {
-      var grid = document.getElementById("myGrid5");
-      waitUntil(function() {
-        return grid && grid.dataSource;
-      }, function() {
-        grid.dataSource = {
-            url: 'rest/list_arrays_{START}_{LENGTH}.json'
-        };
-      });
-  })();
+    var grid = document.getElementById("myGrid3");
+    waitUntil("myGrid5", function(grid) {
+      grid.dataSource = {
+          url: 'rest/list_arrays_{START}_{LENGTH}.json'
+      };
+    });
   </script>
 
  <h3>6.- Rest data source in attributes</h3>
