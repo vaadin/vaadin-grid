@@ -13,7 +13,11 @@ import elemental.json.impl.JsonUtil;
 
 @JavaScript("elementui.js")
 public class WebComponentWrapper extends AbstractJavaScriptComponent {
-    private final Document document = new Document(this);
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -8690500862374495720L;
+	private final Document document = new Document(this);
 
     public WebComponentWrapper() {
         addFunction("callback", arguments -> document.handleCallback(arguments));

@@ -4,6 +4,7 @@ import javax.servlet.annotation.WebServlet;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
+import com.vaadin.prototype.webcomponentwrapper.UIWithRootDocument;
 import com.vaadin.prototype.webcomponentwrapper.WebComponentVaadinServlet;
 import com.vaadin.prototype.webcomponentwrapper.element.Document;
 import com.vaadin.prototype.webcomponentwrapper.element.Element;
@@ -12,6 +13,8 @@ import com.vaadin.prototype.webcomponentwrapper.element.EventParam;
 import com.vaadin.prototype.webcomponentwrapper.element.Import;
 import com.vaadin.prototype.webcomponentwrapper.element.Tag;
 import com.vaadin.prototype.webcomponentwrapper.element.WebComponentWrapper;
+import com.vaadin.prototype.webcomponentwrapper.template.TemplateInstance;
+import com.vaadin.prototype.webcomponentwrapper.template.Templates;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.shared.communication.ServerRpc;
 import com.vaadin.ui.CssLayout;
@@ -21,8 +24,10 @@ import com.vaadin.ui.UI;
 
 @SuppressWarnings("serial")
 @Theme("valo")
-public class DemoUI extends UI {
+public class DemoUI extends UIWithRootDocument {
 	
+	private Document root;
+
 	@WebServlet(value = "/*", asyncSupported = true)
 	@VaadinServletConfiguration(productionMode = false, ui = DemoUI.class)
 	public static class Servlet extends WebComponentVaadinServlet {
@@ -69,6 +74,7 @@ public class DemoUI extends UI {
         WebComponentWrapper wrapper = new WebComponentWrapper();
         main.addComponent(wrapper);
         Document root = wrapper.getRoot();
+        setRoot(root);
         root.setAttribute("style", "overflow: visible;");
 
         PaperButtonElement button = Elements.create(PaperButtonElement.class);
@@ -91,6 +97,22 @@ public class DemoUI extends UI {
         Element input = Elements.create("input");
         input.setAttribute("type", "date");
         root.appendChild(input);
+        
+        TemplateInstance<? extends Element> instance = Templates.instiantiate("hello.html");
+        root.appendChild(instance.getElemet());
     }
+   
+    private void setRoot(Document root) {
+		this.root = root;
+		// TODO Auto-generated method stub
+		
+	}
 
+    public static DemoUI getCurrent() {
+    	return (DemoUI)UI.getCurrent();
+    }
+    
+	public Document getDocumentRoot() {
+    	return root;
+    }
 }

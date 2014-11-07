@@ -1,4 +1,4 @@
-window.com_example_webcomponentwrapper_element_WebComponentWrapper = function() {
+window.com_vaadin_prototype_webcomponentwrapper_element_WebComponentWrapper = function() {
   
   
   console.log("")
