@@ -1,7 +1,6 @@
 package com.vaadin.prototype.wc.gwt.client.widgets;
 
 import static com.google.gwt.query.client.GQuery.$;
-import static com.google.gwt.query.client.GQuery.$$;
 import static com.google.gwt.query.client.GQuery.Widgets;
 import static com.google.gwt.query.client.GQuery.console;
 import static com.google.gwt.query.client.GQuery.window;
@@ -27,7 +26,6 @@ import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.event.logical.shared.AttachEvent.Handler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQ;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Properties;
@@ -57,11 +55,11 @@ import com.vaadin.prototype.wc.gwt.client.html.HTMLShadow;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLTableElement;
 import com.vaadin.prototype.wc.gwt.client.util.Elements;
 import com.vaadin.prototype.wc.gwt.client.widgets.grid.GData;
-import com.vaadin.prototype.wc.gwt.client.widgets.grid.GRestDataSource;
 import com.vaadin.prototype.wc.gwt.client.widgets.grid.GData.GColumn;
 import com.vaadin.prototype.wc.gwt.client.widgets.grid.GData.GColumn.GHeader;
 import com.vaadin.prototype.wc.gwt.client.widgets.grid.GData.GColumn.GHeader.Format;
 import com.vaadin.prototype.wc.gwt.client.widgets.grid.GJsFuncDataSource;
+import com.vaadin.prototype.wc.gwt.client.widgets.grid.GRestDataSource;
 import com.vaadin.shared.ui.grid.GridState;
 import com.vaadin.shared.ui.grid.HeightMode;
 
@@ -288,13 +286,16 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
 
         adjustHeight(vals.size());
         setSelectedRow(getAttrIntValue(this, "selectedRow", -1));
-        
+
+
         String type = getAttrValue(this, "type", null);
         String url = getAttrValue(this, "url", null);
         if ("ajax".equals(type) && url != null) {
-            Properties p = $$("url: " + url);
+            Properties p = Properties.create();
+            p.set("url", url);
             setDataSource(p);
         }
+
         // TODO be able to change the selection mode if
         // attribute selectionMode change
     }
@@ -357,8 +358,8 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
 
             int colOffset = 0;
             for (int j = 0; j < $ths.size(); j++) {
-                
-                
+
+
                 GColumn column = colList.get(j + colOffset);
 
                 GHeader header = GQ.create(GHeader.class);
@@ -441,7 +442,7 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
         changed = true;
         this.cols = cols;
     }
-    
+
     @JsNoExport
     public List<GColumn> getCols() {
         return cols;
@@ -458,11 +459,9 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
             grid.setHeightMode(HeightMode.ROW);
             grid.setHeightByRows(Math.min(size,
                     GridState.DEFAULT_HEIGHT_BY_ROWS));
-            
-            grid.getDataSource().size();
         }
     }
-    
+
     @JsNoExport
     public void adjustHeight() {
         int s = grid.getDataSource().size();
