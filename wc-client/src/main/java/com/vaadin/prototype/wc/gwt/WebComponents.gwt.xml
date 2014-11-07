@@ -7,7 +7,6 @@
     <inherits name="com.google.gwt.user.theme.standard.StandardResources"/>
     
     <inherits name='com.vaadin.DefaultWidgetSet'/>
-    
 
     <!-- TODO: for some reason jsinterop fails with FF and IE
          errors are casting problems seems a problem in GWT
@@ -16,6 +15,5 @@
     <set-property name="user.agent" value="safari" />
 
     <add-linker name="xsiframe"/>
-    <collapse-all-properties/>
 </module>
 

@@ -1,6 +1,7 @@
 package com.vaadin.prototype.wc.gwt.client.widgets;
 
 import static com.google.gwt.query.client.GQuery.$;
+import static com.google.gwt.query.client.GQuery.$$;
 import static com.google.gwt.query.client.GQuery.Widgets;
 import static com.google.gwt.query.client.GQuery.console;
 import static com.google.gwt.query.client.GQuery.window;
@@ -29,6 +30,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQ;
 import com.google.gwt.query.client.GQuery;
+import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
@@ -286,7 +288,13 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
 
         adjustHeight(vals.size());
         setSelectedRow(getAttrIntValue(this, "selectedRow", -1));
-
+        
+        String type = getAttrValue(this, "type", null);
+        String url = getAttrValue(this, "url", null);
+        if ("ajax".equals(type) && url != null) {
+            Properties p = $$("url: " + url);
+            setDataSource(p);
+        }
         // TODO be able to change the selection mode if
         // attribute selectionMode change
     }
@@ -494,7 +502,7 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
             grid.setDataSource(new GJsFuncDataSource(jso, size));
         } else {
             loadHeaders();
-            final DataSource<JsArrayMixed> ds = new GRestDataSource(jso, this);
+            new GRestDataSource(jso, this);
         }
     }
 
