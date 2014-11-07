@@ -1,17 +1,6 @@
 <module>
-
     <inherits name='com.vaadin.prototype.wc.gwt.WebComponents'/>
-
-<!--     <inherits name='com.vaadin.Vaadin'/> -->
-    <inherits name='com.vaadin.DefaultWidgetSet'/>
-    <collapse-all-properties/>
-
     <stylesheet src="demo.css" />
-
-    <!-- Aditionale create a Module-import.html file to use with Web Components -->
-    <define-linker name="wclinker" class="com.vaadin.prototype.wc.WCLinker" />
-    <add-linker name="wclinker" />
-
 <!-- <collapse-all-properties value="false" /> -->
 <!-- <set-property name="compiler.stackMode" value="strip" /> -->
 </module>
