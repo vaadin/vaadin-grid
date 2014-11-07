@@ -1,8 +1,8 @@
-<module rename-to='Demo'>
+<module>
 
     <inherits name='com.vaadin.prototype.wc.gwt.WebComponents'/>
 
-    <inherits name='com.vaadin.Vaadin'/>
+<!--     <inherits name='com.vaadin.Vaadin'/> -->
     <inherits name='com.vaadin.DefaultWidgetSet'/>
     <collapse-all-properties/>
 
@@ -12,6 +12,7 @@
     <define-linker name="wclinker" class="com.vaadin.prototype.wc.WCLinker" />
     <add-linker name="wclinker" />
 
+<!-- <collapse-all-properties value="false" /> -->
 <!-- <set-property name="compiler.stackMode" value="strip" /> -->
 </module>
 

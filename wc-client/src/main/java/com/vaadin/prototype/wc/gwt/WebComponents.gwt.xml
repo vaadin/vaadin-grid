@@ -5,8 +5,6 @@
     <inherits name="com.google.gwt.user.theme.clean.CleanResources"/>
     <inherits name="com.google.gwt.user.theme.dark.DarkResources"/>
     <inherits name="com.google.gwt.user.theme.standard.StandardResources"/>
-    
-    <inherits name='com.vaadin.DefaultWidgetSet'/>
 
     <!-- TODO: for some reason jsinterop fails with FF and IE
          errors are casting problems seems a problem in GWT
