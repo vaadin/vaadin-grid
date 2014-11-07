@@ -9,12 +9,12 @@ import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.vaadin.client.data.AbstractRemoteDataSource;
 
-public class GDataSource extends
+public class GJsFuncDataSource extends
         AbstractRemoteDataSource<JsArrayMixed> {
     private JavaScriptObject f;
     private int size = 0;
 
-    public GDataSource(JavaScriptObject jso, int rows) {
+    public GJsFuncDataSource(JavaScriptObject jso, int rows) {
         assert JsUtils.isFunction(jso);
         f = jso;
         size = rows;

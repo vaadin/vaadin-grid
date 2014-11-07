@@ -12,7 +12,7 @@
       <gQueryVersion>1.4.3-SNAPSHOT</gQueryVersion>
       <gwtversion>2.7.0-rc1</gwtversion>
       <gwtmaven>${gwtversion}</gwtmaven>
-      <gwtmaven>2.7.0-beta1</gwtmaven>
+      <gwtmaven>2.7.0-rc1</gwtmaven>
       <gwt.outputstyle>PRETTY</gwt.outputstyle>
       <jetty.version>8.1.12.v20130726</jetty.version>
       <vaadin.version>7.4.0.alpha11</vaadin.version>

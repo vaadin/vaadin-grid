@@ -2,7 +2,7 @@ target/
 gwt-unitCache/
 .gwt/
 www-test/
-.settings
+.settings/
 .classpath
 .project
 war

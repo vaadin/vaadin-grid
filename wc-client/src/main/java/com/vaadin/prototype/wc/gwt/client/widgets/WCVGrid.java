@@ -18,6 +18,7 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayInteger;
 import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.core.client.js.JsExport;
+import com.google.gwt.core.client.js.JsNoExport;
 import com.google.gwt.core.client.js.JsProperty;
 import com.google.gwt.core.client.js.JsType;
 import com.google.gwt.dom.client.Element;
@@ -27,6 +28,7 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.query.client.GQ;
 import com.google.gwt.query.client.GQuery;
+import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
@@ -35,6 +37,7 @@ import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.JsArrayObject;
+import com.vaadin.client.data.DataSource;
 import com.vaadin.client.ui.grid.FlyweightCell;
 import com.vaadin.client.ui.grid.Grid;
 import com.vaadin.client.ui.grid.Grid.SelectionMode;
@@ -55,7 +58,8 @@ import com.vaadin.prototype.wc.gwt.client.widgets.grid.GData;
 import com.vaadin.prototype.wc.gwt.client.widgets.grid.GData.GColumn;
 import com.vaadin.prototype.wc.gwt.client.widgets.grid.GData.GColumn.GHeader;
 import com.vaadin.prototype.wc.gwt.client.widgets.grid.GData.GColumn.GHeader.Format;
-import com.vaadin.prototype.wc.gwt.client.widgets.grid.GDataSource;
+import com.vaadin.prototype.wc.gwt.client.widgets.grid.GJsFuncDataSource;
+import com.vaadin.prototype.wc.gwt.client.widgets.grid.GRestDataSource;
 import com.vaadin.shared.ui.grid.GridState;
 import com.vaadin.shared.ui.grid.HeightMode;
 
@@ -129,13 +133,16 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
         addEventListener("DOMSubtreeModified", this);
     }
 
-    private void initGrid() {
+    @JsNoExport
+    public void initGrid() {
         if (!changed) {
             return;
         }
         changed = false;
 
+        DataSource<JsArrayMixed> dataSource = null;
         if (grid != null) {
+            dataSource = grid.getDataSource();
             Element e = grid.getElement();
             try {
                 grid.removeFromParent();
@@ -146,6 +153,8 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
             }
         }
         grid = new Grid<JsArrayMixed>();
+        grid.addSelectionChangeHandler(this);
+        shadowPanel.add(grid);
         grid.addSelectionChangeHandler(this);
         shadowPanel.add(grid);
 
@@ -247,8 +256,9 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
         }
         loadRows();
         if (vals != null && !vals.isEmpty()) {
-            ListDataSource<JsArrayMixed> dataSource = new ListDataSource<JsArrayMixed>(
-                    vals);
+           dataSource = new ListDataSource<JsArrayMixed>(vals);
+        }
+        if (dataSource != null) {
             grid.setDataSource(dataSource);
         }
     }
@@ -276,6 +286,15 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
 
         adjustHeight(vals.size());
         setSelectedRow(getAttrIntValue(this, "selectedRow", -1));
+
+
+        String type = getAttrValue(this, "type", null);
+        String url = getAttrValue(this, "url", null);
+        if ("ajax".equals(type) && url != null) {
+            Properties p = Properties.create();
+            p.set("url", url);
+            setDataSource(p);
+        }
 
         // TODO be able to change the selection mode if
         // attribute selectionMode change
@@ -326,8 +345,8 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
             headerDefaultRowIndex = 0;
         }
         for (int i = 0; i < $theadRows.size(); i++) {
-            GQuery $th = $theadRows.eq(i).children("th");
-            while (colList.size() < $th.size()) {
+            GQuery $ths = $theadRows.eq(i).children("th");
+            while (colList.size() < $ths.size()) {
                 GColumn column = GQ.create(GColumn.class);
                 contentsMap.put(column, new ArrayList<GHeader>());
                 colList.add(column);
@@ -335,15 +354,17 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
         }
 
         for (int i = 0; i < $theadRows.size(); i++) {
-            GQuery $row = $theadRows.eq(i).children("th");
+            GQuery $ths = $theadRows.eq(i).children("th");
 
             int colOffset = 0;
-            for (int j = 0; j < $row.size(); j++) {
+            for (int j = 0; j < $ths.size(); j++) {
+
+
                 GColumn column = colList.get(j + colOffset);
 
                 GHeader header = GQ.create(GHeader.class);
 
-                GQuery $th = $row.eq(j);
+                GQuery $th = $ths.eq(j);
 
                 int colSpan = 1;
                 String colString = $th.attr("colspan");
@@ -416,9 +437,15 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
         }
     }
 
-    private void setCols(List<GColumn> cols) {
+    @JsNoExport
+    public void setCols(List<GColumn> cols) {
         changed = true;
         this.cols = cols;
+    }
+
+    @JsNoExport
+    public List<GColumn> getCols() {
+        return cols;
     }
 
     private void setVals(List<JsArrayMixed> vals) {
@@ -426,12 +453,19 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
         this.vals = vals;
     }
 
+    @JsNoExport
     private void adjustHeight(int size) {
         if (size > 0) {
             grid.setHeightMode(HeightMode.ROW);
             grid.setHeightByRows(Math.min(size,
                     GridState.DEFAULT_HEIGHT_BY_ROWS));
         }
+    }
+
+    @JsNoExport
+    public void adjustHeight() {
+        int s = grid.getDataSource().size();
+        adjustHeight(s);
     }
 
     @Override
@@ -462,9 +496,13 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
     };
 
     @JsProperty
-    public void setDataSource(JavaScriptObject function) {
-        assert JsUtils.isFunction(function);
-        grid.setDataSource(new GDataSource(function, size));
+    public void setDataSource(JavaScriptObject jso) {
+        if (JsUtils.isFunction(jso)) {
+            grid.setDataSource(new GJsFuncDataSource(jso, size));
+        } else {
+            loadHeaders();
+            new GRestDataSource(jso, this);
+        }
     }
 
     @JsProperty
@@ -504,6 +542,7 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
 
     @JsProperty
     public void setColumns(JavaScriptObject newCols) {
+        changed = true;
         cols = GQ.create(GData.class).<GData> set("columns", newCols).columns();
     }
 
@@ -571,5 +610,13 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
             });
         }
         return selectedJso;
+    }
+
+    public Grid<JsArrayMixed> getGrid() {
+        if (grid == null) {
+            changed = true;
+            initGrid();
+        }
+        return grid;
     }
 }
