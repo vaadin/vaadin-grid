@@ -1,0 +1,13 @@
+{
+  "error":1,
+  "start":0,
+  "rows":0,
+  "size":31,
+  "columns": [
+      {"title":"Name"},
+      {"title":"Surname"},
+      {"title":"Action"},
+      {"title":"Target"}
+  ],
+  "data":[]
+}
