@@ -1,7 +1,63 @@
 <!DOCTYPE  html>
 <html>
 <head>
+
+ 
 </head>
 <body>
+
+
+<link rel='import' href='vaadin-x.html'></link>
+<script src="angular.js"></script>
+<script src="ng-vaadin.js"></script>
+
+<div ng-app='demoApp' ng-controller='demoAppCtrl'>
+   <v-grid selectionMode="single" selectedRow="{{idx}}">
+    <table>
+      <thead>
+        <tr><th>Name</th><th>Value</th><th>Progress</th></tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="row in data">
+          <td>{{ row[0] }}</td><td>{{ row[1] }}</td><td>{{ row[2] }}</td>          
+        </tr>
+      </tbody>
+    </table>
+   </v-grid><hr>
+   <input ng-model="idx" />
+   <span>Selected row: {{idx}}</span><hr>
+   <input type="text" placeholder='Name' ng-model="current[0]">
+   <input type="text" placeholder='Value' ng-model="current[1]">
+   <input type="text" placeholder='Progress' ng-model="current[2]">    
+   <button ng-click="update()">Update</button>
+   <button ng-click="insert()">Insert</button>
+   <button ng-click="remove()">Remove</button>
+</div>
+
+<script>
+   var app = angular.module("demoApp", [ 'vaadin-x' ]);
+   
+   app.controller("demoAppCtrl", function($scope) {
+     $scope.data = [[ "Gridddd", 10000, 0.8 ],
+                    [ "Vaadin X", 999999, 0.1 ],
+                    [ "designer", 43256, 0.9 ],
+                    [ "TK", 1967, 0.5 ]];
+     $scope.idx = undefined;
+     $scope.current = [];
+     $scope.$watch('idx', function() {
+       angular.copy($scope.data[$scope.idx], $scope.current);
+     });
+     $scope.update = function() {
+       angular.copy($scope.current, $scope.data[$scope.idx]);
+     }
+     $scope.insert = function() {
+       $scope.data.push(angular.copy($scope.current));
+     }
+     $scope.remove = function() {
+       $scope.data.splice($scope.idx, 1);
+     }       
+   });
+</script>   
+ 
 </body>
 </html>
