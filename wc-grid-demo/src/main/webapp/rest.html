@@ -18,7 +18,7 @@
       }
     </script>
 
-  
+
   <h3>1.- Rest data has column info in the object array</h3>
   <v-grid id='myGrid1'>
   </v-grid>
@@ -32,7 +32,7 @@
             url: 'rest/list_object_names_{START}_{LENGTH}.json'
         };
       });
-  })(); 
+  })();
   </script>
 
   <h3>2.- Rest data has column info in headers</h3>
@@ -57,9 +57,9 @@
             url: 'rest/list_object_names_{START}_{LENGTH}.json'
         };
       });
-  })(); 
+  })();
   </script>
-  
+
  <h3>3.- Rest data has column info in a columns object definition</h3>
   <v-grid id='myGrid3'>
   </v-grid>
@@ -73,9 +73,9 @@
             url: 'rest/list_objects_{START}_{LENGTH}.json'
         };
       });
-  })(); 
+  })();
   </script>
-  
+
  <h3>4.- Table has column info in dom and data is array</h3>
   <v-grid id='myGrid4'>
    <table>
@@ -98,7 +98,7 @@
             url: 'rest/list_arrays_{START}_{LENGTH}.json'
         };
       });
-  })(); 
+  })();
   </script>
 
  <h3>5.- Rest returns column info and data is array</h3>
@@ -114,7 +114,12 @@
             url: 'rest/list_arrays_{START}_{LENGTH}.json'
         };
       });
-  })(); 
+  })();
+  </script>
+
+ <h3>6.- Rest data source in attributes</h3>
+  <v-grid type="ajax" url="rest/list_arrays_{START}_{LENGTH}.json">
+  </v-grid>
   </script>
 
 </body>
