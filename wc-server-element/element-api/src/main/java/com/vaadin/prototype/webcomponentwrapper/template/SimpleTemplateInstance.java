@@ -10,7 +10,7 @@ public class SimpleTemplateInstance implements
 
 	public SimpleTemplateInstance(String templateId) {
 		myElement = Elements.create("v-template-instance");
-		myElement.setAttribute("template-id", templateId);
+		myElement.setAttribute("templateid", templateId);
 	}
 
 	@Override

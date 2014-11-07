@@ -53,8 +53,10 @@ public class WebComponentWrapper extends AbstractJavaScriptComponent {
                 org.jsoup.nodes.Element head = response.getDocument().head();
                 head.appendElement("script")
                         .attr("src",
-                                "https://www.polymer-project.org/components/platform/platform.js")
+                                "../bower_components/platform/platform.js")
                         .attr("type", "text/javascript");
+              head.appendElement("link").attr("rel", "import").attr("href", "../bower_components/polymer/polymer.html");
+              head.appendElement("link").attr("rel", "import").attr("href", "../vaadin-template.html");
             }
 
             @Override

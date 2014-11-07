@@ -28,17 +28,6 @@
         </dependency>
     </dependencies>
     <build>
-        <resources>
-            <resource>
-                <directory>${basedir}/src/main/resources</directory>
-            </resource>
-            <resource>
-                <directory>${basedir}/src/main/java</directory>
-                <excludes>
-                    <exclude>**/*.java</exclude>
-                </excludes>
-            </resource>
-        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -46,20 +35,6 @@
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
-            </plugin>
-            <plugin>
-               <groupId>org.apache.maven.plugins</groupId>
-               <artifactId>maven-eclipse-plugin</artifactId>
-               <version>2.7</version>
-               <configuration>
-                   <downloadSources>true</downloadSources>
-                   <downloadJavadocs>false</downloadJavadocs>
-                   <additionalBuildcommands>
-                       <buildcommand>org.eclipse.wst.common.modulecore.ComponentStructuralBuilder</buildcommand>
-                       <buildcommand>org.eclipse.jdt.core.javabuilder</buildcommand>
-                       <buildcommand>org.eclipse.wst.common.modulecore.ComponentStructuralBuilderDependencyResolver</buildcommand>
-                   </additionalBuildcommands>
-               </configuration>
             </plugin>
             <plugin>
                 <groupId>org.eclipse.jetty</groupId>
@@ -71,6 +46,5 @@
                 </configuration>
             </plugin>
         </plugins>
-        <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
     </build>
 </project>

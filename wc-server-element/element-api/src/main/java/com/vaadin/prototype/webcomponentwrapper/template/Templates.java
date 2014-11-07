@@ -40,8 +40,7 @@ public class Templates {
 		return td;
 	}
 
-	private static void addToHTMLBody(TemplateDefinition td) {
-		System.out.println("Trying to add to html body");
+	private static void addToHTMLBody(TemplateDefinition td) { //TODO: effects of this method don't survive page-refreshing
 		Element templateElement = Elements.create("template");
 		templateElement.setAttribute("id", td.getId());
 		templateElement.setInnerHtml(td.getInnerHTML());
