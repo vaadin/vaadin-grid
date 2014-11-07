@@ -3,7 +3,6 @@ package com.vaadin.prototype.wc;
 import com.google.gwt.core.ext.LinkerContext;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.UnableToCompleteException;
-import com.google.gwt.core.ext.TreeLogger.Type;
 import com.google.gwt.core.ext.linker.ArtifactSet;
 import com.google.gwt.core.ext.linker.CompilationResult;
 import com.google.gwt.core.linker.CrossSiteIframeLinker;
@@ -23,7 +22,7 @@ public class WCLinker extends CrossSiteIframeLinker {
     public ArtifactSet link(TreeLogger logger, LinkerContext context,
             ArtifactSet artifacts, boolean onePermutation)
             throws UnableToCompleteException {
-        
+
         ArtifactSet ret =  super.link(logger, context, artifacts, onePermutation);
         ArtifactSet toReturn = new ArtifactSet(ret);
         
@@ -46,7 +45,7 @@ public class WCLinker extends CrossSiteIframeLinker {
                 }
                 js += "</script>\n"; 
             } else {
-                js += "<script src='VAADIN/widgetsets/" + moduleName + "/" + moduleName + ".nocache.js'></script>\n";
+                js += "<script src='" + moduleName + ".nocache.js'></script>\n";
             }
             js += "</head>\n<body>\n</body>\n</html>\n";
             System.out.println("Generated import file: " + moduleName + IMPORT_FILE_SUFFIX);
