@@ -4,9 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1" />
 <script src="VAADIN/widgetsets/Demo/Demo.nocache.js"></script>
-
 <!-- <link rel='import' href='VAADIN/widgetsets/Demo/Demo-import.html'></link> -->
-
 </head>
 <body>
 
@@ -100,16 +98,16 @@
   </v-grid>
 
   <script>
-      myData = [ [ "Grid", 10000, 0.8 ], [ "Vaadin X", 999999, 0.01 ],
-          [ "designer", 999999, 0.01 ] ];
-
       // We need to wait until the WC has been initialized
       // It could take a long if we are compiling SDM
       waitUntilGridReady("myGrid", function(grid) {
+        data = [ [ "Grid", 10000, 0.8 ], [ "Vaadin X", 999999, 0.01 ],
+                 [ "designer", 999999, 0.01 ] ];
+
         // we should set data size before setting the data source (grid bug)
-        grid.rowCount = myData.length;
+        grid.rowCount = data.length;
         grid.dataSource = function(index, count) {
-          return myData.slice(index, index + count);
+          return data.slice(index, index + count);
         };
       });
     </script>

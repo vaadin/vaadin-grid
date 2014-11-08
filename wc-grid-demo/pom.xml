@@ -13,6 +13,13 @@
     <artifactId>wc-grid-demo</artifactId>
     <packaging>war</packaging>
 
+    <properties>
+        <git.bower.repo>git@github.com:manolo/vaadin-x.git</git.bower.repo>
+        <module.name>Demo</module.name>
+        <import.name>vaadin-x</import.name>
+        <gwt.module>com.vaadin.prototype.wc.gwt.${module.name}</gwt.module>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -88,4 +95,34 @@
             </plugin>
         </plugins>
     </build>
+    <profiles>
+      <profile>
+        <id>bower</id>
+        <build><plugins>
+          <plugin>
+              <artifactId>maven-antrun-plugin</artifactId>
+              <executions>
+                <execution>
+                  <id>update-bower-repo</id>
+                  <configuration>
+                    <tasks>
+                      <exec dir="." executable="sh">
+                        <arg value="src/main/scripts/update_bower_repo.sh"/>
+                        <arg value="${project.build.directory}/${project.build.finalName}"/>
+                        <arg value="VAADIN/widgetsets/${module.name}"/>
+                        <arg value="${project.version}"/>
+                        <arg value="${git.bower.repo}"/>
+                        <arg value="${import.name}"/>
+                        <arg value="${vaadin.version}"/>
+                      </exec>
+                    </tasks>
+                  </configuration>
+                  <phase>package</phase>
+                  <goals><goal>run</goal></goals>
+                </execution>
+              </executions>
+            </plugin>
+         </plugins></build>
+      </profile>
+    </profiles>
 </project>
