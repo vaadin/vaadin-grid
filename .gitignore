@@ -1,10 +1,9 @@
-target
-/gwt-unitCache
-/.gwt
-/www-test
-.settings
+target/
+gwt-unitCache/
+.gwt/
+www-test/
+.settings/
 .classpath
 .project
 war
 .DS_Store
-

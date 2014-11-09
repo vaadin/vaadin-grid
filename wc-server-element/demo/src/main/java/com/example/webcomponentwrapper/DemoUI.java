@@ -28,31 +28,31 @@ public class DemoUI extends UIWithRootDocument {
 	
 	private Document root;
 
-	@WebServlet(value = "/*", asyncSupported = true)
+	@WebServlet(value = {"/VAADIN/*", "/app/*"}, asyncSupported = true) //map to "app" to get static files serving by default servlet
 	@VaadinServletConfiguration(productionMode = false, ui = DemoUI.class)
 	public static class Servlet extends WebComponentVaadinServlet {
 		
 	}
 
     @Tag("paper-button")
-    @Import("https://www.polymer-project.org/components/paper-button/paper-button.html")
+    @Import("../bower_components/paper-button/paper-button.html") //to make imports be served by default servlet
     public static interface PaperButtonElement extends Element {
         void setRaised(boolean b);
     }
 
     @Tag("core-icon")
     @Import({
-        "https://www.polymer-project.org/components/core-icon/core-icon.html",
-        "https://www.polymer-project.org/components/core-icons/core-icons.html",
-        "https://www.polymer-project.org/components/core-icons/av-icons.html",
-        "https://www.polymer-project.org/components/core-icons/communication-icons.html",
-        "https://www.polymer-project.org/components/core-icons/device-icons.html",
-        "https://www.polymer-project.org/components/core-icons/editor-icons.html",
-        "https://www.polymer-project.org/components/core-icons/hardware-icons.html",
-        "https://www.polymer-project.org/components/core-icons/image-icons.html",
-        "https://www.polymer-project.org/components/core-icons/maps-icons.html",
-        "https://www.polymer-project.org/components/core-icons/notifiacation-icons.html",
-        "https://www.polymer-project.org/components/core-icons/social-icons.html",
+        "../bower_components/core-icon/core-icon.html",
+        "../bower_components/core-icons/core-icons.html",
+        "../bower_components/core-icons/av-icons.html",
+        "../bower_components/core-icons/communication-icons.html",
+        "../bower_components/core-icons/device-icons.html",
+        "../bower_components/core-icons/editor-icons.html",
+        "../bower_components/core-icons/hardware-icons.html",
+        "../bower_components/core-icons/image-icons.html",
+        "../bower_components/core-icons/maps-icons.html",
+        "../bower_components/core-icons/notification-icons.html",
+        "../bower_components/core-icons/social-icons.html",
     })
     public static interface CoreIconElement extends Element {
         void setIcon(String icon);
@@ -64,6 +64,7 @@ public class DemoUI extends UIWithRootDocument {
 
     @Override
     protected void init(VaadinRequest request) {
+    	super.init(request);
         CssLayout main = new CssLayout();
         main.setSizeFull();
         setContent(main);

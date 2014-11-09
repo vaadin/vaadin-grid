@@ -1,0 +1,16 @@
+<polymer-element name="v-template-instance" attributes="templateid" >
+  <template></template>
+  <script>
+	Polymer('v-template-instance', {
+		domReady: function() {
+			var selector = this.getAttribute("templateid")
+			var template = document.getElementById(selector)
+			var clone = document.importNode(template, true)
+			var self = this
+			clone.childNodes.array().forEach(function(node) {
+				self.shadowRoot.appendChild(node)
+				})
+		}
+	})
+  </script>
+</polymer-element>
