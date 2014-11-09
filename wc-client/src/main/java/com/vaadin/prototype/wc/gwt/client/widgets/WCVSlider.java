@@ -101,10 +101,7 @@ public class WCVSlider extends HTMLElement.Prototype implements
         slider.setMinValue(getAttrDoubleValue(this, "min", 0));
         slider.setMaxValue(getAttrDoubleValue(this, "max", 100));
         slider.setValue(getAttrDoubleValue(this, "value", 0));
-        theme = getAttrValue(this, "theme", "valo");
-        style.innerText("@import url('" + GWT.getModuleBaseURL() + "../../themes/" + theme + "/styles.css')");
-        style.innerText("@import url('VAADIN/themes/" + theme + "/styles.css')");
-        container.setAttribute("class", theme);
+        WCUtils.loadVaadinTheme(container, this, style, "valo");
     }
 
     @Override

@@ -57,6 +57,10 @@ public interface HTMLElement {
         public NodeList<?> children() {
             return element().children();
         }
+        @Override
+        public String innerText() {
+            return element().innerText();
+        }
     }
 
     public interface LifeCycle {
@@ -98,5 +102,6 @@ public interface HTMLElement {
     @JsProperty HTMLStyle style();
     @JsProperty void innerHTML(String string);
     @JsProperty void innerText(String string);
+    @JsProperty String innerText();
     @JsProperty NodeList<?> children();
 }

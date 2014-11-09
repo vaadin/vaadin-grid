@@ -88,10 +88,7 @@ public class WCVProgress extends HTMLElement.Prototype implements
 
     private void readAttributes() {
         widget.setState(getAttrFloatValue(this, "value", 0));
-        theme = getAttrValue(this, "theme", "valo");
-        style.innerText("@import url('" + GWT.getModuleBaseURL() + "../../themes/" + theme + "/styles.css')");
-        style.innerText("@import url('VAADIN/themes/" + theme + "/styles.css')");
-        container.setAttribute("class", theme);
+        WCUtils.loadVaadinTheme(container, this, style, "valo");
     }
 
     @Override

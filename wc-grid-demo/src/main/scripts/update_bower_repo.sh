@@ -43,6 +43,7 @@ cp $htmlFile $tmpDir/$package.html || exit 1
 ## Copy stuff from the war dir
 cp $warDir/index.html $tmpDir/demo.html || exit 1
 cp $warDir/ng-vaadin.js $tmpDir || exit 1
+cp $warDir/bigdata.js $tmpDir || exit 1
 tar cf $tmpDir/module.tar \
     gwt/*/*.css \
     deferred \

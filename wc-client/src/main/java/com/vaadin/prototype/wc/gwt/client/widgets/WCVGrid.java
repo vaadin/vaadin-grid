@@ -273,11 +273,7 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
     }
 
     private void readAttributes() {
-        theme = getAttrValue(this, "theme", "reindeer");
-        // style.innerText("@import url('" + GWT.getModuleBaseURL() +
-        // "../../themes/" + theme + "/styles.css')");
-        style.innerText("@import url('VAADIN/themes/" + theme + "/styles.css')");
-        container.setAttribute("class", theme);
+        WCUtils.loadVaadinTheme(container, this, style, "reindeer");
 
         loadHeaders();
         loadRows();
@@ -286,7 +282,6 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
 
         adjustHeight(vals.size());
         setSelectedRow(getAttrIntValue(this, "selectedRow", -1));
-
 
         String type = getAttrValue(this, "type", null);
         String url = getAttrValue(this, "url", null);

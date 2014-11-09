@@ -240,8 +240,10 @@
                     <hostedWebApp>${project.build.directory}/${project.build.finalName}</hostedWebApp>
                     <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
                     <draftCompile>true</draftCompile>
+<!--
                     <disableCastChecking>true</disableCastChecking>
                     <disableClassMetadata>false</disableClassMetadata>
+-->
                     <superDevMode>true</superDevMode>
                     <jsInteropMode>JS</jsInteropMode>
                     <persistentunitcachedir>${project.build.directory}</persistentunitcachedir>
