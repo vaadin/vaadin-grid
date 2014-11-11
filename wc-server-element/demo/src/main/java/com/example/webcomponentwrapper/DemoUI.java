@@ -13,6 +13,7 @@ import com.vaadin.prototype.webcomponentwrapper.element.EventParam;
 import com.vaadin.prototype.webcomponentwrapper.element.Import;
 import com.vaadin.prototype.webcomponentwrapper.element.Tag;
 import com.vaadin.prototype.webcomponentwrapper.element.WebComponentWrapper;
+import com.vaadin.prototype.webcomponentwrapper.template.Template;
 import com.vaadin.prototype.webcomponentwrapper.template.TemplateInstance;
 import com.vaadin.prototype.webcomponentwrapper.template.Templates;
 import com.vaadin.server.VaadinRequest;
@@ -61,6 +62,11 @@ public class DemoUI extends UIWithRootDocument {
     public static interface PaperRpc extends ServerRpc {
         public void click(@EventParam("clientX") double x);
     }
+    
+    @Tag("v-hello")
+    @Template("hello.html")
+    public static interface HelloElement extends Element {
+    }
 
     @Override
     protected void init(VaadinRequest request) {
@@ -100,7 +106,11 @@ public class DemoUI extends UIWithRootDocument {
         root.appendChild(input);
         
         TemplateInstance<? extends Element> instance = Templates.instiantiate("hello.html");
-        root.appendChild(instance.getElemet());
+        root.appendChild(instance.getElement());
+        
+        TemplateInstance<HelloElement> hello = Templates.instantiate(HelloElement.class);
+        HelloElement helloElement = hello.getElement();
+        root.appendChild(helloElement);
     }
    
     private void setRoot(Document root) {

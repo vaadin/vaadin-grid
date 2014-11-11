@@ -99,7 +99,7 @@ public class Elements {
         return type.cast(instance);
     }
 
-    private static String getElementTag(final Class<?> type) {
+    private static String getElementTag(final Class<? extends Element> type) {
         Tag tag = type.getAnnotation(Tag.class);
         String value = tag.value();
         return value;

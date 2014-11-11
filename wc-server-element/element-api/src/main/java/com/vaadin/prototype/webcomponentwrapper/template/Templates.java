@@ -8,7 +8,10 @@ import com.vaadin.prototype.webcomponentwrapper.UIWithRootDocument;
 import com.vaadin.prototype.webcomponentwrapper.element.Document;
 import com.vaadin.prototype.webcomponentwrapper.element.Element;
 import com.vaadin.prototype.webcomponentwrapper.element.Elements;
+import com.vaadin.prototype.webcomponentwrapper.element.Node;
+import com.vaadin.prototype.webcomponentwrapper.element.Tag;
 import com.vaadin.server.VaadinSession;
+import com.vaadin.ui.JavaScript;
 import com.vaadin.ui.UI;
 
 public class Templates {
@@ -16,40 +19,101 @@ public class Templates {
 	public static TemplateInstance<? extends Element> instiantiate(
 			String fileName) {
 
-		TemplateDefinition t = get(fileName);
+		TemplateDefinition<?> t = get(fileName);
 		if (t == null) {
 			t = bootstrapTemplateDef(fileName);
 		}
 		return t.instantiate();
-
-		// throw new UnsupportedOperationException("Not implemented yet");
 	}
 
-	private static TemplateDefinition bootstrapTemplateDef(String fileName) {
-		ClassLoader cl = findClassloader();
-		String templateContents = read(fileName, cl);
+	public static <E extends Element> TemplateInstance<E> instantiate(
+			Class<E> clazz) {
+		String tag = getTagName(clazz);
+
+		String fileName = getFileName(clazz);
+
+		TemplateDefinition<E> t = get(tag);
+		if (t == null) {
+			t = bootstrapTemplateDef(tag, fileName, clazz);
+		}
+		
+		return t.instantiate();
+	}
+
+	private static <T extends Element> String getTagName(Class<T> clazz) {
+		Tag tagAnnotation = clazz.getAnnotation(Tag.class);
+
+		if (tagAnnotation == null) {
+			throw new IllegalArgumentException(
+					"No @Tag annotation found on this Element subclass: "
+							+ clazz.getCanonicalName());
+		}
+		return tagAnnotation.value();
+	}
+
+	private static <T extends Element> String getFileName(Class<T> clazz) {
+		Template templateAnnotation = clazz.getAnnotation(Template.class);
+		if (templateAnnotation == null) {
+			throw new IllegalArgumentException(
+					"No @Template annotation on this Element subcliass: "
+							+ clazz.getCanonicalName());
+		}
+		return templateAnnotation.value();
+
+	}
+
+	private static TemplateDefinition<Element> bootstrapTemplateDef(String fileName) {
+		String templateContents = readResource(fileName);
 
 		String templateId = fileName;
-		TemplateDefinition td = new SimpleTemplateDefinitionImpl(templateId,
+		TemplateDefinition<Element> td = new SimpleTemplateDefinitionImpl(templateId,
 				templateContents);
 
 		put(templateId, td);
-		
-		addToHTMLBody(td);
+
+		addTemplateToHTMLBody(td);
 
 		return td;
 	}
 
-	private static void addToHTMLBody(TemplateDefinition td) { //TODO: effects of this method don't survive page-refreshing
+	private static <E extends Element> TemplateDefinition<E> bootstrapTemplateDef(String tag, String fileName, Class<E> clazz) {
+		String templateContent = readResource(fileName);
+		
+		TemplateDefinition<E> td = new ParametrizedTemplateDefinitionImpl<E>(tag, templateContent, clazz);
+		put(tag, td);
+		addCustomTagToHTMLBody(td);
+		return td;
+	}
+
+	private static void addTemplateToHTMLBody(TemplateDefinition<Element> td) { // TODO:
+																					// effects
+		// of this
+		// method don't
+		// survive
+		// page-refreshing
 		Element templateElement = Elements.create("template");
 		templateElement.setAttribute("id", td.getId());
 		templateElement.setInnerHtml(td.getInnerHTML());
-		
-		Document root = ((UIWithRootDocument)UI.getCurrent()).getDocumentRoot();
+
+		Document root = ((UIWithRootDocument) UI.getCurrent())
+				.getDocumentRoot();
 		root.appendChild(templateElement);
 	}
-
-	private static void put(String templateId, TemplateDefinition td) {
+	
+	private static <E extends Element> void addCustomTagToHTMLBody(TemplateDefinition<E> td) {
+		Element polymerElement = Elements.create("polymer-element");
+		polymerElement.setAttribute("noscript", "true");
+		polymerElement.setAttribute("name", td.getId());
+		Element template = Elements.create("template");
+		template.setInnerHtml(td.getInnerHTML());
+		polymerElement.appendChild(template);
+		
+		String asHtml = polymerElement.asHtml();
+		String script = "\ndocument.head.innerHTML += '" + asHtml + "'\n";
+		JavaScript.eval(script); // required to let polymer do its magic
+	}
+	
+	private static void put(String templateId, TemplateDefinition<? extends Element> td) {
 		ensureTemplateDefMapExists();
 		if (get(templateId) == null) {
 			TemplateDefinitionMap map = VaadinSession.getCurrent()
@@ -62,9 +126,11 @@ public class Templates {
 		}
 	}
 
-	private static TemplateDefinition get(String templateId) {
-		TemplateDefinitionMap map = VaadinSession.getCurrent().getAttribute(TemplateDefinitionMap.class);
-		if(map == null) {
+	@SuppressWarnings("unchecked")
+	private static <E extends Element> TemplateDefinition<E> get(String templateId) {
+		TemplateDefinitionMap map = VaadinSession.getCurrent().getAttribute(
+				TemplateDefinitionMap.class);
+		if (map == null) {
 			return null;
 		}
 		return map.get(templateId);
@@ -81,7 +147,8 @@ public class Templates {
 
 	}
 
-	private static String read(String fileName, ClassLoader cl) {
+	private static String readResource(String fileName) {
+		ClassLoader cl = findClassloader();
 		StringBuilder sb = new StringBuilder();
 
 		try (BufferedReader br = new BufferedReader(new InputStreamReader(

@@ -14,7 +14,7 @@ public class SimpleTemplateInstance implements
 	}
 
 	@Override
-	public Element getElemet() {
+	public Element getElement() {
 		return myElement;
 	}
 

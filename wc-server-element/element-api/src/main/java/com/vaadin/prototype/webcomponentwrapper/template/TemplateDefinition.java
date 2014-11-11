@@ -4,9 +4,9 @@ import java.io.Serializable;
 
 import com.vaadin.prototype.webcomponentwrapper.element.Element;
 
-public interface TemplateDefinition extends Serializable {
+interface TemplateDefinition<E extends Element> extends Serializable {
 
 	String getId();
 	String getInnerHTML();
-	TemplateInstance<? extends Element> instantiate();
+	TemplateInstance<E> instantiate();
 }

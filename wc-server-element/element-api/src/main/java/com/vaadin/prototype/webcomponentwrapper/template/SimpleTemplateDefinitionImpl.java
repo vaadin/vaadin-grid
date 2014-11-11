@@ -2,7 +2,7 @@ package com.vaadin.prototype.webcomponentwrapper.template;
 
 import com.vaadin.prototype.webcomponentwrapper.element.Element;
 
-public class SimpleTemplateDefinitionImpl implements TemplateDefinition {
+class SimpleTemplateDefinitionImpl implements TemplateDefinition<Element> {
 	
 	/**
 	 * 
@@ -28,7 +28,7 @@ public class SimpleTemplateDefinitionImpl implements TemplateDefinition {
 
 
 	@Override
-	public TemplateInstance<? extends Element> instantiate() {
+	public TemplateInstance<Element> instantiate() {
 		return new SimpleTemplateInstance(getId());
 	}
 
