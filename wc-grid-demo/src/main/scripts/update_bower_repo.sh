@@ -5,14 +5,27 @@
 # updates vaadin themes and gwt themes, update versions and
 # tags the project.
 #
-# Registering a package will make it installable to anyone
-# via the registry (https://bower.herokuapp.com), to register
-# it we run:
-# $ bower register vaadin-x git://github.com/manolo/vaadin-x.git
+# NOTES for public bower register:
+#   Registering a package will make it installable to anyone
+#   via the registry (https://bower.herokuapp.com), to register
+#   it we run:
+#   $ bower register vaadin-x git://github.com/manolo/vaadin-x.git
 #
-# Deleting the registered project needs to be done by the owner
-# $ curl -X DELETE "https://bower.herokuapp.com/packages/vaadin-x?access_token=<token>"
-# To know the access token go to https://github.com/settings/applications
+#   Deleting the registered project needs to be done by the owner
+#   $ curl -X DELETE "https://bower.herokuapp.com/packages/vaadin-x?access_token=<token>"
+#   To know the access token go to https://github.com/settings/applications
+#
+# NOTES for private bower register.
+#   We are running a private bower server and a private git instance.
+#   So you need this configuration in your local bower preferences file:
+#   ~/.bowerrc
+#   { "registry": "http://vaadin-x-bower.intra.itmill.com:5678" }
+#
+#   To register the vaadin-x pakage we did run:
+#   $ bower register vaadin-x git://vaadin-x-bower/vaadin-x-bower.git
+#
+#   To push changes, maven uses ssh://git@vaadin-x-bower:/opt/git/vaadin-x-bower.git
+#   You need to add your ssh public key to the admin of the vaadin-x-bower internal server.
 #
 #
 

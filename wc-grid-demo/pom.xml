@@ -14,7 +14,7 @@
     <packaging>war</packaging>
 
     <properties>
-        <git.bower.repo>git@github.com:manolo/vaadin-x.git</git.bower.repo>
+        <git.bower.repo>git@vaadin-x-bower:/opt/git/vaadin-x-bower.git</git.bower.repo>
         <module.name>Demo</module.name>
         <import.name>vaadin-x</import.name>
         <gwt.module>com.vaadin.prototype.wc.gwt.${module.name}</gwt.module>
