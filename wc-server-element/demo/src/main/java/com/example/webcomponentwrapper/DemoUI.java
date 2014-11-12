@@ -26,35 +26,35 @@ import com.vaadin.ui.UI;
 @SuppressWarnings("serial")
 @Theme("valo")
 public class DemoUI extends UIWithRootDocument {
-	
-	private Document root;
 
-	@WebServlet(value = {"/VAADIN/*", "/app/*"}, asyncSupported = true) //map to "app" to get static files serving by default servlet
-	@VaadinServletConfiguration(productionMode = false, ui = DemoUI.class)
-	public static class Servlet extends WebComponentVaadinServlet {
-		
-	}
+    private Document root;
+
+    @WebServlet(value = { "/VAADIN/*", "/app/*" }, asyncSupported = true)
+    // map to "app" to get static files serving by default servlet
+    @VaadinServletConfiguration(productionMode = false, ui = DemoUI.class)
+    public static class Servlet extends WebComponentVaadinServlet {
+
+    }
 
     @Tag("paper-button")
-    @Import("../bower_components/paper-button/paper-button.html") //to make imports be served by default servlet
+    @Import("../bower_components/paper-button/paper-button.html")
+    // to make imports be served by default servlet
     public static interface PaperButtonElement extends Element {
         void setRaised(boolean b);
     }
 
     @Tag("core-icon")
-    @Import({
-        "../bower_components/core-icon/core-icon.html",
-        "../bower_components/core-icons/core-icons.html",
-        "../bower_components/core-icons/av-icons.html",
-        "../bower_components/core-icons/communication-icons.html",
-        "../bower_components/core-icons/device-icons.html",
-        "../bower_components/core-icons/editor-icons.html",
-        "../bower_components/core-icons/hardware-icons.html",
-        "../bower_components/core-icons/image-icons.html",
-        "../bower_components/core-icons/maps-icons.html",
-        "../bower_components/core-icons/notification-icons.html",
-        "../bower_components/core-icons/social-icons.html",
-    })
+    @Import({ "../bower_components/core-icon/core-icon.html",
+            "../bower_components/core-icons/core-icons.html",
+            "../bower_components/core-icons/av-icons.html",
+            "../bower_components/core-icons/communication-icons.html",
+            "../bower_components/core-icons/device-icons.html",
+            "../bower_components/core-icons/editor-icons.html",
+            "../bower_components/core-icons/hardware-icons.html",
+            "../bower_components/core-icons/image-icons.html",
+            "../bower_components/core-icons/maps-icons.html",
+            "../bower_components/core-icons/notification-icons.html",
+            "../bower_components/core-icons/social-icons.html", })
     public static interface CoreIconElement extends Element {
         void setIcon(String icon);
     }
@@ -62,7 +62,7 @@ public class DemoUI extends UIWithRootDocument {
     public static interface PaperRpc extends ServerRpc {
         public void click(@EventParam("clientX") double x);
     }
-    
+
     @Tag("v-hello")
     @Template("hello.html")
     public static interface HelloElement extends Element {
@@ -70,7 +70,7 @@ public class DemoUI extends UIWithRootDocument {
 
     @Override
     protected void init(VaadinRequest request) {
-    	super.init(request);
+        super.init(request);
         CssLayout main = new CssLayout();
         main.setSizeFull();
         setContent(main);
@@ -100,30 +100,31 @@ public class DemoUI extends UIWithRootDocument {
             }
         });
 
-
         Element input = Elements.create("input");
         input.setAttribute("type", "date");
         root.appendChild(input);
-        
-        TemplateInstance<? extends Element> instance = Templates.instiantiate("hello.html");
+
+        TemplateInstance<? extends Element> instance = Templates
+                .instiantiate("hello.html");
         root.appendChild(instance.getElement());
-        
-        TemplateInstance<HelloElement> hello = Templates.instantiate(HelloElement.class);
+
+        TemplateInstance<HelloElement> hello = Templates
+                .instantiate(HelloElement.class);
         HelloElement helloElement = hello.getElement();
         root.appendChild(helloElement);
     }
-   
+
     private void setRoot(Document root) {
-		this.root = root;
-		// TODO Auto-generated method stub
-		
-	}
+        this.root = root;
+        // TODO Auto-generated method stub
+
+    }
 
     public static DemoUI getCurrent() {
-    	return (DemoUI)UI.getCurrent();
+        return (DemoUI) UI.getCurrent();
     }
-    
-	public Document getDocumentRoot() {
-    	return root;
+
+    public Document getDocumentRoot() {
+        return root;
     }
 }

@@ -16,8 +16,8 @@ public class WebComponentWrapper extends AbstractJavaScriptComponent {
     /**
 	 * 
 	 */
-	private static final long serialVersionUID = -8690500862374495720L;
-	private final Document document = new Document(this);
+    private static final long serialVersionUID = -8690500862374495720L;
+    private final Document document = new Document(this);
 
     public WebComponentWrapper() {
         addFunction("callback", arguments -> document.handleCallback(arguments));
@@ -52,11 +52,14 @@ public class WebComponentWrapper extends AbstractJavaScriptComponent {
             public void modifyBootstrapPage(BootstrapPageResponse response) {
                 org.jsoup.nodes.Element head = response.getDocument().head();
                 head.appendElement("script")
-                        .attr("src",
-                                "../bower_components/platform/platform.js")
+                        .attr("src", "../bower_components/platform/platform.js")
                         .attr("type", "text/javascript");
-              head.appendElement("link").attr("rel", "import").attr("href", "../bower_components/polymer/polymer.html");
-              head.appendElement("link").attr("rel", "import").attr("href", "../vaadin-template.html");
+                head.appendElement("link")
+                        .attr("rel", "import")
+                        .attr("href",
+                                "../bower_components/polymer/polymer.html");
+                head.appendElement("link").attr("rel", "import")
+                        .attr("href", "../vaadin-template.html");
             }
 
             @Override

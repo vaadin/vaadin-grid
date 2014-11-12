@@ -28,9 +28,9 @@ public class Elements {
     public static <T extends Element> T create(String tag) {
         Class<? extends Element> type = registeredElements.get(tag);
         if (type == null) {
-            return (T)new ElementImpl(tag);
+            return (T) new ElementImpl(tag);
         } else {
-            return (T)create(type);
+            return (T) create(type);
         }
     }
 
