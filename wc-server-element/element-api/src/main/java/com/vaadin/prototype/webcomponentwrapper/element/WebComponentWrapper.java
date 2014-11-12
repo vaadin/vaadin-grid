@@ -59,7 +59,7 @@ public class WebComponentWrapper extends AbstractJavaScriptComponent {
                         .attr("href",
                                 "../bower_components/polymer/polymer.html");
                 head.appendElement("link").attr("rel", "import")
-                        .attr("href", "../vaadin-template.html");
+                        .attr("href", "../v-template-instance.html");
             }
 
             @Override

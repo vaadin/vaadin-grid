@@ -1,9 +1,9 @@
-<polymer-element name="v-template-instance" attributes="templateid" >
+<polymer-element name="v-template-instance" attributes="template-id" >
   <template></template>
   <script>
 	Polymer('v-template-instance', {
 		domReady: function() {
-			var selector = this.getAttribute("templateid")
+			var selector = this.getAttribute("template-id")
 			var template = document.getElementById(selector)
 			var clone = document.importNode(template, true)
 			var self = this
