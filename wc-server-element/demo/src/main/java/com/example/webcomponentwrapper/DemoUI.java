@@ -4,7 +4,7 @@ import javax.servlet.annotation.WebServlet;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
-import com.vaadin.prototype.webcomponentwrapper.UIWithRootDocument;
+import com.vaadin.prototype.webcomponentwrapper.WebComponentUI;
 import com.vaadin.prototype.webcomponentwrapper.WebComponentVaadinServlet;
 import com.vaadin.prototype.webcomponentwrapper.element.Document;
 import com.vaadin.prototype.webcomponentwrapper.element.Element;
@@ -21,11 +21,10 @@ import com.vaadin.shared.communication.ServerRpc;
 import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.UI;
 
 @SuppressWarnings("serial")
 @Theme("valo")
-public class DemoUI extends UIWithRootDocument {
+public class DemoUI extends WebComponentUI {
 
     private Document root;
 
@@ -70,7 +69,6 @@ public class DemoUI extends UIWithRootDocument {
 
     @Override
     protected void init(VaadinRequest request) {
-        super.init(request);
         CssLayout main = new CssLayout();
         main.setSizeFull();
         setContent(main);
@@ -105,7 +103,7 @@ public class DemoUI extends UIWithRootDocument {
         root.appendChild(input);
 
         TemplateInstance<? extends Element> instance = Templates
-                .instiantiate("hello.html");
+                .instantiate("hello.html");
         root.appendChild(instance.getElement());
 
         TemplateInstance<HelloElement> hello = Templates
@@ -119,11 +117,7 @@ public class DemoUI extends UIWithRootDocument {
         // TODO Auto-generated method stub
 
     }
-
-    public static DemoUI getCurrent() {
-        return (DemoUI) UI.getCurrent();
-    }
-
+    
     public Document getDocumentRoot() {
         return root;
     }

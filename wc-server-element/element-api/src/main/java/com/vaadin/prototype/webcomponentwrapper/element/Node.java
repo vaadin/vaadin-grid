@@ -1,8 +1,9 @@
 package com.vaadin.prototype.webcomponentwrapper.element;
 
+import java.io.Serializable;
 import java.util.List;
 
-public interface Node {
+public interface Node extends Serializable {
 
     public void appendChild(Node child);
 

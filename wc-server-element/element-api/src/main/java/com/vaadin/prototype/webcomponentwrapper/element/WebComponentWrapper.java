@@ -48,6 +48,11 @@ public class WebComponentWrapper extends AbstractJavaScriptComponent {
 
     public static void initBootstrap(VaadinService service) {
         BootstrapListener l = new BootstrapListener() {
+            /**
+             * 
+             */
+            private static final long serialVersionUID = 6175411499678347549L;
+
             @Override
             public void modifyBootstrapPage(BootstrapPageResponse response) {
                 org.jsoup.nodes.Element head = response.getDocument().head();
@@ -58,8 +63,6 @@ public class WebComponentWrapper extends AbstractJavaScriptComponent {
                         .attr("rel", "import")
                         .attr("href",
                                 "../bower_components/polymer/polymer.html");
-                head.appendElement("link").attr("rel", "import")
-                        .attr("href", "../v-template-instance.html");
             }
 
             @Override
