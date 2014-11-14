@@ -182,6 +182,11 @@ public class ElementImpl extends NodeImpl implements Element {
             }
 
             addEventListener(name, new JavaScriptFunction() {
+                /**
+                 * 
+                 */
+                private static final long serialVersionUID = -7978455071455245154L;
+
                 @Override
                 public void call(final JsonArray arguments) {
                     InvocationHandler invocationHandler = (proxy, calledMethod,
@@ -236,6 +241,11 @@ public class ElementImpl extends NodeImpl implements Element {
             }
 
             addEventListener(eventName, new JavaScriptFunction() {
+                /**
+                 * 
+                 */
+                private static final long serialVersionUID = -8672184304611678361L;
+
                 @Override
                 public void call(JsonArray arguments) {
                     Object[] args = new Object[parameters.length];
