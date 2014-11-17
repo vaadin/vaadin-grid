@@ -1,4 +1,4 @@
-package com.vaadin.prototype.webcomponentwrapper.template;
+package com.vaadin.prototype.webcomponentwrapper;
 
 import java.io.BufferedReader;
 import java.io.IOException;

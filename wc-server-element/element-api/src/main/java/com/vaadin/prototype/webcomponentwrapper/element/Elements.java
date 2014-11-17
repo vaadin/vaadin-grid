@@ -16,12 +16,14 @@ import net.sf.cglib.proxy.NoOp;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import com.vaadin.prototype.webcomponentwrapper.Utils;
+
 public class Elements {
 
     private static final Map<String, Class<? extends Element>> registeredElements = new ConcurrentHashMap<>();
 
     public static <T extends Element> void registerElement(Class<T> type) {
-        registeredElements.put(getElementTag(type), type);
+        registeredElements.put(Utils.getAnnotationValue(type, Tag.class), type);
     }
 
     @SuppressWarnings("unchecked")
@@ -91,18 +93,12 @@ public class Elements {
         enhancer.setCallbackFilter(callbackHelper);
         enhancer.setCallbacks(callbackHelper.getCallbacks());
 
-        String tagName = getElementTag(type);
+        String tagName = Utils.getAnnotationValue(type, Tag.class); //getElementTag(type);
         Object instance = enhancer.create(new Class[] { String.class },
                 new Object[] { tagName });
 
         registeredElements.put(tagName, type);
         return type.cast(instance);
-    }
-
-    private static String getElementTag(final Class<? extends Element> type) {
-        Tag tag = type.getAnnotation(Tag.class);
-        String value = tag.value();
-        return value;
     }
 
     static String getPropertyName(String name) {

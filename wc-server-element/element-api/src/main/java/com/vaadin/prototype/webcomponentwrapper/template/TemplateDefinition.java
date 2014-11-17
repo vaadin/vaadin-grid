@@ -14,7 +14,7 @@ import com.vaadin.prototype.webcomponentwrapper.element.Element;
 public interface TemplateDefinition<E extends Element> {
     String getTag();
 
-    String getHtmlContent();
+    String getHtml();
 
     Class<E> getElementClass();
 

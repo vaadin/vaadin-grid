@@ -1,7 +1,7 @@
 package com.vaadin.prototype.webcomponentwrapper.template;
 
-import static com.vaadin.prototype.webcomponentwrapper.template.Utils.getAnnotationValue;
-import static com.vaadin.prototype.webcomponentwrapper.template.Utils.readResource;
+import static com.vaadin.prototype.webcomponentwrapper.Utils.getAnnotationValue;
+import static com.vaadin.prototype.webcomponentwrapper.Utils.readResource;
 
 import com.vaadin.prototype.webcomponentwrapper.WebComponentUI;
 import com.vaadin.prototype.webcomponentwrapper.element.Element;
@@ -32,7 +32,7 @@ public class Templates {
     }
 
     private static String getTag(String fileName) {
-        StringBuilder sb = new StringBuilder("v-");
+        StringBuilder sb = new StringBuilder("v-anonymous-");
 
         String fileNameFragment = fileName.replace('.', '-');
         sb.append(fileNameFragment);
@@ -44,13 +44,14 @@ public class Templates {
         return getAnnotationValue(klazz, Template.class);
     }
 
-    @SuppressWarnings("unchecked")
     private static <E extends Element> TemplateDefinition<E> bootstrapTemplateDefinition(
             String tag, String fileName, Class<E> klazz) {
         TemplateDefinition<? extends Element> templateDefinition = WebComponentUI
                 .getCurrent().getTemplateDefinition(tag);
         if (templateDefinition != null) {
-            return ((TemplateDefinition<E>) templateDefinition);
+            @SuppressWarnings("unchecked")
+            TemplateDefinition<E> result = (TemplateDefinition<E>) templateDefinition;
+            return result;
         }
 
         String htmlContent = readResource(fileName);
@@ -76,7 +77,7 @@ public class Templates {
         Element polymerDefinition = Elements.create("polymer-element");
         polymerDefinition.setAttribute("name", td.getTag());
         Element template = Elements.create("template");
-        template.setInnerHtml(td.getHtmlContent());
+        template.setInnerHtml(td.getHtml());
         polymerDefinition.appendChild(template);
         
         String script = polymerRegistrationScript.replace("${0}", td.getTag()).replace("${1}", polymerDefinition.asHtml());

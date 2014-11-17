@@ -6,13 +6,13 @@ import com.vaadin.prototype.webcomponentwrapper.element.Elements;
 class TemplateDefinitionImpl<E extends Element> implements
         TemplateDefinition<E> {
     private String tag;
-    private String htmlContent;
+    private String html;
     private Class<E> elementClass;
 
     public TemplateDefinitionImpl(String tag, String htmlContent,
             Class<E> elementClass) {
         this.tag = tag;
-        this.htmlContent = htmlContent;
+        this.html = htmlContent;
         this.elementClass = elementClass;
     }
 
@@ -20,8 +20,8 @@ class TemplateDefinitionImpl<E extends Element> implements
         return tag;
     }
 
-    public String getHtmlContent() {
-        return htmlContent;
+    public String getHtml() {
+        return html;
     }
 
     public Class<E> getElementClass() {
@@ -30,14 +30,7 @@ class TemplateDefinitionImpl<E extends Element> implements
 
     @Override
     public TemplateInstance<E> instantiate() {
-        E element = null;
-        if(elementClass.equals(Element.class)) {
-            element = Elements.create(tag);
-        } else {
-            element = Elements.create(elementClass);
-        }
-        
-        TemplateInstance<E> ti = new TemplateInstanceImpl<>(element);
+        TemplateInstance<E> ti = new TemplateInstanceImpl<>(this);
         return ti;
     }
 

@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EventListener;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -33,13 +33,13 @@ public class ElementImpl extends NodeImpl implements Element {
         return tag;
     }
 
-    private Map<String, String> attributes = new HashMap<>();
+    private Map<String, String> attributes = new LinkedHashMap<>();
 
     // TODO create a wrapper class instead of using two lists
     private List<String> evalQueue = new ArrayList<>();
     private List<Object[]> evalParamQueue = new ArrayList<>();
 
-    private Map<Integer, JavaScriptFunction> callbacks = new HashMap<>();
+    private Map<Integer, JavaScriptFunction> callbacks = new LinkedHashMap<>();
 
     @Override
     public void setAttribute(String name, String value) {
@@ -163,7 +163,7 @@ public class ElementImpl extends NodeImpl implements Element {
                 throw new RuntimeException();
             }
 
-            Map<String, Integer> methodOrder = new HashMap<>();
+            Map<String, Integer> methodOrder = new LinkedHashMap<>();
             Class<?> eventType = method.getParameterTypes()[0];
 
             Method[] eventGetters = eventType.getDeclaredMethods();

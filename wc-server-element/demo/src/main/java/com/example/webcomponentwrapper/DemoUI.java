@@ -13,6 +13,7 @@ import com.vaadin.prototype.webcomponentwrapper.element.EventParam;
 import com.vaadin.prototype.webcomponentwrapper.element.Import;
 import com.vaadin.prototype.webcomponentwrapper.element.Tag;
 import com.vaadin.prototype.webcomponentwrapper.element.WebComponentWrapper;
+import com.vaadin.prototype.webcomponentwrapper.element.elements.InputElement;
 import com.vaadin.prototype.webcomponentwrapper.template.Template;
 import com.vaadin.prototype.webcomponentwrapper.template.TemplateInstance;
 import com.vaadin.prototype.webcomponentwrapper.template.Templates;
@@ -98,6 +99,8 @@ public class DemoUI extends WebComponentUI {
             }
         });
 
+        
+        Elements.registerElement(InputElement.class);
         Element input = Elements.create("input");
         input.setAttribute("type", "date");
         root.appendChild(input);
@@ -110,14 +113,23 @@ public class DemoUI extends WebComponentUI {
                 .instantiate(HelloElement.class);
         HelloElement helloElement = hello.getElement();
         root.appendChild(helloElement);
+
+        TemplateInstance<HelloElement> hello2 = Templates
+                .instantiate(HelloElement.class);
+        HelloElement helloElement2 = hello2.getElement();
+        root.appendChild(helloElement2);
+        
+        InputElement inputElement = hello2.getElementById("myinput");
+        inputElement.setMaxLength("10"); //TODO: does not work, should it?
+        
+        assert hello2.getElement().getChildren().size() == 0;
     }
 
     private void setRoot(Document root) {
         this.root = root;
-        // TODO Auto-generated method stub
 
     }
-    
+
     public Document getDocumentRoot() {
         return root;
     }
