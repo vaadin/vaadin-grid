@@ -3,12 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1" />
+<link href="shadowstyles.css" rel="stylesheet">
+<link href="resizestyles.css" rel="stylesheet">
 <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
 <script src="VAADIN/widgetsets/Demo/Demo.nocache.js"></script>
-<!-- <link rel='import' href='VAADIN/widgetsets/Demo/Demo-import.html'></link> -->
 <script src="bigdata.js"></script>
 </head>
-<body>
+<body class="valo">
 
   <script>
       function waitUntil(check, exec) {
@@ -36,7 +37,7 @@
   </div>
 
   <h3>1.- Simplest possible with inline data</h3>
-  <v-grid>
+  <v-grid theme="valo">
   <!-- TODO: extend Table prototype: requires a customised version of the WC.getWCConstructor hack -->
   <table>
     <thead>

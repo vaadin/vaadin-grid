@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1" />
+<link href="shadowstyles.css" rel="stylesheet">
+<link href="resizestyles.css" rel="stylesheet">
 <!-- Polymer polyfill -->
 <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
 <!-- VaadinX web components -->
@@ -78,7 +80,6 @@
         $scope.model.current = []
 
         $scope.$watch('model.idx', function(newValue, oldValue) {
-          console.log("change " + $scope.model.idx);
           angular.copy($scope.model.data[$scope.model.idx], $scope.model.current);
         });
 
