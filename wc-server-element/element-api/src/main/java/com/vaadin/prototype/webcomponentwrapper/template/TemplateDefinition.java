@@ -1,12 +1,22 @@
 package com.vaadin.prototype.webcomponentwrapper.template;
 
-import java.io.Serializable;
-
 import com.vaadin.prototype.webcomponentwrapper.element.Element;
 
-public interface TemplateDefinition extends Serializable {
+/**
+ * This interface, even though public, and its use should be considered
+ * implementation detail. It's supposed to only be used internally by the
+ * framework
+ * 
+ * @author mprzepiora
+ *
+ * @param <E>
+ */
+public interface TemplateDefinition<E extends Element> {
+    String getTag();
 
-	String getId();
-	String getInnerHTML();
-	TemplateInstance<? extends Element> instantiate();
+    String getHtml();
+
+    Class<E> getElementClass();
+
+    TemplateInstance<E> instantiate();
 }

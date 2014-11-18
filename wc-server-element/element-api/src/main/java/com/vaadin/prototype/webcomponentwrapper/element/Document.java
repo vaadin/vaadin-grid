@@ -67,7 +67,7 @@ public class Document extends ElementImpl {
     public void importComponent(Class<?> iface) {
         Import annotation = iface.getAnnotation(Import.class);
         if (annotation != null) {
-            for (String a : annotation.value()){
+            for (String a : annotation.value()) {
                 addImport(a);
             }
         }
