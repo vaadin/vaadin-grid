@@ -19,26 +19,27 @@ import com.vaadin.prototype.wc.gwt.client.widgets.grid.GData.GColumn.GHeader;
 
 public interface GData extends JsonBuilder {
     
-    public interface GResponse extends JsonBuilder {
-        public interface GCfg extends JsonBuilder {
-            String name();
-            String title();
+    public interface GAjaxConf extends JsonBuilder {
+        
+        public interface GAjaxResponse extends JsonBuilder {
+            public interface GAjaxColumn extends JsonBuilder {
+                String name();
+                String title();
+            }
+
+            int error();
+            int start();
+            int rows();
+            int size();
+            JsArray<JavaScriptObject> data();
+            List<GAjaxColumn>columns();
         }
-        int error();
-        int start();
-        int rows();
-        int size();
-        JsArray<JavaScriptObject> data();
-        List<GCfg>columns();
-    }
-    
-    public interface GAjax extends JsonBuilder {
-        GAjax setUrl(String url);
+
+        GAjaxConf setUrl(String url);
         String getUrl();
     }
     
     public interface GColumn extends JsonBuilder {
-
         public interface GHeader extends JsonBuilder {
             public static enum Format {
                 TEXT, HTML, WIDGET

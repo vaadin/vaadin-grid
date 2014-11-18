@@ -49,6 +49,7 @@ public class WCVProgress extends HTMLElement.Prototype implements
 
         changeEvent = Elements.document.createEvent("HTMLEvents");
         changeEvent.initEvent("change", false, false);
+        changeEvent.srcElement(this);
 
         container = Elements.create("div");
         readAttributes();

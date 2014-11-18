@@ -51,6 +51,7 @@ public class WCVSlider extends HTMLElement.Prototype implements
 
         changeEvent = Elements.document.createEvent("HTMLEvents");
         changeEvent.initEvent("change", false, false);
+        changeEvent.srcElement(this);
 
         container = Elements.create("div");
         readAttributes();
@@ -89,6 +90,7 @@ public class WCVSlider extends HTMLElement.Prototype implements
         if (!val.equals(getAttribute("value"))) {
             setAttribute("value", val);
             dispatchEvent(changeEvent);
+            setValue(Double.valueOf(val));
         }
     }
 

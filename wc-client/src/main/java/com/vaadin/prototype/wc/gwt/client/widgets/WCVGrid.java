@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayInteger;
 import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.core.client.js.JsExport;
@@ -59,6 +60,7 @@ import com.vaadin.prototype.wc.gwt.client.widgets.grid.GData.GColumn;
 import com.vaadin.prototype.wc.gwt.client.widgets.grid.GData.GColumn.GHeader;
 import com.vaadin.prototype.wc.gwt.client.widgets.grid.GData.GColumn.GHeader.Format;
 import com.vaadin.prototype.wc.gwt.client.widgets.grid.GJsFuncDataSource;
+import com.vaadin.prototype.wc.gwt.client.widgets.grid.GJsObjectDataSource;
 import com.vaadin.prototype.wc.gwt.client.widgets.grid.GRestDataSource;
 import com.vaadin.shared.ui.grid.GridState;
 import com.vaadin.shared.ui.grid.HeightMode;
@@ -79,7 +81,6 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
     private HTMLElement style;
     private Panel shadowPanel;
     private boolean initialized = false;
-    private String theme = "valo";
     public List<GColumn> cols;
     private List<JsArrayMixed> vals;
     private boolean changed = true;
@@ -100,6 +101,8 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
         style.setAttribute("language", "text/css");
         selectEvent = Elements.document.createEvent("HTMLEvents");
         selectEvent.initEvent("select", false, false);
+        selectEvent.srcElement(this);
+
         container = Elements.create("div");
         cols = new ArrayList<GColumn>();
         vals = new ArrayList<JsArrayMixed>();
@@ -120,11 +123,14 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
             HTMLShadow shadow = createShadowRoot();
             shadow.appendChild(style);
             shadow.appendChild(container);
-
+            
             shadowPanel = $(container).as(Widgets).panel().widget();
-
+//            grid = new Grid<JsArrayMixed>();
+//            shadowPanel.add(grid);
+//            columns = new ArrayList<>();
         }
     }
+//    List<GridColumn<Object, JsArrayMixed>> columns;
 
     @Override
     public void attachedCallback() {
@@ -132,6 +138,7 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
         readAttributes();
         addEventListener("DOMSubtreeModified", this);
     }
+    
 
     @JsNoExport
     public void initGrid() {
@@ -146,7 +153,6 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
             Element e = grid.getElement();
             try {
                 grid.removeFromParent();
-                console.log("initGrid OK");
             } catch (Exception ex) {
                 console.log("initGrid Error: " + ex.getMessage());
                 e.removeFromParent();
@@ -155,24 +161,24 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
         grid = new Grid<JsArrayMixed>();
         grid.addSelectionChangeHandler(this);
         shadowPanel.add(grid);
-        grid.addSelectionChangeHandler(this);
-        shadowPanel.add(grid);
 
         if ($(this).attr("selectionMode").equals("multi")) {
             grid.setSelectionMode(SelectionMode.MULTI);
         } else {
             grid.setSelectionMode(SelectionMode.SINGLE);
         }
+//        while(columns.size() > 0) {
+//            grid.removeColumn(columns.remove(0));
+//        }
         if (cols != null) {
-            final RegExp templateRegexp = RegExp.compile("\\{\\{data\\}\\}",
-                    "ig");
+            final RegExp templateRegexp = RegExp.compile("\\{\\{data\\}\\}", "ig");
             for (int i = 0, l = cols.size(); i < l; i++) {
                 final GColumn c = cols.get(i);
-                GridColumn<String, JsArrayMixed> col;
+                GridColumn<Object, JsArrayMixed> col;
                 final int idx = i;
-                col = new GridColumn<String, JsArrayMixed>(
-                        new Renderer<String>() {
-                            public void render(FlyweightCell cell, String data) {
+                col = new GridColumn<Object, JsArrayMixed>(
+                        new Renderer<Object>() {
+                            public void render(FlyweightCell cell, Object data) {
                                 Object o = c.renderer();
                                 Element elm = cell.getElement();
                                 if (o instanceof JavaScriptObject) {
@@ -198,15 +204,15 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
                                         // reuse any of the possible HTML tags
                                         // included in the template.
                                         elm.setInnerHTML(templateRegexp
-                                                .replace(c.template(), data));
+                                                .replace(c.template(), String.valueOf(data)));
                                     } else {
-                                        elm.setInnerHTML(data);
+                                        elm.setInnerHTML(String.valueOf(data));
                                     }
                                 }
                             }
                         }) {
                     @Override
-                    public String getValue(JsArrayMixed row) {
+                    public Object getValue(JsArrayMixed row) {
                         Object o = c.value();
                         if (o instanceof JavaScriptObject) {
                             o = JsUtils.runJavascriptFunction(
@@ -216,11 +222,12 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
                         } else {
                             o = row.getObject(idx);
                         }
-                        return String.valueOf(o);
+                        return o;
                     }
                 };
 
                 grid.addColumn(col);
+//                columns.add(col);
                 for (int j = 0; j < c.headerData().size(); j++) {
                     if (grid.getHeader().getRowCount() < c.headerData().size()) {
                         grid.getHeader().appendRow();
@@ -353,13 +360,10 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
 
             int colOffset = 0;
             for (int j = 0; j < $ths.size(); j++) {
-
-
                 GColumn column = colList.get(j + colOffset);
-
                 GHeader header = GQ.create(GHeader.class);
-
                 GQuery $th = $ths.eq(j);
+                column.setName($th.attr("name"));
 
                 int colSpan = 1;
                 String colString = $th.attr("colspan");
@@ -493,10 +497,15 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
     @JsProperty
     public void setDataSource(JavaScriptObject jso) {
         if (JsUtils.isFunction(jso)) {
-            grid.setDataSource(new GJsFuncDataSource(jso, size));
-        } else {
+            grid.setDataSource(new GJsFuncDataSource(jso, size, this));
+        } else if (JsUtils.isArray(jso)) {
+            loadHeaders();
+            grid.setDataSource(new GJsObjectDataSource(jso.<JsArray<JavaScriptObject>>cast(), this));
+        } else if (JsUtils.prop(jso, "url") != null) {
             loadHeaders();
             new GRestDataSource(jso, this);
+        } else {
+            throw new RuntimeException("Unknown jso: " + jso);
         }
     }
 

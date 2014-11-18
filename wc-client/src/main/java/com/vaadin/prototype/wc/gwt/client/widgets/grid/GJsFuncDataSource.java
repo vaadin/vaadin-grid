@@ -1,20 +1,20 @@
 package com.vaadin.prototype.wc.gwt.client.widgets.grid;
 
-import java.util.List;
-
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.client.JsArrayMixed;
-import com.google.gwt.query.client.GQ;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.vaadin.client.data.AbstractRemoteDataSource;
+import com.vaadin.prototype.wc.gwt.client.widgets.WCVGrid;
 
-public class GJsFuncDataSource extends
-        AbstractRemoteDataSource<JsArrayMixed> {
+/**
+ * Datasource where requestRows() is delegated to a js native function
+ *  
+ * @author manolo
+ */
+public class GJsFuncDataSource extends GDataSource {
     private JavaScriptObject f;
-    private int size = 0;
 
-    public GJsFuncDataSource(JavaScriptObject jso, int rows) {
+    public GJsFuncDataSource(JavaScriptObject jso, int rows, WCVGrid grid) {
+        super(grid);
         assert JsUtils.isFunction(jso);
         f = jso;
         size = rows;
@@ -34,26 +34,6 @@ public class GJsFuncDataSource extends
         if (o != null) {
             setRowData(idx, o);
         }
-    }
-    
-    private void setRowData(int idx, JavaScriptObject array) {
-        GData g = GQ.create(GData.class).set("values", array);
-        setRowData(idx, g.values());
-    }
-
-    @Override
-    protected void setRowData(int firstRowIndex, List<JsArrayMixed> rowData) {
-        super.setRowData(firstRowIndex, rowData);
-    }
-
-    @Override
-    public Object getRowKey(JsArrayMixed row) {
-        return row.toString();
-    }
-
-    @Override
-    public int size() {
-        return size;
     }
     
     private native JavaScriptObject exec(JavaScriptObject f, int idx,

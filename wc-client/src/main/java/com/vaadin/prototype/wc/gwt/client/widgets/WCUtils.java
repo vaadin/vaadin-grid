@@ -1,7 +1,6 @@
 package com.vaadin.prototype.wc.gwt.client.widgets;
 
 import static com.google.gwt.query.client.GQuery.$;
-import static com.google.gwt.query.client.GQuery.console;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
