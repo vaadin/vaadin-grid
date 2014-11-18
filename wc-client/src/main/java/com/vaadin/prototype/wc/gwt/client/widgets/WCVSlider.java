@@ -18,13 +18,12 @@ import com.vaadin.prototype.wc.gwt.client.html.HTMLElement;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLEvents;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLShadow;
 import com.vaadin.prototype.wc.gwt.client.util.Elements;
+
 @JsExport
 @JsType
 public class WCVSlider extends HTMLElement.Prototype implements
-        HTMLElement.LifeCycle.Created,
-        HTMLElement.LifeCycle.Attached,
-        HTMLElement.LifeCycle.Changed,
-        ValueChangeHandler<Double>, Handler {
+        HTMLElement.LifeCycle.Created, HTMLElement.LifeCycle.Attached,
+        HTMLElement.LifeCycle.Changed, ValueChangeHandler<Double>, Handler {
 
     public static final String TAG = "v-slider";
 
@@ -35,7 +34,8 @@ public class WCVSlider extends HTMLElement.Prototype implements
     private boolean initialized = false;
 
     public WCVSlider() {
-        // FIXME: If there is no default constructor JsInterop does not export anything
+        // FIXME: If there is no default constructor JsInterop does not export
+        // anything
     }
 
     @Override
@@ -65,7 +65,7 @@ public class WCVSlider extends HTMLElement.Prototype implements
             }
             elementWidget.addAttachHandler(this);
 
-            HTMLShadow shadow = this.createShadowRoot();
+            HTMLShadow shadow = createShadowRoot();
             shadow.appendChild(style);
             shadow.appendChild(container);
 
@@ -113,11 +113,13 @@ public class WCVSlider extends HTMLElement.Prototype implements
     public void jsPropertyValue() {
     }
 
-    @JsProperty public void setValue(double value) {
+    @JsProperty
+    public void setValue(double value) {
         slider.setValue(value);
     }
 
-    @JsProperty public double getValue() {
+    @JsProperty
+    public double getValue() {
         return slider.getValue();
     }
 }

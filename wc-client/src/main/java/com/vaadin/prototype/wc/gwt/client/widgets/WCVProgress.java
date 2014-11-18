@@ -3,9 +3,7 @@ package com.vaadin.prototype.wc.gwt.client.widgets;
 import static com.google.gwt.query.client.GQuery.$;
 import static com.google.gwt.query.client.GQuery.Widgets;
 import static com.vaadin.prototype.wc.gwt.client.widgets.WCUtils.getAttrFloatValue;
-import static com.vaadin.prototype.wc.gwt.client.widgets.WCUtils.getAttrValue;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.js.JsExport;
 import com.google.gwt.core.client.js.JsProperty;
 import com.google.gwt.core.client.js.JsType;
@@ -22,10 +20,8 @@ import com.vaadin.prototype.wc.gwt.client.util.Elements;
 @JsExport
 @JsType
 public class WCVProgress extends HTMLElement.Prototype implements
-        HTMLElement.LifeCycle.Created,
-        HTMLElement.LifeCycle.Attached,
-        HTMLElement.LifeCycle.Changed,
-        Handler {
+        HTMLElement.LifeCycle.Created, HTMLElement.LifeCycle.Attached,
+        HTMLElement.LifeCycle.Changed, Handler {
 
     public static final String TAG = "v-progress";
 
@@ -36,7 +32,8 @@ public class WCVProgress extends HTMLElement.Prototype implements
     private boolean initialized = false;
 
     public WCVProgress() {
-        // FIXME: If there is no default constructor JsInterop does not export anything
+        // FIXME: If there is no default constructor JsInterop does not export
+        // anything
     }
 
     @Override
@@ -65,7 +62,7 @@ public class WCVProgress extends HTMLElement.Prototype implements
             }
             elementWidget.addAttachHandler(this);
 
-            HTMLShadow shadow = this.createShadowRoot();
+            HTMLShadow shadow = createShadowRoot();
             shadow.appendChild(style);
             shadow.appendChild(container);
 
@@ -79,7 +76,6 @@ public class WCVProgress extends HTMLElement.Prototype implements
         initWidgetSystem();
     }
 
-
     @Override
     public void attributeChangedCallback() {
         readAttributes();
@@ -87,7 +83,7 @@ public class WCVProgress extends HTMLElement.Prototype implements
 
     private void readAttributes() {
         widget.setState(getAttrFloatValue(this, "value", 0));
-        WCUtils.loadVaadinTheme(container, this, style, "valo");
+        WCUtils.loadVaadinTheme(container, this, style);
     }
 
     @Override
@@ -101,11 +97,13 @@ public class WCVProgress extends HTMLElement.Prototype implements
     public void jsPropertyValue() {
     }
 
-    @JsProperty public void setValue(double value) {
-        widget.setState((float)value);
+    @JsProperty
+    public void setValue(double value) {
+        widget.setState((float) value);
     }
 
-    @JsProperty public double getValue() {
+    @JsProperty
+    public double getValue() {
         return widget.getState();
     }
 }

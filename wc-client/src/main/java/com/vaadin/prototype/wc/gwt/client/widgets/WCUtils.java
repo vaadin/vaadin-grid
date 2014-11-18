@@ -1,7 +1,6 @@
 package com.vaadin.prototype.wc.gwt.client.widgets;
 
 import static com.google.gwt.query.client.GQuery.$;
-import static com.google.gwt.query.client.GQuery.console;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -13,11 +12,12 @@ import com.vaadin.prototype.wc.gwt.client.html.HTMLElement;
 
 public class WCUtils {
     public static int getAttrIntValue(HTMLElement el, String attr, int def) {
-        return (int)getAttrFloatValue(el, attr, def);
+        return (int) getAttrFloatValue(el, attr, def);
     }
 
-    public static double getAttrDoubleValue(HTMLElement el, String attr, double def) {
-        return (double)getAttrFloatValue(el, attr, (float)def);
+    public static double getAttrDoubleValue(HTMLElement el, String attr,
+            double def) {
+        return getAttrFloatValue(el, attr, (float) def);
     }
 
     public static String getAttrValue(HTMLElement el, String attr, String def) {
@@ -35,6 +35,9 @@ public class WCUtils {
 
     public static void loadVaadinTheme(HTMLElement container, HTMLElement el, HTMLElement style, String def) {
         String theme = getAttrValue(el, "theme", def);
+        if (theme == null) {
+            return;
+        }
         if ($(theme).text().contains(theme)) {
             return;
         }
@@ -57,17 +60,17 @@ public class WCUtils {
     }
 
     public static native void observe(JavaScriptObject jso, EventListener ev) /*-{
-        var fnc = function(changes) {
-          ev.@com.google.gwt.user.client.EventListener::onBrowserEvent(*)(null);
-        };
-        jso.__fnc = fnc;
-        Object.observe(jso, fnc);
-    }-*/;
+                                                                              var fnc = function(changes) {
+                                                                              ev.@com.google.gwt.user.client.EventListener::onBrowserEvent(*)(null);
+                                                                              };
+                                                                              jso.__fnc = fnc;
+                                                                              Object.observe(jso, fnc);
+                                                                              }-*/;
 
     public static native void unobserve(JavaScriptObject jso) /*-{
-        if (jso && jso.__fnc) {
-          Object.unobserve(jso, jso.__fnc);
-          jso.__fnc = undefined;
-        }
-    }-*/;
+                                                              if (jso && jso.__fnc) {
+                                                              Object.unobserve(jso, jso.__fnc);
+                                                              jso.__fnc = undefined;
+                                                              }
+                                                              }-*/;
 }

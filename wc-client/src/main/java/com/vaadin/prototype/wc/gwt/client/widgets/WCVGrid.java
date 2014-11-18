@@ -62,6 +62,9 @@ import com.vaadin.prototype.wc.gwt.client.html.HTMLElement;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLEvents;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLShadow;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLTableElement;
+import com.vaadin.prototype.wc.gwt.client.ui.ElementResizeEvent;
+import com.vaadin.prototype.wc.gwt.client.ui.ElementResizeListener;
+import com.vaadin.prototype.wc.gwt.client.ui.ElementResizeManager;
 import com.vaadin.prototype.wc.gwt.client.util.Elements;
 import com.vaadin.prototype.wc.gwt.client.widgets.grid.GData;
 import com.vaadin.prototype.wc.gwt.client.widgets.grid.GData.GColumn;
@@ -102,6 +105,8 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
     private int size = 0;
 
     private int headerDefaultRowIndex = 0;
+
+    private ElementResizeListener resizeListener;
 
     public WCVGrid() {
         // FIXME: If there is no default constructor JsInterop does not export
@@ -223,6 +228,24 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
         if (dataSource != null) {
             grid.setDataSource(dataSource);
         }
+
+        // needed in case the style isn't loaded yet
+        resizeListener = ElementResizeManager.addResizeListener(
+                grid.getElement(), new ElementResizeListener() {
+
+                    @Override
+                    public void onElementResize(ElementResizeEvent event) {
+                        int rowCount = size;
+                        if (rowCount == 0) {
+                            if (vals != null) {
+                                rowCount = vals.size();
+                            } else if (grid.getDataSource() != null) {
+                                rowCount = grid.getDataSource().size();
+                            }
+                        }
+                        adjustHeight(rowCount);
+                    }
+                });
     }
 
     public static GridColumn<Object, JsArrayMixed> createGridColumn(final GColumn gColumn, final int idx) {
@@ -296,14 +319,13 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
     }
 
     private void readAttributes() {
-        WCUtils.loadVaadinTheme(container, this, style, "reindeer");
+        WCUtils.loadVaadinTheme(container, this, style);
 
         loadHeaders();
         loadRows();
         initGrid();
         parseAttributeDeclarations();
 
-        adjustHeight(vals.size());
         setSelectedRow(getAttrIntValue(this, "selectedRow", -1));
 
         String type = getAttrValue(this, "type", null);
@@ -335,7 +357,8 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
                 }
                 setDataSource(jso);
             } else if (JsUtils.isArray(jso)) {
-                vals = GQ.create(GData.class).<GData>set("values", jso).values();
+                vals = GQ.create(GData.class).<GData> set("values", jso)
+                        .values();
                 loadData();
             } else {
                 console.log("Unknown type of datasource: " + jso);
@@ -463,6 +486,7 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
     @JsNoExport
     private void adjustHeight(int size) {
         if (size > 0) {
+            this.size = size;
             grid.setHeightMode(HeightMode.ROW);
             grid.setHeightByRows(Math.min(size,
                     GridState.DEFAULT_HEIGHT_BY_ROWS));
@@ -471,8 +495,8 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
 
     @JsNoExport
     public void adjustHeight() {
-        int s = grid.getDataSource().size();
-        adjustHeight(s);
+        size = grid.getDataSource().size();
+        adjustHeight(size);
     }
 
     @Override
@@ -562,10 +586,10 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
             }
         }
         // Using GQuery data-binding magic to convert list to js arrays.
-        columnsJso =  GQ.create(GData.class).setColumns(cols).get("columns");
+        columnsJso = GQ.create(GData.class).setColumns(cols).get("columns");
 
         // Add observers to any column configuration object so as
-        for (int i = 0, l = columnsJso.size(); i < l ; i++) {
+        for (int i = 0, l = columnsJso.size(); i < l; i++) {
             WCUtils.observe(columnsJso.get(i), new EventListener() {
                 public void onBrowserEvent(Event event) {
                     refresh();
@@ -586,10 +610,11 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
 
     @JsProperty
     public int getSelectedRow() {
-        return grid == null || grid.getSelectionModel() == null
+        return grid == null
+                || grid.getSelectionModel() == null
                 || !(grid.getSelectionModel() instanceof SelectionModel.Single<?>)
-                || grid.getSelectedRow() == null ? -1
-                        : grid.getDataSource().indexOf(grid.getSelectedRow());
+                || grid.getSelectedRow() == null ? -1 : grid.getDataSource()
+                .indexOf(grid.getSelectedRow());
     }
 
     @JsProperty
