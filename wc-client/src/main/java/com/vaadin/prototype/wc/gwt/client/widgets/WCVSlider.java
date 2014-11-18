@@ -34,9 +34,7 @@ public class WCVSlider extends HTMLElement.Prototype implements
     private HTMLEvents changeEvent;
     private HTMLElement container;
     private HTMLElement style;
-    private Panel shadowPanel;
     private boolean initialized = false;
-    private String theme = "valo";
 
     public WCVSlider() {
         // FIXME: If there is no default constructor JsInterop does not export anything
