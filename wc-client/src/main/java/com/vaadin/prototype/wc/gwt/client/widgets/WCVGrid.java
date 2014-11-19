@@ -59,6 +59,7 @@ import com.vaadin.prototype.wc.gwt.client.widgets.grid.GData;
 import com.vaadin.prototype.wc.gwt.client.widgets.grid.GData.GColumn;
 import com.vaadin.prototype.wc.gwt.client.widgets.grid.GData.GColumn.GHeader;
 import com.vaadin.prototype.wc.gwt.client.widgets.grid.GData.GColumn.GHeader.Format;
+import com.vaadin.prototype.wc.gwt.client.widgets.grid.GDataSource;
 import com.vaadin.prototype.wc.gwt.client.widgets.grid.GJsFuncDataSource;
 import com.vaadin.prototype.wc.gwt.client.widgets.grid.GJsObjectDataSource;
 import com.vaadin.prototype.wc.gwt.client.widgets.grid.GRestDataSource;
@@ -123,7 +124,7 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
             HTMLShadow shadow = createShadowRoot();
             shadow.appendChild(style);
             shadow.appendChild(container);
-            
+
             shadowPanel = $(container).as(Widgets).panel().widget();
 //            grid = new Grid<JsArrayMixed>();
 //            shadowPanel.add(grid);
@@ -138,7 +139,7 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
         readAttributes();
         addEventListener("DOMSubtreeModified", this);
     }
-    
+
 
     @JsNoExport
     public void initGrid() {
@@ -160,6 +161,7 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
         }
         grid = new Grid<JsArrayMixed>();
         grid.addSelectionChangeHandler(this);
+        grid.setWidth("100%");
         shadowPanel.add(grid);
 
         if ($(this).attr("selectionMode").equals("multi")) {
@@ -503,10 +505,15 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
             grid.setDataSource(new GJsObjectDataSource(jso.<JsArray<JavaScriptObject>>cast(), this));
         } else if (JsUtils.prop(jso, "url") != null) {
             loadHeaders();
-            new GRestDataSource(jso, this);
+            @SuppressWarnings("unused")
+            GRestDataSource d = new GRestDataSource(jso, this);
         } else {
             throw new RuntimeException("Unknown jso: " + jso);
         }
+    }
+
+    public void refresh() {
+        ((GDataSource)grid.getDataSource()).refresh();
     }
 
     @JsProperty

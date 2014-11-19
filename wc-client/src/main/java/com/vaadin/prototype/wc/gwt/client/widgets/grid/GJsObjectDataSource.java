@@ -9,19 +9,20 @@ import com.vaadin.prototype.wc.gwt.client.widgets.WCVGrid;
 import com.vaadin.prototype.wc.gwt.client.widgets.grid.GData.GColumn;
 
 public class GJsObjectDataSource extends GDataSource {
-    
+
     private final JsArray<JavaScriptObject> jso;
 
     public GJsObjectDataSource(JsArray<JavaScriptObject> jso, WCVGrid grid) {
         super(grid);
         assert JsUtils.isArray(jso);
         this.jso = jso;
+        size = jso.length();
     }
 
     @Override
     protected void requestRows(final int idx, final int count) {
         List<GColumn> cols = wcGrid.getCols();
-        setRowDataFromJs(idx, cols, jso);
+        setRowDataFromJs(idx, count, cols, jso);
     }
-    
+
 }

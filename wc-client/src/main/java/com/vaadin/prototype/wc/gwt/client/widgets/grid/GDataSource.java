@@ -23,7 +23,7 @@ import com.vaadin.prototype.wc.gwt.client.widgets.grid.GData.GColumn.GHeader.For
 public abstract class GDataSource extends
         AbstractRemoteDataSource<JsArrayMixed> {
     protected int size = 300;
-    
+
     protected final WCVGrid wcGrid;
 
     public GDataSource(WCVGrid grid) {
@@ -38,7 +38,7 @@ public abstract class GDataSource extends
                     .setContent(c.title())
                     .setFormat(Format.HTML)
                     .setColSpan(1));
-            
+
             colList.add(GQ.create(GColumn.class)
                     .setName(c.name())
                     .setHeaderData(l));
@@ -47,7 +47,7 @@ public abstract class GDataSource extends
         wcGrid.initGrid();
         return wcGrid.getCols();
     }
-    
+
     private List<GColumn> configColumnsFromFirstDataRow(Properties p) {
         List<GColumn> colList = new ArrayList<GColumn>();
         for (String k : p.keys()) {
@@ -56,7 +56,7 @@ public abstract class GDataSource extends
                     .setContent(k)
                     .setFormat(Format.HTML)
                     .setColSpan(1));
-            
+
             colList.add(GQ.create(GColumn.class)
                     .setName(k)
                     .setHeaderData(l));
@@ -65,7 +65,7 @@ public abstract class GDataSource extends
         wcGrid.initGrid();
         return wcGrid.getCols();
     }
-    
+
     protected void setRowData(int idx, JavaScriptObject array) {
         GData g = GQ.create(GData.class).set("values", array);
         super.setRowData(idx, g.values());
@@ -81,7 +81,11 @@ public abstract class GDataSource extends
         return size;
     }
 
-    protected void setRowDataFromJs(final int idx, List<GColumn> cols, JsArray<JavaScriptObject> data) {
+    public void refresh() {
+        resetDataAndSize(size());
+    }
+
+    protected void setRowDataFromJs(final int idx, int count, List<GColumn> cols, JsArray<JavaScriptObject> data) {
         if (data.length() > 0) {
             if (JsUtils.isArray(data.get(0))) {
                 try {
@@ -92,9 +96,9 @@ public abstract class GDataSource extends
             } else {
                 if (cols == null || cols.isEmpty()) {
                     cols = configColumnsFromFirstDataRow(data.get(0).<Properties>cast());
-                }                            
+                }
                 List<JsArrayMixed> rowData = new ArrayList<JsArrayMixed>();
-                for (int i = 0; i < data.length(); i++) {
+                for (int i = idx, l = Math.min(data.length(), idx + count); i < l; i++) {
                     Properties c = data.get(i).cast();
                     JsObjectArray<Object> row = JsCache.createArray().cast();
                     for (int j = 0; j < cols.size(); j++) {

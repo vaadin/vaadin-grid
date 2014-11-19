@@ -16,7 +16,7 @@ import com.vaadin.prototype.wc.gwt.client.widgets.grid.GData.GAjaxConf.GAjaxResp
 import com.vaadin.prototype.wc.gwt.client.widgets.grid.GData.GColumn;
 
 public class GRestDataSource extends GDataSource {
-    
+
     private GAjaxConf ajaxCfg;
 
     public GRestDataSource(JavaScriptObject cfg, WCVGrid grid) {
@@ -29,7 +29,7 @@ public class GRestDataSource extends GDataSource {
     protected void requestRows(final int idx, final int count) {
         final String url = ajaxCfg.getUrl().replace("{START}", "" + idx).replace("{LENGTH}", "" + count);
         console.log(url);
-        
+
         Ajax.post(url, null).done(new Function(){
             public void f() {
                 String json = arguments(0);
@@ -41,12 +41,12 @@ public class GRestDataSource extends GDataSource {
                 if (!cfgs.isEmpty() && (cols == null || cols.isEmpty())) {
                     cols = configColumsFromAjaxResponse(cfgs);
                 }
-                
+
                 if (count == 0) {
                     wcGrid.getGrid().setDataSource(GRestDataSource.this);
                 } else {
                     JsArray<JavaScriptObject> data = r.data();
-                    setRowDataFromJs(idx, cols, data);
+                    setRowDataFromJs(idx, count, cols, data);
                 }
                 wcGrid.adjustHeight();
             }
@@ -56,5 +56,5 @@ public class GRestDataSource extends GDataSource {
             }
         });
     }
-    
+
 }
