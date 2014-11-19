@@ -27,6 +27,7 @@ import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.event.logical.shared.AttachEvent.Handler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQ;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Properties;
@@ -471,8 +472,10 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
 
     @Override
     public void onSelectionChange(SelectionChangeEvent<JsArrayMixed> ev) {
-        setAttribute("selectedRow", "" + getSelectedRow());
-        dispatchEvent(selectEvent);
+        if (!refreshing) {
+            setAttribute("selectedRow", "" + getSelectedRow());
+            dispatchEvent(selectEvent);
+        }
     }
 
     // TODO:
@@ -512,8 +515,19 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
         }
     }
 
+    boolean refreshing = false;
     public void refresh() {
+        final int a = getSelectedRow();
         ((GDataSource)grid.getDataSource()).refresh();
+        if (a > 0) {
+            refreshing = true;
+            $(this).delay(5, new Function() {
+                public void f() {
+                    setSelectedRow(a);
+                    refreshing = false;
+                }
+            });
+        }
     }
 
     @JsProperty
