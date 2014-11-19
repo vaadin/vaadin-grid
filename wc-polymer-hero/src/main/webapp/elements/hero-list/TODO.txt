@@ -1,0 +1,19 @@
+       // INFO: this works but seems verbose   
+       //    new MutationObserver(function(mutations) {
+       //      mutations.forEach(function(m) {
+       //        if (m.attributeName == 'value') {
+       //          that.value = m.target.value;
+       //        }
+       //      });  
+       //    }).observe(this.$.slider, {
+       //      attributes : true
+       //    });
+        // TODO: why this does not work?
+        // It seems because java setter does not notify to JS attributes
+        // JsInterop would fix it ?
+        // observe: {
+        //   '$.slider.value': 'sliderchanged'
+        // },
+        // sliderchanged: function(oldValue, newValue) {
+        //   console.log(oldValue + " " + newValue)
+        // }

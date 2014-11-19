@@ -1,0 +1,41 @@
+<link rel="import" href="../hero-list/hero-list.html">
+<link rel="import" href="../hero-details/hero-details.html">
+<link rel="import" href="../hero-edit/hero-edit.html">
+
+<polymer-element name="hero-app">
+  <template>
+    <style>
+    </style>
+          <hero-list id='list' page={{page}} current="{{current}}" hero="{{hero}}" heros="{{heros}}"></hero-list>
+          <hero-details id='details' page={{page}} hero="{{hero}}"></hero-details>
+          <hero-edit id='edit' page={{page}} current="{{current}}" heros="{{heros}}"></hero-edit>
+  </template>
+  <script>
+    Polymer('hero-app', {
+      ready: function() {
+        // Center the map on madrid
+        this.hero = {location:{latitude: 40.4378271,longitude: -3.6795366}};
+        this.page = 0;
+      },
+      pageChanged: function() {
+        switch (this.page) {
+          case 2:
+            this.$.list.style.display = 'none';
+            this.$.details.style.display = 'none';
+            this.$.edit.style.display = 'block';
+            break;
+          case 1:
+            this.$.list.style.display = 'none';
+            this.$.details.style.display = 'block';
+            this.$.edit.style.display = 'none';
+            break;
+          default:
+            this.$.list.style.display = 'block';
+            this.$.details.style.display = 'none';
+            this.$.edit.style.display = 'none';
+            break;
+        }
+      }
+    });
+  </script>
+</polymer-element>

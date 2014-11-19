@@ -1,0 +1,103 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/core-input/core-input.html">
+<polymer-element name="hero-edit" attributes="heros current page">
+  <template>
+    <style>
+    </style>
+    <div>
+       <table width='400px'>
+        <tr>
+          <td colspan='2'><a on-tap='{{cancel}}' href='javascript:'>Cancel</a></td>
+          <td width='10%'><button on-tap='{{save}}'>Save</button></td>
+        </tr>
+        <tr>
+          <td rowspan='2' width='10%'><div class='picture'>Picture</div></td>
+          <td><core-input value='{{hero.name}}'></core-input></td>
+          <td>a.k.a.</td>
+        </tr>
+        <tr>
+          <td colspan='2'><core-input value='{{hero.heroname}}'></core-input></td>
+        </tr>
+        <tr>
+          <td>Vitals</td>
+          <td colspan='2'>
+            <div>Heart rate {{hero.vitals.heart[0]}}</div>
+            <div style='width: 20%'>Caffine saturation</div>
+            <div style='width: 20%'> {{hero.vitals.coffee[0]}}</div>
+            <div style='width: 20%'><button on-tap='{{inject}}'>Inject</button></div>
+          </td>
+        </tr>
+        <tr>
+          <td colspan='2'>IQ</td>
+          <td><core-input value='{{hero.iq}}'></core-input></td>
+        </tr>
+        <tr>
+          <td colspan='2'>Height</td>
+          <td><core-input value='{{hero.height}}' placeholder='cm'></core-input></td>
+        </tr>
+        <tr>
+          <td colspan='2'>Weight</td>
+          <td><core-input value='{{hero.weight}}' placeholder='kg'></core-input></td>
+        </tr>
+        <tr>
+          <td colspan='2'>Kill count</td>
+          <td><core-input value='{{hero.killcount}}'></core-input></td>
+        </tr>
+        <tr>
+          <td colspan='2'>Arch-enemy</td>
+          <td>
+            <select value='{{hero.archenemy}}' >
+              <option template repeat="{{options}}">{{}}</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td colspan='3'>Mission stament
+          <core-input multiline rows='4' value='{{hero.mission}}'></core-input></td>
+        </tr>
+        <tr>
+          <td colspan='3'><button on-tap='{{terminate}}'>Terminate Hero</button></td>
+        </tr>
+       </table>
+     </div>
+  </template>
+  <script>
+    (function () {
+      Polymer({
+        ready: function() {
+          this.options = ["a", "b"];
+        },
+        currentChanged: function() {
+          this.hero = this.heros[this.current];
+        },
+        herosChanged: function() {
+          this.options = [];
+          for (i in this.heros) {
+            this.options.push(this.heros[i].heroname)
+          }
+        },
+        cancel: function() {
+          this.page = 1;
+        },
+        save: function() {
+          for (k in this.hero) {
+            this.heros[this.current][k] = this.hero[k];
+          }
+          this.page = -1;
+        },
+        remove: function() {
+          this.heros.splice(this.current, 1);
+          this.page = -1;
+        },
+        terminate: function() {
+          // TODO: ask if terminated means remove or just change status
+          this.heros[this.current].status = 'Terminated';
+          this.page = -1;
+        },
+        inject: function() {
+          this.hero.vitals.coffee[0]++;
+        }
+      });
+    })();
+  </script>
+</polymer-element>

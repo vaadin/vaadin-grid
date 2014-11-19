@@ -1,0 +1,92 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<polymer-element name="hero-details" attributes="hero page">
+  <template>
+    <style>
+      table {
+        width: 40%;
+        border: none;
+        float: left;
+      }
+      #popup {
+        width: 100%;
+        position: absolute;
+        height: 300px;
+      }
+      #map {
+        width: 50%;
+        height: 100%;
+        position: absolute;
+        left: 40%;
+      }
+    </style>
+    <div id='popup'>
+     <table>
+        <tr>
+          <td colspan='2'>Superhero Details</td>
+          <td><a on-tap="{{edit}}" href='javascript:'>Edit</a></td>
+        </tr>
+        <tr>
+          <td><div class='picture'>Picture</div></td>
+          <td><div>{{hero.name}}, a.k.a.</div><div>{{hero.heroname}}</div></td>
+          <td><button>Call Hero</button></td>
+        </tr>
+        <tr>
+          <td>Vitals</td>
+          <td><div>{{hero.vitals.heart[0]}}</div><div>Heart rate</div></td>
+          <td><div>{{hero.vitals.coffee[0]}}</div><div>Caffeine</div></td>
+        </tr>
+        <tr>
+          <td>IQ</td>
+          <td colspan='2'>{{hero.iq}}</td>
+        </tr>
+        <tr>
+          <td>Height</td>
+          <td colspan='2'>{{hero.height}} cm</td>
+        </tr>
+        <tr>
+          <td>Weight</td>
+          <td colspan='2'>{{hero.weight}} kg</td>
+        </tr>
+        <tr>
+          <td>Kill count</td>
+          <td colspan='2'>{{hero.killcount}}</td>
+        </tr>
+        <tr>
+          <td>Arch-enemy</td>
+          <td colspan='2'>{{hero.archenemy}}</td>
+        </tr>
+        <tr>
+          <td>Mission</td>
+          <td colspan='2'>{{hero.mission}}</td>
+        </tr>
+        <tr>
+          <td colspan='3'><a on-tap="{{close}}" href='javascript:'>Close</a></td>
+        </tr>
+     </table>
+     <div id='map'>
+       <google-map id='gmap' latitude="{{hero.location.latitude}}" longitude="{{hero.location.longitude}}" zoom="8" showCenterMarker='true' disableDefaultUI='true' fit></google-map>
+     </div>
+     </div>
+  </template>
+  <script>
+    (function () {
+      Polymer({
+        ready: function() {
+        },
+        pageChanged: function() {
+          if (this.page == 1) {
+            var gmap = this.$.gmap;
+            this.$.map.removeChild(gmap);
+            this.$.map.appendChild(gmap);
+          }
+        },
+        close: function() {
+          this.page = 0;
+        },
+        edit: function() {
+          this.page = 2; 
+        }
+      });
+    })();
+  </script>
+</polymer-element>
