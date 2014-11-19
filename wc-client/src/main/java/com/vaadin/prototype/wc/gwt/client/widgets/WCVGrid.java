@@ -162,7 +162,7 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
         }
         grid = new Grid<JsArrayMixed>();
         grid.addSelectionChangeHandler(this);
-        grid.setWidth("100%");
+//        grid.setWidth("100%");
         shadowPanel.add(grid);
 
         if ($(this).attr("selectionMode").equals("multi")) {
@@ -174,63 +174,14 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
 //            grid.removeColumn(columns.remove(0));
 //        }
         if (cols != null) {
-            final RegExp templateRegexp = RegExp.compile("\\{\\{data\\}\\}", "ig");
             for (int i = 0, l = cols.size(); i < l; i++) {
-                final GColumn c = cols.get(i);
+                GColumn c = cols.get(i);
                 GridColumn<Object, JsArrayMixed> col;
-                final int idx = i;
-                col = new GridColumn<Object, JsArrayMixed>(
-                        new Renderer<Object>() {
-                            public void render(FlyweightCell cell, Object data) {
-                                Object o = c.renderer();
-                                Element elm = cell.getElement();
-                                if (o instanceof JavaScriptObject) {
-                                    if (JsUtils
-                                            .isFunction((JavaScriptObject) o)) {
-                                        JsUtils.runJavascriptFunction(
-                                                (JavaScriptObject) o, "call",
-                                                o, elm, data, cell.getRow());
-                                    } else {
-                                        if ($(elm).data("init") == null) {
-                                            $(elm).data("init", true);
-                                            JsUtils.runJavascriptFunction(
-                                                    (JavaScriptObject) o,
-                                                    "init", elm);
-                                        }
-                                        JsUtils.runJavascriptFunction(
-                                                (JavaScriptObject) o, "render",
-                                                elm, data);
-                                    }
-                                } else {
-                                    if (c.template() != null) {
-                                        // FIXME: this implementation doesn't
-                                        // reuse any of the possible HTML tags
-                                        // included in the template.
-                                        elm.setInnerHTML(templateRegexp
-                                                .replace(c.template(), String.valueOf(data)));
-                                    } else {
-                                        elm.setInnerHTML(String.valueOf(data));
-                                    }
-                                }
-                            }
-                        }) {
-                    @Override
-                    public Object getValue(JsArrayMixed row) {
-                        Object o = c.value();
-                        if (o instanceof JavaScriptObject) {
-                            o = JsUtils.runJavascriptFunction(
-                                    (JavaScriptObject) o, "call", o, row, idx);
-                        } else if (o instanceof String) {
-                            o = JsUtils.prop(row, o);
-                        } else {
-                            o = row.getObject(idx);
-                        }
-                        return o;
-                    }
-                };
 
+                col = createGridColumn(c, i);
                 grid.addColumn(col);
 //                columns.add(col);
+                
                 for (int j = 0; j < c.headerData().size(); j++) {
                     if (grid.getHeader().getRowCount() < c.headerData().size()) {
                         grid.getHeader().appendRow();
@@ -271,6 +222,59 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
         if (dataSource != null) {
             grid.setDataSource(dataSource);
         }
+    }
+
+    public static GridColumn<Object, JsArrayMixed> createGridColumn(final GColumn gColumn, final int idx) {
+        final RegExp templateRegexp = RegExp.compile("\\{\\{data\\}\\}", "ig");
+        return new GridColumn<Object, JsArrayMixed>(
+                new Renderer<Object>() {
+                    public void render(FlyweightCell cell, Object data) {
+                        Object o = gColumn.renderer();
+                        Element elm = cell.getElement();
+                        if (o instanceof JavaScriptObject) {
+                            if (JsUtils
+                                    .isFunction((JavaScriptObject) o)) {
+                                JsUtils.runJavascriptFunction(
+                                        (JavaScriptObject) o, "call",
+                                        o, elm, data, cell.getRow());
+                            } else {
+                                if ($(elm).data("init") == null) {
+                                    $(elm).data("init", true);
+                                    JsUtils.runJavascriptFunction(
+                                            (JavaScriptObject) o,
+                                            "init", elm);
+                                }
+                                JsUtils.runJavascriptFunction(
+                                        (JavaScriptObject) o, "render",
+                                        elm, data);
+                            }
+                        } else {
+                            if (gColumn.template() != null) {
+                                // FIXME: this implementation doesn't
+                                // reuse any of the possible HTML tags
+                                // included in the template.
+                                elm.setInnerHTML(templateRegexp
+                                        .replace(gColumn.template(), String.valueOf(data)));
+                            } else {
+                                elm.setInnerHTML(String.valueOf(data));
+                            }
+                        }
+                    }
+                }) {
+            @Override
+            public Object getValue(JsArrayMixed row) {
+                Object o = gColumn.value();
+                if (o instanceof JavaScriptObject) {
+                    o = JsUtils.runJavascriptFunction(
+                            (JavaScriptObject) o, "call", o, row, idx);
+                } else if (o instanceof String) {
+                    o = JsUtils.prop(row, o);
+                } else {
+                    o = row.getObject(idx);
+                }
+                return o;
+            }
+        };
     }
 
     @Override
@@ -366,7 +370,7 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
                 GColumn column = colList.get(j + colOffset);
                 GHeader header = GQ.create(GHeader.class);
                 GQuery $th = $ths.eq(j);
-                column.setName($th.attr("name"));
+                column.setValue($th.attr("name"));
 
                 int colSpan = 1;
                 String colString = $th.attr("colspan");

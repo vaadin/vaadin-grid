@@ -53,17 +53,18 @@ public interface GData extends JsonBuilder {
             GHeader setColSpan(int colSpans);
         }
 
+        Object content();
+        GColumn setContent(Object o);
         String type();
         GColumn setType(String s);
         JavaScriptObject renderer();
         GColumn setRenderer(JavaScriptObject o);
         Object value();
+        GColumn setValue(Object o);
         List<GHeader> headerData();
         GColumn setHeaderData(List<GHeader> headers);
         String template();
         GColumn setTemplate(String template);
-        String name();
-        GColumn setName(String name);
     }
 
     List<GColumn> columns();
