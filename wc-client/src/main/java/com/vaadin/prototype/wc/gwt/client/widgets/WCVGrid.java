@@ -264,13 +264,19 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
             @Override
             public Object getValue(JsArrayMixed row) {
                 Object o = gColumn.value();
-                if (o instanceof JavaScriptObject) {
-                    o = JsUtils.runJavascriptFunction(
-                            (JavaScriptObject) o, "call", o, row, idx);
+                if (o instanceof JavaScriptObject
+                        && JsUtils.isFunction((JavaScriptObject) o)) {
+                    o = JsUtils.runJavascriptFunction((JavaScriptObject) o,
+                            "call", o, row, idx);
                 } else if (o instanceof String) {
                     o = JsUtils.prop(row, o);
                 } else {
-                    o = row.getObject(idx);
+                    if (JsUtils.isArray(row)) {
+                        o = row.getObject(idx);
+                    } else {
+                        Properties p = row.cast();
+                        o = p.getObject(p.keys()[idx]);
+                    }
                 }
                 return o;
             }
@@ -371,7 +377,6 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
                 GHeader header = GQ.create(GHeader.class);
                 GQuery $th = $ths.eq(j);
                 column.setValue($th.attr("name"));
-
                 int colSpan = 1;
                 String colString = $th.attr("colspan");
                 if (!colString.isEmpty()) {

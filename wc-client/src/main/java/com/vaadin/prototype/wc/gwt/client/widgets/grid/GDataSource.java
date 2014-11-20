@@ -1,5 +1,7 @@
 package com.vaadin.prototype.wc.gwt.client.widgets.grid;
 
+import static com.google.gwt.query.client.GQuery.console;
+
 import java.util.ArrayList;
 import java.util.List;
 
