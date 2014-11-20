@@ -140,7 +140,14 @@ public class DemoUI extends WebComponentUI {
                 .instantiate(HelloWithBindingElement.class);
         
         HelloWithBindingElement helloWithBindingElement = helloBinding.getElement();
+        InputElement inputElement2 = helloBinding.getElementById("myinput");
+        inputElement2.setMaxLength("10");
+        
         root.appendChild(helloWithBindingElement);
+        
+        TemplateInstance<Element> withProperty = Templates.instantiate("hello-with-binding.html");
+        root.appendChild(withProperty.getElement());
+        withProperty.setPropertyValue("name", "John");
 
     }
 

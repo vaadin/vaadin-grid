@@ -6,5 +6,6 @@ public interface TemplateInstance<E extends Element> {
 
     E getElement();
     <EL extends Element> EL getElementById(String id);
+    void setPropertyValue(String propertyName, String propertyValue);
 
 }

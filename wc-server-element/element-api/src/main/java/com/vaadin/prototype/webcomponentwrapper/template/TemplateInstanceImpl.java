@@ -79,4 +79,9 @@ public class TemplateInstanceImpl<E extends Element> implements
         }
     }
 
+    @Override
+    public void setPropertyValue(String propertyName, String propertyValue) {
+        element.eval("e[param[0]] = param[1]", propertyName, propertyValue);
+    }
+
 }

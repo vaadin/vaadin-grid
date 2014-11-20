@@ -201,7 +201,7 @@ public class Document extends ElementImpl {
         JsonArray callbacks = Json.createArray();
 
         for (int i = 0; i < arguments.length; i++) {
-            Object value = arguments[0];
+            Object value = arguments[i];
             Class<? extends Object> type = value.getClass();
 
             if (JavaScriptFunction.class.isAssignableFrom(type)) {
