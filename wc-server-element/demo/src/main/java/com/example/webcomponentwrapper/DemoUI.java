@@ -120,7 +120,8 @@ public class DemoUI extends WebComponentUI {
         root.appendChild(helloElement2);
         
         InputElement inputElement = hello2.getElementById("myinput");
-        inputElement.setMaxLength("10"); //TODO: does not work, should it?
+        //TODO: does not work, needs hooking to the client-side
+        inputElement.setMaxLength("10");
         
         assert hello2.getElement().getChildren().size() == 0;
     }

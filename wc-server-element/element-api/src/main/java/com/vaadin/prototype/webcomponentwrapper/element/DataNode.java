@@ -3,6 +3,10 @@ package com.vaadin.prototype.webcomponentwrapper.element;
 public class DataNode extends NodeImpl {
     
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 43715777221430953L;
     private String wholeData;
 
     public DataNode(String wholeData) {

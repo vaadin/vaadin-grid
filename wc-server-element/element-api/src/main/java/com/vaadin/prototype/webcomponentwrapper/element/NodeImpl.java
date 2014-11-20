@@ -8,10 +8,12 @@ public abstract class NodeImpl implements Node {
 
     private List<Node> children = new ArrayList<>();
     private Node parent;
+    private Document document;
 
     @Override
     public void appendChild(Node child) {
         children.add(child);
+        child.setParent(this);
 
         Document document = getDocument();
         if (document != null) {
@@ -56,7 +58,14 @@ public abstract class NodeImpl implements Node {
         if (parent != null) {
             return parent.getDocument();
         } else {
-            return null;
+            return document;
+        }
+    }
+
+    //dirty hack to make shadow DOM nodes use the same document
+    void setDocument(Document document) {
+        if (parent == null) {
+            this.document = document;
         }
     }
 

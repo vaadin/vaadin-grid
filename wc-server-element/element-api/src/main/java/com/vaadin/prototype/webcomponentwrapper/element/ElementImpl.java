@@ -22,7 +22,14 @@ import com.vaadin.ui.JavaScriptFunction;
 import elemental.json.JsonArray;
 
 public class ElementImpl extends NodeImpl implements Element {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -2310139720636980919L;
+
     private final String tag;
+    
+    protected List<Node> shadowDOMNodes = Collections.unmodifiableList(new ArrayList<>(0));
 
     public ElementImpl(String tag) {
         this.tag = tag;
@@ -305,5 +312,21 @@ public class ElementImpl extends NodeImpl implements Element {
 
         return b.toString();
     }
+
+    @Override
+    public List<Node> getShadowDOMNodes() {
+        return shadowDOMNodes;
+    }
+    
+    /**
+     * This is internal for the framework and should never be used outside support for Templates
+     * 
+     * @param shadowDOMNodes
+     */
+    public void setShadowDOMNodes(List<Node> shadowDOMNodes) {
+        this.shadowDOMNodes = shadowDOMNodes;
+    }
+    
+    
 
 }

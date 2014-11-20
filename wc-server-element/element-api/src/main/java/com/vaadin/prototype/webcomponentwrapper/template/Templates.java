@@ -68,7 +68,7 @@ public class Templates {
     private static String polymerRegistrationScript = "\n"
             + "Polymer('${0}', {})\n"
             + "var el = document.createElement('div')\n"
-            + "el.innerHTML = '${1}'\n" //watch out for special characters here :(
+            + "el.innerHTML = '${1}'\n" //TODO: watch out for special characters here :(
             + "document.body.appendChild(el)";
 
     // TODO: replace with <link> and resources serving

@@ -2,6 +2,7 @@ package com.vaadin.prototype.webcomponentwrapper.element;
 
 import java.util.Collection;
 import java.util.EventListener;
+import java.util.List;
 
 import com.vaadin.shared.communication.ServerRpc;
 import com.vaadin.ui.JavaScriptFunction;
@@ -34,5 +35,7 @@ public interface Element extends Node {
     public void addEventListener(EventListener listener);
 
     public void addEventListener(ServerRpc rpc);
+    
+    public List<Node> getShadowDOMNodes();
 
 }

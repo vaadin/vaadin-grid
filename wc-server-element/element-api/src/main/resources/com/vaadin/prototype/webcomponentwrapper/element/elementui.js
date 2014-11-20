@@ -1,12 +1,14 @@
 window.com_vaadin_prototype_webcomponentwrapper_element_WebComponentWrapper = function() {
   
+  window.debugConnector = this;
   
   console.log("")
 	var _self = this;
 	
-	var ids = {
+	this.ids = {
 		"0" : this.getElement()
 	};
+	var ids = this.ids;
 
 	var handlers = {
 		createElement : function(id, tagName) {
@@ -28,7 +30,34 @@ window.com_vaadin_prototype_webcomponentwrapper_element_WebComponentWrapper = fu
 			ids[id].remove();
 			delete ids[id];
 		},
-		import: function(url) {
+		hookShadowDOM: function(id, idsTree) {
+			var element = ids[id]
+			console.log("Hooking shadow DOM: " + JSON.stringify(idsTree))
+			if(element.shadowRoot) {
+				var shadowDOM = element.shadowRoot.childNodes
+				
+				var assignIds = function(nodes, idsTree) {					
+					var indexed = []
+					var i = 0
+					for(var prop in idsTree) {
+						indexed[i++] = prop
+					}
+					
+					for(var i = 0; i < indexed.length; i++) {
+						var prop = indexed[i]
+						var numeric = parseInt(prop)
+						var node = nodes[i]
+						ids[numeric] = node
+						assignIds(node.childNodes, idsTree[prop])
+					}
+				}
+				
+				assignIds(shadowDOM, idsTree);
+
+			}
+		},
+		
+		"import": function(url) {
 			var e = document.createElement("link");
 			e.setAttribute("rel", "import");
 			e.setAttribute("href", url);
