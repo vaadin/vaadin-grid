@@ -16,6 +16,8 @@
     <properties>
         <module.name>Hero</module.name>
         <gwt.module>com.vaadin.prototype.wc.gwt.${module.name}</gwt.module>
+        <modulePathPrefix>VAADIN/widgetsets</modulePathPrefix>
+        <modulePathPrefix></modulePathPrefix>
     </properties>
 
     <dependencies>
