@@ -1,7 +1,5 @@
 package com.vaadin.prototype.wc.gwt.client.widgets.grid;
 
-import static com.google.gwt.query.client.GQuery.console;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,7 +73,7 @@ public abstract class GDataSource extends
 
     @Override
     public Object getRowKey(JsArrayMixed row) {
-        return row.toString();
+        return row;
     }
 
     @Override
@@ -86,7 +84,7 @@ public abstract class GDataSource extends
     public void refresh() {
         resetDataAndSize(size());
     }
-    
+
     private native JavaScriptObject slice(JsArray<JavaScriptObject> data, int idx, int count) /*-{
         return data.slice(idx, idx + count);
     }-*/;
