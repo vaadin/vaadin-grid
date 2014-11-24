@@ -3,6 +3,7 @@ package com.vaadin.prototype.webcomponentwrapper.element;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -13,9 +14,14 @@ import com.vaadin.ui.JavaScriptFunction;
 
 import elemental.json.Json;
 import elemental.json.JsonArray;
+import elemental.json.JsonObject;
 import elemental.json.JsonValue;
 
 public class Document extends ElementImpl {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -6104405965509787144L;
     private Component owner;
 
     public Document(Component owner) {
@@ -91,7 +97,9 @@ public class Document extends ElementImpl {
         }
 
         // Attach child
-        child.setParent(parent);
+        // This should be done when parsing?
+//        child.setParent(parent);
+        
 
         // Enqueue initialization operations
         if (child instanceof ElementImpl) {
@@ -113,8 +121,49 @@ public class Document extends ElementImpl {
         // Attach sub children
         child.getChildren().forEach(c -> setChildAdded(child, c));
 
-        // Finally add append command
+        //  add append command
         addCommand("appendChild", parent, Json.create(id.doubleValue()));
+        
+        // Finally, if the node is Element, hook up its shadow dom
+        if (child instanceof Element) {
+            // deal with shadow DOM, if any
+            Element e = (Element) child;
+            List<Node> shadowDOM = e.getShadowDOMNodes();
+            setShadowDOMAdded(shadowDOM, child);
+            
+            //dirty hack:  attach top-level nodes from server-side shadow DOM to this document
+            shadowDOM.forEach( n -> {
+                if(n instanceof NodeImpl) {
+                    NodeImpl ni = (NodeImpl)n;
+                    ni.setDocument(this);
+                }
+            });
+        }
+
+    }
+
+    private void setShadowDOMAdded(List<Node> shadowDOM, Node child) {
+        JsonObject shadowDOMIds = buildIdTree(shadowDOM);
+        addCommand("hookShadowDOM", child, shadowDOMIds);
+    }
+
+    private JsonObject buildIdTree(List<Node> shadowDOM) {
+        JsonObject root = Json.createObject();
+        for (Node n : shadowDOM) {
+            Integer id = Integer.valueOf(nodeIdSequence++);
+            nodeToId.put(n, id);
+            idToNode.put(id, n);
+
+            for (Class<?> iface : n.getClass().getInterfaces()) {
+                importComponent(iface);
+            }
+            List<Node> children = n.getChildren();
+            JsonObject subtree = buildIdTree(children);
+
+            root.put(String.valueOf(id), subtree);
+
+        }
+        return root;
     }
 
     JsonValue flushPendingCommands() {
@@ -152,7 +201,7 @@ public class Document extends ElementImpl {
         JsonArray callbacks = Json.createArray();
 
         for (int i = 0; i < arguments.length; i++) {
-            Object value = arguments[0];
+            Object value = arguments[i];
             Class<? extends Object> type = value.getClass();
 
             if (JavaScriptFunction.class.isAssignableFrom(type)) {

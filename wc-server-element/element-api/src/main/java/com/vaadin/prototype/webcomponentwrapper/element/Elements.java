@@ -93,7 +93,7 @@ public class Elements {
         enhancer.setCallbackFilter(callbackHelper);
         enhancer.setCallbacks(callbackHelper.getCallbacks());
 
-        String tagName = Utils.getAnnotationValue(type, Tag.class); //getElementTag(type);
+        String tagName = Utils.getAnnotationValue(type, Tag.class); // getElementTag(type);
         Object instance = enhancer.create(new Class[] { String.class },
                 new Object[] { tagName });
 
@@ -137,8 +137,7 @@ public class Elements {
                             a -> element.setAttribute(a.getKey(), a.getValue()));
 
             // Adopt children
-            soupElement.childNodes().forEach(
-                    n -> element.appendChild(buildNode(n)));
+            soupElement.childNodes().forEach(n -> element.appendChild(buildNode(n)));
 
             return element;
         } else {

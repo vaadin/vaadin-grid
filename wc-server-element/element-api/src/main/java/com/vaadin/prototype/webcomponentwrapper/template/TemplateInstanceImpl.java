@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.vaadin.prototype.webcomponentwrapper.element.Element;
+import com.vaadin.prototype.webcomponentwrapper.element.ElementImpl;
 import com.vaadin.prototype.webcomponentwrapper.element.Elements;
 import com.vaadin.prototype.webcomponentwrapper.element.Node;
 import com.vaadin.prototype.webcomponentwrapper.element.ElementProcessor;
@@ -29,6 +30,10 @@ public class TemplateInstanceImpl<E extends Element> implements
 
         this.element = element;
         this.shadowDOM = parseFromDefinition();
+        if(element instanceof ElementImpl) {
+            ElementImpl ei = (ElementImpl) element;
+            ei.setShadowDOMNodes(shadowDOM);
+        }
     }
 
     private List<Node> parseFromDefinition() {
@@ -72,6 +77,11 @@ public class TemplateInstanceImpl<E extends Element> implements
         if (id != null && id.length() > 0) {
             idsCache.put(id, element);
         }
+    }
+
+    @Override
+    public void setPropertyValue(String propertyName, String propertyValue) {
+        element.eval("e[param[0]] = param[1]", propertyName, propertyValue);
     }
 
 }

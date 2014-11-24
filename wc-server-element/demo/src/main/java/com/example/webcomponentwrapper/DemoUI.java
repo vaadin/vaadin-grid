@@ -12,6 +12,7 @@ import com.vaadin.prototype.webcomponentwrapper.element.Elements;
 import com.vaadin.prototype.webcomponentwrapper.element.EventParam;
 import com.vaadin.prototype.webcomponentwrapper.element.Import;
 import com.vaadin.prototype.webcomponentwrapper.element.Tag;
+import com.vaadin.prototype.webcomponentwrapper.element.TextNode;
 import com.vaadin.prototype.webcomponentwrapper.element.WebComponentWrapper;
 import com.vaadin.prototype.webcomponentwrapper.element.elements.InputElement;
 import com.vaadin.prototype.webcomponentwrapper.template.Template;
@@ -68,6 +69,11 @@ public class DemoUI extends WebComponentUI {
     public static interface HelloElement extends Element {
     }
 
+    @Tag("v-hello-with-binding")
+    @Template("hello-with-binding.html")
+    public static interface HelloWithBindingElement extends Element {
+    }
+
     @Override
     protected void init(VaadinRequest request) {
         CssLayout main = new CssLayout();
@@ -99,7 +105,6 @@ public class DemoUI extends WebComponentUI {
             }
         });
 
-        
         Elements.registerElement(InputElement.class);
         Element input = Elements.create("input");
         input.setAttribute("type", "date");
@@ -118,11 +123,32 @@ public class DemoUI extends WebComponentUI {
                 .instantiate(HelloElement.class);
         HelloElement helloElement2 = hello2.getElement();
         root.appendChild(helloElement2);
-        
+
         InputElement inputElement = hello2.getElementById("myinput");
-        inputElement.setMaxLength("10"); //TODO: does not work, should it?
-        
+        // TODO: does not work, needs hooking to the client-side
+        inputElement.setMaxLength("10");
+
         assert hello2.getElement().getChildren().size() == 0;
+
+        Element div = Elements.create("div");
+        div.setAttribute("vertical", true);
+        div.appendChild(new TextNode("data binding:"));
+
+        root.appendChild(div);
+
+        TemplateInstance<HelloWithBindingElement> helloBinding = Templates
+                .instantiate(HelloWithBindingElement.class);
+        
+        HelloWithBindingElement helloWithBindingElement = helloBinding.getElement();
+        InputElement inputElement2 = helloBinding.getElementById("myinput");
+        inputElement2.setMaxLength("10");
+        
+        root.appendChild(helloWithBindingElement);
+        
+        TemplateInstance<Element> withProperty = Templates.instantiate("hello-with-binding.html");
+        root.appendChild(withProperty.getElement());
+        withProperty.setPropertyValue("name", "John");
+
     }
 
     private void setRoot(Document root) {
