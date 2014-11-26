@@ -1,6 +1,7 @@
 package com.vaadin.prototype.wc.gwt.client.widgets;
 
 import static com.google.gwt.query.client.GQuery.$;
+import static com.google.gwt.query.client.GQuery.console;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -41,7 +42,7 @@ public class WCUtils {
 
     public static void loadVaadinTheme(HTMLElement container, HTMLElement el, HTMLElement style, String def) {
         String theme = getAttrValue(el, "theme", def);
-        if (style.innerText().contains(theme)) {
+        if ($(theme).text().contains(theme)) {
             return;
         }
         GQuery l = $("link[href*='vaadin-x.html']");
@@ -52,7 +53,7 @@ public class WCUtils {
             base += "../../../";
         }
         base += "VAADIN/themes/";
-        style.innerText("@import url('" + base + theme + "/styles.css')");
+        $(style).text("@import url('" + base + theme + "/styles.css')");
         container.setAttribute("class", theme);
     }
 

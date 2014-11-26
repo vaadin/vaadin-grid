@@ -2,9 +2,11 @@ package com.vaadin.prototype.wc.gwt.client.widgets;
 
 import static com.google.gwt.query.client.GQuery.$;
 import static com.google.gwt.query.client.GQuery.Widgets;
+import static com.google.gwt.query.client.GQuery.console;
 import static com.vaadin.prototype.wc.gwt.client.widgets.WCUtils.getAttrDoubleValue;
 import static com.vaadin.prototype.wc.gwt.client.widgets.WCUtils.getAttrValue;
 
+import com.gargoylesoftware.htmlunit.javascript.host.Console;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.js.JsExport;
 import com.google.gwt.core.client.js.JsProperty;
@@ -98,10 +100,10 @@ public class WCVSlider extends HTMLElement.Prototype implements
     }
 
     private void readAttributes() {
+        WCUtils.loadVaadinTheme(container, this, style, "valo");
         slider.setMinValue(getAttrDoubleValue(this, "min", 0));
         slider.setMaxValue(getAttrDoubleValue(this, "max", 100));
         slider.setValue(getAttrDoubleValue(this, "value", 0));
-        WCUtils.loadVaadinTheme(container, this, style, "valo");
     }
 
     @Override

@@ -88,6 +88,9 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
     public List<GColumn> cols;
     private List<JsArrayMixed> vals;
     private boolean changed = true;
+    // FIXME: using columns name here make this fail in prod mode
+    private List<GridColumn<Object, JsArrayMixed>> gridColumns;
+
 
     // TODO: we should set this from JS among the datasource.
     private int size = 0;
@@ -110,6 +113,7 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
         container = Elements.create("div");
         cols = new ArrayList<GColumn>();
         vals = new ArrayList<JsArrayMixed>();
+        gridColumns = new ArrayList<>();
     }
 
     /*
@@ -132,10 +136,8 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
             grid = new Grid<JsArrayMixed>();
             grid.addSelectionChangeHandler(this);
             shadowPanel.add(grid);
-            columns = new ArrayList<>();
         }
     }
-    List<GridColumn<Object, JsArrayMixed>> columns;
 
     @Override
     public void attachedCallback() {
@@ -143,7 +145,6 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
         readAttributes();
         addEventListener("DOMSubtreeModified", this);
     }
-
 
     @JsNoExport
     public void initGrid() {
@@ -160,8 +161,8 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
             grid.setSelectionMode(SelectionMode.SINGLE);
         }
         console.log("SelectionMode: " + grid.getSelectionModel());
-        while(columns.size() > 0) {
-            grid.removeColumn(columns.remove(0));
+        while(gridColumns.size() > 0) {
+            grid.removeColumn(gridColumns.remove(0));
         }
         if (cols != null) {
             for (int i = 0, l = cols.size(); i < l; i++) {
@@ -169,7 +170,7 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
                 GridColumn<Object, JsArrayMixed> col;
                 col = createGridColumn(c, i);
                 grid.addColumn(col);
-                columns.add(col);
+                gridColumns.add(col);
                 for (int j = 0; j < c.headerData().size(); j++) {
                     if (grid.getHeader().getRowCount() < c.headerData().size()) {
                         grid.getHeader().appendRow();
@@ -471,9 +472,10 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
     @Override
     public void onSelectionChange(SelectionChangeEvent<JsArrayMixed> ev) {
         if (!refreshing) {
+            console.log("Setting...");
             refreshing = true;
             dispatchEvent(selectEvent);
-            setAttribute("selectedRow", "" + getSelectedRow());
+            setAttribute("selectedRow", "" + (getSelectedRow() < 0 ? "" : getSelectedRow()));
             refreshing = false;
         }
     }
