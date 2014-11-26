@@ -1,0 +1,5 @@
+<module rename-to='DemoGrid'>
+    <inherits name='com.vaadin.prototype.wc.gwt.DemoCommon'/>
+    <entry-point class='com.vaadin.prototype.wc.gwt.client.DemoGrid'/>
+</module>
+

@@ -1,5 +1,6 @@
 <module rename-to='Demo'>
     <inherits name='com.vaadin.prototype.wc.gwt.DemoCommon'/>
     <entry-point class='com.vaadin.prototype.wc.gwt.client.Demo'/>
+    <stylesheet src="demo.css" />
 </module>
 

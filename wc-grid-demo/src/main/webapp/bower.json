@@ -1,0 +1,18 @@
+{
+  "name": "vaadin-x",
+  "homepage": "http://vaadin.com",
+  "version": "0",
+  "authors": [
+    "manolo@vaadin.com"
+  ],
+  "description": "Vaadin web components",
+  "keywords": [
+    "vaadin",
+    "web",
+    "components"
+  ],
+  "dependencies": {
+    "platform": "Polymer/platform"
+  },
+  "license": "Apache"
+}

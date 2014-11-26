@@ -1,6 +1,5 @@
 <module>
     <inherits name='com.vaadin.prototype.wc.gwt.WebComponents'/>
-    <stylesheet src="demo.css" />
 <!-- <collapse-all-properties value="false" /> -->
 <!-- <set-property name="compiler.stackMode" value="strip" /> -->
 </module>

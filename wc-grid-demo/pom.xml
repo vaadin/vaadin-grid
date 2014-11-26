@@ -14,10 +14,9 @@
     <packaging>war</packaging>
 
     <properties>
-        <git.bower.repo>git@vaadin-x-bower:/opt/git/vaadin-x-bower.git</git.bower.repo>
-        <module.name>Demo</module.name>
-        <import.name>vaadin-x</import.name>
-        <gwt.module>com.vaadin.prototype.wc.gwt.${module.name}</gwt.module>
+        <git.bower.repo>git@vaadin-x-bower:/opt/git/</git.bower.repo>
+        <module.name>Demo DemoGrid DemoSlider DemoProgress</module.name>
+        <!-- <gwt.module>com.vaadin.prototype.wc.gwt.Demo</gwt.module> -->
     </properties>
 
     <dependencies>
@@ -85,6 +84,9 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>gwt-maven-plugin</artifactId>
+                <configuration>
+                  <logLevel>INFO</logLevel>
+                </configuration>
             </plugin>
             <plugin>
               <artifactId>maven-resources-plugin</artifactId>
@@ -107,13 +109,13 @@
                   <configuration>
                     <tasks>
                       <exec dir="." executable="sh">
-                        <arg value="src/main/scripts/update_bower_repo.sh"/>
+                        <arg value="src/main/scripts/update_modules.sh"/>
                         <arg value="${project.build.directory}/${project.build.finalName}"/>
-                        <arg value="VAADIN/widgetsets/${module.name}"/>
+                        <arg value="VAADIN/widgetsets"/>
                         <arg value="${project.version}"/>
                         <arg value="${git.bower.repo}"/>
-                        <arg value="${import.name}"/>
                         <arg value="${vaadin.version}"/>
+                        <arg value="${module.name}"/>
                       </exec>
                     </tasks>
                   </configuration>

@@ -29,13 +29,16 @@
 #
 #
 
+set -x
 warDir="$1"
-modulePath="$1/$2"
+modulePrefix="$2"
 version="$3"
 gitRepo="$4"
 package="$5"
 vaadinVersion="$6"
-[ -z "$6" ] && echo "Usage $0 <warDir> <modulePath> <version> <gitRepo> <package> <vaadinVersion>" && exit 1
+moduleName="$7"
+modulePath="$warDir/$modulePrefix/$moduleName"
+[ -z "$7" ] && echo "Usage $0 <warDir> <modulePrefix> <version> <gitRepo> <package> <vaadinVersion> <moduleName>" && exit 1
 [ ! -d "$warDir" ] && echo "warDir does not exist: $warDir" && exit 1
 [ ! -d "$modulePath" ] && echo "modulePath does not exist: $modulePath" && exit 1
 
@@ -54,22 +57,22 @@ htmlFile=`ls -t1 *-import.html | head -1`
 cp $htmlFile $tmpDir/$package.html || exit 1
 
 ## Copy stuff from the war dir
-cp $warDir/index.html $tmpDir/demo.html || exit 1
+cp $warDir/demo-$package.html $tmpDir/demo.html || exit 1
+cp $warDir/bower.json $tmpDir || exit 1
 cp $warDir/ng-vaadin.js $tmpDir || exit 1
-cp $warDir/bigdata.js $tmpDir || exit 1
 tar cf $tmpDir/module.tar \
-    gwt/*/*.css \
     deferred \
-    index.html \
     >/dev/null 2>&1
 
 ## Update version, and extract files to update
 cd $tmpDir
 perl -pi -e 's,"version"\s*:\s*"[^"]+","version" : "'$version'",' bower.json
+perl -pi -e 's,"name"\s*:\s*"[^"]+","name" : "'$package'",' bower.json
 tar xf module.tar
 rm -f module.tar
 perl -pi -e 's,^.*(nocache|<link).*$,,g' demo.html
 perl -pi -e 's,</head,  <link rel="import" href="'$package'.html"></link>\n</head,' demo.html
+perl -pi -e 's,src="platform,src="../platform/platform,' demo.html
 
 ## Attach Vaadin .css theme files
 mkdir tmpThemes
@@ -78,7 +81,7 @@ themesJar=`find ~/.m2/repository/com/vaadin/ -name "vaadin-themes-$vaadinVersion
 if [ -f $themesJar ]
 then
   jar xf $themesJar
-  tar cf $tmpDir/themes.tar VAADIN/themes/*/*.css
+  tar cf $tmpDir/themes.tar VAADIN/themes/reindeer/styles.css VAADIN/themes/valo/styles.css
   cd $tmpDir
   rm -rf tmpThemes
   tar xf themes.tar
