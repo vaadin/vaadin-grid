@@ -37,10 +37,8 @@
 
   <h3>1.- Simplest possible with inline data</h3>
   <v-grid>
-  <v-progress value='0.3'></v-progress>
   <!-- TODO: extend Table prototype: requires a customised version of the WC.getWCConstructor hack -->
   <table>
-
     <thead>
       <tr>
         <th>Name</th>
@@ -63,6 +61,334 @@
   </table>
   </v-grid>
 
+  <h3>2.- Simplest possible with explicitly formatted inline data (i.e. children in cells)</h3>
+  <v-grid>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Value</th>
+        <th>Progress</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Grid</td>
+        <td>10 000€</td>
+        <td><v-progress value="0.8" /></td>
+      </tr>
+      <tr>
+        <td>Vaadin X</td>
+        <td>999 999€</td>
+        <td><v-progress value="0.01" /></td>
+      </tr>
+    </tbody>
+  </table>
+  </v-grid>
 
+  <h3>3.- Simplest possible with data source (all data available, no formatting)</h3>
+  <v-grid id='myGrid'>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Value</th>
+        <th>Progress</th>
+      </tr>
+    </thead>
+  </table>
+  </v-grid>
+
+  <script>
+      // We need to wait until the WC has been initialized
+      // It could take a long if we are compiling SDM
+      waitUntilGridReady("myGrid", function(grid) {
+        var data = [ [ "Grid", 10000, 0.8 ], [ "Vaadin X", 999999, 0.01 ],
+                 [ "designer", 999999, 0.01 ] ];
+
+        // we should set data size before setting the data source (grid bug)
+        grid.rowCount = data.length;
+        grid.dataSource = function(index, count) {
+          return data.slice(index, index + count);
+        };
+      });
+    </script>
+
+  <h3>4.- Simplest possible with lazy data source (no formatting)</h3>
+  <v-grid id='myBigGrid'>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Value</th>
+        <th>Progress</th>
+      </tr>
+    </thead>
+  </table>
+  </v-grid>
+
+  <script>
+      waitUntilGridReady("myBigGrid", function(grid) {
+        grid.rowCount = myBigData.length;
+        grid.dataSource = function(index, count, callback) {
+          setTimeout(function() {
+            callback(myBigData.slice(index, index + count));
+          }, 800);
+        };
+      });
+      // Note: myBigData is defined at the end of the page
+    </script>
+
+  <h3>5.- Simplest possible with data source and formatting</h3>
+
+  <v-grid id="myFormatGrid">
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Value</th>
+        <th>Progress</th>
+      </tr>
+    </thead>
+  </table>
+  </v-grid>
+  <script>
+      waitUntilGridReady("myFormatGrid", function(grid) {
+        var data = [ [ "Grid", 10000, 0.8 ], [ "Vaadin X", 999999, 0.01 ], ];
+
+        grid.rowCount = data.length;
+        grid.dataSource = function(index, count) {
+          return data.slice(index, index + count);
+        };
+
+        // Maps to simple Renderer interface instance in GWT
+        var valueRenderer = function(element, data, rowIndex) {
+          // TODO: element.innertHTML = wc.WCUtils.formatCurrency(data);
+          element.innerHTML = wc.WCUtils.formatCurrency(data);
+        }
+
+        // Maps to ComplexRenderer subclass in GWT
+        var progressRenderer = {
+          init : function(element) {
+            var child = document.createElement("v-progress");
+            // TODO: Exporting cell instead of element implies some caveats.
+            // cell.element.appendChild(child);
+            element.appendChild(child);
+          },
+          render : function(element, data) {
+            // TODO: cell.element.children[0].value = data;
+            element.children[0].setAttribute('value', data);
+          }
+        }
+
+        // columns[0] uses default renderer that just sets the value as innerText
+        // TODO: myFormatGrid.columns[1].renderer = valueRenderer;
+        grid.columns[1].renderer = valueRenderer;
+        grid.columns[2].renderer = progressRenderer;
+      });
+    </script>
+
+  <h3>6.- Mapping data from a JS object into columns</h3>
+
+  <v-grid id="myMapGrid">
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Value</th>
+        <th>Progress</th>
+      </tr>
+    </thead>
+  </table>
+  </v-grid>
+  <script>
+      waitUntilGridReady("myMapGrid", function(grid) {
+        var data = [{ name: "Grid", value: 10000, progress: 0.8 },
+                { name: "Vaadin X", value: 999999, progress: 0.01 }];
+
+        grid.rowCount = data.length;
+        grid.dataSource = function(index, count) {
+          return data.slice(index, index + count);
+        };
+
+        // Corresponds to GridColumn.getValue()
+        grid.columns[0].value = function(rowObject, columnIndex) {
+          return "> " + rowObject.name;
+        }
+
+        // Shorthand for using rowObject[value]
+        grid.columns[1].value = "value";
+        grid.columns[2].value = "progress";
+      });
+    </script>
+
+  <h3>7. Complex headers</h3>
+  <v-grid>
+  <table>
+    <thead>
+      <tr>
+        <th><button>I'm a button</button></th>
+        <th colspan="2">Status</th>
+      </tr>
+      <tr default>
+        <th>Name</th>
+        <th>Value</th>
+        <th>Progress</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Grid</td>
+        <td>10000</td>
+        <td>0.8</td>
+      </tr>
+      <tr>
+        <td>Vaadin X</td>
+        <td>999999</td>
+        <td>0.8</td>
+      </tr>
+    </tbody>
+  </table>
+  </v-grid>
+
+
+  <h3>8.- Single selection</h3>
+
+  <v-grid id="mySelGrid" selectionMode="single">
+  <table>
+    <head>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Value</th>
+        <th>Progress</th>
+      </tr>
+    </thead>
+    </head>
+  </table>
+  </v-grid>
+  <button id="mySelButton">Random select</button>
+  Selected: <span id="mySelLabel">-1</span>
+
+  <script>
+      waitUntilGridReady("mySelGrid", function(grid) {
+        var data = [ [ "Gridddd", 10000, 0.8 ], [ "Vaadin X", 999999, 0.01 ],
+                 [ "designer", 43256, 0.01 ], [ "TK", 1967, 0.05 ] ];
+
+        var button = document.getElementById("mySelButton");
+        var label = document.getElementById("mySelLabel");
+
+        grid.rowCount = data.length;
+        grid.dataSource = function(index, count) {
+          return data.slice(index, index + count);
+        };
+
+        grid.addEventListener("select", function(event) {
+          label.innerText = grid.selectedRow;
+        });
+
+        button.addEventListener("click", function(event) {
+          grid.selectedRow = Math.floor(Math.random() * data.length);
+        });
+      });
+    </script>
+
+  <h3>9.- Multi selection</h3>
+
+  <v-grid id="myMultiSelGrid" selectionMode="multi">
+  <table>
+    <head>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Value</th>
+        <th>Progress</th>
+      </tr>
+    </thead>
+    </head>
+  </table>
+  </v-grid>
+  <button id="myMultiSelButton">Random select</button>
+  Selected: <span id="myMultiSelLabel">-1</span>
+
+  <script>
+      waitUntilGridReady("myMultiSelGrid", function(grid) {
+        var data = [ [ "Gridddd", 10000, 0.8 ], [ "Vaadin X", 999999, 0.01 ],
+                 [ "designer", 43256, 0.01 ], [ "TK", 1967, 0.05 ] ];
+
+        var button = document.getElementById("myMultiSelButton");
+        var label = document.getElementById("myMultiSelLabel");
+
+        grid.rowCount = data.length;
+        grid.dataSource = function(index, count) {
+          return data.slice(index, index + count);
+        };
+
+        grid.addEventListener("select", function(event) {
+          label.innerText = grid.selectedRows;
+        });
+
+        button.addEventListener("click", function(event) {
+          var a = Math.floor(Math.random() * data.length);
+          var b = Math.floor(Math.random() * data.length);
+          grid.selectedRows = [a, b];
+        });
+      });
+  </script>
+
+  <h2>Declarative syntax</h2>
+  <h3>1. data array</h3>
+  <script>
+      myData = [ [ "Grid", 10000, 0.8 ], [ "Vaadin X", 999999, 0.01 ], ];
+  </script>
+  <v-grid dataSource=”{{myData}}”>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Value</th>
+        <th>Progress</th>
+      </tr>
+    </thead>
+  </table>
+  </v-grid>
+
+  <h3>2. data function</h3>
+  <script>
+      myDataProvider = function(index, count) {
+        return myBigData.slice(index, index + count);
+      };
+    </script>
+  <v-grid rowCount="{{myBigDataSize}}" dataSource=”{{myDataProvider}}”>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Value</th>
+        <th>Progress</th>
+      </tr>
+    </thead>
+  </table>
+  </v-grid>
+
+  <h3>6. renderers</h3>
+  <v-grid id="myRendererDeclaration" dataSource={{myData}}>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Value</th>
+        <th>Progress</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr template>
+        <td>{{data}}</td>
+        <td>{{data}} €</td>
+        <td><v-progress value="{{data}}" /></td>
+      </tr>
+    </tbody>
+  </table>
+  </v-grid>
 </body>
 </html>

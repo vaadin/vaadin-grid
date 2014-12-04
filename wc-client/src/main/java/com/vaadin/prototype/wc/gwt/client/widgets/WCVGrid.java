@@ -506,7 +506,6 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
 
     @JsProperty
     public void setDataSource(JavaScriptObject jso) {
-        console.log("ADSFAFAAFaaA");
         if (JsUtils.isFunction(jso)) {
             grid.setDataSource(new GJsFuncDataSource(jso, size, this));
         } else if (JsUtils.isArray(jso)) {
