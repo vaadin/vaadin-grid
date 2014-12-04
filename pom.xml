@@ -139,6 +139,12 @@
             <version>${gQueryVersion}</version>
         </dependency>
         <dependency>
+            <groupId>com.googlecode.gwtquery.plugins</groupId>
+            <artifactId>observe-plugin</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
           <groupId>com.vaadin</groupId>
           <artifactId>vaadin-shared</artifactId>
           <version>${vaadin.version}</version>
@@ -220,6 +226,7 @@
                     <hostedWebApp>${project.build.directory}/${project.build.finalName}</hostedWebApp>
                     <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
                     <draftCompile>true</draftCompile>
+                    <bindAddress>0.0.0.0</bindAddress>
 <!--
                     <disableCastChecking>true</disableCastChecking>
                     <disableClassMetadata>false</disableClassMetadata>
@@ -228,6 +235,7 @@
                     <jsInteropMode>JS</jsInteropMode>
                     <persistentunitcachedir>${project.build.directory}</persistentunitcachedir>
                     <modulePathPrefix>${modulePathPrefix}</modulePathPrefix>
+                  <extraJvmArgs>-Xmx2048m</extraJvmArgs>
                 </configuration>
                 <executions>
                     <execution>

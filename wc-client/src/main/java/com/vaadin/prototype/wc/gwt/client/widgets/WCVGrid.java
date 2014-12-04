@@ -32,6 +32,9 @@ import com.google.gwt.query.client.GQ;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.js.JsUtils;
+import com.google.gwt.query.client.plugin.Observe;
+import com.google.gwt.query.client.plugin.Observe.MutationListener;
+import com.google.gwt.query.client.plugin.Observe.MutationRecords.MutationRecord;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.Event;
@@ -74,7 +77,7 @@ import com.vaadin.shared.ui.grid.HeightMode;
 public class WCVGrid extends HTMLTableElement.Prototype implements
         HTMLElement.LifeCycle.Created, HTMLElement.LifeCycle.Attached,
         HTMLElement.LifeCycle.Changed, ValueChangeHandler<Double>, Handler,
-        EventListener, SelectionChangeHandler<JsArrayMixed> {
+        SelectionChangeHandler<JsArrayMixed>, MutationListener {
 
     public static final String TAG = "v-grid";
 
@@ -90,7 +93,8 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
     private boolean changed = true;
     // FIXME: using columns name here make this fail in prod mode
     private List<GridColumn<Object, JsArrayMixed>> gridColumns;
-
+    // We save the original content of the Light-DOM because polyfills remove it
+    private Observe lightDom;
 
     // TODO: we should set this from JS among the datasource.
     private int size = 0;
@@ -122,6 +126,11 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
     private void initWidgetSystem() {
         if (!initialized) {
             initialized = true;
+            lightDom = $(this).children().as(Observe.Observe);
+            lightDom.observe(Observe.createInit().attributes(true)
+                    .characterData(true).childList(true).subtree(true)
+                    .attributeFilter("aaa"), this);
+
             Widget elementWidget = $(this).widget();
             if (elementWidget == null) {
                 elementWidget = $(this).as(Widgets).panel().widget();
@@ -143,12 +152,10 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
     public void attachedCallback() {
         initWidgetSystem();
         readAttributes();
-        addEventListener("DOMSubtreeModified", this);
     }
 
     @JsNoExport
     public void initGrid() {
-        console.log("initGrid " + changed);
         if (!changed) {
             return;
         }
@@ -160,7 +167,6 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
         } else if (grid.getSelectionModel() instanceof SelectionModelMulti && !$(this).attr("selectionMode").equals("multi")) {
             grid.setSelectionMode(SelectionMode.SINGLE);
         }
-        console.log("SelectionMode: " + grid.getSelectionModel());
         while(gridColumns.size() > 0) {
             grid.removeColumn(gridColumns.remove(0));
         }
@@ -333,7 +339,7 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
     private String lastHeaders = null;
 
     private void loadHeaders() {
-        GQuery $theadRows = $(this).find("thead tr");
+        GQuery $theadRows = lightDom.find("thead tr");
         String txt = $theadRows.toString();
         if ($theadRows.isEmpty() || txt.equals(lastHeaders)) {
             return;
@@ -344,7 +350,7 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
 
         Map<GColumn, List<GHeader>> contentsMap = new HashMap<GColumn, List<GHeader>>();
 
-        headerDefaultRowIndex = $theadRows.index($(this).find("tr[default]")
+        headerDefaultRowIndex = $theadRows.index(lightDom.find("tr[default]")
                 .get(0));
         if (headerDefaultRowIndex == -1) {
             headerDefaultRowIndex = 0;
@@ -383,7 +389,7 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
         }
 
         Iterator<GColumn> iterator = contentsMap.keySet().iterator();
-        GQuery $templateRow = $(this).find("tr[template] td");
+        GQuery $templateRow = lightDom.find("tr[template] td");
         for (int i = 0; iterator.hasNext(); i++) {
             GColumn column = iterator.next();
             column.setHeaderData(contentsMap.get(column));
@@ -398,7 +404,7 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
     }
 
     private void loadRows() {
-        GQuery $tr = $(this).find("tbody tr:not([template])");
+        GQuery $tr = lightDom.find("tbody tr:not([template])");
         if (!$tr.isEmpty()) {
             setVals(new ArrayList<JsArrayMixed>());
             for (Element tr : $tr.elements()) {
@@ -421,14 +427,12 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
     }
 
     @Override
-    public void onBrowserEvent(Event event) {
-        console.log(event.getType());
-        if (event.getType().equals("DOMSubtreeModified")) {
-            readAttributes();
-            if (grid != null) {
-                loadRows();
-                loadData();
-            }
+    public void onMutation(List<MutationRecord> mutations) {
+        readAttributes();
+        if (grid != null) {
+            loadRows();
+            loadData();
+            $(grid).css().offset();
         }
     }
 
@@ -472,7 +476,6 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
     @Override
     public void onSelectionChange(SelectionChangeEvent<JsArrayMixed> ev) {
         if (!refreshing) {
-            console.log("Setting...");
             refreshing = true;
             dispatchEvent(selectEvent);
             setAttribute("selectedRow", "" + (getSelectedRow() < 0 ? "" : getSelectedRow()));
@@ -503,6 +506,7 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
 
     @JsProperty
     public void setDataSource(JavaScriptObject jso) {
+        console.log("ADSFAFAAFaaA");
         if (JsUtils.isFunction(jso)) {
             grid.setDataSource(new GJsFuncDataSource(jso, size, this));
         } else if (JsUtils.isArray(jso)) {
