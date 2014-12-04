@@ -13,15 +13,10 @@ import com.vaadin.prototype.wc.gwt.client.widgets.WCVSlider;
  * Example code for a GwtQuery application
  */
 public class Demo implements EntryPoint {
-
     public void onModuleLoad() {
-        Elements.registerElement(WCVGrid.TAG, new WCVGrid());
         Elements.registerElement(WCVProgress.TAG, new WCVProgress());
         Elements.registerElement(WCVSlider.TAG, new WCVSlider());
-
-        // TODO: When we figure out a way to add lazy directives
-        // NgVaadin.loadNgVaadin();
-
+        Elements.registerElement(WCVGrid.TAG, new WCVGrid());
         // Call a vaadin callback function when vaadinX is ready.
         JsUtils.runJavascriptFunction(window, "onVaadinX");
     }

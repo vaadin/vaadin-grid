@@ -29,7 +29,6 @@
 #
 #
 
-set -x
 warDir="$1"
 modulePrefix="$2"
 version="$3"
@@ -41,6 +40,8 @@ modulePath="$warDir/$modulePrefix/$moduleName"
 [ -z "$7" ] && echo "Usage $0 <warDir> <modulePrefix> <version> <gitRepo> <package> <vaadinVersion> <moduleName>" && exit 1
 [ ! -d "$warDir" ] && echo "warDir does not exist: $warDir" && exit 1
 [ ! -d "$modulePath" ] && echo "modulePath does not exist: $modulePath" && exit 1
+
+echo "Updating webcomponent '$package $version' in bower repo ($gitRepo)"
 
 ## Create a tmp dir and remove it on exit
 now=`date +%s`
@@ -72,7 +73,7 @@ tar xf module.tar
 rm -f module.tar
 perl -pi -e 's,^.*(nocache|<link).*$,,g' demo.html
 perl -pi -e 's,</head,  <link rel="import" href="'$package'.html"></link>\n</head,' demo.html
-perl -pi -e 's,src="platform,src="../platform/platform,' demo.html
+perl -pi -e 's,src="bower_components/,src="../,g' demo.html
 
 ## Attach Vaadin .css theme files
 mkdir tmpThemes

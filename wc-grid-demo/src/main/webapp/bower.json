@@ -12,7 +12,7 @@
     "components"
   ],
   "dependencies": {
-    "platform": "Polymer/platform"
+    "webcomponentsjs": "polymer/webcomponentsjs"
   },
   "license": "Apache"
 }

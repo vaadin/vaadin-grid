@@ -3,11 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1" />
-
+<!-- Polymer polyfill -->
+<script src="bower_components/webcomponentsjs/webcomponents.js"></script>
 <!-- VaadinX web components -->
 <script src="VAADIN/widgetsets/Demo/Demo.nocache.js"></script>
 <!-- Angular library -->
-<script src="angular.js"></script>
+<script src="bower_components/angularjs/angular.js"></script>
 <!-- VaadinX directives, TODO: make this be done in Demo.nocache.js -->
 <script src="ng-vaadin.js"></script>
 
@@ -15,46 +16,6 @@
 <body>
 
   <div id='demo' ng-app='demoApp' ng-controller='demoAppCtrl'>
-
-    <h3>Use AngularJS with v-slider (attribute binding)</h3>
-    <v-slider value="{{slider.value}}"></v-slider>
-    Slider Value: <span ng-bind="slider.value"></span>
-    <input type="text" ng-model="slider.value" />
-    <button ng-click="slider.changeSlider()">Set to 80</button>
-
-    <h3>Use AngularJS with v-grid single selection via attributes</h3>
-    <div>
-      <v-grid selectionMode="single" selectedRow="{{grid.row}}">
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Value</th>
-            <th>Progress</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Grid</td>
-            <td>10000</td>
-            <td>0.8</td>
-          </tr>
-          <tr>
-            <td>Vaadin X</td>
-            <td>999999</td>
-            <td>0.3</td>
-          </tr>
-          <tr>
-            <td>TK</td>
-            <td>5555</td>
-            <td>0.5</td>
-          </tr>
-        </tbody>
-      </table>
-      </v-grid>
-      <p>Selected row: {{grid.row}}</p>
-      <input ng-model="grid.row" />
-    </div>
 
     <h3>Implement demo with AngularJS model used as the source of data for v-grid</h3>
     <v-grid selectedRow="{{model.idx}}">
