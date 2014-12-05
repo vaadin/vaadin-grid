@@ -5,22 +5,13 @@ import static com.google.gwt.query.client.GQuery.console;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.client.js.JsExport;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Predicate;
 import com.google.gwt.user.client.EventListener;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLElement;
 
-@JsExport
 public class WCUtils {
-    @JsExport
-    public static String formatCurrency(double val) {
-        NumberFormat fmt = NumberFormat.getCurrencyFormat();
-        return fmt.format(val);
-    }
-
     public static int getAttrIntValue(HTMLElement el, String attr, int def) {
         return (int)getAttrFloatValue(el, attr, def);
     }

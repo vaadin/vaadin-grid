@@ -13,7 +13,6 @@
     <add-linker name="xsiframe"/>
     <define-linker name="wclinker" class="com.vaadin.prototype.wc.WCLinker" />
     <add-linker name="wclinker" />
-    
     <collapse-all-properties value="true" />
 </module>
 

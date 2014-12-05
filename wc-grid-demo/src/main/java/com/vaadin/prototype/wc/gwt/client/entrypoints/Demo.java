@@ -1,4 +1,4 @@
-package com.vaadin.prototype.wc.gwt.client;
+package com.vaadin.prototype.wc.gwt.client.entrypoints;
 
 import static com.google.gwt.query.client.GQuery.window;
 

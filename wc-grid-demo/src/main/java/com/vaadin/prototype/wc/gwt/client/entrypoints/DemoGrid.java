@@ -1,4 +1,4 @@
-package com.vaadin.prototype.wc.gwt.client;
+package com.vaadin.prototype.wc.gwt.client.entrypoints;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.vaadin.prototype.wc.gwt.client.util.Elements;

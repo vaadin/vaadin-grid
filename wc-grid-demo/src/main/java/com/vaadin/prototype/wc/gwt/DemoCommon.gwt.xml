@@ -1,11 +1,10 @@
 <module>
     <inherits name='com.vaadin.prototype.wc.gwt.WebComponents'/>
 <!-- <collapse-all-properties value="false" /> -->
-<!-- <set-property name="compiler.stackMode" value="strip" /> -->
+    <set-property name="compiler.stackMode" value="strip" />
     <replace-with class="com.google.gwt.query.client.impl.SelectorEngineNativeMin">
         <when-type-assignable class="com.google.gwt.query.client.impl.SelectorEngineImpl"/>
         <when-property-is name="user.agent" value="gecko1_8"/>
     </replace-with>
-
 </module>
 
