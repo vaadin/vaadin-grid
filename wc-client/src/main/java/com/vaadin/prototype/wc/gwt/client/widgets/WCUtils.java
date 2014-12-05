@@ -6,8 +6,10 @@ import static com.google.gwt.query.client.GQuery.console;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.js.JsExport;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.i18n.client.NumberFormat;
 import com.google.gwt.query.client.GQuery;
+import com.google.gwt.query.client.Predicate;
 import com.google.gwt.user.client.EventListener;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLElement;
 
@@ -45,15 +47,21 @@ public class WCUtils {
         if ($(theme).text().contains(theme)) {
             return;
         }
-        GQuery l = $("link[href*='vaadin-x.html']");
+        GQuery l = $("link[href]").filter(new Predicate(){
+            public boolean f(Element e, int index) {
+                String h = $(e).attr("href");
+                console.log(h);
+                return h.matches(".*(x-vaadin|vaadin-x|v-\\w+)\\.html");
+            }
+        });
         String base = GWT.getModuleBaseURL();
         if (!l.isEmpty()) {
-            base = l.attr("href").replace("vaadin-x.html", "");
+            base = l.attr("href").replaceFirst("[\\w\\-]+\\.html", "");
         } else if (base.contains("VAADIN/widgetsets")) {
             base += "../../../";
         }
-        base += "VAADIN/themes/";
-        $(style).text("@import url('" + base + theme + "/styles.css')");
+        base += "VAADIN/themes/" + theme + "/styles.css";
+        $(style).text("@import url('" + base + "')");
         container.setAttribute("class", theme);
     }
 
