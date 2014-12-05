@@ -34,11 +34,13 @@ import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugin.Observe;
 import com.google.gwt.query.client.plugin.Observe.MutationListener;
+import com.google.gwt.query.client.plugin.Observe.MutationRecords;
 import com.google.gwt.query.client.plugin.Observe.MutationRecords.MutationRecord;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.JsArrayObject;
@@ -128,8 +130,7 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
             initialized = true;
             lightDom = $(this).children().as(Observe.Observe);
             lightDom.observe(Observe.createInit().attributes(true)
-                    .characterData(true).childList(true).subtree(true)
-                    .attributeFilter("aaa"), this);
+                    .characterData(true).childList(true).subtree(true), this);
 
             Widget elementWidget = $(this).widget();
             if (elementWidget == null) {
@@ -152,8 +153,14 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
     public void attachedCallback() {
         initWidgetSystem();
         readAttributes();
+//        $(grid).as(Observe.Observe).observe(Observe.createInit().childList(true).subtree(true), new Function() {
+//            public void f() {
+//                List<MutationRecord> r = arguments(0);
+//                console.log("Changed Grid " + r.get(0).type());
+//            }
+//        });
     }
-
+    
     @JsNoExport
     public void initGrid() {
         if (!changed) {
@@ -534,6 +541,8 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
                     }
                 });
             }
+        } else if (grid.getDataSource() != null) {
+            grid.setDataSource(grid.getDataSource());
         }
     }
 
@@ -564,8 +573,7 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
         for (int i = 0, l = columnsJso.size(); i < l ; i++) {
             WCUtils.observe(columnsJso.get(i), new EventListener() {
                 public void onBrowserEvent(Event event) {
-                    // TODO: a better way to refresh?
-                    grid.setDataSource(grid.getDataSource());
+                    refresh();
                 }
             });
         }
