@@ -10,17 +10,17 @@ import com.vaadin.prototype.wc.gwt.client.html.HTMLElement;
 
 /**
  * This is the helper class to create, import or register web components.
- * 
+ *
  * This should produce a public API in Vaadin framework, and it should
  * be discussed.
- * 
+ *
  * Righ now we can do:
- * 
+ *
  * WC.load(ImportedWebComponent.class)
  * WC.create(ImportedWebComponent.class)
  * WC.create("a-tag")
  * WC.register(ExportedWebComponent.class)
- * 
+ *
  * @author manolo
  *
  */
@@ -90,8 +90,8 @@ public abstract class WC {
         }
     }
 
-    public static void register(String tag, Class<?> clazz) {
-        Elements.registerElement(tag, clazz);
+    public static void register(String tag, HTMLElement elem) {
+        Elements.registerElement(tag, elem);
     }
 
 }

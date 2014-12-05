@@ -43,7 +43,7 @@ public class Demo implements EntryPoint {
             new DemoWrapWC().onModuleLoad();
         } else if (Window.Location.getPath().contains("gwt.html")) {
             new DemoExportWC().onModuleLoad();
-        } else {
+        } else if (Window.Location.getPath().contains("demo.html"))  {
             loadPolymerElement();
             exportGwtWidgets();
         }
@@ -73,9 +73,9 @@ public class Demo implements EntryPoint {
     }
 
     private void exportGwtWidgets() {
-        WC.register(WCButton.TAG, WCButton.class);
-        WC.register(WCVSlider.TAG, WCVSlider.class);
-        WC.register(WCDateBox.TAG, WCDateBox.class);
-        WC.register(WCDatepicker.TAG, WCDatepicker.class);
+        WC.register(WCButton.TAG, new WCButton());
+        WC.register(WCVSlider.TAG, new WCVSlider());
+        WC.register(WCDateBox.TAG, new WCDateBox());
+        WC.register(WCDatepicker.TAG, new WCDatepicker());
     }
 }

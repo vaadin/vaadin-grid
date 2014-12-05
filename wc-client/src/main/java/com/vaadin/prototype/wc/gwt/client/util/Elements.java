@@ -11,6 +11,7 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.ajax.Ajax;
 import com.google.gwt.user.client.EventListener;
+import com.google.gwt.user.client.Window;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLDocument;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLElement;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLWindow;
@@ -35,7 +36,7 @@ public abstract class Elements {
     // public path of imported components
     private static final String WC = GWT.getModuleBaseForStaticFiles() + "components/";
 
-    private static boolean platformLoaded = true; //((Element)window).getPropertyJSO("Platform") != null;
+    private static boolean platformLoaded = false;
 
     static {
         urlImported = new HashSet<String>();
@@ -47,9 +48,10 @@ public abstract class Elements {
     }
 
     /*
-     * Load platform polyfil
+     * Load webcomponents polyfil
      */
     private static void loadPlatform() {
+        platformLoaded = platformLoaded || $(window).prop("Platform") != null || $(window).prop("WebComponents") != null;
         if (!platformLoaded) {
             String url = WC + "platform/platform.js";
             console.log("Loaded Platform polyfills: " + url);
@@ -130,11 +132,8 @@ public abstract class Elements {
     }
 
     public static void registerElement(String tag, HTMLElement elem) {
-        console.log("Registered ....");
         JavaScriptObject js = getWCOptions(elem);
-        console.log(js);
         document.registerElement(tag, js);
-        console.log("OK");
     }
 
     /**

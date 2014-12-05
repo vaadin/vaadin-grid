@@ -113,7 +113,7 @@ public class DemoWrapWC implements EntryPoint {
 
     private void demoCoreCollapse() {
         final CoreCollapse collapse = WC.create(CoreCollapse.class);
-        collapse.innerText(lorem.getParagraphs());
+        collapse.innerHTML(lorem.getParagraphs());
 
         PaperButton button = WC.create(PaperButton.class);
         button.icon(Icon.ARROW_DROP_DOWN_CIRCLE).label("toogle").raisedButton(true);
@@ -137,7 +137,7 @@ public class DemoWrapWC implements EntryPoint {
         final HTMLElement span = WC.create("span");
         slider.addEventListener("change", new EventListener() {
                 public void onBrowserEvent(Event event) {
-                    span.innerText("" + slider.value());
+                    span.innerHTML("" + slider.value());
                 }
             });
         slider.pin(true).max(80).value(20);
@@ -176,7 +176,7 @@ public class DemoWrapWC implements EntryPoint {
     private void demoShadow() {
         HTMLElement div = WC.create("div");
         div.style().margin("10px").padding("10px").backgroundColor("white").maxWidth("70%");
-        div.innerText(lorem.getWords(40));
+        div.innerHTML(lorem.getWords(40));
         PaperShadow shadow = WC.create(PaperShadow.class).z(2);
         div.appendChild(shadow);
         right.appendChild(div);
@@ -253,7 +253,7 @@ public class DemoWrapWC implements EntryPoint {
         CoreIconButton add = WC.create(CoreIconButton.class);
         add.icon(Icon.AV_WEB);
         final HTMLElement div = WC.create("div");
-        div.innerText("Demo");
+        div.innerHTML("Demo");
         div.setAttribute("flex", "");
         toolbar.appendChild(menu);
         toolbar.appendChild(div);
@@ -294,7 +294,7 @@ public class DemoWrapWC implements EntryPoint {
         dialog.heading("Dialog").transition("core-transition-bottom");
 
         HTMLElement div = WC.create("div");
-        div.innerText(lorem.getParagraphs(1));
+        div.innerHTML(lorem.getParagraphs(1));
         dialog.appendChild(div);
 
         PaperButton more = WC.create(PaperButton.class).label("More Info ...");
@@ -318,7 +318,7 @@ public class DemoWrapWC implements EntryPoint {
         $(container).addClass("paper-shadow-top-z-5");
 
         HTMLElement div1 = WC.create("div");
-        div1.innerText(lorem.getParagraphs(1));
+        div1.innerHTML(lorem.getParagraphs(1));
         CoreSplitter spl1 = WC.create(CoreSplitter.class);
         spl1.direction("left");
         HTMLElement div2 = WC.create("div");
@@ -332,14 +332,14 @@ public class DemoWrapWC implements EntryPoint {
         container.appendChild(div2);
 
         HTMLElement div3 = WC.create("div");
-        div3.innerText(lorem.getParagraphs(1));
+        div3.innerHTML(lorem.getParagraphs(1));
         div3.style().backgroundColor("#D8F7A2");
         CoreSplitter spl2 = WC.create(CoreSplitter.class);
         spl2.minSize("100px");
         spl2.direction("up");
 
         HTMLElement div4 = WC.create("div");
-        div4.innerText(lorem.getParagraphs(1));
+        div4.innerHTML(lorem.getParagraphs(1));
         div4.setAttribute("flex", "");
 
         div2.appendChild(div3);
@@ -351,12 +351,12 @@ public class DemoWrapWC implements EntryPoint {
 
     private void demoChessBoard() {
         final ChessBoard chess = WC.create(ChessBoard.class);
-        chess.innerText("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
+        chess.innerHTML("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
         chess.setAttribute("unicode", "");
         chess.setAttribute("frame", "");
         left.appendChild(chess);
         HTMLElement b = WC.create("button");
-        b.innerText("move");
+        b.innerHTML("move");
         b.addEventListener("click", new EventListener() {
             int c = 0;
             public void onBrowserEvent(Event event) {

@@ -2,16 +2,21 @@ package com.vaadin.prototype.wc.gwt.client.widgets;
 
 import static com.google.gwt.query.client.GQuery.$;
 import static com.google.gwt.query.client.GQuery.Widgets;
+import static com.google.gwt.query.client.GQuery.console;
+import static com.google.gwt.query.client.GQuery.window;
 
 import java.util.Date;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.js.JsExport;
 import com.google.gwt.core.client.js.JsType;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.StyleElement;
 import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.event.logical.shared.AttachEvent.Handler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.datepicker.client.DatePicker;
@@ -19,8 +24,12 @@ import com.vaadin.prototype.wc.gwt.client.html.HTMLElement;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLEvents;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLShadow;
 import com.vaadin.prototype.wc.gwt.client.util.Elements;
-import com.vaadin.prototype.wc.gwt.client.util.WC;
 
+/**
+ * Element class for exporting a GWT DateBox widget as a web element.
+ *
+ * @author manolo
+ */
 @JsExport
 @JsType
 public class WCDatepicker extends HTMLElement.Prototype implements
@@ -34,8 +43,7 @@ public class WCDatepicker extends HTMLElement.Prototype implements
     private DatePicker widget;
     private HTMLEvents changeEvent;
     private HTMLElement container;
-    private HTMLElement style;
-    private Panel shadowPanel;
+    private StyleElement style;
     private boolean initialized = false;
     private String theme = "clean";
 
@@ -43,10 +51,10 @@ public class WCDatepicker extends HTMLElement.Prototype implements
         // FIXME: If there is no default constructor JsInterop does not export anything
     }
 
+    static int a = 0;
     @Override
     public void createdCallback() {
-        style = WC.create("style");
-        style.setAttribute("language", "text/css");
+        style = Document.get().createStyleElement();
 
         widget = new DatePicker();
         widget.addValueChangeHandler(this);
@@ -54,26 +62,34 @@ public class WCDatepicker extends HTMLElement.Prototype implements
         changeEvent = Elements.document.createEvent("HTMLEvents");
         changeEvent.initEvent("change", false, false);
 
-        container = WC.create("div");
+        container = Elements.create("div");
         readAttributes();
+        console.log("Created .... " + a++ + container);
     }
-    
+
     /*
-     * TODO: common stuff for exporting other widgets
+     * TODO: share this with other widgets in an abstract class
      */
     private void initWidgetSystem() {
         if (!initialized) {
             initialized = true;
+            // If the attached element is not a widget yet, promote it to
+            // a widget to respect gwt hierarchy
             Widget elementWidget = $(this).widget();
             if (elementWidget == null) {
+                // Use gQuery to promote an element to a widget
                 elementWidget = $(this).as(Widgets).panel().widget();
             }
+            // handle gwt attach events
             elementWidget.addAttachHandler(this);
 
             HTMLShadow shadow = this.createShadowRoot();
-            shadow.appendChild(style);
+            shadow.appendChild((HTMLElement)style);
+
             shadow.appendChild(container);
 
+            // Promote the shadow element to a panel so as we can attach to it
+            // the exported widget.
             Panel shadowPanel = $(container).as(Widgets).panel().widget();
             shadowPanel.add(widget);
         }
@@ -90,23 +106,19 @@ public class WCDatepicker extends HTMLElement.Prototype implements
     }
 
     private void readAttributes() {
+        JsUtils.prop(window, "ee", this);
+        console.log(this);
         theme = getAttrValue("theme", "chrome");
         widget.setYearAndMonthDropdownVisible(Boolean.valueOf(getAttribute("dropdown")));
+
         String url = GWT.getModuleBaseForStaticFiles() + "gwt/" + theme + "/" + theme + ".css";
-        style.innerText("@import url('" + url + "')");
+        String css = "@import url('" + url + "');";
+        style.appendChild(Document.get().createTextNode(css));
+
         container.setAttribute("class", theme);
+        // TODO: read value and parse it
     }
 
-    // TODO: Make this part of the API of a utils class.
-    private double getAttrDoubleValue(String attr, double def) {
-        return Double.valueOf(getAttrValue(attr, String.valueOf(def)));
-    }
-    // TODO: Make this part of the API of a utils class.
-    private boolean getAttrBooleanValue(String attr) {
-        return Boolean.valueOf(getAttrValue(attr, "false"));
-    }
-
-    // TODO: Make this part of the API of a utils class.
     private String getAttrValue(String attr, String def) {
         String val = getAttribute(attr);
         return val == null || val.isEmpty() ? def : val;
@@ -114,10 +126,7 @@ public class WCDatepicker extends HTMLElement.Prototype implements
 
     @Override
     public void onAttachOrDetach(AttachEvent event) {
-        // TODO: Do something with shadowPanel, right now
-        // gQuery creates a new root-panel so it does not
-        // have any parent, but we should maintain the widget
-        // hierarchy someway.
+        // TODO: Do something with shadowPanel
     }
 
     @Override

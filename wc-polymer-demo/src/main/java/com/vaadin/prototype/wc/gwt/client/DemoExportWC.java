@@ -30,9 +30,9 @@ public class DemoExportWC implements EntryPoint {
 
     private Panel gwtPanel;
     private PaperToast toast;
-    
+
     public void onModuleLoad() {
-        
+
 //        loadMainPageStyle();
 
         // Use sexy gQuery for finding any widget or element in the dom
@@ -42,22 +42,21 @@ public class DemoExportWC implements EntryPoint {
         } else {
             gwtPanel = $("div").widgets(FlowPanel.class).get(0);
         }
-        
+
         if ($("paper-toast").isEmpty()) {
             toast =  WC.create(PaperToast.class);
             Elements.body.appendChild(toast);
         } else {
             toast = (PaperToast)$("paper-toast").get(0);
         }
-        
+
         // Register web components so as we can use those tags from html
-        WC.register(WCButton.TAG, WCButton.class);
-        WC.register(WCVSlider.TAG, WCVSlider.class);
-        WC.register(WCDateBox.TAG, WCDateBox.class);
-        WC.register(WCDatepicker.TAG, WCDatepicker.class);
+        WC.register(WCButton.TAG, new WCButton());
+        WC.register(WCVSlider.TAG, new WCVSlider());
+        WC.register(WCDateBox.TAG, new WCDateBox());
+        WC.register(WCDatepicker.TAG, new WCDatepicker());
 
         gwtPanel.add(new Label("HTML button exported as <x-button> web component:"));
-        console.log(gwtPanel);
         // We can create elements adding the tag with gQuery or Js
         final GQuery g = $("<x-button message='WebComponents Rock'/>")
                 .appendTo($(gwtPanel));
@@ -70,7 +69,7 @@ public class DemoExportWC implements EntryPoint {
                 toast.text(btn.getAttribute("message")).show();
             }
         });
-        
+
         gwtPanel.add(new Label("Vaadin widget exported as <v-slider> web component, note that each one has a different theme and is in a different shadow root."));
         FlowPanel p = new FlowPanel();
         gwtPanel.add(p);
@@ -84,7 +83,7 @@ public class DemoExportWC implements EntryPoint {
                     }
                 });
         }
-        
+
         gwtPanel.add(new Label("GWT widget exported as <x-date-box> web component: "));
         final WCDateBox dbox = (WCDateBox)(HTMLElement)
             $("<x-date-box theme='dark'/>").appendTo($(gwtPanel)).get(0);
@@ -93,7 +92,7 @@ public class DemoExportWC implements EntryPoint {
                 toast.text("Changed date " + dbox.getAttribute("value")).show();
             }
         });
-        
+
         gwtPanel.add(new Label("GWT widget exported as <x-date-picker> web component demonstrating that we can mix gwt themes using shadow root"));
         for (String theme : Arrays.asList("chrome", "standard", "dark", "clean")) {
             final WCDatepicker dpicker = (WCDatepicker)(HTMLElement)
@@ -102,10 +101,10 @@ public class DemoExportWC implements EntryPoint {
                     public void onBrowserEvent(Event event) {
                         toast.text("Changed date " + dpicker.getAttribute("value")).show();
                     }
-                });        
+                });
         }
     }
-    
+
     private void loadMainPageStyle() {
       HTMLElement style = WC.create("style");
       style.setAttribute("language", "text/css");

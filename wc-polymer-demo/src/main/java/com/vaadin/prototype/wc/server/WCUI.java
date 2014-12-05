@@ -1,5 +1,6 @@
 package com.vaadin.prototype.wc.server;
 
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 
 import com.vaadin.annotations.Theme;
@@ -10,6 +11,12 @@ import com.vaadin.prototype.wc.server.ui.BaseComponent.EventListener;
 import com.vaadin.prototype.wc.server.ui.PaperButtonComponent;
 import com.vaadin.prototype.wc.server.ui.PaperSliderComponent;
 import com.vaadin.prototype.wc.server.ui.PaperToggleButtonComponent;
+import com.vaadin.server.BootstrapFragmentResponse;
+import com.vaadin.server.BootstrapListener;
+import com.vaadin.server.BootstrapPageResponse;
+import com.vaadin.server.ServiceException;
+import com.vaadin.server.SessionInitEvent;
+import com.vaadin.server.SessionInitListener;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Button;
@@ -21,20 +28,37 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
 @SuppressWarnings("serial")
-@Widgetset("WebComponents")
+@Widgetset("PolymerSample")
 @Theme("valo")
 public class WCUI extends UI{
 
     @WebServlet(urlPatterns = {"/vaadin/*", "/VAADIN/themes/*"})
     @VaadinServletConfiguration(productionMode = false, ui = WCUI.class)
     public static class WCServlet extends VaadinServlet {
+        @Override
+        protected void servletInitialized() throws ServletException {
+            super.servletInitialized();
+            getService().addSessionInitListener(new SessionInitListener() {
+                public void sessionInit(SessionInitEvent event) throws ServiceException {
+                    event.getSession().addBootstrapListener(new BootstrapListener() {
+                        public void modifyBootstrapPage(BootstrapPageResponse response) {
+                            org.jsoup.nodes.Element head = response.getDocument().head();
+                            head.appendElement("script")
+                                    .attr("src", "/VAADIN/widgetsets/PolymerSample/components/platform/platform.js");
+                        }
+                        public void modifyBootstrapFragment(BootstrapFragmentResponse response) {
+                        }
+                    });
+                }
+            });
+        }
     }
 
     @Override
     protected void init(VaadinRequest request) {
         VerticalLayout layout = new VerticalLayout();
         setContent(layout);
-        
+
         Button vbutton = new Button("Button");
         vbutton.addClickListener(new ClickListener() {
             public void buttonClick(ClickEvent event) {
@@ -42,7 +66,7 @@ public class WCUI extends UI{
             }
         });
         layout.addComponent(vbutton);
-        
+
         PaperButtonComponent button = new PaperButtonComponent();
         button.icon(Icon.IMAGE_AUTO_FIX);
         button.addClickHandler(new EventListener() {
@@ -51,7 +75,7 @@ public class WCUI extends UI{
             }
         });
         layout.addComponent(button);
-        
+
 
         final Label toggleLabel = new Label();
         layout.addComponent(toggleLabel);
