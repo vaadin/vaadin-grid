@@ -2,12 +2,8 @@ package com.vaadin.prototype.wc.gwt.client.widgets;
 
 import static com.google.gwt.query.client.GQuery.$;
 import static com.google.gwt.query.client.GQuery.Widgets;
-import static com.google.gwt.query.client.GQuery.console;
 import static com.vaadin.prototype.wc.gwt.client.widgets.WCUtils.getAttrDoubleValue;
-import static com.vaadin.prototype.wc.gwt.client.widgets.WCUtils.getAttrValue;
 
-import com.gargoylesoftware.htmlunit.javascript.host.Console;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.js.JsExport;
 import com.google.gwt.core.client.js.JsProperty;
 import com.google.gwt.core.client.js.JsType;

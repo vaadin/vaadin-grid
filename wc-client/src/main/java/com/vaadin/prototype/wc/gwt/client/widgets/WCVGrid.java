@@ -436,11 +436,6 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
     @Override
     public void onMutation(List<MutationRecord> mutations) {
         readAttributes();
-        if (grid != null) {
-            loadRows();
-            loadData();
-            $(grid).css().offset();
-        }
     }
 
     private void loadData() {
