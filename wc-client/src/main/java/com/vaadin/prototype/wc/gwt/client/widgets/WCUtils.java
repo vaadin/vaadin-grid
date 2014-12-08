@@ -44,7 +44,6 @@ public class WCUtils {
         GQuery l = $("link[href]").filter(new Predicate(){
             public boolean f(Element e, int index) {
                 String h = $(e).attr("href");
-                console.log(h);
                 return h.matches(".*(x-vaadin|vaadin-x|v-\\w+)\\.html");
             }
         });

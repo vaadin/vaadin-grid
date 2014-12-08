@@ -83,7 +83,7 @@ public class WCVProgress extends HTMLElement.Prototype implements
 
     private void readAttributes() {
         widget.setState(getAttrFloatValue(this, "value", 0));
-        WCUtils.loadVaadinTheme(container, this, style);
+        WCUtils.loadVaadinTheme(container, this, style, null);
     }
 
     @Override

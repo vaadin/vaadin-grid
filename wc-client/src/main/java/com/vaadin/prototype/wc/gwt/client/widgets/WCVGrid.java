@@ -165,7 +165,7 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
 //            }
 //        });
     }
-    
+
     @JsNoExport
     public void initGrid() {
         if (!changed) {
@@ -319,7 +319,7 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
     }
 
     private void readAttributes() {
-        WCUtils.loadVaadinTheme(container, this, style);
+        WCUtils.loadVaadinTheme(container, this, style, null);
 
         loadHeaders();
         loadRows();

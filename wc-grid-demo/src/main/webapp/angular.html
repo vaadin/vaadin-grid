@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1" />
+<link href="VAADIN/themes/valo/styles.css" rel="stylesheet">
 <link href="shadowstyles.css" rel="stylesheet">
 <link href="resizestyles.css" rel="stylesheet">
 <!-- Polymer polyfill -->
@@ -15,7 +16,7 @@
 <script src="ng-vaadin.js"></script>
 
 </head>
-<body>
+<body class='valo' >
 
   <div id='demo' ng-app='demoApp' ng-controller='demoAppCtrl'>
 
@@ -91,7 +92,7 @@
           }, 5);
         }
         $scope.model.remove = function() {
-          if ($scope.model.idx > 0) 
+          if ($scope.model.idx > 0)
           	$scope.model.data.splice($scope.model.idx, 1);
         }
         $scope.model.insert = function() {
