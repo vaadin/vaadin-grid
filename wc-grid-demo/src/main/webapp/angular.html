@@ -90,10 +90,12 @@
           }, 5);
         }
         $scope.model.remove = function() {
-          $scope.model.data.splice($scope.model.idx, 1);
+          if ($scope.model.idx > 0) 
+          	$scope.model.data.splice($scope.model.idx, 1);
         }
         $scope.model.insert = function() {
-          $scope.model.data.push(angular.copy($scope.model.current));
+          if ($scope.model.current[0] && $scope.model.current[1] && $scope.model.current[2])
+            $scope.model.data.push(angular.copy($scope.model.current));
         }
 
       });
