@@ -53,6 +53,8 @@
   <script>
       // Create an application module for our demo, inheriting vaadin-x directives
       var app = angular.module("demoApp", [ 'vaadin-x' ]);
+      var grid = document.querySelector('v-grid');
+      window.g = grid;
 
       // Define the root-level controller for the application.
       app.controller("demoAppCtrl", function($scope) {
@@ -82,6 +84,10 @@
 
         $scope.model.update = function() {
           angular.copy($scope.model.current, $scope.model.data[$scope.model.idx]);
+          // FIXME: needed in Safari, FF & IE
+          setTimeout(function(){
+            grid.onMutation(null);
+          }, 5);
         }
         $scope.model.remove = function() {
           $scope.model.data.splice($scope.model.idx, 1);
