@@ -1,11 +1,29 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/core-input/core-input.html">
+<link rel="import" href="../../bower_components/google-map/google-map.html">
+
 <polymer-element name="hero-edit" attributes="heros current page">
   <template>
     <style>
+      table {
+        width: 40%;
+        border: none;
+        float: left;
+      }
+      .popup {
+        width: 100%;
+        position: absolute;
+        height: 300px;
+      }
+      .map {
+        width: 50%;
+        height: 100%;
+        position: absolute;
+        left: 40%;
+      }
     </style>
-    <div>
-       <table width='400px'>
+     <div id='epopup' class='popup' horizontal layout>
+       <table id='eform'>
         <tr>
           <td colspan='2'><a on-tap='{{cancel}}' href='javascript:'>Cancel</a></td>
           <td width='10%'><button on-tap='{{save}}'>Save</button></td>
@@ -26,6 +44,11 @@
             <div style='width: 20%'> {{hero.vitals.coffee[0]}}</div>
             <div style='width: 20%'><button on-tap='{{inject}}'>Inject</button></div>
           </td>
+        </tr>
+        <tr>
+          <td>Location</td>
+          <td>{{hero.location.latitude}}</td>
+          <td>{{hero.location.longitude}}</td>
         </tr>
         <tr>
           <td colspan='2'>IQ</td>
@@ -59,6 +82,11 @@
           <td colspan='3'><button on-tap='{{terminate}}'>Terminate Hero</button></td>
         </tr>
        </table>
+       <div id='emap' class='map'>
+        <google-map id='gemap' zoom="10" fit>
+          <google-map-marker id='gemark' title="{{hero.name}}" latitude="{{hero.location.latitude}}" longitude="{{hero.location.longitude}}"  draggable="true">{{hero.name}}</google-map-marker>
+        </google-map>
+       </div>
      </div>
   </template>
   <script>
@@ -68,7 +96,18 @@
           this.options = ["a", "b"];
         },
         currentChanged: function() {
-          this.hero = this.heros[this.current];
+          this.hero = this.current >= 0 ? this.heros[this.current] : {};
+        },
+        pageChanged: function() {
+          if (this.page == 2) {
+            // This centers the map at the marker
+            this.$.gemap.fitToMarkers = true;
+            // This refreshes the view, otherwise only few map squares are displayed
+            this.$.emap.removeChild(this.$.gemap);
+            this.$.emap.appendChild(this.$.gemap);
+            // This allows the user move the map
+            this.$.gemap.fitToMarkers = false;
+          }
         },
         herosChanged: function() {
           this.options = [];

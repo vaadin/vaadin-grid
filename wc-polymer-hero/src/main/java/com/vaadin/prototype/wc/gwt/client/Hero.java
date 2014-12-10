@@ -17,11 +17,11 @@ import com.vaadin.prototype.wc.gwt.client.widgets.grid.GDataSource;
 /**
  */
 public class Hero implements EntryPoint {
-    
+
     public class MySource extends GDataSource {
         private final JsArray<JavaScriptObject> jso;
         List<GColumn> gcols = null;
-        
+
         public MySource(JsArray<JavaScriptObject> jso) {
             super(null);
             this.jso = jso;
@@ -34,25 +34,25 @@ public class Hero implements EntryPoint {
              console.log(gcols);
         }
     }
-    
+
     public void onModuleLoad() {
-        
+
 //        Ajax.get("rest/list.json").done(new Function() {
 //            public void f() {
 //                String json = arguments(0);
-//                
+//
 //                Properties p = (Properties)GQ.create(json);
 //                JavaScriptObject jso = p.getJavaScriptObject("heros");
-//                
+//
 //                GridColumn<Object, JsArrayMixed> column = new GridColumn<Object, JsArrayMixed>(){
 //                    public Object getValue(JsArrayMixed row) {
 //                        return row.<Properties>cast().getObject("name");
 //                    }
 //                };
-//                
-//                
-//                        
-//                
+//
+//
+//
+//
 //                Grid g = new Grid<JsArrayMixed>();
 //                RootPanel.get().add(g);
 //                MySource s = new MySource(jso.<JsArray<JavaScriptObject>>cast());
@@ -65,12 +65,12 @@ public class Hero implements EntryPoint {
 //                g.setDataSource(s);
 //            };
 //        });
-        
-        
-        
-        Elements.registerElement(WCVGrid.TAG, WCVGrid.class);
-        Elements.registerElement(WCVProgress.TAG, WCVProgress.class);
-        Elements.registerElement(WCVSlider.TAG, WCVSlider.class);
+
+
+
+        Elements.registerElement(WCVGrid.TAG, new WCVGrid());
+        Elements.registerElement(WCVProgress.TAG, new WCVProgress());
+        Elements.registerElement(WCVSlider.TAG, new WCVSlider());
 //        JsUtils.runJavascriptFunction(window, "onVaadinX");
 //        console.log(">> " + HData.MockData.createRandomData(new Random()));
     }

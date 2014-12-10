@@ -1,4 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/google-map/google-map.html">
+
 <polymer-element name="hero-details" attributes="hero page">
   <template>
     <style>
@@ -7,20 +9,20 @@
         border: none;
         float: left;
       }
-      #popup {
+      .popup {
         width: 100%;
         position: absolute;
         height: 300px;
       }
-      #map {
+      .map {
         width: 50%;
         height: 100%;
         position: absolute;
         left: 40%;
       }
     </style>
-    <div id='popup'>
-     <table>
+    <div id='dpopup' class='popup' horizontal layout>
+     <table id='dform'>
         <tr>
           <td colspan='2'>Superhero Details</td>
           <td><a on-tap="{{edit}}" href='javascript:'>Edit</a></td>
@@ -63,9 +65,10 @@
           <td colspan='3'><a on-tap="{{close}}" href='javascript:'>Close</a></td>
         </tr>
      </table>
-     <div id='map'>
-       <google-map id='gmap' latitude="{{hero.location.latitude}}" longitude="{{hero.location.longitude}}" zoom="8" showCenterMarker='true' disableDefaultUI='true' fit></google-map>
-     </div>
+     <div id='dmap' class='map'>
+      <google-map id='gdmap' zoom="10" fit>
+        <google-map-marker id='gdmark' title="{{hero.name}}" latitude="{{hero.location.latitude}}" longitude="{{hero.location.longitude}}"  draggable="false">{{hero.name}}</google-map-marker>
+      </google-map>
      </div>
   </template>
   <script>
@@ -74,17 +77,21 @@
         ready: function() {
         },
         pageChanged: function() {
-          if (this.page == 1) {
-            var gmap = this.$.gmap;
-            this.$.map.removeChild(gmap);
-            this.$.map.appendChild(gmap);
+          if (this.page == 1 && this.hero) {
+            // This centers the map at the marker
+            this.$.gdmap.fitToMarkers = true;
+            // This refreshes the view, otherwise only few map squares are displayed
+            this.$.dmap.removeChild(this.$.gdmap);
+            this.$.dmap.appendChild(this.$.gdmap);
+            // This allows the user move the map
+            this.$.gdmap.fitToMarkers = false;
           }
         },
         close: function() {
           this.page = 0;
         },
         edit: function() {
-          this.page = 2; 
+          this.page = 2;
         }
       });
     })();

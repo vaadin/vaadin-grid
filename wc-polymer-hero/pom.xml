@@ -51,6 +51,10 @@
             <artifactId>gwtquery</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.googlecode.gwtquery.plugins</groupId>
+            <artifactId>observe-plugin</artifactId>
+        </dependency>
+        <dependency>
           <groupId>com.vaadin</groupId>
           <artifactId>vaadin-shared</artifactId>
         </dependency>

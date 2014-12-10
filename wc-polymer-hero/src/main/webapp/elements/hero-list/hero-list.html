@@ -1,7 +1,10 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/core-ajax/core-ajax.html">
 <link rel="import" href="../../vaadin-x.html?abc">
-<link rel="import" href="../../bower_components/google-map/google-map.html">
+
+<link href="styles.css" rel="stylesheet">
+<link href="shadowstyles.css" rel="stylesheet">
+<link href="resizestyles.css" rel="stylesheet">
 
 <script src="../../vaadin-x-utils.js"></script>
 <polymer-element name="hero-list" attributes="hero heros current page">
@@ -16,7 +19,7 @@
     <div>Demo</div>
     <div>Superhero Roster</div>
     <div>{{size}} heroes on duty</div>
-    <v-grid id='grid'>
+    <v-grid id='grid' theme='reindeer'>
     <table>
      <head>
       <thead>
@@ -29,7 +32,7 @@
         </tr>
       </thead>
      </head>
-     </table>    
+     </table>
     </v-grid>
   </template>
   <script>
@@ -48,7 +51,6 @@
                   element.innerHTML = (data.latitude + " " + data.longitude).replace(/(\d\.\d{4})\d+/g,"$1");
                 };
                 window.heros = _this.heros;
-                
                 _this.$.grid.shadowRoot.querySelector('table').addEventListener("click", function(e) {
                   // TODO: this could be a fix for selecing an item by clicking but does not work
                   // var input = e.target.parentElement.querySelector('td input');
@@ -57,15 +59,17 @@
                   // var evt = document.createEvent("HTMLEvents");
                   // evt.initEvent("change", false, true);
                   // input.dispatchEvent(evt);
-                });      
+                });
             });
           });
           this.$.grid.addEventListener("select", function(e) {
             _this.current = _this.$.grid.selectedRow;
-            _this.hero = _this.heros[_this.current];
-            _this.page = 1;
+            if (_this.heros && _this.current >= 0) {
+              _this.page = 1;
+              _this.hero = _this.heros[_this.current];
+            }
           });
-          
+
         },
         heroChanged: function() {
         },
