@@ -1,6 +1,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/core-input/core-input.html">
 <link rel="import" href="../../bower_components/google-map/google-map.html">
+<link rel="import" href="../hero-sparkline/hero-sparkline.html">
 
 <polymer-element name="hero-edit" attributes="heros current page">
   <template>
@@ -39,9 +40,12 @@
         <tr>
           <td>Vitals</td>
           <td colspan='2'>
-            <div>Heart rate {{hero.vitals.heart[0]}}</div>
+            <div style='width: 20%'>
+              <hero-sparkline color='#DF0016' height='12' width='90' points='{{hero.vitals.heart}}'></hero-sparkline>
+              <div>Heart rate</div>
+            </div>
             <div style='width: 20%'>Caffine saturation</div>
-            <div style='width: 20%'> {{hero.vitals.coffee[0]}}</div>
+            <div style='width: 20%'> {{caffine * 10}} %</div>
             <div style='width: 20%'><button on-tap='{{inject}}'>Inject</button></div>
           </td>
         </tr>
@@ -107,6 +111,10 @@
             this.$.emap.appendChild(this.$.gemap);
             // This allows the user move the map
             this.$.gemap.fitToMarkers = false;
+
+            // TODO: ask if caffine percent is just the last value in the array
+            var arr = this.hero.vitals.coffee;
+            this.caffine =  arr[arr.length - 1];
           }
         },
         herosChanged: function() {
@@ -134,7 +142,9 @@
           this.page = -1;
         },
         inject: function() {
-          this.hero.vitals.coffee[0]++;
+          var v = Math.min(10, this.caffine + 1)
+          var arr = this.hero.vitals.coffee;
+          this.caffine = arr[arr.length - 1] = v;
         }
       });
     })();

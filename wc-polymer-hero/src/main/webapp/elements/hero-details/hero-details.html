@@ -1,5 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/google-map/google-map.html">
+<link rel="import" href="../hero-sparkline/hero-sparkline.html">
 
 <polymer-element name="hero-details" attributes="hero page">
   <template>
@@ -34,8 +35,8 @@
         </tr>
         <tr>
           <td>Vitals</td>
-          <td><div>{{hero.vitals.heart[0]}}</div><div>Heart rate</div></td>
-          <td><div>{{hero.vitals.coffee[0]}}</div><div>Caffeine</div></td>
+          <td><hero-sparkline color='#DF0016' height='12' width='90' points='{{hero.vitals.heart}}'></hero-sparkline><div>Heart rate</div></td>
+          <td><hero-sparkline color='#3777DD' height='12' width='90' points='{{hero.vitals.coffee}}'></hero-sparkline><div>Caffeine</div></td>
         </tr>
         <tr>
           <td>IQ</td>
@@ -92,6 +93,8 @@
         },
         edit: function() {
           this.page = 2;
+        },
+        heroChanged: function() {
         }
       });
     })();

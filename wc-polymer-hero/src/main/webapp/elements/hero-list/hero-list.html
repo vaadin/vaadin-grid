@@ -1,10 +1,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/core-ajax/core-ajax.html">
 <link rel="import" href="../../vaadin-x.html?abc">
-
-<link href="styles.css" rel="stylesheet">
-<link href="shadowstyles.css" rel="stylesheet">
-<link href="resizestyles.css" rel="stylesheet">
+<link rel="import" href="../hero-sparkline/hero-sparkline.html">
 
 <script src="../../vaadin-x-utils.js"></script>
 <polymer-element name="hero-list" attributes="hero heros current page">
@@ -50,7 +47,11 @@
                 grid.columns[3].renderer = function(element, data, rowIndex) {
                   element.innerHTML = (data.latitude + " " + data.longitude).replace(/(\d\.\d{4})\d+/g,"$1");
                 };
-                window.heros = _this.heros;
+                grid.columns[2].renderer = function(element, data, rowIndex) {
+                  element.innerHTML = "<hero-sparkline colors='#DF0016,#3777DD' height='12' width='90' points='[[" +
+                                         data.heart + "],[" + data.coffee + "]]' />";
+                };
+
                 _this.$.grid.shadowRoot.querySelector('table').addEventListener("click", function(e) {
                   // TODO: this could be a fix for selecing an item by clicking but does not work
                   // var input = e.target.parentElement.querySelector('td input');
@@ -70,8 +71,6 @@
             }
           });
 
-        },
-        heroChanged: function() {
         },
         pageChanged: function() {
           if (this.page == -1) {
