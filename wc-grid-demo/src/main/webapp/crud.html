@@ -50,6 +50,7 @@
 
     <script>
         var app = angular.module("CrudApp", [ 'vaadin-x' ]);
+        var grid = document.querySelector('v-grid');
 
         app.controller("CrudController", function($scope) {
             $scope.data = [
@@ -104,6 +105,10 @@
                 row.progress = $scope.editorRow.progress;
 
                 $scope.editorRow = null;
+                // FIXME: needed in Safari, FF & IE
+                setTimeout(function(){
+                  grid.onMutation(null);
+                }, 5);
             };
 
             $scope.delete = function() {

@@ -25,7 +25,7 @@
       }
     </script>
   <h3>1.- Simplest possible with inline data</h3>
-  <v-grid>
+  <v-grid theme='reindeer'>
   <table>
     <thead>
       <tr>
@@ -50,7 +50,7 @@
   </v-grid>
 
   <h3>2.- Simplest possible with explicitly formatted inline data (i.e. children in cells)</h3>
-  <v-grid>
+  <v-grid theme='reindeer'>
   <table>
     <thead>
       <tr>
@@ -75,7 +75,7 @@
   </v-grid>
 
   <h3>3.- Simplest possible with data source (all data available, no formatting)</h3>
-  <v-grid id='myGrid'>
+  <v-grid theme='reindeer' id='myGrid'>
   <table>
     <thead>
       <tr>
@@ -103,7 +103,7 @@
     </script>
 
   <h3>4.- Simplest possible with lazy data source (no formatting)</h3>
-  <v-grid id='myBigGrid'>
+  <v-grid theme='reindeer' id='myBigGrid'>
   <table>
     <thead>
       <tr>
@@ -129,7 +129,7 @@
 
   <h3>5.- Simplest possible with data source and formatting</h3>
 
-  <v-grid id="myFormatGrid">
+  <v-grid theme='reindeer' id="myFormatGrid">
   <table>
     <thead>
       <tr>
@@ -178,7 +178,7 @@
 
   <h3>6.- Mapping data from a JS object into columns</h3>
 
-  <v-grid id="myMapGrid">
+  <v-grid theme='reindeer' id="myMapGrid">
   <table>
     <thead>
       <tr>
@@ -211,7 +211,7 @@
     </script>
 
   <h3>7. Complex headers</h3>
-  <v-grid>
+  <v-grid theme='reindeer'>
   <table>
     <thead>
       <tr>
@@ -242,7 +242,7 @@
 
   <h3>8.- Single selection</h3>
 
-  <v-grid id="mySelGrid" selectionMode="single">
+  <v-grid theme='reindeer' id="mySelGrid" selectionMode="single">
   <table>
     <head>
     <thead>
@@ -283,7 +283,7 @@
 
   <h3>9.- Multi selection</h3>
 
-  <v-grid id="myMultiSelGrid" selectionMode="multi">
+  <v-grid theme='reindeer' id="myMultiSelGrid" selectionMode="multi">
   <table>
     <head>
     <thead>
@@ -329,7 +329,7 @@
   <script>
       myData = [ [ "Grid", 10000, 0.8 ], [ "Vaadin X", 999999, 0.01 ], ];
   </script>
-  <v-grid dataSource=”{{myData}}”>
+  <v-grid theme='reindeer' dataSource=”{{myData}}”>
   <table>
     <thead>
       <tr>
@@ -347,7 +347,7 @@
         return myBigData.slice(index, index + count);
       };
     </script>
-  <v-grid rowCount="{{myBigDataSize}}" dataSource=”{{myDataProvider}}”>
+  <v-grid theme='reindeer' rowCount="{{myBigDataSize}}" dataSource=”{{myDataProvider}}”>
   <table>
     <thead>
       <tr>
@@ -360,7 +360,7 @@
   </v-grid>
 
   <h3>6. renderers</h3>
-  <v-grid id="myRendererDeclaration" dataSource={{myData}}>
+  <v-grid theme='reindeer' id="myRendererDeclaration" dataSource={{myData}}>
   <table>
     <thead>
       <tr>
