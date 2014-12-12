@@ -25,6 +25,12 @@
 
     <profiles>
       <profile>
+        <id>clos</id>
+        <properties>
+          <gwt.closure>true</gwt.closure>
+        </properties>
+      </profile>
+      <profile>
         <id>prod</id>
         <properties>
           <gwt.outputstyle>OBF</gwt.outputstyle>
@@ -222,20 +228,22 @@
                     <style>${gwt.outputstyle}</style>
                     <gwtVersion>${gwtversion}</gwtVersion>
                     <compileReport>true</compileReport>
-                    <runTarget>/index.html</runTarget>
+                    <compileMetrics>true</compileMetrics>
                     <hostedWebApp>${project.build.directory}/${project.build.finalName}</hostedWebApp>
                     <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
-                    <draftCompile>true</draftCompile>
+                    <!-- mandatory jsInterop bug --> <draftCompile>true</draftCompile>
+                    <!-- mandatory jsInterop bug --> <optimizationLevel>0</optimizationLevel>
                     <bindAddress>0.0.0.0</bindAddress>
-<!--
                     <disableCastChecking>true</disableCastChecking>
-                    <disableClassMetadata>false</disableClassMetadata>
--->
+                    <disableClassMetadata>true</disableClassMetadata>
+                    <enableAssertions>false</enableAssertions>
+                    <closureCompiler>${gwt.closure}</closureCompiler>
                     <superDevMode>true</superDevMode>
                     <jsInteropMode>JS</jsInteropMode>
                     <persistentunitcachedir>${project.build.directory}</persistentunitcachedir>
                     <modulePathPrefix>${modulePathPrefix}</modulePathPrefix>
-                  <extraJvmArgs>-Xmx2048m</extraJvmArgs>
+                    <extraJvmArgs>-Xmx2048m</extraJvmArgs>
+                    <runTarget>/</runTarget>
                 </configuration>
                 <executions>
                     <execution>
