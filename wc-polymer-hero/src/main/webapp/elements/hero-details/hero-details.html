@@ -5,72 +5,134 @@
 <polymer-element name="hero-details" attributes="hero page">
   <template>
     <style>
-      table {
-        width: 40%;
-        border: none;
+      #popup {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 60vh;
+        display: flex;
+        background-color: #ffffff;
+        z-index: 5000;
+      }
+      #left {
+        align-self: stretch;
+        flex: 0 0 500px;
+        padding: 25px;
+        overflow: auto;
+      }
+      #dmap {
+        align-self: stretch;
+        flex-grow: 1;
+        flex-shrink: 1;
+        position: relative;
+      }
+      
+      #left > div:not(:first-child) {
+        display: flex;
+      }
+      
+      #left > div > * {
+        flex-grow: 1;
+        margin: 8px 0 0 0;
+      }
+      
+      #left > div:not(:first-child) > p:first-child {
+        flex-basis: 120px;
+        flex-grow: 0;
+        flex-shrink: 0;
+        text-align: right;
+        padding-right: 20px;
+      }
+      p.header, p.info {
+        color: #aaaaaa;
+      }
+      p.header {
         float: left;
       }
-      .popup {
-        width: 100%;
-        position: absolute;
-        height: 300px;
+      p.right {
+        float: right;
+        text-align: right;
       }
-      .map {
-        width: 50%;
-        height: 100%;
-        position: absolute;
-        left: 40%;
+      .vitals .title, .vitals .info, .vitals .subtitle {
+        text-align: center;
+      }
+      .vitals .subtitle {
+        color: #aaaaaa;
+      }
+      #left > div > div.call {
+        flex-grow: 0;
+        flex-shrink: 0;
+        flex-basis 60px;
+      }
+      span.alias {
+        display: block;
+        font-size: 16px;
+        color: black;
+      }
+      
+      img.picture {
+        height: 60px;
+        width: 60px;
+      }
+      div.call {
+        color: white;
+      }
+      #popup a {
+        text-decoration: none;
       }
     </style>
-    <div id='dpopup' class='popup' horizontal layout>
-     <table id='dform'>
-        <tr>
-          <td colspan='2'>Superhero Details</td>
-          <td><a on-tap="{{edit}}" href='javascript:'>Edit</a></td>
-        </tr>
-        <tr>
-          <td><div class='picture'>Picture</div></td>
-          <td><div>{{hero.name}}, a.k.a.</div><div>{{hero.heroname}}</div></td>
-          <td><button>Call Hero</button></td>
-        </tr>
-        <tr>
-          <td>Vitals</td>
-          <td><hero-sparkline color='#DF0016' height='12' width='90' points='{{hero.vitals.heart}}'></hero-sparkline><div>Heart rate</div></td>
-          <td><hero-sparkline color='#3777DD' height='12' width='90' points='{{hero.vitals.coffee}}'></hero-sparkline><div>Caffeine</div></td>
-        </tr>
-        <tr>
-          <td>IQ</td>
-          <td colspan='2'>{{hero.iq}}</td>
-        </tr>
-        <tr>
-          <td>Height</td>
-          <td colspan='2'>{{hero.height}} cm</td>
-        </tr>
-        <tr>
-          <td>Weight</td>
-          <td colspan='2'>{{hero.weight}} kg</td>
-        </tr>
-        <tr>
-          <td>Kill count</td>
-          <td colspan='2'>{{hero.killcount}}</td>
-        </tr>
-        <tr>
-          <td>Arch-enemy</td>
-          <td colspan='2'>{{hero.archenemy}}</td>
-        </tr>
-        <tr>
-          <td>Mission</td>
-          <td colspan='2'>{{hero.mission}}</td>
-        </tr>
-        <tr>
-          <td colspan='3'><a on-tap="{{close}}" href='javascript:'>Close</a></td>
-        </tr>
-     </table>
-     <div id='dmap' class='map'>
-      <google-map id='gdmap' zoom="10" fit>
-        <google-map-marker id='gdmark' title="{{hero.name}}" latitude="{{hero.location.latitude}}" longitude="{{hero.location.longitude}}"  draggable="false">{{hero.name}}</google-map-marker>
-      </google-map>
+    <div id='popup'>
+     <div id="left">
+        <div>
+          <p class="header">Superhero Details</p>
+          <p class="right"><a on-tap="{{edit}}" href='javascript:'>Edit</a></p>
+          <div style="float: none; clear: both"></div>
+        </div>
+        <div>
+          <p><img alt="" class="picture" src="/placeholder.png"></p>
+          <p class="name">{{hero.name}}, a.k.a. <span class="alias">{{hero.heroname}}</span></p>
+          <div class="call v-button v-button-friendly">Call Hero</div>
+        </div>
+        <div class="vitals">
+          <p class="title">Vitals</p>
+          <div><p class="info"><hero-sparkline color='#DF0016' height='12' width='90' points='{{hero.vitals.heart}}'></hero-sparkline></p><p class="subtitle">Heart rate</p></div>
+          <div><p class="info"><hero-sparkline color='#3777DD' height='12' width='90' points='{{hero.vitals.coffee}}'></hero-sparkline></p><p class="subtitle">Caffeine</p></div>
+        </div>
+        <div>
+          <p class="title">IQ</p>
+          <p class="info">{{hero.iq}}</p>
+        </div>
+        <div>
+          <p class="title">Height</p>
+          <p class="info">{{hero.height}} cm</p>
+        </div>
+        <div>
+          <p class="title">Weight</p>
+          <p class="info">{{hero.weight}} kg</p>
+        </div>
+        <div>
+          <p class="title">Kill count</p>
+          <p class="info">{{hero.killcount}}</p>
+        </div>
+        <div>
+          <p class="title">Arch-enemy</p>
+          <p class="info">{{hero.archenemy}}</p>
+        </div>
+        <div>
+          <p class="title">Mission</p>
+          <p class="info">{{hero.mission}}</p>
+        </div>
+        <div>
+          <p><a on-tap="{{close}}" href='javascript:'>Close</a></p>
+        </div>
      </div>
+     <div id='dmap'>
+       <google-map id='gdmap' zoom="10" fit>
+         <google-map-marker id='gdmark' title="{{hero.name}}" latitude="{{hero.location.latitude}}" longitude="{{hero.location.longitude}}"  draggable="false">{{hero.name}}</google-map-marker>
+       </google-map>
+     </div>
+    </div>
   </template>
   <script>
     (function () {

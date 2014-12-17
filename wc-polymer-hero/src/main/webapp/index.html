@@ -10,8 +10,15 @@
 
   <script src="bower_components/platform/platform.js"></script>
   <link rel="import" href="elements/hero-app/hero-app.html">
+  <link rel="stylesheet" href="shadowstyles.css" />
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+  </style>
  </head>
- <body unresolved>
-  <hero-app></hero-app>
+ <body class="valo heroes" unresolved>
+  <hero-app class="v-app" vertical layout></hero-app>
  </body>
 </html>

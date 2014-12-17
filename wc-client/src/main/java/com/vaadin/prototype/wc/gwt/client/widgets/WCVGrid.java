@@ -515,6 +515,10 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
         }
     }
 
+    public void setColumnWidth(int column, int widht) {
+        grid.getColumn(column).setWidth(widht);
+    }
+
     // TODO:
     // @JsProperty seems not exporting these methods right now.
     // We use a magic function name 'jsProperty...' to mark these methods as
@@ -531,6 +535,27 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
     @JsProperty
     public double getRowCount() {
         return size;
+    }
+
+    public void jsPropertyHeightMode() {
+    };
+
+    @JsProperty
+    public String getHeightMode() {
+        return grid.getHeightMode().toString();
+    }
+
+    @JsProperty
+    public void setHeightMode(String mode) {
+        grid.setHeightMode(HeightMode.valueOf(mode));
+    }
+
+    public void jsPropertyHeight() {
+    };
+
+    @JsProperty
+    public void setHeight(String height) {
+        grid.setHeight(height);
     }
 
     public void jsPropertyDataSource() {

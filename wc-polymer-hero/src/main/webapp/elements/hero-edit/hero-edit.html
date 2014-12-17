@@ -6,92 +6,158 @@
 <polymer-element name="hero-edit" attributes="heroes current page">
   <template>
     <style>
-      table {
-        width: 40%;
-        border: none;
-        float: left;
+      #popup {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 60vh;
+        display: flex;
+        background-color: #ffffff;
+        z-index: 5000;
       }
-      .popup {
-        width: 100%;
-        position: absolute;
-        height: 300px;
+      #left {
+        align-self: stretch;
+        flex: 0 0 500px;
+        padding: 25px;
+        overflow: auto;
       }
-      .map {
-        width: 50%;
-        height: 100%;
-        position: absolute;
-        left: 40%;
+      #emap {
+        align-self: stretch;
+        flex-grow: 1;
+        flex-shrink: 1;
+        position: relative;
+      }
+      #left > div.controls {
+        border-bottom: 0;
+      }
+      #left > div.controls div:first-child {
+        flex: 1 1;
+        text-align: left;
+      }
+      #left > div.controls div {
+        margin: 0 5px 0 0;
+        align-self: baseline;
+        flex: 0 0 auto;
+      }
+      #left > div.controls a {
+        text-decoration: none;
+      }
+      #left > div {
+        display: flex;
+        border-bottom: 2px solid #dadada;
+        padding: 5px 0 5px 0;
+      }
+      #left > div:last-child {
+        border-bottom: 0;
+      }
+      #left > div :first-child {
+        flex: 0 0 120px;
+        text-align: right;
+        align-self: baseline;
+        padding-right: 20px;
+      }
+      #left > div :last-child {
+        flex: 1 1;
+      }
+      #left > div.name {
+        border-bottom: 0;
+      }
+      #left > div.name > div > div {
+        border-bottom: 2px solid #dadada;
+      }
+      #left > div.name > div :first-child {
+        display: flex;
+      }
+      #left > div.name > div :first-child :first-child {
+        flex: 1 1;
+      }
+      #left > div.name > div :first-child :last-child {
+        flex: 0 0 auto;
+      }
+      #left > div.vitals {
+        border: 2px solid #dadada;
+        border-radius: 7px;
+        background-color: #eaeaea;
+      }
+      #left > div.vitals .caffeine div:first-child {
+        display: flex;
+      }
+      #left > div.vitals .caffeine div:first-child div {
+        flex: 0 0 auto;
+      }
+      core-input.heroname /deep/ #input {
+        font-size: 26px;
+      }
+      img.picture {
+        height: 60px;
+        width: 60px;
       }
     </style>
-     <div id='epopup' class='popup' horizontal layout>
-       <table id='eform'>
-        <tr>
-          <td colspan='2'><a on-tap='{{cancel}}' href='javascript:'>Cancel</a></td>
-          <td width='10%'><button on-tap='{{save}}'>Save</button></td>
-        </tr>
-        <tr>
-          <td rowspan='2' width='10%'><div class='picture'>Picture</div></td>
-          <td><core-input value='{{hero.name}}'></core-input></td>
-          <td>a.k.a.</td>
-        </tr>
-        <tr>
-          <td colspan='2'><core-input value='{{hero.heroname}}'></core-input></td>
-        </tr>
-        <tr>
-          <td>Vitals</td>
-          <td colspan='2'>
-            <div style='width: 20%'>
-              <hero-sparkline color='#DF0016' height='12' width='90' points='{{hero.vitals.heart}}'></hero-sparkline>
-              <div>Heart rate</div>
+    <div id="popup">
+      <div id="left">
+        <div class="controls">
+          <div>Superhero details</div>
+          <div><a on-tap='{{cancel}}' href='javascript:'>Cancel</a></div>
+          <div class="v-button v-button-friendly" on-tap='{{save}}'>Save</div>
+        </div>
+        <div class="name">
+          <div><img alt="" class="picture" src="/placeholder.png"></div>
+          <div>
+            <div>
+              <core-input value='{{hero.name}}'></core-input>
+              <div>a.k.a.</div>
             </div>
-            <div style='width: 20%'>Caffeine saturation</div>
-            <div style='width: 20%'> {{caffeine * 10}} %</div>
-            <div style='width: 20%'><button on-tap='{{inject}}'>Inject</button></div>
-          </td>
-        </tr>
-        <tr>
-          <td>Location</td>
-          <td>{{hero.location.latitude}}</td>
-          <td>{{hero.location.longitude}}</td>
-        </tr>
-        <tr>
-          <td colspan='2'>IQ</td>
-          <td><core-input value='{{hero.iq}}'></core-input></td>
-        </tr>
-        <tr>
-          <td colspan='2'>Height</td>
-          <td><core-input value='{{hero.height}}' placeholder='cm'></core-input></td>
-        </tr>
-        <tr>
-          <td colspan='2'>Weight</td>
-          <td><core-input value='{{hero.weight}}' placeholder='kg'></core-input></td>
-        </tr>
-        <tr>
-          <td colspan='2'>Kill count</td>
-          <td><core-input value='{{hero.killcount}}'></core-input></td>
-        </tr>
-        <tr>
-          <td colspan='2'>Arch-enemy</td>
-          <td>
-            <select value='{{hero.archenemy}}' >
-              <option template repeat="{{options}}">{{}}</option>
-            </select>
-          </td>
-        </tr>
-        <tr>
-          <td colspan='3'>Mission stament
-          <core-input multiline rows='4' value='{{hero.mission}}'></core-input></td>
-        </tr>
-        <tr>
-          <td colspan='3'><button on-tap='{{terminate}}'>Terminate Hero</button></td>
-        </tr>
-       </table>
-       <div id='emap' class='map'>
-        <google-map id='gemap' zoom="10" fit>
-          <google-map-marker id='gemark' title="{{hero.name}}" latitude="{{hero.location.latitude}}" longitude="{{hero.location.longitude}}"  draggable="true">{{hero.name}}</google-map-marker>
-        </google-map>
-       </div>
-     </div>
+            <div><core-input class="heroname" value='{{hero.heroname}}'></core-input></div>
+          </div>
+        </div>
+        <div class="vitals">
+          <div>Vitals</div>
+          <div>
+            <div>Heart rate {{hero.vitals.heart[0]}}</div>
+            <div class="caffeine">
+              <div>
+                <div>{{hero.vitals.coffee[0]}}</div>
+                <div class="v-button v-button-friendly v-button-small" on-tap='{{inject}}'>Inject</div>
+              </div>
+              <div>Caffeine saturation</div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div>IQ</div>
+          <div><core-input value='{{hero.iq}}'></core-input></div>
+        </div>
+        <div>
+          <div>Height</div>
+          <div><core-input value='{{hero.height}}' placeholder='cm'></core-input></div>
+        </div>
+        <div>
+          <div>Weight</div>
+          <div><core-input value='{{hero.weight}}' placeholder='kg'></core-input></div>
+        </div>
+        <div>
+          <div>Kill count</div>
+          <div><core-input value='{{hero.killcount}}'></core-input></div>
+        </div>
+        <div>
+          <div>Arch-enemy</div>
+          <select value='{{hero.archenemy}}' >
+            <option template repeat="{{options}}">{{}}</option>
+          </select>
+        </div>
+        <div>
+          <div>Mission</div>
+          <core-input multiline rows='4' value='{{hero.mission}}'></core-input>
+        </div>
+        <div class="v-button v-button-friendly" on-tap='{{terminate}}'>Terminate Hero</div>
+      </div>
+    </div>
+    <div id='emap' class='map'>
+      <google-map id='gemap' zoom="10" fit>
+        <google-map-marker id='gemark' title="{{hero.name}}" latitude="{{hero.location.latitude}}" longitude="{{hero.location.longitude}}"  draggable="true">{{hero.name}}</google-map-marker>
+      </google-map>
+    </div>
   </template>
   <script>
     (function () {
@@ -130,7 +196,7 @@
           for (k in this.hero) {
             this.heroes[this.current][k] = this.hero[k];
           }
-          this.page = -1;
+          this.page = 1;
         },
         remove: function() {
           this.heroes.splice(this.current, 1);
@@ -139,7 +205,7 @@
         terminate: function() {
           // TODO: ask if terminated means remove or just change status
           this.heroes[this.current].status = 'Terminated';
-          this.page = -1;
+          this.page = 0;
         },
         inject: function() {
           var v = Math.min(10, this.caffeine + 1)

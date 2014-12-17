@@ -6,6 +6,37 @@
 <script src="../../vaadin-x-utils.js"></script>
 <polymer-element name="hero-list" attributes="hero heroes current page">
   <template>
+    <style>
+      .labels {
+        position: relative;
+      }
+      .right {
+        text-align: right;
+        position: absolute;
+        right: 0;
+        bottom: 0;
+      }
+      .dim {
+        color: #aaaaaa;
+      }
+      .black {
+        color: #000000;
+      }
+      v-grid {
+        position: relative;
+      }
+      v-grid > div {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+      }
+      #grid > div > div {
+        /* fix grid width */
+        width: 100% !important;
+      }
+    </style>
     <core-ajax
      auto = "true"
      url = "../../rest/list.json"
@@ -13,23 +44,23 @@
      method="POST"
      id='ajax'
      ></core-ajax>
-    <div>Demo</div>
-    <div>Superhero Roster</div>
-    <div>{{size}} heroes on duty</div>
-    <v-grid id='grid' theme='valo'>
+    <div class="labels">
+      <div class="v-label dim">Demo</div>
+      <div class="v-label v-label-huge black">Superhero Roster</div>
+      <div class="v-label dim right">{{size}} heroes on duty</div>
+    </div>
+    <v-grid flex id='grid'>
     <table>
-     <head>
       <thead>
         <tr>
           <th name='rank'>Rank</th>
-          <th name='name'>Name</th>
+          <th name='heroname'>Name</th>
           <th name='vitals'>Vitals</th>
           <th name='location'>Location</th>
           <th name='status'>Status</th>
         </tr>
       </thead>
-     </head>
-     </table>
+     </table>    
     </v-grid>
   </template>
   <script>
@@ -45,22 +76,28 @@
                 grid.rowCount = _this.size;
                 grid.dataSource = _this.heroes;
                 grid.columns[3].renderer = function(element, data, rowIndex) {
-                  element.innerHTML = (data.latitude + " " + data.longitude).replace(/(\d\.\d{4})\d+/g,"$1");
+                  element.innerHTML = ("(" + data.latitude + ", " + data.longitude + ")").replace(/(\d\.\d{6})\d+/g,"$1");
                 };
+                
                 grid.columns[2].renderer = function(element, data, rowIndex) {
-                  element.innerHTML = "<hero-sparkline colors='#DF0016,#3777DD' height='12' width='90' points='[[" +
-                                         data.heart + "],[" + data.coffee + "]]' />";
-                };
-
-                _this.$.grid.shadowRoot.querySelector('table').addEventListener("click", function(e) {
-                  // TODO: this could be a fix for selecing an item by clicking but does not work
-                  // var input = e.target.parentElement.querySelector('td input');
-                  // window.i = input;
-                  // input.checked = true;
-                  // var evt = document.createEvent("HTMLEvents");
-                  // evt.initEvent("change", false, true);
-                  // input.dispatchEvent(evt);
-                });
+                    element.innerHTML = "<hero-sparkline colors='#DF0016,#3777DD' height='12' width='90' points='[[" +
+                                           data.heart + "],[" + data.coffee + "]]' />";
+                  };
+                  
+                window.heroes = _this.heroes;
+                
+                grid.heightMode = "CSS";
+                grid.height = "100%";
+                
+                // TODO: Grid doesn't yet support auto column width.
+                // Magic number 60 is from the selection column, due to be removed in
+                // single selection mode in future.
+                var w = grid.clientWidth - 60;
+                grid.setColumnWidth(1, Math.floor(w*0.06));
+                grid.setColumnWidth(2, Math.floor(w*0.2));
+                grid.setColumnWidth(3, Math.floor(w*0.2));
+                grid.setColumnWidth(4, Math.floor(w*0.34));
+                grid.setColumnWidth(5, Math.floor(w*0.2));
             });
           });
           this.$.grid.addEventListener("select", function(e) {
@@ -70,7 +107,6 @@
               _this.hero = _this.heroes[_this.current];
             }
           });
-
         },
         pageChanged: function() {
           if (this.page == -1) {

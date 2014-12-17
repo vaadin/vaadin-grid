@@ -5,10 +5,34 @@
 <polymer-element name="hero-app">
   <template>
     <style>
+      :host {
+        height: 100vh;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 10px;
+      }
+      
+      :host(.state0) hero-details, :host(.state0) hero-edit,
+      :host(.state2) hero-details, :host(.state1) hero-edit {
+        display: none;
+      }
+      
+      :host(.state1) hero-details, :host(.state2) hero-edit {
+        display: block;
+      }
+      
+      hero-list {
+      }
+      
+      @media(max-width: 600px) {
+        :host(.state1) hero-list, :host(.state2) hero-list {
+          display: none;
+        }
+      }
     </style>
-          <hero-list id='list' page={{page}} current="{{current}}" hero="{{hero}}" heroes="{{heroes}}"></hero-list>
-          <hero-details id='details' page={{page}} hero="{{hero}}"></hero-details>
-          <hero-edit id='edit' page={{page}} current="{{current}}" heroes="{{heroes}}"></hero-edit>
+    <hero-list flex vertical layout id='list' page={{page}} current="{{current}}" hero="{{hero}}" heroes="{{heroes}}"></hero-list>
+    <hero-details id='details' page={{page}} hero="{{hero}}"></hero-details>
+    <hero-edit id='edit' page={{page}} current="{{current}}" heroes="{{heroes}}"></hero-edit>
   </template>
   <script>
     Polymer('hero-app', {
@@ -18,23 +42,9 @@
         this.page = 0;
       },
       pageChanged: function() {
-        switch (this.page) {
-          case 2:
-            this.$.list.style.display = 'none';
-            this.$.details.style.display = 'none';
-            this.$.edit.style.display = 'block';
-            break;
-          case 1:
-            this.$.list.style.display = 'none';
-            this.$.details.style.display = 'block';
-            this.$.edit.style.display = 'none';
-            break;
-          default:
-            this.$.list.style.display = 'block';
-            this.$.details.style.display = 'none';
-            this.$.edit.style.display = 'none';
-            break;
-        }
+        console.log("page change:" + this.page);
+        this.classList.remove("state0", "state1", "state2");
+        this.classList.add("state"+this.page)
       }
     });
   </script>
