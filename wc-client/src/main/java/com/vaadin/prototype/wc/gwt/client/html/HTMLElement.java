@@ -2,6 +2,7 @@ package com.vaadin.prototype.wc.gwt.client.html;
 
 import com.google.gwt.core.client.js.JsProperty;
 import com.google.gwt.core.client.js.JsType;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.user.client.EventListener;
@@ -13,53 +14,53 @@ public interface HTMLElement {
     // Uncaught ReferenceError: $clinit_HTMLElement$Prototype is not defined
     // @PrototypeOfJsType
     public static class Prototype implements HTMLElement {
-        private HTMLElement element() {
+        private HTMLElement htmlElement() {
             return (HTMLElement) this;
         }
         @Override public void addEventListener(String event, EventListener listener) {
-            element().addEventListener(event, listener);
+            htmlElement().addEventListener(event, listener);
         }
         @Override public void appendChild(HTMLElement element) {
-            element().appendChild(element);
+            htmlElement().appendChild(element);
         }
         @Override public void setAttribute(String name, String value) {
-            element().setAttribute(name, value);
+            htmlElement().setAttribute(name, value);
         }
         @Override public String getAttribute(String name) {
-            return element().getAttribute(name);
+            return htmlElement().getAttribute(name);
         }
         @Override public HTMLShadow createShadowRoot() {
-            return element().createShadowRoot();
+            return htmlElement().createShadowRoot();
         }
         @Override public Node shadowRoot() {
-            return element().shadowRoot();
+            return htmlElement().shadowRoot();
         }
         @Override public String className() {
-            return element().className();
+            return htmlElement().className();
         }
         @Override public HTMLElement className(String string) {
-            return element().className(string);
+            return htmlElement().className(string);
         }
         @Override public HTMLStyle style() {
-            return element().style();
+            return htmlElement().style();
         }
         @Override public void innerHTML(String string) {
-            element().innerHTML(string);
+            htmlElement().innerHTML(string);
         }
         @Override public void innerText(String string) {
-            element().innerText(string);
+            htmlElement().innerText(string);
         }
         @Override
         public void dispatchEvent(HTMLEvents ev) {
-            element().dispatchEvent(ev);
+            htmlElement().dispatchEvent(ev);
         }
         @Override
         public NodeList<?> children() {
-            return element().children();
+            return htmlElement().children();
         }
         @Override
         public String innerText() {
-            return element().innerText();
+            return htmlElement().innerText();
         }
     }
 

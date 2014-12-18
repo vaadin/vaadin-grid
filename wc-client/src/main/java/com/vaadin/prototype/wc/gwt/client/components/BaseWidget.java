@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.google.gwt.dom.client.Element;
+import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.ui.Widget;
@@ -18,7 +18,7 @@ public abstract class BaseWidget extends Widget  {
     protected abstract <T extends HTMLElement> T element();
     
     public BaseWidget(HTMLElement element) {
-        setElement((Element) element);
+        setElement(JsUtils.cast(element));
         for (String s: events()) {
             element.addEventListener(s, this);
         }
