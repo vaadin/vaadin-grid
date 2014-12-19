@@ -3,11 +3,14 @@ package com.vaadin.prototype.wc.gwt.client.entrypoints;
 import com.google.gwt.core.client.EntryPoint;
 import com.vaadin.prototype.wc.gwt.client.util.Elements;
 import com.vaadin.prototype.wc.gwt.client.widgets.WCUtils;
-import com.vaadin.prototype.wc.gwt.client.widgets.WCVProgress;
+import com.vaadin.prototype.wc.gwt.client.widgets.WCVSlider;
 
-public class DemoProgress implements EntryPoint {
+/**
+ * Exports only the Vaadin slider web component
+ */
+public class VaadinSlider implements EntryPoint {
     public void onModuleLoad() {
         WCUtils.loadVaadinGlobalTheme();
-        Elements.registerElement(WCVProgress.TAG, new WCVProgress());
+        Elements.registerElement(WCVSlider.TAG, new WCVSlider());
     }
 }

@@ -13,9 +13,9 @@ import com.vaadin.prototype.wc.gwt.client.widgets.WCVProgress;
 import com.vaadin.prototype.wc.gwt.client.widgets.WCVSlider;
 
 /**
- * Example code for a GwtQuery application
+ * Exports all vaadin web components.
  */
-public class Demo implements EntryPoint {
+public class VaadinComponents implements EntryPoint {
 
     public void onModuleLoad() {
         GWT.setUncaughtExceptionHandler(new SuperDevModeUncaughtExceptionHandler());

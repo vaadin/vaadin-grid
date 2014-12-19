@@ -8,15 +8,16 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <name>WebComponents Exported Grid Demo project</name>
+    <name>Vaadin WebComponents Exported </name>
     <groupId>com.vaadin.prototype.wc</groupId>
     <artifactId>wc-grid-demo</artifactId>
     <packaging>war</packaging>
 
     <properties>
         <git.bower.repo>git@vaadin-x-bower:/opt/git/</git.bower.repo>
-        <module.name>Demo DemoGrid DemoSlider DemoProgress</module.name>
-        <!-- <gwt.module>com.vaadin.prototype.wc.gwt.Demo</gwt.module> -->
+        <module.names>VaadinComponents VaadinGrid VaadinSlider VaadinProgressBar</module.names>
+        <modulePathPrefix></modulePathPrefix>
+        <gwt.loglevel>WARN</gwt.loglevel>
     </properties>
 
     <dependencies>
@@ -115,11 +116,11 @@
                       <exec dir="." executable="sh">
                         <arg value="src/main/scripts/update_modules.sh"/>
                         <arg value="${project.build.directory}/${project.build.finalName}"/>
-                        <arg value="VAADIN/widgetsets"/>
+                        <arg value="${modulePathPrefix}"/>
                         <arg value="${project.version}"/>
                         <arg value="${git.bower.repo}"/>
                         <arg value="${vaadin.version}"/>
-                        <arg value="${module.name}"/>
+                        <arg value="${module.names}"/>
                       </exec>
                     </tasks>
                   </configuration>

@@ -10,12 +10,12 @@ dir=`dirname $0`
 for module in $modules
 do
    case $module in
-   Demo) package=x-vaadin; gitRepo=$gitUrl/vaadin-x-bower.git ;;
-   DemoGrid) package=v-grid; gitRepo=$gitUrl/v-grid.git ;;
-   DemoProgress) package=v-progress; gitRepo=$gitUrl/v-progress.git ;;
-   DemoSlider) package=v-slider; gitRepo=$gitUrl/v-slider.git ;;
+   VaadinComponents) package=vaadin-components; gitRepo=$gitUrl/vaadin-components.git; files="bigdata.js" ;;
+   VaadinGrid) package=vaadin-grid; gitRepo=$gitUrl/vaadin-grid.git; files="bigdata.js" ;;
+   VaadinProgressBar) package=vaadin-progress-bar; gitRepo=$gitUrl/vaadin-progress-bar.git; files="" ;;
+   VaadinSlider) package=vaadin-slider; gitRepo=$gitUrl/vaadin-slider.git; files="" ;;
    esac
 
    modulePath="$warDir/$module"
-   $dir/update_bower_repo.sh $warDir $modulePrefix $version $gitRepo $package $vaadinVersion $module
+   $dir/update_bower_repo.sh $warDir "$modulePrefix" $version $gitRepo $package $vaadinVersion $module $files
 done

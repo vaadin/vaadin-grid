@@ -1,7 +1,0 @@
-<module rename-to='DemoSlider'>
-    <inherits name='com.vaadin.prototype.wc.gwt.DemoCommon'/>
-    <entry-point class='com.vaadin.prototype.wc.gwt.client.entrypoints.DemoSlider'/>
-    <source path='client/entrypoints' skips="Demo.java,DemoGrid.java,DemoProgress.java" />
-    <source path='client/widgets' skips="WCFormat.java,WCVGrid.java,WCVProgress.java" />    
-</module>
-

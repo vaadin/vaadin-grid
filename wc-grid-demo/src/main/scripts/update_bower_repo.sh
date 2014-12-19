@@ -29,15 +29,16 @@
 #
 #
 
-warDir="$1"
-modulePrefix="$2"
-version="$3"
-gitRepo="$4"
-package="$5"
-vaadinVersion="$6"
-moduleName="$7"
+warDir="$1"; shift
+modulePrefix="$1"; shift
+version="$1"; shift
+gitRepo="$1"; shift
+package="$1"; shift
+vaadinVersion="$1"; shift
+moduleName="$1"; shift
+aditionalFiles="$*"
 modulePath="$warDir/$modulePrefix/$moduleName"
-[ -z "$7" ] && echo "Usage $0 <warDir> <modulePrefix> <version> <gitRepo> <package> <vaadinVersion> <moduleName>" && exit 1
+[ -z "$moduleName" ] && echo "Usage $0 <warDir> <modulePrefix> <version> <gitRepo> <package> <vaadinVersion> <moduleName>" && exit 1
 [ ! -d "$warDir" ] && echo "warDir does not exist: $warDir" && exit 1
 [ ! -d "$modulePath" ] && echo "modulePath does not exist: $modulePath" && exit 1
 
@@ -59,8 +60,10 @@ cp $htmlFile $tmpDir/$package.html || exit 1
 
 ## Copy stuff from the war dir
 cp $warDir/demo-$package.html $tmpDir/demo.html || exit 1
-cp $warDir/bower.json $tmpDir || exit 1
-cp $warDir/ng-vaadin.js $tmpDir || exit 1
+for i in bower.json ng-vaadin.js $aditionalFiles
+do
+  cp $warDir/$i $tmpDir || exit 1
+done
 tar cf $tmpDir/module.tar \
     deferred \
     >/dev/null 2>&1
