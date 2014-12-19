@@ -3,14 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1" />
-<link href="VAADIN/themes/valo/styles.css" rel="stylesheet">
-<link href="shadowstyles.css" rel="stylesheet">
-<link href="resizestyles.css" rel="stylesheet">
 <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
 <script src="VAADIN/widgetsets/Demo/Demo.nocache.js"></script>
 <script src="bigdata.js"></script>
 </head>
-<body class="valo">
+<body vaadin-theme="valo">
 
   <script>
       function waitUntil(check, exec) {
@@ -374,7 +371,7 @@
   </v-grid>
 
   <h3>6. renderers</h3>
-  <v-grid id="myRendererDeclaration" dataSource={{myData}}>
+  <v-grid id="myRendererDeclaration" dataSource='{{myData}}'>
   <table>
     <thead>
       <tr>
@@ -387,7 +384,7 @@
       <tr template>
         <td>{{data}}</td>
         <td>{{data}} €</td>
-        <td><v-progress value="{{data}}" /></td>
+        <td><v-progress value='{{data}}' /></td>
       </tr>
     </tbody>
   </table>

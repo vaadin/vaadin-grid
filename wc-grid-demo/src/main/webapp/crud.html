@@ -4,20 +4,17 @@
     <title>AngularJS CRUD with v-grid</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1" />
-    <link href="VAADIN/themes/valo/styles.css" rel="stylesheet">
-    <link href="shadowstyles.css" rel="stylesheet">
-    <link href="resizestyles.css" rel="stylesheet">
     <!-- Polymer polyfill -->
     <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
     <!-- VaadinX web components -->
     <script src="VAADIN/widgetsets/Demo/Demo.nocache.js"></script>
     <!-- Angular library -->
-    <!-- Angular library -->
     <script src="bower_components/angularjs/angular.js"></script>
     <!-- VaadinX directives, TODO: make this be done in Demo.nocache.js -->
     <script src="ng-vaadin.js"></script>
 </head>
-<body class='valo'>
+<!-- Load vaadin theme dynamically -->
+<body vaadin-theme='valo'>
     <div ng-app="CrudApp" ng-controller="CrudController">
         <v-grid selectionMode="single" selectedRow="{{rowIndex}}">
             <table>
