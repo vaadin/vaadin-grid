@@ -34,6 +34,9 @@
         <id>prod</id>
         <properties>
           <gwt.outputstyle>OBF</gwt.outputstyle>
+          <gwt.disableCastChecking>true</gwt.disableCastChecking>
+          <gwt.disableClassMetadata>true</gwt.disableClassMetadata>
+          <gwt.enableAssertions>false</gwt.enableAssertions>
         </properties>
       </profile>
       <profile>
@@ -231,14 +234,13 @@
                     <compileMetrics>true</compileMetrics>
                     <hostedWebApp>${project.build.directory}/${project.build.finalName}</hostedWebApp>
                     <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
-                    <!-- mandatory jsInterop bug --> <draftCompile>true</draftCompile>
-                    <!-- mandatory jsInterop bug --> <optimizationLevel>0</optimizationLevel>
+                    <draftCompile>false</draftCompile>
+                    <optimizationLevel>9</optimizationLevel>
                     <bindAddress>0.0.0.0</bindAddress>
-                    <disableCastChecking>true</disableCastChecking>
-                    <disableClassMetadata>true</disableClassMetadata>
-                    <enableAssertions>false</enableAssertions>
+                    <disableCastChecking>${gwt.disableCastChecking}</disableCastChecking>
+                    <disableClassMetadata>${gwt.disableClassMetadata}</disableClassMetadata>
+                    <enableAssertions>${gwt.enableAssertions}</enableAssertions>
                     <closureCompiler>${gwt.closure}</closureCompiler>
-                    <superDevMode>true</superDevMode>
                     <jsInteropMode>JS</jsInteropMode>
                     <persistentunitcachedir>${project.build.directory}</persistentunitcachedir>
                     <modulePathPrefix>${modulePathPrefix}</modulePathPrefix>

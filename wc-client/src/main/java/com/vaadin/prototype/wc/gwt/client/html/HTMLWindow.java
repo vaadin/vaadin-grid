@@ -4,18 +4,11 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.ScriptInjector;
 import com.google.gwt.core.client.js.JsProperty;
 import com.google.gwt.core.client.js.JsType;
+import com.google.gwt.query.client.js.JsUtils;
 
 @JsType(prototype = "Window", isNative = true)
 public interface HTMLWindow {
-    // TODO: this makes IE fail with a CastException
-    // static HTMLWindow window = (HTMLWindow)ScriptInjector.TOP_WINDOW;
-    public static abstract class Utils {
-        public static native HTMLWindow window() /*-{
-            return $wnd;
-        }-*/;
-    }
-    static HTMLWindow window = Utils.window();
-
+    static HTMLWindow window = JsUtils.cast(ScriptInjector.TOP_WINDOW);
 
     void alert(String msg);
     boolean confirm(String msg);
