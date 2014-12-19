@@ -25,7 +25,7 @@ public class WCVProgress extends HTMLElement.Prototype implements
 
     public static final String TAG = "v-progress";
 
-    private VProgressBar widget;
+    private VProgressBar progress;
     private HTMLEvents changeEvent;
     private HTMLElement container;
     private HTMLElement style;
@@ -40,7 +40,7 @@ public class WCVProgress extends HTMLElement.Prototype implements
     public void createdCallback() {
         style = Elements.create("style");
 
-        widget = new VProgressBar();
+        progress = new VProgressBar();
 
         changeEvent = Elements.document.createEvent("HTMLEvents");
         changeEvent.initEvent("change", false, false);
@@ -62,12 +62,16 @@ public class WCVProgress extends HTMLElement.Prototype implements
             }
             elementWidget.addAttachHandler(this);
 
-            HTMLShadow shadow = createShadowRoot();
-            shadow.appendChild(style);
-            shadow.appendChild(container);
-
+            if (getAttribute("shadow") != null) {
+                HTMLShadow shadow = createShadowRoot();
+                shadow.appendChild(style);
+                shadow.appendChild(container);
+            } else {
+                appendChild(style);
+                appendChild(container);
+            }
             Panel shadowPanel = $(container).as(Widgets).panel().widget();
-            shadowPanel.add(widget);
+            shadowPanel.add(progress);
         }
     }
 
@@ -82,7 +86,7 @@ public class WCVProgress extends HTMLElement.Prototype implements
     }
 
     private void readAttributes() {
-        widget.setState(getAttrFloatValue(this, "value", 0));
+        progress.setState(getAttrFloatValue(this, "value", 0));
         WCUtils.loadVaadinTheme(container, this, style, null);
     }
 
@@ -99,11 +103,11 @@ public class WCVProgress extends HTMLElement.Prototype implements
 
     @JsProperty
     public void setValue(double value) {
-        widget.setState((float) value);
+        progress.setState((float) value);
     }
 
     @JsProperty
     public double getValue() {
-        return widget.getState();
+        return progress.getState();
     }
 }

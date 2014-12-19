@@ -65,10 +65,14 @@ public class WCVSlider extends HTMLElement.Prototype implements
             }
             elementWidget.addAttachHandler(this);
 
-            HTMLShadow shadow = createShadowRoot();
-            shadow.appendChild(style);
-            shadow.appendChild(container);
-
+            if (getAttribute("shadow") != null) {
+                HTMLShadow shadow = createShadowRoot();
+                shadow.appendChild(style);
+                shadow.appendChild(container);
+            } else {
+                appendChild(style);
+                appendChild(container);
+            }
             Panel shadowPanel = $(container).as(Widgets).panel().widget();
             shadowPanel.add(slider);
         }

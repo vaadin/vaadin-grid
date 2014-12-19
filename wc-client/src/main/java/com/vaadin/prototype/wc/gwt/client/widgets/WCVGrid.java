@@ -34,13 +34,11 @@ import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugin.Observe;
 import com.google.gwt.query.client.plugin.Observe.MutationListener;
-import com.google.gwt.query.client.plugin.Observe.MutationRecords;
 import com.google.gwt.query.client.plugin.Observe.MutationRecords.MutationRecord;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.JsArrayObject;
@@ -91,7 +89,6 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
     private HTMLEvents selectEvent;
     private HTMLElement container;
     private HTMLElement style;
-    private Panel shadowPanel;
     private boolean initialized = false;
     public List<GColumn> cols;
     private List<JsArrayMixed> vals;
@@ -125,6 +122,9 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
         cols = new ArrayList<GColumn>();
         vals = new ArrayList<JsArrayMixed>();
         gridColumns = new ArrayList<>();
+
+        grid = new Grid<JsArrayMixed>();
+        grid.addSelectionChangeHandler(this);
     }
 
     /*
@@ -132,24 +132,30 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
      */
     private void initWidgetSystem() {
         if (!initialized) {
-            initialized = true;
             lightDom = $(this).children().as(Observe.Observe);
-            lightDom.observe(Observe.createInit().attributes(true)
-                    .characterData(true).childList(true).subtree(true), this);
-
+            lightDom.observe(Observe.createInit()
+                    .attributes(true)
+                    .characterData(true)
+                    .childList(true)
+                    .subtree(true), this);
+        }
+        if (!initialized) {
+            initialized = true;
             Widget elementWidget = $(this).widget();
             if (elementWidget == null) {
                 elementWidget = $(this).as(Widgets).panel().widget();
             }
             elementWidget.addAttachHandler(this);
 
-            HTMLShadow shadow = createShadowRoot();
-            shadow.appendChild(style);
-            shadow.appendChild(container);
-
-            shadowPanel = $(container).as(Widgets).panel().widget();
-            grid = new Grid<JsArrayMixed>();
-            grid.addSelectionChangeHandler(this);
+            if (getAttribute("shadow") != null) {
+                HTMLShadow shadow = createShadowRoot();
+                shadow.appendChild(style);
+                shadow.appendChild(container);
+            } else {
+                appendChild(style);
+                appendChild(container);
+            }
+            Panel shadowPanel = $(container).as(Widgets).panel().widget();
             shadowPanel.add(grid);
         }
     }
@@ -158,12 +164,6 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
     public void attachedCallback() {
         initWidgetSystem();
         readAttributes();
-//        $(grid).as(Observe.Observe).observe(Observe.createInit().childList(true).subtree(true), new Function() {
-//            public void f() {
-//                List<MutationRecord> r = arguments(0);
-//                console.log("Changed Grid " + r.get(0).type());
-//            }
-//        });
     }
 
     @JsNoExport
