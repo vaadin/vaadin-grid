@@ -132,8 +132,13 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
      */
     private void initWidgetSystem() {
         if (!initialized) {
-            lightDom = $(this).children().as(Observe.Observe);
-            lightDom.observe(Observe.createInit()
+            lightDom = $(this)
+                    // this is the table inside the v-grid
+                    .children()
+                    // hide it, otherwise it's visible if shadow is not used
+                    .hide()
+                    // observe all mutations in the table
+                    .as(Observe.Observe).observe(Observe.createInit()
                     .attributes(true)
                     .characterData(true)
                     .childList(true)

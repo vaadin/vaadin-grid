@@ -33,6 +33,18 @@ public class WCUtils {
         }
     }
 
+    public static void loadVaadinGlobalTheme() {
+        GQuery body = $("body");
+        String theme = body.attr("vaadin-theme");
+        if (!theme.isEmpty()) {
+            GQuery style = $("#__vaadin-style");
+            if (style.isEmpty()) {
+                style = $("<style id='__vaadin-style' language='text/css'></style>").appendTo($("head"));
+            }
+            loadTheme(body, style, theme);
+        }
+    }
+
     public static void loadVaadinTheme(HTMLElement container, HTMLElement el, HTMLElement style, String def) {
         String theme = getAttrValue(el, "theme", def);
         if (theme == null) {
@@ -41,6 +53,10 @@ public class WCUtils {
         if ($(theme).text().contains(theme)) {
             return;
         }
+        loadTheme($(container), $(style), theme);
+    }
+
+    private static void loadTheme(GQuery container, GQuery style, String theme) {
         GQuery l = $("link[href]").filter(new Predicate(){
             public boolean f(Element e, int index) {
                 String h = $(e).attr("href");
@@ -54,22 +70,22 @@ public class WCUtils {
             base += "../../../";
         }
         base += "VAADIN/themes/" + theme + "/styles.css";
-        $(style).text("@import url('" + base + "')");
-        container.setAttribute("class", theme);
+        container.addClass(theme);
+        style.text("@import url('" + base + "')");
     }
 
     public static native void observe(JavaScriptObject jso, EventListener ev) /*-{
-                                                                              var fnc = function(changes) {
-                                                                              ev.@com.google.gwt.user.client.EventListener::onBrowserEvent(*)(null);
-                                                                              };
-                                                                              jso.__fnc = fnc;
-                                                                              Object.observe(jso, fnc);
-                                                                              }-*/;
+      var fnc = function(changes) {
+        ev.@com.google.gwt.user.client.EventListener::onBrowserEvent(*)(null);
+      };
+      jso.__fnc = fnc;
+      Object.observe(jso, fnc);
+   }-*/;
 
     public static native void unobserve(JavaScriptObject jso) /*-{
-                                                              if (jso && jso.__fnc) {
-                                                              Object.unobserve(jso, jso.__fnc);
-                                                              jso.__fnc = undefined;
-                                                              }
-                                                              }-*/;
+      if (jso && jso.__fnc) {
+        Object.unobserve(jso, jso.__fnc);
+        jso.__fnc = undefined;
+      }
+   }-*/;
 }
