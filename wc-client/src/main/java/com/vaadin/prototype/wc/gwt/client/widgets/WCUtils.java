@@ -1,10 +1,12 @@
 package com.vaadin.prototype.wc.gwt.client.widgets;
 
 import static com.google.gwt.query.client.GQuery.$;
+import static com.google.gwt.query.client.GQuery.document;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Predicate;
 import com.google.gwt.user.client.EventListener;
@@ -34,15 +36,20 @@ public class WCUtils {
     }
 
     public static void loadVaadinGlobalTheme() {
-        GQuery body = $("body");
-        String theme = body.attr("vaadin-theme");
-        if (!theme.isEmpty()) {
-            GQuery style = $("#__vaadin-style");
-            if (style.isEmpty()) {
-                style = $("<style id='__vaadin-style' language='text/css'></style>").appendTo($("head"));
+        // Wait until body is ready.
+        $(document).on("load", new Function(){
+            public void f() {
+               GQuery body = $("body");
+               String theme = body.attr("vaadin-theme");
+               if (!theme.isEmpty()) {
+                   GQuery style = $("#__vaadin-style");
+                   if (style.isEmpty()) {
+                       style = $("<style id='__vaadin-style' language='text/css'></style>").appendTo($("head"));
+                   }
+                   loadTheme(body, style, theme);
+               }
             }
-            loadTheme(body, style, theme);
-        }
+        });
     }
 
     public static void loadVaadinTheme(HTMLElement container, HTMLElement el, HTMLElement style, String def) {
@@ -57,17 +64,20 @@ public class WCUtils {
     }
 
     private static void loadTheme(GQuery container, GQuery style, String theme) {
+        // This code is very tricky and tries to figure out where vaadin themes are.
+        // GWT moduleBaseUrl does not work if we use link imports.
         GQuery l = $("link[href]").filter(new Predicate(){
             public boolean f(Element e, int index) {
                 String h = $(e).attr("href");
-                return h.matches(".*(x-vaadin|vaadin-x|v-\\w+)\\.html");
+                return h.matches("^(|.*/)(x-vaadin|vaadin-x|v-[\\w\\-]+|vaadin-[\\w\\-]+)\\.html");
             }
         });
-        String base = GWT.getModuleBaseURL();
+        String base = GWT.getModuleBaseURL().replace(GWT.getModuleName() + "/", "");
+
         if (!l.isEmpty()) {
             base = l.attr("href").replaceFirst("[\\w\\-]+\\.html", "");
         } else if (base.contains("VAADIN/widgetsets")) {
-            base += "../../../";
+            base += "../../";
         }
         base += "VAADIN/themes/" + theme + "/styles.css";
         container.addClass(theme);

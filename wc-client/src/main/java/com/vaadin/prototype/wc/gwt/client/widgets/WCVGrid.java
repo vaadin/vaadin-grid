@@ -424,11 +424,14 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
         }
 
         Iterator<GColumn> iterator = contentsMap.keySet().iterator();
+        // When we don't use shadow, sometimes the component could
+        // be renderized previously.
+        lightDom.find("div[v-wc-container]").remove();
+
         GQuery $templateRow = lightDom.find("tr[template] td");
         for (int i = 0; iterator.hasNext(); i++) {
             GColumn column = iterator.next();
             column.setHeaderData(contentsMap.get(column));
-
             if (i < $templateRow.size()) {
                 String html = $templateRow.eq(i).html();
                 column.setTemplate(html);
