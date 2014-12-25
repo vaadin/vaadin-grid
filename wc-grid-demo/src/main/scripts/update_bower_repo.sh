@@ -40,80 +40,106 @@ aditionalFiles="$*"
 modulePath="$warDir/$modulePrefix/$moduleName"
 [ -z "$moduleName" ] && echo "Usage $0 <warDir> <modulePrefix> <version> <gitRepo> <package> <vaadinVersion> <moduleName>" && exit 1
 [ ! -d "$warDir" ] && echo "warDir does not exist: $warDir" && exit 1
-[ ! -d "$modulePath" ] && echo "modulePath does not exist: $modulePath" && exit 1
+[ $moduleName != Themes -a ! -d "$modulePath" ] && echo "modulePath does not exist: $modulePath" && exit 1
 
 echo "Updating webcomponent '$package $version' in bower repo ($gitRepo)"
 
-## Create a tmp dir and remove it on exit
-now=`date +%s`
-tmpDir=`mktemp -d /tmp/bower-vaadin-x-$now`
-trap "rm -rf $tmpDir" EXIT
+CloneRepo() {
+  ## Create a tmp dir and remove it on exit
+  now=`date +%s`
+  tmpDir=`mktemp -d /tmp/bower-vaadin-x-$now`
+  trap "rm -rf $tmpDir" EXIT
 
-## Clone the vaadin web components repo
-git clone $gitRepo $tmpDir || exit 1
+  ## Clone the vaadin web components repo
+  git clone $gitRepo $tmpDir || exit 1
+}
 
-## Copy stuff from the gwt output dir
-cd $modulePath || exit 1
-htmlFile=`ls -t1 *-import.html | head -1`
-[ ! -f $htmlFile ] && echo "No *-import.html file to upload" && exit 1
-cp $htmlFile $tmpDir/$package.html || exit 1
+UpdateModule() {
+  ## Copy stuff from the gwt output dir
+  cd $modulePath || exit 1
+  htmlFile=`ls -t1 *-import.html | head -1`
+  [ ! -f $htmlFile ] && echo "No *-import.html file to upload" && exit 1
+  cp $htmlFile $tmpDir/$package.html || exit 1
 
-## Copy stuff from the war dir
-cp $warDir/demo-$package.html $tmpDir/demo.html || exit 1
-for i in bower.json ng-vaadin.js $aditionalFiles
-do
-  cp $warDir/$i $tmpDir || exit 1
-done
-tar cf $tmpDir/module.tar \
+  ## Copy stuff from the war dir
+  cp $warDir/demo-$package.html $tmpDir/demo.html || exit 1
+  for i in ng-vaadin.js $aditionalFiles
+  do
+    cp $warDir/$i $tmpDir || exit 1
+  done
+  tar cf $tmpDir/module.tar \
     deferred \
     >/dev/null 2>&1
 
-## Update version, and extract files to update
-cd $tmpDir
-perl -pi -e 's,"version"\s*:\s*"[^"]+","version" : "'$version'",' bower.json
-perl -pi -e 's,"name"\s*:\s*"[^"]+","name" : "'$package'",' bower.json
-tar xf module.tar
-rm -f module.tar
-perl -pi -e 's,^.*(nocache|<link).*$,,g' demo.html
-perl -pi -e 's,</head,  <link rel="import" href="'$package'.html"></link>\n</head,' demo.html
-perl -pi -e 's,src="bower_components/,src="../,g' demo.html
+  cd $tmpDir || exit 1
 
-## Attach Vaadin .css theme files
-mkdir tmpThemes
-cd tmpThemes || exit 1
-themesJar=`find ~/.m2/repository/com/vaadin/ -name "vaadin-themes-$vaadinVersion.jar"`
-if [ -f $themesJar ]
-then
-  jar xf $themesJar
-  tar cf $tmpDir/themes.tar VAADIN/themes/reindeer/styles.css VAADIN/themes/valo/styles.css
+  ## Extract files to update
+  tar xf module.tar
+  rm -f module.tar
+  perl -pi -e 's,^.*(nocache|<link).*$,,g' demo.html
+  perl -pi -e 's,</head,  <link rel="import" href="'$package'.html"></link>\n</head,' demo.html
+  perl -pi -e 's,src="bower_components/,src="../,g' demo.html
+
+}
+
+UpdateVersion() {
+  cp src/main/webapp/bower.json $tmpDir || exit 1
+  ## Update version, and extract files to update
   cd $tmpDir
-  rm -rf tmpThemes
-  tar xf themes.tar
-  rm -f themes.tar
-fi
+  perl -pi -e 's,^.*'$package'.*$,,g' bower.json
+  perl -pi -e 's,"version"\s*:\s*"[^"]+","version" : "'$version'",' bower.json
+  perl -pi -e 's,"name"\s*:\s*"[^"]+","name" : "'$package'",' bower.json
+}
 
+AttachThemes() {
+  ## Attach Vaadin .css theme files
+  mkdir tmpThemes
+  cd tmpThemes || exit 1
+  themesJar=`find ~/.m2/repository/com/vaadin/ -name "vaadin-themes-$vaadinVersion.jar"`
+  if [ -f $themesJar ]
+  then
+    jar xf $themesJar
+    cd VAADIN/themes || exit 1
+    tar cf $tmpDir/themes.tar . || exit 1
+    # tar cf $tmpDir/themes.tar VAADIN/themes/reindeer/styles.css VAADIN/themes/valo/styles.css
+    cd $tmpDir
+    rm -rf tmpThemes
+    tar xf themes.tar
+    rm -f themes.tar
+  fi
+}
 
-## Check if something has been modified
-if git status  --porcelain | grep . >/dev/null
-then
-   ## If this version already exists remove it
-   if git tag | grep "^v$version$" >/dev/null
-   then
-      git tag -d v$version || exit 1
-      git push origin :refs/tags/v$version || exit 1
-   fi
+UpdateRepo() {
+  ## Check if something has been modified
+  if git status  --porcelain | grep . >/dev/null
+  then
+     ## If this version already exists remove it
+     if git tag | grep "^v$version$" >/dev/null
+     then
+        git tag -d v$version || exit 1
+        git push origin :refs/tags/v$version || exit 1
+     fi
 
-   ## Add new files and commit changes
-   git add .
-   git commit -m "Upgrading version $version" . || exit 1
+     ## Add new files and commit changes
+     git add .
+     git commit -m "Upgrading version $version" . || exit 1
 
-   ## If there is something to push, do it
-   if ! git diff --cached --exit-code
-   then
-      git push origin master || exit 1
-   fi
+     ## If there is something to push, do it
+     if ! git diff --cached --exit-code
+     then
+        git push origin master || exit 1
+     fi
 
-   ## Create the version tags
-   git tag -a v$version -m "Release $version" || exit 1
-   git push origin master --tags || exit 1
-fi
+     ## Create the version tags
+     git tag -a v$version -m "Release $version" || exit 1
+     git push origin master --tags || exit 1
+  fi
+}
+
+echo ">>>> $moduleName"
+echo ">>> CloneRepo"  && CloneRepo
+echo ">>> UpdateVersion"  && UpdateVersion
+[ $moduleName != Themes ] && echo ">>> UpdateModule" && UpdateModule
+[ $moduleName = Themes ] && echo ">>> AttachThemes" && AttachThemes
+echo ">>> UpdateRepo"  && UpdateRepo
+

@@ -14,6 +14,7 @@ do
    VaadinGrid) package=vaadin-grid; gitRepo=$gitUrl/vaadin-grid.git; files="bigdata.js" ;;
    VaadinProgressBar) package=vaadin-progress-bar; gitRepo=$gitUrl/vaadin-progress-bar.git; files="" ;;
    VaadinSlider) package=vaadin-slider; gitRepo=$gitUrl/vaadin-slider.git; files="" ;;
+   Themes) package=vaadin-themes; gitRepo=$gitUrl/vaadin-themes.git; files="";;
    esac
 
    modulePath="$warDir/$module"

@@ -1,6 +1,7 @@
 package com.vaadin.prototype.wc.gwt.client.widgets;
 
 import static com.google.gwt.query.client.GQuery.$;
+import static com.google.gwt.query.client.GQuery.console;
 import static com.google.gwt.query.client.GQuery.document;
 
 import com.google.gwt.core.client.GWT;
@@ -76,10 +77,15 @@ public class WCUtils {
 
         if (!l.isEmpty()) {
             base = l.attr("href").replaceFirst("[\\w\\-]+\\.html", "");
+            if (base.matches("^(|/|.*[\\w\\-]/)$")) {
+                base += "../vaadin-themes/";
+            } else {
+                base += "VAADIN/themes/";
+            }
         } else if (base.contains("VAADIN/widgetsets")) {
-            base += "../../";
+            base += "../themes/";
         }
-        base += "VAADIN/themes/" + theme + "/styles.css";
+        base += theme + "/styles.css";
         container.addClass(theme);
         style.text("@import url('" + base + "')");
     }
