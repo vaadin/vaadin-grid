@@ -15,7 +15,8 @@
 
     <properties>
         <git.bower.repo>git@vaadin-x-bower:/opt/git/</git.bower.repo>
-        <module.names>VaadinComponents VaadinGrid VaadinSlider VaadinProgressBar Themes</module.names>
+        <module.names>VaadinComponents VaadinGrid VaadinSlider VaadinProgressBar Valo Reindeer Themes Angular</module.names>
+        <module.names>Angular</module.names>
         <modulePathPrefix></modulePathPrefix>
         <gwt.loglevel>WARN</gwt.loglevel>
     </properties>

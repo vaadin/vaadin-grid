@@ -13,7 +13,7 @@
   ],
   "dependencies": {
     "webcomponentsjs": "polymer/webcomponentsjs"
-    , "vaadin-themes": ""
+    , "vaadin-valo": ""
   },
   "license": "Apache"
 }

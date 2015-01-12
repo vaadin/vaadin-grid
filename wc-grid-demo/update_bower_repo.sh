@@ -40,9 +40,9 @@ aditionalFiles="$*"
 modulePath="$warDir/$modulePrefix/$moduleName"
 [ -z "$moduleName" ] && echo "Usage $0 <warDir> <modulePrefix> <version> <gitRepo> <package> <vaadinVersion> <moduleName>" && exit 1
 [ ! -d "$warDir" ] && echo "warDir does not exist: $warDir" && exit 1
+[ ! -d "$modulePath" ] && echo "modulePath does not exist: $modulePath" && exit 1
 
 echo "Updating webcomponent '$package $version' in bower repo ($gitRepo)"
-currentDir=`pwd`
 
 CloneRepo() {
   ## Create a tmp dir and remove it on exit
@@ -63,7 +63,7 @@ UpdateModule() {
 
   ## Copy stuff from the war dir
   cp $warDir/demo-$package.html $tmpDir/demo.html || exit 1
-  for i in ng-vaadin.js $aditionalFiles
+  for i in bower.json ng-vaadin.js $aditionalFiles
   do
     cp $warDir/$i $tmpDir || exit 1
   done
@@ -71,29 +71,19 @@ UpdateModule() {
     deferred \
     >/dev/null 2>&1
 
-  cd $tmpDir || exit 1
-
   ## Extract files to update
   tar xf module.tar
   rm -f module.tar
   perl -pi -e 's,^.*(nocache|<link).*$,,g' demo.html
   perl -pi -e 's,</head,  <link rel="import" href="'$package'.html"></link>\n</head,' demo.html
   perl -pi -e 's,src="bower_components/,src="../,g' demo.html
-
 }
 
 UpdateVersion() {
-  cp src/main/webapp/bower.json $tmpDir || exit 1
   ## Update version, and extract files to update
   cd $tmpDir
-  perl -pi -e 's,^.*'$package'.*$,,g' bower.json
   perl -pi -e 's,"version"\s*:\s*"[^"]+","version" : "'$version'",' bower.json
   perl -pi -e 's,"name"\s*:\s*"[^"]+","name" : "'$package'",' bower.json
-}
-
-AttachNg() {
-  cd $currentDir
-  cp ../wc-client/src/main/java/com/vaadin/prototype/wc/gwt/client/js/ng-vaadin.js $tmpDir/vaadin-ng.js || exit 1
 }
 
 AttachThemes() {
@@ -104,16 +94,7 @@ AttachThemes() {
   if [ -f $themesJar ]
   then
     jar xf $themesJar
-    if [ $package = vaadin-valo ]
-    then
-      cd VAADIN/themes/valo || exit 1
-    elif [ $package = vaadin-reindeer ]
-    then
-      cd VAADIN/themes/reindeer || exit 1
-    else
-      cd VAADIN/themes || exit 1
-    fi
-    tar cf $tmpDir/themes.tar . || exit 1
+    tar cf $tmpDir/themes.tar VAADIN/themes/reindeer/styles.css VAADIN/themes/valo/styles.css
     cd $tmpDir
     rm -rf tmpThemes
     tar xf themes.tar
@@ -131,11 +112,11 @@ UpdateRepo() {
         git tag -d v$version || exit 1
         git push origin :refs/tags/v$version || exit 1
      fi
-
+  
      ## Add new files and commit changes
      git add .
      git commit -m "Upgrading version $version" . || exit 1
-
+  
      ## If there is something to push, do it
      if ! git diff --cached --exit-code
      then
@@ -148,11 +129,9 @@ UpdateRepo() {
   fi
 }
 
-echo ">>>> $moduleName"
-echo ">>> CloneRepo"  && CloneRepo
-echo ">>> UpdateVersion"  && UpdateVersion
-[ $moduleName != Themes -a $moduleName != Angular ] && echo ">>> UpdateModule" && UpdateModule
-[ $moduleName = Themes ] && echo ">>> AttachThemes $package" && AttachThemes
-[ $moduleName = Angular ] && echo ">>> AttachAngular" && AttachNg
-echo ">>> UpdateRepo"  && UpdateRepo
+CloneRepo
+UpdateModule
+UpdateVersion
+AttachThemes
+UpdateRepo
 
