@@ -22,18 +22,21 @@ public class GJsFuncDataSource extends GDataSource {
     }
 
     @Override
-    protected void requestRows(final int idx, int count) {
-        JavaScriptObject o = exec(f, idx, count,
+    protected void requestRows(
+            int firstRowIndex,
+            int numberOfRows,
+            com.vaadin.client.data.AbstractRemoteDataSource.RequestRowsCallback<JsArrayMixed> callback) {
+        JavaScriptObject o = exec(f, firstRowIndex, numberOfRows,
                 new AsyncCallback<JavaScriptObject>() {
                     public void onFailure(Throwable caught) {
                     }
 
                     public void onSuccess(JavaScriptObject result) {
-                        setRowData(idx, result);
+                        setRowData(firstRowIndex, result);
                     }
                 });
         if (o != null) {
-            setRowData(idx, o);
+            setRowData(firstRowIndex, o);
         }
     }
 
@@ -44,8 +47,8 @@ public class GJsFuncDataSource extends GDataSource {
 
     private native JavaScriptObject exec(JavaScriptObject f, int idx,
             int count, AsyncCallback<JavaScriptObject> cb) /*-{
-        return f(idx, count, function(r) {
-            cb.@com.google.gwt.user.client.rpc.AsyncCallback::onSuccess(*)(r);
-        });
-    }-*/;
+                                                           return f(idx, count, function(r) {
+                                                           cb.@com.google.gwt.user.client.rpc.AsyncCallback::onSuccess(*)(r);
+                                                           });
+                                                           }-*/;
 }

@@ -1,7 +1,5 @@
 package com.vaadin.prototype.wc.gwt.client;
 
-import static com.google.gwt.query.client.GQuery.$;
-
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.user.client.Window;
 import com.vaadin.prototype.wc.gwt.client.components.ChessBoard;
@@ -43,7 +41,7 @@ public class Demo implements EntryPoint {
             new DemoWrapWC().onModuleLoad();
         } else if (Window.Location.getPath().contains("gwt.html")) {
             new DemoExportWC().onModuleLoad();
-        } else if (Window.Location.getPath().contains("demo.html"))  {
+        } else if (Window.Location.getPath().contains("demo.html")) {
             loadPolymerElement();
             exportGwtWidgets();
         }

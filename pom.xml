@@ -19,7 +19,7 @@
       <gwt.outputstyle>PRETTY</gwt.outputstyle>
       <jetty.version>9.2.3.v20140905</jetty.version>
       <jetty.version>8.1.12.v20130726</jetty.version>
-      <vaadin.version>7.4.0.alpha13</vaadin.version>
+      <vaadin.version>7.4-SNAPSHOT</vaadin.version>
       <maven.test.skip>true</maven.test.skip>
     </properties>
 
@@ -246,6 +246,7 @@
                     <modulePathPrefix>${modulePathPrefix}</modulePathPrefix>
                     <extraJvmArgs>-Xmx2048m</extraJvmArgs>
                     <runTarget>/</runTarget>
+                    <gen>${project.build.directory}/gen</gen>
                 </configuration>
                 <executions>
                     <execution>

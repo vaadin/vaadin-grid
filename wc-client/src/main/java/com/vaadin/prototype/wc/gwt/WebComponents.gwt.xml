@@ -3,8 +3,13 @@
 
     <inherits name='com.google.gwt.user.User'/>
     <inherits name='com.google.gwt.query.QueryMin'/>
+    <inherits name='elemental.Json' />
     <inherits name='com.vaadin.Vaadin'/>
-
+    <generate-with
+        class="com.vaadin.server.widgetsetutils.ConnectorBundleLoaderFactory">
+        <when-type-assignable
+            class="com.vaadin.client.metadata.ConnectorBundleLoader" />
+    </generate-with>
     <!-- TODO: for some reason jsinterop fails with FF and IE
          errors are casting problems seems a problem in GWT
      -->

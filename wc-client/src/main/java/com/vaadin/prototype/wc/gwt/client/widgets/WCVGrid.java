@@ -43,19 +43,18 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.JsArrayObject;
 import com.vaadin.client.data.DataSource;
-import com.vaadin.client.ui.grid.FlyweightCell;
-import com.vaadin.client.ui.grid.Grid;
-import com.vaadin.client.ui.grid.Grid.SelectionMode;
-import com.vaadin.client.ui.grid.GridColumn;
-import com.vaadin.client.ui.grid.GridHeader.HeaderCell;
-import com.vaadin.client.ui.grid.GridHeader.HeaderRow;
-import com.vaadin.client.ui.grid.Renderer;
-import com.vaadin.client.ui.grid.datasources.ListDataSource;
-import com.vaadin.client.ui.grid.selection.SelectionChangeEvent;
-import com.vaadin.client.ui.grid.selection.SelectionChangeHandler;
-import com.vaadin.client.ui.grid.selection.SelectionModel;
-import com.vaadin.client.ui.grid.selection.SelectionModelMulti;
-import com.vaadin.client.ui.grid.selection.SelectionModelSingle;
+import com.vaadin.client.renderers.Renderer;
+import com.vaadin.client.widget.grid.RendererCellReference;
+import com.vaadin.client.widget.grid.datasources.ListDataSource;
+import com.vaadin.client.widget.grid.selection.SelectionEvent;
+import com.vaadin.client.widget.grid.selection.SelectionHandler;
+import com.vaadin.client.widget.grid.selection.SelectionModel;
+import com.vaadin.client.widget.grid.selection.SelectionModelMulti;
+import com.vaadin.client.widget.grid.selection.SelectionModelSingle;
+import com.vaadin.client.widgets.Grid;
+import com.vaadin.client.widgets.Grid.HeaderCell;
+import com.vaadin.client.widgets.Grid.HeaderRow;
+import com.vaadin.client.widgets.Grid.SelectionMode;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLElement;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLEvents;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLShadow;
@@ -80,7 +79,7 @@ import com.vaadin.shared.ui.grid.HeightMode;
 public class WCVGrid extends HTMLTableElement.Prototype implements
         HTMLElement.LifeCycle.Created, HTMLElement.LifeCycle.Attached,
         HTMLElement.LifeCycle.Changed, ValueChangeHandler<Double>, Handler,
-        SelectionChangeHandler<JsArrayMixed>, MutationListener {
+        SelectionHandler<JsArrayMixed>, MutationListener {
 
     public static final String TAG = "v-grid";
 
@@ -94,7 +93,7 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
     private List<JsArrayMixed> vals;
     private boolean changed = true;
     // FIXME: using columns name here make this fail in prod mode
-    private List<GridColumn<Object, JsArrayMixed>> gridColumns;
+    private List<Grid.Column<Object, JsArrayMixed>> gridColumns;
     // We save the original content of the Light-DOM because polyfills remove it
     private Observe lightDom;
 
@@ -124,7 +123,7 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
         gridColumns = new ArrayList<>();
 
         grid = new Grid<JsArrayMixed>();
-        grid.addSelectionChangeHandler(this);
+        grid.addSelectionHandler(this);
     }
 
     /*
@@ -138,11 +137,11 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
                     // hide it, otherwise it's visible if shadow is not used
                     .hide()
                     // observe all mutations in the table
-                    .as(Observe.Observe).observe(Observe.createInit()
-                    .attributes(true)
-                    .characterData(true)
-                    .childList(true)
-                    .subtree(true), this);
+                    .as(Observe.Observe)
+                    .observe(
+                            Observe.createInit().attributes(true)
+                                    .characterData(true).childList(true)
+                                    .subtree(true), this);
         }
         if (!initialized) {
             initialized = true;
@@ -179,34 +178,37 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
         changed = false;
         DataSource<JsArrayMixed> dataSource = null;
         dataSource = grid.getDataSource();
-        if (grid.getSelectionModel() instanceof SelectionModelSingle && $(this).attr("selectionMode").equals("multi")) {
+        if (grid.getSelectionModel() instanceof SelectionModelSingle
+                && $(this).attr("selectionMode").equals("multi")) {
             grid.setSelectionMode(SelectionMode.MULTI);
-        } else if (grid.getSelectionModel() instanceof SelectionModelMulti && !$(this).attr("selectionMode").equals("multi")) {
+        } else if (grid.getSelectionModel() instanceof SelectionModelMulti
+                && !$(this).attr("selectionMode").equals("multi")) {
             grid.setSelectionMode(SelectionMode.SINGLE);
         }
-        while(gridColumns.size() > 0) {
+        while (gridColumns.size() > 0) {
             grid.removeColumn(gridColumns.remove(0));
         }
         if (cols != null) {
             for (int i = 0, l = cols.size(); i < l; i++) {
                 GColumn c = cols.get(i);
-                GridColumn<Object, JsArrayMixed> col;
+                Grid.Column<Object, JsArrayMixed> col;
                 col = createGridColumn(c, i);
                 grid.addColumn(col);
                 gridColumns.add(col);
                 for (int j = 0; j < c.headerData().size(); j++) {
-                    if (grid.getHeader().getRowCount() < c.headerData().size()) {
-                        grid.getHeader().appendRow();
+                    if (grid.getHeaderRowCount() < c.headerData().size()) {
+                        grid.appendHeaderRow();
                     }
                     GHeader header = c.headerData().get(j);
                     int offset = 0;
                     for (int k = 0; k <= j + offset; k++) {
-                        HeaderRow row = grid.getHeader().getRow(k);
+                        HeaderRow row = grid.getHeaderRow(k);
                         if (row.getCell(grid.getColumn(i)).getColspan() != 1) {
                             offset++;
                         }
                     }
-                    HeaderCell cell = grid.getHeader().getRow(j + offset).getCell(col);
+                    HeaderCell cell = grid.getHeaderRow(j + offset)
+                            .getCell(col);
                     cell.setColspan(header.colSpan());
                     Object content = header.content();
                     switch (header.format()) {
@@ -222,8 +224,7 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
                     }
                 }
             }
-            grid.getHeader().setDefaultRow(
-                    grid.getHeader().getRow(headerDefaultRowIndex));
+            grid.setDefaultHeaderRow(grid.getHeaderRow(headerDefaultRowIndex));
         }
 
         loadRows();
@@ -253,43 +254,39 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
                 });
     }
 
-    public static GridColumn<Object, JsArrayMixed> createGridColumn(final GColumn gColumn, final int idx) {
+    public static Grid.Column<Object, JsArrayMixed> createGridColumn(
+            final GColumn gColumn, final int idx) {
         final RegExp templateRegexp = RegExp.compile("\\{\\{data\\}\\}", "ig");
-        return new GridColumn<Object, JsArrayMixed>(
-                new Renderer<Object>() {
-                    public void render(FlyweightCell cell, Object data) {
-                        Object o = gColumn.renderer();
-                        Element elm = cell.getElement();
-                        if (o instanceof JavaScriptObject) {
-                            if (JsUtils
-                                    .isFunction((JavaScriptObject) o)) {
-                                JsUtils.runJavascriptFunction(
-                                        (JavaScriptObject) o, "call",
-                                        o, elm, data, cell.getRow());
-                            } else {
-                                if ($(elm).data("init") == null) {
-                                    $(elm).data("init", true);
-                                    JsUtils.runJavascriptFunction(
-                                            (JavaScriptObject) o,
-                                            "init", elm);
-                                }
-                                JsUtils.runJavascriptFunction(
-                                        (JavaScriptObject) o, "render",
-                                        elm, data);
-                            }
-                        } else {
-                            if (gColumn.template() != null) {
-                                // FIXME: this implementation doesn't
-                                // reuse any of the possible HTML tags
-                                // included in the template.
-                                elm.setInnerHTML(templateRegexp
-                                        .replace(gColumn.template(), String.valueOf(data)));
-                            } else {
-                                elm.setInnerHTML(String.valueOf(data));
-                            }
+        return new Grid.Column<Object, JsArrayMixed>(new Renderer<Object>() {
+            public void render(RendererCellReference cell, Object data) {
+                Object o = gColumn.renderer();
+                Element elm = cell.getElement();
+                if (o instanceof JavaScriptObject) {
+                    if (JsUtils.isFunction((JavaScriptObject) o)) {
+                        JsUtils.runJavascriptFunction((JavaScriptObject) o,
+                                "call", o, elm, data, cell.getRow());
+                    } else {
+                        if ($(elm).data("init") == null) {
+                            $(elm).data("init", true);
+                            JsUtils.runJavascriptFunction((JavaScriptObject) o,
+                                    "init", elm);
                         }
+                        JsUtils.runJavascriptFunction((JavaScriptObject) o,
+                                "render", elm, data);
                     }
-                }) {
+                } else {
+                    if (gColumn.template() != null) {
+                        // FIXME: this implementation doesn't
+                        // reuse any of the possible HTML tags
+                        // included in the template.
+                        elm.setInnerHTML(templateRegexp.replace(
+                                gColumn.template(), String.valueOf(data)));
+                    } else {
+                        elm.setInnerHTML(String.valueOf(data));
+                    }
+                }
+            }
+        }) {
             @Override
             public Object getValue(JsArrayMixed row) {
                 Object o = gColumn.value();
@@ -508,11 +505,12 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
     }
 
     @Override
-    public void onSelectionChange(SelectionChangeEvent<JsArrayMixed> ev) {
+    public void onSelect(SelectionEvent<JsArrayMixed> ev) {
         if (!refreshing) {
             refreshing = true;
             dispatchEvent(selectEvent);
-            setAttribute("selectedRow", "" + (getSelectedRow() < 0 ? "" : getSelectedRow()));
+            setAttribute("selectedRow", ""
+                    + (getSelectedRow() < 0 ? "" : getSelectedRow()));
             refreshing = false;
         }
     }
@@ -544,7 +542,8 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
             grid.setDataSource(new GJsFuncDataSource(jso, size, this));
         } else if (JsUtils.isArray(jso)) {
             loadHeaders();
-            grid.setDataSource(new GJsObjectDataSource(jso.<JsArray<JavaScriptObject>>cast(), this));
+            grid.setDataSource(new GJsObjectDataSource(jso
+                    .<JsArray<JavaScriptObject>> cast(), this));
         } else if (JsUtils.prop(jso, "url") != null) {
             loadHeaders();
             @SuppressWarnings("unused")
@@ -555,13 +554,15 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
     }
 
     boolean refreshing = false;
+
     public void refresh() {
         if ((grid.getDataSource() instanceof GDataSource)) {
             final int a = getSelectedRow();
-            ((GDataSource)grid.getDataSource()).refresh();
+            ((GDataSource) grid.getDataSource()).refresh();
             if (a > 0) {
                 refreshing = true;
                 $(this).delay(5, new Function() {
+                    @Override
                     public void f() {
                         setSelectedRow(a);
                         refreshing = false;
@@ -634,7 +635,7 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
         } else {
             grid.select(grid.getDataSource().getRow(idx));
         }
-        onSelectionChange(null);
+        onSelect(null);
     }
 
     public void jsPropertySelectedRows() {

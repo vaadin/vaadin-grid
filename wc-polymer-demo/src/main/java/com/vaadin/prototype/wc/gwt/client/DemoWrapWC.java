@@ -14,7 +14,6 @@ import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.vaadin.prototype.wc.gwt.client.components.ChessBoard;
 import com.vaadin.prototype.wc.gwt.client.components.CoreCollapse;
@@ -39,7 +38,6 @@ import com.vaadin.prototype.wc.gwt.client.components.PaperRipple;
 import com.vaadin.prototype.wc.gwt.client.components.PaperShadow;
 import com.vaadin.prototype.wc.gwt.client.components.PaperSlider;
 import com.vaadin.prototype.wc.gwt.client.components.PaperToast;
-import com.vaadin.prototype.wc.gwt.client.components.PaperToggleButtonWidget;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLElement;
 import com.vaadin.prototype.wc.gwt.client.util.Elements;
 import com.vaadin.prototype.wc.gwt.client.util.WC;
@@ -116,7 +114,8 @@ public class DemoWrapWC implements EntryPoint {
         collapse.innerHTML(lorem.getParagraphs());
 
         PaperButton button = WC.create(PaperButton.class);
-        button.icon(Icon.ARROW_DROP_DOWN_CIRCLE).label("toogle").raisedButton(true);
+        button.icon(Icon.ARROW_DROP_DOWN_CIRCLE).label("toogle")
+                .raisedButton(true);
         button.addEventListener("click", new EventListener() {
             public void onBrowserEvent(Event event) {
                 collapse.toggle();
@@ -136,10 +135,10 @@ public class DemoWrapWC implements EntryPoint {
         final PaperSlider slider = WC.create(PaperSlider.class);
         final HTMLElement span = WC.create("span");
         slider.addEventListener("change", new EventListener() {
-                public void onBrowserEvent(Event event) {
-                    span.innerHTML("" + slider.value());
-                }
-            });
+            public void onBrowserEvent(Event event) {
+                span.innerHTML("" + slider.value());
+            }
+        });
         slider.pin(true).max(80).value(20);
 
         PaperSlider slider2 = WC.create(PaperSlider.class);
@@ -159,6 +158,7 @@ public class DemoWrapWC implements EntryPoint {
                 .style().background("#8BACE2");
         button.addEventListener("click", new EventListener() {
             int cont = 0;
+
             public void onBrowserEvent(Event event) {
                 String icon = Icon.ALL[cont++ % Icon.ALL.length];
                 button.icon(icon).label(icon);
@@ -175,7 +175,8 @@ public class DemoWrapWC implements EntryPoint {
 
     private void demoShadow() {
         HTMLElement div = WC.create("div");
-        div.style().margin("10px").padding("10px").backgroundColor("white").maxWidth("70%");
+        div.style().margin("10px").padding("10px").backgroundColor("white")
+                .maxWidth("70%");
         div.innerHTML(lorem.getWords(40));
         PaperShadow shadow = WC.create(PaperShadow.class).z(2);
         div.appendChild(shadow);
@@ -187,48 +188,48 @@ public class DemoWrapWC implements EntryPoint {
     }
 
     private void demoCoreMenu() {
-      CoreMenu menu = WC.create(CoreMenu.class);
-      CoreSubmenu submenu1 = WC.create(CoreSubmenu.class);
-      submenu1.icon(Icon.SETTINGS).label("Settings");
-      CoreSubmenu submenu2 = WC.create(CoreSubmenu.class);
-      submenu2.icon(Icon.FAVORITE).label("Favorite");
+        CoreMenu menu = WC.create(CoreMenu.class);
+        CoreSubmenu submenu1 = WC.create(CoreSubmenu.class);
+        submenu1.icon(Icon.SETTINGS).label("Settings");
+        CoreSubmenu submenu2 = WC.create(CoreSubmenu.class);
+        submenu2.icon(Icon.FAVORITE).label("Favorite");
 
-      CoreItem item = WC.create(CoreItem.class);
-      item.icon(Icon.SOCIAL_CAKE).label("Like");
-      submenu1.appendChild(item);
-      item = WC.create(CoreItem.class);
-      item.icon(Icon.ANDROID).label("Android");
-      submenu1.appendChild(item);
+        CoreItem item = WC.create(CoreItem.class);
+        item.icon(Icon.SOCIAL_CAKE).label("Like");
+        submenu1.appendChild(item);
+        item = WC.create(CoreItem.class);
+        item.icon(Icon.ANDROID).label("Android");
+        submenu1.appendChild(item);
 
-      item = WC.create(CoreItem.class);
-      item.icon(Icon.APPS).label("Apps");
-      submenu2.appendChild(item);
-      item = WC.create(CoreItem.class);
-      item.icon(Icon.AV_MIC).label("Sound");
-      submenu2.appendChild(item);
+        item = WC.create(CoreItem.class);
+        item.icon(Icon.APPS).label("Apps");
+        submenu2.appendChild(item);
+        item = WC.create(CoreItem.class);
+        item.icon(Icon.AV_MIC).label("Sound");
+        submenu2.appendChild(item);
 
-      menu.appendChild(submenu1);
-      menu.appendChild(submenu2);
+        menu.appendChild(submenu1);
+        menu.appendChild(submenu2);
 
-      $(menu).addClass("paper-shadow-top-z-3");
+        $(menu).addClass("paper-shadow-top-z-3");
 
-      left.appendChild(menu);
-      menu.style().backgroundColor("antiquewhite");
+        left.appendChild(menu);
+        menu.style().backgroundColor("antiquewhite");
     }
 
     private void demoCoreMenuHtml() {
-        WC.load(CoreIcon.class, CoreIcons.class, CoreMenu.class, CoreSubmenu.class, CoreItem.class);
-        String html = "<core-menu selected='0'>" +
-                "      <core-submenu icon='settings' label='Topics'>" +
-                "        <core-item label='Topic 1'></core-item>" +
-                "        <core-item label='Topic 2'></core-item>" +
-                "      </core-submenu>" +
-                "      <core-submenu icon='favorite' label='Favorites'>" +
-                "        <core-item icon='settings' label='Favorite 1'></core-item>" +
-                "        <core-item label='Favorite 2'></core-item>" +
-                "        <core-item label='Favorite 3'></core-item>" +
-                "      </core-submenu>" +
-                "    </core-menu>";
+        WC.load(CoreIcon.class, CoreIcons.class, CoreMenu.class,
+                CoreSubmenu.class, CoreItem.class);
+        String html = "<core-menu selected='0'>"
+                + "      <core-submenu icon='settings' label='Topics'>"
+                + "        <core-item label='Topic 1'></core-item>"
+                + "        <core-item label='Topic 2'></core-item>"
+                + "      </core-submenu>"
+                + "      <core-submenu icon='favorite' label='Favorites'>"
+                + "        <core-item icon='settings' label='Favorite 1'></core-item>"
+                + "        <core-item label='Favorite 2'></core-item>"
+                + "        <core-item label='Favorite 3'></core-item>"
+                + "      </core-submenu>" + "    </core-menu>";
         $(left).append(html);
     }
 
@@ -239,9 +240,12 @@ public class DemoWrapWC implements EntryPoint {
         final CoreMenuButton menu = WC.create(CoreMenuButton.class);
         menu.icon(Icon.MENU);
 
-        final List<String> items = Arrays.asList(Icon.ARCHIVE, Icon.REPLY, Icon.AV_MOVIE, Icon.AV_VIDEO_YOUTUBE, Icon.CHECK_BOX_OUTLINE, Icon.COMMUNICATION_GMAIL);
+        final List<String> items = Arrays.asList(Icon.ARCHIVE, Icon.REPLY,
+                Icon.AV_MOVIE, Icon.AV_VIDEO_YOUTUBE, Icon.CHECK_BOX_OUTLINE,
+                Icon.COMMUNICATION_GMAIL);
         for (int i = 0; i < items.size(); i++) {
-            CoreItem item = WC.create(CoreItem.class).icon(items.get(i)).label("Item " + i);
+            CoreItem item = WC.create(CoreItem.class).icon(items.get(i))
+                    .label("Item " + i);
             menu.appendChild(item);
         }
 
@@ -266,12 +270,15 @@ public class DemoWrapWC implements EntryPoint {
         });
 
         left.appendChild(toolbar);
-        $(toolbar).css($$("bottom: 0px, color: white, fill: white, background: #7D25AC"));
+        $(toolbar)
+                .css($$("bottom: 0px, color: white, fill: white, background: #7D25AC"));
 
         // FIXME: why is the shadowRoot available after a while?
         new Timer() {
+            @Override
             public void run() {
-                $(menu.shadowRoot()).find("#dropdown").css("background", "#6EA754");
+                $(menu.shadowRoot()).find("#dropdown").css("background",
+                        "#6EA754");
             }
         }.schedule(2000);
 
@@ -286,7 +293,7 @@ public class DemoWrapWC implements EntryPoint {
                 toast.text("Nothing to do yet").show();
             }
         });
-      }
+    }
 
     private void demoDialog() {
         WC.load(CoreTransition.class, CoreTransitionCss.class);
@@ -314,7 +321,8 @@ public class DemoWrapWC implements EntryPoint {
         HTMLElement container = WC.create("div");
         container.setAttribute("horizontal", "");
         container.setAttribute("layout", "");
-        container.style().backgroundColor("#ECD4D8").margin("10px").padding("10px").height("300px");
+        container.style().backgroundColor("#ECD4D8").margin("10px")
+                .padding("10px").height("300px");
         $(container).addClass("paper-shadow-top-z-5");
 
         HTMLElement div1 = WC.create("div");
@@ -359,8 +367,10 @@ public class DemoWrapWC implements EntryPoint {
         b.innerHTML("move");
         b.addEventListener("click", new EventListener() {
             int c = 0;
+
             public void onBrowserEvent(Event event) {
-              chess.fen(c++%2 == 0 ? "k7/8/8/8/8/8/8/7K" : "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
+                chess.fen(c++ % 2 == 0 ? "k7/8/8/8/8/8/8/7K"
+                        : "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
             }
         });
         left.appendChild(b);
@@ -377,13 +387,14 @@ public class DemoWrapWC implements EntryPoint {
     }
 
     private void demoWidgetPaperToggleButton() {
-        gwtPanel.add(new Label("This is a <paper-toggle-button> promoted to widget:"));
-        final PaperToggleButtonWidget b = new PaperToggleButtonWidget();
-        gwtPanel.add(b);
-        b.addChangeHandler(new EventListener() {
-            public void onBrowserEvent(Event event) {
-                toast.text("Toggled, enabled=" + b.checked()).show();
-            }
-        });
+        // gwtPanel.add(new
+        // Label("This is a <paper-toggle-button> promoted to widget:"));
+        // final PaperToggleButtonWidget b = new PaperToggleButtonWidget();
+        // gwtPanel.add(b);
+        // b.addChangeHandler(new EventListener() {
+        // public void onBrowserEvent(Event event) {
+        // toast.text("Toggled, enabled=" + b.checked()).show();
+        // }
+        // });
     }
 }

@@ -20,9 +20,12 @@ public class GJsObjectDataSource extends GDataSource {
     }
 
     @Override
-    protected void requestRows(final int idx, final int count) {
+    protected void requestRows(
+            int firstRowIndex,
+            int numberOfRows,
+            com.vaadin.client.data.AbstractRemoteDataSource.RequestRowsCallback<com.google.gwt.core.client.JsArrayMixed> callback) {
         List<GColumn> cols = wcGrid.getCols();
-        setRowDataFromJs(idx, count, cols, jso);
+        setRowDataFromJs(firstRowIndex, numberOfRows, cols, jso);
     }
 
 }

@@ -22,18 +22,25 @@ public class GRestDataSource extends GDataSource {
     public GRestDataSource(JavaScriptObject cfg, WCVGrid grid) {
         super(grid);
         ajaxCfg = GQ.create(GAjaxConf.class).load(cfg);
-        requestRows(0, 0);
+        requestRows(0, 0, null);
     }
 
     @Override
-    protected void requestRows(final int idx, final int count) {
-        final String url = ajaxCfg.getUrl().replace("{START}", "" + idx).replace("{LENGTH}", "" + count);
+    protected void requestRows(
+            int firstRowIndex,
+            int numberOfRows,
+            com.vaadin.client.data.AbstractRemoteDataSource.RequestRowsCallback<com.google.gwt.core.client.JsArrayMixed> callback) {
+        final String url = ajaxCfg.getUrl()
+                .replace("{START}", "" + firstRowIndex)
+                .replace("{LENGTH}", "" + numberOfRows);
         console.log(url);
 
-        Ajax.post(url, null).done(new Function(){
+        Ajax.post(url, null).done(new Function() {
+            @Override
             public void f() {
                 String json = arguments(0);
-                GAjaxConf.GAjaxResponse r = GQ.create(GAjaxConf.GAjaxResponse.class).parse(json, false);
+                GAjaxConf.GAjaxResponse r = GQ.create(
+                        GAjaxConf.GAjaxResponse.class).parse(json, false);
                 size = r.size();
 
                 List<GAjaxColumn> cfgs = r.columns();
@@ -42,15 +49,16 @@ public class GRestDataSource extends GDataSource {
                     cols = configColumsFromAjaxResponse(cfgs);
                 }
 
-                if (count == 0) {
+                if (numberOfRows == 0) {
                     wcGrid.getGrid().setDataSource(GRestDataSource.this);
                 } else {
                     JsArray<JavaScriptObject> data = r.data();
-                    setRowDataFromJs(idx, count, cols, data);
+                    setRowDataFromJs(firstRowIndex, numberOfRows, cols, data);
                 }
                 wcGrid.adjustHeight();
             }
-        }).fail(new Function(){
+        }).fail(new Function() {
+            @Override
             public void f() {
                 Window.alert("Error getting datasources " + url);
             }
