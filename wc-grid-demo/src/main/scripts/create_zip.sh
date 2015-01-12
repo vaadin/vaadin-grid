@@ -61,6 +61,7 @@ copyNgStuff() {
 createZip() {
   cd $tmpDir
   zip -r /tmp/vaadin-components.zip .
+  echo "Created /tmp/vaadin-components.zip"
 }
 
 createTmp
@@ -72,8 +73,5 @@ copyThemes
 mergeJs
 createZip
 
-echo rm -rf $tmpDir
-
-
-
+rm -rf $tmpDir
 
