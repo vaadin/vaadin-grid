@@ -10,7 +10,10 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Predicate;
+import com.google.gwt.query.client.Promise;
+import com.google.gwt.query.client.plugins.deferred.PromiseFunction;
 import com.google.gwt.user.client.EventListener;
+import com.google.gwt.user.client.Timer;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLElement;
 
 public class WCUtils {
@@ -35,20 +38,35 @@ public class WCUtils {
             return 0;
         }
     }
+    
+    public static Promise ready(Function... fncs) {
+        return new PromiseFunction() {
+            public void f(final com.google.gwt.query.client.Promise.Deferred dfd) {
+                if ("complete" == $(document).prop("readyState")) {
+                    dfd.resolve();
+                } else {
+                    new Timer() {
+                        public void run() {
+                            f(dfd);
+                        }
+                    }.schedule(5);
+                }
+            }
+        }.done(fncs);
+    }
 
     public static void loadVaadinGlobalTheme() {
-        // Wait until body is ready.
-        $(document).on("load", new Function(){
+        ready().done(new Function(){
             public void f() {
-               GQuery body = $("body");
-               String theme = body.attr("vaadin-theme");
-               if (!theme.isEmpty()) {
-                   GQuery style = $("#__vaadin-style");
-                   if (style.isEmpty()) {
-                       style = $("<style id='__vaadin-style' language='text/css'></style>").appendTo($("head"));
-                   }
-                   loadTheme(body, style, theme);
-               }
+                GQuery body = $("body");
+                String theme = body.attr("vaadin-theme");
+                if (!theme.isEmpty()) {
+                    GQuery style = $("#__vaadin-style");
+                    if (style.isEmpty()) {
+                        style = $("<style id='__vaadin-style' language='text/css'></style>").appendTo($("head"));
+                    }
+                    loadTheme(body, style, theme);
+                }
             }
         });
     }
@@ -61,6 +79,7 @@ public class WCUtils {
         if ($(theme).text().contains(theme)) {
             return;
         }
+        console.log("loadVaadinTheme", theme);
         loadTheme($(container), $(style), theme);
     }
 
@@ -73,19 +92,36 @@ public class WCUtils {
                 return h.matches("^(|.*/)(x-vaadin|vaadin-x|v-[\\w\\-]+|vaadin-[\\w\\-]+)\\.html");
             }
         });
+        GQuery s = $("script[src]").filter(new Predicate(){
+            public boolean f(Element e, int index) {
+                String h = $(e).attr("src");
+                return h.matches("^.*\\.nocache.js.*");
+            }
+        });
+        GQuery v = $("script[src]").filter(new Predicate(){
+            public boolean f(Element e, int index) {
+                String h = $(e).attr("src");
+                return h.endsWith("vaadin-components.js");
+            }
+        });
         String base = GWT.getModuleBaseURL().replace(GWT.getModuleName() + "/", "");
-
         if (!l.isEmpty()) {
             base = l.attr("href").replaceFirst("[\\w\\-]+\\.html", "");
             if (base.matches("^(|/|.*[\\w\\-]/)$")) {
-                base += "../vaadin-themes/";
+//                base += "../vaadin-themes/";
+                base += "../vaadin-";
             } else {
                 base += "VAADIN/themes/";
             }
         } else if (base.contains("VAADIN/widgetsets")) {
             base += "../themes/";
+        } else if (!v.isEmpty()) {
+            base = v.attr("src").replace("vaadin-components.js", "themes/");
+        } else if (!s.isEmpty()) {
+            base += "VAADIN/themes/";
         }
         base += theme + "/styles.css";
+        console.log("Theme Url: " + base);
         container.addClass(theme);
         style.text("@import url('" + base + "')");
     }
