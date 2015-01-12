@@ -40,9 +40,9 @@ aditionalFiles="$*"
 modulePath="$warDir/$modulePrefix/$moduleName"
 [ -z "$moduleName" ] && echo "Usage $0 <warDir> <modulePrefix> <version> <gitRepo> <package> <vaadinVersion> <moduleName>" && exit 1
 [ ! -d "$warDir" ] && echo "warDir does not exist: $warDir" && exit 1
-[ $moduleName != Themes -a ! -d "$modulePath" ] && echo "modulePath does not exist: $modulePath" && exit 1
 
 echo "Updating webcomponent '$package $version' in bower repo ($gitRepo)"
+currentDir=`pwd`
 
 CloneRepo() {
   ## Create a tmp dir and remove it on exit
@@ -91,6 +91,12 @@ UpdateVersion() {
   perl -pi -e 's,"name"\s*:\s*"[^"]+","name" : "'$package'",' bower.json
 }
 
+AttachNg() {
+  cd $currentDir
+  cp ../wc-client/src/main/java/com/vaadin/prototype/wc/gwt/client/js/ng-vaadin.js $tmpDir/vaadin-ng.js || exit 1
+  cd $tmpDir
+}
+
 AttachThemes() {
   ## Attach Vaadin .css theme files
   mkdir tmpThemes
@@ -99,9 +105,16 @@ AttachThemes() {
   if [ -f $themesJar ]
   then
     jar xf $themesJar
-    cd VAADIN/themes || exit 1
+    if [ $package = vaadin-valo ]
+    then
+      cd VAADIN/themes/valo || exit 1
+    elif [ $package = vaadin-reindeer ]
+    then
+      cd VAADIN/themes/reindeer || exit 1
+    else
+      cd VAADIN/themes || exit 1
+    fi
     tar cf $tmpDir/themes.tar . || exit 1
-    # tar cf $tmpDir/themes.tar VAADIN/themes/reindeer/styles.css VAADIN/themes/valo/styles.css
     cd $tmpDir
     rm -rf tmpThemes
     tar xf themes.tar
@@ -110,6 +123,7 @@ AttachThemes() {
 }
 
 UpdateRepo() {
+  cd $tmpDir
   ## Check if something has been modified
   if git status  --porcelain | grep . >/dev/null
   then
@@ -139,7 +153,8 @@ UpdateRepo() {
 echo ">>>> $moduleName"
 echo ">>> CloneRepo"  && CloneRepo
 echo ">>> UpdateVersion"  && UpdateVersion
-[ $moduleName != Themes ] && echo ">>> UpdateModule" && UpdateModule
-[ $moduleName = Themes ] && echo ">>> AttachThemes" && AttachThemes
+[ $moduleName != Themes -a $moduleName != Angular ] && echo ">>> UpdateModule" && UpdateModule
+[ $moduleName = Themes ] && echo ">>> AttachThemes $package" && AttachThemes
+[ $moduleName = Angular ] && echo ">>> AttachAngular" && AttachNg
 echo ">>> UpdateRepo"  && UpdateRepo
 
