@@ -3,11 +3,13 @@
 ├── README.txt
 ├── vaadin-components.js
 ├── examples
+│   ├── ng
 │   └── web-components
 ├── gwt
 ├── license.html
 ├── licenses
 ├── ng
+│   └── angularjs
 ├── themes
 │   └── valo
 └── web-components

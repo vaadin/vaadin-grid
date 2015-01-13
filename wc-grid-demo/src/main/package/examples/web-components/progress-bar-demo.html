@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+<head>
+<script src="../../web-components/webcomponentsjs/webcomponents.js"></script>
+<link rel="import" href="../../web-components/vaadin-components/vaadin-components.html"></link>
+<style>
+#meter2 .v-progressbar-indicator {
+  background-image: linear-gradient(to bottom,#E3C51B 2%, #D51616 98%);
+  border: 1px solid #B11392;
+}
+</style>
+</head>
+
+<body vaadin-theme='valo'>
+    <h3>Progress Bar example</h3>
+    <div style='width: 150px; transform: rotate(-90deg);'>
+      <v-progress></v-progress>
+      <v-progress></v-progress>
+      <v-progress></v-progress>
+      <v-progress></v-progress>
+      <v-progress></v-progress>
+      <v-progress></v-progress>
+      <v-progress></v-progress>
+      <v-progress></v-progress>
+      <v-progress></v-progress>
+      <v-progress></v-progress>
+      <v-progress></v-progress>
+      <v-progress></v-progress>
+      <v-progress></v-progress>
+      <v-progress></v-progress>
+      <v-progress></v-progress>
+      <v-progress></v-progress>
+      <v-progress></v-progress>
+    </div>
+    <div id='meter2' style='width: 150px; transform: rotate(0deg);'>
+      <v-progress></v-progress>
+      <v-progress></v-progress>
+      <v-progress></v-progress>
+      <v-progress></v-progress>
+      <v-progress></v-progress>
+      <v-progress></v-progress>
+      <v-progress></v-progress>
+      <v-progress></v-progress>
+      <v-progress></v-progress>
+      <v-progress></v-progress>
+      <v-progress></v-progress>
+      <v-progress></v-progress>
+      <v-progress></v-progress>
+      <v-progress></v-progress>
+      <v-progress></v-progress>
+      <v-progress></v-progress>
+      <v-progress></v-progress>
+    </div>    
+    <script>
+      var prgs = document.querySelectorAll('v-progress');
+      function update() {
+        for (i in prgs) {
+          prgs[i].value =  Math.random();
+        }
+      }
+      setInterval(update, 20)
+    </script>
+    
+</body>
+</html>

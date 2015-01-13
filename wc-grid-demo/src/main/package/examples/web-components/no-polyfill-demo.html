@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<script src="../../web-components/vaadin-components/bigdata.js"></script>
+<link rel="import" href="../../web-components/vaadin-components/vaadin-components.html"></link>
+</head>
+<body >
+  <h3>Slider</h3>
+  <v-slider min='0' max='1000' value='150' shadow theme='valo'></v-slider>
+  <h3>Progress Bar</h3>
+  <v-progress value='0.1' shadow theme='valo' ></v-progress>
+  <script>
+    var s = document.querySelector("v-slider");
+    var p = document.querySelector("v-progress");
+    s.addEventListener('change', function(){
+      p.value = s.value / 1000;
+    }, false);
+
+    myDataProvider = function(index, count, callback) {
+      // simulate lazy loading
+      setTimeout(function() {
+        callback(myBigData.slice(index, index + count));
+      }, 800);
+    };
+  </script>
+  <h3>Grid</h3>
+  <v-grid rowCount='{{myBigDataSize}}' dataSource='{{myDataProvider}}' shadow theme='valo'>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Surname</th>
+        <th>Progress</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr template>
+        <td>Mr. {{data}}</td>
+        <td>{{data}}</td>
+        <td><v-progress value='{{data}}' /></td>
+      </tr>
+    </tbody>    
+  </table>
+  </v-grid>
+</body>
+</html>

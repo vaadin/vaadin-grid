@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+<head>
+<script src="../../web-components/webcomponentsjs/webcomponents.js"></script>
+<link rel="import" href="../../web-components/vaadin-components/vaadin-components.html"></link>
+<style>
+ #box {
+   width: 1px;
+   height: 1px;
+   background: grey;
+   transition: all 0.1s ease-in-out;
+ }
+</style>
+</head>
+<body vaadin-theme='valo'>
+    <h3>Slider Demo</h3>
+    <div style='width: 300px;'>
+      <v-slider id='w' min='1' max='80'></v-slider>
+      <v-slider id='h' min='1' max='400'></v-slider>
+    </div>
+    <div id='box'></div>
+    <script>
+      var w = document.querySelector('#w');
+      var h = document.querySelector('#h');
+      var box = document.querySelector('#box');
+      function change() {
+        box.style.width = w.value + '%';
+        box.style.height = h.value + 'px';
+      }
+      w.addEventListener('change', change);
+      h.addEventListener('change', change);
+    </script>
+</body>
+</html>

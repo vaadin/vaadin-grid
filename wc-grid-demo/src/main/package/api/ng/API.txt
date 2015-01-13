@@ -1,0 +1,41 @@
+# Vaadin Components integration with Angular
+
+## Introduction
+
+Vaadin Components is a set of web elements ready to use in modern browsers and with any javascript framework like Angular.
+
+
+## Imports
+
+Then load Vaadin web components importing the appropriate webcomponent file:
+```
+<!-- Load vaadin theme by hand, note that we need to set class to body -->
+<link href="../../themes/valo/styles.css" rel="stylesheet">
+<!-- Vaadin components -->
+<script src="../../vaadin-components.js"></script>
+<!-- Angular library -->
+<script src="../../ng/angularjs/angular.js"></script>
+<!-- Vaadin components directives -->
+<script src="../../ng/vaadin-ng.js"></script>
+```
+
+
+## Components
+
+### Vaadin Progress Bar
+- *TagName*: v-progress-bar
+- *Attributes*: value theme shadow
+- *Properties*: value
+- *Events*: change
+
+### Vaadin Slider 
+- *TagName*: v-slider
+- *Attributes*: value theme shadow
+- *Properties*: value
+- *Events*: change
+
+### Vaadin Grid
+- *TagName*: v-grid
+- *Attributes*: theme shadow
+- *Properties*: 
+- *Events*: select
