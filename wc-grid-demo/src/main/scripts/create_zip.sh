@@ -4,7 +4,9 @@ package=com.vaadin.prototype.wc
 version=1.0-SNAPSHOT
 client=wc-client
 m2repo=~/.m2/repository/`echo $package | tr "." "/"`
-jarName=vaadin-components-0.1.0.jar
+pkgName=vaadin-components
+jarName=$pkgName-$version.jar
+jsName=$pkgName.js
 
 pwd=`pwd`
 set -xe
@@ -48,8 +50,9 @@ copyThemes() {
 }
 
 mergeJs() {
-  cat $tmpDir/web-components/webcomponentsjs/webcomponents-lite.min.js > $tmpDir/vaadin-components.js
-  grep -v "^<.*>$" $tmpDir/web-components/vaadin-components/vaadin-components.html >> $tmpDir/vaadin-components.js
+  echo "// vaadin components version: $version" > $tmpDir/$jsName
+  tail -1 $tmpDir/web-components/webcomponentsjs/webcomponents-lite.min.js >> $tmpDir/$jsName
+  grep -v "^<.*>$" $tmpDir/web-components/vaadin-components/vaadin-components.html >> $tmpDir/$jsName
 }
 
 copyNgStuff() {
@@ -60,8 +63,12 @@ copyNgStuff() {
 
 createZip() {
   cd $tmpDir
-  zip -r /tmp/vaadin-components.zip .
-  echo "Created /tmp/vaadin-components.zip"
+  content=`ls -1`
+  name=$pkgName-$version
+  mkdir $name
+  mv $content $name
+  zip -qr /tmp/$name.zip .
+  echo "Created /tmp/$name.zip"
 }
 
 createTmp
