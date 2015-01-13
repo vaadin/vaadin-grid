@@ -231,6 +231,7 @@
                     <style>${gwt.outputstyle}</style>
                     <gwtVersion>${gwtversion}</gwtVersion>
                     <compileReport>true</compileReport>
+                    <!-- <detailedSoyc>true</detailedSoyc> -->
                     <compileMetrics>true</compileMetrics>
                     <hostedWebApp>${project.build.directory}/${project.build.finalName}</hostedWebApp>
                     <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
