@@ -191,9 +191,9 @@ public interface HData extends JsonBuilder {
         }
         
         static int rankCounter = 1;
-        public static HData createRandomData(Random random) {
+        public static HData createRandomData(Random random, int count) {
             List<Hero> ret = new ArrayList<Hero>();
-            for (int i = 0 ; i < 100 ; i++) {
+            for (int i = 0 ; i < count ; i++) {
                 Hero h = GQ.create(Hero.class)
                 .setHeight(random.nextInt(100) + 150)
                 .setWeight(random.nextInt(100) + 75)
