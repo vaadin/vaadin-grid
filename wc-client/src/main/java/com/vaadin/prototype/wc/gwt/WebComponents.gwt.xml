@@ -10,10 +10,12 @@
         <when-type-assignable
             class="com.vaadin.client.metadata.ConnectorBundleLoader" />
     </generate-with>
-    <!-- TODO: for some reason jsinterop fails with FF and IE
-         errors are casting problems seems a problem in GWT
-     -->
-    <set-property name="user.agent" value="safari,gecko1_8,ie10,ie9,ie8,ie10" />
+    <generate-with
+        class="com.vaadin.server.widgetsetutils.AcceptCriteriaFactoryGenerator">
+        <when-type-is class="com.vaadin.client.ui.dd.VAcceptCriterionFactory" />
+    </generate-with>
+
+    <set-property name="user.agent" value="safari,gecko1_8,ie10" />
 
     <add-linker name="xsiframe"/>
     <define-linker name="wclinker" class="com.vaadin.prototype.wc.WCLinker" />
