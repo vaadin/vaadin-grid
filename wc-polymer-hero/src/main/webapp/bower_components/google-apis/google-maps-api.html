@@ -36,7 +36,7 @@ Fired when the Maps API library is loaded and ready.
 @event api-load
 -->
 
-<polymer-element name="google-maps-api" extends="core-shared-lib" attributes="version apiKey clientId libraries">
+<polymer-element name="google-maps-api" extends="core-shared-lib" attributes="version apiKey clientId libraries language">
 <script>
 
   Polymer({
@@ -79,17 +79,37 @@ Fired when the Maps API library is loaded and ready.
      */
     version: '3.exp',
 
+    /**
+     * The localized language to load the Maps API with. For more information
+     * see https://developers.google.com/maps/documentation/javascript/basics#Language
+     *
+     * Note: the Maps API defaults to the preffered language setting of the browser.
+     * Use this parameter to override that behavior. 
+     *
+     * @attribute language
+     * @type string
+     * @default null
+     */
+    language: null,
+
     notifyEvent: 'api-load',
 
     ready: function() {
       var url = this.defaultUrl + '&v=' + this.version;
       url += "&libraries=" + this.libraries;
+
       if (this.apiKey && !this.clientId) {
         url += '&key=' + this.apiKey;
       }
+
       if (this.clientId) {
         url += '&client=' + this.clientId;
       }
+
+      if (this.language) {
+        url += '&language=' + this.language;
+      }
+
       this.url = url;
     },
 

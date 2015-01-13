@@ -367,7 +367,12 @@ element.
       var hasContentType = Object.keys(args.headers).some(function (header) {
         return header.toLowerCase() === 'content-type';
       });
-      if (!hasContentType && this.contentType) {
+      // No Content-Type should be specified if sending `FormData`.  
+      // The UA must set the Content-Type w/ a calculated  multipart boundary ID.
+      if (args.body instanceof FormData) {
+        delete args.headers['Content-Type'];
+      } 
+      else if (!hasContentType && this.contentType) {
         args.headers['Content-Type'] = this.contentType;
       }
       if (this.handleAs === 'arraybuffer' || this.handleAs === 'blob' ||

@@ -7,5 +7,5 @@
   "devDependencies": {
     "polymer-test-tools": "Polymer/polymer-test-tools#master"
   },
-  "version": "0.5.1"
+  "version": "0.5.2"
 }

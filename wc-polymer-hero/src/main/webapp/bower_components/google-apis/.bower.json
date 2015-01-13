@@ -1,6 +1,6 @@
 {
   "name": "google-apis",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "homepage": "http://googlewebcomponents.github.io/google-apis",
   "description": "Web components to load Google API libraries",
   "main": "google-apis.html",
@@ -27,11 +27,11 @@
   "dependencies": {
     "core-shared-lib": "Polymer/core-shared-lib#~0.5.1"
   },
-  "_release": "0.4.2",
+  "_release": "0.4.3",
   "_resolution": {
     "type": "version",
-    "tag": "0.4.2",
-    "commit": "971d5c6217737d7d131593c5de7dadf174213792"
+    "tag": "0.4.3",
+    "commit": "a4f49a94f8364ae2e4271beb859121dfa083ae8b"
   },
   "_source": "git://github.com/GoogleWebComponents/google-apis.git",
   "_target": "~0.4.2",

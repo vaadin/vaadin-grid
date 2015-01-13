@@ -40,6 +40,5 @@
   },
   "_source": "git://github.com/GoogleWebComponents/google-map.git",
   "_target": "~0.4.0",
-  "_originalSource": "google-map",
-  "_direct": true
+  "_originalSource": "google-map"
 }

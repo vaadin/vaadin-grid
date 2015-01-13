@@ -1,5 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/google-map/google-map.html">
+<link rel="import" href="../../bower_components/voice-elements/dist/voice-player.html">
 <link rel="import" href="../hero-sparkline/hero-sparkline.html">
 
 <polymer-element name="hero-details" attributes="hero page">
@@ -92,7 +93,8 @@
         <div>
           <p><img alt="" class="picture" src="/placeholder.png"></p>
           <p class="name">{{hero.name}}, a.k.a. <span class="alias">{{hero.heroname}}</span></p>
-          <div class="call v-button v-button-friendly">Call Hero</div>
+          <div on-tap="{{call}}" class="call v-button v-button-friendly">Call Hero</div>
+          <voice-player id="phone" text="Hi! I'd love to chat, but I'm a bit busy at the moment. I'll call you back later."></voice-player>
         </div>
         <div class="vitals">
           <p class="title">Vitals</p>
@@ -155,6 +157,9 @@
         },
         edit: function() {
           this.page = 2;
+        },
+        call: function() {
+          this.$.phone.speak();
         },
         heroChanged: function() {
         }
