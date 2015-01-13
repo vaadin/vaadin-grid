@@ -3,7 +3,7 @@
 <link rel="import" href="../../bower_components/google-map/google-map.html">
 <link rel="import" href="../hero-sparkline/hero-sparkline.html">
 
-<polymer-element name="hero-edit" attributes="heros current page">
+<polymer-element name="hero-edit" attributes="heroes current page">
   <template>
     <style>
       table {
@@ -100,7 +100,7 @@
           this.options = ["a", "b"];
         },
         currentChanged: function() {
-          this.hero = this.current >= 0 ? this.heros[this.current] : {};
+          this.hero = this.current >= 0 ? this.heroes[this.current] : {};
         },
         pageChanged: function() {
           if (this.page == 2) {
@@ -117,10 +117,10 @@
             this.caffeine =  arr[arr.length - 1];
           }
         },
-        herosChanged: function() {
+        heroesChanged: function() {
           this.options = [];
-          for (i in this.heros) {
-            this.options.push(this.heros[i].heroname)
+          for (i in this.heroes) {
+            this.options.push(this.heroes[i].heroname)
           }
         },
         cancel: function() {
@@ -128,17 +128,17 @@
         },
         save: function() {
           for (k in this.hero) {
-            this.heros[this.current][k] = this.hero[k];
+            this.heroes[this.current][k] = this.hero[k];
           }
           this.page = -1;
         },
         remove: function() {
-          this.heros.splice(this.current, 1);
+          this.heroes.splice(this.current, 1);
           this.page = -1;
         },
         terminate: function() {
           // TODO: ask if terminated means remove or just change status
-          this.heros[this.current].status = 'Terminated';
+          this.heroes[this.current].status = 'Terminated';
           this.page = -1;
         },
         inject: function() {

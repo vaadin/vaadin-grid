@@ -22,8 +22,8 @@ import com.vaadin.prototype.wc.gwt.client.widgets.grid.GData;
 
 public interface HData extends JsonBuilder {
     
-    List<Hero> getHeros();
-    HData setHeros(List<Hero> l);
+    List<Hero> getHeroes();
+    HData setHeroes(List<Hero> l);
     
     public interface Hero extends JsonBuilder {
         Hero setRank(int i);
@@ -79,7 +79,7 @@ public interface HData extends JsonBuilder {
                 "Lindström", "Ahlroos", "Paul", "Åstrand", "Signell",
                 "Lehtinen" };
         
-        private static String[] heros = {
+        private static String[] heroes = {
             "The Dapper Mantis",
             "The Gray Charmer",
             "The Misty Prince",
@@ -197,8 +197,8 @@ public interface HData extends JsonBuilder {
                 Hero h = GQ.create(Hero.class)
                 .setHeight(random.nextInt(100) + 150)
                 .setWeight(random.nextInt(100) + 75)
-                .setHeroname(pick(random, heros))
-                .setArchenemy(pick(random, heros))
+                .setHeroname(pick(random, heroes))
+                .setArchenemy(pick(random, heroes))
                 .setName(pick(random, forenames) + " " + pick(random, surnames))
                 .setIq(random.nextInt(500))
                 .setKillcount(random.nextInt(1000))
@@ -220,7 +220,7 @@ public interface HData extends JsonBuilder {
                     return o1.getRank() - o2.getRank();
                 }
             });
-            return GQ.create(HData.class).setHeros(ret);
+            return GQ.create(HData.class).setHeroes(ret);
         }
     }    
 

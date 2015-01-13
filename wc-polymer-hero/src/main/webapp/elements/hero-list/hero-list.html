@@ -4,7 +4,7 @@
 <link rel="import" href="../hero-sparkline/hero-sparkline.html">
 
 <script src="../../vaadin-x-utils.js"></script>
-<polymer-element name="hero-list" attributes="hero heros current page">
+<polymer-element name="hero-list" attributes="hero heroes current page">
   <template>
     <core-ajax
      auto = "true"
@@ -40,10 +40,10 @@
           this.size = 0;
           this.$.ajax.addEventListener('core-response', function(e) {
             waitUntilGridReady(_this.$.grid, function(grid) {
-                _this.heros = e.detail.response.heros;
-                _this.size = _this.heros.length;
+                _this.heroes = e.detail.response.heroes;
+                _this.size = _this.heroes.length;
                 grid.rowCount = _this.size;
-                grid.dataSource = _this.heros;
+                grid.dataSource = _this.heroes;
                 grid.columns[3].renderer = function(element, data, rowIndex) {
                   element.innerHTML = (data.latitude + " " + data.longitude).replace(/(\d\.\d{4})\d+/g,"$1");
                 };
@@ -65,16 +65,16 @@
           });
           this.$.grid.addEventListener("select", function(e) {
             _this.current = _this.$.grid.selectedRow;
-            if (_this.heros && _this.current >= 0) {
+            if (_this.heroes && _this.current >= 0) {
               _this.page = 1;
-              _this.hero = _this.heros[_this.current];
+              _this.hero = _this.heroes[_this.current];
             }
           });
 
         },
         pageChanged: function() {
           if (this.page == -1) {
-            this.size = this.heros.length;
+            this.size = this.heroes.length;
             this.$.grid.refresh();
           }
         },
