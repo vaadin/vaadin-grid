@@ -92,6 +92,7 @@
       img.picture {
         height: 60px;
         width: 60px;
+        border-radius: 60px;
       }
     </style>
     <div id="popup" layout>
@@ -102,7 +103,7 @@
           <div class="v-button v-button-friendly" on-tap='{{save}}'>Save</div>
         </div>
         <div class="name">
-          <div><img alt="" class="picture" src="/placeholder.png"></div>
+          <div><img alt="" class="picture" src="{{hero.picture}}"></div>
           <div>
             <div>
               <core-input value='{{hero.name}}'></core-input>

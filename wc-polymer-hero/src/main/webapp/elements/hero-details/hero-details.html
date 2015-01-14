@@ -75,6 +75,7 @@
       img.picture {
         height: 60px;
         width: 60px;
+        border-radius: 60px;
       }
       div.call {
         color: white;
@@ -91,7 +92,7 @@
           <div style="float: none; clear: both"></div>
         </div>
         <div>
-          <p><img alt="" class="picture" src="/placeholder.png"></p>
+          <p><img alt="" class="picture" src="{{hero.picture}}"></p>
           <p class="name">{{hero.name}}, a.k.a. <span class="alias">{{hero.heroname}}</span></p>
           <div on-tap="{{call}}" class="call v-button v-button-friendly">Call Hero</div>
           <voice-player id="phone" text="Hi! I'd love to chat, but I'm a bit busy at the moment. I'll call you back later."></voice-player>

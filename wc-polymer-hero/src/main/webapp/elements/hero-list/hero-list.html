@@ -105,6 +105,7 @@
             if (_this.heroes && _this.current >= 0) {
               _this.page = 1;
               _this.hero = _this.heroes[_this.current];
+              _this.hero.picture = "http://lorempixel.com/200/200/animals/?" + new Date().getTime();
             }
           });
         },
