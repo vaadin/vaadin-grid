@@ -18,7 +18,10 @@ createTmp() {
 }
 
 copyStaticStuff() {
-  cp -r $pwd/src/main/package/* $tmpDir
+  for i in README.txt license.html licenses api examples 
+  do
+    cp -r $pwd/src/main/package/$i $tmpDir
+  done
 }
 
 copyGwtStuff() {
@@ -71,6 +74,10 @@ createZip() {
   echo "Created /tmp/$name.zip"
 }
 
+removeUnused() {
+  find $tmpDir '(' -name .bower.json -o -name .gitignore ')' -delete
+}
+
 createTmp
 copyStaticStuff
 copyGwtStuff
@@ -78,6 +85,7 @@ copyNgStuff
 copyBowerStuff
 copyThemes
 mergeJs
+removeUnused
 createZip
 
 rm -rf $tmpDir

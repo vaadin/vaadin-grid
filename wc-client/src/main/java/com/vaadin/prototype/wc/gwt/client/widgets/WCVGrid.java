@@ -39,6 +39,7 @@ import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.JsArrayObject;
@@ -490,7 +491,8 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
 
     @JsNoExport
     private void adjustHeight(int size) {
-        if (size > 0) {
+        // TODO: fix this in Grid, it seems this only works with reindeer
+        if (Window.Location.getParameter("resize") != null && size > 0) {
             this.size = size;
             grid.setHeightMode(HeightMode.ROW);
             grid.setHeightByRows(Math.min(size,
