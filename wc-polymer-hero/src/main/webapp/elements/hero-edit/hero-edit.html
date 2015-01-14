@@ -94,7 +94,7 @@
         width: 60px;
       }
     </style>
-    <div id="popup">
+    <div id="popup" layout>
       <div id="left">
         <div class="controls">
           <div>Superhero details</div>
@@ -114,10 +114,10 @@
         <div class="vitals">
           <div>Vitals</div>
           <div>
-            <div>Heart rate {{hero.vitals.heart[0]}}</div>
+            <div><hero-sparkline color='#DF0016' height='12' width='90' points='{{hero.vitals.heart}}'></hero-sparkline><p>Heart rate</p></div>
             <div class="caffeine">
               <div>
-                <div>{{hero.vitals.coffee[0]}}</div>
+                <div>{{caffeine * 100}} %</div>
                 <div class="v-button v-button-friendly v-button-small" on-tap='{{inject}}'>Inject</div>
               </div>
               <div>Caffeine saturation</div>
@@ -152,11 +152,11 @@
         </div>
         <div class="v-button v-button-friendly" on-tap='{{terminate}}'>Terminate Hero</div>
       </div>
-    </div>
-    <div id='emap' class='map'>
-      <google-map id='gemap' zoom="10" fit>
-        <google-map-marker id='gemark' title="{{hero.name}}" latitude="{{hero.location.latitude}}" longitude="{{hero.location.longitude}}"  draggable="true">{{hero.name}}</google-map-marker>
-      </google-map>
+      <div id='emap' class='map'>
+        <google-map id='gemap' zoom="10" fit>
+          <google-map-marker id='gemark' title="{{hero.name}}" latitude="{{hero.location.latitude}}" longitude="{{hero.location.longitude}}"  draggable="true">{{hero.name}}</google-map-marker>
+        </google-map>
+      </div>
     </div>
   </template>
   <script>
