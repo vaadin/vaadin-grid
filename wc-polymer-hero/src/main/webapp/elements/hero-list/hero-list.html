@@ -93,11 +93,11 @@
                 // Magic number 60 is from the selection column, due to be removed in
                 // single selection mode in future.
                 var w = grid.clientWidth - 60;
-                grid.setColumnWidth(1, Math.floor(w*0.06));
+                grid.setColumnWidth(0, Math.floor(w*0.06));
+                grid.setColumnWidth(1, Math.floor(w*0.2));
                 grid.setColumnWidth(2, Math.floor(w*0.2));
-                grid.setColumnWidth(3, Math.floor(w*0.2));
-                grid.setColumnWidth(4, Math.floor(w*0.34));
-                grid.setColumnWidth(5, Math.floor(w*0.2));
+                grid.setColumnWidth(3, Math.floor(w*0.34));
+                grid.setColumnWidth(4, Math.floor(w*0.2));
             });
           });
           this.$.grid.addEventListener("select", function(e) {
