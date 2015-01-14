@@ -1,0 +1,63 @@
+$v-background-color: hsl(0, 0, 99.5%);
+$v-app-background-color: #fff;
+$v-focus-color: hsl(218, 80%, 60%);
+$v-border: 1px solid (v-shade 0.6);
+$v-border-radius: 3px;
+$v-bevel: inset 0 1px 0 v-tint;
+$v-textfield-bevel: false;
+$v-shadow: false;
+$valo-menu-background-color: hsl(218, 20%, 98%);
+
+$v-font-family: "Open Sans", sans-serif;
+$v-gradient: v-linear 0%;
+$v-font-color: #737373;
+$v-link-font-color: #1b84e0;
+$v-friendly-color: #1b84e0;
+$v-font-size: 18px;
+$font-size: $v-font-size;
+$v-table-row-height: 40px;
+$v-selection-color: #f0f0f0;
+
+@import "valo";
+
+.heroes.valo /deep/, .heroes.valo {
+  @include valo;
+  .v-grid {
+    outline: 0;
+    .v-grid-row {
+      border-left: none;
+    }
+    .v-grid-cell.v-grid-cell-active {
+      @include box-shadow(0 0 0 rgba(0, 0, 0, 0));
+    }
+    .v-grid-tablewrapper {
+      border: 0;
+    }
+    .v-grid-body {
+      .v-grid-cell {
+		border-top: 0;
+        border-bottom: 1px solid #e3e3e3;
+	    color: #737373;
+      }
+	  .v-grid-row {
+	    &:nth-child(odd) td, &:nth-child(even) td {
+          background-color: $v-grid-row-background-color;
+		  font-weight: normal;
+        }
+		&.v-grid-row-active td {
+          color: #666666;
+		  font-weight: 400;
+		}
+      }
+    }
+	.v-grid-header {
+	  .v-grid-cell {
+	    background-color: #fafafa;
+	  }
+	  th {
+	    text-align: left;
+        color: #666666;
+	  }
+	}
+  }
+}

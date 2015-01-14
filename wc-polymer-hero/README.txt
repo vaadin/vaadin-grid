@@ -21,3 +21,7 @@ import:
   $ mvn gwt:run
  and point your browser to
   http://127.0.0.1:8888/index.html
+
+
+Custom valo theme recompilation:
+$ sass custom-valo\valo\shadowstyles.scss src\main\webapp\shadowstyles.css
