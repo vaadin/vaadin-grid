@@ -1,0 +1,28 @@
+{
+  "name": "vaadin-components",
+  "homepage": "http://vaadin.com",
+  "authors": [
+    "manolo@vaadin.com"
+  ],
+  "description": "Vaadin web components",
+  "keywords": [
+    "vaadin",
+    "web",
+    "components"
+  ],
+  "dependencies": {
+    "webcomponentsjs": "polymer/webcomponentsjs",
+    "vaadin-valo": ""
+  },
+  "license": "Apache",
+  "_release": "fb6c928982",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "fb6c928982d4ad1ce51b106f094063dd718d40c9"
+  },
+  "_source": "git://vaadin-x-bower/vaadin-components.git",
+  "_target": "*",
+  "_originalSource": "vaadin-components",
+  "_direct": true
+}
