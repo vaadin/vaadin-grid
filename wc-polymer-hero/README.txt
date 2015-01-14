@@ -1,5 +1,3 @@
-
-
 This is the Hero demo project
 
 It uses polymer + vaadin
@@ -21,5 +19,5 @@ import:
   <link rel="import" href="../../vaadin-x.html">
  run
   $ mvn gwt:run
- and point your browser 
+ and point your browser to
   http://127.0.0.1:8888/index.html
