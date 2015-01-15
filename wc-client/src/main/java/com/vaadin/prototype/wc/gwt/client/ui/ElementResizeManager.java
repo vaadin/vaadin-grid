@@ -290,7 +290,6 @@ public class ElementResizeManager {
      */
     private static native void onElementScroll(JavaScriptObject event)
     /*-{
-        console.log("ElementResizemanager::onElementScroll", event);
         var target = event.currentTarget;
 
         // call ElementResizeManager.resetHelpers(target);
