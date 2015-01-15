@@ -104,6 +104,7 @@ AttachThemes() {
   themesJar=`find ~/.m2/repository/com/vaadin/ -name "vaadin-themes-$vaadinVersion.jar"`
   if [ -f $themesJar ]
   then
+    echo "Extracting $themesJar"
     jar xf $themesJar
     if [ $package = vaadin-valo ]
     then
@@ -119,6 +120,8 @@ AttachThemes() {
     rm -rf tmpThemes
     tar xf themes.tar
     rm -f themes.tar
+  else
+    echo "Unable To find a valid theme .jar for version $vaadinVersion in ~/.m2/repository/com/vaadin/" || exit 1
   fi
 }
 
