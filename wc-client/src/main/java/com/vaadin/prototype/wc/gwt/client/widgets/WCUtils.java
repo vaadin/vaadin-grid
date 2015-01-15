@@ -3,6 +3,7 @@ package com.vaadin.prototype.wc.gwt.client.widgets;
 import static com.google.gwt.query.client.GQuery.$;
 import static com.google.gwt.query.client.GQuery.console;
 import static com.google.gwt.query.client.GQuery.document;
+import static com.google.gwt.query.client.GQuery.window;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -38,7 +39,7 @@ public class WCUtils {
             return 0;
         }
     }
-    
+
     public static Promise ready(Function... fncs) {
         return new PromiseFunction() {
             public void f(final com.google.gwt.query.client.Promise.Deferred dfd) {
@@ -71,7 +72,7 @@ public class WCUtils {
         });
     }
 
-    public static void loadVaadinTheme(HTMLElement container, HTMLElement el, HTMLElement style, String def) {
+    public static void loadVaadinTheme(HTMLElement container, HTMLElement el, HTMLElement style, String def, Function... f) {
         String theme = getAttrValue(el, "theme", def);
         if (theme == null) {
             return;
@@ -81,24 +82,47 @@ public class WCUtils {
         }
         console.log("loadVaadinTheme", theme);
         loadTheme($(container), $(style), theme);
+        $(window).delay(100, f);
+    }
+
+    public static GQuery linksAndScripts(final GQuery g) {
+        GQuery imports = g.find("link[rel='import'], script[src]");
+        imports.each(new Function(){
+            public void f() {
+                GQuery a = $("<a>", g.get(0));
+                String attr = $(this).prop("href") != null ? "href" : "src";
+                a.prop("href", $(this).attr(attr));
+                $(this).attr(attr, a.prop("href"));
+            }
+        });
+        GQuery toAdd = $();
+        for (Element e : imports.elements()) {
+            Element d = $(e).prop("import");
+            if (d != null) {
+                toAdd.add(linksAndScripts($(d)));
+            }
+        }
+        return imports.add(toAdd);
     }
 
     private static void loadTheme(GQuery container, GQuery style, String theme) {
+        // Get all scripts and links in the page, even those nested in imports
+        GQuery links = linksAndScripts($(document));
         // This code is very tricky and tries to figure out where vaadin themes are.
         // GWT moduleBaseUrl does not work if we use link imports.
-        GQuery l = $("link[href]").filter(new Predicate(){
+        GQuery l = links.filter(new Predicate(){
             public boolean f(Element e, int index) {
                 String h = $(e).attr("href");
-                return h.matches("^(|.*/)(x-vaadin|vaadin-x|v-[\\w\\-]+|vaadin-[\\w\\-]+)\\.html");
+                return h.matches("^(|.*/)(vaadin-[\\w\\-]+)\\.html");
             }
         });
-        GQuery s = $("script[src]").filter(new Predicate(){
+        GQuery s = links.filter(new Predicate(){
             public boolean f(Element e, int index) {
                 String h = $(e).attr("src");
                 return h.matches("^.*\\.nocache.js.*");
             }
         });
-        GQuery v = $("script[src]").filter(new Predicate(){
+        GQuery v = links.filter(new Predicate(){
             public boolean f(Element e, int index) {
                 String h = $(e).attr("src");
                 return h.endsWith("vaadin-components.js");
