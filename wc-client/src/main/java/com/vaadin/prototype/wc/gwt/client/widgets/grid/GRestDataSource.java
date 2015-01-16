@@ -27,9 +27,9 @@ public class GRestDataSource extends GDataSource {
 
     @Override
     protected void requestRows(
-            int firstRowIndex,
-            int numberOfRows,
-            com.vaadin.client.data.AbstractRemoteDataSource.RequestRowsCallback<com.google.gwt.core.client.JsArrayMixed> callback) {
+            final int firstRowIndex,
+            final int numberOfRows,
+            final com.vaadin.client.data.AbstractRemoteDataSource.RequestRowsCallback<com.google.gwt.core.client.JsArrayMixed> callback) {
         final String url = ajaxCfg.getUrl()
                 .replace("{START}", "" + firstRowIndex)
                 .replace("{LENGTH}", "" + numberOfRows);

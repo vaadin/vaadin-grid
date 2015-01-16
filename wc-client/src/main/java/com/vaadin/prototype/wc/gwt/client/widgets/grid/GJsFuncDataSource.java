@@ -23,9 +23,9 @@ public class GJsFuncDataSource extends GDataSource {
 
     @Override
     protected void requestRows(
-            int firstRowIndex,
-            int numberOfRows,
-            com.vaadin.client.data.AbstractRemoteDataSource.RequestRowsCallback<JsArrayMixed> callback) {
+            final int firstRowIndex,
+            final int numberOfRows,
+            final com.vaadin.client.data.AbstractRemoteDataSource.RequestRowsCallback<JsArrayMixed> callback) {
         JavaScriptObject o = exec(f, firstRowIndex, numberOfRows,
                 new AsyncCallback<JavaScriptObject>() {
                     public void onFailure(Throwable caught) {
@@ -46,9 +46,10 @@ public class GJsFuncDataSource extends GDataSource {
     }
 
     private native JavaScriptObject exec(JavaScriptObject f, int idx,
-            int count, AsyncCallback<JavaScriptObject> cb) /*-{
-                                                           return f(idx, count, function(r) {
-                                                           cb.@com.google.gwt.user.client.rpc.AsyncCallback::onSuccess(*)(r);
-                                                           });
-                                                           }-*/;
+            int count, AsyncCallback<JavaScriptObject> cb)
+   /*-{
+       return f(idx, count, function(r) {
+           cb.@com.google.gwt.user.client.rpc.AsyncCallback::onSuccess(*)(r);
+       });
+   }-*/;
 }
