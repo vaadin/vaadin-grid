@@ -10,19 +10,19 @@ import com.vaadin.prototype.wc.gwt.client.*;
 import com.vaadin.prototype.wc.gwt.client.util.*;
 
 public class CoreDropdownOverlayWidget extends CoreOverlayWidget  {
-  
+
     protected String[] events() {
       return new String[]{};
     }
-    
+
     public CoreDropdownOverlayWidget() {
       super(WC.create(CoreDropdownOverlay.class));
     }
-    
+
     public CoreDropdownOverlayWidget(CoreDropdownOverlay element) {
       super(element);
     }
-    
+
     protected CoreDropdownOverlay element() {
       return (CoreDropdownOverlay)super.getElement();
     }

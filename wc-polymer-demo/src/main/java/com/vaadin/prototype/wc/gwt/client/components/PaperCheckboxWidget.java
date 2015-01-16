@@ -10,19 +10,19 @@ import com.vaadin.prototype.wc.gwt.client.*;
 import com.vaadin.prototype.wc.gwt.client.util.*;
 
 public class PaperCheckboxWidget extends PaperRadioButtonWidget  {
-  
+
     protected String[] events() {
       return new String[]{"change"};
     }
-    
+
     public PaperCheckboxWidget() {
       super(WC.create(PaperCheckbox.class));
     }
-    
+
     public PaperCheckboxWidget(PaperCheckbox element) {
       super(element);
     }
-    
+
     protected PaperCheckbox element() {
       return (PaperCheckbox)super.getElement();
     }

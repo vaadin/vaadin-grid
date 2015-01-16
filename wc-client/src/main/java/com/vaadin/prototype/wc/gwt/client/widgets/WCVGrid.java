@@ -152,7 +152,7 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
             }
             elementWidget.addAttachHandler(this);
 
-            if (getAttribute("shadow") != null) {
+            if (WCUtils.getAttrBooleanValue(this, "shadow", false)) {
                 HTMLShadow shadow = createShadowRoot();
                 shadow.appendChild(style);
                 shadow.appendChild(container);

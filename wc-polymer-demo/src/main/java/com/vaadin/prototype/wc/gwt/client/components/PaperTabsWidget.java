@@ -10,19 +10,19 @@ import com.vaadin.prototype.wc.gwt.client.*;
 import com.vaadin.prototype.wc.gwt.client.util.*;
 
 public class PaperTabsWidget extends CoreSelectorWidget  {
-  
+
     protected String[] events() {
       return new String[]{};
     }
-    
+
     public PaperTabsWidget() {
       super(WC.create(PaperTabs.class));
     }
-    
+
     public PaperTabsWidget(PaperTabs element) {
       super(element);
     }
-    
+
     protected PaperTabs element() {
       return (PaperTabs)super.getElement();
     }

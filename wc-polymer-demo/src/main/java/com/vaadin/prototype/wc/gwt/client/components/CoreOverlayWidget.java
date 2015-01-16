@@ -10,19 +10,19 @@ import com.vaadin.prototype.wc.gwt.client.*;
 import com.vaadin.prototype.wc.gwt.client.util.*;
 
 public class CoreOverlayWidget extends BaseWidget  {
-  
+
     protected String[] events() {
       return new String[]{};
     }
-    
+
     public CoreOverlayWidget() {
       super(WC.create(CoreOverlay.class));
     }
-    
+
     public CoreOverlayWidget(CoreOverlay element) {
       super(element);
     }
-    
+
     protected CoreOverlay element() {
       return (CoreOverlay)super.getElement();
     }

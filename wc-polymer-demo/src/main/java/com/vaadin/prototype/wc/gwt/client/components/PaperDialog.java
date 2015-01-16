@@ -41,7 +41,7 @@ public interface PaperDialog extends HTMLElement  {
   @JsProperty PaperDialog transition(String val);
   @JsProperty String transition();
 
-  /** 
+  /**
    * Toggle the dialog's opened state.
    * @method toggle
    */

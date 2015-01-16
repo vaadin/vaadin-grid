@@ -10,19 +10,19 @@ import com.vaadin.prototype.wc.gwt.client.*;
 import com.vaadin.prototype.wc.gwt.client.util.*;
 
 public class PaperInputWidget extends CoreInputWidget  {
-  
+
     protected String[] events() {
       return new String[]{};
     }
-    
+
     public PaperInputWidget() {
       super(WC.create(PaperInput.class));
     }
-    
+
     public PaperInputWidget(PaperInput element) {
       super(element);
     }
-    
+
     protected PaperInput element() {
       return (PaperInput)super.getElement();
     }

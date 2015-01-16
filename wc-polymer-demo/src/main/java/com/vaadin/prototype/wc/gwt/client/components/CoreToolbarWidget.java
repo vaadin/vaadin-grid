@@ -10,19 +10,19 @@ import com.vaadin.prototype.wc.gwt.client.*;
 import com.vaadin.prototype.wc.gwt.client.util.*;
 
 public class CoreToolbarWidget extends BaseWidget  {
-  
+
     protected String[] events() {
       return new String[]{};
     }
-    
+
     public CoreToolbarWidget() {
       super(WC.create(CoreToolbar.class));
     }
-    
+
     public CoreToolbarWidget(CoreToolbar element) {
       super(element);
     }
-    
+
     protected CoreToolbar element() {
       return (CoreToolbar)super.getElement();
     }

@@ -10,19 +10,19 @@ import com.vaadin.prototype.wc.gwt.client.*;
 import com.vaadin.prototype.wc.gwt.client.util.*;
 
 public class CoreSubmenuWidget extends CoreItemWidget  {
-  
+
     protected String[] events() {
       return new String[]{};
     }
-    
+
     public CoreSubmenuWidget() {
       super(WC.create(CoreSubmenu.class));
     }
-    
+
     public CoreSubmenuWidget(CoreSubmenu element) {
       super(element);
     }
-    
+
     protected CoreSubmenu element() {
       return (CoreSubmenu)super.getElement();
     }

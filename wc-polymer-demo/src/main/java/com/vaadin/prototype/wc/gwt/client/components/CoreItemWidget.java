@@ -10,19 +10,19 @@ import com.vaadin.prototype.wc.gwt.client.*;
 import com.vaadin.prototype.wc.gwt.client.util.*;
 
 public class CoreItemWidget extends BaseWidget  {
-  
+
     protected String[] events() {
       return new String[]{};
     }
-    
+
     public CoreItemWidget() {
       super(WC.create(CoreItem.class));
     }
-    
+
     public CoreItemWidget(CoreItem element) {
       super(element);
     }
-    
+
     protected CoreItem element() {
       return (CoreItem)super.getElement();
     }

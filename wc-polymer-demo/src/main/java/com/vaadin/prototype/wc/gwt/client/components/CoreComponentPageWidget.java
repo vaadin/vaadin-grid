@@ -10,19 +10,19 @@ import com.vaadin.prototype.wc.gwt.client.*;
 import com.vaadin.prototype.wc.gwt.client.util.*;
 
 public class CoreComponentPageWidget extends CoreMetaWidget  {
-  
+
     protected String[] events() {
       return new String[]{"core-response","core-error","core-complete"};
     }
-    
+
     public CoreComponentPageWidget() {
       super(WC.create(CoreComponentPage.class));
     }
-    
+
     public CoreComponentPageWidget(CoreComponentPage element) {
       super(element);
     }
-    
+
     protected CoreComponentPage element() {
       return (CoreComponentPage)super.getElement();
     }

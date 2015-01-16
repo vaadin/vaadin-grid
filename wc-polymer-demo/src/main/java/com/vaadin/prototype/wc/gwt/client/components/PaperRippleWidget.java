@@ -10,19 +10,19 @@ import com.vaadin.prototype.wc.gwt.client.*;
 import com.vaadin.prototype.wc.gwt.client.util.*;
 
 public class PaperRippleWidget extends BaseWidget  {
-  
+
     protected String[] events() {
       return new String[]{};
     }
-    
+
     public PaperRippleWidget() {
       super(WC.create(PaperRipple.class));
     }
-    
+
     public PaperRippleWidget(PaperRipple element) {
       super(element);
     }
-    
+
     protected PaperRipple element() {
       return (PaperRipple)super.getElement();
     }

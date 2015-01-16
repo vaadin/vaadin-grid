@@ -10,19 +10,19 @@ import com.vaadin.prototype.wc.gwt.client.*;
 import com.vaadin.prototype.wc.gwt.client.util.*;
 
 public class CoreKeyHelperWidget extends BaseWidget  {
-  
+
     protected String[] events() {
       return new String[]{};
     }
-    
+
     public CoreKeyHelperWidget() {
       super(WC.create(CoreKeyHelper.class));
     }
-    
+
     public CoreKeyHelperWidget(CoreKeyHelper element) {
       super(element);
     }
-    
+
     protected CoreKeyHelper element() {
       return (CoreKeyHelper)super.getElement();
     }

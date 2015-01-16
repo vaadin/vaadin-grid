@@ -10,19 +10,19 @@ import com.vaadin.prototype.wc.gwt.client.*;
 import com.vaadin.prototype.wc.gwt.client.util.*;
 
 public class CoreIconButtonWidget extends BaseWidget  {
-  
+
     protected String[] events() {
       return new String[]{};
     }
-    
+
     public CoreIconButtonWidget() {
       super(WC.create(CoreIconButton.class));
     }
-    
+
     public CoreIconButtonWidget(CoreIconButton element) {
       super(element);
     }
-    
+
     protected CoreIconButton element() {
       return (CoreIconButton)super.getElement();
     }

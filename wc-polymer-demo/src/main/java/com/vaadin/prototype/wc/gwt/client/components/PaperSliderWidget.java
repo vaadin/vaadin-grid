@@ -10,19 +10,19 @@ import com.vaadin.prototype.wc.gwt.client.*;
 import com.vaadin.prototype.wc.gwt.client.util.*;
 
 public class PaperSliderWidget extends CoreRangeWidget  {
-  
+
     protected String[] events() {
       return new String[]{"change"};
     }
-    
+
     public PaperSliderWidget() {
       super(WC.create(PaperSlider.class));
     }
-    
+
     public PaperSliderWidget(PaperSlider element) {
       super(element);
     }
-    
+
     protected PaperSlider element() {
       return (PaperSlider)super.getElement();
     }

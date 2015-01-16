@@ -150,14 +150,14 @@ public interface CoreInput extends HTMLElement /**
    * Example:
    *
    *     // valid only if the value is a number
-   *     <core-input validate="^[0-9]*$"></core-input> 
-   * 
+   *     <core-input validate="^[0-9]*$"></core-input>
+   *
    *     // valid only if the value is a number
    *     this.$.input.validate = /^[0-9]*$/;
    *
    *     this.$.input2.validate = function(value) {
    *         // valid only if the value is 'foo'
-   *         return value === 'foo';  
+   *         return value === 'foo';
    *     }
    *
    * @attribute validate

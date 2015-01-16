@@ -10,19 +10,19 @@ import com.vaadin.prototype.wc.gwt.client.*;
 import com.vaadin.prototype.wc.gwt.client.util.*;
 
 public class SamplerScaffoldWidget extends BaseWidget  {
-  
+
     protected String[] events() {
       return new String[]{};
     }
-    
+
     public SamplerScaffoldWidget() {
       super(WC.create(SamplerScaffold.class));
     }
-    
+
     public SamplerScaffoldWidget(SamplerScaffold element) {
       super(element);
     }
-    
+
     protected SamplerScaffold element() {
       return (SamplerScaffold)super.getElement();
     }

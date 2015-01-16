@@ -10,19 +10,19 @@ import com.vaadin.prototype.wc.gwt.client.*;
 import com.vaadin.prototype.wc.gwt.client.util.*;
 
 public class PaperToggleButtonWidget extends BaseWidget  {
-  
+
     protected String[] events() {
       return new String[]{"change"};
     }
-    
+
     public PaperToggleButtonWidget() {
       super(WC.create(PaperToggleButton.class));
     }
-    
+
     public PaperToggleButtonWidget(PaperToggleButton element) {
       super(element);
     }
-    
+
     protected PaperToggleButton element() {
       return (PaperToggleButton)super.getElement();
     }

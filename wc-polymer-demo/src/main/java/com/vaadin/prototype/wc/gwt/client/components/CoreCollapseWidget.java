@@ -10,19 +10,19 @@ import com.vaadin.prototype.wc.gwt.client.*;
 import com.vaadin.prototype.wc.gwt.client.util.*;
 
 public class CoreCollapseWidget extends BaseWidget  {
-  
+
     protected String[] events() {
       return new String[]{"core-resize"};
     }
-    
+
     public CoreCollapseWidget() {
       super(WC.create(CoreCollapse.class));
     }
-    
+
     public CoreCollapseWidget(CoreCollapse element) {
       super(element);
     }
-    
+
     protected CoreCollapse element() {
       return (CoreCollapse)super.getElement();
     }

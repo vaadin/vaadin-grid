@@ -10,19 +10,19 @@ import com.vaadin.prototype.wc.gwt.client.*;
 import com.vaadin.prototype.wc.gwt.client.util.*;
 
 public class CoreDropdownWidget extends BaseWidget  {
-  
+
     protected String[] events() {
       return new String[]{};
     }
-    
+
     public CoreDropdownWidget() {
       super(WC.create(CoreDropdown.class));
     }
-    
+
     public CoreDropdownWidget(CoreDropdown element) {
       super(element);
     }
-    
+
     protected CoreDropdown element() {
       return (CoreDropdown)super.getElement();
     }

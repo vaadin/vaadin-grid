@@ -34,7 +34,7 @@ public abstract class Elements {
     public static HTMLElement body;
 
     // public path of imported components
-    private static final String WC = GWT.getModuleBaseForStaticFiles() + "components/";
+    private static final String WC = GWT.getModuleBaseForStaticFiles() + "bower_components/";
 
     private static boolean platformLoaded = false;
 

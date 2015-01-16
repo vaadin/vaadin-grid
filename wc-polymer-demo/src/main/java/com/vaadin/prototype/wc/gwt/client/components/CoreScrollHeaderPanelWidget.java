@@ -10,19 +10,19 @@ import com.vaadin.prototype.wc.gwt.client.*;
 import com.vaadin.prototype.wc.gwt.client.util.*;
 
 public class CoreScrollHeaderPanelWidget extends BaseWidget  {
-  
+
     protected String[] events() {
       return new String[]{"scroll","core-header-transform"};
     }
-    
+
     public CoreScrollHeaderPanelWidget() {
       super(WC.create(CoreScrollHeaderPanel.class));
     }
-    
+
     public CoreScrollHeaderPanelWidget(CoreScrollHeaderPanel element) {
       super(element);
     }
-    
+
     protected CoreScrollHeaderPanel element() {
       return (CoreScrollHeaderPanel)super.getElement();
     }

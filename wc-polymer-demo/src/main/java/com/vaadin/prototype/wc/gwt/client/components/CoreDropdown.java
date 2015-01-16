@@ -68,8 +68,8 @@ public interface CoreDropdown extends HTMLElement  {
   @JsProperty double margin();
 
   /**
-   * The transition property specifies a string which identifies a 
-   * <a href="../core-transition/">`core-transition`</a> element that 
+   * The transition property specifies a string which identifies a
+   * <a href="../core-transition/">`core-transition`</a> element that
    * will be used to help the overlay open and close. The default
    * `core-transition-fade` will cause the overlay to fade in and out.
    *

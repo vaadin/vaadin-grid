@@ -10,19 +10,19 @@ import com.vaadin.prototype.wc.gwt.client.*;
 import com.vaadin.prototype.wc.gwt.client.util.*;
 
 public class ChessBoardWidget extends BaseWidget  {
-  
+
     protected String[] events() {
       return new String[]{};
     }
-    
+
     public ChessBoardWidget() {
       super(WC.create(ChessBoard.class));
     }
-    
+
     public ChessBoardWidget(ChessBoard element) {
       super(element);
     }
-    
+
     protected ChessBoard element() {
       return (ChessBoard)super.getElement();
     }

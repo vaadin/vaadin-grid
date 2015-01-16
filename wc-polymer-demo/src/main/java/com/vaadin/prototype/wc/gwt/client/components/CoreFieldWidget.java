@@ -10,19 +10,19 @@ import com.vaadin.prototype.wc.gwt.client.*;
 import com.vaadin.prototype.wc.gwt.client.util.*;
 
 public class CoreFieldWidget extends BaseWidget  {
-  
+
     protected String[] events() {
       return new String[]{};
     }
-    
+
     public CoreFieldWidget() {
       super(WC.create(CoreField.class));
     }
-    
+
     public CoreFieldWidget(CoreField element) {
       super(element);
     }
-    
+
     protected CoreField element() {
       return (CoreField)super.getElement();
     }

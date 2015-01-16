@@ -33,8 +33,8 @@ public interface PaperSlider extends HTMLElement , CoreRange {
   @JsProperty boolean snaps();
 
   /**
-   * If true, a pin with numeric value label is shown when the slider thumb 
-   * is pressed.  Use for settings for which users need to know the exact 
+   * If true, a pin with numeric value label is shown when the slider thumb
+   * is pressed.  Use for settings for which users need to know the exact
    * value of the setting.
    *
    * @attribute pin

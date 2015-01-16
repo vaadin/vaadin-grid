@@ -10,19 +10,19 @@ import com.vaadin.prototype.wc.gwt.client.*;
 import com.vaadin.prototype.wc.gwt.client.util.*;
 
 public class CoreIconsWidget extends BaseWidget  {
-  
+
     protected String[] events() {
       return new String[]{};
     }
-    
+
     public CoreIconsWidget() {
       super(WC.create(CoreIcons.class));
     }
-    
+
     public CoreIconsWidget(CoreIcons element) {
       super(element);
     }
-    
+
     protected CoreIcons element() {
       return (CoreIcons)super.getElement();
     }

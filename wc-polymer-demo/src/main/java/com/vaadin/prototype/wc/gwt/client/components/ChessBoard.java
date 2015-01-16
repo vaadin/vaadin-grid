@@ -25,7 +25,7 @@ public interface ChessBoard extends HTMLElement  {
    * R // ♖ white rook
    * Q // ♕ white queen
    * K // ♔ white king
-   * 
+   *
    * p // ♟ black pawn
    * n // ♞ black knight
    * b // ♝ black bishop

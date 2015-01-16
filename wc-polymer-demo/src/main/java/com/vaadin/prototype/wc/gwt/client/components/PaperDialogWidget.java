@@ -10,19 +10,19 @@ import com.vaadin.prototype.wc.gwt.client.*;
 import com.vaadin.prototype.wc.gwt.client.util.*;
 
 public class PaperDialogWidget extends BaseWidget  {
-  
+
     protected String[] events() {
       return new String[]{};
     }
-    
+
     public PaperDialogWidget() {
       super(WC.create(PaperDialog.class));
     }
-    
+
     public PaperDialogWidget(PaperDialog element) {
       super(element);
     }
-    
+
     protected PaperDialog element() {
       return (PaperDialog)super.getElement();
     }

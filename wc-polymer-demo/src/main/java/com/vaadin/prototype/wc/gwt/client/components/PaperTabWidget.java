@@ -10,19 +10,19 @@ import com.vaadin.prototype.wc.gwt.client.*;
 import com.vaadin.prototype.wc.gwt.client.util.*;
 
 public class PaperTabWidget extends BaseWidget  {
-  
+
     protected String[] events() {
       return new String[]{};
     }
-    
+
     public PaperTabWidget() {
       super(WC.create(PaperTab.class));
     }
-    
+
     public PaperTabWidget(PaperTab element) {
       super(element);
     }
-    
+
     protected PaperTab element() {
       return (PaperTab)super.getElement();
     }

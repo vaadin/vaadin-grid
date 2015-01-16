@@ -10,19 +10,19 @@ import com.vaadin.prototype.wc.gwt.client.*;
 import com.vaadin.prototype.wc.gwt.client.util.*;
 
 public class CoreMenuButtonWidget extends BaseWidget  {
-  
+
     protected String[] events() {
       return new String[]{};
     }
-    
+
     public CoreMenuButtonWidget() {
       super(WC.create(CoreMenuButton.class));
     }
-    
+
     public CoreMenuButtonWidget(CoreMenuButton element) {
       super(element);
     }
-    
+
     protected CoreMenuButton element() {
       return (CoreMenuButton)super.getElement();
     }

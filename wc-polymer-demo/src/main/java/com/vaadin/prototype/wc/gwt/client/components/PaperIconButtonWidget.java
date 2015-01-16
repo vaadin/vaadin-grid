@@ -10,19 +10,19 @@ import com.vaadin.prototype.wc.gwt.client.*;
 import com.vaadin.prototype.wc.gwt.client.util.*;
 
 public class PaperIconButtonWidget extends PaperButtonWidget  {
-  
+
     protected String[] events() {
       return new String[]{};
     }
-    
+
     public PaperIconButtonWidget() {
       super(WC.create(PaperIconButton.class));
     }
-    
+
     public PaperIconButtonWidget(PaperIconButton element) {
       super(element);
     }
-    
+
     protected PaperIconButton element() {
       return (PaperIconButton)super.getElement();
     }

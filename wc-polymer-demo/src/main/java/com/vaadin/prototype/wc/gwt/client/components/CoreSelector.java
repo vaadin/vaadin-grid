@@ -68,7 +68,7 @@ public interface CoreSelector extends HTMLElement  {
 
   /**
    * Specifies the CSS class to be used to add to the selected element.
-   * 
+   *
    * @attribute selectedClass
    * @type string
    */
@@ -98,7 +98,7 @@ public interface CoreSelector extends HTMLElement  {
   /**
    * Returns the currently selected element. In multi-selection this returns
    * an array of selected elements.
-   * 
+   *
    * @attribute selectedItem
    * @type Object
    */
@@ -108,7 +108,7 @@ public interface CoreSelector extends HTMLElement  {
   /**
    * In single selection, this returns the model associated with the
    * selected element.
-   * 
+   *
    * @attribute selectedModel
    * @type Object
    */
@@ -125,9 +125,9 @@ public interface CoreSelector extends HTMLElement  {
   @JsProperty double selectedIndex();
 
   /**
-   * The target element that contains items.  If this is not set 
+   * The target element that contains items.  If this is not set
    * core-selector is the container.
-   * 
+   *
    * @attribute target
    * @type Object
    */
@@ -135,7 +135,7 @@ public interface CoreSelector extends HTMLElement  {
   @JsProperty JavaScriptObject target();
 
   /**
-   * This can be used to query nodes from the target node to be used for 
+   * This can be used to query nodes from the target node to be used for
    * selection items.  Note this only works if the 'target' property is set.
    *
    * Example:
@@ -147,7 +147,7 @@ public interface CoreSelector extends HTMLElement  {
    *       <label><input type="radio" name="color" value="blue"> Blue</label> <br>
    *       <p>color = {{color}}</p>
    *     </form>
-   * 
+   *
    * @attribute itemSelector
    * @type string
    */

@@ -25,7 +25,7 @@ public interface CoreSplitter extends HTMLElement  {
   @JsProperty String direction();
 
   /**
-   * Minimum width to which the splitter target can be sized, e.g. 
+   * Minimum width to which the splitter target can be sized, e.g.
    * `minSize="100px"`
    *
    * @attribute minSize

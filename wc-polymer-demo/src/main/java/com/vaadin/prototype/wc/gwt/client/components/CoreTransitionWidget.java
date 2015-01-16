@@ -10,19 +10,19 @@ import com.vaadin.prototype.wc.gwt.client.*;
 import com.vaadin.prototype.wc.gwt.client.util.*;
 
 public class CoreTransitionWidget extends BaseWidget  {
-  
+
     protected String[] events() {
       return new String[]{};
     }
-    
+
     public CoreTransitionWidget() {
       super(WC.create(CoreTransition.class));
     }
-    
+
     public CoreTransitionWidget(CoreTransition element) {
       super(element);
     }
-    
+
     protected CoreTransition element() {
       return (CoreTransition)super.getElement();
     }

@@ -10,19 +10,19 @@ import com.vaadin.prototype.wc.gwt.client.*;
 import com.vaadin.prototype.wc.gwt.client.util.*;
 
 public class CoreHeaderPanelWidget extends BaseWidget  {
-  
+
     protected String[] events() {
       return new String[]{};
     }
-    
+
     public CoreHeaderPanelWidget() {
       super(WC.create(CoreHeaderPanel.class));
     }
-    
+
     public CoreHeaderPanelWidget(CoreHeaderPanel element) {
       super(element);
     }
-    
+
     protected CoreHeaderPanel element() {
       return (CoreHeaderPanel)super.getElement();
     }

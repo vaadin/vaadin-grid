@@ -10,19 +10,19 @@ import com.vaadin.prototype.wc.gwt.client.*;
 import com.vaadin.prototype.wc.gwt.client.util.*;
 
 public class CoreIconsetWidget extends CoreMetaWidget  {
-  
+
     protected String[] events() {
       return new String[]{};
     }
-    
+
     public CoreIconsetWidget() {
       super(WC.create(CoreIconset.class));
     }
-    
+
     public CoreIconsetWidget(CoreIconset element) {
       super(element);
     }
-    
+
     protected CoreIconset element() {
       return (CoreIconset)super.getElement();
     }

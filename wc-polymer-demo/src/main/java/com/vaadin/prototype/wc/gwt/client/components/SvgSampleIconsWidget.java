@@ -10,19 +10,19 @@ import com.vaadin.prototype.wc.gwt.client.*;
 import com.vaadin.prototype.wc.gwt.client.util.*;
 
 public class SvgSampleIconsWidget extends BaseWidget  {
-  
+
     protected String[] events() {
       return new String[]{};
     }
-    
+
     public SvgSampleIconsWidget() {
       super(WC.create(SvgSampleIcons.class));
     }
-    
+
     public SvgSampleIconsWidget(SvgSampleIcons element) {
       super(element);
     }
-    
+
     protected SvgSampleIcons element() {
       return (SvgSampleIcons)super.getElement();
     }

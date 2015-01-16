@@ -10,19 +10,19 @@ import com.vaadin.prototype.wc.gwt.client.*;
 import com.vaadin.prototype.wc.gwt.client.util.*;
 
 public class PaperDialogTransitionWidget extends BaseWidget  {
-  
+
     protected String[] events() {
       return new String[]{};
     }
-    
+
     public PaperDialogTransitionWidget() {
       super(WC.create(PaperDialogTransition.class));
     }
-    
+
     public PaperDialogTransitionWidget(PaperDialogTransition element) {
       super(element);
     }
-    
+
     protected PaperDialogTransition element() {
       return (PaperDialogTransition)super.getElement();
     }

@@ -10,19 +10,19 @@ import com.vaadin.prototype.wc.gwt.client.*;
 import com.vaadin.prototype.wc.gwt.client.util.*;
 
 public class PaperRadioButtonWidget extends BaseWidget  {
-  
+
     protected String[] events() {
       return new String[]{"change"};
     }
-    
+
     public PaperRadioButtonWidget() {
       super(WC.create(PaperRadioButton.class));
     }
-    
+
     public PaperRadioButtonWidget(PaperRadioButton element) {
       super(element);
     }
-    
+
     protected PaperRadioButton element() {
       return (PaperRadioButton)super.getElement();
     }

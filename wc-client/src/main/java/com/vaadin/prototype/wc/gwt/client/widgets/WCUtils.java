@@ -18,6 +18,10 @@ import com.google.gwt.user.client.Timer;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLElement;
 
 public class WCUtils {
+    public static boolean getAttrBooleanValue(HTMLElement el, String attr, boolean def) {
+        return Boolean.valueOf(getAttrValue(el, attr, String.valueOf(def)));
+    }
+
     public static int getAttrIntValue(HTMLElement el, String attr, int def) {
         return (int) getAttrFloatValue(el, attr, def);
     }

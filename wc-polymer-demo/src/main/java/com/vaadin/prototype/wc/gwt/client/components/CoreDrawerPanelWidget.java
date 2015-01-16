@@ -10,19 +10,19 @@ import com.vaadin.prototype.wc.gwt.client.*;
 import com.vaadin.prototype.wc.gwt.client.util.*;
 
 public class CoreDrawerPanelWidget extends BaseWidget  {
-  
+
     protected String[] events() {
       return new String[]{"core-responsive-change"};
     }
-    
+
     public CoreDrawerPanelWidget() {
       super(WC.create(CoreDrawerPanel.class));
     }
-    
+
     public CoreDrawerPanelWidget(CoreDrawerPanel element) {
       super(element);
     }
-    
+
     protected CoreDrawerPanel element() {
       return (CoreDrawerPanel)super.getElement();
     }

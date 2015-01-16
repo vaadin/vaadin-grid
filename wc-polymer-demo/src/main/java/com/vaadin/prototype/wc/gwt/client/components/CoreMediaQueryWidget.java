@@ -10,19 +10,19 @@ import com.vaadin.prototype.wc.gwt.client.*;
 import com.vaadin.prototype.wc.gwt.client.util.*;
 
 public class CoreMediaQueryWidget extends BaseWidget  {
-  
+
     protected String[] events() {
       return new String[]{"core-media-change"};
     }
-    
+
     public CoreMediaQueryWidget() {
       super(WC.create(CoreMediaQuery.class));
     }
-    
+
     public CoreMediaQueryWidget(CoreMediaQuery element) {
       super(element);
     }
-    
+
     protected CoreMediaQuery element() {
       return (CoreMediaQuery)super.getElement();
     }

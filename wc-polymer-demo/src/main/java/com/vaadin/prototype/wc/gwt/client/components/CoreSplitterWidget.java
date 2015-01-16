@@ -10,19 +10,19 @@ import com.vaadin.prototype.wc.gwt.client.*;
 import com.vaadin.prototype.wc.gwt.client.util.*;
 
 public class CoreSplitterWidget extends BaseWidget  {
-  
+
     protected String[] events() {
       return new String[]{};
     }
-    
+
     public CoreSplitterWidget() {
       super(WC.create(CoreSplitter.class));
     }
-    
+
     public CoreSplitterWidget(CoreSplitter element) {
       super(element);
     }
-    
+
     protected CoreSplitter element() {
       return (CoreSplitter)super.getElement();
     }

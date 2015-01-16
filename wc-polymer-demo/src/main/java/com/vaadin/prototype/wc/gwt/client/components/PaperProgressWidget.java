@@ -10,19 +10,19 @@ import com.vaadin.prototype.wc.gwt.client.*;
 import com.vaadin.prototype.wc.gwt.client.util.*;
 
 public class PaperProgressWidget extends CoreRangeWidget  {
-  
+
     protected String[] events() {
       return new String[]{};
     }
-    
+
     public PaperProgressWidget() {
       super(WC.create(PaperProgress.class));
     }
-    
+
     public PaperProgressWidget(PaperProgress element) {
       super(element);
     }
-    
+
     protected PaperProgress element() {
       return (PaperProgress)super.getElement();
     }

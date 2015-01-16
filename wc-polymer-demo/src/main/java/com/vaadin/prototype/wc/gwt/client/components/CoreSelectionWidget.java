@@ -10,19 +10,19 @@ import com.vaadin.prototype.wc.gwt.client.*;
 import com.vaadin.prototype.wc.gwt.client.util.*;
 
 public class CoreSelectionWidget extends BaseWidget  {
-  
+
     protected String[] events() {
       return new String[]{};
     }
-    
+
     public CoreSelectionWidget() {
       super(WC.create(CoreSelection.class));
     }
-    
+
     public CoreSelectionWidget(CoreSelection element) {
       super(element);
     }
-    
+
     protected CoreSelection element() {
       return (CoreSelection)super.getElement();
     }

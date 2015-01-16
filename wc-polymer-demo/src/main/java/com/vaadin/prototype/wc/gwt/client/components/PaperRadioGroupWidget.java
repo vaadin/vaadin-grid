@@ -10,19 +10,19 @@ import com.vaadin.prototype.wc.gwt.client.*;
 import com.vaadin.prototype.wc.gwt.client.util.*;
 
 public class PaperRadioGroupWidget extends CoreSelectorWidget  {
-  
+
     protected String[] events() {
       return new String[]{};
     }
-    
+
     public PaperRadioGroupWidget() {
       super(WC.create(PaperRadioGroup.class));
     }
-    
+
     public PaperRadioGroupWidget(PaperRadioGroup element) {
       super(element);
     }
-    
+
     protected PaperRadioGroup element() {
       return (PaperRadioGroup)super.getElement();
     }

@@ -74,12 +74,12 @@ public interface CoreIconsetSvg extends HTMLElement /**
 
   /**
    * Tell users of the iconset, that the set has loaded.
-   * This finds all elements matching the selector argument and calls 
+   * This finds all elements matching the selector argument and calls
    * the method argument on them.
    * @method updateIcons
-   * @param selector {string} css selector to identify iconset users, 
+   * @param selector {string} css selector to identify iconset users,
    * defaults to '[icon]'
-   * @param method {string} method to call on found elements, 
+   * @param method {string} method to call on found elements,
    * defaults to 'updateIcon'
    */
   void updateIcons(JavaScriptObject arg0, JavaScriptObject arg1);

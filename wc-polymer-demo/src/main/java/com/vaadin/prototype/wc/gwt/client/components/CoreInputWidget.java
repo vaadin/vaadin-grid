@@ -10,19 +10,19 @@ import com.vaadin.prototype.wc.gwt.client.*;
 import com.vaadin.prototype.wc.gwt.client.util.*;
 
 public class CoreInputWidget extends BaseWidget  {
-  
+
     protected String[] events() {
       return new String[]{"input","change","input-invalid"};
     }
-    
+
     public CoreInputWidget() {
       super(WC.create(CoreInput.class));
     }
-    
+
     public CoreInputWidget(CoreInput element) {
       super(element);
     }
-    
+
     protected CoreInput element() {
       return (CoreInput)super.getElement();
     }

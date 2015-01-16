@@ -10,19 +10,19 @@ import com.vaadin.prototype.wc.gwt.client.*;
 import com.vaadin.prototype.wc.gwt.client.util.*;
 
 public class CoreRangeWidget extends BaseWidget  {
-  
+
     protected String[] events() {
       return new String[]{};
     }
-    
+
     public CoreRangeWidget() {
       super(WC.create(CoreRange.class));
     }
-    
+
     public CoreRangeWidget(CoreRange element) {
       super(element);
     }
-    
+
     protected CoreRange element() {
       return (CoreRange)super.getElement();
     }
