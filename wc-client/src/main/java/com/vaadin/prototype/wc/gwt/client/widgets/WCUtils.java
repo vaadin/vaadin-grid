@@ -81,10 +81,9 @@ public class WCUtils {
         if (theme == null) {
             return;
         }
-        if ($(theme).text().contains(theme)) {
+        if ($(style).text().contains(theme)) {
             return;
         }
-        console.log("loadVaadinTheme", theme);
         loadTheme($(container), $(style), theme);
         $(window).delay(100, f);
     }

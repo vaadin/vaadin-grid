@@ -45,6 +45,8 @@ import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.JsArrayObject;
 import com.vaadin.client.data.DataSource;
 import com.vaadin.client.renderers.Renderer;
+import com.vaadin.client.widget.escalator.ColumnConfiguration;
+import com.vaadin.client.widget.escalator.RowContainer;
 import com.vaadin.client.widget.grid.RendererCellReference;
 import com.vaadin.client.widget.grid.datasources.ListDataSource;
 import com.vaadin.client.widget.grid.selection.SelectionEvent;
@@ -52,6 +54,7 @@ import com.vaadin.client.widget.grid.selection.SelectionHandler;
 import com.vaadin.client.widget.grid.selection.SelectionModel;
 import com.vaadin.client.widget.grid.selection.SelectionModelMulti;
 import com.vaadin.client.widget.grid.selection.SelectionModelSingle;
+import com.vaadin.client.widgets.Escalator;
 import com.vaadin.client.widgets.Grid;
 import com.vaadin.client.widgets.Grid.HeaderCell;
 import com.vaadin.client.widgets.Grid.HeaderRow;
@@ -322,19 +325,12 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
     }
 
     private void readAttributes() {
-        WCUtils.loadVaadinTheme(container, this, style, null, new Function(){
-            public void f() {
-                refresh();
-            }
-        });
-
+        WCUtils.loadVaadinTheme(container, this, style, null);
         loadHeaders();
         loadRows();
         initGrid();
         parseAttributeDeclarations();
-
         setSelectedRow(getAttrIntValue(this, "selectedRow", -1));
-
         String type = getAttrValue(this, "type", null);
         String url = getAttrValue(this, "url", null);
         if ("ajax".equals(type) && url != null) {
@@ -342,7 +338,6 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
             p.set("url", url);
             setDataSource(p);
         }
-
         // TODO be able to change the selection mode if
         // attribute selectionMode change
     }
@@ -508,6 +503,15 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
     public void adjustHeight() {
         size = grid.getDataSource().size();
         adjustHeight(size);
+    }
+
+    @JsNoExport
+    public Grid<JsArrayMixed> getGrid() {
+        if (grid == null) {
+            changed = true;
+            initGrid();
+        }
+        return grid;
     }
 
     @Override
@@ -713,11 +717,40 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
         return selectedJso;
     }
 
-    public Grid<JsArrayMixed> getGrid() {
-        if (grid == null) {
-            changed = true;
-            initGrid();
-        }
-        return grid;
+    public void jsPropertyTheme() {
     }
+
+    @JsProperty
+    public void setTheme(String value) {
+        setAttribute("theme", value);
+    }
+
+    @JsProperty
+    public void getTheme() {
+        getAttribute("theme");
+    }
+
+    public void redraw() {
+        Escalator e = e(grid);
+        c(e.getHeader());
+        c(e.getFooter());
+        c(e.getBody());
+        ColumnConfiguration columnConfiguration = f(e);
+        for (int i = 0; i < columnConfiguration.getColumnCount(); i++) {
+            columnConfiguration.setColumnWidth(i, columnConfiguration.getColumnWidth(i));
+        }
+    }
+
+    private static native Escalator e(Grid<?> g) /*-{
+        return g.@com.vaadin.client.widgets.Grid::escalator;
+    }-*/;
+
+    private static native Escalator c(RowContainer r) /*-{
+        r.@com.vaadin.client.widgets.Escalator.AbstractRowContainer::defaultRowHeightShouldBeAutodetected = true;
+        r.@com.vaadin.client.widgets.Escalator.AbstractRowContainer::autodetectRowHeight()();
+    }-*/;
+
+    private static native ColumnConfiguration f(Escalator e) /*-{
+        return e.@com.vaadin.client.widgets.Escalator::columnConfiguration;
+    }-*/;
 }

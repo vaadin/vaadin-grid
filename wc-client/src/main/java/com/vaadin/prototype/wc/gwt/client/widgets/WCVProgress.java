@@ -111,4 +111,18 @@ public class WCVProgress extends HTMLElement.Prototype implements
     public double getValue() {
         return progress.getState();
     }
+
+    public void jsPropertyTheme() {
+    }
+
+    @JsProperty
+    public void setTheme(String value) {
+        setAttribute("theme", value);
+    }
+
+    @JsProperty
+    public void getTheme() {
+        getAttribute("theme");
+    }
+
 }

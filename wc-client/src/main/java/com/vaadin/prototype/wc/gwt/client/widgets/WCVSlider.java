@@ -2,6 +2,7 @@ package com.vaadin.prototype.wc.gwt.client.widgets;
 
 import static com.google.gwt.query.client.GQuery.$;
 import static com.google.gwt.query.client.GQuery.Widgets;
+import static com.google.gwt.query.client.GQuery.console;
 import static com.vaadin.prototype.wc.gwt.client.widgets.WCUtils.getAttrDoubleValue;
 
 import com.google.gwt.core.client.js.JsExport;
@@ -125,5 +126,18 @@ public class WCVSlider extends HTMLElement.Prototype implements
     @JsProperty
     public double getValue() {
         return slider.getValue();
+    }
+
+    public void jsPropertyTheme() {
+    }
+
+    @JsProperty
+    public void setTheme(String value) {
+        setAttribute("theme", value);
+    }
+
+    @JsProperty
+    public void getTheme() {
+        getAttribute("theme");
     }
 }

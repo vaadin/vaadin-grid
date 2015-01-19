@@ -11,7 +11,6 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.ajax.Ajax;
 import com.google.gwt.user.client.EventListener;
-import com.google.gwt.user.client.Window;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLDocument;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLElement;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLWindow;
