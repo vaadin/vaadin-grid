@@ -33,5 +33,11 @@ public class CoreIconsetSvgWidget extends CoreMetaWidget  {
     public double iconSize() {
         return element().iconSize();
     }
+    public void applyIcon(Element arg0, String arg1) {
+         element().applyIcon(arg0, arg1);
+    }
+    public void updateIcons(JavaScriptObject arg0, JavaScriptObject arg1) {
+         element().updateIcons(arg0, arg1);
+    }
 
 }

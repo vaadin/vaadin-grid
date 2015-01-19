@@ -45,5 +45,8 @@ public class PaperDialogWidget extends BaseWidget  {
     public String transition() {
         return element().transition();
     }
+    public void toggle() {
+         element().toggle();
+    }
 
 }

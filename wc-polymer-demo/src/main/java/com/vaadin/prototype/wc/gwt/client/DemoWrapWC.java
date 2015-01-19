@@ -68,10 +68,6 @@ public class DemoWrapWC implements EntryPoint {
         demoWidgetPaperToggleButton();
     }
 
-    private native void export(String name, Object o) /*-{
-        $wnd[name] = o;
-    }-*/;
-
     private void demoCreateCoreDrawer() {
         WC.load(CoreIcon.class);
 

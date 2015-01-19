@@ -18,7 +18,7 @@ public class ChessBoardConnector extends BaseConnector {
                 getState().fen = getWidget().fen();
                 getState().frame = getWidget().frame();
 
-      
+
       IsProperties p = super.stateProperties();
     p.set("fen", getState().fen);
     p.set("frame", getState().frame);

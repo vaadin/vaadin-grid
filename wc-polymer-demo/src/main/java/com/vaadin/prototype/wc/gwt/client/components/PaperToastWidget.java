@@ -57,5 +57,14 @@ public class PaperToastWidget extends BaseWidget  {
     public boolean swipeDisabled() {
         return element().swipeDisabled();
     }
+    public void toggle() {
+         element().toggle();
+    }
+    public void show() {
+         element().show();
+    }
+    public void dismiss() {
+         element().dismiss();
+    }
 
 }

@@ -17,7 +17,7 @@ public class PaperTabConnector extends BaseConnector {
     public IsProperties stateProperties() {
                 getState().noink = getWidget().noink();
 
-      
+
       IsProperties p = super.stateProperties();
     p.set("noink", getState().noink);
 

@@ -39,5 +39,8 @@ public class CoreMetaWidget extends BaseWidget  {
     public JsArray list() {
         return element().list();
     }
+    public JavaScriptObject byId(String arg0) {
+        return element().byId(arg0);
+    }
 
 }

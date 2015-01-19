@@ -23,7 +23,7 @@ public class CoreScrollHeaderPanelConnector extends BaseConnector {
                 getState().headerHeight = getWidget().headerHeight();
                 getState().condensedHeaderHeight = getWidget().condensedHeaderHeight();
 
-      
+
       IsProperties p = super.stateProperties();
     p.set("condenses", getState().condenses);
     p.set("noDissolve", getState().noDissolve);

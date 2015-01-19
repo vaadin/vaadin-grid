@@ -8,11 +8,11 @@ public class CoreDrawerPanelComponent extends BaseComponent {
     protected String[] events() {
       return concat(super.events(), new String[]{"core-responsive-change"});
     }
-  
+
     protected String[] attributes() {
       return concat(super.attributes(),new String[]{"responsiveWidth","selected","defaultSelected","narrow"});
     }
-  
+
     @Override
     protected CoreDrawerPanelState getState() {
         return (CoreDrawerPanelState) super.getState();

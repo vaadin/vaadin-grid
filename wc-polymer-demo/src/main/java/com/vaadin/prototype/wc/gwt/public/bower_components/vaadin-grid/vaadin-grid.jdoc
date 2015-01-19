@@ -1,0 +1,59 @@
+/**
+ * @component v-progress-bar
+ */ 
+
+/**
+ * @method refresh
+ */
+
+/**
+ * @method redraw
+ */
+ 
+/**
+ * @attribute shadow
+ * @type boolean
+ * @default false
+ */
+ 
+/**
+ * @attribute selectedRow
+ * @type number
+ * @default -1
+ */ 
+
+/**
+ * @attribute selectedRows
+ * @type object
+ */ 
+
+/**
+ * @attribute rowCount
+ * @type number
+ * @default 0
+ */ 
+
+/**
+ * @attribute type
+ * @type string
+ */ 
+
+/**
+ * @attribute url
+ * @type string
+ */ 
+
+/**
+ * @attribute dataSource
+ * @type object
+ */ 
+
+/**
+ * @attribute theme
+ * @type string
+ * @default valo
+ */ 
+
+/**
+ * @event select
+ */

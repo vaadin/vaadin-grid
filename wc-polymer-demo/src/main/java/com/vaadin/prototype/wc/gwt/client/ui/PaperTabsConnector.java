@@ -18,7 +18,7 @@ public class PaperTabsConnector extends CoreSelectorConnector {
                 getState().noink = getWidget().noink();
                 getState().nobar = getWidget().nobar();
 
-      
+
       IsProperties p = super.stateProperties();
     p.set("noink", getState().noink);
     p.set("nobar", getState().nobar);

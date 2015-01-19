@@ -8,11 +8,11 @@ public class CoreTooltipComponent extends BaseComponent {
     protected String[] events() {
       return concat(super.events(), new String[]{});
     }
-  
+
     protected String[] attributes() {
       return concat(super.attributes(),new String[]{"label","show","position","noarrow","tipAttribute"});
     }
-  
+
     @Override
     protected CoreTooltipState getState() {
         return (CoreTooltipState) super.getState();

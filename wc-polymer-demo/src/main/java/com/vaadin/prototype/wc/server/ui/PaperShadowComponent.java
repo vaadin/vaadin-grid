@@ -8,11 +8,11 @@ public class PaperShadowComponent extends BaseComponent {
     protected String[] events() {
       return concat(super.events(), new String[]{});
     }
-  
+
     protected String[] attributes() {
       return concat(super.attributes(),new String[]{"target","z","animated","hasPosition"});
     }
-  
+
     @Override
     protected PaperShadowState getState() {
         return (PaperShadowState) super.getState();

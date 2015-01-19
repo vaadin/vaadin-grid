@@ -22,7 +22,7 @@ public class CoreIconsetConnector extends CoreMetaConnector {
                 getState().offsetX = getWidget().offsetX();
                 getState().offsetY = getWidget().offsetY();
 
-      
+
       IsProperties p = super.stateProperties();
     p.set("src", getState().src);
     p.set("width", getState().width);

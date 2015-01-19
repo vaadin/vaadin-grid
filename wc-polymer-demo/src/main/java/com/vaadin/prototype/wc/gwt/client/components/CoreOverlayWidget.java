@@ -87,5 +87,17 @@ public class CoreOverlayWidget extends BaseWidget  {
     public String transition() {
         return element().transition();
     }
+    public void toggle() {
+         element().toggle();
+    }
+    public void open() {
+         element().open();
+    }
+    public void close() {
+         element().close();
+    }
+    public void resizeHandler() {
+         element().resizeHandler();
+    }
 
 }

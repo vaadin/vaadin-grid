@@ -16,7 +16,7 @@ public class PaperCheckboxConnector extends PaperRadioButtonConnector {
 
     public IsProperties stateProperties() {
 
-      
+
       IsProperties p = super.stateProperties();
 
       return p;

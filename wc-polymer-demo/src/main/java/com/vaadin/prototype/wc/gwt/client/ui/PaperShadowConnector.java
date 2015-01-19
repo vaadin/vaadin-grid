@@ -19,7 +19,7 @@ public class PaperShadowConnector extends BaseConnector {
                 getState().animated = getWidget().animated();
                 getState().hasPosition = getWidget().hasPosition();
 
-      
+
       IsProperties p = super.stateProperties();
     p.set("z", getState().z);
     p.set("animated", getState().animated);

@@ -8,11 +8,11 @@ public class PaperSliderComponent extends CoreRangeComponent {
     protected String[] events() {
       return concat(super.events(), new String[]{"change"});
     }
-  
+
     protected String[] attributes() {
       return concat(super.attributes(),new String[]{"snaps","pin","disabled","secondaryProgress","editable","immediateValue"});
     }
-  
+
     @Override
     protected PaperSliderState getState() {
         return (PaperSliderState) super.getState();

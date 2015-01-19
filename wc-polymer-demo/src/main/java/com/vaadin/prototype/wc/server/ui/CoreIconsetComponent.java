@@ -8,11 +8,11 @@ public class CoreIconsetComponent extends CoreMetaComponent {
     protected String[] events() {
       return concat(super.events(), new String[]{});
     }
-  
+
     protected String[] attributes() {
       return concat(super.attributes(),new String[]{"src","width","icons","iconSize","offsetX","offsetY"});
     }
-  
+
     @Override
     protected CoreIconsetState getState() {
         return (CoreIconsetState) super.getState();

@@ -40,7 +40,7 @@ public interface CoreMenuButton extends HTMLElement  {
   @JsProperty boolean opened();
 
   /**
-   * Set to true to cause the menu popup to be displayed inline rather
+   * Set to true to cause the menu popup to be displayed inline rather 
    * than in its own layer.
    * @attribute inlineMenu
    * @type boolean

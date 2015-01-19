@@ -61,19 +61,19 @@ public interface PaperToast extends HTMLElement  {
   @JsProperty PaperToast swipeDisabled(boolean val);
   @JsProperty boolean swipeDisabled();
 
-  /**
+  /** 
    * Toggle the opened state of the toast.
    * @method toggle
    */
   void toggle();
 
-  /**
+  /** 
    * Show the toast for the specified duration
    * @method show
    */
   void show();
 
-  /**
+  /** 
    * Dismiss the toast and hide it.
    * @method dismiss
    */

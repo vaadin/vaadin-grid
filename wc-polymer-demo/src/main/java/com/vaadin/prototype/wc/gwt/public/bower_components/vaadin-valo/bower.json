@@ -1,0 +1,19 @@
+{
+  "name" : "vaadin-valo",
+  "homepage": "http://vaadin.com",
+  "version" : "1.0-SNAPSHOT",
+  "authors": [
+    "manolo@vaadin.com"
+  ],
+  "description": "Vaadin web components",
+  "keywords": [
+    "vaadin",
+    "web",
+    "components"
+  ],
+  "dependencies": {
+    "webcomponentsjs": "polymer/webcomponentsjs"
+
+  },
+  "license": "Apache"
+}

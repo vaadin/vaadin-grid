@@ -18,7 +18,7 @@ public class PaperRippleConnector extends BaseConnector {
                 getState().initialOpacity = getWidget().initialOpacity();
                 getState().opacityDecayVelocity = getWidget().opacityDecayVelocity();
 
-      
+
       IsProperties p = super.stateProperties();
     p.set("initialOpacity", getState().initialOpacity);
     p.set("opacityDecayVelocity", getState().opacityDecayVelocity);

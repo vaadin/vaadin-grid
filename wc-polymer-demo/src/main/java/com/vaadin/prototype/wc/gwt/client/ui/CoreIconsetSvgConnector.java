@@ -17,7 +17,7 @@ public class CoreIconsetSvgConnector extends CoreMetaConnector {
     public IsProperties stateProperties() {
                 getState().iconSize = getWidget().iconSize();
 
-      
+
       IsProperties p = super.stateProperties();
     p.set("iconSize", getState().iconSize);
 

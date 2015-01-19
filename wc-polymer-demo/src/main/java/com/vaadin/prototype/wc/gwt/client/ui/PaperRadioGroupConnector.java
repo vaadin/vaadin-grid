@@ -16,7 +16,7 @@ public class PaperRadioGroupConnector extends CoreSelectorConnector {
 
     public IsProperties stateProperties() {
 
-      
+
       IsProperties p = super.stateProperties();
 
       return p;

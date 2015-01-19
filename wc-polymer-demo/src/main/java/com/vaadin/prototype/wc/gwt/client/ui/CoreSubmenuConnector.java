@@ -16,7 +16,7 @@ public class CoreSubmenuConnector extends CoreItemConnector {
 
     public IsProperties stateProperties() {
 
-      
+
       IsProperties p = super.stateProperties();
 
       return p;

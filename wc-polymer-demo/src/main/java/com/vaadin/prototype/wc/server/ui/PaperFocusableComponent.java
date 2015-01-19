@@ -8,11 +8,11 @@ public class PaperFocusableComponent extends BaseComponent {
     protected String[] events() {
       return concat(super.events(), new String[]{});
     }
-  
+
     protected String[] attributes() {
       return concat(super.attributes(),new String[]{"active","focused","pressed","disabled","isToggle"});
     }
-  
+
     @Override
     protected PaperFocusableState getState() {
         return (PaperFocusableState) super.getState();

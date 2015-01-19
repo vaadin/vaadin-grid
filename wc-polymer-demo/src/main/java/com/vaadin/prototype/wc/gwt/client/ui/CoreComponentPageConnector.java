@@ -49,7 +49,7 @@ public class CoreComponentPageConnector extends CoreMetaConnector {
                 getState().notap = getWidget().notap();
                 getState().label = getWidget().label();
 
-      
+
       IsProperties p = super.stateProperties();
     p.set("vertical", getState().vertical);
     p.set("justify", getState().justify);

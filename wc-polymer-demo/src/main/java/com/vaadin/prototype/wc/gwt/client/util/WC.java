@@ -1,5 +1,7 @@
 package com.vaadin.prototype.wc.gwt.client.util;
 
+import static com.google.gwt.query.client.GQuery.console;
+
 import com.vaadin.prototype.wc.gwt.client.components.CoreIcon;
 import com.vaadin.prototype.wc.gwt.client.components.CoreIcons;
 import com.vaadin.prototype.wc.gwt.client.components.CoreSubmenu;
@@ -39,7 +41,9 @@ public abstract class WC {
      * Import the WebComponent of the provided class if it wasn't done already.
      */
     public static <T extends HTMLElement> String load(Class<T> clazz) {
+        console.log(clazz.getName());
         String tag = Elements.computeTag(clazz);
+        console.log(clazz.getName(), tag);
         String path = tag;
 
         if (clazz == CoreIcon.class) {
@@ -77,7 +81,9 @@ public abstract class WC {
         }
 
         Elements.importTemplate(path, tag);
-        return tag;
+        console.log(path, tag, tag.replaceFirst("^vaadin-", "v-").replaceFirst("-bar", ""));
+        
+        return tag.replaceFirst("^vaadin-", "v-").replaceFirst("-bar", "");
     }
 
     /**

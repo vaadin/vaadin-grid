@@ -17,7 +17,7 @@ public class CoreDropdownOverlayConnector extends CoreOverlayConnector {
     public IsProperties stateProperties() {
                 getState().margin = getWidget().margin();
 
-      
+
       IsProperties p = super.stateProperties();
     p.set("margin", getState().margin);
 

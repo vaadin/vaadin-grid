@@ -18,7 +18,7 @@ public interface CoreMeta extends HTMLElement  {
   /**
    * The type of meta-data.  All meta-data with the same type with be
    * stored together.
-   *
+   * 
    * @attribute type
    * @type string
    */
@@ -27,7 +27,7 @@ public interface CoreMeta extends HTMLElement  {
 
   /**
    * Returns a list of all meta-data elements with the same type.
-   *
+   * 
    * @attribute list
    * @type array
    */

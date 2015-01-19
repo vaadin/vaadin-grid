@@ -21,7 +21,7 @@ public class PaperToastConnector extends BaseConnector {
                 getState().responsiveWidth = getWidget().responsiveWidth();
                 getState().swipeDisabled = getWidget().swipeDisabled();
 
-      
+
       IsProperties p = super.stateProperties();
     p.set("text", getState().text);
     p.set("duration", getState().duration);

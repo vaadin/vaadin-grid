@@ -1,0 +1,19 @@
+/**
+ * @component v-progress-bar
+ */
+
+/**
+ * @attribute value
+ * @type number
+ * @default 0
+ */
+
+/**
+ * @attribute theme
+ * @type string
+ * @default valo
+ */
+
+/**
+ * @event change
+ */

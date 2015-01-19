@@ -8,11 +8,11 @@ public class CoreScrollHeaderPanelComponent extends BaseComponent {
     protected String[] events() {
       return concat(super.events(), new String[]{"scroll","core-header-transform"});
     }
-  
+
     protected String[] attributes() {
       return concat(super.attributes(),new String[]{"condenses","noDissolve","noReveal","fixed","keepCondensedHeader","headerHeight","condensedHeaderHeight"});
     }
-  
+
     @Override
     protected CoreScrollHeaderPanelState getState() {
         return (CoreScrollHeaderPanelState) super.getState();

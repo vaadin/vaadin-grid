@@ -44,7 +44,7 @@ public class WCUI extends UI{
                         public void modifyBootstrapPage(BootstrapPageResponse response) {
                             org.jsoup.nodes.Element head = response.getDocument().head();
                             head.appendElement("script")
-                                    .attr("src", "/VAADIN/widgetsets/PolymerSample/components/platform/platform.js");
+                                    .attr("src", "/VAADIN/widgetsets/PolymerSample/bower_components/platform/platform.js");
                         }
                         public void modifyBootstrapFragment(BootstrapFragmentResponse response) {
                         }

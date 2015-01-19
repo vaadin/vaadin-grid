@@ -16,7 +16,7 @@ public class CoreFieldConnector extends BaseConnector {
 
     public IsProperties stateProperties() {
 
-      
+
       IsProperties p = super.stateProperties();
 
       return p;

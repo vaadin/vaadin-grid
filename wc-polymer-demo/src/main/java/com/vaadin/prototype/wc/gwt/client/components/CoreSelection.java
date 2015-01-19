@@ -28,7 +28,7 @@ public interface CoreSelection extends HTMLElement  {
    * Retrieves the selected item(s).
    * @method getSelection
    * @returns Returns the selected item(s). If the multi property is true,
-   * getSelection will return an array, otherwise it will return
+   * getSelection will return an array, otherwise it will return 
    * the selected item or undefined if there is no selection.
    */
   JavaScriptObject getSelection();

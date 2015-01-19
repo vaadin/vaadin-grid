@@ -17,7 +17,7 @@ public class CoreSelectionConnector extends BaseConnector {
     public IsProperties stateProperties() {
                 getState().multi = getWidget().multi();
 
-      
+
       IsProperties p = super.stateProperties();
     p.set("multi", getState().multi);
 

@@ -17,7 +17,7 @@ public class PaperProgressConnector extends CoreRangeConnector {
     public IsProperties stateProperties() {
                 getState().secondaryProgress = getWidget().secondaryProgress();
 
-      
+
       IsProperties p = super.stateProperties();
     p.set("secondaryProgress", getState().secondaryProgress);
 

@@ -41,6 +41,8 @@ public class Demo implements EntryPoint {
             new DemoWrapWC().onModuleLoad();
         } else if (Window.Location.getPath().contains("gwt.html")) {
             new DemoExportWC().onModuleLoad();
+        } else if (Window.Location.getPath().contains("vaadin.html")) {
+            new DemoVaadinComponents().onModuleLoad();
         } else if (Window.Location.getPath().contains("demo.html")) {
             loadPolymerElement();
             exportGwtWidgets();

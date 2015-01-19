@@ -63,5 +63,11 @@ public class CoreIconsetWidget extends CoreMetaWidget  {
     public double offsetY() {
         return element().offsetY();
     }
+    public JavaScriptObject getOffset(String arg0, String arg1) {
+        return element().getOffset(arg0, arg1);
+    }
+    public void applyIcon(Element arg0, String arg1, String arg2, double arg3) {
+         element().applyIcon(arg0, arg1, arg2, arg3);
+    }
 
 }

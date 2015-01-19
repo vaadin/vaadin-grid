@@ -8,11 +8,11 @@ public class PaperButtonComponent extends PaperFocusableComponent {
     protected String[] events() {
       return concat(super.events(), new String[]{"click"});
     }
-  
+
     protected String[] attributes() {
       return concat(super.attributes(),new String[]{"label","raisedButton","iconSrc","icon"});
     }
-  
+
     @Override
     protected PaperButtonState getState() {
         return (PaperButtonState) super.getState();

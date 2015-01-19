@@ -17,7 +17,7 @@ public interface CoreCollapse extends HTMLElement  {
   /**
    * Fired when the target element has been resized as a result of the opened
    * state changing.
-   *
+   * 
    * @event core-resize
    */
   void addEventListener(String event, EventListener listener);
@@ -61,7 +61,7 @@ public interface CoreCollapse extends HTMLElement  {
 
   /**
    * If true, the size of the target element is fixed and is set
-   * on the element.  Otherwise it will try to
+   * on the element.  Otherwise it will try to 
    * use auto to determine the natural size to use
    * for collapsing/expanding.
    *

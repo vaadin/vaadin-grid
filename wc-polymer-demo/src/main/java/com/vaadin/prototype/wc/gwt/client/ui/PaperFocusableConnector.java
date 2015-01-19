@@ -21,7 +21,7 @@ public class PaperFocusableConnector extends BaseConnector {
                 getState().disabled = getWidget().disabled();
                 getState().isToggle = getWidget().isToggle();
 
-      
+
       IsProperties p = super.stateProperties();
     p.set("active", getState().active);
     p.set("focused", getState().focused);

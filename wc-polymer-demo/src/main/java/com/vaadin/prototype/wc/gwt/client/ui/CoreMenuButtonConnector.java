@@ -22,7 +22,7 @@ public class CoreMenuButtonConnector extends BaseConnector {
                 getState().halign = getWidget().halign();
                 getState().valign = getWidget().valign();
 
-      
+
       IsProperties p = super.stateProperties();
     p.set("icon", getState().icon);
     p.set("selected", getState().selected);

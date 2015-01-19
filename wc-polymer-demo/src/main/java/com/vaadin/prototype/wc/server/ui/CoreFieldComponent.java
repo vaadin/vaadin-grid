@@ -8,11 +8,11 @@ public class CoreFieldComponent extends BaseComponent {
     protected String[] events() {
       return concat(super.events(), new String[]{});
     }
-  
+
     protected String[] attributes() {
       return concat(super.attributes(),new String[]{});
     }
-  
+
     @Override
     protected CoreFieldState getState() {
         return (CoreFieldState) super.getState();

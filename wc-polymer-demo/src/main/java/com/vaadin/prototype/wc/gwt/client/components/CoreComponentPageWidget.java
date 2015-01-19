@@ -63,6 +63,9 @@ public class CoreComponentPageWidget extends CoreMetaWidget  {
     public JsArray list() {
         return element().list();
     }
+    public JavaScriptObject byId(String arg0) {
+        return element().byId(arg0);
+    }
     public void src(String val) {
         element().src(val);
     }
@@ -99,6 +102,15 @@ public class CoreComponentPageWidget extends CoreMetaWidget  {
     public double offsetY() {
         return element().offsetY();
     }
+    public JavaScriptObject getOffset(String arg0, String arg1) {
+        return element().getOffset(arg0, arg1);
+    }
+    public void applyIcon(Element arg0, String arg1, String arg2, double arg3) {
+         element().applyIcon(arg0, arg1, arg2, arg3);
+    }
+    public void applyIcon(Element arg0, String arg1) {
+         element().applyIcon(arg0, arg1);
+    }
     public void size(String val) {
         element().size(val);
     }
@@ -134,6 +146,9 @@ public class CoreComponentPageWidget extends CoreMetaWidget  {
     }
     public boolean shadow() {
         return element().shadow();
+    }
+    public JavaScriptObject request(JavaScriptObject arg0, String arg1, String arg2, boolean arg3, JavaScriptObject arg4, JavaScriptObject arg5, JavaScriptObject arg6, String arg7, boolean arg8, JavaScriptObject arg9) {
+        return element().request(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
     }
     public void url(String val) {
         element().url(val);
@@ -195,11 +210,26 @@ public class CoreComponentPageWidget extends CoreMetaWidget  {
     public boolean withCredentials() {
         return element().withCredentials();
     }
+    public void go() {
+         element().go();
+    }
     public void multi(boolean val) {
         element().multi(val);
     }
     public boolean multi() {
         return element().multi();
+    }
+    public JavaScriptObject getSelection() {
+        return element().getSelection();
+    }
+    public JavaScriptObject isSelected(JavaScriptObject arg0) {
+        return element().isSelected(arg0);
+    }
+    public void select(JavaScriptObject arg0) {
+         element().select(arg0);
+    }
+    public void toggle(JavaScriptObject arg0) {
+         element().toggle(arg0);
     }
     public void selected(JavaScriptObject val) {
         element().selected(val);

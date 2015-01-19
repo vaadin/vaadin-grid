@@ -8,11 +8,11 @@ public class CoreSplitterComponent extends BaseComponent {
     protected String[] events() {
       return concat(super.events(), new String[]{});
     }
-  
+
     protected String[] attributes() {
       return concat(super.attributes(),new String[]{"direction","minSize","locked","allowOverflow"});
     }
-  
+
     @Override
     protected CoreSplitterState getState() {
         return (CoreSplitterState) super.getState();

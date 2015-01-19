@@ -21,7 +21,7 @@ public class CoreTooltipConnector extends BaseConnector {
                 getState().noarrow = getWidget().noarrow();
                 getState().tipAttribute = getWidget().tipAttribute();
 
-      
+
       IsProperties p = super.stateProperties();
     p.set("label", getState().label);
     p.set("show", getState().show);

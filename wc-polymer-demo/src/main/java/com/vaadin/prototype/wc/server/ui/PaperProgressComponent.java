@@ -8,11 +8,11 @@ public class PaperProgressComponent extends CoreRangeComponent {
     protected String[] events() {
       return concat(super.events(), new String[]{});
     }
-  
+
     protected String[] attributes() {
       return concat(super.attributes(),new String[]{"secondaryProgress"});
     }
-  
+
     @Override
     protected PaperProgressState getState() {
         return (PaperProgressState) super.getState();

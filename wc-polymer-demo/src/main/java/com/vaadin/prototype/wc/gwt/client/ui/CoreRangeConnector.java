@@ -21,7 +21,7 @@ public class CoreRangeConnector extends BaseConnector {
                 getState().step = getWidget().step();
                 getState().ratio = getWidget().ratio();
 
-      
+
       IsProperties p = super.stateProperties();
     p.set("value", getState().value);
     p.set("min", getState().min);

@@ -8,11 +8,11 @@ public class CoreSelectionComponent extends BaseComponent {
     protected String[] events() {
       return concat(super.events(), new String[]{});
     }
-  
+
     protected String[] attributes() {
       return concat(super.attributes(),new String[]{"multi"});
     }
-  
+
     @Override
     protected CoreSelectionState getState() {
         return (CoreSelectionState) super.getState();

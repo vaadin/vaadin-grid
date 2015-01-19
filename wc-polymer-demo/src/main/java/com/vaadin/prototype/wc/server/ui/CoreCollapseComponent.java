@@ -8,11 +8,11 @@ public class CoreCollapseComponent extends BaseComponent {
     protected String[] events() {
       return concat(super.events(), new String[]{"core-resize"});
     }
-  
+
     protected String[] attributes() {
       return concat(super.attributes(),new String[]{"target","horizontal","opened","duration","fixedSize"});
     }
-  
+
     @Override
     protected CoreCollapseState getState() {
         return (CoreCollapseState) super.getState();

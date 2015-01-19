@@ -70,7 +70,7 @@ public class __CLZ__Connector extends __EXTENDS__ {
 
     public IsProperties stateProperties() {
 __SET_STATES__
-      
+
       IsProperties p = super.stateProperties();
 __SET_PROPS__
       return p;
@@ -106,19 +106,19 @@ import __NS__.gwt.client.*;
 import __NS__.gwt.client.util.*;
 
 public class __CLZ__Widget extends __EXTENDS__  {
-  
+
     protected String[] events() {
       return new String[]{__EVENTS__};
     }
-    
+
     public __CLZ__Widget() {
       super(WC.create(__CLZ__.class));
     }
-    
+
     public __CLZ__Widget(__CLZ__ element) {
       super(element);
     }
-    
+
     protected __CLZ__ element() {
       return (__CLZ__)super.getElement();
     }
@@ -137,11 +137,11 @@ public class __CLZ__Component extends __EXTENDS__ {
     protected String[] events() {
       return concat(super.events(), new String[]{__EVENTS__});
     }
-  
+
     protected String[] attributes() {
       return concat(super.attributes(),new String[]{__ATTRS__});
     }
-  
+
     @Override
     protected __CLZ__State getState() {
         return (__CLZ__State) super.getState();
@@ -180,22 +180,26 @@ sub getDefault {
 
 sub readFile {
   my ($file, $super) = @_;
+  my $jdoc = $file;
+  $jdoc =~ s/\.html$/.jdoc/;
+  $file = $jdoc if (-f $jdoc);
   return if (!-f $file);
 
   my $tag = basename($file, '.html');
+  my $tag = basename($tag, '.jdoc');
 
   my $clz = $tag;
   $clz =~ s/(^|-)(.)/uc($2)/eg;
- 
+
   my $java = "$clz.java";
   return if (!$super && -f $java);
- 
+
   print "Generated element: $tag -> $clz.java\n";
   my $interface = "";
   # if ($super) {
   #  $interface .= "<T extends $clz<?>>";
   # }
-  
+
   my ($event, $attrs, $elemcontent, $statecontent, $setstates, $setprops, $setwidget, $wgevents, $wgcontent, $wextend, $compcontent, $inCom, $comment, $case, $attr, $load, $default, %done, @params);
   my $javatype = "Object";
   my $rtype = "void";
@@ -215,18 +219,24 @@ sub readFile {
       } elsif ($case eq 'method') {
         $elemcontent .= $comment;
         my $sign = "";
+        my $call = "";
         my $i = 0;
         foreach my $p (@params) {
+          my $aname = "arg" . ($i++);
           $sign .= ", " if ($sign ne '');
-          $sign .= getJavaType($p) . " arg" . ($i++);
+          $sign .= getJavaType($p) . " $aname";
+          $call .= ", " if ($call ne '');
+          $call .= "$aname";
         }
         $elemcontent .= "  $rtype $attr($sign);\n";
+        my $ret = "return" unless ($rtype eq 'void');
+        $wgcontent .= "    public $rtype $attr($sign) {\n        $ret element().$attr($call);\n    }\n";
       } elsif ($case eq 'event') {
         $event = "  void addEventListener(String event, EventListener listener);\n" if ("$event" eq '');
         $event = "$comment$event";
         $event =~ s/\s*\*\/\s*\/\*\*\s*\n//smg;
         $wgevents .= "," if($wgevents ne '');
-        $wgevents .= "\"$attr\"";        
+        $wgevents .= "\"$attr\"";
       } elsif ($case eq 'attribute') {
         $done{$attr} = 1;
         $elemcontent .= $comment;
@@ -286,11 +296,11 @@ sub readFile {
         $load .= "$iface.class";
         next;
       }
-      
+
       next if ($iface eq 'CoreThemeAware' || $interface =~ /, $iface/);
       $interface = "$interface, $iface";
       $wextend = "$iface" if ($wextend eq '');
-    
+
       # $interface .= "<$clz>";
 
       $nfile = "$dir/../$nfile/$nfile.html";
@@ -301,12 +311,12 @@ sub readFile {
       $case = "";
     }
   }
-  
+
   my ($body, $dir);
-  
+
   close($f);
   # return if ($elemcontent eq '');
-  
+
   $dir = "$bdir/gwt/client/components/";
   make_path("$dir");
   open(my $f, ">$dir$clz.java");
@@ -320,7 +330,7 @@ sub readFile {
   $body =~ s/__CONTENT__/$elemcontent/g;
   print $f "$body";
   close($f);
-  
+
   open(my $f, ">$dir${clz}Widget.java");
   $body = $widget_tpl;
   $body =~ s/__NS__/$ns/g;
@@ -335,7 +345,7 @@ sub readFile {
   $body =~ s/__CONTENT__/$wgcontent/g;
   print $f "$body";
   close($f);
-  
+
   $dir = "$bdir/gwt/client/ui/";
   make_path("$dir");
   open(my $f, ">$dir${clz}State.java");
@@ -350,7 +360,7 @@ sub readFile {
   }
   print $f "$body";
   close($f);
-  
+
   open(my $f, ">$dir${clz}Connector.java");
   $body = $connector_tpl;
   $body =~ s/__PKG__/$ns.gwt.client.ui/g;
@@ -366,7 +376,7 @@ sub readFile {
   }
   print $f "$body";
   close($f);
-  
+
   $dir = "$bdir/server/ui/";
   make_path("$dir");
   open(my $f, ">$dir${clz}Component.java");

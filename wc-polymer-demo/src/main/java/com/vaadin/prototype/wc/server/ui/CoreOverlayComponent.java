@@ -8,11 +8,11 @@ public class CoreOverlayComponent extends BaseComponent {
     protected String[] events() {
       return concat(super.events(), new String[]{});
     }
-  
+
     protected String[] attributes() {
       return concat(super.attributes(),new String[]{"target","sizingTarget","opened","backdrop","layered","autoCloseDisabled","closeAttribute","closeSelector","margin","transition"});
     }
-  
+
     @Override
     protected CoreOverlayState getState() {
         return (CoreOverlayState) super.getState();

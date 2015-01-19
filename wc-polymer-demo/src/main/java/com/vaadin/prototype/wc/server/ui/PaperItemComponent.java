@@ -8,11 +8,11 @@ public class PaperItemComponent extends BaseComponent {
     protected String[] events() {
       return concat(super.events(), new String[]{});
     }
-  
+
     protected String[] attributes() {
       return concat(super.attributes(),new String[]{"label","iconSrc","icon"});
     }
-  
+
     @Override
     protected PaperItemState getState() {
         return (PaperItemState) super.getState();

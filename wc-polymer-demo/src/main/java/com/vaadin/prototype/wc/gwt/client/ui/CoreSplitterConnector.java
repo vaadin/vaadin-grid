@@ -20,7 +20,7 @@ public class CoreSplitterConnector extends BaseConnector {
                 getState().locked = getWidget().locked();
                 getState().allowOverflow = getWidget().allowOverflow();
 
-      
+
       IsProperties p = super.stateProperties();
     p.set("direction", getState().direction);
     p.set("minSize", getState().minSize);

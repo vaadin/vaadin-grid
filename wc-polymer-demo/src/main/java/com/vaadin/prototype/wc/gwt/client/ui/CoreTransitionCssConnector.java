@@ -16,7 +16,7 @@ public class CoreTransitionCssConnector extends CoreTransitionConnector {
 
     public IsProperties stateProperties() {
 
-      
+
       IsProperties p = super.stateProperties();
 
       return p;

@@ -8,11 +8,11 @@ public class CoreRangeComponent extends BaseComponent {
     protected String[] events() {
       return concat(super.events(), new String[]{});
     }
-  
+
     protected String[] attributes() {
       return concat(super.attributes(),new String[]{"value","min","max","step","ratio"});
     }
-  
+
     @Override
     protected CoreRangeState getState() {
         return (CoreRangeState) super.getState();

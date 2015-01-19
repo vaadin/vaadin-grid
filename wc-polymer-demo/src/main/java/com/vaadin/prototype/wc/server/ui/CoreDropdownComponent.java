@@ -8,11 +8,11 @@ public class CoreDropdownComponent extends BaseComponent {
     protected String[] events() {
       return concat(super.events(), new String[]{});
     }
-  
+
     protected String[] attributes() {
       return concat(super.attributes(),new String[]{"relatedTarget","opened","halign","valign","margin","transition"});
     }
-  
+
     @Override
     protected CoreDropdownState getState() {
         return (CoreDropdownState) super.getState();

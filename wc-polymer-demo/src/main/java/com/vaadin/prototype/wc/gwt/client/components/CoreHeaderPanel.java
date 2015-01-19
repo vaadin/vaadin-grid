@@ -17,20 +17,20 @@ public interface CoreHeaderPanel extends HTMLElement  {
 
   /**
    * Controls header and scrolling behavior. Options are
-   * `standard`, `seamed`, `waterfall`, `waterfall-tall`,
+   * `standard`, `seamed`, `waterfall`, `waterfall-tall`, 
    * `waterfall-medium-tall`, `scroll` and `cover`.
    * Default is `standard`.
    *
-   * `standard`: The header is a step above the panel. The header will consume the
-   * panel at the point of entry, preventing it from passing through to the
+   * `standard`: The header is a step above the panel. The header will consume the 
+   * panel at the point of entry, preventing it from passing through to the 
    * opposite side.
    *
    * `seamed`: The header is presented as seamed with the panel.
    *
-   * `waterfall`: Similar to standard mode, but header is initially presented as
+   * `waterfall`: Similar to standard mode, but header is initially presented as 
    * seamed with panel, but then separates to form the step.
    *
-   * `waterfall-tall`: The header is initially taller (`tall` class is added to
+   * `waterfall-tall`: The header is initially taller (`tall` class is added to 
    * the header).  As the user scrolls, the header separates (forming an edge)
    * while condensing (`tall` class is removed from the header).
    *
@@ -48,7 +48,7 @@ public interface CoreHeaderPanel extends HTMLElement  {
    *         margin: 60px 60px 60px 0;
    *       }
    *     </style>
-   *
+   * 
    *     <core-header-panel mode="cover">
    *       <core-appbar class="tall">
    *         <core-icon-button icon="menu"></core-icon-button>

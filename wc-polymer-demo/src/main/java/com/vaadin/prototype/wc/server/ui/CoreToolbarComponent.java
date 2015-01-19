@@ -8,11 +8,11 @@ public class CoreToolbarComponent extends BaseComponent {
     protected String[] events() {
       return concat(super.events(), new String[]{});
     }
-  
+
     protected String[] attributes() {
       return concat(super.attributes(),new String[]{});
     }
-  
+
     @Override
     protected CoreToolbarState getState() {
         return (CoreToolbarState) super.getState();

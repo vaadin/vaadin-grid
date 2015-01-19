@@ -27,6 +27,15 @@ public class ChessBoardWidget extends BaseWidget  {
       return (ChessBoard)super.getElement();
     }
 
+    public void move(String arg0, String arg1) {
+         element().move(arg0, arg1);
+    }
+    public void clearBoard() {
+         element().clearBoard();
+    }
+    public void put(String arg0, String arg1) {
+         element().put(arg0, arg1);
+    }
     public void fen(String val) {
         element().fen(val);
     }

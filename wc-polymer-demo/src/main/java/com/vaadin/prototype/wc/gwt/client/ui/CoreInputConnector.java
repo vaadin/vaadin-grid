@@ -25,7 +25,7 @@ public class CoreInputConnector extends BaseConnector {
                 getState().validate = getWidget().validate();
                 getState().invalid = getWidget().invalid();
 
-      
+
       IsProperties p = super.stateProperties();
     p.set("placeholder", getState().placeholder);
     p.set("disabled", getState().disabled);

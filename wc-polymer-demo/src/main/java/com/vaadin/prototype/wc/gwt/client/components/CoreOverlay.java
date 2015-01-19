@@ -16,7 +16,7 @@ public interface CoreOverlay extends HTMLElement  {
 
 
   /**
-   * The target element that will be shown when the overlay is
+   * The target element that will be shown when the overlay is 
    * opened. If unspecified, the core-overlay itself is the target.
    *
    * @attribute target
@@ -26,11 +26,11 @@ public interface CoreOverlay extends HTMLElement  {
   @JsProperty JavaScriptObject target();
 
   /**
-   * A `core-overlay`'s size is guaranteed to be
+   * A `core-overlay`'s size is guaranteed to be 
    * constrained to the window size. To achieve this, the sizingElement
-   * is sized with a max-height/width. By default this element is the
+   * is sized with a max-height/width. By default this element is the 
    * target element, but it can be specifically set to a specific element
-   * inside the target if that is more appropriate. This is useful, for
+   * inside the target if that is more appropriate. This is useful, for 
    * example, when a region inside the overlay should scroll if needed.
    *
    * @attribute sizingTarget
@@ -57,7 +57,7 @@ public interface CoreOverlay extends HTMLElement  {
    *
    * @attribute backdrop
    * @type boolean
-   */
+   */    
   @JsProperty CoreOverlay backdrop(boolean val);
   @JsProperty boolean backdrop();
 
@@ -104,8 +104,8 @@ public interface CoreOverlay extends HTMLElement  {
 
   /**
    * A `core-overlay` target's size is constrained to the window size.
-   * The `margin` property specifies a pixel amount around the overlay
-   * that will be reserved. It's useful for ensuring that, for example,
+   * The `margin` property specifies a pixel amount around the overlay 
+   * that will be reserved. It's useful for ensuring that, for example, 
    * a shadow displayed outside the target will always be visible.
    *
    * @attribute margin
@@ -115,8 +115,8 @@ public interface CoreOverlay extends HTMLElement  {
   @JsProperty double margin();
 
   /**
-   * The transition property specifies a string which identifies a
-   * <a href="../core-transition/">`core-transition`</a> element that
+   * The transition property specifies a string which identifies a 
+   * <a href="../core-transition/">`core-transition`</a> element that 
    * will be used to help the overlay open and close. The default
    * `core-transition-fade` will cause the overlay to fade in and out.
    *
@@ -126,21 +126,21 @@ public interface CoreOverlay extends HTMLElement  {
   @JsProperty CoreOverlay transition(String val);
   @JsProperty String transition();
 
-  /**
+  /** 
    * Toggle the opened state of the overlay.
    * @method toggle
    */
   void toggle();
 
-  /**
+  /** 
    * Open the overlay. This is equivalent to setting the `opened`
    * property to true.
    * @method open
    */
   void open();
 
-  /**
-   * Close the overlay. This is equivalent to setting the `opened`
+  /** 
+   * Close the overlay. This is equivalent to setting the `opened` 
    * property to false.
    * @method close
    */
@@ -148,7 +148,7 @@ public interface CoreOverlay extends HTMLElement  {
 
   /**
    * Extensions of core-overlay should implement the `resizeHandler`
-   * method to adjust the size and position of the overlay when the
+   * method to adjust the size and position of the overlay when the 
    * browser window resizes.
    * @method resizeHandler
    */

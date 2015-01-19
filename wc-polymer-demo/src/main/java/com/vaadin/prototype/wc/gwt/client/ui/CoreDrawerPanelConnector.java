@@ -20,7 +20,7 @@ public class CoreDrawerPanelConnector extends BaseConnector {
                 getState().defaultSelected = getWidget().defaultSelected();
                 getState().narrow = getWidget().narrow();
 
-      
+
       IsProperties p = super.stateProperties();
     p.set("responsiveWidth", getState().responsiveWidth);
     p.set("selected", getState().selected);

@@ -8,11 +8,11 @@ public class CoreInputComponent extends BaseComponent {
     protected String[] events() {
       return concat(super.events(), new String[]{"input","change","input-invalid"});
     }
-  
+
     protected String[] attributes() {
       return concat(super.attributes(),new String[]{"placeholder","disabled","type","multiline","rows","inputValue","value","validate","invalid"});
     }
-  
+
     @Override
     protected CoreInputState getState() {
         return (CoreInputState) super.getState();

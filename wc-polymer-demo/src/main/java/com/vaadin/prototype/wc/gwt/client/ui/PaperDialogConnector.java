@@ -19,7 +19,7 @@ public class PaperDialogConnector extends BaseConnector {
                 getState().heading = getWidget().heading();
                 getState().transition = getWidget().transition();
 
-      
+
       IsProperties p = super.stateProperties();
     p.set("opened", getState().opened);
     p.set("heading", getState().heading);

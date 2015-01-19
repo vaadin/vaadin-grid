@@ -20,7 +20,7 @@ public class CoreCollapseConnector extends BaseConnector {
                 getState().duration = getWidget().duration();
                 getState().fixedSize = getWidget().fixedSize();
 
-      
+
       IsProperties p = super.stateProperties();
     p.set("horizontal", getState().horizontal);
     p.set("opened", getState().opened);

@@ -17,7 +17,7 @@ public class PaperFabConnector extends PaperIconButtonConnector {
     public IsProperties stateProperties() {
                 getState().raisedButton = getWidget().raisedButton();
 
-      
+
       IsProperties p = super.stateProperties();
     p.set("raisedButton", getState().raisedButton);
 

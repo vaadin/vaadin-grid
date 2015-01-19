@@ -19,7 +19,7 @@ public class CoreItemConnector extends BaseConnector {
                 getState().icon = getWidget().icon();
                 getState().label = getWidget().label();
 
-      
+
       IsProperties p = super.stateProperties();
     p.set("src", getState().src);
     p.set("icon", getState().icon);

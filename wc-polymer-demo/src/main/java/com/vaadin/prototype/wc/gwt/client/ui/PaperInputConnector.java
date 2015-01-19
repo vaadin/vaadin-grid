@@ -19,7 +19,7 @@ public class PaperInputConnector extends CoreInputConnector {
                 getState().floatingLabel = getWidget().floatingLabel();
                 getState().maxRows = getWidget().maxRows();
 
-      
+
       IsProperties p = super.stateProperties();
     p.set("label", getState().label);
     p.set("floatingLabel", getState().floatingLabel);

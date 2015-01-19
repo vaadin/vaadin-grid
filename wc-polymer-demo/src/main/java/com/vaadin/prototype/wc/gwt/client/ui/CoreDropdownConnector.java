@@ -19,7 +19,7 @@ public class CoreDropdownConnector extends BaseConnector {
                 getState().margin = getWidget().margin();
                 getState().transition = getWidget().transition();
 
-      
+
       IsProperties p = super.stateProperties();
     p.set("opened", getState().opened);
     p.set("margin", getState().margin);

@@ -8,11 +8,11 @@ public class CoreComponentPageComponent extends CoreMetaComponent {
     protected String[] events() {
       return concat(super.events(), new String[]{"core-response","core-error","core-complete"});
     }
-  
+
     protected String[] attributes() {
       return concat(super.attributes(),new String[]{"vertical","justify","align","reverse","type","list","src","width","icons","iconSize","offsetX","offsetY","size","icon","active","mode","tallClass","shadow","url","handleAs","auto","params","response","method","headers","body","contentType","withCredentials","multi","selected","valueattr","selectedClass","selectedProperty","selectedItem","selectedModel","selectedIndex","target","itemSelector","activateEvent","notap","label","sources"});
     }
-  
+
     @Override
     protected CoreComponentPageState getState() {
         return (CoreComponentPageState) super.getState();

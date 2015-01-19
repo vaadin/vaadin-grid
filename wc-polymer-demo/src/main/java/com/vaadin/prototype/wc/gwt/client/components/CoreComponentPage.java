@@ -25,18 +25,18 @@ public interface CoreComponentPage extends HTMLElement /**
 /**
  * @group Polymer Core Elements
  *
- * The `core-iconset` element allows users to define their own icon sets.
+ * The `core-iconset` element allows users to define their own icon sets. 
  * The `src` property specifies the url of the icon image. Multiple icons may
  * be included in this image and they may be organized into rows.
  * The `icons` property is a space separated list of names corresponding to the
  * icons. The names must be ordered as the icons are ordered in the icon image.
  * Icons are expected to be square and are the size specified by the `iconSize`
- * property. The `width` property corresponds to the width of the icon image
+ * property. The `width` property corresponds to the width of the icon image 
  * and must be specified if icons are arranged into multiple rows in the image.
  *
  * All `core-iconset` elements are available for use by other `core-iconset`
  * elements via a database keyed by id. Typically, an element author that wants
- * to support a set of custom icons uses a `core-iconset` to retrieve
+ * to support a set of custom icons uses a `core-iconset` to retrieve 
  * and use another, user-defined iconset.
  *
  * Example:
@@ -46,9 +46,9 @@ public interface CoreComponentPage extends HTMLElement /**
  *     </core-iconset>
  *
  * This will automatically register the icon set "my-icons" to the iconset
- * database.  To use these icons from within another element, make a
+ * database.  To use these icons from within another element, make a 
  * `core-iconset` element and call the `byId` method to retrieve a
- * given iconset. To apply a particular icon to an element, use the
+ * given iconset. To apply a particular icon to an element, use the 
  * `applyIcon` method. For example:
  *
  *     iconset.applyIcon(iconNode, 'car');
@@ -73,19 +73,19 @@ public interface CoreComponentPage extends HTMLElement /**
 /**
  * @group Polymer Core Elements
  *
- * The `core-iconset-svg` element allows users to define their own icon sets
+ * The `core-iconset-svg` element allows users to define their own icon sets 
  * that contain svg icons. The svg icon elements should be children of the
  * `core-iconset-svg` element. Multiple icons should be given distinct id's.
  *
- * Using svg elements to create icons has a few advantages over traditional
+ * Using svg elements to create icons has a few advantages over traditional 
  * bitmap graphics like jpg or png. Icons that use svg are vector based so they
- * are resolution independent and should look good on any device. They are
+ * are resolution independent and should look good on any device. They are 
  * stylable via css. Icons can be themed, colorized, and even animated.
  *
  * Example:
  *
  *     <core-iconset-svg id="my-svg-icons" iconSize="24">
- *       <svg>
+ *       <svg> 
  *         <defs>
  *           <g id="shape">
  *             <rect x="50" y="50" width="50" height="50" />
@@ -96,8 +96,8 @@ public interface CoreComponentPage extends HTMLElement /**
  *     </core-iconset-svg>
  *
  * This will automatically register the icon set "my-svg-icons" to the iconset
- * database.  To use these icons from within another element, make a
- * `core-iconset` element and call the `byId` method
+ * database.  To use these icons from within another element, make a 
+ * `core-iconset` element and call the `byId` method 
  * to retrieve a given iconset. To apply a particular icon inside an
  * element use the `applyIcon` method. For example:
  *
@@ -114,9 +114,9 @@ public interface CoreComponentPage extends HTMLElement /**
    * Fired whenever a response or an error is received.
    *
    * @event core-complete   * Fired when an error is received.
-   *
+   * 
    * @event core-error   * Fired when a response is received.
-   *
+   * 
    * @event core-response
    */
   void addEventListener(String event, EventListener listener);
@@ -132,7 +132,7 @@ public interface CoreComponentPage extends HTMLElement /**
   @JsProperty boolean vertical();
 
   /**
-   * Controls how the items are aligned in the main-axis direction. For
+   * Controls how the items are aligned in the main-axis direction. For 
    * example for a horizontal layout, this controls how each item is aligned
    * horizontally.
    *
@@ -143,7 +143,7 @@ public interface CoreComponentPage extends HTMLElement /**
   @JsProperty String justify();
 
   /**
-   * Controls how the items are aligned in cross-axis direction. For
+   * Controls how the items are aligned in cross-axis direction. For 
    * example for a horizontal layout, this controls how each item is aligned
    * vertically.
    *
@@ -165,7 +165,7 @@ public interface CoreComponentPage extends HTMLElement /**
   /**
    * The type of meta-data.  All meta-data with the same type with be
    * stored together.
-   *
+   * 
    * @attribute type
    * @type string
    */
@@ -174,7 +174,7 @@ public interface CoreComponentPage extends HTMLElement /**
 
   /**
    * Returns a list of all meta-data elements with the same type.
-   *
+   * 
    * @attribute list
    * @type array
    */
@@ -262,7 +262,7 @@ public interface CoreComponentPage extends HTMLElement /**
    * @param {String|Number} icon The name of the icon or the index of the
    * icon within in the icon image.
    * @param {String} theme The name of the theme.
-   * @returns {Object} An object specifying the offset of the given icon
+   * @returns {Object} An object specifying the offset of the given icon 
    * within the icon resource file; `offsetX` is the horizontal offset and
    * `offsetY` is the vertical offset. Both values are in pixel units.
    */
@@ -270,7 +270,7 @@ public interface CoreComponentPage extends HTMLElement /**
 
   /**
    * Applies an icon to the given element as a css background image. This
-   * method does not size the element, and it's often necessary to set
+   * method does not size the element, and it's often necessary to set 
    * the element's height and width so that the background image is visible.
    *
    * @method applyIcon
@@ -278,7 +278,7 @@ public interface CoreComponentPage extends HTMLElement /**
    * applied.
    * @param {String|Number} icon The name or index of the icon to apply.
    * @param {String} theme (optional) The name of the theme for the icon.
-   * @param {Number} scale (optional, defaults to 1) A scaling factor
+   * @param {Number} scale (optional, defaults to 1) A scaling factor 
    * with which the icon can be magnified.
    */
   void applyIcon(Element arg0, String arg1, String arg2, double arg3);
@@ -326,20 +326,20 @@ public interface CoreComponentPage extends HTMLElement /**
 
   /**
    * Controls header and scrolling behavior. Options are
-   * `standard`, `seamed`, `waterfall`, `waterfall-tall`,
+   * `standard`, `seamed`, `waterfall`, `waterfall-tall`, 
    * `waterfall-medium-tall`, `scroll` and `cover`.
    * Default is `standard`.
    *
-   * `standard`: The header is a step above the panel. The header will consume the
-   * panel at the point of entry, preventing it from passing through to the
+   * `standard`: The header is a step above the panel. The header will consume the 
+   * panel at the point of entry, preventing it from passing through to the 
    * opposite side.
    *
    * `seamed`: The header is presented as seamed with the panel.
    *
-   * `waterfall`: Similar to standard mode, but header is initially presented as
+   * `waterfall`: Similar to standard mode, but header is initially presented as 
    * seamed with panel, but then separates to form the step.
    *
-   * `waterfall-tall`: The header is initially taller (`tall` class is added to
+   * `waterfall-tall`: The header is initially taller (`tall` class is added to 
    * the header).  As the user scrolls, the header separates (forming an edge)
    * while condensing (`tall` class is removed from the header).
    *
@@ -357,7 +357,7 @@ public interface CoreComponentPage extends HTMLElement /**
    *         margin: 60px 60px 60px 0;
    *       }
    *     </style>
-   *
+   * 
    *     <core-header-panel mode="cover">
    *       <core-appbar class="tall">
    *         <core-icon-button icon="menu"></core-icon-button>
@@ -410,7 +410,7 @@ public interface CoreComponentPage extends HTMLElement /**
 
   /**
    * The URL target of the request.
-   *
+   * 
    * @attribute url
    * @type string
    */
@@ -420,13 +420,13 @@ public interface CoreComponentPage extends HTMLElement /**
   /**
    * Specifies what data to store in the `response` property, and
    * to deliver as `event.response` in `response` events.
-   *
+   * 
    * One of:
-   *
+   * 
    *    `text`: uses `XHR.responseText`.
-   *
+   *    
    *    `xml`: uses `XHR.responseXML`.
-   *
+   *    
    *    `json`: uses `XHR.responseText` parsed as JSON.
    *
    *    `arraybuffer`: uses `XHR.response`.
@@ -434,7 +434,7 @@ public interface CoreComponentPage extends HTMLElement /**
    *    `blob`: uses `XHR.response`.
    *
    *    `document`: uses `XHR.response`.
-   *
+   *  
    * @attribute handleAs
    * @type string
    */
@@ -452,7 +452,7 @@ public interface CoreComponentPage extends HTMLElement /**
 
   /**
    * Parameters to send to the specified URL, as JSON.
-   *
+   *  
    * @attribute params
    * @type string (JSON)
    */
@@ -483,13 +483,13 @@ public interface CoreComponentPage extends HTMLElement /**
    *
    * Example:
    *
-   *     <core-ajax
+   *     <core-ajax 
    *         auto
    *         url="http://somesite.com"
    *         headers='{"X-Requested-With": "XMLHttpRequest"}'
    *         handleAs="json"
    *         on-core-response="{{handleResponse}}"></core-ajax>
-   *
+   *  
    * @attribute headers
    * @type Object
    */
@@ -504,7 +504,7 @@ public interface CoreComponentPage extends HTMLElement /**
    *     <core-ajax method="POST" auto url="http://somesite.com"
    *         body='{"foo":1, "bar":2}'>
    *     </core-ajax>
-   *
+   *  
    * @attribute body
    * @type Object
    */
@@ -522,7 +522,7 @@ public interface CoreComponentPage extends HTMLElement /**
 
   /**
    * Set the withCredentials flag on the request.
-   *
+   * 
    * @attribute withCredentials
    * @type boolean
    */
@@ -549,7 +549,7 @@ public interface CoreComponentPage extends HTMLElement /**
    * Retrieves the selected item(s).
    * @method getSelection
    * @returns Returns the selected item(s). If the multi property is true,
-   * getSelection will return an array, otherwise it will return
+   * getSelection will return an array, otherwise it will return 
    * the selected item or undefined if there is no selection.
    */
   JavaScriptObject getSelection();
@@ -622,7 +622,7 @@ public interface CoreComponentPage extends HTMLElement /**
 
   /**
    * Specifies the CSS class to be used to add to the selected element.
-   *
+   * 
    * @attribute selectedClass
    * @type string
    */
@@ -642,7 +642,7 @@ public interface CoreComponentPage extends HTMLElement /**
   /**
    * Returns the currently selected element. In multi-selection this returns
    * an array of selected elements.
-   *
+   * 
    * @attribute selectedItem
    * @type Object
    */
@@ -652,7 +652,7 @@ public interface CoreComponentPage extends HTMLElement /**
   /**
    * In single selection, this returns the model associated with the
    * selected element.
-   *
+   * 
    * @attribute selectedModel
    * @type Object
    */
@@ -669,9 +669,9 @@ public interface CoreComponentPage extends HTMLElement /**
   @JsProperty double selectedIndex();
 
   /**
-   * The target element that contains items.  If this is not set
+   * The target element that contains items.  If this is not set 
    * core-selector is the container.
-   *
+   * 
    * @attribute target
    * @type Object
    */
@@ -679,7 +679,7 @@ public interface CoreComponentPage extends HTMLElement /**
   @JsProperty JavaScriptObject target();
 
   /**
-   * This can be used to query nodes from the target node to be used for
+   * This can be used to query nodes from the target node to be used for 
    * selection items.  Note this only works if the 'target' property is set.
    *
    * Example:
@@ -691,7 +691,7 @@ public interface CoreComponentPage extends HTMLElement /**
    *       <label><input type="radio" name="color" value="blue"> Blue</label> <br>
    *       <p>color = {{color}}</p>
    *     </form>
-   *
+   * 
    * @attribute itemSelector
    * @type string
    */

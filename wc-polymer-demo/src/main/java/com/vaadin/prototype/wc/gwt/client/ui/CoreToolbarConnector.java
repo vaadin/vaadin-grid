@@ -16,7 +16,7 @@ public class CoreToolbarConnector extends BaseConnector {
 
     public IsProperties stateProperties() {
 
-      
+
       IsProperties p = super.stateProperties();
 
       return p;

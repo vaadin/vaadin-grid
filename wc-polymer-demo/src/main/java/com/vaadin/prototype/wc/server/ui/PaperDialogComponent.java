@@ -8,11 +8,11 @@ public class PaperDialogComponent extends BaseComponent {
     protected String[] events() {
       return concat(super.events(), new String[]{});
     }
-  
+
     protected String[] attributes() {
       return concat(super.attributes(),new String[]{"opened","heading","transition"});
     }
-  
+
     @Override
     protected PaperDialogState getState() {
         return (PaperDialogState) super.getState();

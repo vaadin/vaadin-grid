@@ -8,11 +8,11 @@ public class PaperRadioButtonComponent extends BaseComponent {
     protected String[] events() {
       return concat(super.events(), new String[]{"change"});
     }
-  
+
     protected String[] attributes() {
       return concat(super.attributes(),new String[]{"checked","label","toggles","disabled"});
     }
-  
+
     @Override
     protected PaperRadioButtonState getState() {
         return (PaperRadioButtonState) super.getState();

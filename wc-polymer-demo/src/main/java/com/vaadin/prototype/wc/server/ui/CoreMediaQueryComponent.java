@@ -8,11 +8,11 @@ public class CoreMediaQueryComponent extends BaseComponent {
     protected String[] events() {
       return concat(super.events(), new String[]{"core-media-change"});
     }
-  
+
     protected String[] attributes() {
       return concat(super.attributes(),new String[]{"queryMatches","query"});
     }
-  
+
     @Override
     protected CoreMediaQueryState getState() {
         return (CoreMediaQueryState) super.getState();

@@ -8,11 +8,11 @@ public class PaperToastComponent extends BaseComponent {
     protected String[] events() {
       return concat(super.events(), new String[]{});
     }
-  
+
     protected String[] attributes() {
       return concat(super.attributes(),new String[]{"text","duration","opened","responsiveWidth","swipeDisabled"});
     }
-  
+
     @Override
     protected PaperToastState getState() {
         return (PaperToastState) super.getState();

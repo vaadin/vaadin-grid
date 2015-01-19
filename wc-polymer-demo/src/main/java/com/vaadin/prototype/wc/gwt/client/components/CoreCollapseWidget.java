@@ -57,5 +57,8 @@ public class CoreCollapseWidget extends BaseWidget  {
     public boolean fixedSize() {
         return element().fixedSize();
     }
+    public void toggle() {
+         element().toggle();
+    }
 
 }

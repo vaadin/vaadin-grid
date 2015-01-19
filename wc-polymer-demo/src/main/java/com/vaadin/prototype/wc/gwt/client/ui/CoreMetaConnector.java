@@ -17,7 +17,7 @@ public class CoreMetaConnector extends BaseConnector {
     public IsProperties stateProperties() {
                 getState().type = getWidget().type();
 
-      
+
       IsProperties p = super.stateProperties();
     p.set("type", getState().type);
 

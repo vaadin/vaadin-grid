@@ -20,7 +20,7 @@ public class PaperRadioButtonConnector extends BaseConnector {
                 getState().toggles = getWidget().toggles();
                 getState().disabled = getWidget().disabled();
 
-      
+
       IsProperties p = super.stateProperties();
     p.set("checked", getState().checked);
     p.set("label", getState().label);

@@ -17,7 +17,7 @@ public class PaperToggleButtonConnector extends BaseConnector {
     public IsProperties stateProperties() {
                 getState().checked = getWidget().checked();
 
-      
+
       IsProperties p = super.stateProperties();
     p.set("checked", getState().checked);
 

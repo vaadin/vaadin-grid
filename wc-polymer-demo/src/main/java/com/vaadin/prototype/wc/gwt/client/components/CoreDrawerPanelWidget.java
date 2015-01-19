@@ -51,5 +51,14 @@ public class CoreDrawerPanelWidget extends BaseWidget  {
     public boolean narrow() {
         return element().narrow();
     }
+    public void togglePanel() {
+         element().togglePanel();
+    }
+    public void openDrawer() {
+         element().openDrawer();
+    }
+    public void closeDrawer() {
+         element().closeDrawer();
+    }
 
 }

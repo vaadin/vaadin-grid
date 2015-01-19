@@ -8,11 +8,11 @@ public class PaperTabsComponent extends CoreSelectorComponent {
     protected String[] events() {
       return concat(super.events(), new String[]{});
     }
-  
+
     protected String[] attributes() {
       return concat(super.attributes(),new String[]{"noink","nobar"});
     }
-  
+
     @Override
     protected PaperTabsState getState() {
         return (PaperTabsState) super.getState();

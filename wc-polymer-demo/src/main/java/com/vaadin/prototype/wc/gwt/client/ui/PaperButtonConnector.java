@@ -20,7 +20,7 @@ public class PaperButtonConnector extends PaperFocusableConnector {
                 getState().iconSrc = getWidget().iconSrc();
                 getState().icon = getWidget().icon();
 
-      
+
       IsProperties p = super.stateProperties();
     p.set("label", getState().label);
     p.set("raisedButton", getState().raisedButton);

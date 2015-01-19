@@ -8,11 +8,11 @@ public class CoreIconComponent extends BaseComponent {
     protected String[] events() {
       return concat(super.events(), new String[]{});
     }
-  
+
     protected String[] attributes() {
       return concat(super.attributes(),new String[]{"src","size","icon"});
     }
-  
+
     @Override
     protected CoreIconState getState() {
         return (CoreIconState) super.getState();

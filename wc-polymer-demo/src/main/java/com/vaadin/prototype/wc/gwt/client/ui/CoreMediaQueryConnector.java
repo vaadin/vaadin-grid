@@ -18,7 +18,7 @@ public class CoreMediaQueryConnector extends BaseConnector {
                 getState().queryMatches = getWidget().queryMatches();
                 getState().query = getWidget().query();
 
-      
+
       IsProperties p = super.stateProperties();
     p.set("queryMatches", getState().queryMatches);
     p.set("query", getState().query);

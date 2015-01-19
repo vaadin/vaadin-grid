@@ -19,7 +19,7 @@ public class CoreIconConnector extends BaseConnector {
                 getState().size = getWidget().size();
                 getState().icon = getWidget().icon();
 
-      
+
       IsProperties p = super.stateProperties();
     p.set("src", getState().src);
     p.set("size", getState().size);

@@ -8,11 +8,11 @@ public class ChessBoardComponent extends BaseComponent {
     protected String[] events() {
       return concat(super.events(), new String[]{});
     }
-  
+
     protected String[] attributes() {
       return concat(super.attributes(),new String[]{"fen","frame"});
     }
-  
+
     @Override
     protected ChessBoardState getState() {
         return (ChessBoardState) super.getState();

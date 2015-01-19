@@ -19,7 +19,7 @@ public class CoreIconButtonConnector extends BaseConnector {
                 getState().active = getWidget().active();
                 getState().icon = getWidget().icon();
 
-      
+
       IsProperties p = super.stateProperties();
     p.set("src", getState().src);
     p.set("active", getState().active);

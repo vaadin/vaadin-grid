@@ -17,7 +17,7 @@ public class PaperIconButtonConnector extends PaperButtonConnector {
     public IsProperties stateProperties() {
                 getState().fill = getWidget().fill();
 
-      
+
       IsProperties p = super.stateProperties();
     p.set("fill", getState().fill);
 

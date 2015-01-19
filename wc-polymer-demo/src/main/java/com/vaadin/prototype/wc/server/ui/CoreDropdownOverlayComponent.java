@@ -8,11 +8,11 @@ public class CoreDropdownOverlayComponent extends CoreOverlayComponent {
     protected String[] events() {
       return concat(super.events(), new String[]{});
     }
-  
+
     protected String[] attributes() {
       return concat(super.attributes(),new String[]{"relatedTarget","halign","valign","margin"});
     }
-  
+
     @Override
     protected CoreDropdownOverlayState getState() {
         return (CoreDropdownOverlayState) super.getState();

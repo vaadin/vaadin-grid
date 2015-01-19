@@ -16,7 +16,7 @@ public interface CoreDrawerPanel extends HTMLElement  {
 
   /**
    * Fired when the narrow layout changes.
-   *
+   * 
    * @event core-responsive-change
    * @param {Object} detail
    * @param {boolean} detail.narrow true if the panel is in narrow layout.
@@ -44,7 +44,7 @@ public interface CoreDrawerPanel extends HTMLElement  {
   @JsProperty String selected();
 
   /**
-   * The panel to be selected when `core-drawer-panel` changes to narrow
+   * The panel to be selected when `core-drawer-panel` changes to narrow 
    * layout.
    *
    * @attribute defaultSelected

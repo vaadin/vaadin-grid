@@ -63,5 +63,8 @@ public class CoreMenuButtonWidget extends BaseWidget  {
     public String valign() {
         return element().valign();
     }
+    public void toggle() {
+         element().toggle();
+    }
 
 }

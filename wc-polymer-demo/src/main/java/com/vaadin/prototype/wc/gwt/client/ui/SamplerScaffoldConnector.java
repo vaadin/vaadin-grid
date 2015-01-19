@@ -16,7 +16,7 @@ public class SamplerScaffoldConnector extends BaseConnector {
 
     public IsProperties stateProperties() {
 
-      
+
       IsProperties p = super.stateProperties();
 
       return p;

@@ -33,5 +33,17 @@ public class CoreSelectionWidget extends BaseWidget  {
     public boolean multi() {
         return element().multi();
     }
+    public JavaScriptObject getSelection() {
+        return element().getSelection();
+    }
+    public JavaScriptObject isSelected(JavaScriptObject arg0) {
+        return element().isSelected(arg0);
+    }
+    public void select(JavaScriptObject arg0) {
+         element().select(arg0);
+    }
+    public void toggle(JavaScriptObject arg0) {
+         element().toggle(arg0);
+    }
 
 }

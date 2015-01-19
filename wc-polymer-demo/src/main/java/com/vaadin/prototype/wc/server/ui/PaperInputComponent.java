@@ -8,11 +8,11 @@ public class PaperInputComponent extends CoreInputComponent {
     protected String[] events() {
       return concat(super.events(), new String[]{});
     }
-  
+
     protected String[] attributes() {
       return concat(super.attributes(),new String[]{"label","floatingLabel","maxRows"});
     }
-  
+
     @Override
     protected PaperInputState getState() {
         return (PaperInputState) super.getState();

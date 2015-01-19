@@ -19,7 +19,7 @@ public class CoreHeaderPanelConnector extends BaseConnector {
                 getState().tallClass = getWidget().tallClass();
                 getState().shadow = getWidget().shadow();
 
-      
+
       IsProperties p = super.stateProperties();
     p.set("mode", getState().mode);
     p.set("tallClass", getState().tallClass);

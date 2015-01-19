@@ -8,11 +8,11 @@ public class PaperRadioGroupComponent extends CoreSelectorComponent {
     protected String[] events() {
       return concat(super.events(), new String[]{});
     }
-  
+
     protected String[] attributes() {
       return concat(super.attributes(),new String[]{});
     }
-  
+
     @Override
     protected PaperRadioGroupState getState() {
         return (PaperRadioGroupState) super.getState();

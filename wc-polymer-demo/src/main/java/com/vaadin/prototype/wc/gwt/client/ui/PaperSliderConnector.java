@@ -22,7 +22,7 @@ public class PaperSliderConnector extends CoreRangeConnector {
                 getState().editable = getWidget().editable();
                 getState().immediateValue = getWidget().immediateValue();
 
-      
+
       IsProperties p = super.stateProperties();
     p.set("snaps", getState().snaps);
     p.set("pin", getState().pin);

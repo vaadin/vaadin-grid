@@ -19,7 +19,7 @@ public class PaperItemConnector extends BaseConnector {
                 getState().iconSrc = getWidget().iconSrc();
                 getState().icon = getWidget().icon();
 
-      
+
       IsProperties p = super.stateProperties();
     p.set("label", getState().label);
     p.set("iconSrc", getState().iconSrc);

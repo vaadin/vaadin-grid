@@ -8,11 +8,11 @@ public class PaperIconButtonComponent extends PaperButtonComponent {
     protected String[] events() {
       return concat(super.events(), new String[]{});
     }
-  
+
     protected String[] attributes() {
       return concat(super.attributes(),new String[]{"fill"});
     }
-  
+
     @Override
     protected PaperIconButtonState getState() {
         return (PaperIconButtonState) super.getState();

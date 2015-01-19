@@ -14,18 +14,18 @@ import com.vaadin.prototype.wc.gwt.client.html.*;
 public interface CoreIconset extends HTMLElement /**
  * @group Polymer Core Elements
  *
- * The `core-iconset` element allows users to define their own icon sets.
+ * The `core-iconset` element allows users to define their own icon sets. 
  * The `src` property specifies the url of the icon image. Multiple icons may
  * be included in this image and they may be organized into rows.
  * The `icons` property is a space separated list of names corresponding to the
  * icons. The names must be ordered as the icons are ordered in the icon image.
  * Icons are expected to be square and are the size specified by the `iconSize`
- * property. The `width` property corresponds to the width of the icon image
+ * property. The `width` property corresponds to the width of the icon image 
  * and must be specified if icons are arranged into multiple rows in the image.
  *
  * All `core-iconset` elements are available for use by other `core-iconset`
  * elements via a database keyed by id. Typically, an element author that wants
- * to support a set of custom icons uses a `core-iconset` to retrieve
+ * to support a set of custom icons uses a `core-iconset` to retrieve 
  * and use another, user-defined iconset.
  *
  * Example:
@@ -35,9 +35,9 @@ public interface CoreIconset extends HTMLElement /**
  *     </core-iconset>
  *
  * This will automatically register the icon set "my-icons" to the iconset
- * database.  To use these icons from within another element, make a
+ * database.  To use these icons from within another element, make a 
  * `core-iconset` element and call the `byId` method to retrieve a
- * given iconset. To apply a particular icon to an element, use the
+ * given iconset. To apply a particular icon to an element, use the 
  * `applyIcon` method. For example:
  *
  *     iconset.applyIcon(iconNode, 'car');
@@ -135,7 +135,7 @@ public interface CoreIconset extends HTMLElement /**
    * @param {String|Number} icon The name of the icon or the index of the
    * icon within in the icon image.
    * @param {String} theme The name of the theme.
-   * @returns {Object} An object specifying the offset of the given icon
+   * @returns {Object} An object specifying the offset of the given icon 
    * within the icon resource file; `offsetX` is the horizontal offset and
    * `offsetY` is the vertical offset. Both values are in pixel units.
    */
@@ -143,7 +143,7 @@ public interface CoreIconset extends HTMLElement /**
 
   /**
    * Applies an icon to the given element as a css background image. This
-   * method does not size the element, and it's often necessary to set
+   * method does not size the element, and it's often necessary to set 
    * the element's height and width so that the background image is visible.
    *
    * @method applyIcon
@@ -151,7 +151,7 @@ public interface CoreIconset extends HTMLElement /**
    * applied.
    * @param {String|Number} icon The name or index of the icon to apply.
    * @param {String} theme (optional) The name of the theme for the icon.
-   * @param {Number} scale (optional, defaults to 1) A scaling factor
+   * @param {Number} scale (optional, defaults to 1) A scaling factor 
    * with which the icon can be magnified.
    */
   void applyIcon(Element arg0, String arg1, String arg2, double arg3);

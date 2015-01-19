@@ -25,7 +25,7 @@ public class CoreSelectorConnector extends BaseConnector {
                 getState().activateEvent = getWidget().activateEvent();
                 getState().notap = getWidget().notap();
 
-      
+
       IsProperties p = super.stateProperties();
     p.set("multi", getState().multi);
     p.set("valueattr", getState().valueattr);

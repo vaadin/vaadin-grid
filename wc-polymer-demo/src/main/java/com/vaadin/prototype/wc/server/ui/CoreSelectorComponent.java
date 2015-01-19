@@ -8,11 +8,11 @@ public class CoreSelectorComponent extends BaseComponent {
     protected String[] events() {
       return concat(super.events(), new String[]{});
     }
-  
+
     protected String[] attributes() {
       return concat(super.attributes(),new String[]{"selected","multi","valueattr","selectedClass","selectedProperty","selectedAttribute","selectedItem","selectedModel","selectedIndex","target","itemSelector","activateEvent","notap"});
     }
-  
+
     @Override
     protected CoreSelectorState getState() {
         return (CoreSelectorState) super.getState();
