@@ -23,11 +23,13 @@ public class VaadinComponents implements EntryPoint {
         // load vaadin-theme if specified in body
         WCUtils.loadVaadinGlobalTheme();
 
-        Elements.registerElement(WCVProgress.TAG, new WCVProgress());
+        WCVProgress progress = new WCVProgress();
+        Elements.registerElement(WCVProgress.TAG, progress);
+        Elements.registerElement(WCVProgress.TAG + "-bar", progress);
         Elements.registerElement(WCVSlider.TAG, new WCVSlider());
         Elements.registerElement(WCVGrid.TAG, new WCVGrid());
 
         // Call a vaadin callback function when vaadinX is ready.
-        JsUtils.runJavascriptFunction(window, "onVaadinX");
+        JsUtils.jsni("onVaadinX");
     }
 }

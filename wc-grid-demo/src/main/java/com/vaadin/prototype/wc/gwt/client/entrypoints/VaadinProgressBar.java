@@ -11,6 +11,8 @@ import com.vaadin.prototype.wc.gwt.client.widgets.WCVProgress;
 public class VaadinProgressBar implements EntryPoint {
     public void onModuleLoad() {
         WCUtils.loadVaadinGlobalTheme();
-        Elements.registerElement(WCVProgress.TAG, new WCVProgress());
+        WCVProgress progress = new WCVProgress();
+        Elements.registerElement(WCVProgress.TAG, progress);
+        Elements.registerElement(WCVProgress.TAG + "-bar", progress);
     }
 }
