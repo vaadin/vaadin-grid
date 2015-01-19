@@ -5,7 +5,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
     <parent>
         <groupId>com.vaadin.prototype.wc</groupId>
         <artifactId>wc-parent</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>0.1.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
