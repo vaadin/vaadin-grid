@@ -9,18 +9,27 @@
     <style>
       .labels {
         position: relative;
+        padding: 1em 0;
       }
       .right {
-        text-align: right;
         position: absolute;
         right: 0;
-        bottom: 0;
+        bottom: 1em;
       }
-      .dim {
-        color: #aaaaaa;
+      @media screen and (max-width: 480px), screen and (max-height: 600px) {
+        .labels {
+          padding: 1em 20px;
+        }
+        .right {
+          right: 20px;
+        }
       }
-      .black {
-        color: #000000;
+      @media screen and (max-width: 480px) {
+        .labels .v-label.v-label-h3.right {
+          position: static;
+          font-size: 1em;
+          padding-top: 0.3em;
+        }
       }
       v-grid {
         position: relative;
@@ -32,9 +41,10 @@
         bottom: 0;
         left: 0;
       }
-      #grid > div > div {
-        /* fix grid width */
+      v-grid > div > div {
+        /* fix grid size */
         width: 100% !important;
+        height: 100% !important;
       }
     </style>
     <core-ajax
@@ -45,9 +55,8 @@
      id='ajax'
      ></core-ajax>
     <div class="labels">
-      <div class="v-label dim">Demo</div>
-      <div class="v-label v-label-huge black">Superhero Roster</div>
-      <div class="v-label dim right">{{size}} heroes on duty</div>
+      <div class="v-label v-label-h2 no-margin">Superhero Roster</div>
+      <div class="v-label v-label-h3 v-label-light no-margin right">{{size}} heroes on duty</div>
     </div>
     <v-grid flex id='grid'>
     <table>
@@ -60,7 +69,7 @@
           <th name='status'>Status</th>
         </tr>
       </thead>
-     </table>    
+     </table>
     </v-grid>
   </template>
   <script>
@@ -78,17 +87,17 @@
                 grid.columns[3].renderer = function(element, data, rowIndex) {
                   element.innerHTML = ("(" + data.latitude + ", " + data.longitude + ")").replace(/(\d\.\d{6})\d+/g,"$1");
                 };
-                
+
                 grid.columns[2].renderer = function(element, data, rowIndex) {
                     element.innerHTML = "<hero-sparkline colors='#DF0016,#3777DD' height='12' width='90' points='[[" +
                                            data.heart + "],[" + data.coffee + "]]' />";
                   };
-                  
+
                 window.heroes = _this.heroes;
-                
+
                 grid.heightMode = "CSS";
                 grid.height = "100%";
-                
+
                 // TODO: Grid doesn't yet support auto column width.
                 // Magic number 60 is from the selection column, due to be removed in
                 // single selection mode in future.

@@ -55,10 +55,10 @@ $v-grid-cell-padding-horizontal: $v-table-cell-padding-horizontal !default;
   // Selected
   .#{$primary-stylename}-row-selected {
     > .#{$primary-stylename}-cell {
-      @include valo-gradient($v-selection-color);
-      color: valo-font-color($v-selection-color);
-      text-shadow: valo-text-shadow($font-color: valo-font-color($v-selection-color), $background-color: $v-selection-color);
-      border-color: adjust-color($v-selection-color, $lightness: -8%, $saturation: -8%);
+      @include valo-gradient($v-grid-row-selected-background-color);
+      color: valo-font-color($v-grid-row-selected-background-color);
+      text-shadow: valo-text-shadow($font-color: valo-font-color($v-grid-row-selected-background-color), $background-color: $v-grid-row-selected-background-color);
+      border-color: adjust-color($v-grid-row-selected-background-color, $lightness: -8%, $saturation: -8%);
     }
 
     > .#{$primary-stylename}-cell-focused:before {

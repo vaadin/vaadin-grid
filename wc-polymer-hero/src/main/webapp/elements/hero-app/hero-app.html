@@ -1,36 +1,278 @@
 <link rel="import" href="../hero-list/hero-list.html">
 <link rel="import" href="../hero-details/hero-details.html">
 <link rel="import" href="../hero-edit/hero-edit.html">
+<link rel="import" href="../../bower_components/core-style/core-style.html">
 
 <polymer-element name="hero-app">
   <template>
     <style>
       :host {
-        height: 100vh;
-        box-sizing: border-box;
-        margin: 0;
-        padding: 10px;
-      }
-      
-      :host(.state0) hero-details, :host(.state0) hero-edit,
-      :host(.state2) hero-details, :host(.state1) hero-edit {
-        display: none;
-      }
-      
-      :host(.state1) hero-details, :host(.state2) hero-edit {
         display: block;
+        height: 100%;
+        box-sizing: border-box;
+        max-width: 1000px;
+        margin: 0 auto;
+        position: relative;
       }
-      
+
+      hero-details,
+      hero-edit {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        max-width: 1000px;
+        height: 60%;
+        transform: translatey(110%);
+        transition: all 400ms;
+      }
+
+      hero-edit {
+        transition: none;
+      }
+
+      :host(.state1) hero-details,
+      :host(.state2) hero-details,
+      :host(.state2) hero-edit {
+        transform: translatey(0%);
+      }
+
       hero-list {
+        height: 100%;
       }
-      
-      @media(max-width: 600px) {
-        :host(.state1) hero-list, :host(.state2) hero-list {
-          display: none;
+
+      @media screen and (max-height: 900px) {
+        :host(.state1) hero-details,
+        :host(.state2) hero-details,
+        :host(.state2) hero-edit {
+          height: 80%;
+        }
+      }
+
+      @media screen and (max-height: 700px) {
+        :host(.state1) hero-details,
+        :host(.state2) hero-details,
+        :host(.state2) hero-edit {
+          height: 100%;
         }
       }
     </style>
-    <hero-list flex vertical layout id='list' page={{page}} current="{{current}}" hero="{{hero}}" heroes="{{heroes}}"></hero-list>
+    <core-style id="hero-panel">
+      :host {
+        display: block;
+        border: 1px solid #E2DFDC;
+        box-shadow: 0px -10px 20px 0px rgba(0,0,0,0.07),
+        0px 1px 3px 0px rgba(0,0,0,0.08);
+        background-color: #fff;
+        z-index: 5000;
+        overflow: hidden;
+      }
+
+      #popup {
+        display: flex;
+        height: 100%;
+      }
+
+      #left {
+        align-self: stretch;
+        flex: 1;
+        border-right: 1px solid #E2DFDC;
+        box-sizing: border-box;
+        position: relative;
+      }
+
+      .map {
+        align-self: stretch;
+        flex: 1;
+        position: relative;
+      }
+
+      .content section {
+        border-top: 1px solid #e5e5e5;
+        overflow: hidden;
+        padding: 10px 20px;
+      }
+
+      section.location {
+        display: none;
+        padding: 0;
+      }
+
+      section.location .v-button {
+        padding: 10px 20px !important;
+        height: auto !important;
+        width: 100%;
+        text-align: left !important;
+      }
+
+      .map .v-button {
+        display: none;
+      }
+
+      @media screen and (max-width: 700px) {
+        #popup {
+          display: block;
+          position: relative;
+        }
+
+        #left {
+          display: block;
+          border-right: 0;
+          height: 100%;
+        }
+
+        .map {
+          position: absolute;
+          z-index: 2;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          left: 0;
+          transform: translatex(100%);
+          transition: all 300ms;
+        }
+
+        .show-map {
+          transform: none;
+        }
+
+        .map .v-button {
+          display: block;
+          position: absolute;
+          z-index: 1;
+          top: 20px;
+          left: 35%;
+          width: 30%;
+        }
+
+        section.location {
+          display: block;
+        }
+      }
+
+      header {
+        position: absolute;
+        z-index: 1;
+        top: 0;
+        right: 0;
+        left: 0;
+        padding: 0 4px;
+        height: 44px;
+        text-align: center;
+        background: #fff;
+        border-bottom: 1px solid #e5e5e5;
+        box-shadow: 0 1px 2px rgba(0,0,0,.04);
+      }
+
+      .v-button:before {
+        content: none !important;
+      }
+
+      header h3 {
+        font-size: 1em !important;
+      }
+
+      .content {
+        overflow: auto;
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        padding: 44px 0;
+      }
+
+      section.hero,
+      section.vitals + section {
+        border-top: 0;
+      }
+
+      .title,
+      .info {
+        float: left;
+        margin: 0 !important;
+      }
+
+      .title {
+        font-weight: 400;
+        width: 35%;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+
+      .info {
+        width: 64%;
+      }
+
+      @media screen and (max-width: 400px) {
+        .info {
+          text-align: right;
+        }
+      }
+
+      section.vitals {
+        background: #FAFAFA;
+        border: 1px solid rgba(0,0,0,0.1);
+        border-radius: 4px;
+        margin: 0 7px;
+        padding-left: 13px;
+        padding-right: 13px;
+      }
+
+      .vitals .title {
+        width: 33%;
+      }
+
+      .vitals div {
+        text-align: center;
+      }
+
+      .vitals .subtitle {
+        color: #979797;
+        margin: 0;
+        font-size: 0.8em;
+        font-weight: 400;
+      }
+
+      .hero .name {
+        font-size: 1em !important;
+        color: #929292;
+      }
+
+      .hero .name .alias {
+        font-size: 1.4em;
+        font-weight: 400;
+        color: #181818;
+        display: block;
+        margin-right: 120px;
+        margin-top: .2em;
+      }
+
+      .hero .photo {
+        width: 74px;
+        float: left;
+        margin: 20px 20px 0 0;
+      }
+
+      .hero .photo img {
+        width: 74px;
+        border-radius: 50%;
+      }
+
+      .hero .photo:before {
+        position: absolute;
+        content: "";
+        width: 74px;
+        height: 74px;
+        border-radius: 50%;
+        box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.12), inset 0 0 0 1px rgba(0,0,0,.1);
+      }
+
+      hero-sparkline {
+        display: block;
+      }
+    </core-style>
+    <hero-list vertical layout id='list' page={{page}} current="{{current}}" hero="{{hero}}" heroes="{{heroes}}"></hero-list>
     <hero-details id='details' page={{page}} hero="{{hero}}"></hero-details>
     <hero-edit id='edit' page={{page}} current="{{current}}" heroes="{{heroes}}"></hero-edit>
   </template>
@@ -44,7 +286,7 @@
       pageChanged: function() {
         console.log("page change:" + this.page);
         this.classList.remove("state0", "state1", "state2");
-        this.classList.add("state"+this.page)
+        this.classList.add("state"+this.page);
       }
     });
   </script>

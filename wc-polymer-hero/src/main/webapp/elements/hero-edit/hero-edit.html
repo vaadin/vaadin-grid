@@ -1,163 +1,122 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/core-input/core-input.html">
 <link rel="import" href="../../bower_components/google-map/google-map.html">
+<link rel="import" href="../../bower_components/core-style/core-style.html">
 <link rel="import" href="../hero-sparkline/hero-sparkline.html">
 
 <polymer-element name="hero-edit" attributes="heroes current page">
   <template>
+    <core-style ref="hero-panel"></core-style>
     <style>
-      #popup {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 60vh;
-        display: flex;
-        background-color: #ffffff;
-        z-index: 5000;
+      :host {
+        box-shadow: none;
       }
-      #left {
-        align-self: stretch;
-        flex: 0 0 500px;
-        padding: 25px;
-        overflow: auto;
+      .info select,
+      .info core-input {
+        width: 100%;
       }
-      #emap {
-        align-self: stretch;
-        flex-grow: 1;
-        flex-shrink: 1;
+      .hero .name {
         position: relative;
+        margin-left: 94px;
+        color: inherit;
       }
-      #left > div.controls {
-        border-bottom: 0;
+      .hero .name .real-name,
+      .hero .name .alias {
+        position: absolute;
+        left: 0;
+        right: 3em;
+        top: 25px;
+        width: auto;
+        border-bottom: 1px solid #E5E5E5;
+        color: inherit;
       }
-      #left > div.controls div:first-child {
-        flex: 1 1;
-        text-align: left;
+      .hero .name .alias {
+        right: 0;
+        top: 45px;
+        margin-right: 0;
       }
-      #left > div.controls div {
-        margin: 0 5px 0 0;
-        align-self: baseline;
-        flex: 0 0 auto;
+      .hero .name .aka {
+        position: absolute;
+        right: 0;
+        top: 25px;
       }
-      #left > div.controls a {
-        text-decoration: none;
+      .vitals .v-button {
+        min-width: 0 !important;
       }
-      #left > div {
-        display: flex;
-        border-bottom: 2px solid #dadada;
-        padding: 5px 0 5px 0;
+      .v-button-danger {
+        width: 100%;
       }
-      #left > div:last-child {
-        border-bottom: 0;
-      }
-      #left > div :first-child {
-        flex: 0 0 120px;
-        text-align: right;
-        align-self: baseline;
-        padding-right: 20px;
-      }
-      #left > div :last-child {
-        flex: 1 1;
-      }
-      #left > div.name {
-        border-bottom: 0;
-      }
-      #left > div.name > div > div {
-        border-bottom: 2px solid #dadada;
-      }
-      #left > div.name > div :first-child {
-        display: flex;
-      }
-      #left > div.name > div :first-child :first-child {
-        flex: 1 1;
-      }
-      #left > div.name > div :first-child :last-child {
-        flex: 0 0 auto;
-      }
-      #left > div.vitals {
-        border: 2px solid #dadada;
-        border-radius: 7px;
-        background-color: #eaeaea;
-      }
-      #left > div.vitals .caffeine div:first-child {
-        display: flex;
-      }
-      #left > div.vitals .caffeine div:first-child div {
-        flex: 0 0 auto;
-      }
-      core-input.heroname /deep/ #input {
-        font-size: 26px;
-      }
-      img.picture {
-        height: 60px;
-        width: 60px;
-        border-radius: 60px;
+      .content section:last-child {
+        border-top: none;
       }
     </style>
     <div id="popup" layout>
       <div id="left">
-        <div class="controls">
-          <div>Superhero details</div>
-          <div><a on-tap='{{cancel}}' href='javascript:'>Cancel</a></div>
-          <div class="v-button v-button-friendly" on-tap='{{save}}'>Save</div>
-        </div>
-        <div class="name">
-          <div><img alt="" class="picture" src="{{hero.picture}}"></div>
-          <div>
+        <header layout horizontal center>
+          <button on-tap="{{cancel}}" class="v-button v-button-borderless-colored">Cancel</button>
+          <h3 flex class="no-margin"></h3>
+          <button on-tap="{{save}}" class="v-button v-button-primary">Save</button>
+        </header>
+        <div class="content">
+        <section class="hero">
+          <p class="photo"><img alt="" src="{{hero.picture}}"></p>
+          <div class="name">
+            <core-input value='{{hero.name}}' class="real-name"></core-input>
+            <span class="aka">a.k.a.</span>
+            <core-input class="alias" value='{{hero.heroname}}'></core-input>
+          </div>
+        </section>
+        <section class="vitals" layout horizontal center>
+          <p class="title">Vitals</p>
+          <div flex><hero-sparkline color='#DF0016' height='12' width='90px' points='{{hero.vitals.heart}}'></hero-sparkline><p class="subtitle">Heart rate</p></div>
+          <div flex>
             <div>
-              <core-input value='{{hero.name}}'></core-input>
-              <div>a.k.a.</div>
+              <div>{{caffeine * 100}} % <button class="v-button v-button-primary v-button-tiny" on-tap='{{inject}}'>Inject</button></div>
             </div>
-            <div><core-input class="heroname" value='{{hero.heroname}}'></core-input></div>
+            <p class="subtitle">Caffeine</p>
           </div>
-        </div>
-        <div class="vitals">
-          <div>Vitals</div>
-          <div>
-            <div><hero-sparkline color='#DF0016' height='12' width='90' points='{{hero.vitals.heart}}'></hero-sparkline><p>Heart rate</p></div>
-            <div class="caffeine">
-              <div>
-                <div>{{caffeine * 100}} %</div>
-                <div class="v-button v-button-friendly v-button-small" on-tap='{{inject}}'>Inject</div>
-              </div>
-              <div>Caffeine saturation</div>
-            </div>
-          </div>
-        </div>
-        <div>
-          <div>IQ</div>
-          <div><core-input value='{{hero.iq}}'></core-input></div>
-        </div>
-        <div>
-          <div>Height</div>
-          <div><core-input value='{{hero.height}}' placeholder='cm'></core-input></div>
-        </div>
-        <div>
-          <div>Weight</div>
-          <div><core-input value='{{hero.weight}}' placeholder='kg'></core-input></div>
-        </div>
-        <div>
-          <div>Kill count</div>
-          <div><core-input value='{{hero.killcount}}'></core-input></div>
-        </div>
-        <div>
-          <div>Arch-enemy</div>
-          <select value='{{hero.archenemy}}' >
+        </section>
+        <section>
+          <p class="title">IQ</p>
+          <p class="info"><core-input value='{{hero.iq}}'></core-input></p>
+        </section>
+        <section>
+          <p class="title">Height</p>
+          <p class="info"><core-input value='{{hero.height}}' placeholder='cm'></p>
+        </section>
+        <section>
+          <p class="title">Weight</p>
+          <p class="info"><core-input value='{{hero.weight}}' placeholder='kg'></p>
+        </section>
+        <section>
+          <p class="title">Kill count</p>
+          <p class="info"><core-input value='{{hero.killcount}}'></core-input></p>
+        </section>
+        <section>
+          <p class="title">Arch-enemy</p>
+          <p class="info">
+            <select value='{{hero.archenemy}}' >
             <option template repeat="{{options}}">{{}}</option>
-          </select>
-        </div>
-        <div>
-          <div>Mission</div>
-          <core-input multiline rows='4' value='{{hero.mission}}'></core-input>
-        </div>
-        <div class="v-button v-button-friendly" on-tap='{{terminate}}'>Terminate Hero</div>
+            </select>
+          </p>
+        </section>
+        <section class="location">
+          <button class="v-button v-button-borderless-colored" on-tap="{{showMap}}">Relocate &rsaquo;</button>
+        </section>
+        <section>
+          <p class="title">Mission</p>
+          <p class="info"><core-input multiline rows='4' value='{{hero.mission}}'></core-input></p>
+        </section>
+        <section>
+          <button class="v-button v-button-danger v-button-large" on-tap='{{terminate}}'>Terminate Hero</button>
+        </section>
       </div>
-      <div id='emap' class='map'>
-        <google-map id='gemap' zoom="10" fit>
-          <google-map-marker id='gemark' title="{{hero.name}}" latitude="{{hero.location.latitude}}" longitude="{{hero.location.longitude}}"  draggable="true">{{hero.name}}</google-map-marker>
-        </google-map>
-      </div>
+    </div>
+    <div id="emap" class="map">
+      <google-map id='gemap' zoom="10" fit>
+        <google-map-marker id='gemark' title="{{hero.name}}" latitude="{{hero.location.latitude}}" longitude="{{hero.location.longitude}}"  draggable="true">{{hero.name}}</google-map-marker>
+      </google-map>
+      <button class="v-button v-button-primary" on-tap="{{hideMap}}">OK</button>
     </div>
   </template>
   <script>
@@ -212,6 +171,12 @@
           var v = Math.min(10, this.caffeine + 1)
           var arr = this.hero.vitals.coffee;
           this.caffeine = arr[arr.length - 1] = v;
+        },
+        showMap: function() {
+          this.$.emap.classList.add("show-map");
+        },
+        hideMap: function() {
+          this.$.emap.classList.remove("show-map");
         }
       });
     })();

@@ -14,11 +14,19 @@
   <style>
     body {
       margin: 0;
-      padding: 0;
+      padding: 0 20px;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    @media screen and (max-width: 480px), screen and (max-height: 600px) {
+      body {
+        padding: 0;
+      }
     }
   </style>
  </head>
  <body class="valo heroes" unresolved>
-  <hero-app class="v-app" vertical layout></hero-app>
+  <hero-app class="v-app"></hero-app>
  </body>
 </html>
