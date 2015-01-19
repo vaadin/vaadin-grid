@@ -18,6 +18,7 @@
         <gwt.module>com.vaadin.prototype.wc.gwt.${module.name}</gwt.module>
         <modulePathPrefix>VAADIN/widgetsets</modulePathPrefix>
         <modulePathPrefix></modulePathPrefix>
+        <gwt.compiler.skip>true</gwt.compiler.skip>
     </properties>
 
     <dependencies>

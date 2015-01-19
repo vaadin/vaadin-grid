@@ -31,15 +31,10 @@ copyStaticStuff() {
 }
 
 copyGwtStuff() {
-  cd $pwd/../$client
-  mvn -q clean install || exit 1
-  cd $pwd/../$gwtapicomponents
-  mvn -q clean install -Dgwt.compiler.skip || exit 1
-  cd $pwd/../$gwtapi
-  mvn -q clean install || exit 1
-  cd $pwd
-
+  cd $pwd/..
+  mvn package -am -pl $gwtapi  -Dgwt.compiler.skip || exit 1
   jar=$pwd/../$gwtapi/target/$gwtapi-$version.jar
+  [ ! -f $jar ] && echo Error not found: $jar && exit 1
   mkdir $tmpDir/gwt
   cp $jar $tmpDir/gwt/$jarName
 }
