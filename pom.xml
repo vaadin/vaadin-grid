@@ -312,6 +312,7 @@
       <module>wc-server</module>
       <module>wc-client</module>
       <module>wc-polymer-demo</module>
+      <module>wc-gwt-api</module>
       <module>wc-polymer-hero</module>
       <module>wc-grid-demo</module>
     </modules>

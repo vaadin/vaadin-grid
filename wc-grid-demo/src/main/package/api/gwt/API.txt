@@ -1,0 +1,42 @@
+# Vaadin Components integration with Angular
+
+## Introduction
+
+Vaadin GWT API is a set of classes designed to wrap vaadin web components in GWT
+
+
+## Preparation
+
+- Add vaadin-components.jar to your class path
+- Inherit the vaadin api module 
+    <inherits name='com.vaadin.prototype.wc.gwt.ComponentsAPI'/>
+- Add the polyfill at the beginning of your hosted page in order to support browsers
+  without webcomponents support.
+    <script src="demo/bower_components/platform/platform.js"></script>
+
+
+## Components
+
+### Vaadin Progress Bar
+   VaadinProgressBarWidget progress = new VaadinProgressBarWidget();
+
+- *TagName*: v-progress-bar
+- *Attributes*: value theme shadow
+- *Properties*: value
+- *Events*: change
+
+### Vaadin Slider 
+   VaadinSliderWidget progress = new VaadinSliderWidget();
+
+- *TagName*: v-slider
+- *Attributes*: value theme shadow
+- *Properties*: value
+- *Events*: change
+
+### Vaadin Grid
+   VaadinGrid progress = new VaadinGrid();
+
+- *TagName*: v-grid
+- *Attributes*: theme shadow
+- *Properties*: 
+- *Events*: select

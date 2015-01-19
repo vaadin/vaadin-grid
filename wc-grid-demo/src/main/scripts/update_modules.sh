@@ -25,4 +25,4 @@ do
    $dir/update_bower_repo.sh $warDir "$modulePrefix" $version $gitRepo $package $vaadinVersion $module $files
 done
 
-$dir/create_zip.sh
+$dir/create_zip.sh $version
