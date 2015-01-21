@@ -142,7 +142,7 @@ public interface HData extends JsonBuilder {
                 "Ice Raven", "The Green Scout", "The Fire Hammer",
                 "The Nuclear Phoenix", "The Copper Watcher", "Orange Guardian",
                 "Cold Dagger", "Doctor Fantastic Wasp", "Silver Protector",
-                "Fallen Pheonix", "Cleanser", "The Royal Sparrow",
+                "Fallen Phoenix", "Cleanser", "The Royal Sparrow",
                 "The Vengeful Hammer", "The Dramatic Watcher",
                 "The Mammoth Champion", "Lord Impossible Wasp",
                 "Master Silver Fighter", "Doctor Steel Owl", "Red Fighter",
