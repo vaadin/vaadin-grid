@@ -664,7 +664,7 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
     @JsProperty
     public void setSelectedRow(int idx) {
         if (idx < 0 || idx >= grid.getDataSource().size()) {
-            if (getSelectedRow() > 0) {
+            if (getSelectedRow() >= 0) {
                 grid.deselect(grid.getDataSource().getRow(getSelectedRow()));
             }
         } else {
