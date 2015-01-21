@@ -9,20 +9,12 @@
     <style>
       .labels {
         position: relative;
-        padding: 1em 0;
+        padding: 1em 20px;
       }
       .right {
         position: absolute;
-        right: 0;
+        right: 20px;
         bottom: 1em;
-      }
-      @media screen and (max-width: 480px), screen and (max-height: 600px) {
-        .labels {
-          padding: 1em 20px;
-        }
-        .right {
-          right: 20px;
-        }
       }
       @media screen and (max-width: 480px) {
         .labels .v-label.v-label-h3.right {
@@ -97,16 +89,6 @@
 
                 grid.heightMode = "CSS";
                 grid.height = "100%";
-
-                // TODO: Grid doesn't yet support auto column width.
-                // Magic number 60 is from the selection column, due to be removed in
-                // single selection mode in future.
-                var w = grid.clientWidth - 60;
-                grid.setColumnWidth(0, Math.floor(w*0.06));
-                grid.setColumnWidth(1, Math.floor(w*0.2));
-                grid.setColumnWidth(2, Math.floor(w*0.2));
-                grid.setColumnWidth(3, Math.floor(w*0.34));
-                grid.setColumnWidth(4, Math.floor(w*0.2));
             });
           });
           this.$.grid.addEventListener("select", function(e) {

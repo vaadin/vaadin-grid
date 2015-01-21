@@ -13,15 +13,17 @@
         max-width: 1000px;
         margin: 0 auto;
         position: relative;
+        overflow: hidden;
       }
 
       hero-details,
       hero-edit {
         position: absolute;
         bottom: 0;
-        width: 100%;
-        max-width: 1000px;
-        height: 60%;
+        left: 0;
+        right: 0;
+        height: 100%;
+        max-height: 768px;
         transform: translatey(110%);
         transition: all 400ms;
       }
@@ -38,22 +40,6 @@
 
       hero-list {
         height: 100%;
-      }
-
-      @media screen and (max-height: 900px) {
-        :host(.state1) hero-details,
-        :host(.state2) hero-details,
-        :host(.state2) hero-edit {
-          height: 80%;
-        }
-      }
-
-      @media screen and (max-height: 700px) {
-        :host(.state1) hero-details,
-        :host(.state2) hero-details,
-        :host(.state2) hero-edit {
-          height: 100%;
-        }
       }
     </style>
     <core-style id="hero-panel">

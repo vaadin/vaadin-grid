@@ -3,13 +3,11 @@
 <polymer-element name="hero-sparkline" attributes='points width height color colors'>
   <template>
     <style>
-      #container {
+      :host {
         display: inline-block;
-      };
+      }
     </style>
-    <div id='container' >
-      <canvas id='canvas' width='{{width}}' height='{{height}}'></canvas>
-    </div>
+    <canvas id='canvas' width='{{width}}' height='{{height}}'></canvas>
   </template>
   <script>
     Polymer({
