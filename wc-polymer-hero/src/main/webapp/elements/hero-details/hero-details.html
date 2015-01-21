@@ -41,7 +41,7 @@
             <p class="photo"><img alt="" src="{{hero.photoUrl}}"></p>
             <h3 class="name">{{hero.name}}, a.k.a. <span class="alias">{{hero.heroname}}</span></h3>
             <button on-tap="{{call}}" class="call v-button v-button-primary">Call Hero</button>
-            <voice-player id="phone" text="Hi! You reached me at a bad moment – I'm currently fighting malicious code and evil servers! Leave a message after the beep, and I'll call you back later!"></voice-player>
+            <voice-player id="phone"></voice-player>
           </section>
           <section class="vitals" layout horizontal center>
             <p class="title">Vitals</p>
@@ -94,6 +94,7 @@
           if (this.page == 1 && this.hero) {
             this.centerPinOnMap();
           }
+          this.$.phone.cancel();
         },
         close: function(e) {
           this.page = 0;
@@ -104,11 +105,29 @@
           e.preventDefault();
         },
         call: function(e) {
-          this.$.phone.speak();
+          var messages = {
+            "terminated": "The dialed number cannot be reached.",
+            "on a mission": "You reached me at a bad moment – I'm currently fighting malicious code and evil servers! I'll call you back later!",
+            "sleeping": "Stop bugging me, I need my beauty sleep!!!",
+            "shopping": "Hello my friend! I'm shopping for some awesome new hardware. I'll get you some new toys as well! See ya!",
+            "training": "Really busy now, can't talk. I still need to do 500 more pushups!",
+            "hanging out": "Hey, what's up! If you have nothing important to do, come and stop by my place!",
+            "exhausted": "Sorry, I'm not really in the mood for talking right now!",
+            "vacation": "Hello! You've reached the automatic voice mail of " + this.hero.heroname + ", who is currently enjoying an earned vacation in a secret location. Leave a message after the beep!",
+            "on a quest": "This is a message to all my allies to conquer " + this.hero.archenemy + ", I'm going to need the help of all of you!"
+          }
+
+          this.$.phone.text = messages[this.hero.status.toLowerCase()];
+          var _this = this;
+          setTimeout(function() {
+            _this.$.phone.cancel();
+            _this.$.phone.speak();
+          }, 10);
           e.preventDefault();
         },
         heroChanged: function() {
           this.centerPinOnMap();
+          this.$.phone.cancel();
         },
         centerPinOnMap: function() {
           // This centers the map at the marker
