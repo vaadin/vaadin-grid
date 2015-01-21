@@ -96,6 +96,8 @@
             if (_this.heroes && _this.current >= 0) {
               _this.page = 1;
               _this.hero = _this.heroes[_this.current];
+            } else {
+              _this.page = 0;
             }
           });
         },
@@ -103,6 +105,9 @@
           if (this.page == -1) {
             this.size = this.heroes.length;
             this.$.grid.refresh();
+          } else if (this.page == 0) {
+            this.$.grid.setSelectedRow(-1);
+            this.$.grid.querySelector(".v-grid").focus();
           }
         },
       });
