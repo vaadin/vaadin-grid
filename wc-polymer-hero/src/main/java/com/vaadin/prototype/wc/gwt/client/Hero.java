@@ -46,7 +46,7 @@ public class Hero implements EntryPoint {
         Elements.registerElement(WCVSlider.TAG, new WCVSlider());
         // Used to generate a list of heres
         if (Window.Location.getParameter("generate-heroes") != null) {
-            HData data = HData.MockData.createRandomData(new Random(), 100);
+            HData data = HData.MockData.createRandomData(new Random());
             console.log(data);
         }
         // console.log(">> ", HData.MockData.createRandomData(new Random()));
