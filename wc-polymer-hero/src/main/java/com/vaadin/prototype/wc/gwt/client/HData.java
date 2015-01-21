@@ -245,7 +245,7 @@ public interface HData extends JsonBuilder {
 
         static String[] statuses = { "Vacation", "On a Mission", "Shopping",
                 "Hanging out", "On a Mission", "Sleeping", "Exhausted",
-                "On a Quest", "Trainning", "Terminated", };
+                "On a Quest", "Training", "Terminated", };
 
         static String[] fantasies = {
                 "An elf named Mirasaer seeks a party to find and explore the ancient ruins of the Bastion of Vano the Deranged.",
