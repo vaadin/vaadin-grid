@@ -42,6 +42,7 @@ copyGwtStuff() {
 copyBowerStuff() {
   mkdir -p $tmpDir/web-components
   cd $tmpDir
+  bower cache clean
   bower install \
     vaadin-components \
     vaadin-grid \
