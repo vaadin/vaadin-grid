@@ -57,7 +57,7 @@
           <h3 flex class="no-margin"></h3>
           <button on-tap="{{save}}" class="v-button v-button-primary">Save</button>
         </header>
-        <div class="content">
+        <div class="content" id="content">
         <section class="hero">
           <p class="photo"><img alt="" src="{{hero.photoUrl}}"></p>
           <div class="name">
@@ -142,6 +142,7 @@
             var arr = this.hero.vitals.coffee;
             this.caffeine =  arr[arr.length - 1];
           }
+          this.$.content.scrollTop = 0;
         },
         heroesChanged: function() {
           this.options = [];

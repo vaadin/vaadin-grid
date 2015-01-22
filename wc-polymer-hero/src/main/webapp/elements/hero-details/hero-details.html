@@ -36,11 +36,11 @@
           <h3 flex class="no-margin">Superhero</h3>
           <button on-tap="{{edit}}" class="v-button v-button-borderless-colored">Edit</button>
         </header>
-        <div class="content">
+        <div class="content" id="content">
           <section class="hero">
             <p class="photo"><img alt="" src="{{hero.photoUrl}}"></p>
             <h3 class="name">{{hero.name}}, a.k.a. <span class="alias">{{hero.heroname}}</span></h3>
-            <button on-tap="{{call}}" class="call v-button v-button-primary">Call Hero</button>
+            <button on-tap="{{call}}" class="call v-button v-button-primary" id="phoneButton">Call Hero</button>
             <voice-player id="phone"></voice-player>
           </section>
           <section class="vitals" layout horizontal center>
@@ -89,6 +89,9 @@
     (function () {
       Polymer({
         ready: function() {
+          if (!('speechSynthesis' in window)) {
+            this.$.phoneButton.parentNode.removeChild(this.$.phoneButton);
+          }
         },
         pageChanged: function() {
           if (this.page == 1 && this.hero) {
@@ -128,6 +131,7 @@
         heroChanged: function() {
           this.centerPinOnMap();
           this.$.phone.cancel();
+          this.$.content.scrollTop = 0;
         },
         centerPinOnMap: function() {
           // This centers the map at the marker
