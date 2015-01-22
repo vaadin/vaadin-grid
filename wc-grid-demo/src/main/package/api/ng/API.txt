@@ -2,19 +2,19 @@
 
 ## Introduction
 
-Vaadin Components is a set of web elements ready to use in modern browsers and with any javascript framework like Angular.
+Vaadin Components is a set of web elements ready to use in modern browsers.
+
+Using Vaadin Components with  AngularJS 1.x requires a module named
+"vaadin-components" to instruct AngularJS how to interact with the components.
 
 
 ## Imports
 
-Then load Vaadin web components importing the appropriate webcomponent file:
 ```
-<!-- Load vaadin theme by hand, note that we need to set class to body -->
-<link href="../../themes/valo/styles.css" rel="stylesheet">
 <!-- Vaadin components -->
 <script src="../../vaadin-components.js"></script>
 <!-- Angular library -->
-<script src="../../ng/angularjs/angular.js"></script>
+<script src="angular.js"></script>
 <!-- Vaadin components directives -->
 <script src="../../ng/vaadin-ng.js"></script>
 ```
