@@ -22,7 +22,7 @@ do
 
    modulePath="$warDir/$module"
    echo ">>>>>>> " $dir/update_bower_repo.sh $warDir "$modulePrefix" $version $gitRepo $package $vaadinVersion $module $files
-   $dir/update_bower_repo.sh $warDir "$modulePrefix" $version $gitRepo $package $vaadinVersion $module $files
+   $dir/update_bower_repo.sh $warDir "$modulePrefix" $version $gitRepo $package $vaadinVersion $module $files || exit 1
 done
 
 $dir/create_zip.sh $version

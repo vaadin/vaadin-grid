@@ -14,8 +14,8 @@
     <packaging>war</packaging>
 
     <properties>
-        <git.bower.repo>git@vaadin-x-bower:/opt/git/</git.bower.repo>
-        <module.names>VaadinComponents VaadinGrid VaadinSlider VaadinProgressBar Valo Reindeer Themes Angular</module.names>
+        <git.bower.repo>git@github.com:vaadin-bower</git.bower.repo>
+        <module.names>VaadinComponents VaadinGrid VaadinSlider VaadinProgressBar Valo Angular</module.names>
         <modulePathPrefix></modulePathPrefix>
         <gwt.loglevel>WARN</gwt.loglevel>
     </properties>
