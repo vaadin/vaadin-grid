@@ -3,9 +3,9 @@
 
   if (!angular) return;
 
-  console.log("Initialised VaadinX angular module");
+  console.log("Initialised Vaadin Components module for AngularJS");
 
-  var vModule = angular.module('vaadin-x', []);
+  var vModule = angular.module('vaadin-components', []);
 
   var attrFnc = function() {
     return {
@@ -53,7 +53,7 @@
 
     angular.forEach(document.querySelectorAll('[ng-app]'), function(element) {
       var app = element.getAttribute('ng-app');
-      // TODO: This causes a lot of errors when starting angular requiring 'vaadin-x'
+      // TODO: This causes a lot of errors when starting angular requiring 'vaadin-components'
       angular.bootstrap(element, [ app ]);
 
       // TODO: This should be a way to add behavior to a module but does not work

@@ -1,6 +1,6 @@
 (function(angular) {'use strict';
 
-  var vModule = angular.module('vaadin-x', []);
+  var vModule = angular.module('vaadin-components', []);
 
   function attrFnc() {
     return {
