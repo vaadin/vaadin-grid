@@ -7,7 +7,7 @@ import static com.google.gwt.query.client.GQuery.document;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.RepeatingCommand;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
@@ -68,7 +68,6 @@ public class WCUtils {
             public void f() {
                 GQuery body = $("body");
                 String theme = body.attr("vaadin-theme");
-                console.log(theme);
                 if (!theme.isEmpty()) {
                     GQuery style = $("#__vaadin-style");
                     if (style.isEmpty()) {
@@ -81,26 +80,42 @@ public class WCUtils {
         });
     }
 
-    private static void waitUntilThemeLoaded(GQuery style, final Function f) {
-        JavaScriptObject s = style.prop("sheet");
-        if (s != null) {
-            final JsArrayObject<JavaScriptObject> r = JsUtils.prop(s, "cssRules");
-            if ( r != null && r.size() > 0) {
-                Scheduler.get().scheduleIncremental(new RepeatingCommand() {
-                    public boolean execute() {
-                        JavaScriptObject s = r.get(0);
-                        s = JsUtils.prop(s, "styleSheet");
-                        if ( r != null && r.size() > 0) {
-                            console.log("Theme fully loaded: " + style);
-                            if (f != null) {
-                                f.f();
-                            }
-                            return false;
+    private static void waitUntilThemeLoaded(final GQuery style, final Function f) {
+        try {
+            final JavaScriptObject sheet = style.prop("sheet");
+            if (sheet != null) {
+                final JsArrayObject<JavaScriptObject> rows = JsUtils.prop(sheet, "cssRules");
+                if ( rows != null && rows.size() > 0) {
+                    new Timer() {
+                        public void run() {
+                            try {
+                                JavaScriptObject importedSheet = JsUtils.prop(rows.get(0), "styleSheet");
+                                if (importedSheet != null) {
+                                     new Timer() {
+                                        @Override
+                                        public void run() {
+                                            f.f();
+                                        }
+                                    }.schedule(500);
+                                    console.log("Theme rules were loaded: " + style.text());
+                                    cancel();
+                                    }
+                                } catch (Exception e) {
+                                    console.log(e);
+                                }
                         }
-                        return true;
-                    }
-                });
+                    // Don't slow down the browser
+                    }.scheduleRepeating(100);
+                }
             }
+        } catch (Exception e) {
+            // Firefox likes to fail if we start poking too early...
+            Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+                @Override
+                public void execute() {
+                    waitUntilThemeLoaded(style, f);
+                }
+            });
         }
     }
 
@@ -114,9 +129,6 @@ public class WCUtils {
         }
         loadTheme($(container), $(style), theme);
         waitUntilThemeLoaded($(style), f);
-    }
-    private static void waitForThemeLoaded(HTMLElement style, Function f) {
-
     }
 
     public static GQuery linksAndScripts(final GQuery g) {
