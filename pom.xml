@@ -15,7 +15,7 @@
       <maven.compiler.source>1.8</maven.compiler.source>
       <maven.compiler.target>1.8</maven.compiler.target>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-      <gQueryVersion>1.4.3-SNAPSHOT</gQueryVersion>
+      <gQueryVersion>1.4.3</gQueryVersion>
       <gwt.outputstyle>PRETTY</gwt.outputstyle>
       <jetty.version>9.2.3.v20140905</jetty.version>
       <jetty.version>8.1.12.v20130726</jetty.version>
