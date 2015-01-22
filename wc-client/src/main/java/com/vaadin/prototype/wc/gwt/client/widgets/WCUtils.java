@@ -3,18 +3,21 @@ package com.vaadin.prototype.wc.gwt.client.widgets;
 import static com.google.gwt.query.client.GQuery.$;
 import static com.google.gwt.query.client.GQuery.console;
 import static com.google.gwt.query.client.GQuery.document;
-import static com.google.gwt.query.client.GQuery.window;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Predicate;
 import com.google.gwt.query.client.Promise;
+import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.deferred.PromiseFunction;
 import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Timer;
+import com.vaadin.client.JsArrayObject;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLElement;
 
 public class WCUtils {
@@ -60,23 +63,48 @@ public class WCUtils {
         }.done(fncs);
     }
 
-    public static void loadVaadinGlobalTheme() {
+    public static void loadVaadinGlobalTheme(final Function f) {
         ready().done(new Function(){
             public void f() {
                 GQuery body = $("body");
                 String theme = body.attr("vaadin-theme");
+                console.log(theme);
                 if (!theme.isEmpty()) {
                     GQuery style = $("#__vaadin-style");
                     if (style.isEmpty()) {
                         style = $("<style id='__vaadin-style' language='text/css'></style>").appendTo($("head"));
                     }
                     loadTheme(body, style, theme);
+                    waitUntilThemeLoaded(style, f);
                 }
             }
         });
     }
 
-    public static void loadVaadinTheme(HTMLElement container, HTMLElement el, HTMLElement style, String def, Function... f) {
+    private static void waitUntilThemeLoaded(GQuery style, final Function f) {
+        JavaScriptObject s = style.prop("sheet");
+        if (s != null) {
+            final JsArrayObject<JavaScriptObject> r = JsUtils.prop(s, "rules");
+            if ( r != null && r.size() > 0) {
+                Scheduler.get().scheduleIncremental(new RepeatingCommand() {
+                    public boolean execute() {
+                        JavaScriptObject s = r.get(0);
+                        s = JsUtils.prop(s, "styleSheet");
+                        if ( r != null && r.size() > 0) {
+                            console.log("Theme fully loaded: " + style);
+                            if (f != null) {
+                                f.f();
+                            }
+                            return false;
+                        }
+                        return true;
+                    }
+                });
+            }
+        }
+    }
+
+    public static void loadVaadinTheme(HTMLElement container, HTMLElement el, HTMLElement style, String def, Function f) {
         String theme = getAttrValue(el, "theme", def);
         if (theme == null) {
             return;
@@ -85,7 +113,10 @@ public class WCUtils {
             return;
         }
         loadTheme($(container), $(style), theme);
-        $(window).delay(100, f);
+        waitUntilThemeLoaded($(style), f);
+    }
+    private static void waitForThemeLoaded(HTMLElement style, Function f) {
+
     }
 
     public static GQuery linksAndScripts(final GQuery g) {
@@ -148,7 +179,6 @@ public class WCUtils {
             base += "VAADIN/themes/";
         }
         base += theme + "/styles.css";
-        console.log("Theme Url: " + base);
         container.addClass(theme);
         style.text("@import url('" + base + "')");
     }

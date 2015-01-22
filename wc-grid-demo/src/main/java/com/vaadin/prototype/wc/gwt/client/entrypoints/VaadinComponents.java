@@ -1,10 +1,13 @@
 package com.vaadin.prototype.wc.gwt.client.entrypoints;
 
-import static com.google.gwt.query.client.GQuery.window;
+import static com.google.gwt.query.client.GQuery.$;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.js.JsUtils;
+import com.vaadin.prototype.wc.gwt.client.html.HTMLElement;
 import com.vaadin.prototype.wc.gwt.client.util.Elements;
 import com.vaadin.prototype.wc.gwt.client.util.SuperDevModeUncaughtExceptionHandler;
 import com.vaadin.prototype.wc.gwt.client.widgets.WCUtils;
@@ -21,7 +24,13 @@ public class VaadinComponents implements EntryPoint {
         GWT.setUncaughtExceptionHandler(new SuperDevModeUncaughtExceptionHandler());
 
         // load vaadin-theme if specified in body
-        WCUtils.loadVaadinGlobalTheme();
+        WCUtils.loadVaadinGlobalTheme(new Function() {
+            public void f() {
+                for (Element e : $("v-grid").elements()) {
+                    ((WCVGrid)(HTMLElement)e).redraw();
+                }
+            }
+        });
 
         WCVProgress progress = new WCVProgress();
         Elements.registerElement(WCVProgress.TAG, progress);

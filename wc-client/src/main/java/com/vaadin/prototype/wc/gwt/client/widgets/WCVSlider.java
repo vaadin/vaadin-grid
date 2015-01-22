@@ -101,7 +101,7 @@ public class WCVSlider extends HTMLElement.Prototype implements
     }
 
     private void readAttributes() {
-        WCUtils.loadVaadinTheme(container, this, style, null);
+        WCUtils.loadVaadinTheme(container, this, style, null, null);
         slider.setMinValue(getAttrDoubleValue(this, "min", 0));
         slider.setMaxValue(getAttrDoubleValue(this, "max", 100));
         slider.setValue(getAttrDoubleValue(this, "value", 0));

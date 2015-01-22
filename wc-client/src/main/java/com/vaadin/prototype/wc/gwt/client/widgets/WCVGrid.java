@@ -325,7 +325,11 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
     }
 
     private void readAttributes() {
-        WCUtils.loadVaadinTheme(container, this, style, null);
+        WCUtils.loadVaadinTheme(container, this, style, null, new Function() {
+            public void f() {
+                console.log("LOADED...");
+            }
+        });
         loadHeaders();
         loadRows();
         initGrid();
@@ -747,7 +751,7 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
 
     private static native Escalator c(RowContainer r) /*-{
         r.@com.vaadin.client.widgets.Escalator.AbstractRowContainer::defaultRowHeightShouldBeAutodetected = true;
-        r.@com.vaadin.client.widgets.Escalator.AbstractRowContainer::autodetectRowHeight()();
+        r.@com.vaadin.client.widgets.Escalator.AbstractRowContainer::autodetectRowHeightLater()();
     }-*/;
 
     private static native ColumnConfiguration f(Escalator e) /*-{

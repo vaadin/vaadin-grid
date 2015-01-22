@@ -46,7 +46,7 @@ public class WCVBase extends HTMLElement.Prototype implements
                 elementWidget = $(this).as(Widgets).panel().widget();
             }
             elementWidget.addAttachHandler(this);
-            
+
             if (getAttribute("useshadow") != null) {
                 HTMLShadow shadow = createShadowRoot();
                 shadow.appendChild(style);
@@ -71,7 +71,7 @@ public class WCVBase extends HTMLElement.Prototype implements
     }
 
     protected void readAttributes() {
-        WCUtils.loadVaadinTheme(container, this, style, null);
+        WCUtils.loadVaadinTheme(container, this, style, null, null);
     }
 
     @Override
