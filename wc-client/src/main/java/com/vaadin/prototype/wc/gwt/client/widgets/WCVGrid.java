@@ -207,7 +207,8 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
                     int offset = 0;
                     for (int k = 0; k <= j + offset; k++) {
                         HeaderRow row = grid.getHeaderRow(k);
-                        if (row.getCell(grid.getColumn(i)).getColspan() != 1) {
+                        if (i != 0 &&
+                                row.getCell(grid.getColumn(i-1)).getColspan() != 1) {
                             offset++;
                         }
                     }
