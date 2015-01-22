@@ -84,7 +84,7 @@ public class WCUtils {
     private static void waitUntilThemeLoaded(GQuery style, final Function f) {
         JavaScriptObject s = style.prop("sheet");
         if (s != null) {
-            final JsArrayObject<JavaScriptObject> r = JsUtils.prop(s, "rules");
+            final JsArrayObject<JavaScriptObject> r = JsUtils.prop(s, "cssRules");
             if ( r != null && r.size() > 0) {
                 Scheduler.get().scheduleIncremental(new RepeatingCommand() {
                     public boolean execute() {
