@@ -63,7 +63,17 @@ public class WCUtils {
         }.done(fncs);
     }
 
-    public static void loadVaadinGlobalTheme(final Function f) {
+    private static Function postThemeLoad = new Function() {
+        public void f() {
+            for (Element e : $("v-grid").elements()) {
+                // ((WCVGrid)(HTMLElement)e).redraw();
+                // GQuery to the rescue. Seems that you cannot call redraw in the java class.
+                JsUtils.jsni(e, "redraw");
+            }
+        }
+    };
+
+    public static void loadVaadinGlobalTheme() {
         ready().done(new Function(){
             public void f() {
                 GQuery body = $("body");
@@ -74,7 +84,7 @@ public class WCUtils {
                         style = $("<style id='__vaadin-style' language='text/css'></style>").appendTo($("head"));
                     }
                     loadTheme(body, style, theme);
-                    waitUntilThemeLoaded(style, f);
+                    waitUntilThemeLoaded(style, postThemeLoad);
                 }
             }
         });
@@ -119,7 +129,11 @@ public class WCUtils {
         }
     }
 
-    public static void loadVaadinTheme(HTMLElement container, HTMLElement el, HTMLElement style, String def, Function f) {
+    public static void loadVaadinTheme(HTMLElement container, HTMLElement el, HTMLElement style, String def) {
+   	        loadVaadinTheme(container, el, style, def, postThemeLoad);
+    }
+
+    private static void loadVaadinTheme(HTMLElement container, HTMLElement el, HTMLElement style, String def, Function f) {
         String theme = getAttrValue(el, "theme", def);
         if (theme == null) {
             return;

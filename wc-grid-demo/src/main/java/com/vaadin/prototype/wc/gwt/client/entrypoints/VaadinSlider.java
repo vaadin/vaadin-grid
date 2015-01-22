@@ -16,7 +16,7 @@ import com.vaadin.prototype.wc.gwt.client.widgets.WCVSlider;
  */
 public class VaadinSlider implements EntryPoint {
     public void onModuleLoad() {
-        WCUtils.loadVaadinGlobalTheme(null);
+        WCUtils.loadVaadinGlobalTheme();
         Elements.registerElement(WCVSlider.TAG, new WCVSlider());
     }
 }

@@ -71,7 +71,7 @@ public class WCVBase extends HTMLElement.Prototype implements
     }
 
     protected void readAttributes() {
-        WCUtils.loadVaadinTheme(container, this, style, null, null);
+        WCUtils.loadVaadinTheme(container, this, style, null);
     }
 
     @Override

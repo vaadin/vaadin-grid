@@ -15,13 +15,7 @@ import com.vaadin.prototype.wc.gwt.client.widgets.WCVGrid;
  */
 public class VaadinGrid implements EntryPoint {
     public void onModuleLoad() {
-        WCUtils.loadVaadinGlobalTheme(new Function() {
-            public void f() {
-                for (Element e : $("v-grid").elements()) {
-                    ((WCVGrid)(HTMLElement)e).redraw();
-                }
-            }
-        });
+        WCUtils.loadVaadinGlobalTheme();
         Elements.registerElement(WCVGrid.TAG, new WCVGrid());
     }
 }

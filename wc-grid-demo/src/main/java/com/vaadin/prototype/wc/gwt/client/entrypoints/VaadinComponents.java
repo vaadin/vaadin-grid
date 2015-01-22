@@ -26,15 +26,7 @@ public class VaadinComponents implements EntryPoint {
     	}
 
         // load vaadin-theme if specified in body
-        WCUtils.loadVaadinGlobalTheme(new Function() {
-            public void f() {
-                for (Element e : $("v-grid").elements()) {
-                    // ((WCVGrid)(HTMLElement)e).redraw();
-                    // GQuery to the rescue. Seems that you cannot call redraw in the java class.
-                    JsUtils.jsni(e, "redraw");
-                }
-            }
-        });
+        WCUtils.loadVaadinGlobalTheme();
 
         WCVProgress progress = new WCVProgress();
         Elements.registerElement(WCVProgress.TAG, progress);

@@ -326,11 +326,7 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
     }
 
     private void readAttributes() {
-        WCUtils.loadVaadinTheme(container, this, style, null, new Function() {
-            public void f() {
-                console.log("LOADED...");
-            }
-        });
+        WCUtils.loadVaadinTheme(container, this, style, null);
         loadHeaders();
         loadRows();
         initGrid();
