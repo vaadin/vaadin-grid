@@ -63,7 +63,7 @@ copyThemes() {
 
 mergeJs() {
   echo "// vaadin components version: $version" > $tmpDir/$jsName
-  tail -1 $tmpDir/web-components/webcomponentsjs/webcomponents-lite.min.js >> $tmpDir/$jsName
+  cat $tmpDir/web-components/webcomponentsjs/webcomponents.min.js >> $tmpDir/$jsName
   cat $tmpDir/web-components/observe-polyfill/Object.observe.poly.js >> $tmpDir/$jsName
   grep -v "^<.*>$" $tmpDir/web-components/vaadin-components/vaadin-components.html >> $tmpDir/$jsName
 }
