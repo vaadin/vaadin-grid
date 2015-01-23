@@ -12,7 +12,7 @@
     "components"
   ],
   "dependencies": {
-    "webcomponentsjs": "polymer/webcomponentsjs"
+    "webcomponentsjs": "0.5.2"
     , "vaadin-valo": ""
   },
   "license": "Apache"
