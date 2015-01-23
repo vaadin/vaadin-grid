@@ -27,21 +27,19 @@
           attributes : true
         });
 
-        scope.$watch(function() {
-          for ( var attr in attrMap) {
-            var value = element.attr(attr);
-            var tokens = attrMap[attr].split(/\./);
+        for (var attr in attrMap) {
+          scope.$watch(function() {return element.attr(attr)}, function(value, oldValue) {
             var parent = scope;
+            var tokens = attrMap[attr].split(/\./);
             for (var i = 0; i < tokens.length - 1; i++) {
               if (typeof (parent[tokens[i]]) == 'undefined') {
                 parent[tokens[i]] = {};
               }
               parent = parent[tokens[i]];
             }
-            // console.log(tokens[tokens.length - 1] + " " + value);
             parent[tokens[tokens.length - 1]] = value;
-          }
-        });
+          });
+        }
       }
     };
   };
