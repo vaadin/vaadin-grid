@@ -520,8 +520,10 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
         if (!refreshing) {
             refreshing = true;
             dispatchEvent(selectEvent);
-            setAttribute("selectedRow", ""
-                    + (getSelectedRow() < 0 ? "" : getSelectedRow()));
+            if(!getAttribute("selectedRow").matches("\\s*\\{\\{.+\\}\\}\\s*")) {
+                setAttribute("selectedRow", ""
+                        + (getSelectedRow() < 0 ? "" : getSelectedRow()));
+            }
             refreshing = false;
         }
     }
