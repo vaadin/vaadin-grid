@@ -97,6 +97,12 @@ AttachNg() {
   cd $tmpDir
 }
 
+AttachObserve() {
+  cd $currentDir
+  cp src/main/package/web-components/observe-polyfill/Object.observe.poly.js $tmpDir/ || exit 1
+  cd $tmpDir
+}
+
 AttachThemes() {
   ## Attach Vaadin .css theme files
   mkdir tmpThemes
@@ -159,5 +165,6 @@ echo ">>> UpdateVersion"  && UpdateVersion
 [ $moduleName != Themes -a $moduleName != Angular ] && echo ">>> UpdateModule" && UpdateModule
 [ $moduleName = Themes ] && echo ">>> AttachThemes $package" && AttachThemes
 [ $moduleName = Angular ] && echo ">>> AttachAngular" && AttachNg
+[ $moduleName = VaadinComponents -o $moduleName = VaadinGrid ] && echo " >>> AttachObservePolyfill" && AttachObserve
 echo ">>> UpdateRepo"  && UpdateRepo
 

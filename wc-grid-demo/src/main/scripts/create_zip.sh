@@ -51,6 +51,9 @@ copyBowerStuff() {
   cd $pwd
   mv $tmpDir/bower_components/* $tmpDir/web-components/
   rmdir $tmpDir/bower_components
+  # Not really bower ..
+  mkdir -p $tmpDir/web-components/observe-polyfill
+  cp $pwd/src/main/package/web-components/observe-polyfill/Object.observe.poly.js $tmpDir/web-components/observe-polyfill
 }
 
 copyThemes() {
@@ -61,6 +64,7 @@ copyThemes() {
 mergeJs() {
   echo "// vaadin components version: $version" > $tmpDir/$jsName
   tail -1 $tmpDir/web-components/webcomponentsjs/webcomponents-lite.min.js >> $tmpDir/$jsName
+  cat $tmpDir/web-components/observe-polyfill/Object.observe.poly.js >> $tmpDir/$jsName
   grep -v "^<.*>$" $tmpDir/web-components/vaadin-components/vaadin-components.html >> $tmpDir/$jsName
 }
 
