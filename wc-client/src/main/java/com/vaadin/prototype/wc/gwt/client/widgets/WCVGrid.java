@@ -46,12 +46,9 @@ import com.vaadin.client.JsArrayObject;
 import com.vaadin.client.data.AbstractRemoteDataSource;
 import com.vaadin.client.data.DataSource;
 import com.vaadin.client.renderers.Renderer;
-import com.vaadin.client.ui.layout.ElementResizeEvent;
-import com.vaadin.client.ui.layout.ElementResizeListener;
 import com.vaadin.client.widget.escalator.ColumnConfiguration;
 import com.vaadin.client.widget.escalator.RowContainer;
 import com.vaadin.client.widget.grid.RendererCellReference;
-import com.vaadin.client.widget.grid.datasources.ListDataSource;
 import com.vaadin.client.widget.grid.selection.SelectionEvent;
 import com.vaadin.client.widget.grid.selection.SelectionHandler;
 import com.vaadin.client.widget.grid.selection.SelectionModel;
@@ -75,6 +72,7 @@ import com.vaadin.prototype.wc.gwt.client.widgets.grid.GDataSource;
 import com.vaadin.prototype.wc.gwt.client.widgets.grid.GJsFuncDataSource;
 import com.vaadin.prototype.wc.gwt.client.widgets.grid.GJsObjectDataSource;
 import com.vaadin.prototype.wc.gwt.client.widgets.grid.GRestDataSource;
+import com.vaadin.prototype.wc.gwt.client.widgets.grid.GDomTableDataSource;
 import com.vaadin.shared.ui.grid.GridState;
 import com.vaadin.shared.ui.grid.HeightMode;
 
@@ -94,7 +92,6 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
     private HTMLElement style;
     private boolean initialized = false;
     public List<GColumn> cols;
-    private List<JsArrayMixed> vals;
     private boolean changed = true;
     // FIXME: using columns name here make this fail in prod mode
     private List<Grid.Column<Object, JsArrayMixed>> gridColumns;
@@ -105,8 +102,6 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
     private int size = 0;
 
     private int headerDefaultRowIndex = 0;
-
-    private ElementResizeListener resizeListener;
 
     public WCVGrid() {
         // FIXME: If there is no default constructor JsInterop does not export
@@ -123,7 +118,6 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
 
         container = Elements.create("div");
         cols = new ArrayList<GColumn>();
-        vals = new ArrayList<JsArrayMixed>();
         gridColumns = new ArrayList<>();
 
         grid = new Grid<JsArrayMixed>();
@@ -135,6 +129,7 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
      */
     private void initWidgetSystem() {
         if (!initialized) {
+
             lightDom = $(this)
                     // this is the table inside the v-grid
                     .children()
@@ -142,8 +137,7 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
                     .hide()
                     // observe all mutations in the table
                     .as(Observe.Observe)
-                    .observe(
-                            Observe.createInit().attributes(true)
+                    .observe(Observe.createInit().attributes(true)
                                     .characterData(true).childList(true)
                                     .subtree(true), this);
         }
@@ -232,31 +226,11 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
             grid.setDefaultHeaderRow(grid.getHeaderRow(headerDefaultRowIndex));
         }
 
-        loadRows();
-        if (vals != null && !vals.isEmpty()) {
-            dataSource = new ListDataSource<JsArrayMixed>(vals);
-        }
+        // If the wrapped DOM table has TR elements, we use it as data source
+        dataSource = GDomTableDataSource.createInstance(lightDom.get(0), this);
         if (dataSource != null) {
             grid.setDataSource(dataSource);
         }
-
-        // needed in case the style isn't loaded yet
-        resizeListener = ElementResizeManager.addResizeListener(
-                grid.getElement(), new ElementResizeListener() {
-
-                    @Override
-                    public void onElementResize(ElementResizeEvent event) {
-                        int rowCount = size;
-                        if (rowCount == 0) {
-                            if (vals != null) {
-                                rowCount = vals.size();
-                            } else if (grid.getDataSource() != null) {
-                                rowCount = grid.getDataSource().size();
-                            }
-                        }
-                        adjustHeight(rowCount);
-                    }
-                });
     }
 
     public static Grid.Column<Object, JsArrayMixed> createGridColumn(
@@ -328,7 +302,6 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
     private void readAttributes() {
         WCUtils.loadVaadinTheme(container, this, style, null);
         loadHeaders();
-        loadRows();
         initGrid();
         parseAttributeDeclarations();
         setSelectedRow(getAttrIntValue(this, "selectedRow", -1));
@@ -360,9 +333,7 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
                 }
                 setDataSource(jso);
             } else if (JsUtils.isArray(jso)) {
-                vals = GQ.create(GData.class).<GData> set("values", jso)
-                        .values();
-                loadData();
+                setDataSource(jso);
             } else {
                 console.log("Unknown type of datasource: " + jso);
             }
@@ -439,21 +410,6 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
         setCols(colList);
     }
 
-    private void loadRows() {
-        GQuery $tr = lightDom.find("tbody tr:not([template])");
-        if (!$tr.isEmpty()) {
-            setVals(new ArrayList<JsArrayMixed>());
-            for (Element tr : $tr.elements()) {
-                JsArrayMixed a = JsArrayMixed.createArray().cast();
-                vals.add(a);
-                GQuery $td = $(tr).find("td");
-                for (int i = 0; i < $td.size(); i++) {
-                    a.push($td.eq(i).html());
-                }
-            }
-        }
-    }
-
     @Override
     public void onAttachOrDetach(AttachEvent event) {
         // TODO: Do something with shadowPanel, right now
@@ -465,12 +421,7 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
     @Override
     public void onMutation(List<MutationRecord> mutations) {
         readAttributes();
-    }
-
-    private void loadData() {
-        if (vals != null && !vals.isEmpty()) {
-            grid.setDataSource(new ListDataSource<JsArrayMixed>(vals));
-        }
+        refresh();
     }
 
     @JsNoExport
@@ -482,11 +433,6 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
     @JsNoExport
     public List<GColumn> getCols() {
         return cols;
-    }
-
-    private void setVals(List<JsArrayMixed> vals) {
-        changed = true;
-        this.vals = vals;
     }
 
     @JsNoExport
@@ -660,8 +606,9 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
         return grid == null
                 || grid.getSelectionModel() == null
                 || !(grid.getSelectionModel() instanceof SelectionModel.Single<?>)
-                || grid.getSelectedRow() == null ? -1 : ((AbstractRemoteDataSource) grid.getDataSource())
-                .indexOf(grid.getSelectedRow());
+                || grid.getSelectedRow() == null ? -1
+                : ((AbstractRemoteDataSource) grid.getDataSource())
+                        .indexOf(grid.getSelectedRow());
     }
 
     @JsProperty
