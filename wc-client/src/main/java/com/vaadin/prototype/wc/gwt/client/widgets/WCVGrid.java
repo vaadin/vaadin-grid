@@ -43,8 +43,11 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.JsArrayObject;
+import com.vaadin.client.data.AbstractRemoteDataSource;
 import com.vaadin.client.data.DataSource;
 import com.vaadin.client.renderers.Renderer;
+import com.vaadin.client.ui.layout.ElementResizeEvent;
+import com.vaadin.client.ui.layout.ElementResizeListener;
 import com.vaadin.client.widget.escalator.ColumnConfiguration;
 import com.vaadin.client.widget.escalator.RowContainer;
 import com.vaadin.client.widget.grid.RendererCellReference;
@@ -63,9 +66,6 @@ import com.vaadin.prototype.wc.gwt.client.html.HTMLElement;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLEvents;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLShadow;
 import com.vaadin.prototype.wc.gwt.client.html.HTMLTableElement;
-import com.vaadin.prototype.wc.gwt.client.ui.ElementResizeEvent;
-import com.vaadin.prototype.wc.gwt.client.ui.ElementResizeListener;
-import com.vaadin.prototype.wc.gwt.client.ui.ElementResizeManager;
 import com.vaadin.prototype.wc.gwt.client.util.Elements;
 import com.vaadin.prototype.wc.gwt.client.widgets.grid.GData;
 import com.vaadin.prototype.wc.gwt.client.widgets.grid.GData.GColumn;
@@ -660,7 +660,7 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
         return grid == null
                 || grid.getSelectionModel() == null
                 || !(grid.getSelectionModel() instanceof SelectionModel.Single<?>)
-                || grid.getSelectedRow() == null ? -1 : grid.getDataSource()
+                || grid.getSelectedRow() == null ? -1 : ((AbstractRemoteDataSource) grid.getDataSource())
                 .indexOf(grid.getSelectedRow());
     }
 
@@ -708,7 +708,7 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
             selectedJso.setLength(0);
             Collection<JsArrayMixed> c = grid.getSelectedRows();
             for (Iterator<JsArrayMixed> i = c.iterator(); i.hasNext();) {
-                selectedJso.push(grid.getDataSource().indexOf(i.next()));
+                selectedJso.push(((AbstractRemoteDataSource) grid.getDataSource()).indexOf(i.next()));
             }
             WCUtils.unobserve(selectedJso);
             WCUtils.observe(selectedJso, new EventListener() {
