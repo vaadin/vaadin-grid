@@ -210,6 +210,10 @@ public class WCUtils {
     }
 
     public static native void observe(JavaScriptObject jso, EventListener ev) /*-{
+      if (! ('observe' in Object) ) {
+        $wnd.console.log("This browser does not support Object.observe, consider to load a polyfill.");
+        return;
+      }
       var fnc = function(changes) {
         ev.@com.google.gwt.user.client.EventListener::onBrowserEvent(*)(null);
       };
