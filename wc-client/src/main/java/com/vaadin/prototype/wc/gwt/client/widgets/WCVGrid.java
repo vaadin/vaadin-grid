@@ -96,7 +96,7 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
     // FIXME: using columns name here make this fail in prod mode
     private List<Grid.Column<Object, JsArrayMixed>> gridColumns;
     // We save the original content of the Light-DOM because polyfills remove it
-    private Observe lightDom;
+    private GQuery lightDom;
 
     // TODO: we should set this from JS among the datasource.
     private int size = 0;
@@ -129,20 +129,13 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
      */
     private void initWidgetSystem() {
         if (!initialized) {
-
+            initialized = true;
             lightDom = $(this)
                     // this is the table inside the v-grid
                     .children()
                     // hide it, otherwise it's visible if shadow is not used
-                    .hide()
-                    // observe all mutations in the table
-                    .as(Observe.Observe)
-                    .observe(Observe.createInit().attributes(true)
-                                    .characterData(true).childList(true)
-                                    .subtree(true), this);
-        }
-        if (!initialized) {
-            initialized = true;
+                    .hide();
+
             Widget elementWidget = $(this).widget();
             if (elementWidget == null) {
                 elementWidget = $(this).as(Widgets).panel().widget();
@@ -159,13 +152,20 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
             }
             Panel shadowPanel = $(container).as(Widgets).panel().widget();
             shadowPanel.add(grid);
+
+            readAttributes();
+
+            // After everything is initialized we listen to all mutations
+            // in the dom table.
+            lightDom.as(Observe.Observe).observe(Observe.createInit()
+                    .attributes(true).characterData(true)
+                    .childList(true).subtree(true), this);
         }
     }
 
     @Override
     public void attachedCallback() {
         initWidgetSystem();
-        readAttributes();
     }
 
     @JsNoExport
@@ -242,15 +242,15 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
                 Element elm = cell.getElement();
                 if (o instanceof JavaScriptObject) {
                     if (JsUtils.isFunction((JavaScriptObject) o)) {
-                        JsUtils.runJavascriptFunction((JavaScriptObject) o,
+                        JsUtils.jsni((JavaScriptObject) o,
                                 "call", o, elm, data, cell.getRow());
                     } else {
                         if ($(elm).data("init") == null) {
                             $(elm).data("init", true);
-                            JsUtils.runJavascriptFunction((JavaScriptObject) o,
+                            JsUtils.jsni((JavaScriptObject) o,
                                     "init", elm);
                         }
-                        JsUtils.runJavascriptFunction((JavaScriptObject) o,
+                        JsUtils.jsni((JavaScriptObject) o,
                                 "render", elm, data);
                     }
                 } else {
@@ -271,7 +271,7 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
                 Object o = gColumn.value();
                 if (o instanceof JavaScriptObject
                         && JsUtils.isFunction((JavaScriptObject) o)) {
-                    o = JsUtils.runJavascriptFunction((JavaScriptObject) o,
+                    o = JsUtils.jsni((JavaScriptObject) o,
                             "call", o, row, idx);
                 } else if (o instanceof String) {
                     o = JsUtils.prop(row, o);
@@ -294,12 +294,13 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
 
     @Override
     public void attributeChangedCallback() {
-        if (!refreshing) {
-            readAttributes();
-        }
+        readAttributes();
     }
 
     private void readAttributes() {
+        if (refreshing) {
+            return;
+        }
         WCUtils.loadVaadinTheme(container, this, style, null);
         loadHeaders();
         initGrid();
@@ -601,6 +602,7 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
     public void jsPropertySelectedRow() {
     };
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @JsProperty
     public int getSelectedRow() {
         return grid == null
@@ -646,6 +648,7 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
         selectedLock = false;
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @JsProperty
     public JsArrayInteger getSelectedRows() {
         if (!selectedLock) {
