@@ -51,7 +51,6 @@
 
   </div>
 
-
   <script>
       // Create an application module for our demo, inheriting vaadin-components directives
       var app = angular.module("demoApp", [ 'vaadin-components' ]);
@@ -85,22 +84,22 @@
 
         $scope.model.update = function() {
           angular.copy($scope.model.current, $scope.model.data[$scope.model.idx]);
-          // FIXME: needed in Safari, FF & IE
-          setTimeout(function(){
-            grid.onMutation(null);
-          }, 5);
+          // FIXME: needed in Safari, FF & IE without observe polyfill
+          grid.refresh();
         }
         $scope.model.remove = function() {
-          if ($scope.model.idx > 0)
-          	$scope.model.data.splice($scope.model.idx, 1);
+          if ($scope.model.idx >= 0) {
+            $scope.model.data.splice($scope.model.idx, 1);
+            $scope.model.current = [];
+            $scope.model.idx = -1;
+          }
         }
         $scope.model.insert = function() {
-          if ($scope.model.current[0] && $scope.model.current[1] && $scope.model.current[2])
+          if ($scope.model.current[0] && $scope.model.current[1] && $scope.model.current[2]) {
             $scope.model.data.push(angular.copy($scope.model.current));
+          }
         }
-
       });
     </script>
-
 </body>
 </html>

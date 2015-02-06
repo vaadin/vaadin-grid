@@ -617,10 +617,16 @@ public class WCVGrid extends HTMLTableElement.Prototype implements
     public void setSelectedRow(int idx) {
         if (idx < 0 || idx >= grid.getDataSource().size()) {
             if (getSelectedRow() >= 0) {
-                grid.deselect(grid.getDataSource().getRow(getSelectedRow()));
+                JsArrayMixed row = grid.getDataSource().getRow(getSelectedRow());
+                if (row != null) {
+                    grid.deselect(row);
+                }
             }
         } else {
-            grid.select(grid.getDataSource().getRow(idx));
+            JsArrayMixed row = grid.getDataSource().getRow(idx);
+            if (row != null) {
+                grid.select(row);
+            }
         }
         onSelect(null);
     }
