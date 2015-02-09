@@ -1,8 +1,0 @@
-<module>
-    <inherits name='com.vaadin.prototype.wc.gwt.WebComponents'/>
-    <inherits name="com.google.gwt.user.theme.chrome.ChromeResources"/>
-    <inherits name="com.google.gwt.user.theme.clean.CleanResources"/>
-    <inherits name="com.google.gwt.user.theme.dark.DarkResources"/>
-    <inherits name="com.google.gwt.user.theme.standard.StandardResources"/>
-</module>
-
