@@ -2,10 +2,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <name>WebComponents project</name>
-    <groupId>com.vaadin.prototype.wc</groupId>
-    <artifactId>wc-parent</artifactId>
+    <groupId>com.vaadin.components</groupId>
+    <artifactId>vaadin-components-parent</artifactId>
     <packaging>pom</packaging>
-    <version>0.1.0</version>
+    <version>0.2.0</version>
 
     <properties>
       <gwtversion>2.7.0-rc1</gwtversion>
