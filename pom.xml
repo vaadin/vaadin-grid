@@ -320,9 +320,7 @@
       </pluginManagement>
     </build>
     <modules>
-      <module>wc-client</module>
-      <module>wc-polymer-demo</module>
-      <module>wc-gwt-api</module>
-      <module>wc-grid-demo</module>
+      <module>vaadin-components-gwt</module>
+      <module>vaadin-components-package</module>
     </modules>
 </project>
