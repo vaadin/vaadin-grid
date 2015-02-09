@@ -1,0 +1,104 @@
+<!DOCTYPE  html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1" />
+<!-- Load vaadin theme by hand, note that we need to set class to body -->
+<link href="../../themes/valo/styles.css" rel="stylesheet">
+<!-- Vaadin components -->
+<script src="../../vaadin-components.js" async ></script>
+<!-- Angular library -->
+<script src="angular.js"></script>
+<!-- VaadinX directives, TODO: make this be done in Demo.nocache.js -->
+<script src="../../ng/vaadin-ng.js"></script>
+
+</head>
+<body class='valo' >
+
+  <div id='demo' ng-app='demoApp' ng-controller='demoAppCtrl'>
+
+    <h3>Implement demo with AngularJS model used as the source of data for v-grid</h3>
+    <v-grid selectedRow="{{model.idx}}">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Value</th>
+          <th>Progress</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="row in model.data">
+          <td>{{ row[0] }}</td>
+          <td>{{ row[1] }}</td>
+          <td><v-progress value='{{ row[2] }}' class="v-widget v-progressbar"></v-progress></td>
+        </tr>
+      </tbody>
+    </table>
+    </v-grid>
+
+    <h3>Implement simple crud editor with AngularJS for v-grid</h3>
+       <span v={{model.idx}}>
+       <input type="text" placeholder='Name' ng-model="model.current[0]"><br/>
+       <input type="text" placeholder='Value' ng-model="model.current[1]"><br/>
+       <input type="text" placeholder='Progress' ng-model="model.current[2]"><br/><br/>
+
+       <button ng-click="model.update()">Update</button>
+       <button ng-click="model.remove()">Remove</button>
+       <button ng-click="model.insert()">Insert</button>
+
+  </div>
+
+
+  <script>
+      // Create an application module for our demo, inheriting vaadin-components directives
+      var app = angular.module("demoApp", [ 'vaadin-components' ]);
+      var grid = document.querySelector('v-grid');
+      window.g = grid;
+
+      // Define the root-level controller for the application.
+      app.controller("demoAppCtrl", function($scope) {
+
+        // Slider demo data binding
+        $scope.slider = {};
+        $scope.slider.value = 30;
+        $scope.slider.changeSlider = function() {
+          $scope.slider.value = 80;
+        }
+
+        // Grid demo data binding
+        $scope.grid = {};
+        $scope.grid.row = -1;
+
+        $scope.model = {};
+        $scope.model.idx = -1;
+        $scope.model.data = [ [ "Gridddd", 10000, 0.8 ],
+            [ "Vaadin X", 999999, 0.1 ], [ "designer", 43256, 0.9 ],
+            [ "TK", 1967, 0.5 ] ];
+        $scope.model.current = []
+
+        $scope.$watch('model.idx', function(newValue, oldValue) {
+          angular.copy($scope.model.data[$scope.model.idx], $scope.model.current);
+        });
+
+        $scope.model.update = function() {
+          angular.copy($scope.model.current, $scope.model.data[$scope.model.idx]);
+          // FIXME: needed in Safari, FF & IE
+          setTimeout(function(){
+            grid.onMutation(null);
+          }, 5);
+        }
+        $scope.model.remove = function() {
+          if ($scope.model.idx > 0)
+            $scope.model.data.splice($scope.model.idx, 1);
+        }
+        $scope.model.insert = function() {
+          if ($scope.model.current[0] && $scope.model.current[1] && $scope.model.current[2])
+            $scope.model.data.push(angular.copy($scope.model.current));
+        }
+
+      });
+    </script>
+
+</body>
+</html>

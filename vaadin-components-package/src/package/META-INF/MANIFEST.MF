@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Vaadin-Package-Version: 1
+Vaadin-License-Title: Apache License 2.0
+Implementation-Vendor: Vaadin Ltd
+Implementation-Title: vaadin-components Add-on
+Implementation-Version: 1.0-SNAPSHOT
