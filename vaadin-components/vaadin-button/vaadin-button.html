@@ -1,0 +1,68 @@
+<link rel='import' href='../polymer/polymer-shadow.html'>
+
+<dom-module id="v-button">
+    <template>
+        <style type="text/css">@import '../vaadin-button/vaadin-button.css';</style>
+
+        <content></content>
+    </template>
+</dom-module>
+
+<script>
+VButton = Polymer({
+    is: 'v-button',
+
+    keyPresses: {
+        'ENTER_KEY': 'click',
+        32: 'click'
+    },
+
+    ready: function() {
+        this.disabledChanged();
+    },
+
+    published: {
+        disabled: { reflect: true, type: Boolean },
+
+        pointerFocus: { reflect: true, type: Boolean }
+    },
+
+    bind: {
+        disabled: 'disabledChanged'
+    },
+
+    disabledChanged: function() {
+        var disabled = this.hasAttribute('disabled');
+        this.toggleAttribute('aria-disabled', disabled);
+        this.tabIndex = disabled ? -1 : 0;
+    },
+
+    attributeChanged: function(name, type, value) {
+        switch(name) {
+            case 'disabled':
+                this.disabled = value;
+                break;
+        }
+    },
+
+    listeners: {
+        'mousedown': '_mousedown',
+        'click' : '_click'
+    },
+
+    _mousedown: function(e) {
+        if (!this.hasAttribute("pointerfocus")) {
+            e.preventDefault();
+        }
+    },
+
+    _click: function(e) {
+        if (this.hasAttribute("disabled")) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            return false;
+        }
+    }
+});
+</script>

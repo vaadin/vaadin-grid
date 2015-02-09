@@ -1,0 +1,21 @@
+{
+  "name": "vaadin-button",
+  "version": "0.2",
+  "authors": [
+    "Vaadin Ltd"
+  ],
+  "description": "Vaadin button",
+  "license": "Apache-2.0",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#0.8-preview",
+    "webcomponentsjs": "~0.5.4"
+  }
+}

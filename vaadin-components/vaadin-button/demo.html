@@ -1,0 +1,28 @@
+<html>
+    <head>
+        <script src="../webcomponentsjs/webcomponents.min.js"></script>
+        <link rel="import" href="vaadin-button.html" />
+    </head>
+    <body>
+        <v-button id="button1" class="small">Click to disable</v-button>
+        <v-button id="button2" class="primary">Re-enable</v-button>
+        <br>
+        <v-button pointerfocus class="friendly">Button</v-button>
+        <v-button disabled class="danger small">Button</v-button>
+        <v-button class="link">Button</v-button>
+        <v-button class="huge">Button</v-button>
+
+        <script>
+        var button1 = document.querySelector("#button1");
+        button1.onclick = function() {
+            button1.disabled = true;
+        };
+
+        var button2 = document.querySelector("#button2");
+        button2.onclick = function() {
+            button1.disabled = false;
+        };
+        </script>
+
+    </body>
+</html>
