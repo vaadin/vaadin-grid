@@ -1,4 +1,0 @@
-<module>
-    <inherits name='com.vaadin.prototype.wc.gwt.WebComponents'/>
-</module>
-

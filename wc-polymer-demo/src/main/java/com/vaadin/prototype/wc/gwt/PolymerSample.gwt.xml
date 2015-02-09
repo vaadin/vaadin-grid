@@ -1,9 +1,0 @@
-<module rename-to='PolymerSample'>
-
-    <inherits name='com.vaadin.prototype.wc.gwt.WebComponents'/>
-    <inherits name='com.vaadin.prototype.wc.gwt.WebComponentsGwtThemes'/>
-    <inherits name='com.vaadin.DefaultWidgetSet'/>
-    <entry-point class='com.vaadin.prototype.wc.gwt.client.Demo'/>
-
-    <stylesheet src="demo.css" />
-</module>

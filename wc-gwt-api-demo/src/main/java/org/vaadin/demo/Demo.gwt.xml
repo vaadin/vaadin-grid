@@ -1,7 +1,0 @@
-<module rename-to='demo'>
-    <inherits name='com.vaadin.prototype.wc.gwt.WebComponents'/>
-    <entry-point class='org.vaadin.demo.client.Demo'/>
-    <source path='client'/>
-    <add-linker name="xsiframe"/>
-    <collapse-all-properties value="true" />
-</module>
