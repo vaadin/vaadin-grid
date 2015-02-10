@@ -2,16 +2,16 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.vaadin.prototype.wc</groupId>
-        <artifactId>wc-parent</artifactId>
-        <version>0.1.0</version>
+        <groupId>com.vaadin.components</groupId>
+        <artifactId>vaadin-components-parent</artifactId>
+        <version>0.2.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <name>Vaadin WebComponents Exported </name>
-    <groupId>com.vaadin.prototype.wc</groupId>
-    <artifactId>wc-grid-demo</artifactId>
-    <packaging>war</packaging>
+    <name>Vaadin Components Export</name>
+    <groupId>com.vaadin.components</groupId>
+    <artifactId>vaadin-export</artifactId>
+    <packaging>pom</packaging>
 
     <properties>
         <git.bower.repo>git@github.com:vaadin-bower</git.bower.repo>
@@ -21,85 +21,10 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>wc-client</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.gwt</groupId>
-            <artifactId>gwt-dev</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.google.gwt</groupId>
-            <artifactId>gwt-user</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.google.gwt</groupId>
-            <artifactId>gwt-codeserver</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.google.gwt</groupId>
-            <artifactId>gwt-elemental</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.googlecode.gwtquery</groupId>
-            <artifactId>gwtquery</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.googlecode.gwtquery.plugins</groupId>
-            <artifactId>observe-plugin</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>com.vaadin</groupId>
-          <artifactId>vaadin-shared</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>com.vaadin</groupId>
-          <artifactId>vaadin-server</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>com.vaadin</groupId>
-          <artifactId>vaadin-client</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>com.vaadin</groupId>
-          <artifactId>vaadin-themes</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>com.vaadin</groupId>
-          <artifactId>vaadin-client-compiler</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>com.vaadin</groupId>
-          <artifactId>vaadin-client-compiler-deps</artifactId>
-        </dependency>
     </dependencies>
     <build>
         <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>gwt-maven-plugin</artifactId>
-                <configuration>
-                  <logLevel>INFO</logLevel>
-                </configuration>
-            </plugin>
-            <plugin>
-              <artifactId>maven-resources-plugin</artifactId>
-            </plugin>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-eclipse-plugin</artifactId>
-            </plugin>
         </plugins>
     </build>
     <profiles>
