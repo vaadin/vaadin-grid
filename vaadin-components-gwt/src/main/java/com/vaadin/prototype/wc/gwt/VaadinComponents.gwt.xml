@@ -1,5 +1,0 @@
-<module rename-to='VaadinComponents'>
-    <inherits name='com.vaadin.prototype.wc.gwt.Common'/>
-    <entry-point class='com.vaadin.prototype.wc.gwt.client.entrypoints.VaadinComponents'/>
-</module>
-

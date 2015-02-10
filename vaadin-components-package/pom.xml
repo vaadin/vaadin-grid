@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?> <project>
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -8,53 +9,34 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <name>Vaadin Components Export</name>
-    <groupId>com.vaadin.components</groupId>
-    <artifactId>vaadin-export</artifactId>
+    <name>Vaadin Components Installer</name>
+    <artifactId>vaadin-components-package</artifactId>
     <packaging>pom</packaging>
 
-    <properties>
-        <git.bower.repo>git@github.com:vaadin-bower</git.bower.repo>
-        <module.names>VaadinComponents VaadinGrid VaadinSlider VaadinProgressBar Valo Angular</module.names>
-        <modulePathPrefix></modulePathPrefix>
-        <gwt.loglevel>WARN</gwt.loglevel>
-    </properties>
-
-    <dependencies>
-    </dependencies>
     <build>
-        <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
         <plugins>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>update-bower-repo</id>
+                        <configuration>
+                            <tasks>
+                                <exec dir="." executable="sh" failonerror="true">
+                                    <arg value="src/scripts/update_components.sh" />
+                                    <arg value="${project.version}" />
+                                    <arg value="${git.bower.repo}" />
+                                    <arg value="${bower.components}" />
+                                </exec>
+                            </tasks>
+                        </configuration>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
-    <profiles>
-      <profile>
-        <id>bower</id>
-        <build><plugins>
-          <plugin>
-              <artifactId>maven-antrun-plugin</artifactId>
-              <executions>
-                <execution>
-                  <id>update-bower-repo</id>
-                  <configuration>
-                    <tasks>
-                      <exec dir="." executable="sh">
-                        <arg value="src/main/scripts/update_modules.sh"/>
-                        <arg value="${project.build.directory}/${project.build.finalName}"/>
-                        <arg value="${modulePathPrefix}"/>
-                        <arg value="${project.version}"/>
-                        <arg value="${git.bower.repo}"/>
-                        <arg value="${vaadin.version}"/>
-                        <arg value="${module.names}"/>
-                      </exec>
-                    </tasks>
-                  </configuration>
-                  <phase>package</phase>
-                  <goals><goal>run</goal></goals>
-                </execution>
-              </executions>
-            </plugin>
-         </plugins></build>
-      </profile>
-    </profiles>
 </project>

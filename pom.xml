@@ -22,26 +22,38 @@
       <vaadin.version>7.4.0.beta2</vaadin.version>
       <vaadin.version>7.4-SNAPSHOT</vaadin.version>
       <maven.test.skip>true</maven.test.skip>
-      <gwt.outputstyle>PRETTY</gwt.outputstyle>
-      <gwt.disableCastChecking>false</gwt.disableCastChecking>
-      <gwt.disableClassMetadata>false</gwt.disableClassMetadata>
-      <gwt.enableAssertions>true</gwt.enableAssertions>
+      <gwt.outputstyle>OBF</gwt.outputstyle>
+      <gwt.disableCastChecking>true</gwt.disableCastChecking>
+      <gwt.disableClassMetadata>true</gwt.disableClassMetadata>
+      <gwt.enableAssertions>false</gwt.enableAssertions>
+      <gwt.closure>true</gwt.closure>
+      <gwt.report>false</gwt.report>
+      <git.bower.repo>git@vaadin-components.intra.itmill.com:/opt/git/</git.bower.repo>
+      <bower.components>vaadin-grid vaadin-button</bower.components>
     </properties>
 
     <profiles>
       <profile>
-        <id>clos</id>
+        <id>soyc</id>
         <properties>
-          <gwt.closure>true</gwt.closure>
+          <gwt.closure>false</gwt.closure>
+          <gwt.report>true</gwt.report>
         </properties>
       </profile>
       <profile>
         <id>prod</id>
         <properties>
-          <gwt.outputstyle>OBF</gwt.outputstyle>
-          <gwt.disableCastChecking>true</gwt.disableCastChecking>
-          <gwt.disableClassMetadata>true</gwt.disableClassMetadata>
-          <gwt.enableAssertions>false</gwt.enableAssertions>
+          <git.bower.repo>git@github.com:vaadin-bower</git.bower.repo>
+        </properties>
+      </profile>
+      <profile>
+        <id>pretty</id>
+        <properties>
+          <gwt.outputstyle>PRETTY</gwt.outputstyle>
+          <gwt.disableCastChecking>false</gwt.disableCastChecking>
+          <gwt.disableClassMetadata>false</gwt.disableClassMetadata>
+          <gwt.enableAssertions>true</gwt.enableAssertions>
+          <gwt.closure>false</gwt.closure>
         </properties>
       </profile>
       <profile>
@@ -241,9 +253,8 @@
                     <logLevel>${gwt.loglevel}</logLevel>
                     <style>${gwt.outputstyle}</style>
                     <gwtVersion>${gwtversion}</gwtVersion>
-                    <compileReport>true</compileReport>
-                    <!-- <detailedSoyc>true</detailedSoyc> -->
-                    <compileMetrics>true</compileMetrics>
+                    <compileReport>${gwt.report}</compileReport>
+                    <compileMetrics>${gwt.report}</compileMetrics>
                     <hostedWebApp>${project.build.directory}/${project.build.finalName}</hostedWebApp>
                     <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
                     <draftCompile>false</draftCompile>

@@ -8,9 +8,9 @@ import com.vaadin.prototype.wc.gwt.client.widgets.WCUtils;
 import com.vaadin.prototype.wc.gwt.client.widgets.WCVGrid;
 
 /**
- * Exports all vaadin web components.
+ * Exports vaadin grid.
  */
-public class VaadinComponents implements EntryPoint {
+public class VaadinGrid implements EntryPoint {
 
     public void onModuleLoad() {
         if (!GWT.isProdMode()) {

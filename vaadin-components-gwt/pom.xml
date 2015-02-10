@@ -91,36 +91,20 @@
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-eclipse-plugin</artifactId>
             </plugin>
+
+            <!-- We dont want the war being installed nor deployed -->
+            <plugin>
+              <artifactId>maven-deploy-plugin</artifactId>
+              <configuration>
+                <skip>true</skip>
+              </configuration>
+            </plugin>
+            <plugin>
+              <artifactId>maven-install-plugin</artifactId>
+              <configuration>
+                <skip>true</skip>
+              </configuration>
+            </plugin>
         </plugins>
     </build>
-    <profiles>
-      <profile>
-        <id>bower</id>
-        <build><plugins>
-          <plugin>
-              <artifactId>maven-antrun-plugin</artifactId>
-              <executions>
-                <execution>
-                  <id>update-bower-repo</id>
-                  <configuration>
-                    <tasks>
-                      <exec dir="." executable="sh">
-                        <arg value="src/main/scripts/update_modules.sh"/>
-                        <arg value="${project.build.directory}/${project.build.finalName}"/>
-                        <arg value="${modulePathPrefix}"/>
-                        <arg value="${project.version}"/>
-                        <arg value="${git.bower.repo}"/>
-                        <arg value="${vaadin.version}"/>
-                        <arg value="${module.names}"/>
-                      </exec>
-                    </tasks>
-                  </configuration>
-                  <phase>package</phase>
-                  <goals><goal>run</goal></goals>
-                </execution>
-              </executions>
-            </plugin>
-         </plugins></build>
-      </profile>
-    </profiles>
 </project>
