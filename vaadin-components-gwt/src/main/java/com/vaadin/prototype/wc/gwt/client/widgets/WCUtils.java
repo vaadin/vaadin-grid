@@ -131,7 +131,7 @@ public class WCUtils {
     }
 
     public static void loadVaadinTheme(HTMLElement container, HTMLElement el, HTMLElement style, String def) {
-   	        loadVaadinTheme(container, el, style, def, postThemeLoad);
+        loadVaadinTheme(container, el, style, def, postThemeLoad);
     }
 
     private static void loadVaadinTheme(HTMLElement container, HTMLElement el, HTMLElement style, String def, Function f) {
