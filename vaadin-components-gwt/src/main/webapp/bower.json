@@ -13,6 +13,7 @@
   ],
   "dependencies": {
     "webcomponentsjs": "0.5.2"
+    , "object.observe" : ""
     , "vaadin-valo": ""
   },
   "license": "Apache"
