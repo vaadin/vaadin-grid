@@ -14,6 +14,7 @@ import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Predicate;
 import com.google.gwt.query.client.Promise;
 import com.google.gwt.query.client.js.JsUtils;
+import com.google.gwt.query.client.plugins.ajax.Ajax;
 import com.google.gwt.query.client.plugins.deferred.PromiseFunction;
 import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Timer;
@@ -165,6 +166,17 @@ public class WCUtils {
         return imports.add(toAdd);
     }
 
+    private static String loadThemeAjax(String theme) {
+        String url = "bower_components/vaadin-" + theme + "/styles.css";
+
+        Ajax.get(url).done(new Function() {
+            public void f() {
+                super.f();
+            }
+        });
+        return url;
+    }
+
     private static void loadTheme(GQuery container, GQuery style, String theme) {
         // Get all scripts and links in the page, even those nested in imports
         GQuery links = linksAndScripts($(document));
@@ -202,7 +214,7 @@ public class WCUtils {
         } else if (!v.isEmpty()) {
             base = v.attr("src").replace("vaadin-components.js", "themes/");
         } else if (!s.isEmpty()) {
-            base += "VAADIN/themes/";
+            base += "bower_components/vaadin-";
         }
         base += theme + "/styles.css";
         container.addClass(theme);

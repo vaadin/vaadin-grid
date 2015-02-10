@@ -4,7 +4,7 @@ import com.google.gwt.core.client.js.JsExport;
 import com.google.gwt.i18n.client.NumberFormat;
 
 @JsExport
-public class WCFormat {
+public class Utils {
     @JsExport
     public static String formatCurrency(double val) {
         NumberFormat fmt = NumberFormat.getCurrencyFormat();

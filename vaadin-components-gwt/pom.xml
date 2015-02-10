@@ -55,10 +55,6 @@
         </dependency>
         <dependency>
           <groupId>com.vaadin</groupId>
-          <artifactId>vaadin-server</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>com.vaadin</groupId>
           <artifactId>vaadin-client</artifactId>
         </dependency>
         <dependency>

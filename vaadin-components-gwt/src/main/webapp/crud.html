@@ -103,9 +103,7 @@
 
                 $scope.editorRow = null;
                 // FIXME: needed in Safari, FF & IE
-                setTimeout(function(){
-                  grid.onMutation(null);
-                }, 5);
+                grid.refresh();
             };
 
             $scope.delete = function() {
