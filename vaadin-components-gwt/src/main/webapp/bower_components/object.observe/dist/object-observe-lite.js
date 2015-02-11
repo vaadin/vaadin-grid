@@ -1,9 +1,9 @@
 /*!
  * Object.observe "lite" polyfill - v0.2.1
  * by Massimo Artizzu (MaxArt2501)
- * 
+ *
  * https://github.com/MaxArt2501/object-observe
- * 
+ *
  * Licensed under the MIT License
  * See LICENSE for details
  */
@@ -212,7 +212,7 @@ Object.observe || (function(O, A, root) {
             else {
                 data = createObjectData(object);
                 setHandler(object, data, handler, acceptList);
-                
+
                 if (observed.size === 1)
                     // Let the observation begin!
                     nextFrame(runGlobalLoop);
@@ -282,7 +282,7 @@ Object.observe || (function(O, A, root) {
                     ovalue = values[idx];
                     props[idx] = null;
                     proplen--;
-                    if (ovalue === value ? ovalue === 0 && 1/ovalue !== 1/value 
+                    if (ovalue === value ? ovalue === 0 && 1/ovalue !== 1/value
                             : ovalue === ovalue || value === value) {
                         addChangeRecord(object, data, {
                             name: key,

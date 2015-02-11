@@ -1,5 +1,0 @@
-<module rename-to='VaadinGrid'>
-    <inherits name='com.vaadin.prototype.wc.gwt.Common'/>
-    <entry-point class='com.vaadin.prototype.wc.gwt.client.entrypoints.VaadinGrid'/>
-</module>
-
