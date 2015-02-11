@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="../../webcomponentsjs/webcomponents.min.js"></script>
+  <script src="../../web-component-tester/browser.js"></script>
+
+  <link rel="import" href="../vaadin-button.html">
+</head>
+<body>
+
+  <script>
+    suite('vaadin-button', function() {
+
+        test('aria-disabled', function() {
+            var button = new VButton();
+            button.disabled = true;
+            assert.isTrue(button.hasAttribute('aria-disabled'));
+            button.disabled = false;
+            assert.isFalse(button.hasAttribute('aria-disabled'));
+        });
+
+        test('button-click', function() {
+            var button = new VButton();
+            button.addEventListener("click", function(){
+                button.clicked = true;
+            });
+            button.click();
+            assert.ok(button.clicked);
+
+            button.clicked = false;
+            button.disabled = true;
+            button.click();
+            assert.notOk(button.clicked);
+        });
+
+        test('keypresses', function() {
+            var button = new VButton();
+            button.addEventListener("click", function(){
+                button.clicked = true;
+            });
+
+            var space = new CustomEvent('keydown', {detail: {key: 'space'}});
+            button.dispatchEvent(space);
+            assert.ok(button.clicked);
+        });
+    });
+  </script>
+</body>
+</html>
