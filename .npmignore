@@ -1,0 +1,16 @@
+*~
+.git
+.gitignore
+.npmignore
+.??*
+gulpfile.js
+pom.xml
+target
+kk
+pp
+tmp
+node_modules
+bower_components
+vaadin-components
+vaadin-components-gwt
+vaadin-components-package

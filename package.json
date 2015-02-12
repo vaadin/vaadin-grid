@@ -1,0 +1,35 @@
+{
+   "name":"vaadin-components-dev",
+   "version":"0.2.0",
+   "description":"Vaadin Development Installer",
+   "main":"index.js",
+   "dependencies":{
+      "bower":"latest",
+      "gulp":"latest",
+      "gulp-git":"latest",
+      "fs-extra":"latest",
+      "gulp-rename":"latest",
+      "gulp-json-editor":"latest",
+      "gulp-replace":"latest"
+   },
+   "devDependencies":{
+      "gulp-util":"latest"
+   },
+   "scripts":{
+   },
+   "repository":{
+      "type":"git",
+      "url": "ssh://manolo@dev.vaadin.com:29418/components"
+   },
+  "keywords": [
+    "vaadin",
+    "components",
+    "webcomponents",
+    "gwt"
+  ],
+  "author": "Vaadin Ltd",
+  "license": "Apache 2.0",
+   "engines":{
+      "node":">=0.10"
+   }
+}

@@ -1,3 +1,4 @@
+.git
 target/
 gwt-unitCache/
 .gwt/
@@ -8,3 +9,5 @@ www-test/
 war
 .DS_Store
 .sass-cache/
+bower_components
+node_modules
