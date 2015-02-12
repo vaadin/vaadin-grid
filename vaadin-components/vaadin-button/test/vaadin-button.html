@@ -11,38 +11,62 @@
 
   <script>
     suite('vaadin-button', function() {
+        var button;
+        var listener;
+        var keyDownSpaceEvent = new CustomEvent('keydown', {detail: {key: 'space'}});
 
-        test('aria-disabled', function() {
-            var button = new VButton();
+        setup(function() {
+          button = new VButton();
+          listener = sinon.spy();
+        });
+
+        test('disabled button has aria-disabled', function() {
             button.disabled = true;
+
             assert.isTrue(button.hasAttribute('aria-disabled'));
+        });
+
+        test('enabled button does not have aria-disabled', function() {
             button.disabled = false;
+
             assert.isFalse(button.hasAttribute('aria-disabled'));
+
+            // For comparison, Chai also supports BDD style chaining
+            expect(button.hasAttribute('aria-disabled')).to.be.false;
         });
 
-        test('button-click', function() {
-            var button = new VButton();
-            button.addEventListener("click", function(){
-                button.clicked = true;
-            });
-            button.click();
-            assert.ok(button.clicked);
+        test('event listener is called on click()', function() {
+            button.addEventListener("click", listener);
 
-            button.clicked = false;
+            button.click();
+
+            assert(listener.calledOnce);
+        });
+
+        test('event listener is not called on a disabled button', function() {
+            button.addEventListener("click", listener);
             button.disabled = true;
+
             button.click();
-            assert.notOk(button.clicked);
+
+            expect(listener.callCount).to.equal(0);
         });
 
-        test('keypresses', function() {
-            var button = new VButton();
-            button.addEventListener("click", function(){
-                button.clicked = true;
-            });
+        test('click event is received from keydown - space', function() {
+            button.addEventListener("click", listener);
 
-            var space = new CustomEvent('keydown', {detail: {key: 'space'}});
-            button.dispatchEvent(space);
-            assert.ok(button.clicked);
+            button.dispatchEvent(keyDownSpaceEvent);
+
+            assert(listener.calledOnce);
+        });
+
+        test('click event is not received on a disabled button', function() {
+            button.addEventListener("click", listener);
+            button.disabled = true;
+
+            button.dispatchEvent(keyDownSpaceEvent);
+
+            expect(listener.callCount).to.equal(0);
         });
     });
   </script>
