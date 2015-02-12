@@ -8,7 +8,6 @@
     <version>0.2.0</version>
 
     <properties>
-      <gwtversion>2.7.0-rc1</gwtversion>
       <gwtversion>2.8.0-MCM</gwtversion>
       <gwtmaven>2.7.0</gwtmaven>
       <modulePathPrefix>VAADIN/widgetsets</modulePathPrefix>
@@ -17,9 +16,7 @@
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       <gQueryVersion>1.4.4-SNAPSHOT</gQueryVersion>
       <gwt.outputstyle>PRETTY</gwt.outputstyle>
-      <jetty.version>9.2.3.v20140905</jetty.version>
       <jetty.version>8.1.12.v20130726</jetty.version>
-      <vaadin.version>7.4.0.beta2</vaadin.version>
       <vaadin.version>7.4-SNAPSHOT</vaadin.version>
       <maven.test.skip>true</maven.test.skip>
       <gwt.outputstyle>OBF</gwt.outputstyle>

@@ -10,7 +10,7 @@
 #   Registering a package will make it installable to anyone
 #   via the registry (https://bower.herokuapp.com), to register
 #   it we run:
-#   $ bower register vaadin-components git://github.com/manolo/vaadin-components.git
+#   $ bower register vaadin-components git://github.com/vaadin-bower/vaadin-components.git
 #
 #   Deleting the registered project needs to be done by the owner
 #   $ curl -X DELETE "https://bower.herokuapp.com/packages/vaadin-components?access_token=<token>"
@@ -35,6 +35,13 @@ package="$1"; shift
 moduleName=$1
 
 gitRepo="$gitUrl/$package.git"
+
+# Bower version syntax is MAJOR.MINOR.PATCH (N.N.N)
+# We compute the patch version based on the number of minutes from 01.01.2015
+major_minor=`expr $version : '\([0-9][0-9]*\.[0-9][0-9]*\)'`
+now=`date +%s`
+patch=`expr \( $now - 1420070400 \) / 60`
+tag=$major_minor.$patch
 
 CheckFolders() {
  ## Just some checks to know that folders are ok
@@ -112,7 +119,7 @@ UpdateGwtModule() {
 
 UpdateVersion() {
  cd $tmpDir || exit 1
- perl -pi -e 's,"version"\s*:\s*"[^"]+","version" : "'$version'",' bower.json
+ perl -pi -e 's,"version"\s*:\s*"[^"]+","version" : "'$tag'",' bower.json
  perl -pi -e 's,"private"\s*:\s*[^ \,]+,"private" : false,' bower.json
 }
 
@@ -121,16 +128,9 @@ UpdateRepo() {
  ## Check if something has been modified
  if git status  --porcelain | grep . >/dev/null
  then
-  ## If this version already exists remove it
-  if git tag | grep "^v$version$" >/dev/null
-  then
-     git tag -d v$version || exit 1
-     git push origin :refs/tags/v$version || exit 1
-  fi
-
   ## Add new files and commit changes
   git add .
-  git commit -m "Upgrading version $version" . || exit 1
+  git commit -m "Upgrading version $tag" . || exit 1
 
   ## If there is something to push, do it
   if ! git diff --cached --exit-code
@@ -139,7 +139,7 @@ UpdateRepo() {
   fi
 
   ## Create the version tags
-  git tag -a v$version -m "Release $version" || exit 1
+  git tag -a v$tag -m "Release $tag" || exit 1
   git push origin master --tags || exit 1
  fi
 }

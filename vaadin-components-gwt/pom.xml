@@ -9,7 +9,6 @@
     </parent>
 
     <name>Vaadin Components Gwt Exported</name>
-    <groupId>com.vaadin.components</groupId>
     <artifactId>vaadin-components-gwt</artifactId>
     <packaging>war</packaging>
 
