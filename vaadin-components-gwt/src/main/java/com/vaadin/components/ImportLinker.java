@@ -32,12 +32,12 @@ public class ImportLinker extends CrossSiteIframeLinker {
             if ("false".equals(getStringConfigurationProperty(context, "includeSourceMapUrl", null))) {
                 js += ""
                         + "<script>\n"
-                        + "$wnd = window; $doc = document;"
+                        + "$wnd = window; $doc = document;\n"
                         + generateVadinScript(logger, context, artifacts, null);
                 for (CompilationResult result : artifacts.find(CompilationResult.class)) {
                     String strongName = result.getStrongName();
                     js += ""
-                            + "\nfunction _" +  strongName  + "(){\n"
+                            + "\nfunction _" +  strongName  + "($wnd, $doc){\n"
                             + getModulePrefix(logger, context, strongName)
                             + result.getJavaScript()[0] + "\n"
                             + getModuleSuffix2(logger, context, strongName)
@@ -62,7 +62,7 @@ public class ImportLinker extends CrossSiteIframeLinker {
                   getSelectionScriptTemplate(logger, context), logger);
           replaceAll(buffer, "__INSTALL_SCRIPT__", ""
                   + "function installScript(filename) {"
-                  + " this['_' + filename.replace(/.*([\\dA-F]{32}).cache.js/,'$1')]();"
+                  + " this['_' + filename.replace(/.*([\\dA-F]{32}).cache.js/,'$1')](window, document);"
                   + "}"
                   + "");
 
