@@ -6,16 +6,23 @@
    "dependencies":{
       "bower":"latest",
       "gulp":"latest",
+      "gulp-util":"latest",
       "gulp-git":"latest",
       "fs-extra":"latest",
       "gulp-rename":"latest",
       "gulp-json-editor":"latest",
-      "gulp-replace":"latest"
+      "gulp-replace":"latest",
+      "gulp-sass":"latest",
+      "gulp-sourcemaps":"latest",
+      "gulp-autoprefixer":"latest",
+      "gulp-minify-css":"latest",
+      "yargs":"latest"
    },
-   "devDependencies":{
-      "gulp-util":"latest"
+   "devDependencies": {
+      "web-component-tester": "latest"
    },
-   "scripts":{
+   "scripts": {
+      "install": "node_modules/.bin/bower install webcomponentsjs object.observe Polymer/polymer#0.8-preview"
    },
    "repository":{
       "type":"git",

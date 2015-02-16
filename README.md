@@ -13,7 +13,7 @@ Here you have a set of modules used for Vaadin Components
 
 How to build
 
-- Install node, gulp, bower, git, java and maven in your system, and
+- Install node, java and maven in your system, and
   be sure that all of them are available in your PATH.
 
 - Clone the project:
@@ -21,10 +21,24 @@ How to build
   $ cd components
 
 - Install the rest of needed dependencies:
-  $ node install.
+  $ npm install
+
+- Add the folder node_modules/.bin in your PATH so as you can run
+  bower, gulp, etc. from command line
+  $ export PATH=$PATH:$PWD/node_modules/.bin/
 
 - To compile gwt modules to JS, just run:
-  $ gulp clean gwt
+  $ gulp gwt
+
+  If you wanted to produce GWT pretty code run:
+  $ gulp clean gwt-pretty
+
+- To compile each component theme, run:
+  $ gulp css --component=button,grid
+
+  Additionaly you can produce a debug version of the styles (with source maps),
+  and start a watch task to monitor the source files for any changes
+  $ gulp css --component=button --debug --watch
 
 - To deploy all webcomponents to bower repos:
   $ gulp deploy

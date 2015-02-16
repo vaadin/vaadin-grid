@@ -1,0 +1,21 @@
+@mixin user-select($us) {
+  user-select: $us;
+}
+
+@mixin animation($anim) {
+  animation: $anim;
+}
+
+@mixin box-shadow($bs) {
+  box-shadow: $bs;
+}
+
+@mixin keyframes($name) {
+  @keyframes $name {
+    @content;
+  }
+}
+
+@mixin box-sizing($bs) {
+  box-sizing: $bs;
+}

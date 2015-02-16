@@ -11,3 +11,8 @@ war
 .sass-cache/
 bower_components
 node_modules
+vaadin-theme/**/*.css
+vaadin-theme/**/*.css.map
+vaadin-components/**/*.css
+vaadin-components/**/*.css.map
+npm-debug.log

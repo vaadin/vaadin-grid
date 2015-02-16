@@ -4,14 +4,20 @@ var cmd = require('child_process');
 var git = require('gulp-git');
 var fs = require('fs-extra');
 var rename = require('gulp-rename');
-var json = require("gulp-json-editor");
+var json = require('gulp-json-editor');
 var replace = require('gulp-replace');
+
+var sass = require('gulp-sass');
+var sourcemaps = require('gulp-sourcemaps');
+var autoprefixer = require('gulp-autoprefixer');
+var minify = require('gulp-minify-css');
+var args = require('yargs').argv;
 
 var pwd = process.cwd();
 var gitrepo = 'git@vaadin-components.intra.itmill.com:/opt/git/';
 var target = pwd + '/target';
 var version = '0.2.0';
-var major = version.replace(/(\d+\.\d+\.).*$/, "$1");
+var major = version.replace(/(\d+\.\d+\.).*$/, '$1');
 var patch = ~~((new Date().getTime() / 1000 - 1420070400) / 60)
 var tag =  major + patch;
 
@@ -22,12 +28,13 @@ function system(command, cb) {
   });
 }
 
-function compileGwt(cb) {
-  gutil.log("Updating maven dependencies ...");
-  system('mvn clean compile -q -am -pl vaadin-components-gwt', function(){
-    gutil.log("Compiling GWT components ...");
-    system('mvn clean package -q -am -pl vaadin-components-gwt', function(){
-      gutil.log("GWT components compilation suceeded.")
+function compileGwt(cb, pretty) {
+  gutil.log('Updating Maven dependencies ...');
+  system('mvn compile -q -am -pl vaadin-components-gwt', function(){
+    gutil.log('Compiling GWT components ...');
+    var command = 'mvn package -q -am -pl vaadin-components-gwt' + (pretty ? ' -Ppretty' : '');
+    system(command, function(){
+      gutil.log('GWT components compilation succeeded.')
       if (cb) cb();
     });
   });
@@ -51,15 +58,18 @@ function updatePolymerComponent(component, tag, tmpdir ) {
     .pipe(json({version: tag, name: component}))
     .pipe(gulp.dest(gitcwd));
 
+    gulp.src(gitcwd + '/**/*.html')
+    .pipe(replace(/(src|href)=("|')(.*?)\.\.\/\.\.\/bower_components\//mg, '$1=$2$3../'))
+    .pipe(gulp.dest(gitcwd));
+
     process.chdir(gitcwd);
     git.status({
       args : '--porcelain'
     }, function(err, stdout) {
       if (/\w/.test(stdout.replace('M bower.json','').replace(/\s/,''))) {
-        for (line in stdout.split())
         // FIXME: This is executed in parallel, I think git.commit
         // implementation is buggy, so using a hack with system.
-        // gulp.src("*")
+        // gulp.src('*')
         // .pipe(git.commit(message))
         // .pipe(git.tag('v' + tag, message));
         system('git add . ; git commit -q -a -m ' + message, function() {
@@ -67,19 +77,19 @@ function updatePolymerComponent(component, tag, tmpdir ) {
             git.push('origin', 'master', {
               args : '--tags'
             }, function() {
-              gutil.log(">>>> Released a new version of " + component + " (" + tag + ")");
+              gutil.log('>>>> Released a new version of ' + component + ' (' + tag + ')');
             })
           })
         })
       } else {
-        gutil.log(">>>> No new changes to commit for component " + component);
+        gutil.log('>>>> No new changes to commit for component ' + component);
       }
     });
   });
 }
 
 function copyGwtModule(component, moduleName, version, cb) {
-  warDir = "vaadin-components-gwt/target/vaadin-components-gwt-" + version + "/";
+  warDir = 'vaadin-components-gwt/target/vaadin-components-gwt-' + version + '/';
   modulePath = warDir + '/' + moduleName + '/';
   webDir = 'vaadin-components-gwt/src/main/webapp/';
   var componentDir = 'vaadin-components/' + component;
@@ -99,30 +109,36 @@ function copyGwtModule(component, moduleName, version, cb) {
   gulp.src(webDir + 'demo-' + component + '.html')
   .pipe(replace(/^.*(nocache|<link).*$/mg, ''))
   .pipe(replace(/<\/head/mg, '\n<link rel="import" href="' + component + '.html"></link>\n\n</head'))
-  .pipe(replace(/src="bower_components\//mg, 'src="../'))
+  .pipe(replace(/(src|href)=("|')[\.\/]*bower_components\//mg, '$1=$2../../bower_components'))
   .pipe(rename(function (path) {
     path.basename = 'demo';
   }))
-  .pipe(gulp.dest(componentDir));
-
-  gulp.src(webDir + 'bower.json')
   .pipe(gulp.dest(componentDir));
 
   if (cb) cb();
 }
 
 gulp.task('default', function() {
-  console.log("\n  Use:\n    gulp <clean|gwt|deploy|all>\n");
+  console.log('\n  Use:\n    gulp <clean|gwt|deploy|all>\n');
 });
 
-gulp.task('clean', function() {
+gulp.task('clean', function(cb) {
   fs.removeSync(target);
   fs.mkdirsSync(target);
+  system('mvn clean', cb);
 })
 
-gulp.task('gwt', function() {
+gulp.task('gwt-pretty', function(cb) {
   compileGwt(function() {
     copyGwtModule('vaadin-grid', 'VaadinGrid', version);
+    cb();
+  }, true);
+})
+
+gulp.task('gwt', function(cb) {
+  compileGwt(function() {
+    copyGwtModule('vaadin-grid', 'VaadinGrid', version);
+    cb();
   });
 })
 
@@ -132,10 +148,53 @@ gulp.task('deploy', function() {
 });
 
 gulp.task('all', ['clean'], function() {
+  // Compile themes
+  args = {component: 'button'};
+  gulp.start('css');
+  // Compile Gwt
   compileGwt(function() {
     copyGwtModule('vaadin-grid', 'VaadinGrid', version, function() {
+      // Deploy everything
       gulp.start('deploy')
     });
   });
 });
 
+gulp.task('css', function () {
+  if(args.component) {
+    var components = args.component.split(',');
+    for (i in components) {
+      var component = components[i];
+      gutil.log('Compiling theme for component: ' + component);
+      var input = pwd + '/vaadin-theme/components/' + component + '/' + component + '.scss';
+      var output = pwd + '/vaadin-components/vaadin-' + component;
+
+      var stream = gulp.src(input)
+        .pipe(sourcemaps.init())
+        .pipe(sass())
+        .pipe(autoprefixer({
+          browsers: ['last 2 versions'],
+          cascade: false
+        }))
+       .pipe(minify({ keepBreaks: args.debug }));
+
+      if(args.debug) {
+        stream = stream.pipe(sourcemaps.write());
+      }
+
+      stream
+        .pipe(rename({prefix: 'vaadin-'}))
+        .pipe(gulp.dest(output));
+    }
+  } else {
+    console.log('\n  Use:\n    gulp css --component=<component(ie:button)>\n');
+    // TODO compile full theme with included components
+  }
+
+  if(args.watch) {
+    gulp.watch(pwd + '/vaadin-theme/**/*.scss', ['css']);
+
+    // Only add the watch once
+    args.watch = false;
+  }
+});
