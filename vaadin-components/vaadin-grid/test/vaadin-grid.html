@@ -80,9 +80,10 @@ suite('vaadin-grid', function() {
   });
 
   test('row click select', function() {
-    grid.querySelector(".v-grid-body .v-grid-cell").click();
+    var cell = grid.querySelector(".v-grid-body .v-grid-cell");
+    cell.click();
     assert.equal(grid.getAttribute("selectedrow"), "0");
-    grid.querySelector(".v-grid-body .v-grid-cell").click();
+    cell.click();
     assert.notOk(grid.getAttribute("selectedrow"));
   });
 

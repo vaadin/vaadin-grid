@@ -16,7 +16,8 @@
       "gulp-sourcemaps":"latest",
       "gulp-autoprefixer":"latest",
       "gulp-minify-css":"latest",
-      "yargs":"latest"
+      "yargs":"latest",
+      "web-component-tester":"latest"
    },
    "devDependencies": {
       "web-component-tester": "latest"

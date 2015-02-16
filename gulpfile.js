@@ -6,6 +6,7 @@ var fs = require('fs-extra');
 var rename = require('gulp-rename');
 var json = require('gulp-json-editor');
 var replace = require('gulp-replace');
+require('web-component-tester').gulp.init(gulp);
 
 var sass = require('gulp-sass');
 var sourcemaps = require('gulp-sourcemaps');
@@ -146,6 +147,8 @@ gulp.task('deploy', function() {
   updatePolymerComponent('vaadin-button', tag, target);
   updatePolymerComponent('vaadin-grid', tag, target);
 });
+
+gulp.task('test', ['test:local']);
 
 gulp.task('all', ['clean'], function() {
   // Compile themes
