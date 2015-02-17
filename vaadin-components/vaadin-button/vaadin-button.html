@@ -39,8 +39,12 @@ VButton = Polymer({
     attributeChanged: function(name, type, value) {
         switch(name) {
             case 'disabled':
-                this.disabled = value;
-                break;
+              if(typeof value == "string") {
+                this.disabled = true;
+              } else {
+                this.disabled = false;
+              }
+              break;
         }
     },
 
