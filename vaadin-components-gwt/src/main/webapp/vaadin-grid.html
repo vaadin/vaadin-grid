@@ -1,0 +1,86 @@
+<link rel='import' href='../../bower_components/polymer/polymer.html'>
+<link rel='import' href="vaadin-grid-import.html">
+<link rel="stylesheet" href="vaadin-grid.css" shim-shadowdom>
+
+<dom-module id="v-grid">
+  <template>
+  </template>
+</dom-module>
+
+
+<script>
+  var prototype = {
+    is: "v-grid",
+
+    mixins: [Object.getPrototypeOf(new vaadin.GridComponent())],
+
+    published: {
+
+      selectedRows: {
+        reflect: true,
+        type: Array,
+        notify: true
+      },
+
+      selectionMode: {
+        reflect: true,
+        type: String,
+        notify: true
+      }
+    },
+
+    bind: {
+
+      selectionMode: 'setSelectionMode',
+
+      selectedRows: 'selectedRowsChanged',
+
+      dataSource: 'setDataSource',
+
+      rows: 'setRowCount'
+    },
+
+    setDataSource: function(ds) {
+      this._setDataSource(ds, this.rows || 10);
+    },
+
+    attributeChanged: function(name, type, value) {
+      switch (name) {
+        case 'selected-rows':
+          this.selectedRows = value;
+          break;
+        case 'selection-mode':
+          this.selectionMode = value;
+          break;
+      }
+    },
+
+    selectedRowsChanged: function(selectedRows) {
+      var array = selectedRows;
+      if (typeof selectedRows == 'string') {
+        array = JSON.parse(selectedRows);
+      }
+
+      this.setSelectedRows(array);
+    },
+
+    ready: function() {
+      this.setLightDom(this.lightDom.querySelector("table"));
+      this.localDom.appendChild(this.getGridElement());
+      this.initGrid();
+
+      // TODO: Remove timeout
+      var _this = this;
+      setTimeout(function() {
+        _this.redraw();
+      }, 0);
+    },
+
+    get columns() {
+      return this.getColumns();
+    }
+
+  };
+
+  VGrid = Polymer(prototype);
+</script>

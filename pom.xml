@@ -166,6 +166,7 @@
             <groupId>com.googlecode.gwtquery</groupId>
             <artifactId>gwtquery</artifactId>
             <version>${gQueryVersion}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.googlecode.gwtquery.plugins</groupId>
@@ -177,6 +178,7 @@
           <groupId>com.vaadin</groupId>
           <artifactId>vaadin-widgets</artifactId>
           <version>${vaadin.version}</version>
+          <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.commons</groupId>

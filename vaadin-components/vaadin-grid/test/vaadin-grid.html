@@ -18,25 +18,23 @@ function waitUntil(check, exec) {
 }
 function waitUntilGridReady(grid, exec) {
   waitUntil(function() {
-    return grid && grid.dataSource && grid;
+    return grid && grid.querySelector(".v-grid-header .v-grid-row");
   }, exec);
 }
 </script>
+
+<div id="gridwrapper"></div>
 
 <script>
 suite('vaadin-grid', function() {
   var grid;
 
   setup(function(done) {
-    if (grid && grid.parentElement) {
-      grid.parentElement.removeChild(grid);
-    }
-    grid = document.createElement('v-grid');
+    var wrapper = document.getElementById("gridwrapper");
+    wrapper.innerHTML = "<v-grid><table><thead><tr><th>Name</th><th>Value</th></tr></thead>"+
+    "<tbody><tr><td>Grid</td><td>10000</td></tr></tbody></table><v-grid>";
+    grid = wrapper.querySelector("v-grid");
 
-    grid.innerHTML = "<table><thead><tr><th>Name</th><th>Value</th></tr></thead>"+
-    "<tbody><tr><td>Grid</td><td>10000</td></tr></tbody></table>";
-
-    document.body.appendChild(grid);
     waitUntilGridReady(grid, done);
   });
 
@@ -73,18 +71,18 @@ suite('vaadin-grid', function() {
   });
 
   test('row declarative select', function() {
-    grid.setAttribute("selectedrow", "0");
+    grid.setAttribute("selected-rows", "[0]");
     assert.ok(grid.querySelector(".v-grid-body .v-grid-row-selected"));
-    grid.removeAttribute("selectedrow");
+    grid.setAttribute("selected-rows", "[]");
     assert.notOk(grid.querySelector(".v-grid-body .v-grid-row-selected"));
   });
 
   test('row click select', function() {
     var cell = grid.querySelector(".v-grid-body .v-grid-cell");
     cell.click();
-    assert.equal(grid.getAttribute("selectedrow"), "0");
+    assert.equal(grid.getAttribute("selected-rows"), "[0]");
     cell.click();
-    assert.notOk(grid.getAttribute("selectedrow"));
+    assert.isTrue(grid.getAttribute("selected-rows") == "[]");
   });
 
   test('add new row to the light dom', function(done) {

@@ -101,8 +101,11 @@ function copyGwtModule(component, moduleName, version, cb) {
 
   gulp.src(modulePath + moduleName +  '-import.html')
   .pipe(rename(function (path) {
-    path.basename = component;
+    path.basename = component+"-import";
   }))
+  .pipe(gulp.dest(componentDir));
+
+  gulp.src(webDir + component + '.html')
   .pipe(gulp.dest(componentDir));
 
   gulp.src(modulePath + 'deferred')
@@ -111,7 +114,7 @@ function copyGwtModule(component, moduleName, version, cb) {
   gulp.src(webDir + 'demo-' + component + '.html')
   .pipe(replace(/^.*(nocache|<link).*$/mg, ''))
   .pipe(replace(/<\/head/mg, '\n<link rel="import" href="' + component + '.html"></link>\n\n</head'))
-  .pipe(replace(/(src|href)=("|')[\.\/]*bower_components\//mg, '$1=$2../../bower_components'))
+  .pipe(replace(/(src|href)=("|')[\.\/]*bower_components\//mg, '$1=$2../../bower_components/'))
   .pipe(rename(function (path) {
     path.basename = 'demo';
   }))

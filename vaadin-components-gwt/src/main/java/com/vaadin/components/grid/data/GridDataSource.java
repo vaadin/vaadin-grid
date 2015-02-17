@@ -27,13 +27,10 @@ public abstract class GridDataSource extends
         JSArray<JSColumn> colList = JS.createArray();
         for (String k : p.keys()) {
             JSArray<JSHeaderCell> l = JS.createArray();
-            l.add(JS.createJsType(JSHeaderCell.class)
-                    .setContent(k)
-                    .setFormat(Format.HTML.name())
-                    .setColSpan(1));
+            l.add(JS.createJsType(JSHeaderCell.class).setContent(k)
+                    .setFormat(Format.HTML.name()).setColSpan(1));
 
-            colList.add(JS.createJsType(JSColumn.class)
-                    .setValue(k)
+            colList.add(JS.createJsType(JSColumn.class).setValue(k)
                     .setHeaderData(l));
         }
         if (wcGrid != null) {
@@ -44,7 +41,7 @@ public abstract class GridDataSource extends
     }
 
     protected void setRowData(int idx, JavaScriptObject array) {
-        super.setRowData(idx, JS.<JsArrayMixed>asList(array));
+        super.setRowData(idx, JS.<JsArrayMixed> asList(array));
     }
 
     @Override
@@ -61,14 +58,18 @@ public abstract class GridDataSource extends
         resetDataAndSize(size());
     }
 
-    private native JavaScriptObject slice(JsArray<JavaScriptObject> data, int idx, int count) /*-{
-        return data.slice(idx, idx + count);
-    }-*/;
+    private native JavaScriptObject slice(JsArray<JavaScriptObject> data,
+            int idx, int count) /*-{
+                                return data.slice(idx, idx + count);
+                                }-*/;
 
-    protected JSArray<JSColumn> setRowDataFromJs(final int idx, int count, JSArray<JSColumn> cols, JsArray<JavaScriptObject> data) {
+    protected JSArray<JSColumn> setRowDataFromJs(final int idx, int count,
+            JSArray<JSColumn> cols, JsArray<JavaScriptObject> data) {
         if (data.length() > 0) {
-            if (!JsUtils.isArray(data.get(0)) && (cols == null || cols.isEmpty())) {
-                cols = configColumnsFromFirstDataRow(data.get(0).<Properties>cast());
+            if (!JsUtils.isArray(data.get(0))
+                    && (cols == null || cols.isEmpty())) {
+                cols = configColumnsFromFirstDataRow(data.get(0)
+                        .<Properties> cast());
             }
             setRowData(idx, slice(data, idx, count));
         }

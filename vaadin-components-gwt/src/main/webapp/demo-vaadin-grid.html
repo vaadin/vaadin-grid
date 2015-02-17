@@ -21,7 +21,7 @@
       function waitUntilGridReady(id, exec) {
         waitUntil(function() {
           var grid = document.getElementById(id);
-          return grid && grid.dataSource && grid;
+          return grid && grid;
         }, exec);
       }
     </script>
@@ -243,7 +243,7 @@
 
   <h3>8.- Single selection</h3>
 
-  <v-grid id="mySelGrid" selectionMode="single">
+  <v-grid id="mySelGrid" selection-mode="single">
   <table>
     <head>
     <thead>
@@ -273,18 +273,18 @@
         };
 
         grid.addEventListener("select", function(event) {
-          label.innerText = grid.selectedRow;
+          label.innerText = grid.selectedRows;
         });
 
         button.addEventListener("click", function(event) {
-          grid.selectedRow = Math.floor(Math.random() * data.length);
+          grid.selectedRows = [Math.floor(Math.random() * data.length)];
         });
       });
     </script>
 
   <h3>9.- Multi selection</h3>
 
-  <v-grid id="myMultiSelGrid" selectionMode="multi">
+  <v-grid id="myMultiSelGrid">
   <table>
     <head>
     <thead>
@@ -309,6 +309,7 @@
         var label = document.getElementById("myMultiSelLabel");
 
         grid.rowCount = data.length;
+        grid.selectionMode = "multi";
         grid.dataSource = function(index, count) {
           return data.slice(index, index + count);
         };

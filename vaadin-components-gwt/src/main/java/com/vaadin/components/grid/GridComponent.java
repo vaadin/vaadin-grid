@@ -1,11 +1,6 @@
 package com.vaadin.components.grid;
 
 import static com.google.gwt.query.client.GQuery.$;
-import static com.google.gwt.query.client.GQuery.Widgets;
-import static com.google.gwt.query.client.GQuery.console;
-import static com.google.gwt.query.client.GQuery.window;
-import static com.vaadin.components.common.util.DOMUtils.getAttrIntValue;
-import static com.vaadin.components.common.util.DOMUtils.getAttrValue;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,26 +16,18 @@ import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.core.client.js.JsExport;
 import com.google.gwt.core.client.js.JsNamespace;
 import com.google.gwt.core.client.js.JsNoExport;
-import com.google.gwt.core.client.js.JsProperty;
 import com.google.gwt.core.client.js.JsType;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.event.logical.shared.AttachEvent;
-import com.google.gwt.event.logical.shared.AttachEvent.Handler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.dom.client.TableElement;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.js.JsUtils;
-import com.google.gwt.query.client.plugin.Observe;
-import com.google.gwt.query.client.plugin.Observe.MutationListener;
-import com.google.gwt.query.client.plugin.Observe.MutationRecords.MutationRecord;
-import com.google.gwt.regexp.shared.MatchResult;
+import com.google.gwt.query.client.plugins.widgets.WidgetsUtils;
 import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.data.AbstractRemoteDataSource;
 import com.vaadin.client.data.DataSource;
@@ -50,60 +37,43 @@ import com.vaadin.client.widget.escalator.RowContainer;
 import com.vaadin.client.widget.grid.RendererCellReference;
 import com.vaadin.client.widget.grid.selection.SelectionEvent;
 import com.vaadin.client.widget.grid.selection.SelectionHandler;
-import com.vaadin.client.widget.grid.selection.SelectionModel;
-import com.vaadin.client.widget.grid.selection.SelectionModelMulti;
-import com.vaadin.client.widget.grid.selection.SelectionModelSingle;
 import com.vaadin.client.widgets.Escalator;
 import com.vaadin.client.widgets.Grid;
 import com.vaadin.client.widgets.Grid.HeaderCell;
 import com.vaadin.client.widgets.Grid.HeaderRow;
 import com.vaadin.client.widgets.Grid.SelectionMode;
-import com.vaadin.components.common.html.HTMLElement;
-import com.vaadin.components.common.html.HTMLEvents;
-import com.vaadin.components.common.html.HTMLShadow;
-import com.vaadin.components.common.html.HTMLTableElement;
 import com.vaadin.components.common.util.DOMUtils;
 import com.vaadin.components.common.util.Elements;
 import com.vaadin.components.grid.config.JS;
 import com.vaadin.components.grid.config.JSArray;
+import com.vaadin.components.grid.config.JSColumn;
 import com.vaadin.components.grid.config.JSHeaderCell;
 import com.vaadin.components.grid.config.JSHeaderCell.Format;
-import com.vaadin.components.grid.config.JSColumn;
 import com.vaadin.components.grid.data.GridDataSource;
 import com.vaadin.components.grid.data.GridDomTableDataSource;
 import com.vaadin.components.grid.data.GridJsFuncDataSource;
 import com.vaadin.components.grid.data.GridJsObjectDataSource;
 import com.vaadin.shared.ui.grid.HeightMode;
 
-@JsExport()
-@JsNamespace("vaadin")
+@JsNamespace(Elements.VAADIN_JS_NAMESPACE)
+@JsExport
 @JsType
-public class GridComponent extends HTMLTableElement.Prototype implements
-        HTMLElement.LifeCycle.Created, HTMLElement.LifeCycle.Attached,
-        HTMLElement.LifeCycle.Changed, ValueChangeHandler<Double>, Handler,
-        SelectionHandler<JsArrayMixed>, MutationListener {
+public class GridComponent implements SelectionHandler<JsArrayMixed> {
 
-    public static final String TAG = "v-grid";
-
-    // FIXME: figure out a way to reuse grid.
     private Grid<JsArrayMixed> grid;
-    private HTMLEvents selectEvent;
-    private HTMLElement container;
-    private HTMLElement style;
-    private boolean initialized = false;
     public JSArray<JSColumn> cols;
+    private boolean changed = true;
+    // FIXME: using columns name here make this fail in prod mode
+    private List<Grid.Column<Object, JsArrayMixed>> gridColumns;
+    private List<Grid.Column<Object, JsArrayMixed>> JstColumns;
+
     // Array of JSO representing column configuration
     // used in JS to change renderers.
     private JSArray<JSColumn> columnsJso;
 
-    private boolean changed = true;
-    // FIXME: using columns name here make this fail in prod mode
-    private List<Grid.Column<Object, JsArrayMixed>> JstColumns;
-    // We save the original content of the Light-DOM because polyfills remove it
     private GQuery lightDom;
 
-    // TODO: we should set this from JS among the datasource.
-    private int size = 0;
+    private boolean updating = false;
 
     private int headerDefaultRowIndex = 0;
 
@@ -112,81 +82,32 @@ public class GridComponent extends HTMLTableElement.Prototype implements
         // anything
     }
 
-    @Override
-    public void createdCallback() {
-        style = Elements.create("style");
-        style.setAttribute("language", "text/css");
-        selectEvent = Elements.document.createEvent("HTMLEvents");
-        selectEvent.initEvent("select", false, false);
-        selectEvent.srcElement(this);
+    public Element getGridElement() {
+        return grid.getElement();
+    }
 
-        container = Elements.create("div");
+    public void setLightDom(TableElement tableElement) {
+        lightDom = $(tableElement);
+    }
+
+    public void created() {
         cols = JS.createArray();
+        gridColumns = new ArrayList<>();
         JstColumns = new ArrayList<>();
-
         grid = new Grid<JsArrayMixed>();
         grid.addSelectionHandler(this);
     }
 
-    /*
-     * TODO: common stuff for exporting other widgets
-     */
-    private void initWidgetSystem() {
-        if (!initialized) {
-            initialized = true;
-            lightDom = $(this)
-                    // this is the table inside the v-grid
-                    .children()
-                    // hide it, otherwise it's visible if shadow is not used
-                    .hide();
-
-            Widget elementWidget = $(this).widget();
-            if (elementWidget == null) {
-                elementWidget = $(this).as(Widgets).panel().widget();
-            }
-            elementWidget.addAttachHandler(this);
-
-            if (DOMUtils.getAttrBooleanValue(this, "shadow", false)) {
-                HTMLShadow shadow = createShadowRoot();
-                shadow.appendChild(style);
-                shadow.appendChild(container);
-            } else {
-                appendChild(style);
-                appendChild(container);
-            }
-            Panel shadowPanel = $(container).as(Widgets).panel().widget();
-            shadowPanel.add(grid);
-
-            readAttributes();
-
-            // After everything is initialized we listen to all mutations
-            // in the dom table.
-            lightDom.as(Observe.Observe).observe(Observe.createInit()
-                    .attributes(true).characterData(true)
-                    .childList(true).subtree(true), this);
-        }
-    }
-
-    @Override
-    public void attachedCallback() {
-        initWidgetSystem();
-    }
-
-    @JsNoExport
     public void initGrid() {
+        WidgetsUtils.attachWidget(grid, null);
+        loadHeaders();
+
         if (!changed) {
             return;
         }
         changed = false;
-        DataSource<JsArrayMixed> dataSource = null;
-        dataSource = grid.getDataSource();
-        if (grid.getSelectionModel() instanceof SelectionModelSingle
-                && $(this).attr("selectionMode").equals("multi")) {
-            grid.setSelectionMode(SelectionMode.MULTI);
-        } else if (grid.getSelectionModel() instanceof SelectionModelMulti
-                && !$(this).attr("selectionMode").equals("multi")) {
-            grid.setSelectionMode(SelectionMode.SINGLE);
-        }
+        DataSource<JsArrayMixed> dataSource = grid.getDataSource();
+
         while (JstColumns.size() > 0) {
             grid.removeColumn(JstColumns.remove(0));
         }
@@ -205,8 +126,9 @@ public class GridComponent extends HTMLTableElement.Prototype implements
                     int offset = 0;
                     for (int k = 0; k <= j + offset; k++) {
                         HeaderRow row = grid.getHeaderRow(k);
-                        if (i != 0 &&
-                                row.getCell(grid.getColumn(i-1)).getColspan() != 1) {
+                        if (i != 0
+                                && row.getCell(grid.getColumn(i - 1))
+                                        .getColspan() != 1) {
                             offset++;
                         }
                     }
@@ -231,7 +153,8 @@ public class GridComponent extends HTMLTableElement.Prototype implements
         }
 
         // If the wrapped DOM table has TR elements, we use it as data source
-        dataSource = GridDomTableDataSource.createInstance(lightDom.get(0), this);
+        dataSource = GridDomTableDataSource.createInstance(lightDom.get(0),
+                this);
         if (dataSource != null) {
             grid.setDataSource(dataSource);
         }
@@ -241,21 +164,20 @@ public class GridComponent extends HTMLTableElement.Prototype implements
             final JSColumn gColumn, final int idx) {
         final RegExp templateRegexp = RegExp.compile("\\{\\{data\\}\\}", "ig");
         return new Grid.Column<Object, JsArrayMixed>(new Renderer<Object>() {
+            @Override
             public void render(RendererCellReference cell, Object data) {
                 Object o = gColumn.renderer();
                 Element elm = cell.getElement();
                 if (o instanceof JavaScriptObject) {
                     if (JsUtils.isFunction((JavaScriptObject) o)) {
-                        JsUtils.jsni((JavaScriptObject) o,
-                                "call", o, elm, data, cell.getRow());
+                        JsUtils.jsni((JavaScriptObject) o, "call", o, elm,
+                                data, cell.getRow());
                     } else {
                         if ($(elm).data("init") == null) {
                             $(elm).data("init", true);
-                            JsUtils.jsni((JavaScriptObject) o,
-                                    "init", elm);
+                            JsUtils.jsni((JavaScriptObject) o, "init", elm);
                         }
-                        JsUtils.jsni((JavaScriptObject) o,
-                                "render", elm, data);
+                        JsUtils.jsni((JavaScriptObject) o, "render", elm, data);
                     }
                 } else {
                     if (gColumn.template() != null) {
@@ -275,10 +197,9 @@ public class GridComponent extends HTMLTableElement.Prototype implements
                 Object o = gColumn.value();
                 if (o instanceof JavaScriptObject
                         && JsUtils.isFunction((JavaScriptObject) o)) {
-                    o = JsUtils.jsni((JavaScriptObject) o,
-                            "call", o, row, idx);
+                    o = JsUtils.jsni((JavaScriptObject) o, "call", o, row, idx);
                 } else if (o instanceof String
-                        // For some reason JsInterop returns empty
+                // For some reason JsInterop returns empty
                         && "" != o) {
                     o = JsUtils.prop(row, o);
                 } else {
@@ -292,59 +213,6 @@ public class GridComponent extends HTMLTableElement.Prototype implements
                 return o;
             }
         };
-    }
-
-    @Override
-    public void onValueChange(ValueChangeEvent<Double> ev) {
-    }
-
-    @Override
-    public void attributeChangedCallback() {
-        readAttributes();
-    }
-
-    private void readAttributes() {
-        if (refreshing) {
-            return;
-        }
-        DOMUtils.loadVaadinTheme(container, this, style, null);
-        loadHeaders();
-        initGrid();
-        parseAttributeDeclarations();
-        setSelectedRow(getAttrIntValue(this, "selectedRow", -1));
-        String type = getAttrValue(this, "type", null);
-        String url = getAttrValue(this, "url", null);
-        if ("ajax".equals(type) && url != null) {
-            Properties p = Properties.create();
-            p.set("url", url);
-            setDataSource(p);
-        }
-        // TODO be able to change the selection mode if
-        // attribute selectionMode change
-    }
-
-    private void parseAttributeDeclarations() {
-        String dataPath = getAttribute("dataSource");
-        RegExp regex = RegExp.compile("\\{\\{\\s*(\\w+)\\s*\\}\\}");
-        MatchResult match = regex.exec(dataPath);
-        if (match != null) {
-            JavaScriptObject jso = JsUtils.prop(window, match.getGroup(1));
-            if (JsUtils.isFunction(jso)) {
-                String count = getAttribute("rowCount");
-                match = regex.exec(count);
-                if (match != null) {
-                    count = "" + JsUtils.prop(window, match.getGroup(1));
-                }
-                if (count != null && count.matches("[\\d\\.\\+]+")) {
-                    setRowCount(Integer.valueOf(count));
-                }
-                setDataSource(jso);
-            } else if (JsUtils.isArray(jso)) {
-                setDataSource(jso);
-            } else {
-                console.log("Unknown type of datasource: " + jso);
-            }
-        }
     }
 
     private String lastHeaders = null;
@@ -370,7 +238,7 @@ public class GridComponent extends HTMLTableElement.Prototype implements
             GQuery $ths = $theadRows.eq(i).children("th");
             while (colList.size() < $ths.size()) {
                 JSColumn column = JS.createJsType(JSColumn.class);
-                contentsMap.put(column, JS.<JSHeaderCell>createArray());
+                contentsMap.put(column, JS.<JSHeaderCell> createArray());
                 colList.add(column);
             }
         }
@@ -417,17 +285,8 @@ public class GridComponent extends HTMLTableElement.Prototype implements
         setCols(colList);
     }
 
-    @Override
-    public void onAttachOrDetach(AttachEvent event) {
-        // TODO: Do something with shadowPanel, right now
-        // gQuery creates a new root-panel so it does not
-        // have any parent, but we should maintain the widget
-        // hierarchy someway.
-    }
-
-    @Override
-    public void onMutation(List<MutationRecord> mutations) {
-        readAttributes();
+    public void onMutation() {
+        loadHeaders();
         refresh();
     }
 
@@ -442,23 +301,23 @@ public class GridComponent extends HTMLTableElement.Prototype implements
         return cols;
     }
 
-    @JsNoExport
-    private void adjustHeight(int size) {
+    public void setRowCount(int size) {
         // TODO: fix this in Grid, it seems this only works with reindeer
         if (Window.Location.getParameter("resize") != null && size > 0) {
-            this.size = size;
             grid.setHeightMode(HeightMode.ROW);
             grid.setHeightByRows(Math.min(size,
                     RowContainer.INITIAL_DEFAULT_ROW_HEIGHT));
         }
     }
 
+    // TODO: Remove
     @JsNoExport
     public void adjustHeight() {
-        size = grid.getDataSource().size();
-        adjustHeight(size);
+        int size = grid.getDataSource().size();
+        setRowCount(size);
     }
 
+    // TODO: Remove
     @JsNoExport
     public Grid<JsArrayMixed> getGrid() {
         if (grid == null) {
@@ -468,67 +327,36 @@ public class GridComponent extends HTMLTableElement.Prototype implements
         return grid;
     }
 
+    @JsNoExport
     @Override
     public void onSelect(SelectionEvent<JsArrayMixed> ev) {
-        if (!refreshing) {
-            refreshing = true;
-            dispatchEvent(selectEvent);
-            if(!getAttribute("selectedRow").matches("\\s*\\{\\{.+\\}\\}\\s*")) {
-                setAttribute("selectedRow", ""
-                        + (getSelectedRow() < 0 ? "" : getSelectedRow()));
-            }
-            refreshing = false;
+        if (!updating) {
+            setSelectedRowsProperty(getSelectedRows());
         }
     }
+
+    private native void setSelectedRowsProperty(JsArrayInteger selected)
+    /*-{
+    	this.selectedRows = selected;
+    }-*/;
 
     public void setColumnWidth(int column, int widht) {
         grid.getColumn(column).setWidth(widht);
     }
 
-    // TODO:
-    // @JsProperty seems not exporting these methods right now.
-    // We use a magic function name 'jsProperty...' to mark these methods as
-    // JS properties when mixing the prototype in Elements.
-    public void jsPropertyRowCount() {
-    };
-
-    @JsProperty
-    public void setRowCount(double rows) {
-        size = (int) rows;
-        adjustHeight(size);
-    }
-
-    @JsProperty
-    public double getRowCount() {
-        return size;
-    }
-
-    public void jsPropertyHeightMode() {
-    };
-
-    @JsProperty
     public String getHeightMode() {
         return grid.getHeightMode().toString();
     }
 
-    @JsProperty
     public void setHeightMode(String mode) {
         grid.setHeightMode(HeightMode.valueOf(mode));
     }
 
-    public void jsPropertyHeight() {
-    };
-
-    @JsProperty
     public void setHeight(String height) {
         grid.setHeight(height);
     }
 
-    public void jsPropertyDataSource() {
-    };
-
-    @JsProperty
-    public void setDataSource(JavaScriptObject jso) {
+    public void setDataSource(JavaScriptObject jso, int size) {
         if (JsUtils.isFunction(jso)) {
             grid.setDataSource(new GridJsFuncDataSource(jso, size, this));
         } else if (JsUtils.isArray(jso)) {
@@ -540,19 +368,15 @@ public class GridComponent extends HTMLTableElement.Prototype implements
         }
     }
 
-    boolean refreshing = false;
-
     public void refresh() {
         if ((grid.getDataSource() instanceof GridDataSource)) {
-            final int a = getSelectedRow();
+            final JsArrayInteger a = getSelectedRows();
             ((GridDataSource) grid.getDataSource()).refresh();
-            if (a > 0) {
-                refreshing = true;
+            if (a.length() > 0) {
                 $(this).delay(5, new Function() {
                     @Override
                     public void f() {
-                        setSelectedRow(a);
-                        refreshing = false;
+                        setSelectedRows(a);
                     }
                 });
             }
@@ -561,15 +385,6 @@ public class GridComponent extends HTMLTableElement.Prototype implements
         }
     }
 
-    @JsProperty
-    public JavaScriptObject getDataSource() {
-        return JavaScriptObject.createFunction();
-    }
-
-    public void jsPropertyColumns() {
-    };
-
-    @JsProperty
     public JavaScriptObject getColumns() {
         // remove old observers
         if (columnsJso != null) {
@@ -583,6 +398,7 @@ public class GridComponent extends HTMLTableElement.Prototype implements
         // Add observers to any column configuration object so as
         for (int i = 0, l = columnsJso.length(); i < l; i++) {
             DOMUtils.observe(columnsJso.get(i), new EventListener() {
+                @Override
                 public void onBrowserEvent(Event event) {
                     refresh();
                 }
@@ -591,100 +407,38 @@ public class GridComponent extends HTMLTableElement.Prototype implements
         return columnsJso;
     }
 
-    @JsProperty
+    public void setSelectionMode(String selectionMode) {
+        grid.setSelectionMode(SelectionMode.valueOf(selectionMode.toUpperCase()));
+    }
+
     public void setColumns(JavaScriptObject newCols) {
         changed = true;
         cols = newCols.cast();
     }
 
-    public void jsPropertySelectedRow() {
-    };
-
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    @JsProperty
-    public int getSelectedRow() {
-        return grid == null
-                || grid.getSelectionModel() == null
-                || !(grid.getSelectionModel() instanceof SelectionModel.Single<?>)
-                || grid.getSelectedRow() == null ? -1
-                : ((AbstractRemoteDataSource) grid.getDataSource())
-                        .indexOf(grid.getSelectedRow());
-    }
-
-    @JsProperty
-    public void setSelectedRow(int idx) {
-        if (idx < 0 || idx >= grid.getDataSource().size()) {
-            if (getSelectedRow() >= 0) {
-                JsArrayMixed row = grid.getDataSource().getRow(getSelectedRow());
-                if (row != null) {
-                    grid.deselect(row);
-                }
-            }
-        } else {
-            JsArrayMixed row = grid.getDataSource().getRow(idx);
-            if (row != null) {
-                grid.select(row);
-            }
-        }
-        onSelect(null);
-    }
-
-    public void jsPropertySelectedRows() {
-    };
-
-    // Array of selected indexed returned to JS
-    // We observe it so as when JS makes changes we update
-    // grid selection.
-    private JsArrayInteger selectedJso;
-    private boolean selectedLock;
-
-    @JsProperty
-    public void setSelectedRows(JsArrayInteger arr) {
-        if (arr != selectedJso) {
-            DOMUtils.unobserve(selectedJso);
-        }
-        selectedJso = arr;
-        selectedLock = true;
+    public void setSelectedRows(JsArrayInteger selectedJso) {
+        updating = true;
         grid.getSelectionModel().reset();
         for (int i = 0, l = selectedJso.length(); i < l; i++) {
-            grid.select(grid.getDataSource().getRow(selectedJso.get(i)));
+            int selectedIndex = selectedJso.get(i);
+            if (selectedIndex >= 0
+                    && selectedIndex < grid.getDataSource().size()) {
+                grid.select(grid.getDataSource().getRow(selectedIndex));
+            }
         }
-        selectedLock = false;
+        updating = false;
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    @JsProperty
     public JsArrayInteger getSelectedRows() {
-        if (!selectedLock) {
-            if (selectedJso == null) {
-                selectedJso = JsArrayInteger.createArray().cast();
-            }
-            selectedJso.setLength(0);
-            Collection<JsArrayMixed> c = grid.getSelectedRows();
-            for (Iterator<JsArrayMixed> i = c.iterator(); i.hasNext();) {
-                selectedJso.push(((AbstractRemoteDataSource) grid.getDataSource()).indexOf(i.next()));
-            }
-            DOMUtils.unobserve(selectedJso);
-            DOMUtils.observe(selectedJso, new EventListener() {
-                public void onBrowserEvent(Event event) {
-                    setSelectedRows(selectedJso);
-                }
-            });
+        JsArrayInteger selectedJso = JsArrayInteger.createArray().cast();
+        selectedJso.setLength(0);
+        Collection<JsArrayMixed> c = grid.getSelectedRows();
+        for (Iterator<JsArrayMixed> i = c.iterator(); i.hasNext();) {
+            selectedJso.push(((AbstractRemoteDataSource) grid.getDataSource())
+                    .indexOf(i.next()));
         }
         return selectedJso;
-    }
-
-    public void jsPropertyTheme() {
-    }
-
-    @JsProperty
-    public void setTheme(String value) {
-        setAttribute("theme", value);
-    }
-
-    @JsProperty
-    public String getTheme() {
-        return getAttribute("theme");
     }
 
     public void redraw() {
@@ -694,20 +448,25 @@ public class GridComponent extends HTMLTableElement.Prototype implements
         c(e.getBody());
         ColumnConfiguration columnConfiguration = f(e);
         for (int i = 0; i < columnConfiguration.getColumnCount(); i++) {
-            columnConfiguration.setColumnWidth(i, columnConfiguration.getColumnWidth(i));
+            columnConfiguration.setColumnWidth(i,
+                    columnConfiguration.getColumnWidth(i));
         }
     }
 
-    private static native Escalator e(Grid<?> g) /*-{
+    private static native Escalator e(Grid<?> g)
+    /*-{
         return g.@com.vaadin.client.widgets.Grid::escalator;
     }-*/;
 
-    private static native Escalator c(RowContainer r) /*-{
+    private static native Escalator c(RowContainer r)
+    /*-{
         r.@com.vaadin.client.widgets.Escalator.AbstractRowContainer::defaultRowHeightShouldBeAutodetected = true;
         r.@com.vaadin.client.widgets.Escalator.AbstractRowContainer::autodetectRowHeightLater()();
     }-*/;
 
-    private static native ColumnConfiguration f(Escalator e) /*-{
+    private static native ColumnConfiguration f(Escalator e)
+    /*-{
         return e.@com.vaadin.client.widgets.Escalator::columnConfiguration;
     }-*/;
+
 }
