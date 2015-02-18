@@ -25,7 +25,7 @@ public abstract class Elements {
     private static  Set<String> urlImported;
 
     // This has to match with the @JsNamespace of the package-info of exported components
-    public static final String NS_WC = "$wnd.vaadin";
+    public static final String VAADIN_JS_NAMESPACE = "vaadin";
 
     public static HTMLWindow window;
     public static HTMLDocument document;

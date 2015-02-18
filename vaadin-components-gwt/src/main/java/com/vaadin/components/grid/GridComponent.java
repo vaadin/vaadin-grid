@@ -19,6 +19,7 @@ import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayInteger;
 import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.core.client.js.JsExport;
+import com.google.gwt.core.client.js.JsNamespace;
 import com.google.gwt.core.client.js.JsNoExport;
 import com.google.gwt.core.client.js.JsProperty;
 import com.google.gwt.core.client.js.JsType;
@@ -75,7 +76,8 @@ import com.vaadin.components.grid.data.GridJsObjectDataSource;
 import com.vaadin.components.grid.data.GridRestDataSource;
 import com.vaadin.shared.ui.grid.HeightMode;
 
-@JsExport
+@JsExport()
+@JsNamespace("vaadin")
 @JsType
 public class GridComponent extends HTMLTableElement.Prototype implements
         HTMLElement.LifeCycle.Created, HTMLElement.LifeCycle.Attached,
@@ -684,8 +686,8 @@ public class GridComponent extends HTMLTableElement.Prototype implements
     }
 
     @JsProperty
-    public void getTheme() {
-        getAttribute("theme");
+    public String getTheme() {
+        return getAttribute("theme");
     }
 
     public void redraw() {

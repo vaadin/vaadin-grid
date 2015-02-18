@@ -49,7 +49,7 @@ public class DOMUtils {
         }
     }
 
-    public static Promise ready(Function... fncs) {
+    public static Promise ready() {
         return new PromiseFunction() {
             public void f(final com.google.gwt.query.client.Promise.Deferred dfd) {
                 if ("complete" == $(document).prop("readyState")) {
@@ -62,7 +62,7 @@ public class DOMUtils {
                     }.schedule(5);
                 }
             }
-        }.done(fncs);
+        };
     }
 
     private static Function postThemeLoad = new Function() {
