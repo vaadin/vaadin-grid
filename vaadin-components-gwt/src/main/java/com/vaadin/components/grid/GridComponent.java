@@ -42,7 +42,6 @@ import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
-import com.vaadin.client.JsArrayObject;
 import com.vaadin.client.data.AbstractRemoteDataSource;
 import com.vaadin.client.data.DataSource;
 import com.vaadin.client.renderers.Renderer;
@@ -74,7 +73,6 @@ import com.vaadin.components.grid.data.GridDomTableDataSource;
 import com.vaadin.components.grid.data.GridJsFuncDataSource;
 import com.vaadin.components.grid.data.GridJsObjectDataSource;
 import com.vaadin.components.grid.data.GridRestDataSource;
-import com.vaadin.shared.ui.grid.GridState;
 import com.vaadin.shared.ui.grid.HeightMode;
 
 @JsExport
@@ -444,7 +442,7 @@ public class GridComponent extends HTMLTableElement.Prototype implements
             this.size = size;
             grid.setHeightMode(HeightMode.ROW);
             grid.setHeightByRows(Math.min(size,
-                    GridState.DEFAULT_HEIGHT_BY_ROWS));
+                    RowContainer.INITIAL_DEFAULT_ROW_HEIGHT));
         }
     }
 
@@ -570,13 +568,13 @@ public class GridComponent extends HTMLTableElement.Prototype implements
 
     // Array of JSO representing column configuration
     // used in JS to change renderers.
-    private JsArrayObject<JavaScriptObject> columnsJso;
+    private JsArray<JavaScriptObject> columnsJso;
 
     @JsProperty
     public JavaScriptObject getColumns() {
         // remove old observers
         if (columnsJso != null) {
-            for (int i = 0, l = columnsJso.size(); i < l; i++) {
+            for (int i = 0, l = columnsJso.length(); i < l; i++) {
                 DOMUtils.unobserve(columnsJso.get(i));
             }
         }
@@ -584,7 +582,7 @@ public class GridComponent extends HTMLTableElement.Prototype implements
         columnsJso = GQ.create(GridData.class).setColumns(cols).get("columns");
 
         // Add observers to any column configuration object so as
-        for (int i = 0, l = columnsJso.size(); i < l; i++) {
+        for (int i = 0, l = columnsJso.length(); i < l; i++) {
             DOMUtils.observe(columnsJso.get(i), new EventListener() {
                 public void onBrowserEvent(Event event) {
                     refresh();

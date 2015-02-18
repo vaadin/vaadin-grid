@@ -175,50 +175,8 @@
         </dependency>
         <dependency>
           <groupId>com.vaadin</groupId>
-          <artifactId>vaadin-shared</artifactId>
+          <artifactId>vaadin-widgets</artifactId>
           <version>${vaadin.version}</version>
-        </dependency>
-        <dependency>
-          <groupId>com.vaadin</groupId>
-          <artifactId>vaadin-server</artifactId>
-          <version>${vaadin.version}</version>
-        </dependency>
-        <dependency>
-          <groupId>com.vaadin</groupId>
-          <artifactId>vaadin-client</artifactId>
-          <version>${vaadin.version}</version>
-          <scope>provided</scope>
-        </dependency>
-        <dependency>
-          <groupId>com.vaadin</groupId>
-          <artifactId>vaadin-themes</artifactId>
-          <version>${vaadin.version}</version>
-        </dependency>
-        <dependency>
-          <groupId>com.vaadin</groupId>
-          <artifactId>vaadin-client-compiler</artifactId>
-          <version>${vaadin.version}</version>
-          <scope>provided</scope>
-            <exclusions>
-              <exclusion>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-servlets</artifactId>
-              </exclusion>
-              <exclusion>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-annotations</artifactId>
-              </exclusion>
-              <exclusion>
-                <artifactId>org.objectweb.asm</artifactId>
-                <groupId>org.eclipse.jetty.orbit</groupId>
-              </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-          <groupId>com.vaadin</groupId>
-          <artifactId>vaadin-client-compiler-deps</artifactId>
-          <version>1.1.0</version>
-          <scope>provided</scope>
         </dependency>
         <dependency>
           <groupId>org.apache.commons</groupId>

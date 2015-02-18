@@ -3,15 +3,6 @@
     <inherits name='com.google.gwt.query.QueryMin'/>
     <inherits name='elemental.Json' />
     <inherits name='com.vaadin.Vaadin'/>
-    <generate-with
-        class="com.vaadin.server.widgetsetutils.ConnectorBundleLoaderFactory">
-        <when-type-assignable
-            class="com.vaadin.client.metadata.ConnectorBundleLoader" />
-    </generate-with>
-    <generate-with
-        class="com.vaadin.server.widgetsetutils.AcceptCriteriaFactoryGenerator">
-        <when-type-is class="com.vaadin.client.ui.dd.VAcceptCriterionFactory" />
-    </generate-with>
 
     <source path="" />
 

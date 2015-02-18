@@ -6,6 +6,7 @@ import static com.google.gwt.query.client.GQuery.document;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
@@ -18,12 +19,12 @@ import com.google.gwt.query.client.plugins.ajax.Ajax;
 import com.google.gwt.query.client.plugins.deferred.PromiseFunction;
 import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Timer;
-import com.vaadin.client.JsArrayObject;
 import com.vaadin.components.common.html.HTMLElement;
 
 public class DOMUtils {
     public static boolean getAttrBooleanValue(HTMLElement el, String attr, boolean def) {
         return Boolean.valueOf(getAttrValue(el, attr, String.valueOf(def)));
+
     }
 
     public static int getAttrIntValue(HTMLElement el, String attr, int def) {
@@ -95,8 +96,8 @@ public class DOMUtils {
         try {
             final JavaScriptObject sheet = style.prop("sheet");
             if (sheet != null) {
-                final JsArrayObject<JavaScriptObject> rows = JsUtils.prop(sheet, "cssRules");
-                if ( rows != null && rows.size() > 0) {
+                final JsArray<JavaScriptObject> rows = JsUtils.prop(sheet, "cssRules");
+                if ( rows != null && rows.length() > 0) {
                     new Timer() {
                         public void run() {
                             try {

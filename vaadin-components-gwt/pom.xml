@@ -50,23 +50,7 @@
         </dependency>
         <dependency>
           <groupId>com.vaadin</groupId>
-          <artifactId>vaadin-shared</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>com.vaadin</groupId>
-          <artifactId>vaadin-client</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>com.vaadin</groupId>
-          <artifactId>vaadin-themes</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>com.vaadin</groupId>
-          <artifactId>vaadin-client-compiler</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>com.vaadin</groupId>
-          <artifactId>vaadin-client-compiler-deps</artifactId>
+          <artifactId>vaadin-widgets</artifactId>
         </dependency>
     </dependencies>
     <build>
