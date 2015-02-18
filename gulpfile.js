@@ -15,6 +15,7 @@ var minify = require('gulp-minify-css');
 var args = require('yargs').argv;
 
 var pwd = process.cwd();
+var gwtproject = 'vaadin-components-gwt';
 var gitrepo = 'git@vaadin-components.intra.itmill.com:/opt/git/';
 var target = pwd + '/target';
 var version = '0.2.0';
@@ -31,9 +32,9 @@ function system(command, cb) {
 
 function compileGwt(cb, pretty) {
   gutil.log('Updating Maven dependencies ...');
-  system('mvn compile -q -am -pl vaadin-components-gwt', function(){
+  system('mvn compile -q -am -pl ' + gwtproject, function(){
     gutil.log('Compiling GWT components ...');
-    var command = 'mvn package -q -am -pl vaadin-components-gwt' + (pretty ? ' -Ppretty' : '');
+    var command = 'mvn package -q -am -pl ' + gwtproject + (pretty ? ' -Ppretty' : '');
     system(command, function(){
       gutil.log('GWT components compilation succeeded.')
       if (cb) cb();
@@ -173,21 +174,25 @@ gulp.task('css', function () {
       var output = pwd + '/vaadin-components/vaadin-' + component;
 
       var stream = gulp.src(input)
+        .pipe(rename({prefix: 'vaadin-'}))
         .pipe(sourcemaps.init())
         .pipe(sass())
         .pipe(autoprefixer({
           browsers: ['last 2 versions'],
           cascade: false
-        }))
-       .pipe(minify({ keepBreaks: args.debug }));
+        }));
 
       if(args.debug) {
-        stream = stream.pipe(sourcemaps.write());
+        stream.pipe(sourcemaps.write());
+      }
+      if(!args.pretty) {
+        stream.pipe(minify({ keepBreaks: args.debug }))
+      }
+      if (component == 'grid') {
+        stream.pipe(gulp.dest(pwd + '/' + gwtproject +  '/src/main/webapp'));
       }
 
-      stream
-        .pipe(rename({prefix: 'vaadin-'}))
-        .pipe(gulp.dest(output));
+      stream.pipe(gulp.dest(output));
     }
   } else {
     console.log('\n  Use:\n    gulp css --component=<component(ie:button)>\n');
