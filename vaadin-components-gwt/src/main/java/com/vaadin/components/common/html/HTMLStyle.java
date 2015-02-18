@@ -5,7 +5,7 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.js.JsProperty;
 import com.google.gwt.core.client.js.JsType;
 
-@JsType(prototype = "CSSStyleDeclaration", isNative = true)
+@JsType(prototype = "CSSStyleDeclaration")
 public interface HTMLStyle {
   String getPropertyValue();
   int getPropertyPriority();

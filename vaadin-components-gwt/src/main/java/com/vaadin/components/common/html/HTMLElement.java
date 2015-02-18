@@ -6,7 +6,7 @@ import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.user.client.EventListener;
 
-@JsType(prototype = "HTMLElement", isNative = true)
+@JsType(prototype = "HTMLElement")
 public interface HTMLElement {
 
     // FIXME: Creating prototypes by hand because @JsExport causes:

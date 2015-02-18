@@ -3,7 +3,7 @@ package com.vaadin.components.common.html;
 import com.google.gwt.core.client.js.JsProperty;
 import com.google.gwt.core.client.js.JsType;
 
-@JsType(prototype = "HTMLEvents", isNative = true)
+@JsType(prototype = "HTMLEvents")
 public interface HTMLEvents {
     @JsProperty HTMLElement srcElement();
     @JsProperty void srcElement(HTMLElement e);

@@ -4,7 +4,7 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.js.JsProperty;
 import com.google.gwt.core.client.js.JsType;
 
-@JsType(prototype = "Window", isNative = true)
+@JsType(prototype = "Window")
 public interface HTMLWindow {
 
     static class U {
