@@ -30,10 +30,10 @@
 
   <h3>Other web-elements</h3>
   <div style='width: 30%'>
-    V-slider
-    <v-slider min='0' max='100' value='45'></v-slider>
-    V-progress
-    <v-progress value='0.3'></v-progress>
+    range<br />
+    <input type=range min='0' max='100' value='45'></input><br />
+    progress<br />
+    <progress value='0.3'></progress>
   </div>
 
   <h3>1.- Simplest possible with inline data</h3>
@@ -76,12 +76,12 @@
       <tr>
         <td>Grid</td>
         <td>10 000€</td>
-        <td><v-progress value="0.8" /></td>
+        <td><progress value="0.8" /></td>
       </tr>
       <tr>
         <td>Vaadin X</td>
         <td>999 999€</td>
-        <td><v-progress value="0.01" /></td>
+        <td><progress value="0.01" /></td>
       </tr>
     </tbody>
   </table>
@@ -121,8 +121,8 @@
     <thead>
       <tr>
         <th>Name</th>
-        <th>Value</th>
-        <th>Progress</th>
+        <th>Surname</th>
+        <th>Action</th>
       </tr>
     </thead>
   </table>
@@ -170,7 +170,7 @@
         // Maps to ComplexRenderer subclass in GWT
         var progressRenderer = {
           init : function(element) {
-            var child = document.createElement("v-progress");
+            var child = document.createElement("progress");
             // TODO: Exporting cell instead of element implies some caveats.
             // cell.element.appendChild(child);
             element.appendChild(child);
@@ -385,7 +385,7 @@
       <tr template>
         <td>{{data}}</td>
         <td>{{data}} €</td>
-        <td><v-progress value='{{data}}' /></td>
+        <td><progress value='{{data}}' /></td>
       </tr>
     </tbody>
   </table>

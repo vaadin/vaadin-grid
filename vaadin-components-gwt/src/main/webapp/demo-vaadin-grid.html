@@ -64,12 +64,12 @@
       <tr>
         <td>Grid</td>
         <td>10 000€</td>
-        <td><v-progress value="0.8" /></td>
+        <td><progress value="0.8" /></td>
       </tr>
       <tr>
         <td>Vaadin X</td>
         <td>999 999€</td>
-        <td><v-progress value="0.01" /></td>
+        <td><progress value="0.01" /></td>
       </tr>
     </tbody>
   </table>
@@ -159,7 +159,7 @@
         // Maps to ComplexRenderer subclass in GWT
         var progressRenderer = {
           init : function(element) {
-            var child = document.createElement("v-progress");
+            var child = document.createElement("progress");
             // TODO: Exporting cell instead of element implies some caveats.
             // cell.element.appendChild(child);
             element.appendChild(child);
@@ -374,7 +374,7 @@
       <tr template>
         <td>{{data}}</td>
         <td>{{data}} €</td>
-        <td><v-progress value="{{data}}" /></td>
+        <td><progress value="{{data}}" /></td>
       </tr>
     </tbody>
   </table>
