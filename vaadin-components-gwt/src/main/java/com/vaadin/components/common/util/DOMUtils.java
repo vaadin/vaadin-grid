@@ -222,7 +222,7 @@ public class DOMUtils {
         style.text("@import url('" + base + "')");
     }
 
-    public static native void observe(JavaScriptObject jso, EventListener ev) /*-{
+    public static native void observe(Object jso, EventListener ev) /*-{
       if (! ('observe' in Object) ) {
         $wnd.console.log("This browser does not support Object.observe, consider to load a polyfill.");
         return;
@@ -234,7 +234,7 @@ public class DOMUtils {
       Object.observe(jso, fnc);
    }-*/;
 
-    public static native void unobserve(JavaScriptObject jso) /*-{
+    public static native void unobserve(Object jso) /*-{
       if (jso && jso.__fnc) {
         Object.unobserve(jso, jso.__fnc);
         jso.__fnc = undefined;

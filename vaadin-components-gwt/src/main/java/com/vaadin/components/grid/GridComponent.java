@@ -29,7 +29,6 @@ import com.google.gwt.event.logical.shared.AttachEvent.Handler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.query.client.Function;
-import com.google.gwt.query.client.GQ;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.js.JsUtils;
@@ -65,15 +64,15 @@ import com.vaadin.components.common.html.HTMLShadow;
 import com.vaadin.components.common.html.HTMLTableElement;
 import com.vaadin.components.common.util.DOMUtils;
 import com.vaadin.components.common.util.Elements;
-import com.vaadin.components.grid.data.GridData;
-import com.vaadin.components.grid.data.GridData.GridColumn;
-import com.vaadin.components.grid.data.GridData.GridColumn.GridHeader;
-import com.vaadin.components.grid.data.GridData.GridColumn.GridHeader.Format;
+import com.vaadin.components.grid.config.JS;
+import com.vaadin.components.grid.config.JSArray;
+import com.vaadin.components.grid.config.JSHeaderCell;
+import com.vaadin.components.grid.config.JSHeaderCell.Format;
+import com.vaadin.components.grid.config.JSColumn;
 import com.vaadin.components.grid.data.GridDataSource;
 import com.vaadin.components.grid.data.GridDomTableDataSource;
 import com.vaadin.components.grid.data.GridJsFuncDataSource;
 import com.vaadin.components.grid.data.GridJsObjectDataSource;
-import com.vaadin.components.grid.data.GridRestDataSource;
 import com.vaadin.shared.ui.grid.HeightMode;
 
 @JsExport()
@@ -92,10 +91,14 @@ public class GridComponent extends HTMLTableElement.Prototype implements
     private HTMLElement container;
     private HTMLElement style;
     private boolean initialized = false;
-    public List<GridColumn> cols;
+    public JSArray<JSColumn> cols;
+    // Array of JSO representing column configuration
+    // used in JS to change renderers.
+    private JSArray<JSColumn> columnsJso;
+
     private boolean changed = true;
     // FIXME: using columns name here make this fail in prod mode
-    private List<Grid.Column<Object, JsArrayMixed>> gridColumns;
+    private List<Grid.Column<Object, JsArrayMixed>> JstColumns;
     // We save the original content of the Light-DOM because polyfills remove it
     private GQuery lightDom;
 
@@ -118,8 +121,8 @@ public class GridComponent extends HTMLTableElement.Prototype implements
         selectEvent.srcElement(this);
 
         container = Elements.create("div");
-        cols = new ArrayList<GridColumn>();
-        gridColumns = new ArrayList<>();
+        cols = JS.createArray();
+        JstColumns = new ArrayList<>();
 
         grid = new Grid<JsArrayMixed>();
         grid.addSelectionHandler(this);
@@ -184,21 +187,21 @@ public class GridComponent extends HTMLTableElement.Prototype implements
                 && !$(this).attr("selectionMode").equals("multi")) {
             grid.setSelectionMode(SelectionMode.SINGLE);
         }
-        while (gridColumns.size() > 0) {
-            grid.removeColumn(gridColumns.remove(0));
+        while (JstColumns.size() > 0) {
+            grid.removeColumn(JstColumns.remove(0));
         }
         if (cols != null) {
             for (int i = 0, l = cols.size(); i < l; i++) {
-                GridColumn c = cols.get(i);
+                JSColumn c = cols.get(i);
                 Grid.Column<Object, JsArrayMixed> col;
                 col = createGridColumn(c, i);
                 grid.addColumn(col);
-                gridColumns.add(col);
+                JstColumns.add(col);
                 for (int j = 0; j < c.headerData().size(); j++) {
                     if (grid.getHeaderRowCount() < c.headerData().size()) {
                         grid.appendHeaderRow();
                     }
-                    GridHeader header = c.headerData().get(j);
+                    JSHeaderCell header = c.headerData().get(j);
                     int offset = 0;
                     for (int k = 0; k <= j + offset; k++) {
                         HeaderRow row = grid.getHeaderRow(k);
@@ -211,7 +214,7 @@ public class GridComponent extends HTMLTableElement.Prototype implements
                             .getCell(col);
                     cell.setColspan(header.colSpan());
                     Object content = header.content();
-                    switch (header.format()) {
+                    switch (Format.valueOf(header.format())) {
                     case HTML:
                         cell.setHtml((String) content);
                         break;
@@ -235,7 +238,7 @@ public class GridComponent extends HTMLTableElement.Prototype implements
     }
 
     public static Grid.Column<Object, JsArrayMixed> createGridColumn(
-            final GridColumn gColumn, final int idx) {
+            final JSColumn gColumn, final int idx) {
         final RegExp templateRegexp = RegExp.compile("\\{\\{data\\}\\}", "ig");
         return new Grid.Column<Object, JsArrayMixed>(new Renderer<Object>() {
             public void render(RendererCellReference cell, Object data) {
@@ -274,7 +277,9 @@ public class GridComponent extends HTMLTableElement.Prototype implements
                         && JsUtils.isFunction((JavaScriptObject) o)) {
                     o = JsUtils.jsni((JavaScriptObject) o,
                             "call", o, row, idx);
-                } else if (o instanceof String) {
+                } else if (o instanceof String
+                        // For some reason JsInterop returns empty
+                        && "" != o) {
                     o = JsUtils.prop(row, o);
                 } else {
                     if (JsUtils.isArray(row)) {
@@ -352,9 +357,9 @@ public class GridComponent extends HTMLTableElement.Prototype implements
         }
         lastHeaders = txt;
 
-        List<GridColumn> colList = new ArrayList<GridColumn>();
+        JSArray<JSColumn> colList = JS.createArray();
 
-        Map<GridColumn, List<GridHeader>> contentsMap = new HashMap<GridColumn, List<GridHeader>>();
+        Map<JSColumn, JSArray<JSHeaderCell>> contentsMap = new HashMap<JSColumn, JSArray<JSHeaderCell>>();
 
         headerDefaultRowIndex = $theadRows.index(lightDom.find("tr[default]")
                 .get(0));
@@ -364,8 +369,8 @@ public class GridComponent extends HTMLTableElement.Prototype implements
         for (int i = 0; i < $theadRows.size(); i++) {
             GQuery $ths = $theadRows.eq(i).children("th");
             while (colList.size() < $ths.size()) {
-                GridColumn column = GQ.create(GridColumn.class);
-                contentsMap.put(column, new ArrayList<GridHeader>());
+                JSColumn column = JS.createJsType(JSColumn.class);
+                contentsMap.put(column, JS.<JSHeaderCell>createArray());
                 colList.add(column);
             }
         }
@@ -375,8 +380,8 @@ public class GridComponent extends HTMLTableElement.Prototype implements
 
             int colOffset = 0;
             for (int j = 0; j < $ths.size(); j++) {
-                GridColumn column = colList.get(j + colOffset);
-                GridHeader header = GQ.create(GridHeader.class);
+                JSColumn column = colList.get(j + colOffset);
+                JSHeaderCell header = JS.createJsType(JSHeaderCell.class);
                 GQuery $th = $ths.eq(j);
                 column.setValue($th.attr("name"));
                 int colSpan = 1;
@@ -389,19 +394,19 @@ public class GridComponent extends HTMLTableElement.Prototype implements
                 // FIXME: Assuming format to be HTML, should we detect
                 // between simple text and HTML contents?
                 header.setColSpan(colSpan).setContent($th.html())
-                        .setFormat(Format.HTML);
+                        .setFormat(Format.HTML.name());
                 contentsMap.get(column).add(header);
             }
         }
 
-        Iterator<GridColumn> iterator = contentsMap.keySet().iterator();
+        Iterator<JSColumn> iterator = contentsMap.keySet().iterator();
         // When we don't use shadow, sometimes the component could
         // be renderized previously.
         lightDom.find("div[v-wc-container]").remove();
 
         GQuery $templateRow = lightDom.find("tr[template] td");
         for (int i = 0; iterator.hasNext(); i++) {
-            GridColumn column = iterator.next();
+            JSColumn column = iterator.next();
             column.setHeaderData(contentsMap.get(column));
             if (i < $templateRow.size()) {
                 String html = $templateRow.eq(i).html();
@@ -427,13 +432,13 @@ public class GridComponent extends HTMLTableElement.Prototype implements
     }
 
     @JsNoExport
-    public void setCols(List<GridColumn> cols) {
+    public void setCols(JSArray<JSColumn> cols) {
         changed = true;
         this.cols = cols;
     }
 
     @JsNoExport
-    public List<GridColumn> getCols() {
+    public JSArray<JSColumn> getCols() {
         return cols;
     }
 
@@ -530,10 +535,6 @@ public class GridComponent extends HTMLTableElement.Prototype implements
             loadHeaders();
             grid.setDataSource(new GridJsObjectDataSource(jso
                     .<JsArray<JavaScriptObject>> cast(), this));
-        } else if (JsUtils.prop(jso, "url") != null) {
-            loadHeaders();
-            @SuppressWarnings("unused")
-            GridRestDataSource d = new GridRestDataSource(jso, this);
         } else {
             throw new RuntimeException("Unknown jso: " + jso);
         }
@@ -568,10 +569,6 @@ public class GridComponent extends HTMLTableElement.Prototype implements
     public void jsPropertyColumns() {
     };
 
-    // Array of JSO representing column configuration
-    // used in JS to change renderers.
-    private JsArray<JavaScriptObject> columnsJso;
-
     @JsProperty
     public JavaScriptObject getColumns() {
         // remove old observers
@@ -581,7 +578,7 @@ public class GridComponent extends HTMLTableElement.Prototype implements
             }
         }
         // Using GQuery data-binding magic to convert list to js arrays.
-        columnsJso = GQ.create(GridData.class).setColumns(cols).get("columns");
+        columnsJso = cols;
 
         // Add observers to any column configuration object so as
         for (int i = 0, l = columnsJso.length(); i < l; i++) {
@@ -597,7 +594,7 @@ public class GridComponent extends HTMLTableElement.Prototype implements
     @JsProperty
     public void setColumns(JavaScriptObject newCols) {
         changed = true;
-        cols = GQ.create(GridData.class).<GridData> set("columns", newCols).columns();
+        cols = newCols.cast();
     }
 
     public void jsPropertySelectedRow() {
