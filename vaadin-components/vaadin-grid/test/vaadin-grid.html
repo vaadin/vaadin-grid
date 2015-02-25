@@ -1,108 +1,202 @@
 <!doctype html>
 <html>
+
 <head>
   <meta charset="utf-8">
+  <script>
+    PolymerSettings = {
+      shadow: true
+    };
+  </script>
+
   <script src="../../../bower_components/webcomponentsjs/webcomponents.min.js"></script>
-  <script src="../../../bower_components/web-component-tester/browser.js"></script>
+  <script src="../../../node_modules/web-component-tester/browser.js"></script>
+  <link rel="import" href="../../../bower_components/polymer/src/expr/polymer-expr.html">
   <link rel="import" href="../vaadin-grid.html">
 </head>
+
 <body vaadin-theme='valo'>
-<script>
-function waitUntil(check, exec) {
-  var id = setInterval(function() {
-    if (check()) {
-      clearInterval(id);
-      exec();
+  <script>
+    function waitUntil(check, exec) {
+      var id = setInterval(function() {
+        if (check()) {
+          clearInterval(id);
+          exec();
+        }
+      }, 100);
     }
-  }, 100);
-}
-function waitUntilGridReady(grid, exec) {
-  waitUntil(function() {
-    return grid && grid.querySelector(".v-grid-header .v-grid-row");
-  }, exec);
-}
-</script>
 
-<div id="gridwrapper"></div>
+    function waitUntilGridReady(grid, exec) {
+      waitUntil(function() {
+        return grid && grid.localDom.querySelector(".v-grid-header .v-grid-row");
+      }, exec);
+    }
+  </script>
 
-<script>
-suite('vaadin-grid', function() {
-  var grid;
+  <div id="gridwrapper"></div>
 
-  setup(function(done) {
-    var wrapper = document.getElementById("gridwrapper");
-    wrapper.innerHTML = "<v-grid><table><thead><tr><th>Name</th><th>Value</th></tr></thead>"+
-    "<tbody><tr><td>Grid</td><td>10000</td></tr></tbody></table><v-grid>";
-    grid = wrapper.querySelector("v-grid");
+  <script>
+    suite('vaadin-grid', function() {
+      var grid;
 
-    waitUntilGridReady(grid, done);
-  });
+      setup(function(done) {
+        var wrapper = document.getElementById("gridwrapper");
+        wrapper.innerHTML = "<v-grid><table><thead><tr><th>Name</th><th>Value</th></tr></thead>" +
+          "<tbody><tr><td>Grid</td><td>10000</td></tr><tr><td>VaadinX</td><td>1000</td></tr></tbody></table><v-grid>";
+        grid = wrapper.querySelector("v-grid");
 
-  test('light dom table header gets rendered in the grid', function() {
-    var row = grid.querySelector(".v-grid-header .v-grid-row");
-    var cells = row.childNodes;
+        waitUntilGridReady(grid, done);
+      });
 
-    assert.isTrue(cells[0].innerHTML == 'Name');
-    assert.isTrue(cells[1].innerHTML == 'Value');
-  });
+      test('light dom table header gets rendered in the grid', function() {
+        var row = grid.localDom.querySelector(".v-grid-header .v-grid-row");
+        var cells = row.childNodes;
 
-  test('light dom table body gets rendered in the grid', function() {
-    var row = grid.querySelector(".v-grid-body .v-grid-row");
-    var cells = row.childNodes;
+        assert.isTrue(cells[0].innerHTML == 'Name');
+        assert.isTrue(cells[1].innerHTML == 'Value');
+      });
 
-    assert.isTrue(cells[0].innerHTML == 'Grid');
-    assert.isTrue(cells[1].innerHTML == '10000');
-  });
+      test('light dom table body gets rendered in the grid', function() {
+        var row = grid.localDom.querySelector(".v-grid-body .v-grid-row");
+        var cells = row.childNodes;
 
-  test('changes to the light dom cells get reflected to composed dom', function(done) {
-    var tableHeaderCell = grid.querySelector("thead th");
-    tableHeaderCell.innerHTML = "TestH";
+        assert.isTrue(cells[0].innerHTML == 'Grid');
+        assert.isTrue(cells[1].innerHTML == '10000');
+      });
 
-    var tableBodyCell = grid.querySelector("tbody td");
-    tableBodyCell.innerHTML = "TestB";
+      /* TODO: Revisit once light dom changes refelect to grid.
+        test('changes to the light dom cells get reflected to composed dom', function(done) {
+          var tableHeaderCell = grid.lightDom.querySelector("thead th");
+          tableHeaderCell.innerHTML = "TestH";
 
-    waitUntilGridReady(grid, function() {
-      var gridHeaderCell = grid.querySelector(".v-grid-header .v-grid-cell");
-      assert.isTrue(gridHeaderCell.innerHTML == 'TestH');
-      var gridBodyCell = grid.querySelector(".v-grid-body .v-grid-cell");
-      assert.isTrue(gridBodyCell.innerHTML == 'TestB');
-      done();
+          var tableBodyCell = grid.lightDom.querySelector("tbody td");
+          tableBodyCell.innerHTML = "TestB";
+
+          waitUntilGridReady(grid, function() {
+            var gridHeaderCell = grid.localDom.querySelector(".v-grid-header .v-grid-cell");
+            assert.equal(gridHeaderCell.innerHTML, 'TestH');
+            var gridBodyCell = grid.localDom.querySelector(".v-grid-body .v-grid-cell");
+            assert.isTrue(gridBodyCell.innerHTML == 'TestB');
+            done();
+          });
+        });
+        */
+
+      test('row declarative select', function() {
+        grid.setAttribute("selected-rows", "[0]");
+        assert.ok(grid.localDom.querySelector(".v-grid-body .v-grid-row-selected"));
+        grid.setAttribute("selected-rows", "[]");
+        assert.notOk(grid.localDom.querySelector(".v-grid-body .v-grid-row-selected"));
+      });
+
+      test('row click select', function() {
+        var cell = grid.localDom.querySelector(".v-grid-body .v-grid-cell");
+        cell.click();
+        assert.equal(grid.getAttribute("selected-rows"), "[0]");
+        cell.click();
+        assert.isTrue(grid.getAttribute("selected-rows") == "[]");
+      });
+
+      /* TODO: Revisit once light dom changes refelect to grid.
+        test('add new row to the light dom', function(done) {
+          var tBodyRow = document.createElement("tr");
+          tBodyRow.innerHTML = "<td>Test</td><td>99</td>";
+
+          var tBody = grid.lightDom.querySelector("table tbody");
+          tBody.appendChild(tBodyRow);
+
+          waitUntilGridReady(grid, function() {
+            var rows = grid.localDom.querySelector(".v-grid-body").childNodes;
+            var cells = rows[rows.length - 1].childNodes;
+
+            assert.isTrue(cells[0].innerHTML == 'Test');
+            assert.isTrue(cells[1].innerHTML == '99');
+            done();
+          });
+        });
+        */
+
+      test('switch between selection modes: property', function() {
+        var checkBoxQuery = "input[type='checkbox']";
+
+        grid.selectionMode = "single";
+        assert.equal(grid.getAttribute("selection-mode"), "single");
+        assert.notOk(grid.localDom.querySelector(checkBoxQuery));
+
+        grid.selectionMode = "multi";
+        assert.equal(grid.getAttribute("selection-mode"), "multi");
+        var checkBoxes = grid.localDom.querySelectorAll(checkBoxQuery);
+        assert.isTrue(checkBoxes.length > 0);
+
+        grid.selectionMode = "none";
+        assert.equal(grid.getAttribute("selection-mode"), "none");
+        assert.notOk(grid.localDom.querySelector(checkBoxQuery));
+      });
+
+      test('switch between selection modes: attribute', function() {
+        var checkBoxQuery = "input[type='checkbox']";
+
+        grid.setAttribute("selection-mode", "single");
+        var cellQuery = ".v-grid-body .v-grid-cell";
+        grid.localDom.querySelector(cellQuery).click();
+        assert.equal(grid.selectionMode, "single");
+        assert.equal(grid.selectedRows, "[0]");
+
+        grid.setAttribute("selection-mode", "multi");
+        assert.equal(grid.selectionMode, "multi");
+        assert.equal(grid.selectedRows, "[]");
+
+        grid.setAttribute("selection-mode", "none");
+        assert.equal(grid.selectionMode, "none");
+      });
+
+      test('selected rows: single', function() {
+        var rowQuery = ".v-grid-body .v-grid-row";
+        var selectedStyle = "v-grid-row-selected";
+
+        grid.selectionMode = "single";
+        grid.selectedRows = "[1]";
+        assert.equal(grid.getAttribute("selected-rows"), "[1]");
+        var rows = grid.localDom.querySelectorAll(rowQuery);
+        assert.isFalse(rows[0].classList.contains(selectedStyle));
+        assert.isTrue(rows[1].classList.contains(selectedStyle));
+        grid.selectedRows = "[]";
+        assert.equal(grid.localDom.querySelectorAll(rowQuery + "." + selectedStyle).length, 0);
+
+        grid.setAttribute("selected-rows", "[0]");
+        assert.equal(grid.selectedRows, "[0]");
+        grid.setAttribute("selected-rows", "[]");
+        assert.equal(grid.selectedRows, "[]");
+
+        var cellQuery = ".v-grid-body .v-grid-cell";
+        grid.localDom.querySelector(cellQuery).click();
+        assert.equal(grid.selectedRows, "[0]");
+      });
+
+      test('selected rows: multi', function() {
+        var rowQuery = ".v-grid-body .v-grid-row";
+        var selectedStyle = "v-grid-row-selected";
+
+        grid.selectionMode = "multi";
+        grid.selectedRows = "[0,1]";
+        assert.equal(grid.getAttribute("selected-rows"), "[0,1]");
+        var rows = grid.localDom.querySelectorAll(rowQuery);
+        assert.isTrue(rows[0].classList.contains(selectedStyle));
+        assert.isTrue(rows[1].classList.contains(selectedStyle));
+        grid.selectedRows = "[0]";
+        assert.equal(grid.localDom.querySelectorAll(rowQuery + "." + selectedStyle).length, 1);
+
+        grid.setAttribute("selected-rows", "[0,1]");
+        assert.equal(grid.selectedRows, "[0,1]");
+        grid.setAttribute("selected-rows", "[]");
+        assert.equal(grid.selectedRows, "[]");
+
+        // TODO: Select in UI
+      });
+
     });
-  });
-
-  test('row declarative select', function() {
-    grid.setAttribute("selected-rows", "[0]");
-    assert.ok(grid.querySelector(".v-grid-body .v-grid-row-selected"));
-    grid.setAttribute("selected-rows", "[]");
-    assert.notOk(grid.querySelector(".v-grid-body .v-grid-row-selected"));
-  });
-
-  test('row click select', function() {
-    var cell = grid.querySelector(".v-grid-body .v-grid-cell");
-    cell.click();
-    assert.equal(grid.getAttribute("selected-rows"), "[0]");
-    cell.click();
-    assert.isTrue(grid.getAttribute("selected-rows") == "[]");
-  });
-
-  test('add new row to the light dom', function(done) {
-    var tBodyRow = document.createElement("tr");
-    tBodyRow.innerHTML = "<td>Test</td><td>99</td>";
-
-    var tBody = grid.querySelector("table tbody");
-    tBody.appendChild(tBodyRow);
-
-    waitUntilGridReady(grid, function() {
-      var rows = grid.querySelector(".v-grid-body").childNodes;
-      var cells = rows[rows.length - 1].childNodes;
-
-      assert.isTrue(cells[0].innerHTML == 'Test');
-      assert.isTrue(cells[1].innerHTML == '99');
-      done();
-    });
-  });
-});
-</script>
+  </script>
 
 </body>
+
 </html>

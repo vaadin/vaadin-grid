@@ -18,26 +18,45 @@
 
       selectedRows: {
         reflect: true,
-        type: Array,
-        notify: true
+        type: Array
       },
 
       selectionMode: {
         reflect: true,
-        type: String,
-        notify: true
+        type: String
+      },
+
+      disabled: {
+        reflect: true,
+        type: Boolean
+      },
+
+      editable: {
+        reflect: true,
+        type: Boolean
+      },
+
+      frozenColumn: {
+        reflect: true,
+        type: String
       }
     },
 
     bind: {
 
-      selectionMode: 'setSelectionMode',
+      selectionMode: 'selectionModeChanged',
 
       selectedRows: 'selectedRowsChanged',
 
       dataSource: 'setDataSource',
 
-      rows: 'setRowCount'
+      rows: 'setRowCount',
+
+      disabled: 'setDisabled',
+
+      editable: 'setEditable',
+
+      frozenColumn: 'setFrozenColumn'
     },
 
     setDataSource: function(ds) {
@@ -52,6 +71,15 @@
         case 'selection-mode':
           this.selectionMode = value;
           break;
+        case 'disabled':
+          this.disabled = typeof value == "string";
+          break;
+        case 'editable':
+          this.editable = typeof value == "string";
+          break;
+        case 'frozen-column':
+          this.frozenColumn = value;
+          break;
       }
     },
 
@@ -62,6 +90,10 @@
       }
 
       this.setSelectedRows(array);
+    },
+
+    selectionModeChanged: function(mode) {
+      this.setSelectionMode(mode);
     },
 
     ready: function() {

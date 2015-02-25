@@ -290,6 +290,33 @@ public class GridComponent implements SelectionHandler<JsArrayMixed> {
         refresh();
     }
 
+    public void setDisabled(boolean disabled) {
+        grid.setEnabled(!disabled);
+    }
+
+    public void setEditable(boolean editable) {
+        // TODO: Currently missing an editor handler
+        grid.setEditorEnabled(editable);
+    }
+
+    public void setFrozenColumn(String frozenColumn) {
+        Integer column = null;
+        try {
+            column = Integer.parseInt(frozenColumn);
+        } catch (NumberFormatException e) {
+            for (int i = 0; i < cols.length(); i++) {
+                if (frozenColumn.equals(cols.get(i).headerData().get(0)
+                        .content())) {
+                    column = i + 1;
+                    break;
+                }
+            }
+        }
+        if (column != null) {
+            grid.setFrozenColumnCount(column);
+        }
+    }
+
     @JsNoExport
     public void setCols(JSArray<JSColumn> cols) {
         changed = true;
