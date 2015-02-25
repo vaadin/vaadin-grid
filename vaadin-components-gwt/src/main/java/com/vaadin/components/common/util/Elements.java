@@ -158,8 +158,8 @@ public abstract class Elements {
                 // don't set twice
                 if (src[prpName] === undefined) {
                   Object.defineProperty(dest, prpName, {
-                      get: src[getName] || function(){},
-                      set: src[setName] || function(){},
+                      get: src[getName] || function(){},
+                      set: src[setName] || function(){},
                       enumerable: true,
                       configurable: true
                   });

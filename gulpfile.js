@@ -25,8 +25,13 @@ var tag =  major + patch;
 
 function system(command, cb) {
   cmd.exec(command, function(err, stdout, stderr) {
-    if (err) throw err;
-    if (cb) cb(err);
+    if (err) {
+        gutil.log(stderr);
+        throw err;
+    }
+    if (cb) {
+        cb(err);
+    }
   });
 }
 
