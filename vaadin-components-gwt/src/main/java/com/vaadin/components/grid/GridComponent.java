@@ -2,11 +2,9 @@ package com.vaadin.components.grid;
 
 import static com.google.gwt.query.client.GQuery.$;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.core.client.JavaScriptObject;
@@ -27,6 +25,7 @@ import com.google.gwt.query.client.plugins.widgets.WidgetsUtils;
 import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.data.AbstractRemoteDataSource;
@@ -63,9 +62,6 @@ public class GridComponent implements SelectionHandler<JsArrayMixed> {
     private Grid<JsArrayMixed> grid;
     public JSArray<JSColumn> cols;
     private boolean changed = true;
-    // FIXME: using columns name here make this fail in prod mode
-    private List<Grid.Column<Object, JsArrayMixed>> gridColumns;
-    private List<Grid.Column<Object, JsArrayMixed>> JstColumns;
 
     // Array of JSO representing column configuration
     // used in JS to change renderers.
@@ -92,8 +88,6 @@ public class GridComponent implements SelectionHandler<JsArrayMixed> {
 
     public void created() {
         cols = JS.createArray();
-        gridColumns = new ArrayList<>();
-        JstColumns = new ArrayList<>();
         grid = new Grid<JsArrayMixed>();
         grid.addSelectionHandler(this);
     }
@@ -108,8 +102,8 @@ public class GridComponent implements SelectionHandler<JsArrayMixed> {
         changed = false;
         DataSource<JsArrayMixed> dataSource = grid.getDataSource();
 
-        while (JstColumns.size() > 0) {
-            grid.removeColumn(JstColumns.remove(0));
+        while (grid.getColumnCount() > 1) {
+            grid.removeColumn(grid.getColumn(1));
         }
         if (cols != null) {
             for (int i = 0, l = cols.size(); i < l; i++) {
@@ -117,7 +111,6 @@ public class GridComponent implements SelectionHandler<JsArrayMixed> {
                 Grid.Column<Object, JsArrayMixed> col;
                 col = createGridColumn(c, i);
                 grid.addColumn(col);
-                JstColumns.add(col);
                 for (int j = 0; j < c.headerData().size(); j++) {
                     if (grid.getHeaderRowCount() < c.headerData().size()) {
                         grid.appendHeaderRow();
@@ -158,6 +151,7 @@ public class GridComponent implements SelectionHandler<JsArrayMixed> {
         if (dataSource != null) {
             grid.setDataSource(dataSource);
         }
+        redraw();
     }
 
     public static Grid.Column<Object, JsArrayMixed> createGridColumn(
@@ -393,6 +387,7 @@ public class GridComponent implements SelectionHandler<JsArrayMixed> {
         } else {
             throw new RuntimeException("Unknown jso: " + jso);
         }
+        redraw();
     }
 
     public void refresh() {
@@ -468,32 +463,40 @@ public class GridComponent implements SelectionHandler<JsArrayMixed> {
         return selectedJso;
     }
 
+    private Timer redrawTimer;
     public void redraw() {
-        Escalator e = e(grid);
-        c(e.getHeader());
-        c(e.getFooter());
-        c(e.getBody());
-        ColumnConfiguration columnConfiguration = f(e);
-        for (int i = 0; i < columnConfiguration.getColumnCount(); i++) {
-            columnConfiguration.setColumnWidth(i,
-                    columnConfiguration.getColumnWidth(i));
+        if (redrawTimer == null) {
+            redrawTimer = new Timer() {
+                int c = -1;
+                Escalator e = e(grid);
+                ColumnConfiguration columnConfiguration = f(e);
+                public void run() {
+                    // Hack to recompute row heights
+                    c(e.getHeader());
+                    c(e.getFooter());
+                    c(e.getBody());
+                    // Hack to recompute column width
+                    // Column 0 is always check-box
+                    columnConfiguration.setColumnWidth(1, --c);
+                    grid.getColumn(1).setWidth(c);
+                }
+                private native Escalator e(Grid<?> g)
+                /*-{
+                    return g.@com.vaadin.client.widgets.Grid::escalator;
+                }-*/;
+
+                private native Escalator c(RowContainer r)
+                /*-{
+                    r.@com.vaadin.client.widgets.Escalator.AbstractRowContainer::defaultRowHeightShouldBeAutodetected = true;
+                    r.@com.vaadin.client.widgets.Escalator.AbstractRowContainer::autodetectRowHeightLater()();
+                }-*/;
+
+                private native ColumnConfiguration f(Escalator e)
+                /*-{
+                    return e.@com.vaadin.client.widgets.Escalator::columnConfiguration;
+                }-*/;
+            };
         }
+        redrawTimer.schedule(50);
     }
-
-    private static native Escalator e(Grid<?> g)
-    /*-{
-        return g.@com.vaadin.client.widgets.Grid::escalator;
-    }-*/;
-
-    private static native Escalator c(RowContainer r)
-    /*-{
-        r.@com.vaadin.client.widgets.Escalator.AbstractRowContainer::defaultRowHeightShouldBeAutodetected = true;
-        r.@com.vaadin.client.widgets.Escalator.AbstractRowContainer::autodetectRowHeightLater()();
-    }-*/;
-
-    private static native ColumnConfiguration f(Escalator e)
-    /*-{
-        return e.@com.vaadin.client.widgets.Escalator::columnConfiguration;
-    }-*/;
-
 }

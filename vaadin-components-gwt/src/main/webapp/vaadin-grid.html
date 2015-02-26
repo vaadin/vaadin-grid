@@ -12,7 +12,7 @@
   var prototype = {
     is: "v-grid",
 
-    mixins: [Object.getPrototypeOf(new vaadin.GridComponent())],
+    mixins: [],
 
     published: {
 
@@ -100,12 +100,6 @@
       this.setLightDom(this.lightDom.querySelector("table"));
       this.localDom.appendChild(this.getGridElement());
       this.initGrid();
-
-      // TODO: Remove timeout
-      var _this = this;
-      setTimeout(function() {
-        _this.redraw();
-      }, 0);
     },
 
     get columns() {
@@ -114,5 +108,11 @@
 
   };
 
-  VGrid = Polymer(prototype);
+  document.addEventListener("v-grid-loaded", function() {
+    prototype.mixins.push(Object.getPrototypeOf(new vaadin.GridComponent()));
+    VGrid = Polymer(prototype);
+  });
+  if (window.vaadin && window.vaadin.GridComponent) {
+    document.dispatchEvent(new Event('v-grid-loaded'));
+  }
 </script>

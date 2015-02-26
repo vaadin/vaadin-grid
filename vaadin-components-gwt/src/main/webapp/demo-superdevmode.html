@@ -7,35 +7,11 @@
 <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
 <script src="bower_components/object.observe/dist/object-observe-lite.js"></script>
 <script src="VaadinGrid/VaadinGrid.nocache.js"></script>
+<link href="vaadin-grid.html" rel="import">
 
 <script src="bigdata.js"></script>
 </head>
 <body >
-
-  <script>
-      setTimeout(function() {
-        var link=document.createElement('link');
-        link.href='vaadin-grid.html';
-        link.rel='import';
-        document.getElementsByTagName('head')[0].appendChild(link);
-      }, 100);
-
-
-      function waitUntil(check, exec) {
-        var id = setInterval(function() {
-          if (r = check()) {
-            clearInterval(id);
-            exec(r)
-          }
-        }, 100);
-      }
-      function waitUntilGridReady(id, exec) {
-        waitUntil(function() {
-          var grid = document.getElementById(id);
-          return grid && grid.dataSource && grid;
-        }, exec);
-      }
-    </script>
 
   <h3>1.- Simplest possible with inline data</h3>
   <v-grid selectionMode='multi'>

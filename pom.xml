@@ -227,6 +227,7 @@
                     <extraJvmArgs>-Xmx2048m</extraJvmArgs>
                     <runTarget>/</runTarget>
                     <gen>${project.build.directory}/gen</gen>
+                    <workDir>target</workDir>
                 </configuration>
                 <executions>
                     <execution>

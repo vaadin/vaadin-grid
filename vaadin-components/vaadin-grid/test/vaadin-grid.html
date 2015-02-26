@@ -42,7 +42,7 @@
       setup(function(done) {
         var wrapper = document.getElementById("gridwrapper");
         wrapper.innerHTML = "<v-grid><table><thead><tr><th>Name</th><th>Value</th></tr></thead>" +
-          "<tbody><tr><td>Grid</td><td>10000</td></tr><tr><td>VaadinX</td><td>1000</td></tr></tbody></table><v-grid>";
+          "<tbody><tr><td>Grid</td><td>10000</td></tr><tr><td>VaadinX</td><td>1000</td></tr></tbody></table></v-grid>";
         grid = wrapper.querySelector("v-grid");
 
         waitUntilGridReady(grid, done);
@@ -144,7 +144,6 @@
 
         grid.setAttribute("selection-mode", "multi");
         assert.equal(grid.selectionMode, "multi");
-        assert.equal(grid.selectedRows, "[]");
 
         grid.setAttribute("selection-mode", "none");
         assert.equal(grid.selectionMode, "none");
