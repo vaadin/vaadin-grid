@@ -11,20 +11,15 @@
 </head>
 <body>
   <script>
-      function waitUntil(check, exec) {
-        var id = setInterval(function() {
-          if (r = check()) {
-            clearInterval(id);
-            exec(r)
-          }
-        }, 100);
+    function waitUntilGridReady(id, cb) {
+      if (window.vaadin && vaadin._v_grid_ready) {
+        cb(document.getElementById(id));
+      } else {
+        document.addEventListener("v-grid-ready", function(){
+          cb(document.getElementById(id));
+        });
       }
-      function waitUntilGridReady(id, exec) {
-        waitUntil(function() {
-          var grid = document.getElementById(id);
-          return grid && grid;
-        }, exec);
-      }
+    }
     </script>
   <h3>1.- Simplest possible with inline data</h3>
   <v-grid>
@@ -97,7 +92,7 @@
                  [ "designer", 999999, 0.01 ] ];
 
         // we should set data size before setting the data source (grid bug)
-        grid.rowCount = data.length;
+        grid.rows = data.length;
         grid.dataSource = function(index, count) {
           return data.slice(index, index + count);
         };
@@ -119,7 +114,7 @@
 
   <script>
       waitUntilGridReady("myBigGrid", function(grid) {
-        grid.rowCount = myBigData.length;
+        grid.rows = myBigData.length;
         grid.dataSource = function(index, count, callback) {
           setTimeout(function() {
             callback(myBigData.slice(index, index + count));
@@ -146,7 +141,7 @@
       waitUntilGridReady("myFormatGrid", function(grid) {
         var data = [ [ "Grid", 10000, 0.8 ], [ "Vaadin X", 999999, 0.01 ], ];
 
-        grid.rowCount = data.length;
+        grid.rows = data.length;
         grid.dataSource = function(index, count) {
           return data.slice(index, index + count);
         };
@@ -173,6 +168,7 @@
 
         // columns[0] uses default renderer that just sets the value as innerText
         // TODO: myFormatGrid.columns[1].renderer = valueRenderer;
+
         grid.columns[1].renderer = valueRenderer;
         grid.columns[2].renderer = progressRenderer;
       });
@@ -196,7 +192,7 @@
         var data = [{ name: "Grid", value: 10000, progress: 0.8 },
                 { name: "Vaadin X", value: 999999, progress: 0.01 }];
 
-        grid.rowCount = data.length;
+        grid.rows = data.length;
         grid.dataSource = function(index, count) {
           return data.slice(index, index + count);
         };
@@ -268,7 +264,7 @@
         var button = document.getElementById("mySelButton");
         var label = document.getElementById("mySelLabel");
 
-        grid.rowCount = data.length;
+        grid.rows = data.length;
         grid.dataSource = function(index, count) {
           return data.slice(index, index + count);
         };
@@ -309,7 +305,7 @@
         var button = document.getElementById("myMultiSelButton");
         var label = document.getElementById("myMultiSelLabel");
 
-        grid.rowCount = data.length;
+        grid.rows = data.length;
         grid.selectionMode = "multi";
         grid.dataSource = function(index, count) {
           return data.slice(index, index + count);
@@ -326,60 +322,5 @@
         });
       });
   </script>
-
-  <h2>Declarative syntax</h2>
-  <h3>1. data array</h3>
-  <script>
-      myData = [ [ "Grid", 10000, 0.8 ], [ "Vaadin X", 999999, 0.01 ], ];
-  </script>
-  <v-grid dataSource=”{{myData}}”>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Value</th>
-        <th>Progress</th>
-      </tr>
-    </thead>
-  </table>
-  </v-grid>
-
-  <h3>2. data function</h3>
-  <script>
-      myDataProvider = function(index, count) {
-        return myBigData.slice(index, index + count);
-      };
-    </script>
-  <v-grid rowCount="{{myBigDataSize}}" dataSource=”{{myDataProvider}}”>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Value</th>
-        <th>Progress</th>
-      </tr>
-    </thead>
-  </table>
-  </v-grid>
-
-  <h3>6. renderers</h3>
-  <v-grid id="myRendererDeclaration" dataSource={{myData}}>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Value</th>
-        <th>Progress</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr template>
-        <td>{{data}}</td>
-        <td>{{data}} €</td>
-        <td><progress value="{{data}}" /></td>
-      </tr>
-    </tbody>
-  </table>
-  </v-grid>
 </body>
 </html>

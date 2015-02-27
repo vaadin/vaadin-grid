@@ -34,7 +34,7 @@ public abstract class GridDataSource extends
                     .setHeaderData(l));
         }
         if (wcGrid != null) {
-            wcGrid.setCols(colList);
+            wcGrid.setColumns(colList);
             wcGrid.initGrid();
         }
         return colList;

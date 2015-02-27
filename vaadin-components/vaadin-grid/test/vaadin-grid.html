@@ -15,22 +15,16 @@
   <link rel="import" href="../vaadin-grid.html">
 </head>
 
-<body vaadin-theme='valo'>
+<body>
   <script>
-    function waitUntil(check, exec) {
-      var id = setInterval(function() {
-        if (check()) {
-          clearInterval(id);
-          exec();
+      function waitUntilGridReady(cb) {
+        document.addEventListener("v-grid-ready", function(){
+          setTimeout(cb, 100);
+        });
+        if (window.vaadin && vaadin._v_grid_ready) {
+          setTimeout(cb, 100);
         }
-      }, 100);
-    }
-
-    function waitUntilGridReady(grid, exec) {
-      waitUntil(function() {
-        return grid && grid.localDom.querySelector(".v-grid-header .v-grid-row");
-      }, exec);
-    }
+      }
   </script>
 
   <div id="gridwrapper"></div>
@@ -45,7 +39,7 @@
           "<tbody><tr><td>Grid</td><td>10000</td></tr><tr><td>VaadinX</td><td>1000</td></tr></tbody></table></v-grid>";
         grid = wrapper.querySelector("v-grid");
 
-        waitUntilGridReady(grid, done);
+        waitUntilGridReady(done);
       });
 
       test('light dom table header gets rendered in the grid', function() {
@@ -92,9 +86,9 @@
       test('row click select', function() {
         var cell = grid.localDom.querySelector(".v-grid-body .v-grid-cell");
         cell.click();
-        assert.equal(grid.getAttribute("selected-rows"), "[0]");
+        assert.equal(grid.getAttribute("selected-rows"), "0");
         cell.click();
-        assert.isTrue(grid.getAttribute("selected-rows") == "[]");
+        assert.isTrue(grid.getAttribute("selected-rows") == "");
       });
 
       /* TODO: Revisit once light dom changes refelect to grid.
@@ -140,7 +134,7 @@
         var cellQuery = ".v-grid-body .v-grid-cell";
         grid.localDom.querySelector(cellQuery).click();
         assert.equal(grid.selectionMode, "single");
-        assert.equal(grid.selectedRows, "[0]");
+        assert.equal(grid.selectedRows, "0");
 
         grid.setAttribute("selection-mode", "multi");
         assert.equal(grid.selectionMode, "multi");
@@ -154,22 +148,22 @@
         var selectedStyle = "v-grid-row-selected";
 
         grid.selectionMode = "single";
-        grid.selectedRows = "[1]";
-        assert.equal(grid.getAttribute("selected-rows"), "[1]");
+        grid.selectedRows = "1";
+        assert.equal(grid.getAttribute("selected-rows"), "1");
         var rows = grid.localDom.querySelectorAll(rowQuery);
         assert.isFalse(rows[0].classList.contains(selectedStyle));
         assert.isTrue(rows[1].classList.contains(selectedStyle));
-        grid.selectedRows = "[]";
+        grid.selectedRows = "";
         assert.equal(grid.localDom.querySelectorAll(rowQuery + "." + selectedStyle).length, 0);
 
-        grid.setAttribute("selected-rows", "[0]");
-        assert.equal(grid.selectedRows, "[0]");
-        grid.setAttribute("selected-rows", "[]");
-        assert.equal(grid.selectedRows, "[]");
+        grid.setAttribute("selected-rows", "0");
+        assert.equal(grid.selectedRows, "0");
+        grid.setAttribute("selected-rows", "");
+        assert.equal(grid.selectedRows, "");
 
         var cellQuery = ".v-grid-body .v-grid-cell";
         grid.localDom.querySelector(cellQuery).click();
-        assert.equal(grid.selectedRows, "[0]");
+        assert.equal(grid.selectedRows, "0");
       });
 
       test('selected rows: multi', function() {
@@ -177,18 +171,18 @@
         var selectedStyle = "v-grid-row-selected";
 
         grid.selectionMode = "multi";
-        grid.selectedRows = "[0,1]";
-        assert.equal(grid.getAttribute("selected-rows"), "[0,1]");
+        grid.selectedRows = "0,1";
+        assert.equal(grid.getAttribute("selected-rows"), "0,1");
         var rows = grid.localDom.querySelectorAll(rowQuery);
         assert.isTrue(rows[0].classList.contains(selectedStyle));
         assert.isTrue(rows[1].classList.contains(selectedStyle));
-        grid.selectedRows = "[0]";
+        grid.selectedRows = "0";
         assert.equal(grid.localDom.querySelectorAll(rowQuery + "." + selectedStyle).length, 1);
 
-        grid.setAttribute("selected-rows", "[0,1]");
-        assert.equal(grid.selectedRows, "[0,1]");
-        grid.setAttribute("selected-rows", "[]");
-        assert.equal(grid.selectedRows, "[]");
+        grid.setAttribute("selected-rows", "0,1");
+        assert.equal(grid.selectedRows, "0,1");
+        grid.setAttribute("selected-rows", "");
+        assert.equal(grid.selectedRows, "");
 
         // TODO: Select in UI
       });

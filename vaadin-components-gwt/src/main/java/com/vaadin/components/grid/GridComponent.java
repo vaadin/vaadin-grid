@@ -26,17 +26,13 @@ import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.data.AbstractRemoteDataSource;
 import com.vaadin.client.data.DataSource;
 import com.vaadin.client.renderers.Renderer;
-import com.vaadin.client.widget.escalator.ColumnConfiguration;
-import com.vaadin.client.widget.escalator.RowContainer;
 import com.vaadin.client.widget.grid.RendererCellReference;
 import com.vaadin.client.widget.grid.selection.SelectionEvent;
 import com.vaadin.client.widget.grid.selection.SelectionHandler;
-import com.vaadin.client.widgets.Escalator;
 import com.vaadin.client.widgets.Grid;
 import com.vaadin.client.widgets.Grid.HeaderCell;
 import com.vaadin.client.widgets.Grid.HeaderRow;
@@ -61,17 +57,14 @@ public class GridComponent implements SelectionHandler<JsArrayMixed> {
 
     private Grid<JsArrayMixed> grid;
     public JSArray<JSColumn> cols;
-    private boolean changed = true;
-
-    // Array of JSO representing column configuration
-    // used in JS to change renderers.
-    private JSArray<JSColumn> columnsJso;
+    private int size = 0;
 
     private GQuery lightDom;
 
     private boolean updating = false;
 
     private int headerDefaultRowIndex = 0;
+
 
     public GridComponent() {
         // FIXME: If there is no default constructor JsInterop does not export
@@ -87,7 +80,7 @@ public class GridComponent implements SelectionHandler<JsArrayMixed> {
     }
 
     public void created() {
-        cols = JS.createArray();
+        setColumns(JS.createArray());
         grid = new Grid<JsArrayMixed>();
         grid.addSelectionHandler(this);
     }
@@ -96,10 +89,6 @@ public class GridComponent implements SelectionHandler<JsArrayMixed> {
         WidgetsUtils.attachWidget(grid, null);
         loadHeaders();
 
-        if (!changed) {
-            return;
-        }
-        changed = false;
         DataSource<JsArrayMixed> dataSource = grid.getDataSource();
 
         while (grid.getColumnCount() > 1) {
@@ -276,7 +265,7 @@ public class GridComponent implements SelectionHandler<JsArrayMixed> {
             }
         }
 
-        setCols(colList);
+        setColumns(colList);
     }
 
     public void onMutation() {
@@ -313,7 +302,6 @@ public class GridComponent implements SelectionHandler<JsArrayMixed> {
 
     @JsNoExport
     public void setCols(JSArray<JSColumn> cols) {
-        changed = true;
         this.cols = cols;
     }
 
@@ -323,43 +311,16 @@ public class GridComponent implements SelectionHandler<JsArrayMixed> {
     }
 
     public void setRowCount(int size) {
-        // TODO: fix this in Grid, it seems this only works with reindeer
-        if (Window.Location.getParameter("resize") != null && size > 0) {
-            grid.setHeightMode(HeightMode.ROW);
-            grid.setHeightByRows(Math.min(size,
-                    RowContainer.INITIAL_DEFAULT_ROW_HEIGHT));
-        }
-    }
-
-    // TODO: Remove
-    @JsNoExport
-    public void adjustHeight() {
-        int size = grid.getDataSource().size();
-        setRowCount(size);
-    }
-
-    // TODO: Remove
-    @JsNoExport
-    public Grid<JsArrayMixed> getGrid() {
-        if (grid == null) {
-            changed = true;
-            initGrid();
-        }
-        return grid;
+        this.size = size;
     }
 
     @JsNoExport
     @Override
     public void onSelect(SelectionEvent<JsArrayMixed> ev) {
         if (!updating) {
-            setSelectedRowsProperty(getSelectedRows());
+            $(this).trigger("select");
         }
     }
-
-    private native void setSelectedRowsProperty(JsArrayInteger selected)
-    /*-{
-    	this.selectedRows = selected;
-    }-*/;
 
     public void setColumnWidth(int column, int widht) {
         grid.getColumn(column).setWidth(widht);
@@ -377,7 +338,7 @@ public class GridComponent implements SelectionHandler<JsArrayMixed> {
         grid.setHeight(height);
     }
 
-    public void setDataSource(JavaScriptObject jso, int size) {
+    public void setDataSource(JavaScriptObject jso) {
         if (JsUtils.isFunction(jso)) {
             grid.setDataSource(new GridJsFuncDataSource(jso, size, this));
         } else if (JsUtils.isArray(jso)) {
@@ -396,7 +357,6 @@ public class GridComponent implements SelectionHandler<JsArrayMixed> {
             ((GridDataSource) grid.getDataSource()).refresh();
             if (a.length() > 0) {
                 $(this).delay(5, new Function() {
-                    @Override
                     public void f() {
                         setSelectedRows(a);
                     }
@@ -408,34 +368,32 @@ public class GridComponent implements SelectionHandler<JsArrayMixed> {
     }
 
     public JavaScriptObject getColumns() {
-        // remove old observers
-        if (columnsJso != null) {
-            for (int i = 0, l = columnsJso.length(); i < l; i++) {
-                DOMUtils.unobserve(columnsJso.get(i));
-            }
-        }
-        // Using GQuery data-binding magic to convert list to js arrays.
-        columnsJso = cols;
-
-        // Add observers to any column configuration object so as
-        for (int i = 0, l = columnsJso.length(); i < l; i++) {
-            DOMUtils.observe(columnsJso.get(i), new EventListener() {
-                @Override
-                public void onBrowserEvent(Event event) {
-                    refresh();
-                }
-            });
-        }
-        return columnsJso;
+        return cols;
     }
 
     public void setSelectionMode(String selectionMode) {
+        // TODO: this randomly raises an asynchronous exception
+        // The selection column cannot be modified after init
         grid.setSelectionMode(SelectionMode.valueOf(selectionMode.toUpperCase()));
+        grid.getDefaultHeaderRow().getCell(grid.getColumn(0)).setText("");
     }
 
     public void setColumns(JavaScriptObject newCols) {
-        changed = true;
-        cols = newCols.cast();
+        if (cols != newCols) {
+            if (cols != null) {
+                for (int i = 0, l = cols.length(); i < l; i++) {
+                    DOMUtils.unobserve(cols.get(i));
+                }
+            }
+            cols = newCols.cast();
+            for (int i = 0, l = cols.length(); i < l; i++) {
+                DOMUtils.observe(cols.get(i), new EventListener() {
+                    public void onBrowserEvent(Event event) {
+                        refresh();
+                    }
+                });
+            }
+        }
     }
 
     public void setSelectedRows(JsArrayInteger selectedJso) {
@@ -449,6 +407,7 @@ public class GridComponent implements SelectionHandler<JsArrayMixed> {
             }
         }
         updating = false;
+        onSelect(null);
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -464,39 +423,37 @@ public class GridComponent implements SelectionHandler<JsArrayMixed> {
     }
 
     private Timer redrawTimer;
+    // TODO: this method is a workaround to adjust sizes of the grid based on
+    // the v-grid container. It should be done out-of-the-box by the grid though.
     public void redraw() {
         if (redrawTimer == null) {
             redrawTimer = new Timer() {
-                int c = -1;
-                Escalator e = e(grid);
-                ColumnConfiguration columnConfiguration = f(e);
                 public void run() {
-                    // Hack to recompute row heights
-                    c(e.getHeader());
-                    c(e.getFooter());
-                    c(e.getBody());
-                    // Hack to recompute column width
-                    // Column 0 is always check-box
-                    columnConfiguration.setColumnWidth(1, --c);
-                    grid.getColumn(1).setWidth(c);
+                    // Setting grid to 100% makes it fit to our v-grid container
+                    grid.setWidth("100%");
+                    grid.resetSizesFromDom();
+                    grid.recalculateColumnWidths();
+
+                    // Let see if our container has a fixed css height
+                    int vgridHeight = $(GridComponent.this).height();
+                    int gridHeight = $(grid).height();
+                    if (vgridHeight != gridHeight) {
+                        // Use same height that v-grid
+                        grid.setHeight(vgridHeight + "px");
+                    } else {
+                        // Check if data-source size is smaller than grid visible rows, and reduce height
+                        // TODO: this should be done using setHeightByRows, but it has performance issues
+                        GridDataSource ds = (GridDataSource)grid.getDataSource();
+                        if (ds != null && ds.size() < grid.getHeightByRows()) {
+                            int h = $(grid).find("tr td").height() + 2;
+                            double s = h * (ds.size() + grid.getHeaderRowCount() + grid.getFooterRowCount());
+                            grid.setHeight(s + "px");
+                        }
+                    }
                 }
-                private native Escalator e(Grid<?> g)
-                /*-{
-                    return g.@com.vaadin.client.widgets.Grid::escalator;
-                }-*/;
-
-                private native Escalator c(RowContainer r)
-                /*-{
-                    r.@com.vaadin.client.widgets.Escalator.AbstractRowContainer::defaultRowHeightShouldBeAutodetected = true;
-                    r.@com.vaadin.client.widgets.Escalator.AbstractRowContainer::autodetectRowHeightLater()();
-                }-*/;
-
-                private native ColumnConfiguration f(Escalator e)
-                /*-{
-                    return e.@com.vaadin.client.widgets.Escalator::columnConfiguration;
-                }-*/;
             };
         }
+        // Scheduling it we avoid multiple redraw in very small time
         redrawTimer.schedule(50);
     }
 }

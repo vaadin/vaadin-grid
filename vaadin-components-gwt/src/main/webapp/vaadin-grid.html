@@ -15,12 +15,6 @@
     mixins: [],
 
     published: {
-
-      selectedRows: {
-        reflect: true,
-        type: Array
-      },
-
       selectionMode: {
         reflect: true,
         type: String
@@ -43,24 +37,13 @@
     },
 
     bind: {
-
-      selectionMode: 'selectionModeChanged',
-
-      selectedRows: 'selectedRowsChanged',
-
+      selectionMode: 'setSelectionMode',
       dataSource: 'setDataSource',
-
-      rows: 'setRowCount',
-
       disabled: 'setDisabled',
-
       editable: 'setEditable',
-
-      frozenColumn: 'setFrozenColumn'
-    },
-
-    setDataSource: function(ds) {
-      this._setDataSource(ds, this.rows || 10);
+      frozenColumn: 'setFrozenColumn',
+      rows: 'setRowCount',
+      rowCount: 'setRowCount',
     },
 
     attributeChanged: function(name, type, value) {
@@ -83,13 +66,12 @@
       }
     },
 
-    selectedRowsChanged: function(selectedRows) {
-      var array = selectedRows;
-      if (typeof selectedRows == 'string') {
-        array = JSON.parse(selectedRows);
-      }
+    listeners: {
+      'select': 'onSelect'
+    },
 
-      this.setSelectedRows(array);
+    onSelect: function() {
+      this.setAttribute('selected-rows', String(this.selectedRows));
     },
 
     selectionModeChanged: function(mode) {
@@ -102,17 +84,38 @@
       this.initGrid();
     },
 
+    set selectedRows(r) {
+      return this.setSelectedRows(r);
+    },
+    get selectedRows() {
+      return this.getSelectedRows();
+    },
+    set columns(r) {
+      this.setColumns(r);
+    },
     get columns() {
       return this.getColumns();
+    },
+    get datasource() {
+      return this.getDataSource();
     }
-
   };
 
-  document.addEventListener("v-grid-loaded", function() {
+  function loadComponent() {
     prototype.mixins.push(Object.getPrototypeOf(new vaadin.GridComponent()));
     VGrid = Polymer(prototype);
-  });
+    // Give some time to gwt async processes to run (we need this in FF)
+    setTimeout(function() {
+      vaadin._v_grid_ready = true;
+      document.dispatchEvent(new Event('v-grid-ready'));
+    }, 5);
+  }
+
   if (window.vaadin && window.vaadin.GridComponent) {
-    document.dispatchEvent(new Event('v-grid-loaded'));
+    loadComponent();
+  } else {
+    document.addEventListener("v-grid-loaded", function() {
+      loadComponent();
+    });
   }
 </script>
