@@ -79,74 +79,74 @@ $valo-anim-keyframes-included: false !default;
   $valo-anim-keyframes-included: true;
 }
 
-/**
- * Add animate-in-fade animation to the targeted elements.
- *
- * @group animation
- *
- * @param {time} $duration (180ms) - the duration of the fade
- * @param {time} $delay (null) - the delay of the fade
- */
+///
+/// Add animate-in-fade animation to the targeted elements.
+///
+/// @group animation
+///
+/// @param {time} $duration [180ms] - the duration of the fade
+/// @param {time} $delay [null] - the delay of the fade
+///
 @mixin valo-animate-in-fade ($duration: 180ms, $delay: null){
   @include animation(valo-animate-in-fade $duration $delay);
 }
 
-/**
- * Add animate-out-fade animation to the targeted elements.
- *
- * @group animation
- *
- * @param {time} $duration (180ms) - the duration of the fade
- * @param {time} $delay (null) - the delay of the fade
- */
+///
+/// Add animate-out-fade animation to the targeted elements.
+///
+/// @group animation
+///
+/// @param {time} $duration [180ms] - the duration of the fade
+/// @param {time} $delay [null] - the delay of the fade
+///
 @mixin valo-animate-out-fade ($duration: 180ms, $delay: null){
   @include animation(valo-animate-out-fade $duration $delay);
 }
 
-/**
- * Add animate-in-slide-down animation to the targeted elements.
- *
- * @group animation
- *
- * @param {time} $duration (400ms) - the duration of the slide
- * @param {time} $delay (null) - the delay of the slide
- */
+///
+/// Add animate-in-slide-down animation to the targeted elements.
+///
+/// @group animation
+///
+/// @param {time} $duration [400ms] - the duration of the slide
+/// @param {time} $delay [null] - the delay of the slide
+///
 @mixin valo-animate-in-slide-down ($duration: 400ms, $delay: null){
   @include animation(valo-animate-in-slide-down $duration $delay);
 }
 
-/**
- * Add animate-in-slide-up animation to the targeted elements.
- *
- * @group animation
- *
- * @param {time} $duration (400ms) - the duration of the slide
- * @param {time} $delay (null) - the delay of the slide
- */
+///
+/// Add animate-in-slide-up animation to the targeted elements.
+///
+/// @group animation
+///
+/// @param {time} $duration [400ms] - the duration of the slide
+/// @param {time} $delay [null] - the delay of the slide
+///
 @mixin valo-animate-in-slide-up ($duration: 400ms, $delay: null){
   @include animation(valo-animate-in-slide-up $duration $delay);
 }
 
-/**
- * Add animate-in-slide-left animation to the targeted elements.
- *
- * @group animation
- *
- * @param {time} $duration (400ms) - the duration of the slide
- * @param {time} $delay (null) - the delay of the slide
- */
+///
+/// Add animate-in-slide-left animation to the targeted elements.
+///
+/// @group animation
+///
+/// @param {time} $duration [400ms] - the duration of the slide
+/// @param {time} $delay [null] - the delay of the slide
+///
 @mixin valo-animate-in-slide-left ($duration: 400ms, $delay: null){
   @include animation(valo-animate-in-slide-left $duration $delay);
 }
 
-/**
- * Add animate-in-slide-right animation to the targeted elements.
- *
- * @group animation
- *
- * @param {time} $duration (400ms) - the duration of the slide
- * @param {time} $delay (null) - the delay of the slide
- */
+///
+/// Add animate-in-slide-right animation to the targeted elements.
+///
+/// @group animation
+///
+/// @param {time} $duration [400ms] - the duration of the slide
+/// @param {time} $delay [null] - the delay of the slide
+///
 @mixin valo-animate-in-slide-right ($duration: 400ms, $delay: null){
   @include animation(valo-animate-in-slide-right $duration $delay);
 }

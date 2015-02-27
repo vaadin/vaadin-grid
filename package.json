@@ -17,10 +17,8 @@
       "gulp-autoprefixer":"latest",
       "gulp-minify-css":"latest",
       "yargs":"latest",
-      "web-component-tester":"latest"
-   },
-   "devDependencies": {
-      "web-component-tester": "latest"
+      "web-component-tester":"latest",
+      "sassdoc": "latest"
    },
    "scripts": {
       "install": "node_modules/.bin/bower install webcomponentsjs object.observe Polymer/polymer#0.8-preview"

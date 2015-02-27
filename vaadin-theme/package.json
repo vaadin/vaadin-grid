@@ -1,0 +1,21 @@
+{
+  "name": "vaadin-theme",
+  "version": "0.2.0",
+  "description": "Vaadin Valo Theme",
+  "main": "index.js",
+  "title": "Vaadin Valo Theme",
+  "directories": {
+    "doc": "docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vaadin/components/tree/master/vaadin-theme"
+  },
+  "keywords": [
+    "vaadin",
+    "valo",
+    "theme"
+  ],
+  "author": "Vaadin Ltd.",
+  "license": "Apache License 2.0"
+}

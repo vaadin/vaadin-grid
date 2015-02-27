@@ -1,10 +1,10 @@
-/**
- * Error indicator styles. The error indicator is by default a font character which you can style freely.
- *
- * @param {boolean} $is-pseudo-element (false) - is the selector including this mixin targeting a pseudo element
- *
- * @requires {mixin} valo-error-indicator-icon-style by default
- */
+///
+/// Error indicator styles. The error indicator is by default a font character which you can style freely.
+///
+/// @param {boolean} $is-pseudo-element [false] - is the selector including this mixin targeting a pseudo element
+///
+/// @requires {mixin} valo-error-indicator-icon-style by default
+///
 @mixin valo-error-indicator-style ($is-pseudo-element: false) {
   color: $v-error-indicator-color;
   font-weight: 600;
@@ -20,20 +20,20 @@
   }
 }
 
-/**
- * The error indicator icon style. Should be a font character or a font icon.
- */
+///
+/// The error indicator icon style. Should be a font character or a font icon.
+///
 @mixin valo-error-indicator-icon-style {
   content: "!";
 }
 
 
-/**
- *
- *
- *
- * @group link
- */
+///
+///
+///
+///
+/// @group link
+///
 @mixin valo-link-style {
   cursor: $v-link-cursor;
   color: $v-link-font-color;

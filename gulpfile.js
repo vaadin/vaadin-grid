@@ -9,6 +9,7 @@ var replace = require('gulp-replace');
 require('web-component-tester').gulp.init(gulp);
 
 var sass = require('gulp-sass');
+var sassdoc = require('sassdoc');
 var sourcemaps = require('gulp-sourcemaps');
 var autoprefixer = require('gulp-autoprefixer');
 var minify = require('gulp-minify-css');
@@ -129,7 +130,7 @@ function copyGwtModule(component, moduleName, version, cb) {
 }
 
 gulp.task('default', function() {
-  console.log('\n  Use:\n    gulp <clean|gwt|deploy|all>\n');
+  console.log('\n  Use:\n    gulp <clean|gwt|css|sassdoc|deploy|all>\n');
 });
 
 gulp.task('clean', function(cb) {
@@ -213,4 +214,21 @@ gulp.task('css', function () {
     // Only add the watch once
     args.watch = false;
   }
+});
+
+gulp.task('sassdoc', function () {
+  var options = {
+    dest: pwd + '/vaadin-theme/docs',
+    verbose: true,
+    display: {
+      access: ['public', 'private'],
+      alias: true,
+      watermark: true,
+    },
+    basePath: 'https://github.com/vaadin/components/tree/master/vaadin-theme',
+    package: pwd + '/vaadin-theme/package.json'
+  };
+
+  return gulp.src([pwd + '/vaadin-theme/*.scss', pwd + '/vaadin-theme/**/*.scss'])
+    .pipe(sassdoc(options));
 });

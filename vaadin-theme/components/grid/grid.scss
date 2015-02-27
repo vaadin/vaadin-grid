@@ -24,13 +24,13 @@ $v-grid-animations-enabled: $v-animations-enabled !default;
 // ADJUSTED IMPORT URL
 @import "base";
 
-/**
- *
- *
- * @param {string} $primary-stylename (v-grid) -
- *
- * @group grid
- */
+///
+///
+///
+/// @param {string} $primary-stylename [v-grid] -
+///
+/// @group grid
+///
 @mixin valo-grid ($primary-stylename: v-grid) {
 
   @include base-grid($primary-stylename);
@@ -215,7 +215,7 @@ $v-grid-animations-enabled: $v-animations-enabled !default;
       }
     }
   }
-  */
+///
 
 }
 
