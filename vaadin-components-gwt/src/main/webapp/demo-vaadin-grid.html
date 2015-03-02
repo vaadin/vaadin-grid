@@ -127,7 +127,7 @@
         grid.dataSource = function(index, count, callback) {
           setTimeout(function() {
             callback(myBigData.slice(index, index + count));
-          }, 800);
+          }, index ? 800 : 0);
         };
       });
       // Note: myBigData is defined at the end of the page
@@ -159,27 +159,19 @@
 
         // Maps to simple Renderer interface instance in GWT
         var valueRenderer = function(element, data, rowIndex) {
-          // TODO: element.innertHTML = wc.WCUtils.formatCurrency(data);
-          element.innerHTML = wc.WCUtils.formatCurrency(data);
+          element.innerHTML = vaadin.Utils.formatCurrency(data);
         }
 
         // Maps to ComplexRenderer subclass in GWT
         var progressRenderer = {
           init : function(element) {
             var child = document.createElement("progress");
-            // TODO: Exporting cell instead of element implies some caveats.
-            // cell.element.appendChild(child);
             element.appendChild(child);
           },
           render : function(element, data) {
-            // TODO: cell.element.children[0].value = data;
             element.children[0].setAttribute('value', data);
           }
         }
-
-        // columns[0] uses default renderer that just sets the value as innerText
-        // TODO: myFormatGrid.columns[1].renderer = valueRenderer;
-
         grid.columns[1].renderer = valueRenderer;
         grid.columns[2].renderer = progressRenderer;
       });
