@@ -13,7 +13,7 @@ Here you have a set of modules used for Vaadin Components
 
 How to build
 
-- Install node, java and maven in your system, and
+- Install node, jdk8 and maven in your system, and
   be sure that all of them are available in your PATH.
 
 - Clone the project:
