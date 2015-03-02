@@ -191,11 +191,11 @@ gulp.task('css', function () {
           cascade: false
         }));
 
+      if(!args.pretty) {
+        stream = stream.pipe(minify({ keepBreaks: args.debug }))
+      }
       if(args.debug) {
         stream.pipe(sourcemaps.write());
-      }
-      if(!args.pretty) {
-        stream.pipe(minify({ keepBreaks: args.debug }))
       }
       if (component == 'grid') {
         stream.pipe(gulp.dest(pwd + '/' + gwtproject +  '/src/main/webapp'));
