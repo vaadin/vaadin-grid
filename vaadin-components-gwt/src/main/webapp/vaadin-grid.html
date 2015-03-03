@@ -84,6 +84,23 @@
       this.initGrid();
     },
 
+    select: function(value) {
+      var array = this.selectedRows;
+      if (array.indexOf(value) == -1) {
+        array.push(value);
+        this.selectedRows = array;
+      }
+    },
+
+    deselect: function(value) {
+      var array = this.selectedRows;
+      var index = array.indexOf(value);
+      if (index > -1) {
+        array.splice(index, 1);
+        this.selectedRows = array;
+      }
+    },
+
     set selectedRows(r) {
       return this.setSelectedRows(r);
     },

@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <script>
     PolymerSettings = {
-      shadow: true
+      //shadow: true
     };
   </script>
 
@@ -17,14 +17,14 @@
 
 <body>
   <script>
-      function waitUntilGridReady(cb) {
-        document.addEventListener("v-grid-ready", function(){
-          setTimeout(cb, 100);
-        });
-        if (window.vaadin && vaadin._v_grid_ready) {
-          setTimeout(cb, 100);
-        }
+    function waitUntilGridReady(cb) {
+      document.addEventListener("v-grid-ready", function() {
+        setTimeout(cb, 100);
+      });
+      if (window.vaadin && vaadin._v_grid_ready) {
+        setTimeout(cb, 100);
       }
+    }
   </script>
 
   <div id="gridwrapper"></div>
@@ -185,6 +185,46 @@
         assert.equal(grid.selectedRows, "");
 
         // TODO: Select in UI
+      });
+
+      test('select function', function() {
+        grid.selectionMode = "multi";
+        grid.select(0);
+        grid.select(1);
+        assert.includeMembers(grid.selectedRows, [0, 1]);
+
+        grid.selectionMode = "single";
+        expect(grid.selectedRows).to.be.empty;
+
+        grid.select(0);
+        grid.select(1);
+        assert.lengthOf(grid.selectedRows, 1);
+        assert.include(grid.selectedRows, 1);
+
+        grid.select(2);
+        assert.equal(1, grid.selectedRows[0]);
+      });
+
+      test('deselect function', function() {
+        grid.selectionMode = "multi";
+        grid.selectedRows = [0, 1];
+        grid.deselect(0);
+        assert.lengthOf(grid.selectedRows, 1);
+        assert.include(grid.selectedRows, 1);
+
+        grid.deselect(1);
+        expect(grid.selectedRows).to.be.empty;
+
+        grid.selectedRows = [0, 1];
+        grid.deselect(2);
+        assert.includeMembers(grid.selectedRows, [0, 1]);
+
+        grid.selectionMode = "single";
+        grid.select(1);
+        grid.deselect(0);
+        expect(grid.selectedRows).not.to.be.empty;
+        grid.deselect(1);
+        expect(grid.selectedRows).to.be.empty;
       });
 
     });
