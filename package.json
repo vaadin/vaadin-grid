@@ -1,41 +1,38 @@
 {
-   "name":"vaadin-components-dev",
-   "version":"0.2.0",
-   "description":"Vaadin Development Installer",
-   "main":"index.js",
-   "dependencies":{
-      "bower":"latest",
-      "gulp":"latest",
-      "gulp-util":"latest",
-      "gulp-git":"latest",
-      "fs-extra":"latest",
-      "gulp-rename":"latest",
-      "gulp-json-editor":"latest",
-      "gulp-replace":"latest",
-      "gulp-sass":"latest",
-      "gulp-sourcemaps":"latest",
-      "gulp-autoprefixer":"latest",
-      "gulp-minify-css":"latest",
-      "yargs":"latest",
-      "web-component-tester":"latest",
-      "sassdoc": "latest"
-   },
-   "scripts": {
-      "install": "node_modules/.bin/bower install webcomponentsjs object.observe Polymer/polymer#0.8-preview"
-   },
-   "repository":{
-      "type":"git",
-      "url": "ssh://manolo@dev.vaadin.com:29418/components"
-   },
+  "name":"vaadin-components",
+  "version":"0.2.0",
+  "description":"A set of high-quality Web Components with a customizable Sass based theme",
+  "author": "Vaadin Ltd",
+  "license": "Apache License 2.0",
+
+  "dependencies":{
+    "bower":"latest",
+    "gulp":"latest",
+    "gulp-util":"latest",
+    "gulp-git":"latest",
+    "fs-extra":"latest",
+    "gulp-rename":"latest",
+    "gulp-json-editor":"latest",
+    "gulp-replace":"latest",
+    "gulp-sass":"latest",
+    "gulp-sourcemaps":"latest",
+    "gulp-autoprefixer":"latest",
+    "gulp-minify-css":"latest",
+    "yargs":"latest",
+    "web-component-tester":"latest",
+    "sassdoc": "latest"
+  },
+
+  "scripts": {
+    "install": "node_modules/.bin/bower install webcomponentsjs object.observe Polymer/polymer#0.8-preview"
+  },
+
   "keywords": [
     "vaadin",
     "components",
+    "web",
+    "components",
     "webcomponents",
     "gwt"
-  ],
-  "author": "Vaadin Ltd",
-  "license": "Apache 2.0",
-   "engines":{
-      "node":">=0.10"
-   }
+  ]
 }
