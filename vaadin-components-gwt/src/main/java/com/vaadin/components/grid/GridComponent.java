@@ -49,6 +49,7 @@ import com.vaadin.components.grid.data.GridDomTableDataSource;
 import com.vaadin.components.grid.data.GridJsFuncDataSource;
 import com.vaadin.components.grid.data.GridJsObjectDataSource;
 import com.vaadin.shared.ui.grid.HeightMode;
+import com.vaadin.shared.ui.grid.ScrollDestination;
 
 @JsNamespace(Elements.VAADIN_JS_NAMESPACE)
 @JsExport
@@ -64,7 +65,6 @@ public class GridComponent implements SelectionHandler<JsArrayMixed> {
     private boolean updating = false;
 
     private int headerDefaultRowIndex = 0;
-
 
     public GridComponent() {
         // FIXME: If there is no default constructor JsInterop does not export
@@ -300,6 +300,23 @@ public class GridComponent implements SelectionHandler<JsArrayMixed> {
         }
     }
 
+    public void scrollToRow(int index, String scrollDestination) {
+        if (scrollDestination != null) {
+            grid.scrollToRow(index,
+                    ScrollDestination.valueOf(scrollDestination.toUpperCase()));
+        } else {
+            grid.scrollToRow(index);
+        }
+    }
+
+    public void scrollToStart() {
+        grid.scrollToStart();
+    }
+
+    public void scrollToEnd() {
+        grid.scrollToEnd();
+    }
+
     @JsNoExport
     public void setCols(JSArray<JSColumn> cols) {
         this.cols = cols;
@@ -357,6 +374,7 @@ public class GridComponent implements SelectionHandler<JsArrayMixed> {
             ((GridDataSource) grid.getDataSource()).refresh();
             if (a.length() > 0) {
                 $(this).delay(5, new Function() {
+                    @Override
                     public void f() {
                         setSelectedRows(a);
                     }
@@ -388,6 +406,7 @@ public class GridComponent implements SelectionHandler<JsArrayMixed> {
             cols = newCols.cast();
             for (int i = 0, l = cols.length(); i < l; i++) {
                 DOMUtils.observe(cols.get(i), new EventListener() {
+                    @Override
                     public void onBrowserEvent(Event event) {
                         refresh();
                     }
@@ -423,11 +442,14 @@ public class GridComponent implements SelectionHandler<JsArrayMixed> {
     }
 
     private Timer redrawTimer;
+
     // TODO: this method is a workaround to adjust sizes of the grid based on
-    // the v-grid container. It should be done out-of-the-box by the grid though.
+    // the v-grid container. It should be done out-of-the-box by the grid
+    // though.
     public void redraw() {
         if (redrawTimer == null) {
             redrawTimer = new Timer() {
+                @Override
                 public void run() {
                     // Setting grid to 100% makes it fit to our v-grid container
                     grid.setWidth("100%");
@@ -441,12 +463,17 @@ public class GridComponent implements SelectionHandler<JsArrayMixed> {
                         // Use same height that v-grid
                         grid.setHeight(vgridHeight + "px");
                     } else {
-                        // Check if data-source size is smaller than grid visible rows, and reduce height
-                        // TODO: this should be done using setHeightByRows, but it has performance issues
-                        GridDataSource ds = (GridDataSource)grid.getDataSource();
+                        // Check if data-source size is smaller than grid
+                        // visible rows, and reduce height
+                        // TODO: this should be done using setHeightByRows, but
+                        // it has performance issues
+                        GridDataSource ds = (GridDataSource) grid
+                                .getDataSource();
                         if (ds != null && ds.size() < grid.getHeightByRows()) {
                             int h = $(grid).find("tr td").height() + 2;
-                            double s = h * (ds.size() + grid.getHeaderRowCount() + grid.getFooterRowCount());
+                            double s = h
+                                    * (ds.size() + grid.getHeaderRowCount() + grid
+                                            .getFooterRowCount());
                             grid.setHeight(s + "px");
                         }
                     }
