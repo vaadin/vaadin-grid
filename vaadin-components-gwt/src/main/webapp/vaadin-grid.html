@@ -82,6 +82,13 @@
       this.setLightDom(this.lightDom.querySelector("table"));
       this.localDom.appendChild(this.getGridElement());
       this.initGrid();
+
+      Object.defineProperty(this, 'scrollTop', {
+        get: function() { return this.getScrollTop(); },
+        set: function(newValue) { this.setScrollTop(newValue); },
+        enumerable: true,
+        configurable: false
+      });
     },
 
     select: function(value) {

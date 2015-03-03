@@ -317,6 +317,14 @@ public class GridComponent implements SelectionHandler<JsArrayMixed> {
         grid.scrollToEnd();
     }
 
+    public double getScrollTop() {
+        return grid.getScrollTop();
+    }
+
+    public void setScrollTop(double px) {
+        grid.setScrollTop(px);
+    }
+
     @JsNoExport
     public void setCols(JSArray<JSColumn> cols) {
         this.cols = cols;

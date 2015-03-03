@@ -333,6 +333,33 @@
           }, done);
         }, done);
       });
+
+      test('scrollTop property', function(done) {
+        grid.rows = 100;
+        grid.dataSource = infiniteDataSource;
+
+        assert.equal(grid.scrollTop, 0);
+
+        waitUntil(function() {
+          return gridContainsText(grid, "foo 0");
+        }, function() {
+
+          grid.scrollToRow(1, "start");
+
+          var rowHeight = grid.scrollTop;
+          expect(rowHeight).to.be.above(0);
+
+          grid.scrollToRow(50, "start");
+          waitUntil(function() {
+            return gridContainsText(grid, "foo 50");
+          }, function() {
+            assert.equal(grid.scrollTop, rowHeight * 50);
+
+            done();
+          });
+        });
+      });
+
     });
   </script>
 
