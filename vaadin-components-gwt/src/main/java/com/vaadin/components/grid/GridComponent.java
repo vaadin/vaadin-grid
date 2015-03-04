@@ -2,8 +2,10 @@ package com.vaadin.components.grid;
 
 import static com.google.gwt.query.client.GQuery.$;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
@@ -25,18 +27,22 @@ import com.vaadin.client.data.AbstractRemoteDataSource;
 import com.vaadin.client.data.DataSource;
 import com.vaadin.client.widget.grid.selection.SelectionEvent;
 import com.vaadin.client.widget.grid.selection.SelectionHandler;
+import com.vaadin.client.widget.grid.sort.SortOrder;
 import com.vaadin.client.widgets.Grid;
+import com.vaadin.client.widgets.Grid.Column;
 import com.vaadin.client.widgets.Grid.SelectionMode;
 import com.vaadin.components.common.util.DOMUtils;
 import com.vaadin.components.common.util.Elements;
 import com.vaadin.components.grid.config.JS;
 import com.vaadin.components.grid.config.JSArray;
 import com.vaadin.components.grid.config.JSColumn;
+import com.vaadin.components.grid.config.JSSortOrder;
 import com.vaadin.components.grid.data.GridDataSource;
 import com.vaadin.components.grid.data.GridDomTableDataSource;
 import com.vaadin.components.grid.data.GridJsFuncDataSource;
 import com.vaadin.components.grid.data.GridJsObjectDataSource;
 import com.vaadin.components.grid.head.GridDomTableHead;
+import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.grid.HeightMode;
 import com.vaadin.shared.ui.grid.ScrollDestination;
 
@@ -57,6 +63,46 @@ public class GridComponent implements SelectionHandler<JsArrayMixed> {
         setColumns(JS.createArray());
         grid = new Grid<JsArrayMixed>();
         grid.addSelectionHandler(this);
+    }
+
+    public Element getGridElement() {
+        return grid.getElement();
+    }
+
+    public JSSortOrder[] getSortOrder() {
+        List<SortOrder> sortOrders = grid.getSortOrder();
+        JSSortOrder[] result = new JSSortOrder[sortOrders.size()];
+        for (int i = 0; i < sortOrders.size(); i++) {
+            SortOrder sortOrder = sortOrders.get(i);
+            JSSortOrder jsOrder = JS.createJsType(JSSortOrder.class);
+            int columnIndex = grid.getColumns().indexOf(sortOrder.getColumn());
+            jsOrder.setColumn(columnIndex);
+
+            String directionString = sortOrder.getDirection() == SortDirection.ASCENDING ? "asc"
+                    : "desc";
+            jsOrder.setDirection(directionString);
+            result[i] = jsOrder;
+        }
+        return result;
+    }
+
+    public void setSortOrder(JSSortOrder[] jsOrders) {
+        List<SortOrder> order = new ArrayList<SortOrder>();
+        for (JSSortOrder jsOrder : jsOrders) {
+            Column<?, JsArrayMixed> column = grid
+                    .getColumn(jsOrder.getColumn());
+            SortDirection direction = SortDirection.ASCENDING;
+            if (jsOrder.getDirection() != null) {
+                if ("desc".equals(jsOrder.getDirection())) {
+                    direction = SortDirection.DESCENDING;
+                } else if (!"asc".equals(jsOrder.getDirection())) {
+                    throw new RuntimeException("Invalid sort direction: "
+                            + jsOrder.getDirection());
+                }
+            }
+            order.add(new SortOrder(column, direction));
+        }
+        grid.setSortOrder(order);
     }
 
     public Grid<JsArrayMixed> getGrid() {
