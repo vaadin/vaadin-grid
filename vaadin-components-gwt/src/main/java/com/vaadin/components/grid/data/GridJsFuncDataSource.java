@@ -26,12 +26,12 @@ public class GridJsFuncDataSource extends GridDataSource {
             final int firstRowIndex,
             final int numberOfRows,
             final com.vaadin.client.data.AbstractRemoteDataSource.RequestRowsCallback<JsArrayMixed> callback) {
-        JavaScriptObject o = exec(f, firstRowIndex, numberOfRows,
-                new AsyncCallback<JavaScriptObject>() {
+        JsArrayMixed o = exec(f, firstRowIndex, numberOfRows,
+                new AsyncCallback<JsArrayMixed>() {
                     public void onFailure(Throwable caught) {
                     }
 
-                    public void onSuccess(JavaScriptObject result) {
+                    public void onSuccess(JsArrayMixed result) {
                         setRowData(firstRowIndex, result);
                     }
                 });
@@ -45,8 +45,8 @@ public class GridJsFuncDataSource extends GridDataSource {
         return JsUtils.JSON2String(row);
     }
 
-    private native JavaScriptObject exec(JavaScriptObject f, int idx,
-            int count, AsyncCallback<JavaScriptObject> cb)
+    private native JsArrayMixed exec(JavaScriptObject f, int idx,
+            int count, AsyncCallback<JsArrayMixed> cb)
    /*-{
        return f(idx, count, function(r) {
            cb.@com.google.gwt.user.client.rpc.AsyncCallback::onSuccess(*)(r);

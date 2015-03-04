@@ -13,6 +13,8 @@ import com.vaadin.components.grid.config.JSColumn;
 import com.vaadin.components.grid.config.JSHeaderCell;
 import com.vaadin.components.grid.config.JSHeaderCell.Format;
 
+import java.util.List;
+
 public abstract class GridDataSource extends
         AbstractRemoteDataSource<JsArrayMixed> {
     protected int size = 300;
@@ -41,7 +43,17 @@ public abstract class GridDataSource extends
         return colList;
     }
 
-    protected void setRowData(int idx, JavaScriptObject array) {
+    protected void setRowData(int idx, JsArrayMixed array) {
+        List<Object> list = JS.asList(array);
+        // wrap list items if they are strings, integers, etc
+        for (int i = 0; i < list.size(); i++) {
+            Object item = list.get(i);
+            if(!(item instanceof JavaScriptObject)) {
+                JSArray<Object> wrapper = JS.createArray();
+                wrapper.add(item);
+                list.set(i, wrapper);
+            }
+        }
         super.setRowData(idx, JS.<JsArrayMixed> asList(array));
     }
 
@@ -59,7 +71,7 @@ public abstract class GridDataSource extends
         resetDataAndSize(size());
     }
 
-    private native JavaScriptObject slice(JsArray<JavaScriptObject> data,
+    private native JsArrayMixed slice(JsArray<JavaScriptObject> data,
             int idx, int count) /*-{
                                 return data.slice(idx, idx + count);
                                 }-*/;
