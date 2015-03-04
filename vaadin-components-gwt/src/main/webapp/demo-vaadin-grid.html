@@ -21,7 +21,10 @@
       }
     }
     </script>
-  <h3>1.- Simplest possible with inline data</h3>
+
+<ol>
+  <li>
+  <h3>Simplest possible with inline data</h3>
   <v-grid>
   <table>
     <thead>
@@ -45,8 +48,10 @@
     </tbody>
   </table>
   </v-grid>
+  </li>
 
-  <h3>2.- Simplest possible with explicitly formatted inline data (i.e. children in cells)</h3>
+  <li>
+  <h3>Simplest possible with explicitly formatted inline data (i.e. children in cells)</h3>
   <v-grid>
   <table>
     <thead>
@@ -70,8 +75,10 @@
     </tbody>
   </table>
   </v-grid>
+  </li>
 
-  <h3>3.- Simplest possible with data source (all data available, no formatting)</h3>
+  <li>
+  <h3>Simplest possible with data source (all data available, no formatting)</h3>
   <v-grid id='myGrid'>
   <table>
     <thead>
@@ -98,8 +105,10 @@
         };
       });
     </script>
+  </li>
 
-  <h3>4.- Simplest possible with lazy data source (no formatting)</h3>
+  <li>
+  <h3>Simplest possible with lazy data source (no formatting)</h3>
   <v-grid id='myBigGrid'>
   <table>
     <thead>
@@ -123,8 +132,10 @@
       });
       // Note: myBigData is defined at the end of the page
     </script>
+  </li>
 
-  <h3>5.- Simplest possible with data source and formatting</h3>
+  <li>
+  <h3>Simplest possible with data source and formatting</h3>
 
   <v-grid id="myFormatGrid">
   <table>
@@ -173,8 +184,10 @@
         grid.columns[2].renderer = progressRenderer;
       });
     </script>
+  </li>
 
-  <h3>6.- Mapping data from a JS object into columns</h3>
+  <li>
+  <h3>Mapping data from a JS object into columns</h3>
 
   <v-grid id="myMapGrid">
   <table>
@@ -207,8 +220,37 @@
         grid.columns[2].value = "progress";
       });
     </script>
+  </li>
 
-  <h3>7. Complex headers</h3>
+
+  <li>
+  <h3>Mapping data from a array into single column</h3>
+  <v-grid id="with-single-column">
+    <table>
+      <thead>
+      <tr>
+        <th>Name</th>
+      </tr>
+      </thead>
+    </table>
+  </v-grid>
+  <script>
+    waitUntilGridReady("with-single-column", function(grid) {
+      var data = [
+        "Grid",
+        "Vaadin X"
+      ];
+
+      grid.rows = data.length;
+      grid.dataSource = function(index, count) {
+        return data.slice(index, index + count);
+      };
+    });
+  </script>
+  </li>
+
+  <li>
+  <h3>Complex headers</h3>
   <v-grid>
   <table>
     <thead>
@@ -236,9 +278,10 @@
     </tbody>
   </table>
   </v-grid>
+  </li>
 
-
-  <h3>8.- Single selection</h3>
+  <li>
+  <h3>Single selection</h3>
 
   <v-grid id="mySelGrid" selection-mode="single">
   <table>
@@ -278,8 +321,10 @@
         });
       });
     </script>
+  </li>
 
-  <h3>9.- Multi selection</h3>
+  <li>
+  <h3>Multi selection</h3>
 
   <v-grid id="myMultiSelGrid">
   <table>
@@ -322,5 +367,99 @@
         });
       });
   </script>
+  </li>
+
+  <li>
+  <h3>Simplest possible with dynamic tbody from array of objects</h3>
+  <v-grid id="with-dynamic-tbody" selectionMode='multi'>
+    <table>
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Value</th>
+        <th>Progress</th>
+      </tr>
+      </thead>
+      <tbody>
+      <template is="auto-binding" repeat="{{ mydata }}">
+        <tr>
+          <td>{{ name }}</td>
+          <td>{{ value }}</td>
+          <td>{{ progress }}</td>
+        </tr>
+      </template>
+      </tbody>
+    </table>
+  </v-grid>
+  <script>
+    var template = document.querySelector("#with-dynamic-tbody template");
+    template.mydata = [
+      {"name": "Grid", "value": "10000", "progress": 0.8},
+      {"name": "Vaadin X", "value": "999999", "progress": 0.8}
+    ];
+  </script>
+  </li>
+
+  <li>
+  <h3>Simplest possible with dynamic tbody from array of arrays</h3>
+  <v-grid id="with-dynamic-tbody-from-array" selectionMode='multi'>
+    <table>
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Value</th>
+        <th>Progress</th>
+      </tr>
+      </thead>
+      <tbody>
+      <template is="auto-binding" repeat="{{item in mydata }}">
+        <tr>
+          <template repeat="{{k in item | keys}}">
+            <td>{{ item[k] }}</td>
+          </template>
+        </tr>
+      </template>
+      </tbody>
+    </table>
+  </v-grid>
+  <script>
+    var template = document.querySelector("#with-dynamic-tbody-from-array template");
+    template.mydata = [
+      ["Grid", "10000", 0.8],
+      ["Vaadin X", "999999", 0.8]
+    ];
+    template.keys = function(object) {
+      return Object.keys(object);
+    };
+  </script>
+  </li>
+
+  <li>
+  <h3>Simplest possible with dynamic tbody from simple array</h3>
+  <v-grid id="with-dynamic-tbody-from-simple-array" selectionMode='multi'>
+    <table>
+      <thead>
+      <tr>
+        <th>Name</th>
+      </tr>
+      </thead>
+      <tbody>
+      <template is="auto-binding" repeat="{{item in mydata }}">
+        <tr>
+          <td>{{ item }}</td>
+        </tr>
+      </template>
+      </tbody>
+    </table>
+  </v-grid>
+  <script>
+    var template = document.querySelector("#with-dynamic-tbody-from-simple-array template");
+    template.mydata = [
+      "Grid",
+      "Vaadin X"
+    ];
+  </script>
+  </li>
+</ol>
 </body>
 </html>
