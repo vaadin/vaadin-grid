@@ -363,94 +363,78 @@
 
   <li>
   <h3>Simplest possible with dynamic tbody from array of objects</h3>
-  <v-grid id="with-dynamic-tbody" selectionMode='multi'>
-    <table>
-      <thead>
-      <tr>
-        <th>Name</th>
-        <th>Value</th>
-        <th>Progress</th>
-      </tr>
-      </thead>
-      <tbody>
-      <template is="auto-binding" repeat="{{ mydata }}">
-        <tr>
-          <td>{{ name }}</td>
-          <td>{{ value }}</td>
-          <td>{{ progress }}</td>
-        </tr>
+    <dom-module id="my-grid-with-template">
+      <template>
+        <v-grid selectionMode='multi'>
+          <table>
+            <thead>
+            <tr>
+              <th>Name</th>
+              <th>Value</th>
+              <th>Progress</th>
+            </tr>
+            </thead>
+            <tbody>
+            <template is="x-repeat" items="{{mydata}}">
+              <tr>
+                <td>{{item.name}}</td>
+                <td>{{item.value}}</td>
+                <td>{{item.progress}}</td>
+              </tr>
+            </template>
+            </tbody>
+          </table>
+        </v-grid>
       </template>
-      </tbody>
-    </table>
-  </v-grid>
-  <script>
-    var template = document.querySelector("#with-dynamic-tbody template");
-    template.mydata = [
-      {"name": "Grid", "value": "10000", "progress": 0.8},
-      {"name": "Vaadin X", "value": "999999", "progress": 0.8}
-    ];
-  </script>
-  </li>
-
-  <li>
-  <h3>Simplest possible with dynamic tbody from array of arrays</h3>
-  <v-grid id="with-dynamic-tbody-from-array" selectionMode='multi'>
-    <table>
-      <thead>
-      <tr>
-        <th>Name</th>
-        <th>Value</th>
-        <th>Progress</th>
-      </tr>
-      </thead>
-      <tbody>
-      <template is="auto-binding" repeat="{{item in mydata }}">
-        <tr>
-          <template repeat="{{k in item | keys}}">
-            <td>{{ item[k] }}</td>
-          </template>
-        </tr>
-      </template>
-      </tbody>
-    </table>
-  </v-grid>
-  <script>
-    var template = document.querySelector("#with-dynamic-tbody-from-array template");
-    template.mydata = [
-      ["Grid", "10000", 0.8],
-      ["Vaadin X", "999999", 0.8]
-    ];
-    template.keys = function(object) {
-      return Object.keys(object);
-    };
-  </script>
+    </dom-module>
+    <script>
+      Polymer({
+        is: 'my-grid-with-template',
+        ready: function() {
+          this.mydata = [
+            {"name": "Grid", "value": "10000", "progress": 0.8},
+            {"name": "Vaadin X", "value": "999999", "progress": 0.8}
+          ];
+        }
+      }) ;
+    </script>
+    <my-grid-with-template></my-grid-with-template>
   </li>
 
   <li>
   <h3>Simplest possible with dynamic tbody from simple array</h3>
-  <v-grid id="with-dynamic-tbody-from-simple-array" selectionMode='multi'>
-    <table>
-      <thead>
-      <tr>
-        <th>Name</th>
-      </tr>
-      </thead>
-      <tbody>
-      <template is="auto-binding" repeat="{{item in mydata }}">
-        <tr>
-          <td>{{ item }}</td>
-        </tr>
+    <dom-module id="my-grid-with-template2">
+      <template>
+        <v-grid selectionMode='multi'>
+          <table>
+            <thead>
+            <tr>
+              <th>Name</th>
+            </tr>
+            </thead>
+            <tbody>
+            <template is="x-repeat" items="{{mydata}}">
+              <tr>
+                <td>{{item}}</td>
+              </tr>
+            </template>
+            </tbody>
+          </table>
+        </v-grid>
       </template>
-      </tbody>
-    </table>
-  </v-grid>
-  <script>
-    var template = document.querySelector("#with-dynamic-tbody-from-simple-array template");
-    template.mydata = [
-      "Grid",
-      "Vaadin X"
-    ];
-  </script>
+    </dom-module>
+    <script>
+      Polymer({
+        is: 'my-grid-with-template2',
+        ready: function() {
+          this.mydata = [
+            "Grid",
+            "Vaadin X"
+          ];
+        }
+      }) ;
+    </script>
+    <my-grid-with-template2></my-grid-with-template2>
   </li>
 </ol>
 </body>
