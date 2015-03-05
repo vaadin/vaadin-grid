@@ -105,9 +105,9 @@
         */
 
       test('row declarative select', function() {
-        grid.setAttribute("selected-rows", "[0]");
+        grid.setAttribute("selected-rows", "0");
         assert.ok(grid.localDom.querySelector(".v-grid-body .v-grid-row-selected"));
-        grid.setAttribute("selected-rows", "[]");
+        grid.setAttribute("selected-rows", "");
         assert.notOk(grid.localDom.querySelector(".v-grid-body .v-grid-row-selected"));
       });
 
@@ -116,7 +116,7 @@
         cell.click();
         assert.equal(grid.getAttribute("selected-rows"), "0");
         cell.click();
-        assert.isTrue(grid.getAttribute("selected-rows") == "");
+        assert.isTrue(grid.getAttribute("selected-rows") === "");
       });
 
       /* TODO: Revisit once light dom changes refelect to grid.
@@ -162,7 +162,7 @@
         var cellQuery = ".v-grid-body .v-grid-cell";
         grid.localDom.querySelector(cellQuery).click();
         assert.equal(grid.selectionMode, "single");
-        assert.equal(grid.selectedRows, "0");
+        expect(grid.selectedRows).to.eql([0]);
 
         grid.setAttribute("selection-mode", "multi");
         assert.equal(grid.selectionMode, "multi");
@@ -176,7 +176,7 @@
         var selectedStyle = "v-grid-row-selected";
 
         grid.selectionMode = "single";
-        grid.selectedRows = "1";
+        grid.selectedRows = [1];
         assert.equal(grid.getAttribute("selected-rows"), "1");
         var rows = grid.localDom.querySelectorAll(rowQuery);
         assert.isFalse(rows[0].classList.contains(selectedStyle));
@@ -185,13 +185,13 @@
         assert.equal(grid.localDom.querySelectorAll(rowQuery + "." + selectedStyle).length, 0);
 
         grid.setAttribute("selected-rows", "0");
-        assert.equal(grid.selectedRows, "0");
+        expect(grid.selectedRows).to.eql([0]);
         grid.setAttribute("selected-rows", "");
-        assert.equal(grid.selectedRows, "");
+        expect(grid.selectedRows).to.be.empty;
 
         var cellQuery = ".v-grid-body .v-grid-cell";
         grid.localDom.querySelector(cellQuery).click();
-        assert.equal(grid.selectedRows, "0");
+        expect(grid.selectedRows).to.eql([0]);
       });
 
       test('selected rows: multi', function() {
@@ -208,9 +208,9 @@
         assert.equal(grid.localDom.querySelectorAll(rowQuery + "." + selectedStyle).length, 1);
 
         grid.setAttribute("selected-rows", "0,1");
-        assert.equal(grid.selectedRows, "0,1");
+        expect(grid.selectedRows).to.eql([0,1]);
         grid.setAttribute("selected-rows", "");
-        assert.equal(grid.selectedRows, "");
+        expect(grid.selectedRows).to.be.empty;
 
         // TODO: Select in UI
       });
@@ -219,15 +219,14 @@
         grid.selectionMode = "multi";
         grid.select(0);
         grid.select(1);
-        assert.includeMembers(grid.selectedRows, [0, 1]);
+        expect(grid.selectedRows).to.eql([0, 1]);
 
         grid.selectionMode = "single";
         expect(grid.selectedRows).to.be.empty;
 
         grid.select(0);
         grid.select(1);
-        assert.lengthOf(grid.selectedRows, 1);
-        assert.include(grid.selectedRows, 1);
+        expect(grid.selectedRows).to.eql([1]);
 
         grid.select(2);
         assert.equal(1, grid.selectedRows[0]);
@@ -237,15 +236,14 @@
         grid.selectionMode = "multi";
         grid.selectedRows = [0, 1];
         grid.deselect(0);
-        assert.lengthOf(grid.selectedRows, 1);
-        assert.include(grid.selectedRows, 1);
+        expect(grid.selectedRows).to.eql([1]);
 
         grid.deselect(1);
         expect(grid.selectedRows).to.be.empty;
 
         grid.selectedRows = [0, 1];
         grid.deselect(2);
-        assert.includeMembers(grid.selectedRows, [0, 1]);
+        expect(grid.selectedRows).to.eql([0,1]);
 
         grid.selectionMode = "single";
         grid.select(1);

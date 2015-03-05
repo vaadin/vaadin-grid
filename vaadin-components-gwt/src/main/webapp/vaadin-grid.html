@@ -49,7 +49,11 @@
     attributeChanged: function(name, type, value) {
       switch (name) {
         case 'selected-rows':
-          this.selectedRows = value;
+          this.selectedRows = value.split(',').map(function(x) {
+            return parseInt(x, 10);
+          }).filter(function(x) {
+            return !isNaN(x);
+          });
           break;
         case 'selection-mode':
           this.selectionMode = value;
@@ -71,7 +75,7 @@
     },
 
     onSelect: function() {
-      this.setAttribute('selected-rows', String(this.selectedRows));
+      this.setAttribute('selected-rows', this.selectedRows.join());
     },
 
     selectionModeChanged: function(mode) {
