@@ -53,9 +53,12 @@ public class GridComponent implements SelectionHandler<JsArrayMixed> {
     private boolean updating = false;
     private GridDomTableHead head;
 
+    private Element wrapper;
+
     public GridComponent() {
-        // FIXME: If there is no default constructor JsInterop does not export
-        // anything
+        setColumns(JS.createArray());
+        grid = new Grid<JsArrayMixed>();
+        grid.addSelectionHandler(this);
     }
 
     public Element getGridElement() {
@@ -66,7 +69,7 @@ public class GridComponent implements SelectionHandler<JsArrayMixed> {
         return grid;
     }
 
-    public void setLightDom(TableElement tableElement) {
+    private void setLightDom(TableElement tableElement) {
         if (head == null) {
             head = new GridDomTableHead(tableElement, this);
         } else {
@@ -76,10 +79,10 @@ public class GridComponent implements SelectionHandler<JsArrayMixed> {
         cols = head.loadHeaders();
     }
 
-    public void created() {
-        setColumns(JS.createArray());
-        grid = new Grid<JsArrayMixed>();
-        grid.addSelectionHandler(this);
+    public void setWrapper(Element wrapper) {
+        setLightDom((TableElement) $(wrapper.getPropertyObject("lightDom"))
+                .find("table").get(0));
+        this.wrapper = wrapper;
     }
 
     public void initGrid() {
@@ -174,7 +177,7 @@ public class GridComponent implements SelectionHandler<JsArrayMixed> {
     @Override
     public void onSelect(SelectionEvent<JsArrayMixed> ev) {
         if (!updating) {
-            $(this).trigger("select");
+            $(wrapper).trigger("select");
         }
     }
 
@@ -212,7 +215,7 @@ public class GridComponent implements SelectionHandler<JsArrayMixed> {
             final JsArrayInteger a = getSelectedRows();
             ((GridDataSource) grid.getDataSource()).refresh();
             if (a.length() > 0) {
-                $(this).delay(5, new Function() {
+                $(wrapper).delay(5, new Function() {
                     @Override
                     public void f() {
                         setSelectedRows(a);
@@ -296,11 +299,13 @@ public class GridComponent implements SelectionHandler<JsArrayMixed> {
                     grid.recalculateColumnWidths();
 
                     // Let see if our container has a fixed css height
-                    int vgridHeight = $(GridComponent.this).height();
+                    int vgridHeight = $(wrapper).height();
                     int gridHeight = $(grid).height();
                     if (vgridHeight != gridHeight) {
                         // Use same height that v-grid
-                        grid.setHeight(vgridHeight + "px");
+                        if (vgridHeight > 0) {
+                            grid.setHeight(vgridHeight + "px");
+                        }
                     } else {
                         // Check if data-source size is smaller than grid
                         // visible rows, and reduce height
@@ -313,7 +318,9 @@ public class GridComponent implements SelectionHandler<JsArrayMixed> {
                             double s = h
                                     * (ds.size() + grid.getHeaderRowCount() + grid
                                             .getFooterRowCount());
-                            grid.setHeight(s + "px");
+                            if (s > 0) {
+                                grid.setHeight(s + "px");
+                            }
                         }
                     }
                 }

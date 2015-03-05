@@ -12,7 +12,7 @@
   var prototype = {
     is: "v-grid",
 
-    mixins: [],
+    internal: undefined,
 
     published: {
       selectionMode: {
@@ -37,13 +37,13 @@
     },
 
     bind: {
-      selectionMode: 'setSelectionMode',
-      dataSource: 'setDataSource',
-      disabled: 'setDisabled',
-      editable: 'setEditable',
-      frozenColumn: 'setFrozenColumn',
-      rows: 'setRowCount',
-      rowCount: 'setRowCount',
+      selectionMode: 'internal.setSelectionMode',
+      dataSource: 'internal.setDataSource',
+      disabled: 'internal.setDisabled',
+      editable: 'internal.setEditable',
+      frozenColumn: 'internal.setFrozenColumn',
+      rows: 'internal.setRowCount',
+      rowCount: 'internal.setRowCount'
     },
 
     attributeChanged: function(name, type, value) {
@@ -79,20 +79,40 @@
     },
 
     selectionModeChanged: function(mode) {
-      this.setSelectionMode(mode);
+      this.internal.setSelectionMode(mode);
+    },
+
+    created: function() {
+      this.internal = new vaadin.GridComponent();
     },
 
     ready: function() {
-      this.setLightDom(this.lightDom.querySelector("table"));
-      this.localDom.appendChild(this.getGridElement());
-      this.initGrid();
+      this.internal.setWrapper(this);
+      this.localDom.appendChild(this.internal.getGridElement());
+      this.internal.initGrid();
 
       Object.defineProperty(this, 'scrollTop', {
-        get: function() { return this.getScrollTop(); },
-        set: function(newValue) { this.setScrollTop(newValue); },
+        get: function() {
+          return this.internal.getScrollTop();
+        },
+        set: function(newValue) {
+          this.internal.setScrollTop(newValue);
+        },
         enumerable: true,
         configurable: false
       });
+    },
+
+    scrollToRow: function(index, scrollDestination) {
+      this.internal.scrollToRow(index, scrollDestination);
+    },
+
+    scrollToStart: function() {
+      this.internal.scrollToStart();
+    },
+
+    scrollToEnd: function() {
+      this.internal.scrollToEnd();
     },
 
     select: function(value) {
@@ -113,24 +133,24 @@
     },
 
     set selectedRows(r) {
-      return this.setSelectedRows(r);
+      return this.internal.setSelectedRows(r);
     },
     get selectedRows() {
-      return this.getSelectedRows();
+      return this.internal.getSelectedRows();
     },
     set columns(r) {
-      this.setColumns(r);
+      this.internal.setColumns(r);
     },
     get columns() {
-      return this.getColumns();
+      return this.internal.getColumns();
     },
     get datasource() {
-      return this.getDataSource();
-    }
+      return this.internal.getDataSource();
+    },
+
   };
 
   function loadComponent() {
-    prototype.mixins.push(Object.getPrototypeOf(new vaadin.GridComponent()));
     VGrid = Polymer(prototype);
     // Give some time to gwt async processes to run (we need this in FF)
     setTimeout(function() {
