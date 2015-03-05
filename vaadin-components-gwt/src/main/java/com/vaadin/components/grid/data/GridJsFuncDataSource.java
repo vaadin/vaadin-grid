@@ -1,5 +1,7 @@
 package com.vaadin.components.grid.data;
 
+import static com.google.gwt.query.client.GQuery.$$;
+
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.query.client.js.JsUtils;

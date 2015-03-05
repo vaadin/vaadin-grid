@@ -1,3 +1,4 @@
+"use strict";
 var gulp = require('gulp');
 var gutil = require('gulp-util');
 var chalk = require('chalk');
@@ -98,33 +99,27 @@ function updatePolymerComponent(component, tag, tmpdir ) {
 }
 
 function copyGwtModule(component, moduleName, version, cb) {
-  warDir = 'vaadin-components-gwt/target/vaadin-components-gwt-' + version + '/';
-  modulePath = warDir + '/' + moduleName + '/';
-  webDir = 'vaadin-components-gwt/src/main/webapp/';
+  var warDir = 'vaadin-components-gwt/target/vaadin-components-gwt-' + version + '/';
+  var modulePath = warDir + moduleName + '/';
+  var webDir = 'vaadin-components-gwt/src/main/webapp/';
+  var webComponentDir = webDir + component + '/';
   var componentDir = 'vaadin-components/' + component;
 
   process.chdir(pwd);
   fs.mkdirsSync(componentDir);
 
+  gulp.src(webComponentDir + '**/*')
+  .pipe(replace(new RegExp('^.*script.*' + moduleName + '.*$','mg'), ''))
+  .pipe(replace(/(src|href)=("|')([\.\/]*)\.\.\/bower_components\//mg, '$1=$2$3../../bower_components/'))
+  .pipe(gulp.dest(componentDir));
+
   gulp.src(modulePath + moduleName +  '-import.html')
   .pipe(rename(function (path) {
-    path.basename = component+"-import";
+    path.basename = component + "-import";
   }))
   .pipe(gulp.dest(componentDir));
 
-  gulp.src(webDir + component + '.html')
-  .pipe(gulp.dest(componentDir));
-
-  gulp.src(modulePath + 'deferred')
-  .pipe(gulp.dest(componentDir));
-
-  gulp.src(webDir + 'demo-' + component + '.html')
-  .pipe(replace(/^.*(nocache|<link).*$/mg, ''))
-  .pipe(replace(/<\/head/mg, '\n<link rel="import" href="' + component + '.html"></link>\n\n</head'))
-  .pipe(replace(/(src|href)=("|')[\.\/]*bower_components\//mg, '$1=$2../../bower_components/'))
-  .pipe(rename(function (path) {
-    path.basename = 'demo';
-  }))
+  gulp.src(componentDir + 'deferred')
   .pipe(gulp.dest(componentDir));
 
   if (cb) cb();
@@ -138,21 +133,21 @@ gulp.task('clean', function(cb) {
   fs.removeSync(target);
   fs.mkdirsSync(target);
   system('mvn clean', cb);
-})
+});
 
 gulp.task('gwt-pretty', function(cb) {
   compileGwt(function() {
     copyGwtModule('vaadin-grid', 'VaadinGrid', version);
     cb();
   }, true);
-})
+});
 
 gulp.task('gwt', function(cb) {
   compileGwt(function() {
     copyGwtModule('vaadin-grid', 'VaadinGrid', version);
     cb();
   });
-})
+});
 
 gulp.task('deploy', function() {
   updatePolymerComponent('vaadin-button', tag, target);
@@ -246,7 +241,7 @@ gulp.task('css', function () {
     var components = args.component.split(',');
   }
 
-  for (i in components) {
+  for (var i in components) {
     var component = components[i].trim();
     gutil.log('Compiling theme for component: ' + component);
     var input = pwd + '/vaadin-theme/components/' + component + '/' + component + '.scss';
@@ -268,7 +263,7 @@ gulp.task('css', function () {
       stream.pipe(sourcemaps.write());
     }
     if (component == 'grid') {
-      stream.pipe(gulp.dest(pwd + '/' + gwtproject +  '/src/main/webapp'));
+      stream.pipe(gulp.dest(pwd + '/' + gwtproject +  '/src/main/webapp/vaadin-' + component));
     }
 
     stream.pipe(gulp.dest(output));

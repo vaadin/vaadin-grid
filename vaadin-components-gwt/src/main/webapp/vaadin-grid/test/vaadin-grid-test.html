@@ -10,19 +10,21 @@
   </script>
 
   <script src="../../../bower_components/webcomponentsjs/webcomponents.min.js"></script>
-  <script src="../../../node_modules/web-component-tester/browser.js"></script>
+  <script src="../../../bower_components/web-component-tester/browser.js"></script>
   <link rel="import" href="../../../bower_components/polymer/src/expr/polymer-expr.html">
+  <script src="../../VaadinGrid/VaadinGrid.nocache.js"></script>
   <link rel="import" href="../vaadin-grid.html">
 </head>
 
 <body>
   <script>
     function waitUntilGridReady(cb) {
-      document.addEventListener("v-grid-ready", function() {
-        setTimeout(cb, 100);
-      });
       if (window.vaadin && vaadin._v_grid_ready) {
-        setTimeout(cb, 100);
+        cb();
+      } else {
+        document.addEventListener("v-grid-ready", function() {
+          cb();
+        });
       }
     }
 
@@ -67,7 +69,11 @@
           "<tbody><tr><td>Grid</td><td>10000</td></tr><tr><td>VaadinX</td><td>1000</td></tr></tbody></table></v-grid>";
         grid = wrapper.querySelector("v-grid");
 
-        waitUntilGridReady(done);
+        waitUntilGridReady(function () {
+          // in each iteration we need to sleep a while so as all
+          // asynchronous processes in the grid initialization finish
+          setTimeout(done, 200);
+        });
       });
 
       test('light dom table header gets rendered in the grid', function() {
@@ -232,7 +238,7 @@
         assert.equal(1, grid.selectedRows[0]);
       });
 
-      test('deselect function', function() {
+        test('deselect function', function() {
         grid.selectionMode = "multi";
         grid.selectedRows = [0, 1];
         grid.deselect(0);
@@ -403,6 +409,7 @@
       });
 
     });
+
   </script>
 
 </body>
