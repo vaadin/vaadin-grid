@@ -358,6 +358,14 @@
         });
       });
 
+      test('theme property', function() {
+        grid.theme = "foo";
+        assert.equal(grid.getAttribute("theme"), "foo");
+
+        grid.setAttribute("theme", "bar");
+        assert.equal(grid.theme, "bar");
+      });
+
     });
   </script>
 

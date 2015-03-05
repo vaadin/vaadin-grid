@@ -33,6 +33,11 @@
       frozenColumn: {
         reflect: true,
         type: String
+      },
+
+      theme: {
+        reflect: true,
+        type: String
       }
     },
 
@@ -66,6 +71,9 @@
           break;
         case 'frozen-column':
           this.frozenColumn = value;
+          break;
+        case 'theme':
+          this.theme = value;
           break;
       }
     },
