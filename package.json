@@ -23,8 +23,13 @@
     "sassdoc": "latest"
   },
 
+  "devDependencies": {
+    "ip":"latest",
+    "chalk":"latest"
+  },
+
   "scripts": {
-    "install": "node_modules/.bin/bower install --allow-root https://github.com/Polymer/polymer.git#0.8-preview https://github.com/Polymer/web-component-tester.git https://github.com/Polymer/webcomponentsjs.git https://github.com/MaxArt2501/object-observe.git#0.2.1"
+    "install": "node_modules/.bin/bower install --allow-root https://github.com/Polymer/polymer.git#3449fc4 https://github.com/Polymer/web-component-tester.git https://github.com/Polymer/webcomponentsjs.git https://github.com/MaxArt2501/object-observe.git#0.2.1"
   },
 
   "keywords": [

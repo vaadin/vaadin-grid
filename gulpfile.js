@@ -1,5 +1,6 @@
 var gulp = require('gulp');
 var gutil = require('gulp-util');
+var chalk = require('chalk');
 var cmd = require('child_process');
 var git = require('gulp-git');
 var fs = require('fs-extra');
@@ -159,6 +160,56 @@ gulp.task('deploy', function() {
 });
 
 gulp.task('test', ['test:local']);
+
+function cleanDone(done) {
+  return function(error) {
+    if (error) {
+      // Pretty error for gulp.
+      error = new Error(chalk.red(error.message || error));
+      error.showStack = false;
+    }
+    done(error);
+  };
+}
+
+gulp.task('test:validation', function(done) {
+
+  //TODO: PR which enabled wct gulp script to accept options so we don't need
+  //      to call test() anymore.
+  // https://github.com/Polymer/web-component-tester/blob/master/runner/gulp.js
+  var test = require('./node_modules/web-component-tester/runner/test.js');
+
+  test(
+    {
+      browserOptions: {
+        url: 'http://validation-hub.devnet.vaadin.com:4444/wd/hub',
+        platform: 'VISTA'
+      },
+      activeBrowsers: [
+        {
+          browserName: "chrome",
+          version: "40"
+        }
+        //{
+        //  browserName: "firefox",
+        //  version: '35'
+        //},
+        //{
+        //  browserName: 'internet explorer',
+        //  version: '11'
+        //}
+      ],
+      plugins: {
+        local: false,
+        sauce: false
+      },
+      root: '.',
+      webserver: {
+        port: 8888,
+        hostname: require('ip').address()
+      }
+    }, cleanDone(done));
+});
 
 gulp.task('all', ['clean'], function() {
   // Compile themes
