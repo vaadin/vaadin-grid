@@ -1,6 +1,7 @@
 package com.vaadin.components.grid;
 
 import static com.google.gwt.query.client.GQuery.$;
+import static com.google.gwt.query.client.GQuery.browser;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -324,21 +325,24 @@ public class GridComponent implements SelectionHandler<JsArrayMixed> {
     public void redraw() {
         if (redrawTimer == null) {
             redrawTimer = new Timer() {
+                int defaultSize = (int) grid.getHeightByRows();
+                int size = defaultSize;
+
                 @Override
                 public void run() {
                     // Setting grid to 100% makes it fit to our v-grid container
-                    grid.setWidth("100%");
+                    // TODO: but it does not work in FF.
+                    if (!browser.mozilla) {
+                        grid.setWidth("100%");
+                    }
                     grid.resetSizesFromDom();
                     grid.recalculateColumnWidths();
 
                     // Let see if our container has a fixed css height
                     int vgridHeight = $(container).height();
                     int gridHeight = $(grid).height();
-                    if (vgridHeight != gridHeight) {
-                        // Use same height that v-grid
-                        if (vgridHeight > 0) {
-                            grid.setHeight(vgridHeight + "px");
-                        }
+                    if (vgridHeight != gridHeight && vgridHeight > 0) {
+                        grid.setHeight(vgridHeight + "px");
                     } else {
                         // Check if data-source size is smaller than grid
                         // visible rows, and reduce height
@@ -346,12 +350,14 @@ public class GridComponent implements SelectionHandler<JsArrayMixed> {
                         // it has performance issues
                         GridDataSource ds = (GridDataSource) grid
                                 .getDataSource();
-                        if (ds != null && ds.size() < grid.getHeightByRows()) {
-                            int h = $(grid).find("tr td").height() + 2;
-                            double s = h
-                                    * (ds.size() + grid.getHeaderRowCount() + grid
-                                            .getFooterRowCount());
-                            if (s > 0) {
+                        if (ds != null) {
+                            int nsize = Math.min(ds.size(), defaultSize);
+                            if (nsize != size) {
+                                size = nsize;
+                                int h = $(grid).find("tr td").height() + 2;
+                                double s = h
+                                        * (size + grid.getHeaderRowCount() + grid
+                                                .getFooterRowCount());
                                 grid.setHeight(s + "px");
                             }
                         }
