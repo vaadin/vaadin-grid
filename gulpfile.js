@@ -201,11 +201,12 @@ gulp.task('test:validation', function(done) {
       ],
       plugins: {
         local: false,
-        sauce: false
+        sauce: false,
+        'teamcity-reporter':true
       },
       root: '.',
       webserver: {
-        port: 8888,
+        port: 2000,
         hostname: require('ip').address()
       }
     }, cleanDone(done));

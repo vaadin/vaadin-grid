@@ -25,7 +25,8 @@
 
   "devDependencies": {
     "ip":"latest",
-    "chalk":"latest"
+    "chalk":"latest",
+    "wct-teamcity-reporter":"latest"
   },
 
   "scripts": {
