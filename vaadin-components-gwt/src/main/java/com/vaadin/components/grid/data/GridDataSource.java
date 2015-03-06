@@ -35,7 +35,8 @@ public abstract class GridDataSource extends
         }
         if (wcGrid != null) {
             wcGrid.setColumns(colList);
-            wcGrid.initGrid();
+            // FIXME: head.updateGridColumns should get called
+            // wcGrid.initGrid();
         }
         return colList;
     }

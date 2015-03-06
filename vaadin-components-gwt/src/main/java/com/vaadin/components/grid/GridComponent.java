@@ -16,7 +16,6 @@ import com.google.gwt.core.client.js.JsType;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.TableElement;
 import com.google.gwt.query.client.Function;
-import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.widgets.WidgetsUtils;
 import com.google.gwt.user.client.Event;
@@ -49,11 +48,10 @@ public class GridComponent implements SelectionHandler<JsArrayMixed> {
     private Grid<JsArrayMixed> grid;
     public JSArray<JSColumn> cols;
     private int size = 0;
-    private GQuery lightDom;
     private boolean updating = false;
     private GridDomTableHead head;
 
-    private Element wrapper;
+    private Element container;
 
     public GridComponent() {
         setColumns(JS.createArray());
@@ -61,40 +59,29 @@ public class GridComponent implements SelectionHandler<JsArrayMixed> {
         grid.addSelectionHandler(this);
     }
 
-    public Element getGridElement() {
-        return grid.getElement();
-    }
-
     public Grid<JsArrayMixed> getGrid() {
         return grid;
     }
 
-    private void setLightDom(TableElement tableElement) {
+    public void init(Element container, TableElement lightDomElement,
+            Element gridContainer) {
+        this.container = container;
+
         if (head == null) {
-            head = new GridDomTableHead(tableElement, this);
+            head = new GridDomTableHead(lightDomElement, this);
         } else {
-            head.setLightDom(tableElement);
+            head.setLightDom(lightDomElement);
         }
-        lightDom = $(tableElement);
         cols = head.loadHeaders();
-    }
 
-    public void setWrapper(Element wrapper) {
-        setLightDom((TableElement) $(wrapper.getPropertyObject("lightDom"))
-                .find("table").get(0));
-        this.wrapper = wrapper;
-    }
-
-    public void initGrid() {
+        gridContainer.appendChild(grid.getElement());
         WidgetsUtils.attachWidget(grid, null);
-        if (lightDom == null) {
-            setLightDom(null);
-        }
-        if (!lightDom.isEmpty()) {
+
+        if (lightDomElement != null) {
             // If the wrapped DOM table has TR elements, we use it as data
             // source
             DataSource<JsArrayMixed> dataSource = GridDomTableDataSource
-                    .createInstance(lightDom.get(0), this);
+                    .createInstance(lightDomElement, this);
             if (dataSource != null) {
                 grid.setDataSource(dataSource);
                 redraw();
@@ -177,7 +164,7 @@ public class GridComponent implements SelectionHandler<JsArrayMixed> {
     @Override
     public void onSelect(SelectionEvent<JsArrayMixed> ev) {
         if (!updating) {
-            $(wrapper).trigger("select");
+            $(container).trigger("select");
         }
     }
 
@@ -215,7 +202,7 @@ public class GridComponent implements SelectionHandler<JsArrayMixed> {
             final JsArrayInteger a = getSelectedRows();
             ((GridDataSource) grid.getDataSource()).refresh();
             if (a.length() > 0) {
-                $(wrapper).delay(5, new Function() {
+                $(container).delay(5, new Function() {
                     @Override
                     public void f() {
                         setSelectedRows(a);
@@ -299,7 +286,7 @@ public class GridComponent implements SelectionHandler<JsArrayMixed> {
                     grid.recalculateColumnWidths();
 
                     // Let see if our container has a fixed css height
-                    int vgridHeight = $(wrapper).height();
+                    int vgridHeight = $(container).height();
                     int gridHeight = $(grid).height();
                     if (vgridHeight != gridHeight) {
                         // Use same height that v-grid

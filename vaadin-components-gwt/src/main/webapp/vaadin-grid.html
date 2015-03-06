@@ -12,7 +12,7 @@
   var prototype = {
     is: "v-grid",
 
-    internal: undefined,
+    grid: undefined,
 
     published: {
       selectionMode: {
@@ -37,13 +37,13 @@
     },
 
     bind: {
-      selectionMode: 'internal.setSelectionMode',
-      dataSource: 'internal.setDataSource',
-      disabled: 'internal.setDisabled',
-      editable: 'internal.setEditable',
-      frozenColumn: 'internal.setFrozenColumn',
-      rows: 'internal.setRowCount',
-      rowCount: 'internal.setRowCount'
+      selectionMode: 'grid.setSelectionMode',
+      dataSource: 'grid.setDataSource',
+      disabled: 'grid.setDisabled',
+      editable: 'grid.setEditable',
+      frozenColumn: 'grid.setFrozenColumn',
+      rows: 'grid.setRowCount',
+      rowCount: 'grid.setRowCount'
     },
 
     attributeChanged: function(name, type, value) {
@@ -79,24 +79,22 @@
     },
 
     selectionModeChanged: function(mode) {
-      this.internal.setSelectionMode(mode);
+      this.grid.setSelectionMode(mode);
     },
 
     created: function() {
-      this.internal = new vaadin.GridComponent();
+      this.grid = new vaadin.GridComponent();
     },
 
     ready: function() {
-      this.internal.setWrapper(this);
-      this.localDom.appendChild(this.internal.getGridElement());
-      this.internal.initGrid();
+      this.grid.init(this, this.lightDom.querySelector("table"), this.localDom);
 
       Object.defineProperty(this, 'scrollTop', {
         get: function() {
-          return this.internal.getScrollTop();
+          return this.grid.getScrollTop();
         },
         set: function(newValue) {
-          this.internal.setScrollTop(newValue);
+          this.grid.setScrollTop(newValue);
         },
         enumerable: true,
         configurable: false
@@ -104,15 +102,15 @@
     },
 
     scrollToRow: function(index, scrollDestination) {
-      this.internal.scrollToRow(index, scrollDestination);
+      this.grid.scrollToRow(index, scrollDestination);
     },
 
     scrollToStart: function() {
-      this.internal.scrollToStart();
+      this.grid.scrollToStart();
     },
 
     scrollToEnd: function() {
-      this.internal.scrollToEnd();
+      this.grid.scrollToEnd();
     },
 
     select: function(value) {
@@ -133,19 +131,19 @@
     },
 
     set selectedRows(r) {
-      return this.internal.setSelectedRows(r);
+      return this.grid.setSelectedRows(r);
     },
     get selectedRows() {
-      return this.internal.getSelectedRows();
+      return this.grid.getSelectedRows();
     },
     set columns(r) {
-      this.internal.setColumns(r);
+      this.grid.setColumns(r);
     },
     get columns() {
-      return this.internal.getColumns();
+      return this.grid.getColumns();
     },
     get datasource() {
-      return this.internal.getDataSource();
+      return this.grid.getDataSource();
     },
 
   };
