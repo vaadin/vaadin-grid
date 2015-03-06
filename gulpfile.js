@@ -172,6 +172,19 @@ function cleanDone(done) {
   };
 }
 
+function localAddress() {
+  var ip, tun, ifaces = require('os').networkInterfaces();
+  Object.keys(ifaces).forEach(function (ifname) {
+    ifaces[ifname].forEach(function (iface) {
+      if ('IPv4' == iface.family && !iface.internal) {
+        if (!ip) ip = iface.address;
+        if (/tun/.test(ifname)) tun = iface.address;
+      }
+    });
+  });
+  return tun || ip;
+}
+
 gulp.task('test:validation', function(done) {
 
   //TODO: PR which enabled wct gulp script to accept options so we don't need
@@ -207,7 +220,7 @@ gulp.task('test:validation', function(done) {
       root: '.',
       webserver: {
         port: 2000,
-        hostname: require('ip').address()
+        hostname: localAddress()
       }
     }, cleanDone(done));
 });
