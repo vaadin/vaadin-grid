@@ -227,8 +227,8 @@ gulp.task('test:validation', function(done) {
 
 gulp.task('all', ['clean'], function() {
   // Compile themes
-  args = {component: 'button'};
   gulp.start('css');
+
   // Compile Gwt
   compileGwt(function() {
     copyGwtModule('vaadin-grid', 'VaadinGrid', version, function() {
