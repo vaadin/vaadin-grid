@@ -1,4 +1,5 @@
 "use strict";
+var _ = require('lodash');
 var gulp = require('gulp');
 var gutil = require('gulp-util');
 var chalk = require('chalk');
@@ -16,10 +17,11 @@ var sourcemaps = require('gulp-sourcemaps');
 var autoprefixer = require('gulp-autoprefixer');
 var minify = require('gulp-minify-css');
 var args = require('yargs').argv;
+var zip = require('gulp-zip');
 
 var pwd = process.cwd();
 var gwtproject = 'vaadin-components-gwt';
-var gitrepo = 'git@vaadin-components.intra.itmill.com:/opt/git/';
+var gitrepo = 'git@github.com:vaadin-bower/';
 var target = pwd + '/target';
 var version = '0.2.0';
 var major = version.replace(/(\d+\.\d+\.).*$/, '$1');
@@ -46,54 +48,6 @@ function compileGwt(cb, pretty) {
     system(command, function(){
       gutil.log('GWT components compilation succeeded.')
       if (cb) cb();
-    });
-  });
-}
-
-function updatePolymerComponent(component, tag, tmpdir ) {
-  var message = 'Releasing_version_' + tag;
-  var gitcwd = tmpdir + '/' + component;
-  var giturl = gitrepo + '/' + component + '.git';
-  var componentDir = 'vaadin-components/' + component;
-  fs.removeSync(gitcwd);
-  git.clone(giturl, {
-    args : gitcwd
-  }, function(err) {
-    if (err) throw err;
-
-    process.chdir(pwd);
-    fs.copySync(componentDir, gitcwd);
-
-    gulp.src(gitcwd + '/bower.json')
-    .pipe(json({version: tag, name: component}))
-    .pipe(gulp.dest(gitcwd));
-
-    gulp.src(gitcwd + '/**/*.html')
-    .pipe(replace(/(src|href)=("|')(.*?)\.\.\/\.\.\/bower_components\//mg, '$1=$2$3../'))
-    .pipe(gulp.dest(gitcwd));
-
-    process.chdir(gitcwd);
-    git.status({
-      args : '--porcelain'
-    }, function(err, stdout) {
-      if (/\w/.test(stdout.replace('M bower.json','').replace(/\s/,''))) {
-        // FIXME: This is executed in parallel, I think git.commit
-        // implementation is buggy, so using a hack with system.
-        // gulp.src('*')
-        // .pipe(git.commit(message))
-        // .pipe(git.tag('v' + tag, message));
-        system('git add . ; git commit -q -a -m ' + message, function() {
-          git.tag(tag, message, function() {
-            git.push('origin', 'master', {
-              args : '--tags'
-            }, function() {
-              gutil.log('>>>> Released a new version of ' + component + ' (' + tag + ')');
-            })
-          })
-        })
-      } else {
-        gutil.log('>>>> No new changes to commit for component ' + component);
-      }
     });
   });
 }
@@ -126,7 +80,7 @@ function copyGwtModule(component, moduleName, version, cb) {
 }
 
 gulp.task('default', function() {
-  console.log('\n  Use:\n    gulp <clean|gwt|css|sassdoc|deploy|all>\n');
+  console.log('\n  Use:\n    gulp <clean|gwt|css|sassdoc|test|stage|deploy|all>\n');
 });
 
 gulp.task('clean', function(cb) {
@@ -149,9 +103,91 @@ gulp.task('gwt', function(cb) {
   });
 });
 
-gulp.task('deploy', function() {
-  updatePolymerComponent('vaadin-button', tag, target);
-  updatePolymerComponent('vaadin-grid', tag, target);
+gulp.task('stage:clone', function(done) {
+  var giturl = gitrepo + 'vaadin-components.git';
+
+  fs.removeSync(target);
+
+  var cloneArgs = (args.checkout ? '-b ' + args.checkout + ' ' : '') + target;
+
+  git.clone(giturl, {
+    args : cloneArgs
+  }, function(err) {
+    if (err) throw err;
+    done();
+  });
+});
+
+gulp.task('stage:components', ['stage:clone'], function() {
+  var components = ['vaadin-button', 'vaadin-grid'];
+
+  process.chdir(pwd);
+
+  _.forEach(components, function(component) {
+    fs.copySync('vaadin-components/' + component, target + '/' + component);
+  });
+});
+
+gulp.task('stage:bower.json', ['stage:clone'], function() {
+  return gulp.src(pwd + '/vaadin-components-package/bower.json')
+             .pipe(json({version: tag}))
+             .pipe(gulp.dest(target));
+});
+
+gulp.task('stage:replace', ['stage:components'], function() {
+  return gulp.src(target + '/**/*.html')
+             .pipe(replace(/(src|href)=("|')(.*?)\.\.\/\.\.\/bower_components\//mg, '$1=$2$3../../'))
+             .pipe(gulp.dest(target));
+});
+
+gulp.task('stage', ['stage:components', 'stage:replace', 'stage:bower.json'], function() {
+
+});
+
+gulp.task('deploy', ['stage'], function() {
+  var message = 'Release version ' + tag + '.';
+
+  process.chdir(target);
+  git.status({
+    args : '--porcelain'
+  }, function(err, stdout) {
+    if (/\w/.test(stdout.replace('M bower.json','').replace(/\s/,''))) {
+      system('git add . ; git commit -q -a -m "' + message + '"', function() {
+        git.tag(tag, message, function() {
+          git.push('origin', 'master', {
+            args : '--tags'
+          }, function() {
+            gutil.log('>>>> Released a new version of components (' + tag + ').');
+          })
+        })
+      })
+    } else {
+      gutil.log('>>>> No new changes to commit for components.');
+    }
+  });
+});
+
+gulp.task('deploy:snapshot', ['stage'], function() {
+  var message = 'Release snapshot ' + tag + '.';
+
+  process.chdir(target);
+    git.status({
+      args : '--porcelain'
+    }, function(err, stdout) {
+      system('git add . ; git commit -q -a -m "' + message + '" --amend', function() {
+        git.push('origin', 'HEAD:0.2-snapshot', {
+          args: '--force'
+        }, function() {
+          gutil.log('>>>> Released a new version of components (' + tag + ').');
+        })
+      })
+    });
+});
+
+gulp.task('stage:zip', ['stage'], function() {
+    return gulp.src(target + '/**/*')
+      .pipe(zip('vaadin-components-' + tag + '.zip'))
+      .pipe(gulp.dest(target));
 });
 
 gulp.task('test', ['test:local']);

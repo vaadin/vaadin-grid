@@ -1,5 +1,5 @@
 {
-  "name": "vaadin-grid",
+  "name": "vaadin-components",
   "version": "0.2.0",
   "authors": [
     "Vaadin Ltd"
@@ -8,10 +8,10 @@
   "license": "Apache License 2.0",
   "ignore": [
     "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests"
+    "**/node_modules",
+    "**/bower_components",
+    "**/test",
+    "**/tests"
   ],
   "dependencies": {
     "polymer": "Polymer/polymer#0.8-preview",

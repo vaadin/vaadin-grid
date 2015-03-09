@@ -1,38 +1,35 @@
 {
-  "name":"vaadin-components",
-  "version":"0.2.0",
-  "description":"A set of high-quality Web Components with a customizable Sass based theme",
+  "name": "vaadin-components",
+  "version": "0.2.0",
+  "description": "A set of high-quality Web Components with a customizable Sass based theme",
   "author": "Vaadin Ltd",
   "license": "Apache License 2.0",
-
-  "dependencies":{
-    "bower":"latest",
-    "gulp":"latest",
-    "gulp-util":"latest",
-    "gulp-git":"latest",
-    "fs-extra":"latest",
-    "gulp-rename":"latest",
-    "gulp-json-editor":"latest",
-    "gulp-replace":"latest",
-    "gulp-sass":"latest",
-    "gulp-sourcemaps":"latest",
-    "gulp-autoprefixer":"latest",
-    "gulp-minify-css":"latest",
-    "yargs":"latest",
-    "web-component-tester":"latest",
+  "dependencies": {
+    "bower": "latest",
+    "gulp": "latest",
+    "gulp-util": "latest",
+    "gulp-git": "latest",
+    "fs-extra": "latest",
+    "gulp-rename": "latest",
+    "gulp-json-editor": "latest",
+    "gulp-replace": "latest",
+    "gulp-sass": "latest",
+    "gulp-sourcemaps": "latest",
+    "gulp-autoprefixer": "latest",
+    "gulp-minify-css": "latest",
+    "yargs": "latest",
+    "web-component-tester": "latest",
     "sassdoc": "latest"
   },
-
   "devDependencies": {
-    "ip":"latest",
-    "chalk":"latest",
-    "wct-teamcity-reporter":"latest"
+    "chalk": "latest",
+    "gulp-zip": "^2.0.3",
+    "lodash": "^3.5.0",
+    "wct-teamcity-reporter": "latest"
   },
-
   "scripts": {
     "install": "node_modules/.bin/bower install --allow-root https://github.com/Polymer/polymer.git#3449fc4 https://github.com/Polymer/web-component-tester.git https://github.com/Polymer/webcomponentsjs.git https://github.com/MaxArt2501/object-observe.git#0.2.1"
   },
-
   "keywords": [
     "vaadin",
     "components",
