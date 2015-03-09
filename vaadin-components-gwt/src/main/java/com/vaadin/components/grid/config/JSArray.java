@@ -6,12 +6,11 @@ import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.query.client.js.JsUtils;
 
 /**
- * This object represent a native JS Array of any JsType.
- * In theory JsTypes are JavaScriptObject but does not extend
- * it so we need this.
+ * This object represent a native JS Array of any JsType. In theory JsTypes are
+ * JavaScriptObject but does not extend it so we need this.
  *
- * At the same time, we have a quick way to get a java List
- * implementation so as we can use easily this in foreach blocks.
+ * At the same time, we have a quick way to get a java List implementation so as
+ * we can use easily this in foreach blocks.
  */
 public class JSArray<T> extends JsArrayMixed {
     protected JSArray() {
@@ -39,5 +38,18 @@ public class JSArray<T> extends JsArrayMixed {
 
     public final int size() {
         return length();
+    }
+
+    public final void add(T value, int index) {
+        JsUtils.jsni(this, "splice", index, 0, value);
+    }
+
+    public final int indexOf(T value) {
+        double val = JsUtils.jsni(this, "indexOf", value);
+        return (int) val;
+    }
+
+    public final void remove(T value) {
+        JsUtils.jsni(this, "splice", indexOf(value), 1);
     }
 }

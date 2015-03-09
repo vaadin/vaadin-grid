@@ -21,7 +21,7 @@ public class GridJsObjectDataSource extends GridDataSource {
             int firstRowIndex,
             int numberOfRows,
             com.vaadin.client.data.AbstractRemoteDataSource.RequestRowsCallback<com.google.gwt.core.client.JsArrayMixed> callback) {
-        setRowDataFromJs(firstRowIndex, numberOfRows, wcGrid.getCols(), jso);
+        setRowDataFromJs(firstRowIndex, numberOfRows, wcGrid.getColumns(), jso);
     }
 
 }

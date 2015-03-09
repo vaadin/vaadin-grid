@@ -3,7 +3,9 @@ package com.vaadin.components.grid;
 import static com.google.gwt.query.client.GQuery.$;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -37,11 +39,11 @@ import com.vaadin.components.grid.config.JSArray;
 import com.vaadin.components.grid.config.JSColumn;
 import com.vaadin.components.grid.config.JSEnums;
 import com.vaadin.components.grid.config.JSSortOrder;
-import com.vaadin.components.grid.config.JSValidate;
 import com.vaadin.components.grid.data.GridDataSource;
 import com.vaadin.components.grid.data.GridDomTableDataSource;
 import com.vaadin.components.grid.data.GridJsFuncDataSource;
 import com.vaadin.components.grid.data.GridJsObjectDataSource;
+import com.vaadin.components.grid.head.GridColumn;
 import com.vaadin.components.grid.head.GridDomTableHead;
 import com.vaadin.components.grid.utils.Redraw;
 import com.vaadin.shared.data.sort.SortDirection;
@@ -54,10 +56,10 @@ import com.vaadin.shared.ui.grid.ScrollDestination;
 @JsNamespace(Elements.VAADIN_JS_NAMESPACE)
 @JsExport
 @JsType
-public class GridComponent implements SelectionHandler<JsArrayMixed>, EventListener {
+public class GridComponent implements SelectionHandler<JsArrayMixed>,
+        EventListener {
 
     private Grid<JsArrayMixed> grid;
-    private JSArray<JSColumn> jsColumns;
     private JSArray<JSSortOrder> jsSort;
 
     private int size = 0;
@@ -66,11 +68,13 @@ public class GridComponent implements SelectionHandler<JsArrayMixed>, EventListe
     private Redraw redrawer;
 
     private Element container;
+    private JSArray<JSColumn> cols;
 
     public GridComponent() {
-        setColumns(JS.createArray());
         grid = new Grid<JsArrayMixed>();
         grid.addSelectionHandler(this);
+        cols = JS.createArray();
+        observeColumnArray();
     }
 
     public Element getGridElement() {
@@ -85,7 +89,8 @@ public class GridComponent implements SelectionHandler<JsArrayMixed>, EventListe
         List<SortOrder> order = new ArrayList<SortOrder>();
         for (JSSortOrder jsOrder : jsOrders.asList()) {
             Column<?, ?> column = grid.getColumn(jsOrder.getColumn());
-            SortDirection direction = JSEnums.Direction.val(jsOrder.getDirection());
+            SortDirection direction = JSEnums.Direction.val(jsOrder
+                    .getDirection());
             jsOrder.setDirection(JSEnums.Direction.val(direction));
             order.add(new SortOrder(column, direction));
         }
@@ -100,18 +105,19 @@ public class GridComponent implements SelectionHandler<JsArrayMixed>, EventListe
     public void init(Element container, TableElement lightDomElement,
             Element gridContainer) {
         this.container = container;
+        redrawer = new Redraw(grid, container);
 
         if (head == null) {
             head = new GridDomTableHead(lightDomElement, this);
         } else {
             head.setLightDom(lightDomElement);
         }
-        jsColumns = head.loadHeaders();
+        if (lightDomElement != null) {
+            setColumns(head.loadHeaders());
+        }
 
         gridContainer.appendChild(grid.getElement());
         WidgetsUtils.attachWidget(grid, null);
-
-        redrawer = new Redraw(grid, container);
 
         if (lightDomElement != null) {
             // If the wrapped DOM table has TR elements, we use it as data
@@ -125,8 +131,41 @@ public class GridComponent implements SelectionHandler<JsArrayMixed>, EventListe
         }
     }
 
+    public JSColumn addColumn(JSColumn jsColumn, String beforeColumn) {
+        int index = grid.getColumnCount();
+        if (beforeColumn != null) {
+            index = getColumnIndexByIndexOrName(beforeColumn);
+        }
+        cols.add(jsColumn, index);
+
+        return jsColumn;
+    }
+
+    private int getColumnIndexByIndexOrName(String indexOrName) {
+        if (indexOrName.matches("\\d+")) {
+            int parsedInt = Integer.parseInt(indexOrName);
+            if (parsedInt < cols.length()) {
+                return parsedInt;
+            }
+        } else {
+            String idString = String.valueOf(indexOrName);
+            for (int i = 0; i < cols.length(); i++) {
+                JSColumn jsColumn = cols.get(i);
+                if (idString.equals(jsColumn.name())) {
+                    return i;
+                }
+            }
+        }
+        throw new IllegalArgumentException("Column not found.");
+    }
+
+    public void removeColumn(String id) {
+        int index = getColumnIndexByIndexOrName(id);
+        cols.remove(cols.get(index));
+    }
+
     public void onMutation() {
-        jsColumns = head.loadHeaders();
+        setColumns(head.loadHeaders());
         refresh();
     }
 
@@ -140,17 +179,8 @@ public class GridComponent implements SelectionHandler<JsArrayMixed>, EventListe
     }
 
     public void setFrozenColumn(String frozenColumn) {
-        Integer column = JSValidate.Int.val(frozenColumn);
-        for (int i = 0; i < jsColumns.length(); i++) {
-            if (frozenColumn.equals(jsColumns.get(i).headerData().get(0)
-                    .content())) {
-                column = i + 1;
-                break;
-            }
-        }
-        if (column != null) {
-            grid.setFrozenColumnCount(column);
-        }
+        int index = getColumnIndexByIndexOrName(frozenColumn);
+        grid.setFrozenColumnCount(index + 1);
     }
 
     public void scrollToRow(int index, String scrollDestination) {
@@ -178,14 +208,8 @@ public class GridComponent implements SelectionHandler<JsArrayMixed>, EventListe
         grid.setScrollTop(px);
     }
 
-    @JsNoExport
-    public void setCols(JSArray<JSColumn> cols) {
-        this.jsColumns = cols;
-    }
-
-    @JsNoExport
-    public JSArray<JSColumn> getCols() {
-        return jsColumns;
+    public JSArray<JSColumn> getColumns() {
+        return cols;
     }
 
     public void setRowCount(int size) {
@@ -220,7 +244,7 @@ public class GridComponent implements SelectionHandler<JsArrayMixed>, EventListe
         if (JsUtils.isFunction(jso)) {
             grid.setDataSource(new GridJsFuncDataSource(jso, size, this));
         } else if (JsUtils.isArray(jso)) {
-            jsColumns = head.loadHeaders();
+            setColumns(head.loadHeaders());
             grid.setDataSource(new GridJsObjectDataSource(jso
                     .<JsArray<JavaScriptObject>> cast(), this));
         } else {
@@ -246,27 +270,64 @@ public class GridComponent implements SelectionHandler<JsArrayMixed>, EventListe
         }
     }
 
-    public JavaScriptObject getColumns() {
-        return jsColumns;
+    public void setColumns(JSArray<JSColumn> columns) {
+        if (this.cols != null) {
+            DOMUtils.unobserve(this.cols);
+        }
+
+        Collection<JSColumn> gCols = new ArrayList<JSColumn>();
+        for (Column<?, JsArrayMixed> gCol : grid.getColumns()) {
+            gCols.add(((GridColumn) gCol).getJsColumn());
+        }
+
+        // Add all missing columns to grid
+        for (JSColumn column : columns.asList()) {
+            if (!gCols.contains(column)) {
+                GridColumn.addColumn(column, this);
+            }
+        }
+        // Remove all non-included columns from grid
+        for (Column<?, JsArrayMixed> column : grid.getColumns()) {
+            if (columns.indexOf(((GridColumn) column).getJsColumn()) == -1) {
+                grid.removeColumn(column);
+            }
+        }
+
+        // Fix column order
+        GridColumn[] array = grid.getColumns().toArray(new GridColumn[0]);
+        Arrays.sort(array, new Comparator<GridColumn>() {
+            @Override
+            public int compare(GridColumn o1, GridColumn o2) {
+                return columns.indexOf(o1.getJsColumn()) > columns.indexOf(o2
+                        .getJsColumn()) ? 1 : -1;
+            }
+        });
+        grid.setColumnOrder(array);
+
+        this.cols = columns;
+        observeColumnArray();
+    }
+
+    private void observeColumnArray() {
+        DOMUtils.observe(this.cols, new EventListener() {
+            @Override
+            public void onBrowserEvent(Event event) {
+                setColumns(GridComponent.this.cols);
+            }
+        });
     }
 
     public void setSelectionMode(String selectionMode) {
         // TODO: this randomly raises an asynchronous exception
         // The selection column cannot be modified after init
-        grid.setSelectionMode(JSEnums.Selection.<SelectionMode>val(selectionMode));
+        grid.setSelectionMode(JSEnums.Selection
+                .<SelectionMode> val(selectionMode));
         grid.getDefaultHeaderRow().getCell(grid.getColumn(0)).setText("");
     }
 
+    @Override
     public void onBrowserEvent(Event event) {
         refresh();
-    }
-
-    public void setColumns(JavaScriptObject newCols) {
-        if (jsColumns != newCols) {
-            DOMUtils.unobserveJsArray(jsColumns);
-            jsColumns = newCols.cast();
-            DOMUtils.observeJsArray(jsColumns, this);
-        }
     }
 
     public void setSelectedRows(JsArrayInteger selectedJso) {
