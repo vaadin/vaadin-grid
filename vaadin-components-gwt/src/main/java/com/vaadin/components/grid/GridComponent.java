@@ -1,7 +1,6 @@
 package com.vaadin.components.grid;
 
 import static com.google.gwt.query.client.GQuery.$;
-import static com.google.gwt.query.client.GQuery.browser;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,7 +22,6 @@ import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.widgets.WidgetsUtils;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
-import com.google.gwt.user.client.Timer;
 import com.vaadin.client.data.AbstractRemoteDataSource;
 import com.vaadin.client.data.DataSource;
 import com.vaadin.client.widget.grid.selection.SelectionEvent;
@@ -37,26 +35,35 @@ import com.vaadin.components.common.util.Elements;
 import com.vaadin.components.grid.config.JS;
 import com.vaadin.components.grid.config.JSArray;
 import com.vaadin.components.grid.config.JSColumn;
+import com.vaadin.components.grid.config.JSEnums;
 import com.vaadin.components.grid.config.JSSortOrder;
+import com.vaadin.components.grid.config.JSValidate;
 import com.vaadin.components.grid.data.GridDataSource;
 import com.vaadin.components.grid.data.GridDomTableDataSource;
 import com.vaadin.components.grid.data.GridJsFuncDataSource;
 import com.vaadin.components.grid.data.GridJsObjectDataSource;
 import com.vaadin.components.grid.head.GridDomTableHead;
+import com.vaadin.components.grid.utils.Redraw;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.grid.HeightMode;
 import com.vaadin.shared.ui.grid.ScrollDestination;
 
+/**
+ * Class to export Vaadin Grid to JS.
+ */
 @JsNamespace(Elements.VAADIN_JS_NAMESPACE)
 @JsExport
 @JsType
-public class GridComponent implements SelectionHandler<JsArrayMixed> {
+public class GridComponent implements SelectionHandler<JsArrayMixed>, EventListener {
 
     private Grid<JsArrayMixed> grid;
-    public JSArray<JSColumn> cols;
+    private JSArray<JSColumn> jsColumns;
+    private JSArray<JSSortOrder> jsSort;
+
     private int size = 0;
     private boolean updating = false;
     private GridDomTableHead head;
+    private Redraw redrawer;
 
     private Element container;
 
@@ -70,40 +77,20 @@ public class GridComponent implements SelectionHandler<JsArrayMixed> {
         return grid.getElement();
     }
 
-    public JSSortOrder[] getSortOrder() {
-        List<SortOrder> sortOrders = grid.getSortOrder();
-        JSSortOrder[] result = new JSSortOrder[sortOrders.size()];
-        for (int i = 0; i < sortOrders.size(); i++) {
-            SortOrder sortOrder = sortOrders.get(i);
-            JSSortOrder jsOrder = JS.createJsType(JSSortOrder.class);
-            int columnIndex = grid.getColumns().indexOf(sortOrder.getColumn());
-            jsOrder.setColumn(columnIndex);
-
-            String directionString = sortOrder.getDirection() == SortDirection.ASCENDING ? "asc"
-                    : "desc";
-            jsOrder.setDirection(directionString);
-            result[i] = jsOrder;
-        }
-        return result;
+    public JavaScriptObject getSortOrder() {
+        return jsSort;
     }
 
-    public void setSortOrder(JSSortOrder[] jsOrders) {
+    public void setSortOrder(JSArray<JSSortOrder> jsOrders) {
         List<SortOrder> order = new ArrayList<SortOrder>();
-        for (JSSortOrder jsOrder : jsOrders) {
-            Column<?, JsArrayMixed> column = grid
-                    .getColumn(jsOrder.getColumn());
-            SortDirection direction = SortDirection.ASCENDING;
-            if (jsOrder.getDirection() != null) {
-                if ("desc".equals(jsOrder.getDirection())) {
-                    direction = SortDirection.DESCENDING;
-                } else if (!"asc".equals(jsOrder.getDirection())) {
-                    throw new RuntimeException("Invalid sort direction: "
-                            + jsOrder.getDirection());
-                }
-            }
+        for (JSSortOrder jsOrder : jsOrders.asList()) {
+            Column<?, ?> column = grid.getColumn(jsOrder.getColumn());
+            SortDirection direction = JSEnums.Direction.val(jsOrder.getDirection());
+            jsOrder.setDirection(JSEnums.Direction.val(direction));
             order.add(new SortOrder(column, direction));
         }
         grid.setSortOrder(order);
+        this.jsSort = jsOrders;
     }
 
     public Grid<JsArrayMixed> getGrid() {
@@ -119,10 +106,12 @@ public class GridComponent implements SelectionHandler<JsArrayMixed> {
         } else {
             head.setLightDom(lightDomElement);
         }
-        cols = head.loadHeaders();
+        jsColumns = head.loadHeaders();
 
         gridContainer.appendChild(grid.getElement());
         WidgetsUtils.attachWidget(grid, null);
+
+        redrawer = new Redraw(grid, container);
 
         if (lightDomElement != null) {
             // If the wrapped DOM table has TR elements, we use it as data
@@ -137,7 +126,7 @@ public class GridComponent implements SelectionHandler<JsArrayMixed> {
     }
 
     public void onMutation() {
-        cols = head.loadHeaders();
+        jsColumns = head.loadHeaders();
         refresh();
     }
 
@@ -151,16 +140,12 @@ public class GridComponent implements SelectionHandler<JsArrayMixed> {
     }
 
     public void setFrozenColumn(String frozenColumn) {
-        Integer column = null;
-        try {
-            column = Integer.parseInt(frozenColumn);
-        } catch (NumberFormatException e) {
-            for (int i = 0; i < cols.length(); i++) {
-                if (frozenColumn.equals(cols.get(i).headerData().get(0)
-                        .content())) {
-                    column = i + 1;
-                    break;
-                }
+        Integer column = JSValidate.Int.val(frozenColumn);
+        for (int i = 0; i < jsColumns.length(); i++) {
+            if (frozenColumn.equals(jsColumns.get(i).headerData().get(0)
+                    .content())) {
+                column = i + 1;
+                break;
             }
         }
         if (column != null) {
@@ -195,12 +180,12 @@ public class GridComponent implements SelectionHandler<JsArrayMixed> {
 
     @JsNoExport
     public void setCols(JSArray<JSColumn> cols) {
-        this.cols = cols;
+        this.jsColumns = cols;
     }
 
     @JsNoExport
     public JSArray<JSColumn> getCols() {
-        return cols;
+        return jsColumns;
     }
 
     public void setRowCount(int size) {
@@ -235,7 +220,7 @@ public class GridComponent implements SelectionHandler<JsArrayMixed> {
         if (JsUtils.isFunction(jso)) {
             grid.setDataSource(new GridJsFuncDataSource(jso, size, this));
         } else if (JsUtils.isArray(jso)) {
-            cols = head.loadHeaders();
+            jsColumns = head.loadHeaders();
             grid.setDataSource(new GridJsObjectDataSource(jso
                     .<JsArray<JavaScriptObject>> cast(), this));
         } else {
@@ -262,32 +247,25 @@ public class GridComponent implements SelectionHandler<JsArrayMixed> {
     }
 
     public JavaScriptObject getColumns() {
-        return cols;
+        return jsColumns;
     }
 
     public void setSelectionMode(String selectionMode) {
         // TODO: this randomly raises an asynchronous exception
         // The selection column cannot be modified after init
-        grid.setSelectionMode(SelectionMode.valueOf(selectionMode.toUpperCase()));
+        grid.setSelectionMode(JSEnums.Selection.<SelectionMode>val(selectionMode));
         grid.getDefaultHeaderRow().getCell(grid.getColumn(0)).setText("");
     }
 
+    public void onBrowserEvent(Event event) {
+        refresh();
+    }
+
     public void setColumns(JavaScriptObject newCols) {
-        if (cols != newCols) {
-            if (cols != null) {
-                for (int i = 0, l = cols.length(); i < l; i++) {
-                    DOMUtils.unobserve(cols.get(i));
-                }
-            }
-            cols = newCols.cast();
-            for (int i = 0, l = cols.length(); i < l; i++) {
-                DOMUtils.observe(cols.get(i), new EventListener() {
-                    @Override
-                    public void onBrowserEvent(Event event) {
-                        refresh();
-                    }
-                });
-            }
+        if (jsColumns != newCols) {
+            DOMUtils.unobserveJsArray(jsColumns);
+            jsColumns = newCols.cast();
+            DOMUtils.observeJsArray(jsColumns, this);
         }
     }
 
@@ -317,55 +295,9 @@ public class GridComponent implements SelectionHandler<JsArrayMixed> {
         return selectedJso;
     }
 
-    private Timer redrawTimer;
-
-    // TODO: this method is a workaround to adjust sizes of the grid based on
-    // the v-grid container. It should be done out-of-the-box by the grid
-    // though.
+    // TODO: remove this when grid resizes appropriately on container
+    // and data changes.
     public void redraw() {
-        if (redrawTimer == null) {
-            redrawTimer = new Timer() {
-                int defaultSize = (int) grid.getHeightByRows();
-                int size = defaultSize;
-
-                @Override
-                public void run() {
-                    // Setting grid to 100% makes it fit to our v-grid container
-                    // TODO: but it does not work in FF.
-                    if (!browser.mozilla) {
-                        grid.setWidth("100%");
-                    }
-                    grid.resetSizesFromDom();
-                    grid.recalculateColumnWidths();
-
-                    // Let see if our container has a fixed css height
-                    int vgridHeight = $(container).height();
-                    int gridHeight = $(grid).height();
-                    if (vgridHeight != gridHeight && vgridHeight > 0) {
-                        grid.setHeight(vgridHeight + "px");
-                    } else {
-                        // Check if data-source size is smaller than grid
-                        // visible rows, and reduce height
-                        // TODO: this should be done using setHeightByRows, but
-                        // it has performance issues
-                        GridDataSource ds = (GridDataSource) grid
-                                .getDataSource();
-                        if (ds != null) {
-                            int nsize = Math.min(ds.size(), defaultSize);
-                            if (nsize != size) {
-                                size = nsize;
-                                int h = $(grid).find("tr td").height() + 2;
-                                double s = h
-                                        * (size + grid.getHeaderRowCount() + grid
-                                                .getFooterRowCount());
-                                grid.setHeight(s + "px");
-                            }
-                        }
-                    }
-                }
-            };
-        }
-        // Scheduling it we avoid multiple redraw in very small time
-        redrawTimer.schedule(50);
+        redrawer.redraw();
     }
 }

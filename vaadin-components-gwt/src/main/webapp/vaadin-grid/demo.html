@@ -214,7 +214,6 @@
     </script>
   </li>
 
-
   <li>
   <h3>Mapping data from a array into single column</h3>
   <v-grid id="with-single-column">
@@ -436,6 +435,34 @@
     </script>
     <my-grid-with-template2></my-grid-with-template2>
   </li>
+
+  <li>
+  <h3>Sort example</h3>
+    <v-grid id='mySortGrid'>
+      <table><thead><tr><th>Name</th><th>Value</th></tr></thead>
+      <tbody><tr><td>Grid</td><td>10000</td></tr><tr><td>VaadinX</td><td>1000</td></tr></tbody></table>
+    </v-grid>
+    <button id="mySortButton">Order column 0</button>
+    Sort: <span id="mySortLabel"></span>
+
+    <script>
+        waitUntilGridReady("mySortGrid", function(grid) {
+          var button = document.getElementById("mySortButton");
+          var label = document.getElementById("mySortLabel");
+
+          var cnt = 0;
+          button.addEventListener("click", function(event) {
+            var dir = cnt++ % 2 == 0 ? "desc" : "asc";
+            grid.sortOrder = [{
+              column: 1,
+              direction: dir
+            }];
+            label.textContent = JSON.stringify(grid.sortOrder);
+          });
+        });
+    </script>
+  </li>
+
 </ol>
 </body>
 </html>

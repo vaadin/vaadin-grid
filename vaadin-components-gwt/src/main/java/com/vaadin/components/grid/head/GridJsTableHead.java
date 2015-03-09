@@ -9,6 +9,7 @@ import com.vaadin.client.widgets.Grid.HeaderRow;
 import com.vaadin.components.grid.GridComponent;
 import com.vaadin.components.grid.config.JSArray;
 import com.vaadin.components.grid.config.JSColumn;
+import com.vaadin.components.grid.config.JSEnums;
 import com.vaadin.components.grid.config.JSHeaderCell;
 import com.vaadin.components.grid.config.JSHeaderCell.Format;
 
@@ -57,7 +58,7 @@ public class GridJsTableHead {
                         .getCell(col);
                 cell.setColspan(header.colSpan());
                 Object content = header.content();
-                switch (Format.valueOf(header.format())) {
+                switch (JSEnums.Format.<Format>val(header.format())) {
                 case HTML:
                     cell.setHtml((String) content);
                     break;
