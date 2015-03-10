@@ -23,7 +23,10 @@ var target = pwd + '/target';
 var version = '0.2.0';
 var major = version.replace(/(\d+\.\d+\.).*$/, '$1');
 var patch = ~~((new Date().getTime() / 1000 - 1420070400) / 60)
-var tag =  major + patch;
+var tag =  args.version || major + patch; // will rename the tag variable in a separate patch
+var target_cdn = target + '/cdn/' + tag;
+var target_bower = target + '/bower';
+var target_zip = target + '/zip';
 
 function system(command, cb) {
   cmd.exec(command, function(err, stdout, stderr) {
@@ -103,9 +106,9 @@ gulp.task('gwt', function(cb) {
 gulp.task('stage:clone', function(done) {
   var giturl = gitrepo + 'vaadin-components.git';
 
-  fs.removeSync(target);
+  fs.removeSync(target_bower);
 
-  var cloneArgs = (args.checkout ? '-b ' + args.checkout + ' ' : '') + target;
+  var cloneArgs = (args.checkout ? '-b ' + args.checkout + ' ' : '') + target_bower;
 
   git.clone(giturl, {
     args : cloneArgs
@@ -121,20 +124,36 @@ gulp.task('stage:components', ['stage:clone'], function() {
   process.chdir(pwd);
 
   _.forEach(components, function(component) {
-    fs.copySync('vaadin-components/' + component, target + '/' + component);
+    fs.copySync('vaadin-components/' + component, target_bower + '/' + component);
   });
 });
 
 gulp.task('stage:bower.json', ['stage:clone'], function() {
   return gulp.src(pwd + '/vaadin-components-package/bower.json')
              .pipe(json({version: tag}))
-             .pipe(gulp.dest(target));
+             .pipe(gulp.dest(target_bower));
 });
 
 gulp.task('stage:replace', ['stage:components'], function() {
-  return gulp.src(target + '/**/*.html')
+  return gulp.src(target_bower + '/**/*.html')
              .pipe(replace(/(src|href)=("|')(.*?)\.\.\/\.\.\/bower_components\//mg, '$1=$2$3../../'))
-             .pipe(gulp.dest(target));
+             .pipe(gulp.dest(target_bower));
+});
+
+gulp.task('stage:cdn', function() {
+  fs.removeSync(target + '/cdn');
+
+  var components = ['vaadin-grid', 'vaadin-button'];
+
+  var paths = _.map(components, function(n) {
+    return 'vaadin-components/' + n + '/**/*';
+  }).concat(['!**/test/*', '!**/demo*', '!**/demo/*', '!**/bigdata.js']);
+
+  return gulp.src(paths)
+          .pipe(replace(/(src|href)=("|')(.*?)\.\.\/\.\.\/bower_components\/(.*?)\//mg, '$1=$2$4/'))
+          .pipe(gulp.dest(target_cdn))
+         .pipe(gulp.src('bower_components/**/*')
+          .pipe(gulp.dest(target_cdn)));
 });
 
 gulp.task('stage', ['stage:components', 'stage:replace', 'stage:bower.json'], function() {
@@ -144,7 +163,7 @@ gulp.task('stage', ['stage:components', 'stage:replace', 'stage:bower.json'], fu
 gulp.task('deploy', ['stage'], function() {
   var message = 'Release version ' + tag + '.';
 
-  process.chdir(target);
+  process.chdir(target_bower);
   git.status({
     args : '--porcelain'
   }, function(err, stdout) {
@@ -167,7 +186,7 @@ gulp.task('deploy', ['stage'], function() {
 gulp.task('deploy:snapshot', ['stage'], function() {
   var message = 'Release snapshot ' + tag + '.';
 
-  process.chdir(target);
+  process.chdir(target_bower);
     git.status({
       args : '--porcelain'
     }, function(err, stdout) {
@@ -181,10 +200,14 @@ gulp.task('deploy:snapshot', ['stage'], function() {
     });
 });
 
+// zipping doesn't really depend on stage:clone because we're not going to push,
+// but it makes sense to reuse the existing stage tasks for copying the needed files.
 gulp.task('stage:zip', ['stage'], function() {
-    return gulp.src(target + '/**/*')
+    fs.removeSync(target_zip);
+
+    return gulp.src(target_bower + '/**/*')
       .pipe(zip('vaadin-components-' + tag + '.zip'))
-      .pipe(gulp.dest(target));
+      .pipe(gulp.dest(target_zip));
 });
 
 gulp.task('test', ['test:local']);
