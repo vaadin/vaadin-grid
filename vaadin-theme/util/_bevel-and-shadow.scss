@@ -102,7 +102,7 @@
       @each $b in $bevel {
         $this: valo-bevel-and-shadow($bevel: $b, $shadow: null, $background-color: $background-color, $gradient: $gradient);
         @if $this {
-          @if length($box-shadow) > 0 {
+          @if $box-shadow != null {
             $box-shadow: $box-shadow, $this;
           } @else {
             $box-shadow: $this;
@@ -112,7 +112,7 @@
     } @else if $bevel and $bevel != none {
       $this: valo-replace-tones($bevel, $background-color, $gradient);
       @if $this {
-        @if length($box-shadow) > 0 {
+        @if $box-shadow != null {
           $box-shadow: $box-shadow, $this;
         } @else {
           $box-shadow: $this;
@@ -126,7 +126,7 @@
       @each $s in $shadow {
         $this: valo-bevel-and-shadow($bevel: null, $shadow: $s, $background-color: null, $gradient: null);
         @if $this {
-          @if length($box-shadow) > 0 {
+          @if $box-shadow != null {
             $box-shadow: $box-shadow, $this;
           } @else {
             $box-shadow: $this;
@@ -136,7 +136,7 @@
     } @else {
       $this: valo-replace-shadow($shadow);
       @if $this {
-        @if length($box-shadow) > 0 {
+        @if $box-shadow != null {
           $box-shadow: $box-shadow, $this;
         } @else {
           $box-shadow: $this;
