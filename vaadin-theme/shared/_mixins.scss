@@ -52,3 +52,14 @@
     opacity: $v-disabled-opacity;
   }
 }
+
+///
+/// Indicate that an element is clickable/tappable
+///
+/// @group util
+///
+@mixin valo-tappable {
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  -webkit-touch-callout: none;
+  cursor: pointer;
+}

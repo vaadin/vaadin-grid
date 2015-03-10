@@ -1,14 +1,8 @@
 // Color functions are used to calculate default font color
 @import "../util/color";
 
-///
-/// A static text that is shown under the loading spinned while the client-side
-/// engine is being loaded and started. The text must be given in quotes. The
-/// text can not be localized currently.
-///
-/// @type string, quoted
-///
-$v-app-loading-text: "" !default;
+// Used from the Gulp task which compiles a custom named theme variation
+$v-theme-name: null !default;
 
 ///
 /// Base line height for all widgets. It must be given a unitless number.
@@ -138,7 +132,7 @@ $v-shadow-opacity: 5% !default;
 ///
 /// The background color is the main control parameter for the Valo theme and
 /// it is  used for computing all other colors in the theme. If the color is dark
-/// (has low luminance),  * light foreground colors that give high contrast
+/// (has low luminance), light foreground colors that give high contrast
 /// with the background are automatically used.
 ///
 /// Can be any valid CSS color.
@@ -447,54 +441,12 @@ $v-hover-styles-enabled: true !default;
 /// @type list
 ///
 /// @example scss
-/// // Remove the Calendar component styles from the output (must be declared after importing Valo)
-/// $v-included-components: remove($v-included-components, calendar);
-///
-/// @example scss
-/// // Only include the Label, Button and Vertical and Horizontal layouts in the compilation
-/// $v-included-components: label, button, orderedlayout;
+/// // Only include the v-button and v-grid in the compilation
+/// $v-included-components: button, grid;
 ///
 $v-included-components:
-    absolutelayout,
-    accordion,
-    button,
-    calendar,
-    checkbox,
-    colorpicker,
-    combobox,
-    csslayout,
-    customcomponent,
-    customlayout,
-    datefield,
-    dragwrapper,
-    form,
-    formlayout,
-    grid,
-    gridlayout,
-    label,
-    link,
-    menubar,
-    nativebutton,
-    nativeselect,
-    notification,
-    optiongroup,
-    orderedlayout,
-    panel,
-    popupview,
-    progressbar,
-    slider,
-    splitpanel,
-    table,
-    tabsheet,
-    textfield,
-    textarea,
-    richtextarea,
-    tree,
-    treetable,
-    twincolselect,
-    upload,
-    window,
-    valo-menu !default;
+    button
+    grid !default;
 
 ///
 /// List of components whose additional styles should be included in the compilation.
@@ -525,18 +477,6 @@ $v-included-additional-styles: $v-included-components !default;
 @function v-is-included ($component-name, $is-included: $v-included-components) {
   @return contains($is-included, $component-name);
 }
-
-
-///
-/// A flag to note whether relative URL paths are relative to the currently parsed SCSS file or to the compilation root file.
-/// The Vaadin compiler parses URL paths differently than the regular Sass compiler (i.e. Vaadin modifies relative url paths).
-/// This boolean is used to flag which compiler is used, so that paths are correct for different resources.
-/// false == Ruby, true == Vaadin
-///
-/// @type bool
-///
-$v-relative-paths: false !default;
-
 
 ///
 ///

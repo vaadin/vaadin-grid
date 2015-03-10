@@ -1,6 +1,4 @@
-@import "../../valo";
-
-// Outputs the selectors and properties for the Button component.
+/// Outputs the selectors and properties for the Button component.
 ///
 /// @param {string} $selector [v-button] - the main selector for the component [usually the element name]
 /// @param {bool} $include-additional-styles - should the mixin output all the different style variations of the component
@@ -35,15 +33,12 @@
     }
 
     #{$selector}.borderless-colored {
-      @include valo-button-borderless-style($font-color: $v-selection-color);
-    }
-
-    #{$selector}.quiet {
-      @include valo-button-quiet-style;
+      @extend #{$selector}.borderless;
+      color: $v-selection-color;
     }
 
     #{$selector}.link {
-      @include valo-button-borderless-style;
+      @extend #{$selector}.borderless;
       @include valo-link-style;
     }
 
@@ -62,19 +57,11 @@
     #{$selector}.huge {
       @include valo-button-style($unit-size: $v-unit-size--huge, $bevel: null, $shadow: null, $background-color: null, $font-size: $v-font-size--huge, $font-weight: null);
     }
-
-    #{$selector}.icon-align-right {
-      @include valo-button-icon-align-right-style;
-    }
-
-    #{$selector}.icon-align-top {
-      @include valo-button-icon-align-top-style;
-    }
   }
 }
 
 
-// Outputs the static styles (i.e. styles which don't differ between button variants) for a button.
+/// Outputs the static styles (i.e. styles which don't differ between button variants) for a button.
 ///
 /// @param {list} $states [normal hover focus active disabled] - The button states for which to output corresponding static styles
 ///
@@ -130,7 +117,7 @@
 }
 
 
-// Outputs the styles for a button variant.
+/// Outputs the styles for a button variant.
 ///
 /// @param {size} $unit-size [$v-unit-size] - The sizing of the button, which corresponds its height
 /// @param {size | list} $padding [null] - The padding of the button. Computed from other parameters by default.
@@ -233,7 +220,7 @@
 }
 
 
-// Outputs the hover state styles for a button. The styles are by default targeted
+/// Outputs the hover state styles for a button. The styles are by default targeted
 /// for a pseudo element which is shown on top of the normal state button.
 ///
 /// @group button
@@ -248,7 +235,7 @@
 }
 
 
-// Outputs the focus state styles for a button. The styles are by default targeted
+/// Outputs the focus state styles for a button. The styles are by default targeted
 /// for a pseudo element which is shown on top of the normal state button.
 ///
 /// @group button
@@ -268,7 +255,7 @@
 }
 
 
-// Outputs the active state (pressed/down) styles for a button. The styles are by default targeted
+/// Outputs the active state (pressed/down) styles for a button. The styles are by default targeted
 /// for a pseudo element which is shown on top of the normal state button.
 ///
 /// @group button
@@ -280,7 +267,7 @@
 }
 
 
-// Output styles for a borderless button. Expects that the targeted element
+/// Output styles for a borderless button. Expects that the targeted element
 /// already has both valo-button-static-style and valo-button-style included.
 ///
 /// @param {color} $font-color [inherit] - The font color of the borderless button
@@ -312,74 +299,12 @@
 }
 
 
-// Output styles for a "quiet" button (a button whose outline is only shown
-/// once the user hovers over the button caption). Expects that the targeted
-/// element already has both valo-button-static-style and valo-button-style
-/// included.
-///
-/// @group button
-@mixin valo-button-quiet-style {
-  visibility: hidden;
-
-  &:focus,
-  &:hover {
-    visibility: visible;
+@if v-is-included(button) {
+  // Output the styles according to the theme
+  $v-button-selector: "v-button:not([theme])";
+  @if $v-theme-name {
+    $v-button-selector: "v-button[theme=\"#{$v-theme-name}\"]"
   }
 
-  [class*="wrap"] {
-    visibility: visible;
-  }
-
-  [class*="caption"] {
-    // For IE8
-    display: inline-block;
-  }
+  @include valo-button($selector: $v-button-selector);
 }
-
-
-// Output styles to align a button's icon on the right side of its caption.
-///
-/// @group button
-@mixin valo-button-icon-align-right-style {
-  [class*="wrap"] {
-    display: inline-block;
-  }
-
-  .v-icon {
-    float: right;
-    $padding-width: ceil($v-unit-size/2.4);
-    margin-left: $padding-width + ceil($padding-width/-5);
-
-    + span:not(:empty) {
-      margin-left: 0;
-    }
-  }
-}
-
-
-// Output styles to align a button's icon on top of its caption.
-///
-/// @group button
-@mixin valo-button-icon-align-top-style {
-  height: auto;
-  padding-top: ceil($v-unit-size/9);
-  padding-bottom: ceil($v-unit-size/9);
-
-  [class*="wrap"] {
-    display: inline-block;
-  }
-
-  .v-icon {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-
-    + span:not(:empty) {
-      margin-top: ceil($v-unit-size/6);
-      margin-left: 0;
-    }
-  }
-}
-
-// Output the styles
-@include valo-button;

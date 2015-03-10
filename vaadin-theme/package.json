@@ -17,5 +17,20 @@
     "theme"
   ],
   "author": "Vaadin Ltd.",
-  "license": "Apache License 2.0"
+  "license": "Apache License 2.0",
+  "bin": {
+    "vaadin-theme": "bin/vaadin-theme.js"
+  },
+  "dependencies": {
+    "gulp": "latest",
+    "gulp-util": "latest",
+    "gulp-rename": "latest",
+    "gulp-replace": "latest",
+    "gulp-insert": "latest",
+    "gulp-sass": "latest",
+    "gulp-sourcemaps": "latest",
+    "gulp-autoprefixer": "latest",
+    "gulp-strip-css-comments": "latest",
+    "yargs": "latest"
+  }
 }

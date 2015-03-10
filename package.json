@@ -13,10 +13,6 @@
     "gulp-rename": "latest",
     "gulp-json-editor": "latest",
     "gulp-replace": "latest",
-    "gulp-sass": "latest",
-    "gulp-sourcemaps": "latest",
-    "gulp-autoprefixer": "latest",
-    "gulp-minify-css": "latest",
     "yargs": "latest",
     "web-component-tester": "latest",
     "sassdoc": "latest"
@@ -28,7 +24,8 @@
     "wct-teamcity-reporter": "latest"
   },
   "scripts": {
-    "install": "node_modules/.bin/bower install --allow-root https://github.com/Polymer/polymer.git#3449fc4 https://github.com/Polymer/web-component-tester.git https://github.com/Polymer/webcomponentsjs.git https://github.com/MaxArt2501/object-observe.git#0.2.1"
+    "install": "node_modules/.bin/bower install --allow-root https://github.com/Polymer/polymer.git#3449fc4 https://github.com/Polymer/web-component-tester.git https://github.com/Polymer/webcomponentsjs.git https://github.com/MaxArt2501/object-observe.git#0.2.1",
+    "postinstall": "cd vaadin-theme && npm install"
   },
   "keywords": [
     "vaadin",

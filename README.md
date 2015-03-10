@@ -65,6 +65,13 @@ to test or develop those components:
 
         $ gulp css --component=button --debug --watch
 
+## Developing vaadin-theme
+
+The most convenient way to develop the vaadin-theme sub-project (i.e. Valo theme) is to use `npm link`. This will in effect install the "vaadin-theme"
+folder as a global package, using symbolic links, allowing you to run the `vaadin-theme`command as the end-user would:
+
+    $ cd vaadin-theme
+    $ npm link
 
 ## Demos / examples
 

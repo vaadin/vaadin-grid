@@ -1,4 +1,3 @@
-@import "../../valo";
 @import "textfield";
 @import "legacy-mixins";
 
@@ -198,47 +197,48 @@ $v-grid-animations-enabled: $v-animations-enabled !default;
 
   // MOVED KEYFRAME DEFINITIONS INSIDE MAIN MIXIN
   // TODO enable once LibSass 3.2 is released with support for @at-root
-  /*
-  @at-root {
-    @include keyframes(valo-grid-editor-footer-animate-in) {
-      0% {
-        margin-top: -$v-grid-row-height;
-      }
-    }
 
-    @include keyframes(valo-grid-editor-footer-animate-in-alt) {
-      0% {
-        margin-bottom: -$v-grid-row-height - first-number($v-grid-cell-horizontal-border);
-      }
-      100% {
-        margin-bottom: first-number($v-grid-cell-horizontal-border) * -1;
-      }
-    }
-  }
-  */
+  // @at-root {
+  //   @include keyframes(valo-grid-editor-footer-animate-in) {
+  //     0% {
+  //       margin-top: -$v-grid-row-height;
+  //     }
+  //   }
+  //
+  //   @include keyframes(valo-grid-editor-footer-animate-in-alt) {
+  //     0% {
+  //       margin-bottom: -$v-grid-row-height - first-number($v-grid-cell-horizontal-border);
+  //     }
+  //     100% {
+  //       margin-bottom: first-number($v-grid-cell-horizontal-border) * -1;
+  //     }
+  //   }
+  // }
 
-}
 
-@include keyframes(valo-grid-editor-footer-animate-in) {
-  0% {
-    margin-top: -$v-grid-row-height;
-  }
-}
-
-@include keyframes(valo-grid-editor-footer-animate-in-alt) {
-  0% {
-    margin-bottom: -$v-grid-row-height - first-number($v-grid-cell-horizontal-border);
-  }
-  100% {
-    margin-bottom: first-number($v-grid-cell-horizontal-border) * -1;
-  }
 }
 
 // END COPY FROM FRAMEWORK valo/components/_grid.scss
+@if v-is-included(grid) {
 
+  @include keyframes(valo-grid-editor-footer-animate-in) {
+    0% {
+      margin-top: -$v-grid-row-height;
+    }
+  }
 
-v-grid {
-  font: $v-font-weight #{$v-font-size}/#{$v-line-height} $v-font-family;
-  display: block;
-  @include valo-grid;
+  @include keyframes(valo-grid-editor-footer-animate-in-alt) {
+    0% {
+      margin-bottom: -$v-grid-row-height - first-number($v-grid-cell-horizontal-border);
+    }
+    100% {
+      margin-bottom: first-number($v-grid-cell-horizontal-border) * -1;
+    }
+  }
+
+  v-grid {
+    font: $v-font-weight #{$v-font-size}/#{$v-line-height} $v-font-family;
+    display: block;
+    @include valo-grid;
+  }
 }

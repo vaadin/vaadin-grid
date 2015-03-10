@@ -11,7 +11,10 @@
 ///
 @function contains($list, $value, $recursive: false) {
   @if $recursive == false {
-    @return (false != index($list, $value));
+    @if index($list, $value) {
+      @return true;
+    }
+    @return false;
   }
 
   $ret: false;

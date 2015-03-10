@@ -1,0 +1,7 @@
+@import "imported";
+
+$v-theme-name: "my-theme";
+$v-included-components: button;
+$v-included-additional-styles: none;
+
+@import "vaadin-theme";
