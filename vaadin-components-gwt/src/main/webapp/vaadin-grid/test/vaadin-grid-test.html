@@ -584,12 +584,15 @@
         waitUntil(function() {
           return grid.querySelector(".v-grid-body");
         }, function() {
-          grid.columns.push({name: "foo", headerHtml: "fooheader"});
+          grid.columns.push({
+            name: "foo",
+            headerHtml: "fooheader"
+          });
 
           waitUntil(function() {
             return gridContainsText(grid, "fooheader");
           }, function() {
-              done();
+            done();
           });
         });
 
@@ -633,7 +636,7 @@
         assert.notOk(grid.cellClassName);
         var cellClassName = function(cell) {
           var columnIndex = cell.columnName == "name" ? 0 : 1;
-          var cellElement =  grid.querySelectorAll(".v-grid-body .v-grid-row")[cell.row.index].querySelectorAll(".v-grid-cell")[columnIndex];
+          var cellElement = grid.querySelectorAll(".v-grid-body .v-grid-row")[cell.row.index].querySelectorAll(".v-grid-cell")[columnIndex];
           elementEquals = elementEquals && cell.element == cellElement;
           return cell.columnName;
         };
@@ -645,6 +648,95 @@
         assert.equal(grid.cellClassName, cellClassName);
       });
 
+      var editorHandler = {
+        getCellEditor: function(columnObject) {
+          var input = document.createElement("input");
+          return input;
+        },
+        bind: function(req) {
+          for (var i = 0; i < req.grid.columns.length; i++) {
+            var col = req.grid.columns[i];
+            var el = req.getCellEditor(col);
+            el.value = req.dataItem[i];
+          }
+          req.success();
+        },
+        save: function(req) {
+          var failingColumns = [];
+          for (var i = 0; i < req.grid.columns.length; i++) {
+            var col = req.grid.columns[i];
+            var el = req.getCellEditor(col);
+            if (el.value == "fail") {
+              failingColumns.push(col);
+            }
+          }
+          if (failingColumns.length > 0) {
+            req.failure("Save failed", failingColumns);
+          } else {
+            req.success();
+          }
+        }
+      };
+
+      test('editor: enabled', function() {
+        grid.columns[0].name = "name";
+        grid.columns[1].name = "value";
+        grid.editor.handler = editorHandler;
+        expect(grid.editor.editRow.bind(grid.editor, 0)).to.throw("editor is not enabled");
+        grid.editor.enabled = true;
+        grid.editor.editRow(0);
+
+        assert.isTrue(gridContainsText(grid, "v-grid-editor"));
+      });
+
+      test('editor: saveButtonText and cancelButtonText', function() {
+        grid.columns[0].name = "name";
+        grid.columns[1].name = "value";
+        grid.editor.handler = editorHandler;
+        grid.editor.enabled = true;
+        grid.editor.editRow(0);
+        grid.editor.saveButtonText = "saveButtonTextFoo";
+        grid.editor.cancelButtonText = "cancelButtonTextFoo";
+
+        assert.isTrue(gridContainsText(grid, "saveButtonTextFoo"));
+        assert.isTrue(gridContainsText(grid, "cancelButtonTextFoo"));
+      });
+
+      test('editor: editrow', function() {
+        grid.columns[0].name = "name";
+        grid.columns[1].name = "value";
+        grid.editor.handler = editorHandler;
+        grid.editor.enabled = true;
+
+        grid.editor.editRow(0);
+        assert.equal(grid.querySelector(".v-grid-editor input").value, "Grid");
+        grid.editor.cancel();
+        assert.isFalse(gridContainsText(grid, "v-grid-editor"));
+        grid.editor.editRow(1);
+        assert.equal(grid.querySelector(".v-grid-editor input").value, "VaadinX");
+        grid.editor.save();
+        assert.isFalse(gridContainsText(grid, "v-grid-editor"));
+
+        expect(grid.editor.editRow.bind(grid.editor, 10)).to.throw("Row index");
+      });
+
+      test('editor: failure', function() {
+        grid.columns[0].name = "name";
+        grid.columns[1].name = "value";
+        grid.editor.handler = editorHandler;
+        grid.editor.enabled = true;
+
+        grid.editor.editRow(0);
+        var fields = grid.querySelectorAll(".v-grid-editor input");
+        fields[0].value = "fail";
+        grid.editor.save();
+
+        assert.isTrue(gridContainsText(grid, "Save failed"));
+        var cells = grid.querySelectorAll(".v-grid-editor-cells > div");
+        assert.isTrue(cells[0].classList.contains("error"));
+        assert.isFalse(cells[1].classList.contains("error"));
+
+      });
 
     });
   </script>

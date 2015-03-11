@@ -46,10 +46,14 @@
       selectionMode: 'grid.setSelectionMode',
       dataSource: 'grid.setDataSource',
       disabled: 'grid.setDisabled',
-      editable: 'grid.setEditable',
+      editable: 'editableChanged',
       frozenColumn: 'grid.setFrozenColumn',
       rows: 'grid.setRowCount',
       rowCount: 'grid.setRowCount'
+    },
+
+    editableChanged: function(editable) {
+      this.editor.enabled = editable;
     },
 
     attributeChanged: function(name, type, value) {
@@ -83,6 +87,8 @@
       'select': 'onSelect'
     },
 
+    editor: {},
+
     onSelect: function() {
       this.setAttribute('selected-rows', this.selectedRows.join());
     },
@@ -97,6 +103,46 @@
 
     ready: function() {
       this.grid.init(this, this.lightDom.querySelector("table"), this.localDom);
+
+      var _this = this;
+      this.editor = {
+        gridEditor: _this.grid.getEditor(),
+
+        get enabled() {
+          return this.gridEditor.isEnabled();
+        },
+        set enabled(enabled) {
+          _this.editable = enabled;
+          this.gridEditor.setEnabled(enabled);
+        },
+        get handler() {
+          return this.gridEditor.getHandler();
+        },
+        set handler(handler) {
+          this.gridEditor.setHandler(handler);
+        },
+        get saveButtonText() {
+          return this.gridEditor.getSaveButtonText();
+        },
+        set saveButtonText(saveButtonText) {
+          this.gridEditor.setSaveButtonText(saveButtonText);
+        },
+        get cancelButtonText() {
+          return this.gridEditor.getSaveButtonText();
+        },
+        set cancelButtonText(cancelButtonText) {
+          this.gridEditor.setCancelButtonText(cancelButtonText);
+        },
+        editRow: function(row) {
+          this.gridEditor.editRow(row);
+        },
+        save: function() {
+          this.gridEditor.save();
+        },
+        cancel: function() {
+          this.gridEditor.cancel();
+        }
+      };
 
       Object.defineProperty(this, 'scrollTop', {
         get: function() {

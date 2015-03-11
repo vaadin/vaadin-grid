@@ -70,6 +70,7 @@ public class GridComponent implements SelectionHandler<JsArrayMixed>,
     private boolean updating = false;
     private GridDomTableHead head;
     private Redraw redrawer;
+    private GridEditor editor;
 
     private Element container;
     private JSArray<JSColumn> cols;
@@ -79,6 +80,10 @@ public class GridComponent implements SelectionHandler<JsArrayMixed>,
         grid.addSelectionHandler(this);
         cols = JS.createArray();
         observeColumnArray();
+    }
+
+    public GridEditor getEditor() {
+        return editor;
     }
 
     public Element getGridElement() {
@@ -110,6 +115,7 @@ public class GridComponent implements SelectionHandler<JsArrayMixed>,
             Element gridContainer) {
         this.container = container;
         redrawer = new Redraw(grid, container);
+        editor = new GridEditor(grid, container);
 
         if (head == null) {
             head = new GridDomTableHead(lightDomElement, this);
@@ -175,11 +181,6 @@ public class GridComponent implements SelectionHandler<JsArrayMixed>,
 
     public void setDisabled(boolean disabled) {
         grid.setEnabled(!disabled);
-    }
-
-    public void setEditable(boolean editable) {
-        // TODO: Currently missing an editor handler
-        grid.setEditorEnabled(editable);
     }
 
     public void setFrozenColumn(String frozenColumn) {
