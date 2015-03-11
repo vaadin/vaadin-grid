@@ -243,11 +243,42 @@ gulp.task('test:validation', function(done) {
       plugins: {
         local: false,
         sauce: false,
-        'teamcity-reporter':true
+        'teamcity-reporter': args.teamcity
       },
       root: '.',
       webserver: {
         port: 2000,
+        hostname: localAddress()
+      }
+    }, cleanDone(done));
+});
+
+gulp.task('test:sauce', function(done) {
+  var test = require('./node_modules/web-component-tester/runner/test.js');
+
+  test(
+    {
+      browserOptions: {
+        name: localAddress() + ' / ' + new Date(),
+        build: 'vaadin-components'
+      },
+
+      plugins: {
+        local: false,
+        sauce: {
+          username: args.username,
+          accessKey: args.accessKey,
+          browsers: ['Windows 7/chrome@41',
+                     'Windows 7/firefox@36',
+                     'Windows 7/internet explorer@11',
+                     'OS X 10.10/safari@8.0', //slow startup
+                     'OS X 10.10/iphone@8.1', //slow as hell startup
+                     'Linux/android@5.0']
+        },
+        'teamcity-reporter': args.teamcity
+      },
+      webserver: {
+        //Sauce OSX doesn't work with 'localhost', need real IP
         hostname: localAddress()
       }
     }, cleanDone(done));
