@@ -10,6 +10,7 @@ var rename = require('gulp-rename');
 var json = require('gulp-json-editor');
 var replace = require('gulp-replace');
 require('web-component-tester').gulp.init(gulp);
+var rsync = require('gulp-rsync');
 
 var vaadintheme = require("./vaadin-theme/gulpfile");
 var sassdoc = require('sassdoc');
@@ -208,6 +209,24 @@ gulp.task('stage:zip', ['stage'], function() {
     return gulp.src(target_bower + '/**/*')
       .pipe(zip('vaadin-components-' + tag + '.zip'))
       .pipe(gulp.dest(target_zip));
+});
+
+gulp.task('deploy:cdn', ['stage:cdn'], function() {
+  if(!args.cdnUsername || !args.cdnDestination) {
+    throw new Error('missing parameters --cdn-username and/or --cdn-destination');
+  }
+
+  return gulp.src(target_cdn)
+    .pipe(rsync({
+      username: args.cdnUsername,
+      hostname: 'cdn.vaadin.com',
+      root: target_cdn,
+      emptyDirectories: false,
+      recursive: true,
+      clean: true,
+      silent: true,
+      destination: args.cdnDestination + tag
+    }));
 });
 
 gulp.task('test', ['test:local']);
