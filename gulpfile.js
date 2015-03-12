@@ -10,7 +10,9 @@ var rename = require('gulp-rename');
 var json = require('gulp-json-editor');
 var replace = require('gulp-replace');
 require('web-component-tester').gulp.init(gulp);
+var test = require('./node_modules/web-component-tester/runner/test.js');
 var rsync = require('gulp-rsync');
+
 
 var vaadintheme = require("./vaadin-theme/gulpfile");
 var sassdoc = require('sassdoc');
@@ -28,6 +30,8 @@ var tag =  args.version || major + patch; // will rename the tag variable in a s
 var target_cdn = target + '/cdn/' + tag;
 var target_bower = target + '/bower';
 var target_zip = target + '/zip';
+
+var _components = ['vaadin-button', 'vaadin-grid'];
 
 function system(command, cb) {
   cmd.exec(command, function(err, stdout, stderr) {
@@ -229,6 +233,40 @@ gulp.task('deploy:cdn', ['stage:cdn'], function() {
     }));
 });
 
+gulp.task('stage:cdn-test', function() {
+  fs.removeSync(target_cdn + '/test');
+
+  return gulp.src('vaadin-components/**/test/**/*')
+    .pipe(replace(/(src|href)=("|')(.*?)\.\.\/\.\.\/(bower_components|node_modules)\/(.*?)\//mg, '$1=$2https://cdn.vaadin.com/vaadin-components/'+ tag +'/$5/'))
+    .pipe(replace(/(src|href)=("|')(.*?)\.\.\//mg, '$1=$2https://cdn.vaadin.com/vaadin-components/'+ tag +'/'))
+             .pipe(gulp.dest(target_cdn + '/test/'));
+});
+
+gulp.task('test:cdn', ['stage:cdn-test'], function(done) {
+  test(
+    {
+      suites: ['target/cdn/' + tag + '/test/**/test'],
+      browserOptions: {
+        name: localAddress() + ' / ' + new Date(),
+        build: 'vaadin-components / cdn.vaadin.com / ' + tag
+      },
+
+      plugins: {
+        local: false,
+        sauce: {
+          username: args.sauceUsername,
+          accessKey: args.sauceAccessKey,
+          browsers: ['Windows 7/chrome@41']
+        },
+        'teamcity-reporter': args.teamcity
+      },
+      webserver: {
+        //Sauce OSX doesn't work with 'localhost', need real IP
+        hostname: localAddress()
+      }
+    }, cleanDone(done));
+});
+
 gulp.task('test', ['test:local']);
 
 function cleanDone(done) {
@@ -256,12 +294,6 @@ function localAddress() {
 }
 
 gulp.task('test:validation', function(done) {
-
-  //TODO: PR which enabled wct gulp script to accept options so we don't need
-  //      to call test() anymore.
-  // https://github.com/Polymer/web-component-tester/blob/master/runner/gulp.js
-  var test = require('./node_modules/web-component-tester/runner/test.js');
-
   test(
     {
       browserOptions: {
@@ -296,8 +328,6 @@ gulp.task('test:validation', function(done) {
 });
 
 gulp.task('test:sauce', function(done) {
-  var test = require('./node_modules/web-component-tester/runner/test.js');
-
   test(
     {
       browserOptions: {
@@ -308,8 +338,8 @@ gulp.task('test:sauce', function(done) {
       plugins: {
         local: false,
         sauce: {
-          username: args.username,
-          accessKey: args.accessKey,
+          username: args.sauceUsername,
+          accessKey: args.sauceAccessKey,
           browsers: ['Windows 7/chrome@41',
                      'Windows 7/firefox@36',
                      'Windows 7/internet explorer@11',
