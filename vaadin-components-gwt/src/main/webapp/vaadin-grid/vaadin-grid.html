@@ -167,7 +167,31 @@
     },
     set sortOrder(sortOrder) {
       this.grid.setSortOrder(sortOrder);
-    }
+    },
+    /**
+     * Sets the style generator that is used for generating styles for rows.
+     *
+     * @attribute rowClassName
+     * @type object
+     */
+    get rowClassName() {
+      return this.grid.getRowClassName();
+    },
+    set rowClassName(rowClassName) {
+      this.grid.setRowClassName(rowClassName);
+    },
+    /**
+     * Sets the style generator that is used for generating styles for cells.
+     *
+     * @attribute cellClassName
+     * @type object
+     */
+    get cellClassName() {
+      return this.grid.getCellClassName();
+    },
+    set cellClassName(cellClassName) {
+      this.grid.setCellClassName(cellClassName);
+    },
   };
 
   function loadComponent() {

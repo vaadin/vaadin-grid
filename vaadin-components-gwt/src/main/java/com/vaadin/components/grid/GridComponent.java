@@ -36,8 +36,10 @@ import com.vaadin.components.common.util.DOMUtils;
 import com.vaadin.components.common.util.Elements;
 import com.vaadin.components.grid.config.JS;
 import com.vaadin.components.grid.config.JSArray;
+import com.vaadin.components.grid.config.JSCellClassName;
 import com.vaadin.components.grid.config.JSColumn;
 import com.vaadin.components.grid.config.JSEnums;
+import com.vaadin.components.grid.config.JSRowClassName;
 import com.vaadin.components.grid.config.JSSortOrder;
 import com.vaadin.components.grid.data.GridDataSource;
 import com.vaadin.components.grid.data.GridDomTableDataSource;
@@ -45,6 +47,8 @@ import com.vaadin.components.grid.data.GridJsFuncDataSource;
 import com.vaadin.components.grid.data.GridJsObjectDataSource;
 import com.vaadin.components.grid.head.GridColumn;
 import com.vaadin.components.grid.head.GridDomTableHead;
+import com.vaadin.components.grid.utils.GridCellStyleGenerator;
+import com.vaadin.components.grid.utils.GridRowStyleGenerator;
 import com.vaadin.components.grid.utils.Redraw;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.grid.HeightMode;
@@ -354,6 +358,42 @@ public class GridComponent implements SelectionHandler<JsArrayMixed>,
                     .indexOf(i.next()));
         }
         return selectedJso;
+    }
+
+    public JSRowClassName getRowClassName() {
+        JSRowClassName result = null;
+        if (grid.getRowStyleGenerator() != null) {
+            result = ((GridRowStyleGenerator) grid.getRowStyleGenerator())
+                    .getRowClassName();
+        }
+        return result;
+    }
+
+    public void setRowClassName(JSRowClassName rowClassName) {
+        if (rowClassName == null) {
+            grid.setRowStyleGenerator(null);
+        } else {
+            grid.setRowStyleGenerator(new GridRowStyleGenerator(rowClassName,
+                    container));
+        }
+    }
+
+    public JSCellClassName getCellClassName() {
+        JSCellClassName result = null;
+        if (grid.getCellStyleGenerator() != null) {
+            result = ((GridCellStyleGenerator) grid.getCellStyleGenerator())
+                    .getCellClassName();
+        }
+        return result;
+    }
+
+    public void setCellClassName(JSCellClassName cellClass) {
+        if (cellClass == null) {
+            grid.setCellStyleGenerator(null);
+        } else {
+            grid.setCellStyleGenerator(new GridCellStyleGenerator(cellClass,
+                    container));
+        }
     }
 
     // TODO: remove this when grid resizes appropriately on container
