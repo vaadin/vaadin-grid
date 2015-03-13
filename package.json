@@ -19,9 +19,11 @@
   },
   "devDependencies": {
     "chalk": "latest",
+    "gulp-bower": "0.0.10",
     "gulp-rsync": "0.0.5",
     "gulp-zip": "^2.0.3",
     "lodash": "^3.5.0",
+    "require-dir": "^0.1.0",
     "wct-teamcity-reporter": "1.0.1"
   },
   "scripts": {

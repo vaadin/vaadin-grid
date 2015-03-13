@@ -1,6 +1,8 @@
 "use strict";
 var _ = require('lodash');
 var gulp = require('gulp');
+require('require-dir')('./tasks');
+
 var gutil = require('gulp-util');
 var chalk = require('chalk');
 var cmd = require('child_process');
