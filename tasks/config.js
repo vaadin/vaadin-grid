@@ -18,7 +18,9 @@ module.exports = {
   version: args.version || '0.2-snapshot',
   paths: {
     staging: {
-      bower: 'target/bower'
-    }
+      bower: 'target/bower',
+      cdn: 'target/cdn'
+    },
+    userhome: process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE
   }
 };

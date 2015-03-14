@@ -46,13 +46,17 @@ gulp.task('bower:stage-bower.json', ['bower:clone'], function() {
 
 gulp.task('bower:stage-imports', ['bower:stage-components'], function() {
   return gulp.src(checkoutPath + '/**/*.html')
-             .pipe(replace(/(src|href)=("|')(.*?)\.\.\/\.\.\/bower_components\//mg, '$1=$2$3../../'))
+             .pipe(replace(/(src|href)=("|')(.*?)(\.\.\/)+bower_components\//mg, '$1=$2$3../../'))
              .pipe(gulp.dest(checkoutPath));
 });
 
-gulp.task('stage:bower', ['bower:stage-components', 'bower:stage-imports', 'bower:stage-bower.json'], function() {
-
+gulp.task('bower:fix-object-observe', ['bower:stage-imports'], function() {
+  return gulp.src(checkoutPath + '/vaadin-grid/*')
+    .pipe(replace(/object.observe/mg, 'object-observe'))
+    .pipe(gulp.dest(checkoutPath + '/vaadin-grid/'));
 });
+
+gulp.task('stage:bower', ['bower:stage-components', 'bower:stage-imports', 'bower:stage-bower.json', 'bower:fix-object-observe']);
 
 gulp.task('bower:create-commit', ['stage:bower'], function(){
   if(args.release) {
@@ -106,49 +110,21 @@ gulp.task('bower-test:stage-imports', ['bower-test:install-vaadin-components'], 
     .pipe(gulp.dest(checkoutPath + '/test/bower_components/vaadin-components/'));
 });
 
-gulp.task('bower-test:stage', ['bower-test:install-vaadin-components', 'bower-test:stage-imports', 'bower-test:install-wct'], function() {
-
-});
+gulp.task('bower-test:stage', ['bower-test:install-vaadin-components', 'bower-test:stage-imports', 'bower-test:install-wct']);
 
 gulp.task('verify:bower', ['bower-test:stage'], function(done) {
-  common.test(
-    {
-      suites: [checkoutPath + '/test/bower_components/vaadin-components/**/test'],
-      browserOptions: {
-        name: common.localAddress() + ' / ' + new Date(),
-        build: 'vaadin-components / bower / ' + version
-      },
+  common.testSauce(
+      [checkoutPath + '/test/bower_components/vaadin-components/**/test'],
+    ['Windows 7/chrome@41'],
+    'vaadin-components / bower / ' + version,
+    function(err) {
+      common.handleRevert(err, function() {
+        gutil.log('Reverting branch/tag ' + version);
 
-      plugins: {
-        //local: {
-        //  browsers: ['chrome']
-        //},
-        sauce: {
-          username: args.sauceUsername,
-          accessKey: args.sauceAccessKey,
-          browsers: ['Windows 7/chrome@41']
-        },
-        'teamcity-reporter': args.teamcity
-      },
-      webserver: {
-        hostname: common.localAddress()
-      }
-    }, function(err) {
-      if(err) {
-        gutil.log(err.toString());
-        if(args.autoRevert) {
-          gutil.log('Reverting branch/tag ' + version);
-
-          // implicit requirement: repository must be cloned in checkoutPath
-          git.push('origin', ':' + version, {cwd: checkoutPath}, function() {
-            done(err);
-          });
-        } else {
-          gutil.log('No action. Use --auto-revert to revert changes.')
+        // implicit requirement: repository must be cloned in checkoutPath
+        git.push('origin', ':' + version, {cwd: checkoutPath}, function() {
           done(err);
-        }
-      } else {
-       done();
-      }
+        });
+      }, done);
     });
 });

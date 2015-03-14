@@ -147,65 +147,13 @@ gulp.task('stage:replace', ['stage:components'], function() {
              .pipe(gulp.dest(target_bower));
 });
 
-gulp.task('stage:cdn', function() {
-  fs.removeSync(target + '/cdn');
-
-  var components = ['vaadin-grid', 'vaadin-button'];
-
-  var paths = _.map(components, function(n) {
-    return 'vaadin-components/' + n + '/**/*';
-  }).concat(['!**/test/*', '!**/demo*', '!**/demo/*', '!**/bigdata.js']);
-
-  return gulp.src(paths)
-          .pipe(replace(/(src|href)=("|')(.*?)\.\.\/\.\.\/bower_components\/(.*?)\//mg, '$1=$2$4/'))
-          .pipe(gulp.dest(target_cdn))
-         .pipe(gulp.src('bower_components/**/*')
-          .pipe(gulp.dest(target_cdn)));
-});
-
 gulp.task('stage', ['stage:components', 'stage:replace', 'stage:bower.json'], function() {
 
 });
 
-gulp.task('deploy', ['stage'], function() {
-  var message = 'Release version ' + tag + '.';
+gulp.task('deploy', ['deploy:bower', 'deploy:cdn']);
 
-  process.chdir(target_bower);
-  git.status({
-    args : '--porcelain'
-  }, function(err, stdout) {
-    if (/\w/.test(stdout.replace('M bower.json','').replace(/\s/,''))) {
-      system('git add . ; git commit -q -a -m "' + message + '"', function() {
-        git.tag(tag, message, function() {
-          git.push('origin', 'master', {
-            args : '--tags'
-          }, function() {
-            gutil.log('>>>> Released a new version of components (' + tag + ').');
-          })
-        })
-      })
-    } else {
-      gutil.log('>>>> No new changes to commit for components.');
-    }
-  });
-});
-
-gulp.task('deploy:snapshot', ['stage'], function() {
-  var message = 'Release snapshot ' + tag + '.';
-
-  process.chdir(target_bower);
-    git.status({
-      args : '--porcelain'
-    }, function(err, stdout) {
-      system('git add . ; git commit -q -a -m "' + message + '" --amend', function() {
-        git.push('origin', 'HEAD:0.2-snapshot', {
-          args: '--force'
-        }, function() {
-          gutil.log('>>>> Released a new version of components (' + tag + ').');
-        })
-      })
-    });
-});
+gulp.task('verify', ['verify:bower', 'verify:cdn']);
 
 // zipping doesn't really depend on stage:clone because we're not going to push,
 // but it makes sense to reuse the existing stage tasks for copying the needed files.
@@ -215,58 +163,6 @@ gulp.task('stage:zip', ['stage'], function() {
     return gulp.src(target_bower + '/**/*')
       .pipe(zip('vaadin-components-' + tag + '.zip'))
       .pipe(gulp.dest(target_zip));
-});
-
-gulp.task('deploy:cdn', ['stage:cdn'], function() {
-  if(!args.cdnUsername || !args.cdnDestination) {
-    throw new Error('missing parameters --cdn-username and/or --cdn-destination');
-  }
-
-  return gulp.src(target_cdn)
-    .pipe(rsync({
-      username: args.cdnUsername,
-      hostname: 'cdn.vaadin.com',
-      root: target_cdn,
-      emptyDirectories: false,
-      recursive: true,
-      clean: true,
-      silent: true,
-      destination: args.cdnDestination + tag
-    }));
-});
-
-gulp.task('stage:cdn-test', function() {
-  fs.removeSync(target_cdn + '/test');
-
-  return gulp.src('vaadin-components/**/test/**/*')
-    .pipe(replace(/(src|href)=("|')(.*?)\.\.\/\.\.\/(bower_components|node_modules)\/(.*?)\//mg, '$1=$2https://cdn.vaadin.com/vaadin-components/'+ tag +'/$5/'))
-    .pipe(replace(/(src|href)=("|')(.*?)\.\.\//mg, '$1=$2https://cdn.vaadin.com/vaadin-components/'+ tag +'/'))
-             .pipe(gulp.dest(target_cdn + '/test/'));
-});
-
-gulp.task('test:cdn', ['stage:cdn-test'], function(done) {
-  test(
-    {
-      suites: ['target/cdn/' + tag + '/test/**/test'],
-      browserOptions: {
-        name: localAddress() + ' / ' + new Date(),
-        build: 'vaadin-components / cdn.vaadin.com / ' + tag
-      },
-
-      plugins: {
-        local: false,
-        sauce: {
-          username: args.sauceUsername,
-          accessKey: args.sauceAccessKey,
-          browsers: ['Windows 7/chrome@41']
-        },
-        'teamcity-reporter': args.teamcity
-      },
-      webserver: {
-        //Sauce OSX doesn't work with 'localhost', need real IP
-        hostname: localAddress()
-      }
-    }, cleanDone(done));
 });
 
 gulp.task('test', ['test:local']);

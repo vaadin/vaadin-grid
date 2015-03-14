@@ -23,11 +23,12 @@
     "gulp-rsync": "0.0.5",
     "gulp-zip": "^2.0.3",
     "lodash": "^3.5.0",
+    "node-ssh-exec": "^0.1.1",
     "require-dir": "^0.1.0",
     "wct-teamcity-reporter": "1.0.1"
   },
   "scripts": {
-    "install": "node_modules/.bin/bower install --allow-root https://github.com/Polymer/polymer.git#3449fc4 https://github.com/Polymer/web-component-tester.git https://github.com/Polymer/webcomponentsjs.git https://github.com/MaxArt2501/object-observe.git#0.2.1",
+    "install": "node_modules/.bin/bower install --allow-root ./vaadin-components-package/bower.json https://github.com/Polymer/web-component-tester.git",
     "postinstall": "cd vaadin-theme && npm install"
   },
   "keywords": [
