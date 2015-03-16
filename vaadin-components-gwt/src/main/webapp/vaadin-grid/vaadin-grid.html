@@ -18,9 +18,9 @@
     published: {
 
       /**
-       * Sets current selection mode.
+       * Declares the selection model of the Grid to one of the built-in/preconfigured selection modes.
        *
-       * @attribute selectionMode
+       * @attribute selection-mode
        * @type String
        */
       selectionMode: {
@@ -29,7 +29,12 @@
       },
 
       /**
-       * Sets whether this widget is disabled.
+       * Disables the grid functionality. At least the following should be disabled (handled by the GWT code):
+       *   row editor
+       *   scrolling
+       *   changing sort order
+       *   focusing
+       *   changing selection
        *
        * @attribute disabled
        * @type boolean
@@ -40,7 +45,7 @@
       },
 
       /**
-       * Sets the enabled state of the editor.
+       * Enables the row editor feature (double click/tap or or Enter key in a content row activates the editing mode)
        *
        * @attribute editable
        * @type boolean
@@ -56,16 +61,19 @@
        * checkbox column will still be frozen if it's in use. Setting the count to
        * -1 will also disable the selection column.
        *
-       * @attribute frozenColumn
+       * @attribute frozen-columns
        * @type String
        */
-      frozenColumn: {
+      frozenColumns: {
         reflect: true,
         type: String
       },
 
       /**
-       * Sets the theme
+       * Declares the theme used for this grid instance. The grid does not load the custom theme CSS file,
+       * it expects that the correct styles are provided by the current HTML page.
+       *
+       * If not specified, the default theme variation is used (loaded automatically by the HTML import).
        *
        * @attribute theme
        * @type String
@@ -73,6 +81,19 @@
       theme: {
         reflect: true,
         type: String
+      },
+
+      /**
+       * Declares the number of visible rows in the grid. Implicitly sets the height
+       * in the inline style, overriding any previous height. Setting style.height
+       * in this case should be ignored if possible.
+       *
+       * @attribute rows
+       * @type String
+       */
+      rows: {
+        reflect: true,
+        type: Number
       }
     },
 
@@ -81,8 +102,8 @@
       dataSource: 'grid.setDataSource',
       disabled: 'grid.setDisabled',
       editable: 'editableChanged',
-      frozenColumn: 'grid.setFrozenColumn',
-      rows: 'grid.setRowCount',
+      frozenColumns: 'grid.setFrozenColumns',
+      rows: 'grid.setRows',
       /**
        * Sets the row count
        *
@@ -114,11 +135,17 @@
         case 'editable':
           this.editable = typeof value == "string";
           break;
-        case 'frozen-column':
-          this.frozenColumn = value;
+        case 'frozen-columns':
+          this.frozenColumns = value;
           break;
         case 'theme':
           this.theme = value;
+          break;
+        case 'rows':
+          this.rows = value;
+          break;
+        case 'style':
+          this.grid.redraw();
           break;
       }
     },
@@ -197,6 +224,13 @@
         enumerable: true,
         configurable: false
       });
+
+      var _this = this;
+      setTimeout(function(){
+        for (i in _this.attributes) {
+          _this.attributeChanged(_this.attributes[i].nodeName, null, _this.attributes[i].nodeValue);
+        }
+      }, 1)
     },
 
     /**

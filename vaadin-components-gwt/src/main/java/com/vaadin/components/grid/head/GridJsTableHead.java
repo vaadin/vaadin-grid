@@ -1,5 +1,7 @@
 package com.vaadin.components.grid.head;
 
+import static com.google.gwt.query.client.GQuery.console;
+
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayMixed;
 import com.vaadin.client.widgets.Grid;
@@ -44,6 +46,13 @@ public class GridJsTableHead {
             }
         }
         if (defaultRow >= 0) {
+            if (grid.getColumnCount() < defaultRow) {
+                console.error("GridJsTableHead [complex headers BUG]: grid with a defaultRow: "
+                        + defaultRow
+                        + " value greater than number of columns: "
+                        + grid.getColumnCount());
+                return;
+            }
             grid.setDefaultHeaderRow(grid.getHeaderRow(defaultRow));
         }
     }

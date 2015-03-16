@@ -94,13 +94,22 @@ public final class GridColumn extends Column<Object, JsArrayMixed> {
             valueGenerator = JsUtils.prop(jso, VALUE);
             break;
         case "minWidth":
-            setMinimumWidth(parseDouble(JsUtils.prop(jso, VALUE)));
+            String minWidth = JsUtils.prop(jso, VALUE);
+            if (minWidth != null && !minWidth.isEmpty()) {
+                setMinimumWidth(parseDouble(minWidth));
+            }
             break;
         case "maxWidth":
-            setMaximumWidth(parseDouble(JsUtils.prop(jso, VALUE)));
+            String maxWidth = JsUtils.prop(jso, VALUE);
+            if (maxWidth != null && !maxWidth.isEmpty()) {
+                setMaximumWidth(parseDouble(maxWidth));
+            }
             break;
         case "width":
-            setWidth(parseDouble(JsUtils.prop(jso, VALUE)));
+            String width = JsUtils.prop(jso, VALUE);
+            if (width != null && !width.isEmpty()) {
+                setWidth(parseDouble(width));
+            }
             break;
         default:
             break;

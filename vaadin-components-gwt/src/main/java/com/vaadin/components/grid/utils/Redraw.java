@@ -12,13 +12,16 @@ import com.vaadin.components.grid.data.GridDataSource;
  */
 public class Redraw extends Timer {
     private final Grid<?> grid;
-    private final Element container;
+    private Element container;
     private int defaultSize, size;
 
-    public Redraw(Grid<?> vaadinGrid, Element containerElement) {
+    public Redraw(Grid<?> vaadinGrid) {
         grid = vaadinGrid;
-        container = containerElement;
-        defaultSize = size = (int) grid.getHeightByRows();
+    }
+
+    public void setContainer(Element containerElement) {
+        this.container = containerElement;
+        redraw();
     }
 
     public void redraw() {
@@ -26,6 +29,9 @@ public class Redraw extends Timer {
     }
 
     public void run() {
+        if (defaultSize == 0) {
+            defaultSize = size = (int) grid.getHeightByRows();
+        }
         // Setting grid to 100% makes it fit to our v-grid container
         grid.setWidth("100%");
         grid.resetSizesFromDom();
@@ -42,6 +48,7 @@ public class Redraw extends Timer {
             // TODO: this should be done using setHeightByRows, but
             // it has performance issues
             GridDataSource ds = (GridDataSource) grid.getDataSource();
+
             if (ds != null) {
                 int nsize = Math.min(ds.size(), defaultSize);
                 if (nsize != size) {
@@ -54,5 +61,15 @@ public class Redraw extends Timer {
                 }
             }
         }
+    }
+
+    public void setSize(int size) {
+        if (size != defaultSize) {
+            defaultSize = size;
+            redraw();
+        }
+    }
+    public int getSize() {
+        return defaultSize;
     }
 }

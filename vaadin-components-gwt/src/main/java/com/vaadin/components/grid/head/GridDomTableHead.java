@@ -15,6 +15,7 @@ import com.vaadin.components.grid.config.JSArray;
 import com.vaadin.components.grid.config.JSColumn;
 import com.vaadin.components.grid.config.JSHeaderCell;
 import com.vaadin.components.grid.config.JSHeaderCell.Format;
+import com.vaadin.components.grid.config.JSValidate;
 
 /**
  * This class represents a grid header configuration based on a DOM structure.
@@ -61,8 +62,9 @@ public class GridDomTableHead extends GridJsTableHead {
                 jsColumns.add(column);
             }
             // The default row should be the last row in the header which has
-            // the largest number of th elements
-            if ($ths.size() == jsColumns.size()) {
+            // the largest number of th elements, or the last header row, which
+            // contains a th element with the sortable attribute
+            if (!$ths.filter("[sortable]").isEmpty() ||$ths.size() == jsColumns.size()) {
                 defaultRow = i;
             }
         }
@@ -74,13 +76,13 @@ public class GridDomTableHead extends GridJsTableHead {
                 JSHeaderCell header = JS.createJsType(JSHeaderCell.class);
                 GQuery $th = $ths.eq(j);
                 column.setValue($th.attr("name"));
-                int colSpan = 1;
-                String colString = $th.attr("colspan");
-                if (!colString.isEmpty()) {
-                    colSpan = Integer.parseInt(colString);
-                    colOffset += colSpan - 1;
-                }
-                header.setColSpan(colSpan);
+                column.setSortable(JSValidate.Boolean.attr($th, "sortable"));
+                column.setReadOnly(JSValidate.Boolean.attr($th, "read-only"));
+                column.setFlex(JSValidate.Flex.attr($th, "flex"));
+                column.setWidth(JSValidate.Pixel.attr($th, "width"));
+                column.setMinWidth(JSValidate.Pixel.attr($th, "min-width"));
+                column.setMaxWidth(JSValidate.Pixel.attr($th, "max-width"));
+                header.setColSpan(JSValidate.Integer.attr($th, "colspan"));
                 header.setContent($th.html()).setFormat(Format.HTML.name());
                 contentsMap.get(column).add(header);
             }

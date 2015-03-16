@@ -265,7 +265,7 @@
       });
 
       test('scrollToRow function', function(done) {
-        grid.rows = 100;
+        grid.rowCount = 100;
         grid.dataSource = infiniteDataSource;
 
         expect(grid.scrollToRow.bind(grid, -10)).to.throw("Row index");
@@ -289,7 +289,7 @@
       });
 
       test('scrollToRow with destination', function(done) {
-        grid.rows = 100;
+        grid.rowCount = 100;
         grid.dataSource = infiniteDataSource;
 
         waitUntil(function() {
@@ -321,7 +321,7 @@
       });
 
       test('scrollToStart and scrollToEnd functions', function(done) {
-        grid.rows = 100;
+        grid.rowCount = 100;
         grid.dataSource = infiniteDataSource;
 
         waitUntil(function() {
@@ -344,7 +344,7 @@
       });
 
       test('scrollTop property', function(done) {
-        grid.rows = 100;
+        grid.rowCount = 100;
         grid.dataSource = infiniteDataSource;
 
         assert.equal(grid.scrollTop, 0);
@@ -599,7 +599,7 @@
       });
 
       test('frozen column', function(done) {
-        grid.frozenColumn = 0;
+        grid.frozenColumns = 1;
 
         waitUntil(function() {
           return gridContainsText(grid, "v-grid-cell frozen");

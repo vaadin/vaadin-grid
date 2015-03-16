@@ -99,7 +99,7 @@
                  [ "designer", 999999, 0.01 ] ];
 
         // we should set data size before setting the data source (grid bug)
-        grid.rows = data.length;
+        grid.rowCount = data.length;
         grid.dataSource = function(index, count) {
           return data.slice(index, index + count);
         };
@@ -123,7 +123,7 @@
 
   <script>
       waitUntilGridReady("myBigGrid", function(grid) {
-        grid.rows = myBigData.length;
+        grid.rowCount = myBigData.length;
         grid.dataSource = function(index, count, callback) {
           setTimeout(function() {
             callback(myBigData.slice(index, index + count));
@@ -152,7 +152,7 @@
       waitUntilGridReady("myFormatGrid", function(grid) {
         var data = [ [ "Grid", 10000, 0.8 ], [ "Vaadin X", 999999, 0.01 ], ];
 
-        grid.rows = data.length;
+        grid.rowCount = data.length;
         grid.dataSource = function(index, count) {
           return data.slice(index, index + count);
         };
@@ -197,7 +197,7 @@
         var data = [{ name: "Grid", value: 10000, progress: 0.8 },
                 { name: "Vaadin X", value: 999999, progress: 0.01 }];
 
-        grid.rows = data.length;
+        grid.rowCount = data.length;
         grid.dataSource = function(index, count) {
           return data.slice(index, index + count);
         };
@@ -232,7 +232,7 @@
         "Vaadin X"
       ];
 
-      grid.rows = data.length;
+      grid.rowCount = data.length;
       grid.dataSource = function(index, count) {
         return data.slice(index, index + count);
       };
@@ -298,7 +298,7 @@
         var button = document.getElementById("mySelButton");
         var label = document.getElementById("mySelLabel");
 
-        grid.rows = data.length;
+        grid.rowCount = data.length;
         grid.dataSource = function(index, count) {
           return data.slice(index, index + count);
         };
@@ -341,7 +341,7 @@
         var button = document.getElementById("myMultiSelButton");
         var label = document.getElementById("myMultiSelLabel");
 
-        grid.rows = data.length;
+        grid.rowCount = data.length;
         grid.selectionMode = "multi";
         grid.dataSource = function(index, count) {
           return data.slice(index, index + count);
@@ -361,10 +361,10 @@
   </li>
 
   <li>
-  <h3>Simplest possible with dynamic tbody from array of objects</h3>
+  <h3>Simplest possible polymer x-repeat from array of objects</h3>
     <dom-module id="my-grid-with-template">
       <template>
-        <v-grid selectionMode='multi'>
+        <v-grid selectionMode='single'>
           <table>
             <thead>
             <tr>
@@ -401,10 +401,10 @@
   </li>
 
   <li>
-  <h3>Simplest possible with dynamic tbody from simple array</h3>
+    <h3>Simplest possible polymer x-repeat from simple array</h3>
     <dom-module id="my-grid-with-template2">
       <template>
-        <v-grid selectionMode='multi'>
+        <v-grid selectionMode='single'>
           <table>
             <thead>
             <tr>
@@ -437,6 +437,46 @@
   </li>
 
   <li>
+  <h3>Simplest possible polymer x-repeat from array of objects and selection multiple</h3>
+    <dom-module id="my-grid-with-template-multi">
+      <template>
+        <v-grid selectionMode='multi'>
+          <table>
+            <thead>
+            <tr>
+              <th>Name</th>
+              <th>Value</th>
+              <th>Progress</th>
+            </tr>
+            </thead>
+            <tbody>
+            <template is="x-repeat" items="{{mydata}}">
+              <tr>
+                <td>{{item.name}}</td>
+                <td>{{item.value}}</td>
+                <td>{{item.progress}}</td>
+              </tr>
+            </template>
+            </tbody>
+          </table>
+        </v-grid>
+      </template>
+    </dom-module>
+    <script>
+      Polymer({
+        is: 'my-grid-with-template-multi',
+        ready: function() {
+          this.mydata = [
+            {"name": "Grid", "value": "10000", "progress": 0.8},
+            {"name": "Vaadin X", "value": "999999", "progress": 0.8}
+          ];
+        }
+      }) ;
+    </script>
+    <my-grid-with-template-multi></my-grid-with-template-multi>
+  </li>
+
+  <li>
   <h3>Sort example</h3>
     <v-grid id='mySortGrid'>
       <table><thead><tr><th>Name</th><th>Value</th></tr></thead>
@@ -465,7 +505,7 @@
 
   <li>
     <h3>Row editor</h3>
-    <v-grid id='editableGrid'>
+    <v-grid id='editableGrid' style='width: 200px'>
       <table>
         <thead>
           <tr>
@@ -517,6 +557,79 @@
         };
       });
     </script>
+  </li>
+
+  <li>
+  <h3>DOM API</h3>
+  <v-grid
+    selection-mode='none'
+    selected-rows='0,2,3'
+    rows=3
+    frozen-columns= '-1'
+    style='width: 100%'
+    editable
+    >
+  <table >
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th sortable>Value</th>
+        <th width=40>Progress</th>
+        <th min-width=200>foo</th>
+        <th>bar</th>
+        <th flex=100>foo</th>
+        <th flex=0>bar</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Grid</td>
+        <td>10000</td>
+        <td>0.8</td>
+        <td>lorem ipsum</td>
+        <td>dolor sit amet</td>
+        <td>lorem ipsum</td>
+        <td>dolor sit amet</td>
+      </tr>
+      <tr>
+        <td>Vaadin X</td>
+        <td>999999</td>
+        <td>0.8</td>
+        <td>lorem ipsum</td>
+        <td>dolor sit amet</td>
+        <td>lorem ipsum</td>
+        <td>dolor sit amet</td>
+      </tr>
+      <tr>
+        <td>Designer</td>
+        <td>10000</td>
+        <td>0.5</td>
+        <td>lorem ipsum</td>
+        <td>dolor sit amet</td>
+        <td>lorem ipsum</td>
+        <td>dolor sit amet</td>
+      </tr>
+      <tr>
+        <td>Spreadsheet</td>
+        <td>10000</td>
+        <td>0.5</td>
+        <td>lorem ipsum</td>
+        <td>dolor sit amet</td>
+        <td>lorem ipsum</td>
+        <td>dolor sit amet</td>
+      </tr>
+      <tr>
+        <td>TK</td>
+        <td>10000</td>
+        <td>0.5</td>
+        <td>lorem ipsum</td>
+        <td>dolor sit amet</td>
+        <td>lorem ipsum</td>
+        <td>dolor sit amet</td>
+      </tr>
+    </tbody>
+  </table>
+  </v-grid>
   </li>
 
 </ol>

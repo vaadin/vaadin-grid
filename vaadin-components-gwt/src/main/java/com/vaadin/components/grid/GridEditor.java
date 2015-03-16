@@ -37,9 +37,12 @@ public class GridEditor {
 
     private final Map<JSColumn, Element> editors = new HashMap<>();
 
-    public GridEditor(Grid<JsArrayMixed> grid, Element container) {
+    public GridEditor(Grid<JsArrayMixed> grid) {
         this.grid = grid;
-        this.container = container;
+    }
+
+    public void setContainer(Element containerElement) {
+        this.container = containerElement;
     }
 
     public boolean isEnabled() {

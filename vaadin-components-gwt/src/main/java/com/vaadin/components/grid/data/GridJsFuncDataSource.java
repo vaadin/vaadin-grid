@@ -1,9 +1,5 @@
 package com.vaadin.components.grid.data;
 
-import static com.google.gwt.query.client.GQuery.$;
-import static com.google.gwt.query.client.GQuery.console;
-import static com.google.gwt.query.client.GQuery.window;
-
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.query.client.Function;
