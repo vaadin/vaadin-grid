@@ -16,26 +16,60 @@
     grid: undefined,
 
     published: {
+
+      /**
+       * Sets current selection mode.
+       *
+       * @attribute selectionMode
+       * @type String
+       */
       selectionMode: {
         reflect: true,
         type: String
       },
 
+      /**
+       * Sets whether this widget is disabled.
+       *
+       * @attribute disabled
+       * @type boolean
+       */
       disabled: {
         reflect: true,
         type: Boolean
       },
 
+      /**
+       * Sets the enabled state of the editor.
+       *
+       * @attribute editable
+       * @type boolean
+       */
       editable: {
         reflect: true,
         type: Boolean
       },
 
+      /**
+       * Sets the number of frozen columns in this grid. Setting the count to 0
+       * means that no data columns will be frozen, but the built-in selection
+       * checkbox column will still be frozen if it's in use. Setting the count to
+       * -1 will also disable the selection column.
+       *
+       * @attribute frozenColumn
+       * @type String
+       */
       frozenColumn: {
         reflect: true,
         type: String
       },
 
+      /**
+       * Sets the theme
+       *
+       * @attribute theme
+       * @type String
+       */
       theme: {
         reflect: true,
         type: String
@@ -49,6 +83,12 @@
       editable: 'editableChanged',
       frozenColumn: 'grid.setFrozenColumn',
       rows: 'grid.setRowCount',
+      /**
+       * Sets the row count
+       *
+       * @attribute rowCount
+       * @type number
+       */
       rowCount: 'grid.setRowCount'
     },
 
@@ -84,6 +124,9 @@
     },
 
     listeners: {
+      /**
+       * @event select
+       */
       'select': 'onSelect'
     },
 
@@ -156,18 +199,41 @@
       });
     },
 
+    /**
+     * Scrolls to a certain row, using user-specified scroll destination.
+     *
+     * @method scrollToRow
+     * @param {number} index - zero-based index of the row to scroll to.
+     * @param {string} scrollDestination - desired destination placement of scrolled-to-row.
+     */
     scrollToRow: function(index, scrollDestination) {
       this.grid.scrollToRow(index, scrollDestination);
     },
 
+    /**
+     * Scrolls to the beginning of the very first row.
+     *
+     * @method scrollToStart
+     */
     scrollToStart: function() {
       this.grid.scrollToStart();
     },
 
+    /**
+     * Scrolls to the end of the very last row.
+     *
+     * @method scrollToEnd
+     */
     scrollToEnd: function() {
       this.grid.scrollToEnd();
     },
 
+    /**
+     * Selects certain row
+     *
+     * @method select
+     * @param {Object} value
+     */
     select: function(value) {
       var array = this.selectedRows;
       if (array.indexOf(value) == -1) {
@@ -176,6 +242,12 @@
       }
     },
 
+    /**
+     * Deselects certain row
+     *
+     * @method select
+     * @param {Object} value
+     */
     deselect: function(value) {
       var array = this.selectedRows;
       var index = array.indexOf(value);
@@ -185,29 +257,70 @@
       }
     },
 
+    /**
+     * Deselects certain row
+     *
+     * @method select
+     * @param {Object} column
+     * @param {string} beforeColumn
+     */
     addColumn: function(column, beforeColumn) {
       this.grid.addColumn(column, beforeColumn);
     },
 
+    /**
+     * Removes column with certain id
+     *
+     * @method removeColumn
+     * @param {string} id
+     */
     removeColumn: function(id) {
       this.grid.removeColumn(id);
     },
 
+    /**
+     * The selected rows array
+     *
+     * @attribute selectedRows
+     * @type array
+     */
     set selectedRows(r) {
       return this.grid.setSelectedRows(r);
     },
     get selectedRows() {
       return this.grid.getSelectedRows();
     },
+
+    /**
+     * The columns array
+     *
+     * @attribute columns
+     * @type array
+     */
     set columns(r) {
       this.grid.setColumns(r);
     },
     get columns() {
       return this.grid.getColumns();
     },
+
+    /**
+     * The datasource
+     *
+     * @attribute datasource
+     * @type object
+     */
     get datasource() {
       return this.grid.getDataSource();
     },
+
+    /**
+     * Sets the sort order to use. Setting this causes the Grid to re-sort
+     * itself. If set to null, the sort order is cleared.
+     *
+     * @attribute sortOrder
+     * @type array
+     */
     get sortOrder() {
       return this.grid.getSortOrder();
     },
