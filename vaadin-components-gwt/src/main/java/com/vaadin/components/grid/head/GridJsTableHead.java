@@ -3,7 +3,6 @@ package com.vaadin.components.grid.head;
 import static com.google.gwt.query.client.GQuery.console;
 
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.client.JsArrayMixed;
 import com.vaadin.client.widgets.Grid;
 import com.vaadin.components.grid.GridComponent;
 import com.vaadin.components.grid.config.JSArray;
@@ -16,7 +15,7 @@ import com.vaadin.components.grid.config.JSHeaderCell;
  */
 public class GridJsTableHead {
 
-    protected Grid<JsArrayMixed> grid;
+    protected Grid<Object> grid;
     private GridComponent gridComponent;
 
     protected JSArray<JSColumn> jsColumns = JSArray.createArray().cast();

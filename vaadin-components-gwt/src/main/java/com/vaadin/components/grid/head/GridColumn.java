@@ -11,15 +11,17 @@ import com.vaadin.client.widget.grid.RendererCellReference;
 import com.vaadin.client.widgets.Grid;
 import com.vaadin.client.widgets.Grid.Column;
 import com.vaadin.components.grid.GridComponent;
+import com.vaadin.components.grid.config.JS;
 import com.vaadin.components.grid.config.JSColumn;
+import com.vaadin.components.grid.data.DataItemContainer;
 
-public final class GridColumn extends Column<Object, JsArrayMixed> {
+public final class GridColumn extends Column<Object, Object> {
 
     private static final String VALUE = "value";
     private JSColumn jsColumn;
-    private Grid<JsArrayMixed> grid;
+    private Grid<Object> grid;
     private GridComponent gridComponent;
-    protected JavaScriptObject valueGenerator;
+    private JavaScriptObject valueGenerator;
     private JavaScriptObject renderer;
     private String name;
 
@@ -141,30 +143,35 @@ public final class GridColumn extends Column<Object, JsArrayMixed> {
     }
 
     @Override
-    public Object getValue(JsArrayMixed row) {
-        int idx = grid.getColumns().indexOf(this);
-
-        Object o = null;
-
+    public Object getValue(Object dataItem) {
+        if (dataItem instanceof DataItemContainer) {
+            dataItem = ((DataItemContainer) dataItem).getDataItem();
+        }
+        Object result = null;
         if (valueGenerator != null) {
-            o = JsUtils.jsni(valueGenerator, "call", valueGenerator, row);
+            result = JsUtils.jsni(valueGenerator, "call", valueGenerator,
+                    dataItem);
         } else {
-            if (o instanceof JavaScriptObject
-                    && JsUtils.isFunction((JavaScriptObject) o)) {
-                o = JsUtils.jsni((JavaScriptObject) o, "call", o, row, idx);
-            } else if (o instanceof String
-            // For some reason JsInterop returns empty
-                    && "" != o) {
-                o = JsUtils.prop(row, o);
+            if (JS.isPrimitiveType(dataItem)) {
+                if (getColumnIndex() == 0) {
+                    result = dataItem;
+                }
             } else {
-                if (JsUtils.isArray(row)) {
-                    o = row.getObject(idx);
+                if (JsUtils.isArray((JavaScriptObject) dataItem)) {
+                    result = ((JsArrayMixed) dataItem)
+                            .getObject(getColumnIndex());
                 } else {
-                    Properties p = row.cast();
-                    o = p.getObject(p.keys()[idx]);
+                    Properties p = ((JavaScriptObject) dataItem).cast();
+                    result = p.getObject(name);
                 }
             }
         }
-        return o;
+
+        return result;
     }
+
+    private int getColumnIndex() {
+        return gridComponent.getColumns().indexOf(jsColumn);
+    }
+
 }

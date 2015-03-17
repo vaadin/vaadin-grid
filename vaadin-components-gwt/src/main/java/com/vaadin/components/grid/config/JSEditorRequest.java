@@ -17,10 +17,10 @@ public interface JSEditorRequest {
     void setRowIndex(int rowIndex);
 
     @JsProperty
-    JavaScriptObject getDataItem();
+    Object getDataItem();
 
     @JsProperty
-    void setDataItem(JavaScriptObject dataItem);
+    void setDataItem(Object dataItem);
 
     @JsProperty
     Element getGrid();

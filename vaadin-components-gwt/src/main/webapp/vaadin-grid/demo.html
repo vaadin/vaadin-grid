@@ -52,7 +52,7 @@
 
   <li>
   <h3>Simplest possible with explicitly formatted inline data (i.e. children in cells)</h3>
-  <v-grid>
+  <v-grid id="childrenInCells">
   <table>
     <thead>
       <tr>
@@ -75,6 +75,15 @@
     </tbody>
   </table>
   </v-grid>
+
+  <script>
+      waitUntilGridReady("childrenInCells", function(grid) {
+        grid.columns[2].renderer = function(cell) {
+          cell.element.innerHTML = cell.data;
+        };
+      });
+    </script>
+
   </li>
 
   <li>
@@ -98,10 +107,9 @@
         var data = [ [ "Grid", 10000, 0.8 ], [ "Vaadin X", 999999, 0.01 ],
                  [ "designer", 999999, 0.01 ] ];
 
-        // we should set data size before setting the data source (grid bug)
-        grid.rowCount = data.length;
-        grid.dataSource = function(index, count) {
-          return data.slice(index, index + count);
+        grid.data.source = function(req) {
+          var array = data.slice(req.index, req.index + req.count);
+          req.success(array, data.length);
         };
       });
     </script>
@@ -123,11 +131,11 @@
 
   <script>
       waitUntilGridReady("myBigGrid", function(grid) {
-        grid.rowCount = myBigData.length;
-        grid.dataSource = function(index, count, callback) {
+
+        grid.data.source = function(req) {
           setTimeout(function() {
-            callback(myBigData.slice(index, index + count));
-          }, index ? 800 : 0);
+            req.success(myBigData.slice(req.index, req.index + req.count), myBigData.length);
+          }, req.index ? 800 : 0);
         };
       });
       // Note: myBigData is defined at the end of the page
@@ -152,30 +160,25 @@
       waitUntilGridReady("myFormatGrid", function(grid) {
         var data = [ [ "Grid", 10000, 0.8 ], [ "Vaadin X", 999999, 0.01 ], ];
 
-        grid.rowCount = data.length;
-        grid.dataSource = function(index, count) {
-          return data.slice(index, index + count);
+        grid.data.source = function(req) {
+          req.success(data.slice(req.index, req.index + req.count), data.length);
         };
 
         // Maps to simple Renderer interface instance in GWT
-        var valueRenderer = function(element, data, rowIndex) {
-          element.innerHTML = vaadin.Utils.formatCurrency(data);
-        }
+        var valueRenderer = function(cell) {
+          cell.element.innerHTML = vaadin.Utils.formatCurrency(cell.data);
+        };
 
         // Maps to ComplexRenderer subclass in GWT
-        var progressRenderer = {
-          init : function(element) {
-            var child = document.createElement("progress");
-            element.appendChild(child);
-          },
-          render : function(element, data) {
-            element.children[0].setAttribute('value', data);
-          }
-        }
+        var progressRenderer = function(cell) {
+          var child = document.createElement("progress");
+          child.setAttribute('value', cell.data);
+          cell.element.appendChild(child);
+        };
         grid.columns[1].renderer = valueRenderer;
         grid.columns[2].renderer = progressRenderer;
       });
-    </script>
+  </script>
   </li>
 
   <li>
@@ -197,21 +200,18 @@
         var data = [{ name: "Grid", value: 10000, progress: 0.8 },
                 { name: "Vaadin X", value: 999999, progress: 0.01 }];
 
-        grid.rowCount = data.length;
-        grid.dataSource = function(index, count) {
-          return data.slice(index, index + count);
+        grid.data.source = function(req) {
+          req.success(data.slice(req.index, req.index + req.count), data.length);
         };
 
-        // Corresponds to GridColumn.getValue()
-        grid.columns[0].value = function(rowObject, columnIndex) {
+        grid.columns[0].generatedValue = function(rowObject, columnIndex) {
           return "> " + rowObject.name;
-        }
+        };
 
-        // Shorthand for using rowObject[value]
-        grid.columns[1].value = "value";
-        grid.columns[2].value = "progress";
+        grid.columns[1].name = "value";
+        grid.columns[2].name = "progress";
       });
-    </script>
+  </script>
   </li>
 
   <li>
@@ -232,9 +232,8 @@
         "Vaadin X"
       ];
 
-      grid.rowCount = data.length;
-      grid.dataSource = function(index, count) {
-        return data.slice(index, index + count);
+      grid.data.source = function(req) {
+        req.success(data.slice(req.index, req.index + req.count), data.length);
       };
     });
   </script>
@@ -298,9 +297,8 @@
         var button = document.getElementById("mySelButton");
         var label = document.getElementById("mySelLabel");
 
-        grid.rowCount = data.length;
-        grid.dataSource = function(index, count) {
-          return data.slice(index, index + count);
+        grid.data.source = function(req) {
+          req.success(data.slice(req.index, req.index + req.count), data.length);
         };
 
         grid.addEventListener("select", function(event) {
@@ -341,10 +339,9 @@
         var button = document.getElementById("myMultiSelButton");
         var label = document.getElementById("myMultiSelLabel");
 
-        grid.rowCount = data.length;
         grid.selectionMode = "multi";
-        grid.dataSource = function(index, count) {
-          return data.slice(index, index + count);
+        grid.data.source = function(req) {
+          req.success(data.slice(req.index, req.index + req.count), data.length);
         };
 
         grid.addEventListener("select", function(event) {

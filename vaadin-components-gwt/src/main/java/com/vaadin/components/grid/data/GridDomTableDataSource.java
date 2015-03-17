@@ -12,8 +12,8 @@ import com.google.gwt.query.client.GQuery;
 import com.vaadin.components.grid.GridComponent;
 
 /**
- * DataSource implementation based on a DOM table.
- * Each TR tag in the TBODY corresponds with a row in the Grid.
+ * DataSource implementation based on a DOM table. Each TR tag in the TBODY
+ * corresponds with a row in the Grid.
  */
 public class GridDomTableDataSource extends GridDataSource {
 
@@ -36,20 +36,20 @@ public class GridDomTableDataSource extends GridDataSource {
     }
 
     @Override
-    protected void requestRows(
-            int firstRowIndex,
-            int numberOfRows,
-            RequestRowsCallback<JsArrayMixed> callback) {
+    protected void requestRows(int firstRowIndex, int numberOfRows,
+            RequestRowsCallback<Object> callback) {
 
-        List<JsArrayMixed> list = new ArrayList<JsArrayMixed>();
+        List<Object> list = new ArrayList<>();
 
-        for (Element row : rows().gt(firstRowIndex - 1).lt(numberOfRows).elements()) {
+        for (Element row : rows().gt(firstRowIndex - 1).lt(numberOfRows)
+                .elements()) {
             JsArrayMixed values = JsArrayMixed.createArray().cast();
             for (Element e : $(row).find("td").elements()) {
                 values.push($(e).html());
             }
             list.add(values);
         }
+
         setRowData(firstRowIndex, list);
     }
 
@@ -64,8 +64,10 @@ public class GridDomTableDataSource extends GridDataSource {
     /**
      * Return a new DOM DataSource, only in the case the table has elements.
      */
-    public static GridDomTableDataSource createInstance(Element table, GridComponent grid) {
-        GridDomTableDataSource dataSource = new GridDomTableDataSource(table, grid);
+    public static GridDomTableDataSource createInstance(Element table,
+            GridComponent grid) {
+        GridDomTableDataSource dataSource = new GridDomTableDataSource(table,
+                grid);
         return dataSource.size > 0 ? dataSource : null;
     }
 }

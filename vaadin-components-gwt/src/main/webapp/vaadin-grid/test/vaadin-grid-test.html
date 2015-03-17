@@ -51,12 +51,12 @@
     suite('vaadin-grid', function() {
       var grid;
 
-      var infiniteDataSource = function(index, count, callback) {
+      var infiniteDataSource = function(req) {
         var data = [];
-        for (var i = index; i < index + count; i++) {
+        for (var i = req.index; i < req.index + req.count; i++) {
           data.push(["foo " + i, "bar " + i]);
         }
-        callback(data);
+        req.success(data, this.size);
       };
 
       var gridContainsText = function(_grid, text) {
@@ -265,8 +265,8 @@
       });
 
       test('scrollToRow function', function(done) {
-        grid.rowCount = 100;
-        grid.dataSource = infiniteDataSource;
+        infiniteDataSource.size = 100;
+        grid.data.source = infiniteDataSource;
 
         expect(grid.scrollToRow.bind(grid, -10)).to.throw("Row index");
 
@@ -289,8 +289,8 @@
       });
 
       test('scrollToRow with destination', function(done) {
-        grid.rowCount = 100;
-        grid.dataSource = infiniteDataSource;
+        infiniteDataSource.size = 100;
+        grid.data.source = infiniteDataSource;
 
         waitUntil(function() {
           return gridContainsText(grid, "foo 0");
@@ -321,8 +321,8 @@
       });
 
       test('scrollToStart and scrollToEnd functions', function(done) {
-        grid.rowCount = 100;
-        grid.dataSource = infiniteDataSource;
+        infiniteDataSource.size = 100;
+        grid.data.source = infiniteDataSource;
 
         waitUntil(function() {
           return gridContainsText(grid, "foo 0");
@@ -344,8 +344,8 @@
       });
 
       test('scrollTop property', function(done) {
-        grid.rowCount = 100;
-        grid.dataSource = infiniteDataSource;
+        infiniteDataSource.size = 100;
+        grid.data.source = infiniteDataSource;
 
         assert.equal(grid.scrollTop, 0);
 
@@ -757,6 +757,156 @@
 
         var editors = grid.querySelectorAll(".v-grid-editor .v-grid-editor-cells > div *");
         assert.lengthOf(editors, 0);
+      });
+
+      test('data: object type', function(done) {
+        grid.columns[0].name = "firstname";
+        grid.columns[1].name = "lastname";
+        grid.columns.push({
+          name: 'salary',
+          headerHtml: "Salary"
+        });
+
+        var mydata = [{
+          firstname: "John",
+          lastname: "Doe",
+          salary: 1234.56
+        }, {
+          firstname: "Jane",
+          lastname: "Doe",
+          salary: 2345.67
+        }, ];
+
+        grid.data.source = function(request) {
+          request.success(mydata.slice(request.index, request.index +
+            request.count), mydata.length);
+        };
+
+
+        waitUntil(function() {
+          return gridContainsText(grid, "2345.67");
+        }, function() {
+          var cells = grid.querySelectorAll(".v-grid-body .v-grid-cell");
+          assert.equal(cells[0].innerHTML, "John");
+          assert.equal(cells[2].innerHTML, "1234.56");
+          assert.equal(cells[3].innerHTML, "Jane");
+          assert.equal(cells[4].innerHTML, "Doe");
+          done();
+        });
+
+      });
+
+      test('data: array type', function(done) {
+        grid.columns.push({
+          headerHtml: "Salary"
+        });
+
+        mydata = [
+          ["John", "Doe", 1234.56],
+          ["Jane", "Doe", 2345.67],
+        ];
+
+        grid.data.source = function(request) {
+          request.success(mydata.slice(request.index, request.index +
+            request.count), mydata.length);
+        };
+
+        waitUntil(function() {
+          return gridContainsText(grid, "2345.67");
+        }, function() {
+          var cells = grid.querySelectorAll(".v-grid-body .v-grid-cell");
+          assert.equal(cells[0].innerHTML, "John");
+          assert.equal(cells[2].innerHTML, "1234.56");
+          assert.equal(cells[3].innerHTML, "Jane");
+          assert.equal(cells[4].innerHTML, "Doe");
+          done();
+        });
+
+      });
+
+      test('data: boolean type', function(done) {
+        grid.columns.splice(0, 1);
+        grid.selectionMode = "multi";
+
+        waitUntil(function() {
+          return grid.localDom.querySelector("input[type='checkbox']");
+        }, function() {
+          var mydata = [
+            false,
+            true,
+          ];
+
+          grid.data.source = function(request) {
+            request.success(mydata.slice(request.index, request.index +
+              request.count), mydata.length);
+          };
+
+          waitUntil(function() {
+            return gridContainsText(grid, "false");
+          }, function() {
+            var cells = grid.querySelectorAll(".v-grid-body .v-grid-cell");
+            assert.equal(cells[3].innerHTML, "true");
+            done();
+          });
+        });
+
+      });
+
+      test('data: string type', function(done) {
+        grid.columns.splice(0, 1);
+        grid.selectionMode = "multi";
+
+        waitUntil(function() {
+          return grid.localDom.querySelector("input[type='checkbox']");
+        }, function() {
+          var mydata = [
+            "Lorem",
+            "Ipsum",
+          ];
+
+          grid.data.source = function(request) {
+            request.success(mydata.slice(request.index, request.index +
+              request.count), mydata.length);
+          };
+
+          waitUntil(function() {
+            return gridContainsText(grid, "Lorem");
+          }, function() {
+            var cells = grid.querySelectorAll(".v-grid-body .v-grid-cell");
+            assert.equal(cells[3].innerHTML, "Ipsum");
+            done();
+          });
+        });
+
+      });
+
+      test('data: non-object types', function(done) {
+        var first = grid.columns[0];
+        grid.columns.splice(0, 1);
+        grid.columns.push(first);
+        grid.columns.splice(1, 1);
+
+
+        var mydata = [
+          1, 2, null, undefined, 1, "cellsready"
+        ];
+
+        grid.data.source = function(request) {
+          request.success(mydata.slice(request.index, request.index +
+            request.count), mydata.length);
+        };
+
+        waitUntil(function() {
+          return gridContainsText(grid, "cellsready");
+        }, function() {
+          var cells = grid.querySelectorAll(".v-grid-body .v-grid-cell");
+          assert.equal(cells[0].innerHTML, "1");
+          assert.equal(cells[1].innerHTML, "2");
+          assert.equal(cells[2].innerHTML, "");
+          assert.equal(cells[3].innerHTML, "");
+          assert.equal(cells[4].innerHTML, "1");
+          done();
+        });
 
       });
 

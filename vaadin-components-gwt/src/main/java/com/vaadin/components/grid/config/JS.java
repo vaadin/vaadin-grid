@@ -8,8 +8,8 @@ import com.google.gwt.core.client.JsArrayMixed;
 /**
  * Class with static utilities for @JsType
  *
- * TODO: revisit when JsInterop supports static or default
- * methods in @JsType interfaces
+ * TODO: revisit when JsInterop supports static or default methods in @JsType
+ * interfaces
  *
  */
 public abstract class JS {
@@ -17,7 +17,7 @@ public abstract class JS {
     @SuppressWarnings("unchecked")
     public static <T> T createJsType(Class<T> clz) {
         if (clz == JsArrayMixed.class || clz == JSArray.class) {
-            return (T)JavaScriptObject.createArray();
+            return (T) JavaScriptObject.createArray();
         }
         return (T) JavaScriptObject.createObject();
     }
@@ -28,13 +28,19 @@ public abstract class JS {
     }
 
     /**
-     * Box a native JS array in a Java List. It does not have
-     * any performance penalty because we directly change the
-     * native array of super ArrayList implementation.
+     * Box a native JS array in a Java List. It does not have any performance
+     * penalty because we directly change the native array of super ArrayList
+     * implementation.
      */
-    public native static <T> List<T> asList(JavaScriptObject o) /*-{
+    public static native <T> List<T> asList(JavaScriptObject o)
+    /*-{
         var l = @java.util.ArrayList::new()();
         l.@java.util.ArrayList::array = o;
         return l;
+    }-*/;
+
+    public static native boolean isPrimitiveType(Object dataItem)
+    /*-{
+        return Object(dataItem) !== dataItem;
     }-*/;
 }

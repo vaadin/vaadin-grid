@@ -1,7 +1,6 @@
 package com.vaadin.components.grid;
 
 import static com.google.gwt.query.client.GQuery.$;
-import static com.google.gwt.query.client.GQuery.console;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,9 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayInteger;
-import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.core.client.js.JsExport;
 import com.google.gwt.core.client.js.JsNamespace;
 import com.google.gwt.core.client.js.JsNoExport;
@@ -29,6 +26,7 @@ import com.vaadin.client.data.AbstractRemoteDataSource;
 import com.vaadin.client.data.DataSource;
 import com.vaadin.client.widget.grid.selection.SelectionEvent;
 import com.vaadin.client.widget.grid.selection.SelectionHandler;
+import com.vaadin.client.widget.grid.selection.SelectionModelMulti;
 import com.vaadin.client.widget.grid.selection.SelectionModelNone;
 import com.vaadin.client.widget.grid.sort.SortOrder;
 import com.vaadin.client.widgets.Grid;
@@ -47,7 +45,6 @@ import com.vaadin.components.grid.config.JSValidate;
 import com.vaadin.components.grid.data.GridDataSource;
 import com.vaadin.components.grid.data.GridDomTableDataSource;
 import com.vaadin.components.grid.data.GridJsFuncDataSource;
-import com.vaadin.components.grid.data.GridJsObjectDataSource;
 import com.vaadin.components.grid.head.GridColumn;
 import com.vaadin.components.grid.head.GridDomTableHead;
 import com.vaadin.components.grid.utils.GridCellStyleGenerator;
@@ -57,30 +54,27 @@ import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.grid.HeightMode;
 import com.vaadin.shared.ui.grid.ScrollDestination;
 
-
 /**
  * Class to export Vaadin Grid to JS.
  */
 @JsNamespace(Elements.VAADIN_JS_NAMESPACE)
 @JsExport
 @JsType
-public class GridComponent implements SelectionHandler<JsArrayMixed>,
-        EventListener {
+public class GridComponent implements SelectionHandler<Object>, EventListener {
 
-    private Grid<JsArrayMixed> grid;
+    private final Grid<Object> grid;
     private JSArray<JSSortOrder> jsSort;
 
-    private int size = 0;
     private boolean updating = false;
     private GridDomTableHead head;
-    private Redraw redrawer;
-    private GridEditor editor;
+    private final Redraw redrawer;
+    private final GridEditor editor;
 
     private Element container;
     private JSArray<JSColumn> cols;
 
     public GridComponent() {
-        grid = new Grid<JsArrayMixed>();
+        grid = new Grid<Object>();
         grid.addSelectionHandler(this);
         cols = JS.createArray();
         observeColumnArray();
@@ -96,7 +90,7 @@ public class GridComponent implements SelectionHandler<JsArrayMixed>,
         return grid.getElement();
     }
 
-    public JavaScriptObject getSortOrder() {
+    public JSArray<JSSortOrder> getSortOrder() {
         return jsSort;
     }
 
@@ -113,7 +107,7 @@ public class GridComponent implements SelectionHandler<JsArrayMixed>,
         this.jsSort = jsOrders;
     }
 
-    public Grid<JsArrayMixed> getGrid() {
+    public Grid<Object> getGrid() {
         return grid;
     }
 
@@ -139,7 +133,7 @@ public class GridComponent implements SelectionHandler<JsArrayMixed>,
         if (lightDomElement != null) {
             // If the wrapped DOM table has TR elements, we use it as data
             // source
-            DataSource<JsArrayMixed> dataSource = GridDomTableDataSource
+            DataSource<Object> dataSource = GridDomTableDataSource
                     .createInstance(lightDomElement, this);
             if (dataSource != null) {
                 grid.setDataSource(dataSource);
@@ -222,13 +216,9 @@ public class GridComponent implements SelectionHandler<JsArrayMixed>,
         return cols;
     }
 
-    public void setRowCount(int size) {
-        this.size = size;
-    }
-
     @JsNoExport
     @Override
-    public void onSelect(SelectionEvent<JsArrayMixed> ev) {
+    public void onSelect(SelectionEvent<Object> ev) {
         if (!updating) {
             $(container).trigger("select");
         }
@@ -250,21 +240,22 @@ public class GridComponent implements SelectionHandler<JsArrayMixed>,
         grid.setHeight(height);
     }
 
-    public void setDataSource(JavaScriptObject jso) {
-        if (JsUtils.isFunction(jso)) {
-            grid.setDataSource(new GridJsFuncDataSource(jso, size, this));
-        } else if (JsUtils.isArray(jso)) {
-            setColumns(head.loadHeaders());
-            grid.setDataSource(new GridJsObjectDataSource(jso
-                    .<JsArray<JavaScriptObject>> cast(), this));
+    public void setDataSource(JavaScriptObject data) {
+        if (JsUtils.isFunction(data)) {
+            grid.setDataSource(new GridJsFuncDataSource(data, this));
         } else {
-            throw new RuntimeException("Unknown jso: " + jso);
+            throw new RuntimeException("Unknown data source type: " + data
+                    + ". Arrays and Functions are supported only.");
         }
         redraw();
     }
 
+    public DataSource<Object> getDataSource() {
+        return grid.getDataSource();
+    }
+
     public void refresh() {
-        if ((grid.getDataSource() instanceof GridDataSource)) {
+        if (grid.getDataSource() instanceof GridDataSource) {
             final JsArrayInteger a = getSelectedRows();
             ((GridDataSource) grid.getDataSource()).refresh();
             if (a.length() > 0) {
@@ -287,10 +278,8 @@ public class GridComponent implements SelectionHandler<JsArrayMixed>,
         }
 
         Collection<JSColumn> gCols = new ArrayList<JSColumn>();
-        for (Column<?, JsArrayMixed> gCol : grid.getColumns()) {
-            if (gCol instanceof GridColumn) {
-                gCols.add(((GridColumn) gCol).getJsColumn());
-            }
+        for (Column<?, Object> gCol : getDataColumns()) {
+            gCols.add(((GridColumn) gCol).getJsColumn());
         }
 
         // Add all missing columns to grid
@@ -300,29 +289,37 @@ public class GridComponent implements SelectionHandler<JsArrayMixed>,
             }
         }
         // Remove all non-included columns from grid
-        for (Column<?, JsArrayMixed> column : grid.getColumns()) {
-            if (column instanceof GridColumn) {
-                if (columns.indexOf(((GridColumn) column).getJsColumn()) == -1) {
-                    grid.removeColumn(column);
-                }
+        for (Column<?, Object> column : getDataColumns()) {
+            if (columns.indexOf(((GridColumn) column).getJsColumn()) == -1) {
+                grid.removeColumn(column);
             }
         }
 
         // Fix column order
-        Column[] array = grid.getColumns().toArray(new Column[0]);
+        Column[] array = getDataColumns().toArray(new Column[0]);
         Arrays.sort(array, new Comparator<Object>() {
+            @Override
             public int compare(Object o1, Object o2) {
-                if (!(o1 instanceof GridColumn) || !(o2 instanceof GridColumn)) {
-                    console.error("GridComponent [setColumns multi BUG]: there is a SelectionColumn");
-                    return 0;
-                }
-                return columns.indexOf(((GridColumn)o1).getJsColumn()) > columns.indexOf(((GridColumn)o2)
-                        .getJsColumn()) ? 1 : -1;
+                return columns.indexOf(((GridColumn) o1).getJsColumn()) > columns
+                        .indexOf(((GridColumn) o2).getJsColumn()) ? 1 : -1;
             }
         });
         grid.setColumnOrder(array);
         this.cols = columns;
         observeColumnArray();
+    }
+
+    /*
+     * This method is needed internally for listing all the columns that display
+     * data. On multi-select mode grid.getColumns() will contain the selection
+     * column as the first item.
+     */
+    private List<Column<?, Object>> getDataColumns() {
+        List<Column<?, Object>> result = grid.getColumns();
+        if (grid.getSelectionModel() instanceof SelectionModelMulti) {
+            result = result.subList(1, result.size());
+        }
+        return result;
     }
 
     private void observeColumnArray() {
@@ -369,8 +366,8 @@ public class GridComponent implements SelectionHandler<JsArrayMixed>,
     public JsArrayInteger getSelectedRows() {
         JsArrayInteger selectedJso = JsArrayInteger.createArray().cast();
         selectedJso.setLength(0);
-        Collection<JsArrayMixed> c = grid.getSelectedRows();
-        for (Iterator<JsArrayMixed> i = c.iterator(); i.hasNext();) {
+        Collection<Object> c = grid.getSelectedRows();
+        for (Iterator<Object> i = c.iterator(); i.hasNext();) {
             selectedJso.push(((AbstractRemoteDataSource) grid.getDataSource())
                     .indexOf(i.next()));
         }

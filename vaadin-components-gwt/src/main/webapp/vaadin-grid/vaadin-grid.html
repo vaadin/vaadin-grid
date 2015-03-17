@@ -99,18 +99,10 @@
 
     bind: {
       selectionMode: 'grid.setSelectionMode',
-      dataSource: 'grid.setDataSource',
       disabled: 'grid.setDisabled',
       editable: 'editableChanged',
       frozenColumns: 'grid.setFrozenColumns',
       rows: 'grid.setRows',
-      /**
-       * Sets the row count
-       *
-       * @attribute rowCount
-       * @type number
-       */
-      rowCount: 'grid.setRowCount'
     },
 
     editableChanged: function(editable) {
@@ -158,6 +150,8 @@
     },
 
     editor: {},
+
+    data: {},
 
     onSelect: function() {
       this.setAttribute('selected-rows', this.selectedRows.join());
@@ -212,6 +206,40 @@
         cancel: function() {
           this.gridEditor.cancel();
         }
+
+      };
+
+      this.data = {
+
+        get source() {
+          return this._source;
+        },
+        set source(source) {
+          var sourceFunction = source;
+          if (Array.isArray(source)) {
+            sourceFunction = function(req) {
+              var array = data.slice(req.index, req.index + req.count);
+              req.success(array, data.length);
+            };
+          }
+          _this.grid.setDataSource(sourceFunction);
+
+          this._source = source;
+        },
+
+        dataUpdated: function(firstIndex, itemsData) {
+          _this.grid.getDataSource().dataUpdated(firstIndex, itemsData);
+        },
+        dataRemoved: function(firstIndex, numberOfItems) {
+          _this.grid.getDataSource().dataRemoved(firstIndex, numberOfItems);
+        },
+        dataAdded: function(firstIndex, numberOfItems) {
+          _this.grid.getDataSource().dataAdded(firstIndex, numberOfItems);
+        },
+        resetData: function(estimatedNewSize) {
+          _this.grid.getDataSource().resetData(estimatedNewSize);
+        },
+
       };
 
       Object.defineProperty(this, 'scrollTop', {
@@ -336,16 +364,6 @@
     },
     get columns() {
       return this.grid.getColumns();
-    },
-
-    /**
-     * The datasource
-     *
-     * @attribute datasource
-     * @type object
-     */
-    get datasource() {
-      return this.grid.getDataSource();
     },
 
     /**

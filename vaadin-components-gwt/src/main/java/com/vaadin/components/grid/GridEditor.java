@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.core.client.js.JsExport;
 import com.google.gwt.core.client.js.JsNamespace;
 import com.google.gwt.core.client.js.JsType;
@@ -23,6 +22,7 @@ import com.vaadin.components.grid.config.JSArray;
 import com.vaadin.components.grid.config.JSColumn;
 import com.vaadin.components.grid.config.JSEditorHandler;
 import com.vaadin.components.grid.config.JSEditorRequest;
+import com.vaadin.components.grid.data.DataItemContainer;
 import com.vaadin.components.grid.head.GridColumn;
 
 @JsNamespace(Elements.VAADIN_JS_NAMESPACE)
@@ -30,14 +30,14 @@ import com.vaadin.components.grid.head.GridColumn;
 @JsType
 public class GridEditor {
 
-    private Grid<JsArrayMixed> grid;
+    private final Grid<Object> grid;
     private Element container;
     private JSEditorHandler handler;
     private boolean enabled;
 
     private final Map<JSColumn, Element> editors = new HashMap<>();
 
-    public GridEditor(Grid<JsArrayMixed> grid) {
+    public GridEditor(Grid<Object> grid) {
         this.grid = grid;
     }
 
@@ -86,32 +86,29 @@ public class GridEditor {
 
     public void setHandler(JSEditorHandler handler) {
         this.handler = handler;
-        grid.setEditorHandler(new EditorHandler<JsArrayMixed>() {
+        grid.setEditorHandler(new EditorHandler<Object>() {
             @Override
-            public void bind(
-                    com.vaadin.client.widget.grid.EditorHandler.EditorRequest<JsArrayMixed> request) {
+            public void bind(EditorRequest<Object> request) {
                 JsUtils.jsni(handler.getBind(), "call", handler.getBind(),
                         createJSEditorRequest(request));
             }
 
             @Override
-            public void cancel(
-                    com.vaadin.client.widget.grid.EditorHandler.EditorRequest<JsArrayMixed> request) {
+            public void cancel(EditorRequest<Object> request) {
                 JsUtils.jsni(handler.getCancel(), "call", handler.getCancel(),
                         createJSEditorRequest(request));
                 editors.clear();
             }
 
             @Override
-            public void save(
-                    com.vaadin.client.widget.grid.EditorHandler.EditorRequest<JsArrayMixed> request) {
+            public void save(EditorRequest<Object> request) {
                 JsUtils.jsni(handler.getSave(), "call", handler.getSave(),
                         createJSEditorRequest(request));
                 editors.clear();
             }
 
             @Override
-            public Widget getWidget(Column<?, JsArrayMixed> column) {
+            public Widget getWidget(Column<?, Object> column) {
                 Element editor = getEditor(((GridColumn) column).getJsColumn());
                 return editor != null ? new ElementWrapper(editor) : null;
             }
@@ -123,11 +120,15 @@ public class GridEditor {
         return handler;
     }
 
-    private JSEditorRequest createJSEditorRequest(
-            EditorRequest<JsArrayMixed> request) {
+    private JSEditorRequest createJSEditorRequest(EditorRequest<Object> request) {
         JSEditorRequest result = JS.createJsType(JSEditorRequest.class);
         result.setRowIndex(request.getRowIndex());
-        result.setDataItem(request.getRow());
+
+        Object dataItem = request.getRow();
+        if (dataItem instanceof DataItemContainer) {
+            dataItem = ((DataItemContainer) dataItem).getDataItem();
+        }
+        result.setDataItem(dataItem);
         result.setGrid(container);
         result.setSuccess(JsUtils.wrapFunction(new Function() {
             @Override
@@ -139,8 +140,8 @@ public class GridEditor {
             @Override
             public void f() {
                 JSArray<JSColumn> columns = arguments(1);
-                Collection<Column<?, JsArrayMixed>> errorColumns = new ArrayList<>();
-                for (Column<?, JsArrayMixed> column : grid.getColumns()) {
+                Collection<Column<?, Object>> errorColumns = new ArrayList<>();
+                for (Column<?, Object> column : grid.getColumns()) {
                     if (columns.indexOf(((GridColumn) column).getJsColumn()) != -1) {
                         errorColumns.add(column);
                     }

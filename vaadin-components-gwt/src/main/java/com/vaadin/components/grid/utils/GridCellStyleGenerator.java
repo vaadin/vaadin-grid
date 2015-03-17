@@ -1,6 +1,5 @@
 package com.vaadin.components.grid.utils;
 
-import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.dom.client.Element;
 import com.vaadin.client.widget.grid.CellReference;
 import com.vaadin.client.widget.grid.CellStyleGenerator;
@@ -13,7 +12,7 @@ import com.vaadin.components.grid.head.GridColumn;
 /**
  * A GWT/JavaScript bridge for Grid CellStyleGenerator.
  */
-public class GridCellStyleGenerator implements CellStyleGenerator<JsArrayMixed> {
+public class GridCellStyleGenerator implements CellStyleGenerator<Object> {
 
     private JSCellClassName cellClassName;
     private Element container;
@@ -29,7 +28,7 @@ public class GridCellStyleGenerator implements CellStyleGenerator<JsArrayMixed> 
     }
 
     @Override
-    public String getStyle(CellReference<JsArrayMixed> cellReference) {
+    public String getStyle(CellReference<Object> cellReference) {
         JSCell cell = JS.createJsType(JSCell.class);
         String columnName = ((GridColumn) cellReference.getColumn())
                 .getJsColumn().name();

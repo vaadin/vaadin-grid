@@ -1,48 +1,64 @@
 package com.vaadin.components.grid.data;
 
+import java.util.Collections;
+import java.util.List;
+
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.js.JsUtils;
 import com.vaadin.components.grid.GridComponent;
+import com.vaadin.components.grid.config.JS;
+import com.vaadin.components.grid.config.JSDataRequest;
 
 /**
  * Datasource where requestRows() is delegated to a js native function
  */
 public class GridJsFuncDataSource extends GridDataSource {
 
-    private JavaScriptObject jsFunction;
+    private final JavaScriptObject jsFunction;
 
-    public GridJsFuncDataSource(JavaScriptObject jso, int rows, GridComponent grid) {
+    public GridJsFuncDataSource(JavaScriptObject jso, GridComponent grid) {
         super(grid);
         assert JsUtils.isFunction(jso);
         jsFunction = jso;
-        size = rows;
     }
 
     @Override
     protected void requestRows(
             final int firstRowIndex,
             final int numberOfRows,
-            final com.vaadin.client.data.AbstractRemoteDataSource.RequestRowsCallback<JsArrayMixed> callback) {
+            final com.vaadin.client.data.AbstractRemoteDataSource.RequestRowsCallback<Object> callback) {
 
-        JavaScriptObject jsCallback = JsUtils.wrapFunction(new Function() {
+        JSDataRequest jsDataRequest = JS.createJsType(JSDataRequest.class);
+        jsDataRequest.setIndex(firstRowIndex);
+        jsDataRequest.setCount(numberOfRows);
+        jsDataRequest.setSortOrder(gridComponent.getSortOrder());
+        // jsDataRequest.setFilterData();
+        jsDataRequest.setSuccess(JsUtils.wrapFunction(new Function() {
+            @Override
             public void f() {
-                JsArrayMixed result = arguments(0);
-                setRowData(firstRowIndex, result);
+                List<Object> list = JS.asList(arguments(0));
+                for (int i = 0; i < list.size(); i++) {
+                    if (JS.isPrimitiveType(list.get(i))) {
+                        list.set(i, new DataItemContainer(list.get(i)));
+                    }
+                }
+
+                Object totalSize = arguments(1);
+                if (totalSize != null) {
+                    size = ((Double) totalSize).intValue();
+                }
+                callback.onResponse(list, size);
             }
-        });
+        }));
+        jsDataRequest.setFailure(JsUtils.wrapFunction(new Function() {
+            @Override
+            public void f() {
+                callback.onResponse(Collections.emptyList(), size);
+            }
+        }));
 
-        // When we call the native function, it could return the array of rows directly
-        // or via the provided callback function.
-        JsArrayMixed result = JsUtils.jsni(jsFunction, "call", jsFunction, firstRowIndex, numberOfRows, jsCallback);
-        if (result != null) {
-            setRowData(firstRowIndex, result);
-        }
+        JsUtils.jsni(jsFunction, "call", jsFunction, jsDataRequest);
     }
 
-    @Override
-    public Object getRowKey(JsArrayMixed row) {
-        return JsUtils.JSON2String(row);
-    }
 }
