@@ -29,7 +29,24 @@ VButton = Polymer({
   },
 
   published: {
+    /**
+     * Sets whether this widget is disabled.
+     *
+     * @attribute disabled
+     * @type boolean
+     */
     disabled: { reflect: true, type: Boolean },
+
+    /**
+     * Sets whether this button is focused when clicking with the mouse or tapping with a finger.
+     *
+     * By default v-button elements are only focusable with the keyboard TAB key or programmatically
+     * using the focus() method. Setting this property to true allows the button to gain focus also
+     * when clicking of tapping it.
+     *
+     * @attribute pointerFocus
+     * @type boolean
+     */
     pointerFocus: { reflect: true, type: Boolean }
   },
 
