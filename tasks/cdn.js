@@ -31,10 +31,11 @@ gulp.task('cdn:stage-components', ['cdn:clean'], function() {
 
   return gulp.src(paths)
     .pipe(replace(/(src|href)=("|')(.*?)\.\.\/\.\.\/bower_components\/(.*?)\//mg, '$1=$2$4/'))
+    .pipe(replace(/object.observe/mg, 'object-observe'))
     .pipe(gulp.dest(stagingPath));
 });
 
-gulp.task('cdn:stage-bower_components', ['cdn:clean'], function() {
+gulp.task('cdn:install-dependencies', ['cdn:clean'], function() {
   return bower({
     directory: stagingPath,
     forceLatest: true,
@@ -42,13 +43,13 @@ gulp.task('cdn:stage-bower_components', ['cdn:clean'], function() {
   }, [['./vaadin-components-package/']]);
 });
 
-gulp.task('cdn:fix-object-observe', ['bower:stage-imports'], function() {
-  return gulp.src(stagingPath + '/*')
-    .pipe(replace(/object.observe/mg, 'object-observe'))
-    .pipe(gulp.dest(stagingPath));
+gulp.task('cdn:stage-bower_components', ['cdn:install-dependencies'], function() {
+  fs.removeSync(stagingPath + '/vaadin-components');
 });
 
-gulp.task('stage:cdn', ['cdn:stage-components', 'cdn:stage-bower_components', 'cdn:fix-object-observe']);
+gulp.task('stage:cdn',
+  ['cdn:stage-components',
+    'cdn:stage-bower_components']);
 
 gulp.task('deploy:cdn', ['stage:cdn'], function() {
   common.checkArguments(['cdnUsername', 'cdnDestination']);
@@ -96,13 +97,13 @@ gulp.task('verify:cdn', ['cdn-test:stage'], function(done) {
     ['Windows 7/firefox@36'],
     'vaadin-components / cdn.vaadin.com / ' + version,
     function(err) {
-      common.handleRevert(err, function() {
+      common.autoRevert(err, function() {
         gutil.log('Deleting folder ' + args.cdnDestination + version);
 
         require('node-ssh-exec')({
           host: 'cdn.vaadin.com',
           username: args.cdnUsername,
-          privateKey: require('fs').readFileSync(config.paths.userhome + '/.ssh/id_rsa')
+          privateKey: config.paths.privateKey()
         }, 'rm -rf ' + args.cdnDestination + version, function (error, response) {
           if (error) {
             throw error;

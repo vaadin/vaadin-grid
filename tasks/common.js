@@ -73,7 +73,7 @@ module.exports = {
           }, done);
   },
 
-  handleRevert: function(err, handler, done) {
+  autoRevert: function(err, handler, done) {
     if(err) {
       gutil.log(err.toString());
       if(args.autoRevert) {

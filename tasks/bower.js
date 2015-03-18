@@ -118,7 +118,7 @@ gulp.task('verify:bower', ['bower-test:stage'], function(done) {
     ['Windows 7/chrome@41'],
     'vaadin-components / bower / ' + version,
     function(err) {
-      common.handleRevert(err, function() {
+      common.autoRevert(err, function() {
         gutil.log('Reverting branch/tag ' + version);
 
         // implicit requirement: repository must be cloned in checkoutPath

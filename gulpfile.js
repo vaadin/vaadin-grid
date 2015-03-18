@@ -2,38 +2,28 @@
 var _ = require('lodash');
 var gulp = require('gulp');
 require('require-dir')('./tasks');
+var common = require('./tasks/common');
 
 var gutil = require('gulp-util');
 var chalk = require('chalk');
 var cmd = require('child_process');
-var git = require('gulp-git');
 var fs = require('fs-extra');
 var rename = require('gulp-rename');
 var json = require('gulp-json-editor');
 var replace = require('gulp-replace');
 require('web-component-tester').gulp.init(gulp);
-var test = require('./node_modules/web-component-tester/runner/test.js');
-var rsync = require('gulp-rsync');
-
 
 var vaadintheme = require("./vaadin-theme/gulpfile");
 var sassdoc = require('sassdoc');
 var args = require('yargs').argv;
-var zip = require('gulp-zip');
 
 var pwd = process.cwd();
 var gwtproject = 'vaadin-components-gwt';
-var gitrepo = 'git@github.com:vaadin-bower/';
 var target = pwd + '/target';
 var version = '0.2.0';
 var major = version.replace(/(\d+\.\d+\.).*$/, '$1');
 var patch = ~~((new Date().getTime() / 1000 - 1420070400) / 60)
 var tag =  args.version || major + patch; // will rename the tag variable in a separate patch
-var target_cdn = target + '/cdn/' + tag;
-var target_bower = target + '/bower';
-var target_zip = target + '/zip';
-
-var _components = ['vaadin-button', 'vaadin-grid'];
 
 function system(command, cb) {
   cmd.exec(command, function(err, stdout, stderr) {
@@ -110,89 +100,16 @@ gulp.task('gwt', function(cb) {
   });
 });
 
-gulp.task('stage:clone', function(done) {
-  var giturl = gitrepo + 'vaadin-components.git';
-
-  fs.removeSync(target_bower);
-
-  var cloneArgs = (args.checkout ? '-b ' + args.checkout + ' ' : '') + target_bower;
-
-  git.clone(giturl, {
-    args : cloneArgs
-  }, function(err) {
-    if (err) throw err;
-    done();
-  });
-});
-
-gulp.task('stage:components', ['stage:clone'], function() {
-  var components = ['vaadin-button', 'vaadin-grid'];
-
-  process.chdir(pwd);
-
-  _.forEach(components, function(component) {
-    fs.copySync('vaadin-components/' + component, target_bower + '/' + component);
-  });
-});
-
-gulp.task('stage:bower.json', ['stage:clone'], function() {
-  return gulp.src(pwd + '/vaadin-components-package/bower.json')
-             .pipe(json({version: tag}))
-             .pipe(gulp.dest(target_bower));
-});
-
-gulp.task('stage:replace', ['stage:components'], function() {
-  return gulp.src(target_bower + '/**/*.html')
-             .pipe(replace(/(src|href)=("|')(.*?)\.\.\/\.\.\/bower_components\//mg, '$1=$2$3../../'))
-             .pipe(gulp.dest(target_bower));
-});
-
-gulp.task('stage', ['stage:components', 'stage:replace', 'stage:bower.json'], function() {
-
-});
-
 gulp.task('deploy', ['deploy:bower', 'deploy:cdn']);
 
-gulp.task('verify', ['verify:bower', 'verify:cdn']);
-
-// zipping doesn't really depend on stage:clone because we're not going to push,
-// but it makes sense to reuse the existing stage tasks for copying the needed files.
-gulp.task('stage:zip', ['stage'], function() {
-    fs.removeSync(target_zip);
-
-    return gulp.src(target_bower + '/**/*')
-      .pipe(zip('vaadin-components-' + tag + '.zip'))
-      .pipe(gulp.dest(target_zip));
-});
+// can't run all the verification concurrently until sauce-connect-launcher supports
+// multiple tunnels
+//gulp.task('verify', ['verify:bower', 'verify:cdn']);
 
 gulp.task('test', ['test:local']);
 
-function cleanDone(done) {
-  return function(error) {
-    if (error) {
-      // Pretty error for gulp.
-      error = new Error(chalk.red(error.message || error));
-      error.showStack = false;
-    }
-    done(error);
-  };
-}
-
-function localAddress() {
-  var ip, tun, ifaces = require('os').networkInterfaces();
-  Object.keys(ifaces).forEach(function (ifname) {
-    ifaces[ifname].forEach(function (iface) {
-      if ('IPv4' == iface.family && !iface.internal) {
-        if (!ip) ip = iface.address;
-        if (/tun/.test(ifname)) tun = iface.address;
-      }
-    });
-  });
-  return tun || ip;
-}
-
 gulp.task('test:validation', function(done) {
-  test(
+  common.test(
     {
       browserOptions: {
         url: 'http://validation-hub.devnet.vaadin.com:4444/wd/hub',
@@ -220,38 +137,22 @@ gulp.task('test:validation', function(done) {
       root: '.',
       webserver: {
         port: 2000,
-        hostname: localAddress()
+        hostname: common.localAddress()
       }
-    }, cleanDone(done));
+    }, done);
 });
 
 gulp.task('test:sauce', function(done) {
-  test(
-    {
-      browserOptions: {
-        name: localAddress() + ' / ' + new Date(),
-        build: 'vaadin-components'
-      },
-
-      plugins: {
-        local: false,
-        sauce: {
-          username: args.sauceUsername,
-          accessKey: args.sauceAccessKey,
-          browsers: ['Windows 7/chrome@41',
-                     'Windows 7/firefox@36',
-                     'Windows 7/internet explorer@11',
-                     'OS X 10.10/safari@8.0', //slow startup
-                     'OS X 10.10/iphone@8.1', //slow as hell startup
-                     'Linux/android@5.0']
-        },
-        'teamcity-reporter': args.teamcity
-      },
-      webserver: {
-        //Sauce OSX doesn't work with 'localhost', need real IP
-        hostname: localAddress()
-      }
-    }, cleanDone(done));
+  common.testSauce(
+    [],
+    ['Windows 7/chrome@41',
+      'Windows 7/firefox@36',
+      'Windows 7/internet explorer@11',
+      'OS X 10.10/safari@8.0',
+      'OS X 10.10/iphone@8.1',
+      'Linux/android@5.0'],
+    'vaadin-components / ' + version,
+     done)
 });
 
 gulp.task('all', ['clean'], function() {
