@@ -78,8 +78,8 @@ public class GridComponent implements SelectionHandler<Object>, EventListener {
         grid.addSelectionHandler(this);
         cols = JS.createArray();
         observeColumnArray();
-        redrawer = new Redraw(grid);
-        editor = new GridEditor(grid);
+        redrawer = new Redraw(this);
+        editor = new GridEditor(this);
     }
 
     public GridEditor getEditor() {
@@ -255,19 +255,15 @@ public class GridComponent implements SelectionHandler<Object>, EventListener {
     }
 
     public void refresh() {
-        if (grid.getDataSource() instanceof GridDataSource) {
-            final JsArrayInteger a = getSelectedRows();
-            ((GridDataSource) grid.getDataSource()).refresh();
-            if (a.length() > 0) {
-                $(container).delay(5, new Function() {
-                    @Override
-                    public void f() {
-                        setSelectedRows(a);
-                    }
-                });
-            }
-        } else if (grid.getDataSource() != null) {
-            grid.setDataSource(grid.getDataSource());
+        final JsArrayInteger a = getSelectedRows();
+        ((GridDataSource) grid.getDataSource()).refresh();
+        if (a.length() > 0) {
+            $(container).delay(5, new Function() {
+                @Override
+                public void f() {
+                    setSelectedRows(a);
+                }
+            });
         }
     }
 

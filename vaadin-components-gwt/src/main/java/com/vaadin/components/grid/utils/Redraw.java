@@ -5,6 +5,7 @@ import static com.google.gwt.query.client.GQuery.$;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.vaadin.client.widgets.Grid;
+import com.vaadin.components.grid.GridComponent;
 import com.vaadin.components.grid.data.GridDataSource;
 
 /**
@@ -15,8 +16,8 @@ public class Redraw extends Timer {
     private Element container;
     private int defaultSize, size;
 
-    public Redraw(Grid<?> vaadinGrid) {
-        grid = vaadinGrid;
+    public Redraw(GridComponent gridComponent) {
+        grid = gridComponent.getGrid();
     }
 
     public void setContainer(Element containerElement) {

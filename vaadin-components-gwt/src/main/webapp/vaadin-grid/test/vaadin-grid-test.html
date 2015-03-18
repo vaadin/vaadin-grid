@@ -63,6 +63,36 @@
         return _grid.localDom.querySelector(".v-grid").innerHTML.indexOf(text) > -1;
       };
 
+      var editorHandler = {
+        getCellEditor: function(columnObject) {
+          var input = document.createElement("input");
+          return input;
+        },
+        bind: function(req) {
+          for (var i = 0; i < req.grid.columns.length; i++) {
+            var col = req.grid.columns[i];
+            var el = req.getCellEditor(col);
+            el.value = req.dataItem[i];
+          }
+          req.success();
+        },
+        save: function(req) {
+          var failingColumns = [];
+          for (var i = 0; i < req.grid.columns.length; i++) {
+            var col = req.grid.columns[i];
+            var el = req.getCellEditor(col);
+            if (el.value == "fail") {
+              failingColumns.push(col);
+            }
+          }
+          if (failingColumns.length > 0) {
+            req.failure("Save failed", failingColumns);
+          } else {
+            req.success();
+          }
+        }
+      };
+
       setup(function(done) {
         var wrapper = document.getElementById("gridwrapper");
         if (grid) {
@@ -647,36 +677,6 @@
         assert.isTrue(grid.querySelector(".v-grid-body .v-grid-row .v-grid-cell").classList.contains("name"));
         assert.equal(grid.cellClassName, cellClassName);
       });
-
-      var editorHandler = {
-        getCellEditor: function(columnObject) {
-          var input = document.createElement("input");
-          return input;
-        },
-        bind: function(req) {
-          for (var i = 0; i < req.grid.columns.length; i++) {
-            var col = req.grid.columns[i];
-            var el = req.getCellEditor(col);
-            el.value = req.dataItem[i];
-          }
-          req.success();
-        },
-        save: function(req) {
-          var failingColumns = [];
-          for (var i = 0; i < req.grid.columns.length; i++) {
-            var col = req.grid.columns[i];
-            var el = req.getCellEditor(col);
-            if (el.value == "fail") {
-              failingColumns.push(col);
-            }
-          }
-          if (failingColumns.length > 0) {
-            req.failure("Save failed", failingColumns);
-          } else {
-            req.success();
-          }
-        }
-      };
 
       test('editor: enabled', function() {
         grid.columns[0].name = "name";

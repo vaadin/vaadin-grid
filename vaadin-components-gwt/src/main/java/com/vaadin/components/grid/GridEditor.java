@@ -31,14 +31,16 @@ import com.vaadin.components.grid.head.GridColumn;
 public class GridEditor {
 
     private final Grid<Object> grid;
+    private GridComponent gridComponent;
     private Element container;
     private JSEditorHandler handler;
     private boolean enabled;
 
     private final Map<JSColumn, Element> editors = new HashMap<>();
 
-    public GridEditor(Grid<Object> grid) {
-        this.grid = grid;
+    public GridEditor(GridComponent gridComponent) {
+        this.gridComponent = gridComponent;
+        this.grid = gridComponent.getGrid();
     }
 
     public void setContainer(Element containerElement) {
@@ -105,6 +107,7 @@ public class GridEditor {
                 JsUtils.jsni(handler.getSave(), "call", handler.getSave(),
                         createJSEditorRequest(request));
                 editors.clear();
+                gridComponent.refresh();
             }
 
             @Override
