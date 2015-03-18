@@ -48,10 +48,10 @@ public interface JSColumn {
     JSColumn setSortable(boolean b);
 
     @JsProperty
-    boolean editable();
+    boolean readOnly();
 
     @JsProperty
-    JSColumn setEditable(boolean b);
+    JSColumn setReadOnly(boolean b);
 
     @JsProperty
     JavaScriptObject renderer();

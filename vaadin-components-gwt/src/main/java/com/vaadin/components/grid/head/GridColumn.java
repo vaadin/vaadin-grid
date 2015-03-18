@@ -35,7 +35,7 @@ public final class GridColumn extends Column<Object, JsArrayMixed> {
 
         // Define the properties
         for (String propertyName : Arrays.asList("flex", "name", "headerHtml",
-                "sortable", "editable", "renderer", "generatedValue",
+                "sortable", "readOnly", "renderer", "generatedValue",
                 "minWidth", "maxWidth", "width")) {
             result.defineProperty(jsColumn, propertyName);
         }
@@ -84,8 +84,8 @@ public final class GridColumn extends Column<Object, JsArrayMixed> {
         case "sortable":
             setSortable(JsUtils.prop(jso, VALUE));
             break;
-        case "editable":
-            setEditable(JsUtils.prop(jso, VALUE));
+        case "readOnly":
+            setEditable(!JsUtils.<Boolean> prop(jso, VALUE));
             break;
         case "renderer":
             setColumnRenderer(JsUtils.prop(jso, VALUE));
