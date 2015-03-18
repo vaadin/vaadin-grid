@@ -28,6 +28,8 @@ import com.vaadin.client.widget.grid.selection.SelectionEvent;
 import com.vaadin.client.widget.grid.selection.SelectionHandler;
 import com.vaadin.client.widget.grid.selection.SelectionModelMulti;
 import com.vaadin.client.widget.grid.selection.SelectionModelNone;
+import com.vaadin.client.widget.grid.sort.SortEvent;
+import com.vaadin.client.widget.grid.sort.SortHandler;
 import com.vaadin.client.widget.grid.sort.SortOrder;
 import com.vaadin.client.widgets.Grid;
 import com.vaadin.client.widgets.Grid.Column;
@@ -60,7 +62,8 @@ import com.vaadin.shared.ui.grid.ScrollDestination;
 @JsNamespace(Elements.VAADIN_JS_NAMESPACE)
 @JsExport
 @JsType
-public class GridComponent implements SelectionHandler<Object>, EventListener {
+public class GridComponent implements SelectionHandler<Object>,
+        EventListener, SortHandler<Object> {
 
     private final Grid<Object> grid;
     private JSArray<JSSortOrder> jsSort;
@@ -76,6 +79,7 @@ public class GridComponent implements SelectionHandler<Object>, EventListener {
     public GridComponent() {
         grid = new Grid<Object>();
         grid.addSelectionHandler(this);
+        grid.addSortHandler(this);
         cols = JS.createArray();
         observeColumnArray();
         redrawer = new Redraw(this);
@@ -414,5 +418,20 @@ public class GridComponent implements SelectionHandler<Object>, EventListener {
 
     public void setRows(int rows) {
         redrawer.setSize(rows);
+    }
+
+    @Override
+    public void sort(SortEvent<Object> event) {
+        if (jsSort == null) {
+            jsSort = JSArray.createArray().cast();
+        }
+        jsSort.setLength(0);
+        for (SortOrder order: event.getOrder()) {
+            int idx = grid.getColumns().indexOf(order.getColumn());
+            jsSort.push(JS.createJsType(JSSortOrder.class).setColumn(idx)
+                    .setDirection(JSEnums.Direction.val(order.getDirection())));
+        }
+        $(container).trigger("sort");
+        refresh();
     }
 }

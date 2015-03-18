@@ -476,26 +476,39 @@
   <li>
   <h3>Sort example</h3>
     <v-grid id='mySortGrid'>
-      <table><thead><tr><th>Name</th><th>Value</th></tr></thead>
-      <tbody><tr><td>Grid</td><td>10000</td></tr><tr><td>VaadinX</td><td>1000</td></tr></tbody></table>
+      <table><thead><tr><th sortable>Name</th><th sortable>Value</th><th sortable>Progress</th></tr></thead></table>
     </v-grid>
-    <button id="mySortButton">Order column 0</button>
+    <button id="mySortButton">Sort by column 1</button>
     Sort: <span id="mySortLabel"></span>
 
     <script>
         waitUntilGridReady("mySortGrid", function(grid) {
+          var data = [ [ "Gridddd", 10000, 0.8 ], [ "Vaadin X", 999999, 0.01 ],
+                       [ "designer", 43256, 0.01 ], [ "TK", 1967, 0.05 ] ];
+
           var button = document.getElementById("mySortButton");
           var label = document.getElementById("mySortLabel");
-
           var cnt = 0;
+
           button.addEventListener("click", function(event) {
             var dir = cnt++ % 2 == 0 ? "desc" : "asc";
             grid.sortOrder = [{
               column: 1,
               direction: dir
             }];
-            label.textContent = JSON.stringify(grid.sortOrder);
           });
+
+          grid.addEventListener("sort", function() {
+            var idx = grid.sortOrder[0].column;
+            var asc = grid.sortOrder[0].direction == 'asc';
+            data.sort(function(a, b){
+              return a[idx] < b[idx] && asc ? -1 : 1;
+            });
+            label.textContent = JSON.stringify(grid.sortOrder);
+          })
+          grid.data.source = function(req) {
+            req.success(data.slice(req.index, req.index + req.count), data.length);
+          };
         });
     </script>
   </li>
