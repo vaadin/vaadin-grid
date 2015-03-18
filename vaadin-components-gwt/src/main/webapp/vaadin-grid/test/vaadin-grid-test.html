@@ -738,6 +738,28 @@
 
       });
 
+      test('editor: return null cell editor', function() {
+        grid.columns[0].name = "name";
+        grid.columns[1].name = "value";
+        grid.editor.handler = {
+          getCellEditor: function(columnObject) {
+            return columnObject === grid.columns[0] ? null : undefined;
+          },
+          bind: function(req) {
+            req.success();
+          }
+        };
+        grid.editor.enabled = true;
+
+        grid.editor.editRow(0);
+        var cells = grid.querySelectorAll(".v-grid-editor .v-grid-editor-cells > div");
+        assert.lengthOf(cells, 2);
+
+        var editors = grid.querySelectorAll(".v-grid-editor .v-grid-editor-cells > div *");
+        assert.lengthOf(editors, 0);
+
+      });
+
     });
   </script>
 

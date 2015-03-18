@@ -110,7 +110,7 @@ public class GridEditor {
             @Override
             public Widget getWidget(Column<?, JsArrayMixed> column) {
                 Element editor = getEditor(((GridColumn) column).getJsColumn());
-                return new ElementWrapper(editor);
+                return editor != null ? new ElementWrapper(editor) : null;
             }
         });
         grid.setEditorEnabled(enabled);
