@@ -1,6 +1,7 @@
 package com.vaadin.components.grid;
 
 import static com.google.gwt.query.client.GQuery.$;
+import static com.google.gwt.query.client.GQuery.console;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -119,9 +120,6 @@ public class GridComponent implements SelectionHandler<Object>,
             Element gridContainer) {
         this.container = container;
 
-        redrawer.setContainer(container);
-        editor.setContainer(container);
-
         if (head == null) {
             head = new GridDomTableHead(lightDomElement, this);
         } else {
@@ -143,6 +141,9 @@ public class GridComponent implements SelectionHandler<Object>,
                 grid.setDataSource(dataSource);
             }
         }
+
+        redrawer.setContainer(container);
+        editor.setContainer(container);
     }
 
     public JSColumn addColumn(JSColumn jsColumn, String beforeColumn) {
@@ -416,8 +417,11 @@ public class GridComponent implements SelectionHandler<Object>,
         redrawer.redraw();
     }
 
-    public void setRows(int rows) {
-        redrawer.setSize(rows);
+    // TODO: we are using String instead of int because polymer passes a string
+    // instead of the number when using the 'bind:' directive, when the value
+    // is set as an attribute, the 'published:' works as expected though.
+    public void setRows(String rows) {
+        redrawer.setSize(JSValidate.Integer.val(rows));
     }
 
     @Override

@@ -3,6 +3,9 @@ package com.vaadin.components.grid.utils;
 import static com.google.gwt.query.client.GQuery.$;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.query.client.Function;
+import com.google.gwt.query.client.GQuery;
+import com.google.gwt.query.client.plugins.Resize;
 import com.google.gwt.user.client.Timer;
 import com.vaadin.client.widgets.Grid;
 import com.vaadin.components.grid.GridComponent;
@@ -13,16 +16,23 @@ import com.vaadin.components.grid.data.GridDataSource;
  */
 public class Redraw extends Timer {
     private final Grid<?> grid;
-    private Element container;
-    private int defaultSize, size;
+    private GQuery container;
+    boolean heightByRows = false;
+    boolean heightAuto = false;
+    private int defaultRows, numberRows, width, height;
 
     public Redraw(GridComponent gridComponent) {
         grid = gridComponent.getGrid();
     }
 
     public void setContainer(Element containerElement) {
-        this.container = containerElement;
-        redraw();
+        container = $(containerElement);
+        // Use gQuery resize plugin to observe resize changes in the container.
+        container.as(Resize.Resize).resize(new Function(){
+            public void f() {
+                redraw();
+            }
+        });
     }
 
     public void redraw() {
@@ -30,47 +40,80 @@ public class Redraw extends Timer {
     }
 
     public void run() {
-        if (defaultSize == 0) {
-            defaultSize = size = (int) grid.getHeightByRows();
+        if (defaultRows == 0) {
+            defaultRows = numberRows = (int) grid.getHeightByRows();
         }
-        // Setting grid to 100% makes it fit to our v-grid container
-        grid.setWidth("100%");
-        grid.resetSizesFromDom();
-        grid.recalculateColumnWidths();
 
-        // Let see if our container has a fixed css height
-        int vgridHeight = $(container).height();
-        int gridHeight = $(grid).height();
-        if (vgridHeight != gridHeight && vgridHeight > 0) {
-            grid.setHeight(vgridHeight + "px");
+        int w = container.width();
+        if (w != width) {
+            // Setting grid to 100% makes it fit to our v-grid container.
+            // We could set this in CSS, but we should be sure that it is set
+            // with selectors able override inline sizes, because width is
+            // always set by the grid.
+            grid.setWidth("100%");
+            grid.recalculateColumnWidths();
+            width = w;
+        }
+
+        // If height is set using the 'rows' attribute, we always use it.
+        if (heightByRows) {
+            if (numberRows != defaultRows) {
+                numberRows = defaultRows;
+                setHeightByRows(numberRows);
+            }
         } else {
-            // Check if data-source size is smaller than grid
-            // visible rows, and reduce height
-            // TODO: this should be done using setHeightByRows, but
-            // it has performance issues
-            GridDataSource ds = (GridDataSource) grid.getDataSource();
-
-            if (ds != null) {
-                int nsize = Math.min(ds.size(), defaultSize);
-                if (nsize != size) {
-                    size = nsize;
-                    int h = $(grid).find("tr td").height() + 2;
-                    double s = h * (size
-                                    + grid.getHeaderRowCount()
-                                    + grid.getFooterRowCount());
-                    grid.setHeight(s + "px");
+            int h = container.height();
+            if (h != height) {
+                // Let see whether our container has a height set in CCS or it's
+                // auto. The only way to know it is comparing container and grid
+                // sizes.
+                if (height == 0) {
+                    heightAuto = h == $(grid).innerHeight(); 
+                }
+                if (!heightAuto) {
+                    // Container has a fixed height, so setting it to 100% makes
+                    // the grid expand to fill all the space. It also makes the
+                    // grid to recompute rows, so we use it as a refresh
+                    // mechanism. We cannot set this in CSS because we should 
+                    // override inline sizes making setHeightByRows fail.
+                    grid.setHeight("100%");
+                    height = h;
+                } else {
+                    // There is no height set for our container, if the number
+                    // of rows of the data source is smaller then the default
+                    // size we reduce it.
+                    GridDataSource ds = (GridDataSource) grid.getDataSource();
+                    int nsize = Math.min(ds == null ? 0 : ds.size(),
+                            defaultRows);
+                    if (nsize != numberRows) {
+                        numberRows = nsize;
+                        setHeightByRows(numberRows);
+                    }
                 }
             }
         }
     }
 
+    // TODO: This method is here because original grid.setHeightByRows seems
+    // not working and it always sets a value of 10 rows. It also used to
+    // have performance problems in FF.
+    void setHeightByRows(int rows) {
+        // grid.setHeightByRows(rows);
+        int h = $(grid).find("tr td").height() + 1;
+        rows += grid.getHeaderRowCount() + grid.getFooterRowCount();
+        height = h * rows;
+        grid.setHeight(height + "px");
+    }
+
     public void setSize(int size) {
-        if (size != defaultSize) {
-            defaultSize = size;
+        if (!heightByRows || size != defaultRows) {
+            heightByRows = size > 0;
+            defaultRows = size;
             redraw();
         }
     }
+
     public int getSize() {
-        return defaultSize;
+        return defaultRows;
     }
 }
