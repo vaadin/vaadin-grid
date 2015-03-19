@@ -20,7 +20,7 @@ import com.google.gwt.query.client.plugins.deferred.PromiseFunction;
 import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Timer;
 import com.vaadin.components.common.html.HTMLElement;
-import com.vaadin.components.grid.config.JSArray;
+import com.vaadin.components.common.js.JSArray;
 
 public class DOMUtils {
     public static boolean getAttrBooleanValue(HTMLElement el, String attr, boolean def) {

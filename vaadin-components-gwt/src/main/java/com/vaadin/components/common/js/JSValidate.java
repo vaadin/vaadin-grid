@@ -1,4 +1,4 @@
-package com.vaadin.components.grid.config;
+package com.vaadin.components.common.js;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.GQuery;

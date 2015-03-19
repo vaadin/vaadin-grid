@@ -10,8 +10,8 @@ import com.vaadin.client.renderers.Renderer;
 import com.vaadin.client.widget.grid.RendererCellReference;
 import com.vaadin.client.widgets.Grid;
 import com.vaadin.client.widgets.Grid.Column;
+import com.vaadin.components.common.js.JS;
 import com.vaadin.components.grid.GridComponent;
-import com.vaadin.components.grid.config.JS;
 import com.vaadin.components.grid.config.JSColumn;
 import com.vaadin.components.grid.data.DataItemContainer;
 

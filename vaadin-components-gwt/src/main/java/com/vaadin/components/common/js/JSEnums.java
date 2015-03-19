@@ -1,10 +1,11 @@
-package com.vaadin.components.grid.config;
+package com.vaadin.components.common.js;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import com.vaadin.client.widgets.Grid.SelectionMode;
+import com.vaadin.components.grid.config.JSHeaderCell;
 import com.vaadin.shared.data.sort.SortDirection;
 
 /**

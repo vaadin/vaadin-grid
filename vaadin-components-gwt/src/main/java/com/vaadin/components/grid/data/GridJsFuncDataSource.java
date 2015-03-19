@@ -6,8 +6,8 @@ import java.util.List;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.js.JsUtils;
+import com.vaadin.components.common.js.JS;
 import com.vaadin.components.grid.GridComponent;
-import com.vaadin.components.grid.config.JS;
 import com.vaadin.components.grid.config.JSDataRequest;
 
 /**

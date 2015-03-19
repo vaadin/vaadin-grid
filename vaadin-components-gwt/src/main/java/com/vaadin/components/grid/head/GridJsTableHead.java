@@ -4,8 +4,8 @@ import static com.google.gwt.query.client.GQuery.console;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.vaadin.client.widgets.Grid;
+import com.vaadin.components.common.js.JSArray;
 import com.vaadin.components.grid.GridComponent;
-import com.vaadin.components.grid.config.JSArray;
 import com.vaadin.components.grid.config.JSColumn;
 import com.vaadin.components.grid.config.JSHeaderCell;
 

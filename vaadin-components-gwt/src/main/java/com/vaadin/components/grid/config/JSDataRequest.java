@@ -3,6 +3,7 @@ package com.vaadin.components.grid.config;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.js.JsProperty;
 import com.google.gwt.core.client.js.JsType;
+import com.vaadin.components.common.js.JSArray;
 
 /**
  * This class is a JsInterop wrapper for the JS object editor handler request.

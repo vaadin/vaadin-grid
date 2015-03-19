@@ -9,13 +9,13 @@ import java.util.Map;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.GQuery;
+import com.vaadin.components.common.js.JS;
+import com.vaadin.components.common.js.JSArray;
+import com.vaadin.components.common.js.JSValidate;
 import com.vaadin.components.grid.GridComponent;
-import com.vaadin.components.grid.config.JS;
-import com.vaadin.components.grid.config.JSArray;
 import com.vaadin.components.grid.config.JSColumn;
 import com.vaadin.components.grid.config.JSHeaderCell;
 import com.vaadin.components.grid.config.JSHeaderCell.Format;
-import com.vaadin.components.grid.config.JSValidate;
 
 /**
  * This class represents a grid header configuration based on a DOM structure.

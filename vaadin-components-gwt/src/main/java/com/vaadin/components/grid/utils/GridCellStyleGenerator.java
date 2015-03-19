@@ -3,7 +3,7 @@ package com.vaadin.components.grid.utils;
 import com.google.gwt.dom.client.Element;
 import com.vaadin.client.widget.grid.CellReference;
 import com.vaadin.client.widget.grid.CellStyleGenerator;
-import com.vaadin.components.grid.config.JS;
+import com.vaadin.components.common.js.JS;
 import com.vaadin.components.grid.config.JSCell;
 import com.vaadin.components.grid.config.JSCellClassName;
 import com.vaadin.components.grid.config.JSRow;

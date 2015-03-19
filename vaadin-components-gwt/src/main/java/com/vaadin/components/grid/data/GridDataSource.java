@@ -6,7 +6,7 @@ import com.google.gwt.core.client.js.JsType;
 import com.vaadin.client.data.AbstractRemoteDataSource;
 import com.vaadin.components.common.util.Elements;
 import com.vaadin.components.grid.GridComponent;
-import com.vaadin.components.grid.config.JSArray;
+import com.vaadin.components.common.js.JSArray;
 
 @JsNamespace(Elements.VAADIN_JS_NAMESPACE)
 @JsExport

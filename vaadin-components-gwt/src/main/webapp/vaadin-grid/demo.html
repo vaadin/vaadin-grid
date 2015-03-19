@@ -488,10 +488,10 @@
 
           var button = document.getElementById("mySortButton");
           var label = document.getElementById("mySortLabel");
-          var cnt = 0;
 
+          var dir = 'desc';
           button.addEventListener("click", function(event) {
-            var dir = cnt++ % 2 == 0 ? "desc" : "asc";
+            dir = dir == 'desc' ? "asc" : "desc";
             grid.sortOrder = [{
               column: 1,
               direction: dir
