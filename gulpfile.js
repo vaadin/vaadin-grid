@@ -112,26 +112,19 @@ gulp.task('test:validation', function(done) {
   common.test(
     {
       browserOptions: {
-        url: 'http://validation-hub.devnet.vaadin.com:4444/wd/hub',
-        platform: 'VISTA'
+        name: common.localAddress() + ' / ' + new Date(),
+        build: 'vaadin-components / validation'
       },
-      activeBrowsers: [
-        {
-          browserName: "chrome",
-          version: "40"
-        }
-        //{
-        //  browserName: "firefox",
-        //  version: '35'
-        //},
-        //{
-        //  browserName: 'internet explorer',
-        //  version: '11'
-        //}
-      ],
       plugins: {
-        local: false,
-        sauce: false,
+        sauce: {
+          username: args.sauceUsername,
+          accessKey: args.sauceAccessKey,
+          browsers: [
+            'Windows 7/chrome@41',
+            'Windows 7/firefox@36',
+            'Windows 7/internet explorer@11'
+          ]
+        },
         'teamcity-reporter': args.teamcity
       },
       root: '.',
