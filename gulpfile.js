@@ -100,11 +100,11 @@ gulp.task('gwt', function(cb) {
   });
 });
 
-gulp.task('deploy', ['deploy:bower', 'deploy:cdn']);
+gulp.task('deploy', ['deploy:bower', 'deploy:cdn', 'deploy:zip']);
 
 // can't run all the verification concurrently until sauce-connect-launcher supports
 // multiple tunnels
-//gulp.task('verify', ['verify:bower', 'verify:cdn']);
+//gulp.task('verify', ['verify:bower', 'verify:cdn', 'verify:zip]);
 
 gulp.task('test', ['test:local']);
 
