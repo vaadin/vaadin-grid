@@ -806,10 +806,7 @@
           ["Jane", "Doe", 2345.67],
         ];
 
-        grid.data.source = function(request) {
-          request.success(mydata.slice(request.index, request.index +
-            request.count), mydata.length);
-        };
+        grid.data.source = mydata;
 
         waitUntil(function() {
           return gridContainsText(grid, "2345.67");

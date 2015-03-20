@@ -218,8 +218,8 @@
           var sourceFunction = source;
           if (Array.isArray(source)) {
             sourceFunction = function(req) {
-              var array = data.slice(req.index, req.index + req.count);
-              req.success(array, data.length);
+              var array = source.slice(req.index, req.index + req.count);
+              req.success(array, source.length);
             };
           }
           _this.grid.setDataSource(sourceFunction);
