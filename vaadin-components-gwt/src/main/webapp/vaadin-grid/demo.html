@@ -642,6 +642,60 @@
   </v-grid>
   </li>
 
+  <li>
+    <h3>Header and Footer</h3>
+    <v-grid id='staticsections'>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Grid</td>
+            <td>10000</td>
+          </tr>
+          <tr>
+            <td>VaadinX</td>
+            <td>1000</td>
+          </tr>
+        </tbody>
+      </table>
+    </v-grid>
+    <br/>
+    <button id="headervisibility">Toggle header visibility</button>
+    <button id="footervisibility">Toggle footer visibility</button>
+    <script>
+      waitUntilGridReady("staticsections", function(grid) {
+        // Remove the header row
+        grid.header.removeRow(0);
+
+        // Add a header row
+        var colspanToggle = document.createElement("button");
+        colspanToggle.innerText = "Toggle colspan";
+        colspanToggle.addEventListener("click", function(){
+          var cell = grid.header.getCell(0, 0);
+          cell.colspan = cell.colspan == 1 ? 2 : 1;
+        });
+        grid.header.addRow(0, [colspanToggle, "Value"]);
+
+        // Add a footer row
+        grid.footer.addRow(0, ["sum", 11000]);
+
+        // Toggle header / footer visibility
+        document.getElementById("headervisibility").addEventListener("click", function(){
+          grid.header.hidden = !grid.header.hidden;
+        });
+        document.getElementById("footervisibility").addEventListener("click", function(){
+          grid.footer.hidden = !grid.footer.hidden;
+        });
+
+      });
+    </script>
+  </li>
+
 </ol>
 </body>
 </html>

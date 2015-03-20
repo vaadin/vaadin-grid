@@ -62,8 +62,8 @@ import com.vaadin.shared.ui.grid.ScrollDestination;
 @JsNamespace(Elements.VAADIN_JS_NAMESPACE)
 @JsExport
 @JsType
-public class GridComponent implements SelectionHandler<Object>,
-        EventListener, SortHandler<Object> {
+public class GridComponent implements SelectionHandler<Object>, EventListener,
+        SortHandler<Object> {
 
     private final Grid<Object> grid;
     private JSArray<JSSortOrder> jsSort;
@@ -72,6 +72,7 @@ public class GridComponent implements SelectionHandler<Object>,
     private GridDomTableHead head;
     private final Redraw redrawer;
     private final GridEditor editor;
+    private final GridStaticSection staticSection;
 
     private Element container;
     private JSArray<JSColumn> cols;
@@ -84,6 +85,7 @@ public class GridComponent implements SelectionHandler<Object>,
         observeColumnArray();
         redrawer = new Redraw(this);
         editor = new GridEditor(this);
+        staticSection = new GridStaticSection(this);
     }
 
     public GridEditor getEditor() {
@@ -220,6 +222,27 @@ public class GridComponent implements SelectionHandler<Object>,
         return cols;
     }
 
+    public GridStaticSection getStaticSection() {
+        return staticSection;
+    }
+
+    public Column<?, ?> getColumnByJSColumnNameOrIndex(Object columnId) {
+        Column<?, ?> column = null;
+
+        if (JS.isPrimitiveType(columnId)) {
+            int index = getColumnIndexByIndexOrName(String.valueOf(columnId));
+            column = grid.getColumn(index);
+        } else {
+            for (Column<?, ?> gCol : getDataColumns()) {
+                if (((GridColumn) gCol).getJsColumn() == columnId) {
+                    column = gCol;
+                    break;
+                }
+            }
+        }
+        return column;
+    }
+
     @JsNoExport
     @Override
     public void onSelect(SelectionEvent<Object> ev) {
@@ -311,11 +334,11 @@ public class GridComponent implements SelectionHandler<Object>,
     }
 
     /*
-     * This method is needed internally for listing all the columns that display
-     * data. On multi-select mode grid.getColumns() will contain the selection
-     * column as the first item.
+     * This method is needed internally (package) for listing all the columns
+     * that display data. On multi-select mode grid.getColumns() will contain
+     * the selection column as the first item so it's excluded from the result.
      */
-    private List<Column<?, Object>> getDataColumns() {
+    List<Column<?, Object>> getDataColumns() {
         List<Column<?, Object>> result = grid.getColumns();
         if (grid.getSelectionModel() instanceof SelectionModelMulti) {
             result = result.subList(1, result.size());
@@ -430,7 +453,7 @@ public class GridComponent implements SelectionHandler<Object>,
             jsSort = JSArray.createArray().cast();
         }
         jsSort.setLength(0);
-        for (SortOrder order: event.getOrder()) {
+        for (SortOrder order : event.getOrder()) {
             int idx = grid.getColumns().indexOf(order.getColumn());
             jsSort.push(JS.createJsType(JSSortOrder.class).setColumn(idx)
                     .setDirection(JSEnums.Direction.val(order.getDirection())));

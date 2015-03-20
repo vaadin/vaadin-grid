@@ -153,8 +153,9 @@
     },
 
     editor: {},
-
     data: {},
+    header: {},
+    footer: {},
 
     onSelect: function() {
       this.setAttribute('selected-rows', this.selectedRows.join());
@@ -245,6 +246,69 @@
 
       };
 
+      this.header = {
+        getCell: function(rowIndex, columnId) {
+          return _this.grid.getStaticSection().getHeaderCell(rowIndex, columnId);
+        },
+        addRow: function(rowIndex, cellContent) {
+          _this.grid.getStaticSection().addHeader(rowIndex, cellContent);
+        },
+        removeRow: function(rowIndex) {
+          _this.grid.getStaticSection().removeHeader(rowIndex);
+        },
+        setRowClassName: function(rowIndex, className) {
+          _this.grid.getStaticSection().setHeaderRowClassName(rowIndex, className);
+        },
+        /**
+         * Sets the default row of the header. The default row is a special header
+         * row providing a user interface for sorting columns.
+         *
+         * @attribute rowIndex
+         * @type number
+         */
+        get defaultRow() {
+          return _this.grid.getStaticSection().getDefaultHeader();
+        },
+        set defaultRow(rowIndex) {
+          _this.grid.getStaticSection().setDefaultHeader(rowIndex);
+        },
+        get hidden() {
+          return _this.grid.getStaticSection().isHeaderHidden();
+        },
+        set hidden(hidden) {
+          _this.grid.getStaticSection().setHeaderHidden(hidden);
+        }
+
+      };
+
+      this.footer = {
+        getCell: function(rowIndex, columnId) {
+          return _this.grid.getStaticSection().getFooterCell(rowIndex, columnId);
+        },
+        addRow: function(rowIndex, cellContent) {
+          _this.grid.getStaticSection().addFooter(rowIndex, cellContent);
+        },
+        removeRow: function(rowIndex) {
+          _this.grid.getStaticSection().removeFooter(rowIndex);
+        },
+        setRowClassName: function(rowIndex, className) {
+          _this.grid.getStaticSection().setFooterRowClassName(rowIndex, className);
+        },
+        get hidden() {
+          return _this.grid.getStaticSection().isFooterHidden();
+        },
+        set hidden(hidden) {
+          _this.grid.getStaticSection().setFooterHidden(hidden);
+        }
+      };
+
+      // Set read-only properties
+      ["data", "editor", "header", "footer"].forEach(function(prop){
+        Object.defineProperty(_this, prop, {
+          writable: false
+        });
+      });
+
       Object.defineProperty(this, 'scrollTop', {
         get: function() {
           return this.grid.getScrollTop();
@@ -256,12 +320,11 @@
         configurable: false
       });
 
-      var _this = this;
-      setTimeout(function(){
-        for (i in _this.attributes) {
+      setTimeout(function() {
+        for (var i in _this.attributes) {
           _this.attributeChanged(_this.attributes[i].nodeName, null, _this.attributes[i].nodeValue);
         }
-      }, 1)
+      }, 1);
     },
 
     /**

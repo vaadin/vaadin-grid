@@ -69,12 +69,13 @@
           return input;
         },
         bind: function(req) {
-          grid.columns.forEach(function(col) {
-            if(!col.readOnly) {
+          for (var i = 0; i < req.grid.columns.length; i++) {
+            var col = req.grid.columns[i];
+            if (!col.readOnly) {
               var el = req.getCellEditor(col);
               el.value = req.dataItem[i];
             }
-          });
+          }
           req.success();
         },
         save: function(req) {
@@ -607,7 +608,7 @@
 
       test('add new column to an empty grid', function(done) {
         var wrapper = document.getElementById("gridwrapper");
-        wrapper.removeChild(grid);
+        document.body.appendChild(grid);
 
         wrapper.innerHTML = "<v-grid></v-grid>";
         grid = wrapper.querySelector("v-grid");
@@ -1015,6 +1016,252 @@
         assert.isTrue(editorHandler.getCellEditor.calledOnce);
 
         editorHandler.getCellEditor.restore();
+      });
+
+      var staticSections = ["header", "footer"];
+
+      test('staticsections: non-writable', function() {
+        staticSections.forEach(function(section) {
+          var original = grid[section];
+          grid[section] = undefined;
+          assert.equal(grid[section], original);
+        });
+      });
+
+      test('staticsections: getCell', function(done) {
+        grid.footer.addRow(0, ["Name", "Value"]);
+        staticSections.forEach(function(section) {
+          var cell = grid[section].getCell(0, 0);
+          assert.equal(cell.content, "Name");
+          grid.columns[1].name = "foo";
+          var cell2 = grid[section].getCell(0, "foo");
+          assert.equal(cell2.content, "Value");
+
+          grid[section].addRow(1, [section + "foo", section + "bar"]);
+
+          waitUntil(function() {
+            return gridContainsText(grid, section + "foo");
+          }, function() {
+            assert.equal(grid[section].getCell(1, "foo").content, section + "bar");
+            done[section] = true;
+          });
+
+        });
+
+        waitUntil(function() {
+          return done[staticSections[0]] && done[staticSections[1]];
+        }, function() {
+          done();
+        });
+
+      });
+
+      test('staticsections: cell api', function(done) {
+        grid.footer.addRow(0, ["Name", "Value"]);
+        staticSections.forEach(function(section) {
+          var cell = grid[section].getCell(0, 0);
+          var input = document.createElement("input");
+          cell.content = input;
+
+          waitUntil(function() {
+            return grid.querySelector(".v-grid-" + section + " .v-grid-cell > input");
+          }, function() {
+            cell.colspan = 2;
+
+            waitUntil(function() {
+              return grid.querySelectorAll(".v-grid-" + section + " .v-grid-cell")[1].style.display === "none";
+            }, function() {
+              done[section] = true;
+            });
+          });
+        });
+
+        waitUntil(function() {
+          return done[staticSections[0]] && done[staticSections[1]];
+        }, function() {
+          done();
+        });
+
+      });
+
+      test('staticsections: cell reference', function() {
+        var cell = grid.header.getCell(0, 0);
+        var sameCell = grid.header.getCell(0, 0);
+        cell.content = "foo";
+        assert.equal(sameCell.content, "foo");
+      });
+
+      test('staticsections: addRow', function(done) {
+        grid.footer.addRow(0, ["Name", "Value"]);
+        staticSections.forEach(function(section) {
+          grid[section].addRow();
+          var cell = grid[section].getCell(1, 1);
+          cell.content = section + "testcontent";
+
+          waitUntil(function() {
+            return gridContainsText(grid, section + "testcontent");
+          }, function() {
+            var cells = grid.querySelectorAll(".v-grid-" + section + " .v-grid-cell");
+            assert.equal(cells[3].innerHTML, section + "testcontent");
+            done[section] = true;
+          });
+        });
+
+        waitUntil(function() {
+          return done[staticSections[0]] && done[staticSections[1]];
+        }, function() {
+          done();
+        });
+      });
+
+      test('staticsections: addRow index', function(done) {
+        grid.footer.addRow(0, ["Name", "Value"]);
+        staticSections.forEach(function(section) {
+
+          grid[section].addRow(0);
+          var cell = grid[section].getCell(0, 1);
+          cell.content = section + "testcontent";
+
+          waitUntil(function() {
+            return gridContainsText(grid, section + "testcontent");
+          }, function() {
+            assert.equal(grid.querySelectorAll(".v-grid-" + section + " .v-grid-cell")[3].innerHTML, "Value");
+            done[section] = true;
+          });
+        });
+
+        waitUntil(function() {
+          return done[staticSections[0]] && done[staticSections[1]];
+        }, function() {
+          done();
+        });
+      });
+
+      test('staticsections: addRow cellContent', function(done) {
+        grid.footer.addRow(0, ["Name", "Value"]);
+        staticSections.forEach(function(section) {
+
+          var input = document.createElement("input");
+          grid[section].addRow(0, [0, "foo"]);
+          grid[section].addRow(0, [null, input]);
+
+          waitUntil(function() {
+            return grid.querySelector(".v-grid-" + section + " .v-grid-cell > input");
+          }, function() {
+            var cells = grid.querySelectorAll(".v-grid-" + section + " .v-grid-cell");
+            assert.equal(cells[0].innerHTML, "");
+            assert.equal(cells[1].firstElementChild, input);
+            assert.equal(cells[2].innerHTML, "0");
+            assert.equal(cells[3].innerHTML, "foo");
+            done[section] = true;
+          });
+        });
+
+        waitUntil(function() {
+          return done[staticSections[0]] && done[staticSections[1]];
+        }, function() {
+          done();
+        });
+
+      });
+
+      test('staticsections: removeRow', function(done) {
+        grid.footer.addRow(0, ["Name", "Value"]);
+        staticSections.forEach(function(section) {
+          grid[section].addRow(1, [0, "testcontent"]);
+
+          waitUntil(function() {
+            return gridContainsText(grid, "testcontent");
+          }, function() {
+            assert.lengthOf(grid.querySelectorAll(".v-grid-" + section + " .v-grid-row"), 2);
+
+            grid[section].removeRow(0);
+
+            waitUntil(function() {
+              return grid.querySelectorAll(".v-grid-" + section + " .v-grid-row").length === 1;
+            }, function() {
+              var cells = grid.querySelectorAll(".v-grid-" + section + " .v-grid-cell");
+              assert.equal(cells[1].innerHTML, "testcontent");
+              done[section] = true;
+            });
+          });
+        });
+
+        waitUntil(function() {
+          return done[staticSections[0]] && done[staticSections[1]];
+        }, function() {
+          done();
+        });
+
+      });
+
+      test('staticsections: setRowClassName', function(done) {
+        grid.footer.addRow(0, ["Name", "Value"]);
+        staticSections.forEach(function(section) {
+          grid[section].addRow(1);
+
+          grid[section].setRowClassName(0, "first");
+          grid[section].setRowClassName(1, "second");
+
+          waitUntil(function() {
+            return gridContainsText(grid, "second");
+          }, function() {
+            var rows = grid.querySelectorAll(".v-grid-" + section + " .v-grid-row");
+            assert.isTrue(rows[0].classList.contains("first"));
+            assert.isFalse(rows[0].classList.contains("second"));
+            assert.isFalse(rows[1].classList.contains("first"));
+            assert.isTrue(rows[1].classList.contains("second"));
+            done[section] = true;
+          });
+        });
+
+        waitUntil(function() {
+          return done[staticSections[0]] && done[staticSections[1]];
+        }, function() {
+          done();
+        });
+      });
+
+      test('staticsections: hidden', function(done) {
+        grid.footer.addRow(0, ["Name", "Value"]);
+
+        assert.isFalse(grid.header.hidden);
+        assert.isFalse(grid.footer.hidden);
+
+        grid.header.hidden = true;
+        grid.footer.hidden = true;
+
+        waitUntil(function() {
+          return grid.querySelector(".v-grid-header").innerHTML === "";
+        }, function() {
+          assert.equal(grid.querySelector(".v-grid-footer").innerHTML, "");
+          done();
+        });
+      });
+
+      test('staticsections: header.defaultRow', function() {
+        assert.equal(grid.header.defaultRow, 0);
+
+        grid.header.defaultRow = 0;
+
+        var setDefaulHeader = function(rowIndex) {
+          grid.header.defaultRow = rowIndex;
+        };
+
+        expect(setDefaulHeader.bind(this, 1)).to.throw("Row with index 1 does not exist");
+        expect(setDefaulHeader.bind(this, -1)).to.throw("Row with index -1 does not exist");
+
+        assert.equal(grid.header.defaultRow, 0);
+
+        grid.header.addRow(0);
+        assert.equal(grid.header.defaultRow, 1);
+
+        grid.header.addRow();
+        assert.equal(grid.header.defaultRow, 1);
+
+        grid.header.defaultRow = 0;
+        assert.equal(grid.header.defaultRow, 0);
+
       });
 
     });

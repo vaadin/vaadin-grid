@@ -5,17 +5,15 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.vaadin.client.widgets.Grid.SelectionMode;
-import com.vaadin.components.grid.config.JSHeaderCell;
 import com.vaadin.shared.data.sort.SortDirection;
 
 /**
- * A collection of java enums which can be mapped to JS strings and
- * validated through methods in this class.
+ * A collection of java enums which can be mapped to JS strings and validated
+ * through methods in this class.
  */
 public enum JSEnums {
-    Direction("sort direction", SortDirection.values(), "asc", "asc", "desc"),
-    Format("format", JSHeaderCell.Format.values(), "html"),
-    Selection("selection mode", SelectionMode.values(), "single");
+    Direction("sort direction", SortDirection.values(), "asc", "asc", "desc"), Selection(
+            "selection mode", SelectionMode.values(), "single");
 
     public String def;
     private Enum<?>[] enums;
@@ -26,12 +24,13 @@ public enum JSEnums {
     public <T> T val(String s) {
         s = s == null || s.isEmpty() ? def : s.toLowerCase();
         if (!vals.contains(s)) {
-            throw new RuntimeException("Invalid " + name + ", valid options are: " + vals);
+            throw new RuntimeException("Invalid " + name
+                    + ", valid options are: " + vals);
         }
         if (enums != null) {
             for (Enum<?> e : enums) {
                 if (val(e).equals(s)) {
-                    return (T)e;
+                    return (T) e;
                 }
             }
         }
@@ -47,7 +46,8 @@ public enum JSEnums {
         return def;
     }
 
-    JSEnums(String message, Enum<?>[] enumVals, String defaultStr, String... strVals) {
+    JSEnums(String message, Enum<?>[] enumVals, String defaultStr,
+            String... strVals) {
         this.name = message;
         this.enums = enumVals;
         this.def = defaultStr;

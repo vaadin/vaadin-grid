@@ -3,7 +3,6 @@ package com.vaadin.components.grid.config;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.js.JsProperty;
 import com.google.gwt.core.client.js.JsType;
-import com.vaadin.components.common.js.JSArray;
 
 /**
  * This class is a JsInterop object for the JS object representing a grid column
@@ -65,24 +64,6 @@ public interface JSColumn {
 
     @JsProperty
     JSColumn setGeneratedValue(JavaScriptObject o);
-
-    @JsProperty
-    Object value();
-
-    @JsProperty
-    JSColumn setValue(Object o);
-
-    @JsProperty
-    JSArray<JSHeaderCell> headerData();
-
-    @JsProperty
-    JSColumn setHeaderData(JSArray<JSHeaderCell> headers);
-
-    @JsProperty
-    String template();
-
-    @JsProperty
-    JSColumn setTemplate(String template);
 
     @JsProperty
     String headerHtml();

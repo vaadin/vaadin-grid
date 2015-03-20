@@ -3,7 +3,6 @@ package com.vaadin.components.grid.head;
 import static com.google.gwt.query.client.GQuery.$;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import com.google.gwt.core.client.JavaScriptObject;
@@ -14,8 +13,7 @@ import com.vaadin.components.common.js.JSArray;
 import com.vaadin.components.common.js.JSValidate;
 import com.vaadin.components.grid.GridComponent;
 import com.vaadin.components.grid.config.JSColumn;
-import com.vaadin.components.grid.config.JSHeaderCell;
-import com.vaadin.components.grid.config.JSHeaderCell.Format;
+import com.vaadin.components.grid.config.JSStaticCell;
 
 /**
  * This class represents a grid header configuration based on a DOM structure.
@@ -50,52 +48,46 @@ public class GridDomTableHead extends GridJsTableHead {
 
         jsColumns.setLength(0);
 
-        Map<JSColumn, JSArray<JSHeaderCell>> contentsMap =
-                new HashMap<JSColumn, JSArray<JSHeaderCell>>();
+        Map<JSColumn, JSArray<JSStaticCell>> contentsMap = new HashMap<JSColumn, JSArray<JSStaticCell>>();
 
         int defaultRow = 0;
         for (int i = 0; i < $rows.size(); i++) {
             GQuery $ths = $rows.eq(i).children("th");
             while (jsColumns.size() < $ths.size()) {
                 JSColumn column = JS.createJsType(JSColumn.class);
-                contentsMap.put(column, JS.<JSHeaderCell> createArray());
+                contentsMap.put(column, JS.<JSStaticCell> createArray());
                 jsColumns.add(column);
             }
             // The default row should be the last row in the header which has
             // the largest number of th elements, or the last header row, which
             // contains a th element with the sortable attribute
-            if (!$ths.filter("[sortable]").isEmpty() ||$ths.size() == jsColumns.size()) {
+            if (!$ths.filter("[sortable]").isEmpty()
+                    || $ths.size() == jsColumns.size()) {
                 defaultRow = i;
             }
         }
 
         for (int i = 0; i < $rows.size(); i++) {
             GQuery $ths = $rows.eq(i).children("th");
+            if (grid.getHeaderRowCount() < i + 1) {
+                grid.addHeaderRowAt(i + 1);
+            }
+
             for (int j = 0, colOffset = 0; j + colOffset < $ths.size(); j++) {
                 JSColumn column = jsColumns.get(j + colOffset);
-                JSHeaderCell header = JS.createJsType(JSHeaderCell.class);
+
                 GQuery $th = $ths.eq(j);
-                column.setValue($th.attr("name"));
                 column.setSortable(JSValidate.Boolean.attr($th, "sortable"));
                 column.setReadOnly(JSValidate.Boolean.attr($th, "read-only"));
                 column.setFlex(JSValidate.Flex.attr($th, "flex"));
                 column.setWidth(JSValidate.Pixel.attr($th, "width"));
                 column.setMinWidth(JSValidate.Pixel.attr($th, "min-width"));
                 column.setMaxWidth(JSValidate.Pixel.attr($th, "max-width"));
-                header.setColSpan(JSValidate.Integer.attr($th, "colspan"));
-                header.setContent($th.html()).setFormat(Format.HTML.name());
-                contentsMap.get(column).add(header);
-            }
-        }
+                column.setHeaderHtml($th.html());
 
-        GQuery $templateRow = lightDom.find("tr[template] td");
-        Iterator<JSColumn> iterator = contentsMap.keySet().iterator();
-        for (int i = 0; iterator.hasNext(); i++) {
-            JSColumn column = iterator.next();
-            column.setHeaderData(contentsMap.get(column));
-            if (i < $templateRow.size()) {
-                String html = $templateRow.eq(i).html();
-                column.setTemplate(html);
+                JSStaticCell header = JS.createJsType(JSStaticCell.class);
+                header.setColspan(JSValidate.Integer.attr($th, "colspan"));
+                contentsMap.get(column).add(header);
             }
         }
 

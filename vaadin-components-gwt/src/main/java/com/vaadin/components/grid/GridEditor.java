@@ -11,6 +11,7 @@ import com.google.gwt.core.client.js.JsType;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.js.JsUtils;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.widget.grid.EditorHandler;
 import com.vaadin.client.widget.grid.EditorHandler.EditorRequest;
@@ -31,7 +32,7 @@ import com.vaadin.components.grid.head.GridColumn;
 public class GridEditor {
 
     private final Grid<Object> grid;
-    private GridComponent gridComponent;
+    private final GridComponent gridComponent;
     private Element container;
     private JSEditorHandler handler;
     private boolean enabled;
@@ -113,7 +114,8 @@ public class GridEditor {
             @Override
             public Widget getWidget(Column<?, Object> column) {
                 Element editor = getEditor(((GridColumn) column).getJsColumn());
-                return editor != null ? new ElementWrapper(editor) : null;
+                return editor != null ? new SimplePanel(editor) {
+                } : null;
             }
         });
         grid.setEditorEnabled(enabled);
@@ -169,12 +171,6 @@ public class GridEditor {
                             handler.getGetCellEditor(), jsColumn));
         }
         return editors.get(jsColumn);
-    }
-
-    private class ElementWrapper extends Widget {
-        public ElementWrapper(Element elem) {
-            setElement(elem);
-        }
     }
 
 }

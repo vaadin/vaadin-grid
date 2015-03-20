@@ -11,18 +11,18 @@ import com.vaadin.client.widget.grid.RendererCellReference;
 import com.vaadin.client.widgets.Grid;
 import com.vaadin.client.widgets.Grid.Column;
 import com.vaadin.components.common.js.JS;
+import com.vaadin.components.common.js.JS.PropertyValueSetter;
 import com.vaadin.components.grid.GridComponent;
 import com.vaadin.components.grid.config.JSColumn;
 import com.vaadin.components.grid.data.DataItemContainer;
 
-public final class GridColumn extends Column<Object, Object> {
+public final class GridColumn extends Column<Object, Object> implements
+        PropertyValueSetter {
 
-    private static final String VALUE = "value";
     private JSColumn jsColumn;
     private Grid<Object> grid;
     private GridComponent gridComponent;
     private JavaScriptObject valueGenerator;
-    private JavaScriptObject renderer;
     private String name;
 
     public static GridColumn addColumn(JSColumn jsColumn,
@@ -39,7 +39,7 @@ public final class GridColumn extends Column<Object, Object> {
         for (String propertyName : Arrays.asList("flex", "name", "headerHtml",
                 "sortable", "readOnly", "renderer", "generatedValue",
                 "minWidth", "maxWidth", "width")) {
-            result.defineProperty(jsColumn, propertyName);
+            JS.defineSetter(jsColumn, result, propertyName, result);
         }
 
         return result;
@@ -55,7 +55,6 @@ public final class GridColumn extends Column<Object, Object> {
     }
 
     private void setColumnRenderer(JavaScriptObject renderer) {
-        this.renderer = renderer;
         setRenderer(new Renderer<Object>() {
             @Override
             public void render(RendererCellReference cell, Object data) {
@@ -70,7 +69,9 @@ public final class GridColumn extends Column<Object, Object> {
         });
     }
 
-    private void setValue(String propertyName, JavaScriptObject jso) {
+    @Override
+    public void setValue(Object target, String propertyName,
+            JavaScriptObject jso) {
         switch (propertyName) {
         case "flex":
             double value = JsUtils.prop(jso, VALUE);
@@ -118,25 +119,6 @@ public final class GridColumn extends Column<Object, Object> {
         }
         gridComponent.redraw();
     }
-
-    private native void defineProperty(JSColumn jsColumn, String propertyName)
-    /*-{
-      var _this = this;
-      var _value = jsColumn[propertyName];
-      Object.defineProperty(jsColumn, propertyName, {
-        get: function() {
-            return _value;
-        },
-        set: function(value) {
-            _this.@com.vaadin.components.grid.head.GridColumn::setValue(Ljava/lang/String;Lcom/google/gwt/core/client/JavaScriptObject;)(propertyName, {value: value});
-            _value = value;
-        }
-      });
-      
-      if (_value !== undefined){
-          jsColumn[propertyName] = _value;
-      }
-    }-*/;
 
     private double parseDouble(String cssPixelValue) {
         return Double.parseDouble(cssPixelValue.replaceAll("[^\\d]", ""));
