@@ -77,7 +77,7 @@ function copyGwtModule(component, moduleName, version, cb) {
 }
 
 gulp.task('default', function() {
-  console.log('\n  Use:\n    gulp <clean|gwt|css|sassdoc|test|stage|deploy|all>\n');
+  console.log('\n  Use:\n    gulp <clean|gwt[:pretty]|css|sassdoc|test[:validation:sauce]|stage|deploy[:bower:cdn:zip]|all>\n');
 });
 
 gulp.task('clean', function(cb) {
@@ -86,7 +86,7 @@ gulp.task('clean', function(cb) {
   system('mvn clean', cb);
 });
 
-gulp.task('gwt-pretty', function(cb) {
+gulp.task('gwt:pretty', function(cb) {
   compileGwt(function() {
     copyGwtModule('vaadin-grid', 'VaadinGrid', version);
     cb();
@@ -189,7 +189,7 @@ gulp.task('css', function() {
 
     // Grid theme is also compiled to the GWT package folder
     if(component == 'grid') {
-      vaadintheme.compile(input, pwd + '/' + gwtproject +  '/src/main/webapp/vaadin-grid.css', args);
+      vaadintheme.compile(input, pwd + '/' + gwtproject +  '/src/main/webapp/vaadin-grid/vaadin-grid.css', args);
     }
   }
 });
