@@ -30,18 +30,24 @@ public class Redraw extends Timer {
         // Use gQuery resize plugin to observe resize changes in the container.
         container.as(Resize.Resize).resize(new Function(){
             public void f() {
-                redraw();
+                redraw(false);
             }
         });
     }
 
-    public void redraw() {
+    public void redraw(boolean force) {
+        if (force) {
+            width = height = 0;
+        }
         schedule(50);
     }
 
     public void run() {
         if (defaultRows == 0) {
-            defaultRows = numberRows = (int) grid.getHeightByRows();
+            defaultRows = (int) grid.getHeightByRows();
+            if (numberRows == 0) {
+                numberRows = defaultRows;
+            }
         }
 
         int w = container.width();
@@ -67,18 +73,16 @@ public class Redraw extends Timer {
                 // Let see whether our container has a height set in CCS or it's
                 // auto. The only way to know it is comparing container and grid
                 // sizes.
-                if (height == 0) {
-                    heightAuto = h == $(grid).innerHeight(); 
-                }
+                heightAuto = h == $(grid).innerHeight();
                 if (!heightAuto) {
                     // Container has a fixed height, so setting it to 100% makes
                     // the grid expand to fill all the space. It also makes the
                     // grid to recompute rows, so we use it as a refresh
-                    // mechanism. We cannot set this in CSS because we should 
+                    // mechanism. We cannot set this in CSS because we should
                     // override inline sizes making setHeightByRows fail.
                     grid.setHeight("100%");
                     height = h;
-                } else {
+                } else if (height == 0) {
                     // There is no height set for our container, if the number
                     // of rows of the data source is smaller then the default
                     // size we reduce it.
@@ -90,6 +94,7 @@ public class Redraw extends Timer {
                         setHeightByRows(numberRows);
                     }
                 }
+                grid.resetSizesFromDom();
             }
         }
     }
@@ -109,7 +114,7 @@ public class Redraw extends Timer {
         if (!heightByRows || size != defaultRows) {
             heightByRows = size > 0;
             defaultRows = size;
-            redraw();
+            redraw(true);
         }
     }
 

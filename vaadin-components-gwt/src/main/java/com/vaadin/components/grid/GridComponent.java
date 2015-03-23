@@ -1,7 +1,6 @@
 package com.vaadin.components.grid;
 
 import static com.google.gwt.query.client.GQuery.$;
-import static com.google.gwt.query.client.GQuery.console;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -248,11 +247,11 @@ public class GridComponent implements SelectionHandler<Object>,
     public void setDataSource(JavaScriptObject data) {
         if (JsUtils.isFunction(data)) {
             grid.setDataSource(new GridJsFuncDataSource(data, this));
+            redrawer.redraw(true);
         } else {
             throw new RuntimeException("Unknown data source type: " + data
                     + ". Arrays and Functions are supported only.");
         }
-        redraw();
     }
 
     public DataSource<Object> getDataSource() {
@@ -262,6 +261,7 @@ public class GridComponent implements SelectionHandler<Object>,
     public void refresh() {
         final JsArrayInteger a = getSelectedRows();
         ((GridDataSource) grid.getDataSource()).refresh();
+        redrawer.redraw(true);
         if (a.length() > 0) {
             $(container).delay(5, new Function() {
                 @Override
@@ -414,7 +414,7 @@ public class GridComponent implements SelectionHandler<Object>,
     // TODO: remove this when grid resizes appropriately on container
     // and data changes.
     public void redraw() {
-        redrawer.redraw();
+        redrawer.redraw(false);
     }
 
     // TODO: we are using String instead of int because polymer passes a string

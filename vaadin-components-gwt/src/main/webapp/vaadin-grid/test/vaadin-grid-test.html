@@ -907,6 +907,100 @@
 
       });
 
+      test('redraw', function(done) {
+        function width(e) {
+          return pxval(e,'width');
+        }
+        function height(e) {
+          return pxval(e,'height');
+        }
+        function pxval(e, prop) {
+          return parseInt(e.ownerDocument.defaultView.getComputedStyle(e).getPropertyValue(prop).replace('px',''));
+        }
+        function assertSameDimensions() {
+          return width(grid) == width(inner) && height(grid) == height(inner);
+        }
+        function assertHeightByRows(rows) {
+          h = height(inner);
+          h1 = headers * thHeight + rows * tdHeight;
+          // IE and FF add an aditional pixel to each row
+          h2 = h1 + rows + headers;
+          return h == h1 || h == h2;
+        }
+        var grid = document.querySelector("#gridwrapper v-grid");
+        var inner = document.querySelector("#gridwrapper v-grid div.v-grid");
+        var tbody = grid.lightDom.querySelector('table tbody');
+        var thHeight = height(grid.querySelector('thead tr th'));
+        var headers = grid.querySelectorAll('thead tr').length;
+        var tdHeight = height(grid.querySelector('tbody tr td'));
+
+        waitUntil(function() {
+          return assertSameDimensions();
+        }, function() {
+          assert.isTrue(assertHeightByRows(2));
+
+          // Increase the number of rows
+          tbody.innerHTML += tbody.innerHTML;
+          tbody.innerHTML += tbody.innerHTML;
+          tbody.innerHTML += tbody.innerHTML;
+          tbody.innerHTML += tbody.innerHTML;
+          // Maybe DOM.observer polyfill was not loaded
+          grid.grid.refresh();
+          waitUntil(function() {
+            return assertSameDimensions();
+          }, function() {
+            // grid has a limit of 10 data rows by default
+            assert.isTrue(assertHeightByRows(10));
+
+            // Restrict height by rows
+            grid.rows = 3;
+            waitUntil(function() {
+              return assertSameDimensions();
+            }, function() {
+              assert.isTrue(assertHeightByRows(3));
+
+              // unrestrict height by rows
+              grid.rows = 0;
+              waitUntil(function() {
+                return assertSameDimensions();
+              }, function() {
+                assert.isTrue(assertHeightByRows(10));
+
+                // Set fixed sizes
+                grid.style.width = '300px';
+                grid.style.height = '100px';
+                waitUntil(function() {
+                  return assertSameDimensions();
+                }, function() {
+                  // Cover all the page
+                  grid.style.position = 'absolute';
+                  grid.style.width = '100%';
+                  grid.style.height = '100%';
+                  waitUntil(function() {
+                    return assertSameDimensions();
+                  }, function() {
+                    assert.equal(document.body.clientHeight, height(grid));
+                    assert.equal(document.body.clientWidth, width(grid));
+                    // We can have different height for v-grid and the inner grid.
+                    // Also we can define more than 10 rows.
+                    grid.rows = 12;
+                    grid.style.width = '50%';
+                    waitUntil(function() {
+                      return width(grid) == width(inner);
+                    }, function() {
+                      assert.isFalse(height(grid) == height(inner));
+                      assert.isTrue(assertHeightByRows(12));
+                      assert.isFalse(assertSameDimensions());
+                      done();
+                    });
+                  });
+                });
+              });
+            });
+          });
+        });
+      });
+
     });
   </script>
 
