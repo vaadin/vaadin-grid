@@ -224,15 +224,15 @@ public class DOMUtils {
     }
 
     public static native void observe(Object jso, EventListener ev) /*-{
-      if (! ('observe' in Object) ) {
+      if ('observe' in $wnd.Object) {
+        var fnc = function(changes) {
+          ev.@com.google.gwt.user.client.EventListener::onBrowserEvent(*)(null);
+        };
+        jso.__fnc = fnc;
+        $wnd.Object.observe(jso, fnc);
+      } else {
         $wnd.console.log("This browser does not support Object.observe, consider to load a polyfill.");
-        return;
       }
-      var fnc = function(changes) {
-        ev.@com.google.gwt.user.client.EventListener::onBrowserEvent(*)(null);
-      };
-      jso.__fnc = fnc;
-      Object.observe(jso, fnc);
    }-*/;
 
     public static void unobserveJsArray(JSArray<?> cols) {
@@ -252,8 +252,8 @@ public class DOMUtils {
     }
 
     public static native void unobserve(Object jso) /*-{
-      if (jso && jso.__fnc) {
-        Object.unobserve(jso, jso.__fnc);
+      if ('observe' in $wnd.Object && jso && jso.__fnc) {
+        $wnd.Object.unobserve(jso, jso.__fnc);
         jso.__fnc = undefined;
       }
    }-*/;
