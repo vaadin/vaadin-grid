@@ -135,6 +135,27 @@ gulp.task('test:validation', function(done) {
     }, done);
 });
 
+gulp.task('test:vaadin', function(done) {
+  common.test(
+    {
+      browserOptions: {
+        url: 'http://validation-hub.devnet.vaadin.com:4444/wd/hub'
+      },
+      activeBrowsers: [
+        {
+          browserName: "chrome",
+          version: "40",
+          platform: "VISTA"
+        }
+      ],
+      root: '.',
+      webserver: {
+        port: 2000,
+        hostname: common.localAddress()
+      }
+    }, done);
+});
+
 gulp.task('test:sauce', function(done) {
   common.testSauce(
     [],
