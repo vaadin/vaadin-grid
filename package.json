@@ -32,7 +32,7 @@
   },
   "scripts": {
     "install": "node_modules/.bin/bower install --allow-root ./vaadin-components-package/bower.json https://github.com/Polymer/web-component-tester.git",
-    "postinstall": "cd vaadin-theme && npm install"
+    "postinstall": "rm -rf vaadin-components-gwt/src/main/webapp/bower_components && cp -r bower_components vaadin-components-gwt/src/main/webapp/ && cd vaadin-theme && npm install"
   },
   "keywords": [
     "vaadin",
