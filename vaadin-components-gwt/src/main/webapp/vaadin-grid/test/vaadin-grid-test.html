@@ -637,6 +637,7 @@
 
       test('add new column to an empty grid', function(done) {
         var wrapper = document.getElementById("gridwrapper");
+        // Remove existing grid from the wrapper but keep it in the dom
         document.body.appendChild(grid);
 
         wrapper.innerHTML = "<v-grid></v-grid>";
@@ -660,6 +661,11 @@
       });
 
       test('frozen column', function(done) {
+        var setFrozenColumns = function(value) {
+          grid.frozenColumns = value;
+        };
+        expect(setFrozenColumns.bind(grid, -2)).to.throw("count must be between -1 and the current number of columns (2)");
+
         grid.frozenColumns = 1;
 
         waitUntil(function() {
@@ -670,6 +676,14 @@
           done();
         });
 
+      });
+
+      test('frozen column: unfreeze selection column', function() {
+        grid.selectionMode = "multi";
+        assert.ok(grid.querySelector(".frozen"));
+
+        grid.frozenColumns = -1;
+        assert.notOk(grid.querySelector(".frozen"));
       });
 
       test('rowClassName', function() {
