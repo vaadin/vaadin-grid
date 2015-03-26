@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
@@ -370,20 +371,27 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
     }
 
     public void setSelectedRows(JsArrayInteger selectedJso) {
-        if (grid.getSelectionModel() instanceof SelectionModelNone) {
-            return;
-        }
-        updating = true;
-        grid.getSelectionModel().reset();
-        for (int i = 0, l = selectedJso.length(); i < l; i++) {
-            int selectedIndex = selectedJso.get(i);
-            if (selectedIndex >= 0
-                    && selectedIndex < grid.getDataSource().size()) {
-                grid.select(grid.getDataSource().getRow(selectedIndex));
+        if (!(grid.getSelectionModel() instanceof SelectionModelNone)) {
+            updating = true;
+
+            HashSet<Object> previouslySelected = new HashSet<Object>(
+                    grid.getSelectedRows());
+
+            grid.getSelectionModel().reset();
+            for (int i = 0, l = selectedJso.length(); i < l; i++) {
+                int selectedIndex = selectedJso.get(i);
+                if (selectedIndex >= 0
+                        && selectedIndex < grid.getDataSource().size()) {
+                    grid.select(grid.getDataSource().getRow(selectedIndex));
+                }
+            }
+
+            updating = false;
+
+            if (!previouslySelected.equals(grid.getSelectedRows())) {
+                onSelect(null);
             }
         }
-        updating = false;
-        onSelect(null);
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
