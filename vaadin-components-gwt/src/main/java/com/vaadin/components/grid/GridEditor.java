@@ -93,21 +93,20 @@ public class GridEditor {
             @Override
             public void bind(EditorRequest<Object> request) {
                 JsUtils.jsni(handler.getBind(), "call", handler.getBind(),
-                        createJSEditorRequest(request));
+                        createJSEditorRequest(request, false));
             }
 
             @Override
             public void cancel(EditorRequest<Object> request) {
                 JsUtils.jsni(handler.getCancel(), "call", handler.getCancel(),
-                        createJSEditorRequest(request));
+                        createJSEditorRequest(request, true));
                 editors.clear();
             }
 
             @Override
             public void save(EditorRequest<Object> request) {
                 JsUtils.jsni(handler.getSave(), "call", handler.getSave(),
-                        createJSEditorRequest(request));
-                editors.clear();
+                        createJSEditorRequest(request, true));
                 gridComponent.refresh();
             }
 
@@ -125,7 +124,8 @@ public class GridEditor {
         return handler;
     }
 
-    private JSEditorRequest createJSEditorRequest(EditorRequest<Object> request) {
+    private JSEditorRequest createJSEditorRequest(
+            EditorRequest<Object> request, final boolean clearEditorsOnSuccess) {
         JSEditorRequest result = JS.createJsType(JSEditorRequest.class);
         result.setRowIndex(request.getRowIndex());
 
@@ -139,15 +139,20 @@ public class GridEditor {
             @Override
             public void f() {
                 request.success();
+                if (clearEditorsOnSuccess) {
+                    editors.clear();
+                }
             }
         }));
         result.setFailure(JsUtils.wrapFunction(new Function() {
             @Override
             public void f() {
-                JSArray<JSColumn> columns = arguments(1);
+                JSArray<JSColumn> jsErrorColumns = arguments(1);
                 Collection<Column<?, Object>> errorColumns = new ArrayList<>();
-                for (Column<?, Object> column : grid.getColumns()) {
-                    if (columns.indexOf(((GridColumn) column).getJsColumn()) != -1) {
+                for (Column<?, Object> column : gridComponent.getDataColumns()) {
+                    if (jsErrorColumns != null
+                            && jsErrorColumns.indexOf(((GridColumn) column)
+                                    .getJsColumn()) != -1) {
                         errorColumns.add(column);
                     }
                 }

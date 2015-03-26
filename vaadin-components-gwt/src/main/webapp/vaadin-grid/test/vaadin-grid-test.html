@@ -761,6 +761,30 @@
         assert.lengthOf(editors, 0);
       });
 
+      test('editor: element instance after save', function() {
+        grid.editor.enabled = true;
+        grid.editor.handler = editorHandler;
+
+        var editor1, editor2;
+        editorHandler.save = function(req){
+          if (!editor1){
+            editor1 = req.getCellEditor(grid.columns[0]);
+            req.failure();
+          } else {
+            editor2 = req.getCellEditor(grid.columns[0]);
+            req.success();
+          }
+        };
+        grid.editor.editRow(0);
+
+        //Save fails
+        grid.editor.save();
+        //Save succeeds
+        grid.editor.save();
+
+        assert.equal(editor1, editor2);
+      });
+
       test('data: object type', function(done) {
         grid.columns[0].name = "firstname";
         grid.columns[1].name = "lastname";
