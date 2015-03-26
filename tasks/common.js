@@ -46,31 +46,29 @@ module.exports = {
   checkArguments: checkArguments,
 
   testSauce: function(suites, browsers, build, done) {
-        checkArguments(['sauceUsername', 'sauceAccessKey']);
+    test(
+      {
+        suites: suites,
+        browserOptions: {
+          name: localAddress() + ' / ' + new Date(),
+          build: build
+        },
 
-        test(
-          {
-            suites: suites,
-            browserOptions: {
-              name: localAddress() + ' / ' + new Date(),
-              build: build
-            },
-
-            plugins: {
-              //local: {
-              //  browsers: ['chrome']
-              //},
-              sauce: {
-                username: args.sauceUsername,
-                accessKey: args.sauceAccessKey,
-                browsers: browsers
-              },
-              'teamcity-reporter': args.teamcity
-            },
-            webserver: {
-              hostname: localAddress()
-            }
-          }, done);
+        plugins: {
+          //local: {
+          //  browsers: ['chrome']
+          //},
+          sauce: {
+            username: args.sauceUsername,
+            accessKey: args.sauceAccessKey,
+            browsers: browsers
+          },
+          'teamcity-reporter': args.teamcity
+        },
+        webserver: {
+          hostname: localAddress()
+        }
+    }, done);
   },
 
   autoRevert: function(err, handler, done) {
