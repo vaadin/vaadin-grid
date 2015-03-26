@@ -69,11 +69,12 @@
           return input;
         },
         bind: function(req) {
-          for (var i = 0; i < req.grid.columns.length; i++) {
-            var col = req.grid.columns[i];
-            var el = req.getCellEditor(col);
-            el.value = req.dataItem[i];
-          }
+          grid.columns.forEach(function(col) {
+            if(!col.readOnly) {
+              var el = req.getCellEditor(col);
+              el.value = req.dataItem[i];
+            }
+          });
           req.success();
         },
         save: function(req) {
@@ -1000,6 +1001,20 @@
             });
           });
         });
+      });
+
+      test('editor: getCellEditor and read-only columns', function() {
+        grid.columns[0].readOnly = true;
+
+        sinon.spy(editorHandler, "getCellEditor");
+
+        grid.editor.handler = editorHandler;
+        grid.editor.enabled = true;
+        grid.editor.editRow(0);
+
+        assert.isTrue(editorHandler.getCellEditor.calledOnce);
+
+        editorHandler.getCellEditor.restore();
       });
 
     });
