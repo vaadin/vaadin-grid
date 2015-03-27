@@ -44,8 +44,8 @@ public abstract class JS {
         return Object(dataItem) !== dataItem;
     }-*/;
 
-    public static native void defineSetter(Object jsObject, Object target,
-            String propertyName, PropertyValueSetter pvs)
+    public static native void defineSetter(Object jsObject,
+            String propertyName, JavaScriptObject setter)
     /*-{
       var _value = jsObject[propertyName];
 
@@ -54,7 +54,7 @@ public abstract class JS {
             return _value;
         },
         set: function(value) {
-            pvs.@com.vaadin.components.common.js.JS$PropertyValueSetter::setValue(Ljava/lang/Object;Ljava/lang/String;Lcom/google/gwt/core/client/JavaScriptObject;)(target, propertyName, {value: value});
+            setter(value);
             _value = value;
         }
       });
@@ -63,10 +63,4 @@ public abstract class JS {
           jsObject[propertyName] = _value;
       }
     }-*/;
-
-    public interface PropertyValueSetter {
-        String VALUE = "value";
-
-        void setValue(Object target, String propertyName, JavaScriptObject jso);
-    }
 }

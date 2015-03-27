@@ -1,16 +1,15 @@
 package com.vaadin.components.grid.table;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.js.JsExport;
 import com.google.gwt.core.client.js.JsNamespace;
 import com.google.gwt.core.client.js.JsNoExport;
 import com.google.gwt.core.client.js.JsType;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.vaadin.client.widgets.Grid;
@@ -18,7 +17,6 @@ import com.vaadin.client.widgets.Grid.Column;
 import com.vaadin.client.widgets.Grid.StaticSection.StaticCell;
 import com.vaadin.client.widgets.Grid.StaticSection.StaticRow;
 import com.vaadin.components.common.js.JS;
-import com.vaadin.components.common.js.JS.PropertyValueSetter;
 import com.vaadin.components.common.js.JSArray;
 import com.vaadin.components.common.util.Elements;
 import com.vaadin.components.grid.GridComponent;
@@ -28,7 +26,7 @@ import com.vaadin.shared.ui.grid.GridStaticCellType;
 @JsNamespace(Elements.VAADIN_JS_NAMESPACE)
 @JsExport
 @JsType
-public class GridStaticSection implements PropertyValueSetter {
+public class GridStaticSection {
 
     private final GridComponent gridComponent;
     private final Grid<Object> grid;
@@ -53,13 +51,51 @@ public class GridStaticSection implements PropertyValueSetter {
                 jsCell.setContent(cell.getHtml());
             }
 
-            for (String propertyName : Arrays.asList("colspan", "content", "className")) {
-                JS.defineSetter(jsCell, cell, propertyName, this);
-            }
+            bind(jsCell, "colspan", new Function() {
+                @Override
+                public void f() {
+                    cell.setColspan(((Double) arguments(0)).intValue());
+                }
+            });
+            bind(jsCell, "content", new Function() {
+                @Override
+                public void f() {
+                    Object content = arguments(0);
+                    if (content == null) {
+                        cell.setHtml(null);
+                    } else if (JS.isPrimitiveType(content)
+                            || content instanceof Number) {
+                        cell.setHtml(String.valueOf(content));
+                    } else if (JsUtils.isElement(content)) {
+                        cell.setWidget(new SimplePanel((Element) content) {
+                        });
+                    }
+                }
+            });
+            bind(jsCell, "className", new Function() {
+                @Override
+                public void f() {
+                    cell.setStyleName(arguments(0));
+                }
+            });
+
             cells.put(cell, jsCell);
         }
 
         return cells.get(cell);
+    }
+
+    private void bind(JSStaticCell cell, String propertyName,
+            final Function function) {
+        JS.defineSetter(cell, propertyName,
+                JsUtils.wrapFunction(new Function() {
+                    @Override
+                    public void f() {
+                        Object newValue = arguments(0);
+                        function.f(newValue);
+                        gridComponent.redraw();
+                    }
+                }));
     }
 
     public JSStaticCell getHeaderCell(int rowIndex, Object columnId) {
@@ -163,34 +199,5 @@ public class GridStaticSection implements PropertyValueSetter {
     public void setFooterHidden(boolean hidden) {
         grid.setFooterVisible(!hidden);
         gridComponent.redraw(true);
-    }
-
-    @Override
-    public void setValue(Object target, String propertyName,
-            JavaScriptObject jso) {
-        StaticCell cell = (StaticCell) target;
-        switch (propertyName) {
-        case "colspan":
-            cell.setColspan(JsUtils.prop(jso, VALUE, Integer.class));
-            break;
-        case "content":
-            Object content = JsUtils.prop(jso, VALUE);
-            if (content == null) {
-                cell.setHtml(null);
-            } else if (JS.isPrimitiveType(content) || content instanceof Number) {
-                cell.setHtml(String.valueOf(content));
-            } else if (JsUtils.isElement(content)) {
-                cell.setWidget(new SimplePanel((Element) content) {
-                });
-            }
-            break;
-        case "className":
-            cell.setStyleName(JsUtils.prop(jso, VALUE, String.class));
-            break;
-        default:
-            break;
-        }
-
-        gridComponent.redraw();
     }
 }

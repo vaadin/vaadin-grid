@@ -1,9 +1,8 @@
 package com.vaadin.components.grid.table;
 
-import java.util.Arrays;
-
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayMixed;
+import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.js.JsUtils;
 import com.vaadin.client.renderers.Renderer;
@@ -11,43 +10,117 @@ import com.vaadin.client.widget.grid.RendererCellReference;
 import com.vaadin.client.widgets.Grid;
 import com.vaadin.client.widgets.Grid.Column;
 import com.vaadin.components.common.js.JS;
-import com.vaadin.components.common.js.JS.PropertyValueSetter;
 import com.vaadin.components.grid.GridComponent;
 import com.vaadin.components.grid.config.JSColumn;
 import com.vaadin.components.grid.data.DataItemContainer;
 
-public final class GridColumn extends Column<Object, Object> implements
-        PropertyValueSetter {
+public final class GridColumn extends Column<Object, Object> {
 
-    private JSColumn jsColumn;
-    private Grid<Object> grid;
-    private GridComponent gridComponent;
+    private final JSColumn jsColumn;
+    private final Grid<Object> grid;
+    private final GridComponent gridComponent;
     private JavaScriptObject valueGenerator;
     private String name;
 
     public static GridColumn addColumn(JSColumn jsColumn,
             GridComponent gridComponent) {
-
-        GridColumn result = new GridColumn();
-        result.grid = gridComponent.getGrid();
-        result.gridComponent = gridComponent;
-        result.jsColumn = jsColumn;
-
+        GridColumn result = new GridColumn(jsColumn, gridComponent.getGrid(),
+                gridComponent);
         gridComponent.getGrid().addColumn(result);
-
-        // Define the properties
-        for (String propertyName : Arrays.asList("flex", "name", "headerHtml",
-                "sortable", "readOnly", "renderer", "generatedValue",
-                "minWidth", "maxWidth", "width")) {
-            JS.defineSetter(jsColumn, result, propertyName, result);
-        }
-
+        result.bindProperties();
         return result;
-
     }
 
-    private GridColumn() {
-        super();
+    private GridColumn(JSColumn jsColumn, Grid<Object> grid,
+            GridComponent gridComponent) {
+        this.jsColumn = jsColumn;
+        this.grid = grid;
+        this.gridComponent = gridComponent;
+    }
+
+    private void bindProperties() {
+        bind("headerHtml", new Function() {
+            @Override
+            public void f() {
+                grid.getDefaultHeaderRow().getCell(GridColumn.this)
+                        .setHtml(arguments(0));
+            }
+        });
+        bind("flex", new Function() {
+            @Override
+            public void f() {
+                setExpandRatio(((Double) arguments(0)).intValue());
+            }
+        });
+        bind("name", new Function() {
+            @Override
+            public void f() {
+                name = arguments(0);
+            }
+        });
+        bind("sortable", new Function() {
+            @Override
+            public void f() {
+                setSortable(arguments(0));
+            }
+        });
+        bind("readOnly", new Function() {
+            @Override
+            public void f() {
+                setEditable(!(boolean) arguments(0));
+            }
+        });
+        bind("renderer", new Function() {
+            @Override
+            public void f() {
+                setColumnRenderer(arguments(0));
+            }
+        });
+        bind("generatedValue", new Function() {
+            @Override
+            public void f() {
+                valueGenerator = arguments(0);
+            }
+        });
+        bind("minWidth", new Function() {
+            @Override
+            public void f() {
+                String minWidth = arguments(0);
+                if (minWidth != null && !minWidth.isEmpty()) {
+                    setMinimumWidth(parseDouble(minWidth));
+                }
+            }
+        });
+        bind("maxWidth", new Function() {
+            @Override
+            public void f() {
+                String maxWidth = arguments(0);
+                if (maxWidth != null && !maxWidth.isEmpty()) {
+                    setMaximumWidth(parseDouble(maxWidth));
+                }
+            }
+        });
+        bind("width", new Function() {
+            @Override
+            public void f() {
+                String width = arguments(0);
+                if (width != null && !width.isEmpty()) {
+                    setWidth(parseDouble(width));
+                }
+            }
+        });
+    }
+
+    private void bind(String propertyName, final Function function) {
+        JS.defineSetter(getJsColumn(), propertyName,
+                JsUtils.wrapFunction(new Function() {
+                    @Override
+                    public void f() {
+                        Object newValue = arguments(0);
+                        function.f(newValue);
+                        gridComponent.redraw();
+                    }
+                }));
     }
 
     public JSColumn getJsColumn() {
@@ -67,57 +140,6 @@ public final class GridColumn extends Column<Object, Object> implements
                 JsUtils.jsni(renderer, "call", renderer, cellJso);
             }
         });
-    }
-
-    @Override
-    public void setValue(Object target, String propertyName,
-            JavaScriptObject jso) {
-        switch (propertyName) {
-        case "flex":
-            double value = JsUtils.prop(jso, VALUE);
-            setExpandRatio((int) value);
-            break;
-        case "name":
-            name = JsUtils.prop(jso, VALUE);
-            break;
-        case "headerHtml":
-            grid.getDefaultHeaderRow().getCell(this)
-                    .setHtml(JsUtils.prop(jso, VALUE));
-            break;
-        case "sortable":
-            setSortable(JsUtils.prop(jso, VALUE));
-            break;
-        case "readOnly":
-            setEditable(!JsUtils.<Boolean> prop(jso, VALUE));
-            break;
-        case "renderer":
-            setColumnRenderer(JsUtils.prop(jso, VALUE));
-            break;
-        case "generatedValue":
-            valueGenerator = JsUtils.prop(jso, VALUE);
-            break;
-        case "minWidth":
-            String minWidth = JsUtils.prop(jso, VALUE);
-            if (minWidth != null && !minWidth.isEmpty()) {
-                setMinimumWidth(parseDouble(minWidth));
-            }
-            break;
-        case "maxWidth":
-            String maxWidth = JsUtils.prop(jso, VALUE);
-            if (maxWidth != null && !maxWidth.isEmpty()) {
-                setMaximumWidth(parseDouble(maxWidth));
-            }
-            break;
-        case "width":
-            String width = JsUtils.prop(jso, VALUE);
-            if (width != null && !width.isEmpty()) {
-                setWidth(parseDouble(width));
-            }
-            break;
-        default:
-            break;
-        }
-        gridComponent.redraw();
     }
 
     private double parseDouble(String cssPixelValue) {
