@@ -6,6 +6,9 @@ import java.util.List;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.GQuery;
+import com.google.gwt.query.client.plugins.observe.Observe;
+import com.google.gwt.query.client.plugins.observe.Observe.Changes.MutationRecord;
+import com.google.gwt.query.client.plugins.observe.Observe.MutationListener;
 import com.google.gwt.user.client.Timer;
 import com.vaadin.client.widgets.Grid;
 import com.vaadin.client.widgets.Grid.Column;
@@ -22,7 +25,7 @@ import com.vaadin.components.grid.data.GridDomTableDataSource;
 /**
  * This class represents a grid header configuration based on a DOM structure.
  */
-public class GridLightDomTable {
+public class GridLightDomTable implements MutationListener {
 
     private String lastConfigString = null;
     private GQuery $light, $thead, $tfoot, $head_tr, $foot_tr;
@@ -40,6 +43,10 @@ public class GridLightDomTable {
         $light = $(tableElement);
 
         parseDom();
+
+        $light.as(Observe.Observe).mutation(
+                Observe.createMutationInit().attributes(true).childList(true)
+                        .subtree(true), this);
     }
 
     public void parseDom() {
@@ -185,5 +192,31 @@ public class GridLightDomTable {
 
     public GridDomTableDataSource getDomDataSource() {
         return ds;
+    }
+
+    @Override
+    public void onMutation(List<MutationRecord> mutations) {
+        boolean dataChanged = false;
+        boolean headerChanged = false;
+        for (MutationRecord r : mutations) {
+            GQuery g = $(r.removedNodes()).add($(r.addedNodes()))
+                    // Find the parents of the mutated nodes
+                    .closest("tbody,thead,tfoot");
+            if (!headerChanged
+                    && (!g.filter("thead,tfoot").isEmpty() || r.attributeName() != null)) {
+                headerChanged = true;
+            }
+            if (!dataChanged && !g.filter("tbody").isEmpty()) {
+                dataChanged = true;
+            }
+        }
+
+        if (headerChanged || !dataChanged) {
+            parseDom();
+            gridComponent.redraw(true);
+        }
+        if (dataChanged) {
+            gridComponent.refresh();
+        }
     }
 }

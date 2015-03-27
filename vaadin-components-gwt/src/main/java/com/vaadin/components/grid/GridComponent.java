@@ -172,11 +172,6 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
         cols.remove(cols.get(index));
     }
 
-    public void onMutation() {
-        lightDom.parseDom();
-        refresh();
-    }
-
     public void setDisabled(boolean disabled) {
         grid.setEnabled(!disabled);
     }
