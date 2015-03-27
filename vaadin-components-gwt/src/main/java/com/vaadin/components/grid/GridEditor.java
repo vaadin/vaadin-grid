@@ -24,7 +24,7 @@ import com.vaadin.components.grid.config.JSColumn;
 import com.vaadin.components.grid.config.JSEditorHandler;
 import com.vaadin.components.grid.config.JSEditorRequest;
 import com.vaadin.components.grid.data.DataItemContainer;
-import com.vaadin.components.grid.head.GridColumn;
+import com.vaadin.components.grid.table.GridColumn;
 
 @JsNamespace(Elements.VAADIN_JS_NAMESPACE)
 @JsExport

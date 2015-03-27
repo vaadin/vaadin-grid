@@ -7,7 +7,7 @@ import com.vaadin.components.common.js.JS;
 import com.vaadin.components.grid.config.JSCell;
 import com.vaadin.components.grid.config.JSCellClassName;
 import com.vaadin.components.grid.config.JSRow;
-import com.vaadin.components.grid.head.GridColumn;
+import com.vaadin.components.grid.table.GridColumn;
 
 /**
  * A GWT/JavaScript bridge for Grid CellStyleGenerator.

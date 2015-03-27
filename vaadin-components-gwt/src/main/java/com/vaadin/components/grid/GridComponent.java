@@ -48,8 +48,9 @@ import com.vaadin.components.grid.config.JSSortOrder;
 import com.vaadin.components.grid.data.GridDataSource;
 import com.vaadin.components.grid.data.GridDomTableDataSource;
 import com.vaadin.components.grid.data.GridJsFuncDataSource;
-import com.vaadin.components.grid.head.GridColumn;
-import com.vaadin.components.grid.head.GridDomTableHead;
+import com.vaadin.components.grid.table.GridColumn;
+import com.vaadin.components.grid.table.GridLightDomTable;
+import com.vaadin.components.grid.table.GridStaticSection;
 import com.vaadin.components.grid.utils.GridCellStyleGenerator;
 import com.vaadin.components.grid.utils.GridRowStyleGenerator;
 import com.vaadin.components.grid.utils.Redraw;
@@ -70,7 +71,7 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
     private JSArray<JSSortOrder> jsSort;
 
     private boolean updating = false;
-    private GridDomTableHead head;
+    private GridLightDomTable lightDom;
     private final Redraw redrawer;
     private final GridEditor editor;
     private final GridStaticSection staticSection;
@@ -122,27 +123,17 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
             Element gridContainer) {
         this.container = container;
 
-        if (head == null) {
-            head = new GridDomTableHead(lightDomElement, this);
-        } else {
-            head.setLightDom(lightDomElement);
-        }
         if (lightDomElement != null) {
-            setColumns(head.loadHeaders());
+            lightDom = new GridLightDomTable(lightDomElement, this);
+            // Check if we have the data in the DOM
+            GridDomTableDataSource ds = lightDom.getDomDataSource();
+            if (ds != null) {
+                grid.setDataSource(ds);
+            }
         }
 
         gridContainer.appendChild(grid.getElement());
         WidgetsUtils.attachWidget(grid, null);
-
-        if (lightDomElement != null) {
-            // If the wrapped DOM table has TR elements, we use it as data
-            // source
-            DataSource<Object> dataSource = GridDomTableDataSource
-                    .createInstance(lightDomElement, this);
-            if (dataSource != null) {
-                grid.setDataSource(dataSource);
-            }
-        }
 
         redrawer.setContainer(container);
         editor.setContainer(container);
@@ -182,7 +173,7 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
     }
 
     public void onMutation() {
-        setColumns(head.loadHeaders());
+        lightDom.parseDom();
         refresh();
     }
 
@@ -229,8 +220,7 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
 
     public Column<?, ?> getColumnByJSColumnNameOrIndex(Object columnId) {
         Column<?, ?> column = null;
-
-        if (JS.isPrimitiveType(columnId)) {
+        if (columnId instanceof Integer || JS.isPrimitiveType(columnId)) {
             int index = getColumnIndexByIndexOrName(String.valueOf(columnId));
             column = grid.getColumn(index);
         } else {
@@ -329,17 +319,20 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
                         .indexOf(((GridColumn) o2).getJsColumn()) ? 1 : -1;
             }
         });
-        grid.setColumnOrder(array);
+        if (array.length > 0) {
+            grid.setColumnOrder(array);
+        }
         this.cols = columns;
         observeColumnArray();
     }
 
-    /*
-     * This method is needed internally (package) for listing all the columns
-     * that display data. On multi-select mode grid.getColumns() will contain
-     * the selection column as the first item so it's excluded from the result.
+    /**
+     * Returns all the columns that display data. On multi-select mode
+     * grid.getColumns() will contain the selection column as the first item so
+     * it's excluded from the result.
      */
-    List<Column<?, Object>> getDataColumns() {
+    @JsNoExport
+    public List<Column<?, Object>> getDataColumns() {
         List<Column<?, Object>> result = grid.getColumns();
         if (grid.getSelectionModel() instanceof SelectionModelMulti) {
             result = result.subList(1, result.size());
@@ -445,7 +438,12 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
     // TODO: remove this when grid resizes appropriately on container
     // and data changes.
     public void redraw() {
-        redrawer.redraw(false);
+        redraw(false);
+    }
+
+    @JsNoExport
+    public void redraw(boolean force) {
+        redrawer.redraw(force);
     }
 
     // TODO: we are using String instead of int because polymer passes a string

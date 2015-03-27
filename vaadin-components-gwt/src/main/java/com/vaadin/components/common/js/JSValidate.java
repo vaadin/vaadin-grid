@@ -10,11 +10,11 @@ import com.google.gwt.regexp.shared.RegExp;
  * A collection of validations for JS values.
  */
 public enum JSValidate {
-    Pixel("pixel value", RegExp.compile("^([\\d\\.]+)(px)?$", "i"), String.class, "", ""),
-    Integer("int value", RegExp.compile("^([+-]?\\d+)"), Integer.class, 0, 0),
-    Flex("int value", RegExp.compile("^([+-]?\\d+)"), Integer.class, 0, 1),
-    Double("double value", RegExp.compile("^([+-]?[\\d\\.]+)"), Double.class, 0, 0),
-    Boolean("boolean value", RegExp.compile("^(|true|false)", "i"), Boolean.class, true, false);
+    String("string value", "(.+)", String.class, "", ""),
+    Pixel("pixel value", "([\\d\\.]+)(px)?$", String.class, "", ""),
+    Integer("int value", "([+-]?\\d+)", Integer.class, 0, 0),
+    Double("double value", "([+-]?[\\d\\.]+)", Double.class, 0, 0),
+    Boolean("boolean value", "(|true|false)", Boolean.class, true, false);
 
     private final String message;
     private final RegExp regex;
@@ -22,25 +22,43 @@ public enum JSValidate {
     private final Object defaultIfEmpty;
     private final Object defaultIfNull;
 
-    private JSValidate(String message, RegExp regex, Class<?> type,
+    private JSValidate(String message, String regex, Class<?> type,
             Object defaultIfEmpty, Object defaultIfNull) {
         this.message = message;
-        this.regex = regex;
+        this.regex = RegExp.compile("^" + regex + "$", "i");
         this.type = type;
         this.defaultIfEmpty = defaultIfEmpty;
         this.defaultIfNull = defaultIfNull;
     }
 
     public <T> T attr(GQuery g, String s) {
-        return attr(g.get(0), s);
+        return attr(g.get(0), s, defaultIfEmpty, defaultIfNull);
+    }
+
+    public <T> T attr(GQuery g, String s, Object defaultIfEmpty,
+            Object defaultIfNull) {
+        return attr(g.get(0), s, defaultIfEmpty, defaultIfNull);
     }
 
     public <T> T attr(Element el, String s) {
-        return val(el != null && JsUtils.hasAttribute(el, s) ? el.getAttribute(s) : null);
+        return val(
+                el != null && JsUtils.hasAttribute(el, s) ? el.getAttribute(s)
+                        : null, defaultIfEmpty, defaultIfNull);
+    }
+
+    public <T> T attr(Element el, String s, Object defaultIfEmpty,
+            Object defaultIfNull) {
+        return val(
+                el != null && JsUtils.hasAttribute(el, s) ? el.getAttribute(s)
+                        : null, defaultIfEmpty, defaultIfNull);
+    }
+
+    public <T> T val(String s) {
+        return val(s, defaultIfEmpty, defaultIfNull);
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T val(String s) {
+    public <T> T val(String s, Object defaultIfEmpty, Object defaultIfNull) {
         if (s == null) {
             return (T) defaultIfNull;
         }

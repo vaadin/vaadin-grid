@@ -19,7 +19,9 @@ public class Redraw extends Timer {
     private GQuery container;
     boolean heightByRows = false;
     boolean heightAuto = false;
+    boolean forceRedraw = false;
     private int defaultRows, numberRows, width, height;
+
 
     public Redraw(GridComponent gridComponent) {
         grid = gridComponent.getGrid();
@@ -36,8 +38,8 @@ public class Redraw extends Timer {
     }
 
     public void redraw(boolean force) {
-        if (force) {
-            width = height = 0;
+        if (forceRedraw = force) {
+            height = 0;
         }
         schedule(50);
     }
@@ -51,7 +53,7 @@ public class Redraw extends Timer {
         }
 
         int w = container.width();
-        if (w != width) {
+        if (forceRedraw || w != width) {
             // Setting grid to 100% makes it fit to our v-grid container.
             // We could set this in CSS, but we should be sure that it is set
             // with selectors able override inline sizes, because width is
@@ -62,7 +64,7 @@ public class Redraw extends Timer {
         }
 
         // If height is set using the 'rows' attribute, we always use it.
-        if (heightByRows) {
+        if (forceRedraw || heightByRows) {
             if (numberRows != defaultRows) {
                 numberRows = defaultRows;
                 setHeightByRows(numberRows);
@@ -97,6 +99,7 @@ public class Redraw extends Timer {
                 grid.resetSizesFromDom();
             }
         }
+        forceRedraw = false;
     }
 
     // TODO: This method is here because original grid.setHeightByRows seems
@@ -105,7 +108,8 @@ public class Redraw extends Timer {
     void setHeightByRows(int rows) {
         // grid.setHeightByRows(rows);
         int h = $(grid).find("tr td").height() + 1;
-        rows += grid.getHeaderRowCount() + grid.getFooterRowCount();
+        rows += grid.isHeaderVisible() ? grid.getHeaderRowCount() : 0;
+        rows += grid.isFooterVisible() ? grid.getFooterRowCount() : 0;
         height = h * rows;
         grid.setHeight(height + "px");
     }

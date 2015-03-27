@@ -1,4 +1,4 @@
-package com.vaadin.components.grid;
+package com.vaadin.components.grid.table;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -8,6 +8,7 @@ import java.util.Map;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.js.JsExport;
 import com.google.gwt.core.client.js.JsNamespace;
+import com.google.gwt.core.client.js.JsNoExport;
 import com.google.gwt.core.client.js.JsType;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.js.JsUtils;
@@ -20,6 +21,7 @@ import com.vaadin.components.common.js.JS;
 import com.vaadin.components.common.js.JS.PropertyValueSetter;
 import com.vaadin.components.common.js.JSArray;
 import com.vaadin.components.common.util.Elements;
+import com.vaadin.components.grid.GridComponent;
 import com.vaadin.components.grid.config.JSStaticCell;
 import com.vaadin.shared.ui.grid.GridStaticCellType;
 
@@ -37,7 +39,8 @@ public class GridStaticSection implements PropertyValueSetter {
         this.grid = gridComponent.getGrid();
     }
 
-    private JSStaticCell assureJSStaticCell(StaticCell cell) {
+    @JsNoExport
+    public JSStaticCell assureJSStaticCell(StaticCell cell) {
         if (!cells.containsKey(cell)) {
             JSStaticCell jsCell = JS.createJsType(JSStaticCell.class);
             jsCell.setColspan(cell.getColspan());
@@ -50,7 +53,7 @@ public class GridStaticSection implements PropertyValueSetter {
                 jsCell.setContent(cell.getHtml());
             }
 
-            for (String propertyName : Arrays.asList("colspan", "content")) {
+            for (String propertyName : Arrays.asList("colspan", "content", "className")) {
                 JS.defineSetter(jsCell, cell, propertyName, this);
             }
             cells.put(cell, jsCell);
@@ -150,7 +153,7 @@ public class GridStaticSection implements PropertyValueSetter {
 
     public void setHeaderHidden(boolean hidden) {
         grid.setHeaderVisible(!hidden);
-        gridComponent.redraw();
+        gridComponent.redraw(true);
     }
 
     public boolean isFooterHidden() {
@@ -159,7 +162,7 @@ public class GridStaticSection implements PropertyValueSetter {
 
     public void setFooterHidden(boolean hidden) {
         grid.setFooterVisible(!hidden);
-        gridComponent.redraw();
+        gridComponent.redraw(true);
     }
 
     @Override
@@ -168,8 +171,7 @@ public class GridStaticSection implements PropertyValueSetter {
         StaticCell cell = (StaticCell) target;
         switch (propertyName) {
         case "colspan":
-            double value = JsUtils.prop(jso, VALUE);
-            cell.setColspan((int) value);
+            cell.setColspan(JsUtils.prop(jso, VALUE, Integer.class));
             break;
         case "content":
             Object content = JsUtils.prop(jso, VALUE);
@@ -182,11 +184,13 @@ public class GridStaticSection implements PropertyValueSetter {
                 });
             }
             break;
+        case "className":
+            cell.setStyleName(JsUtils.prop(jso, VALUE, String.class));
+            break;
         default:
             break;
         }
 
         gridComponent.redraw();
     }
-
 }

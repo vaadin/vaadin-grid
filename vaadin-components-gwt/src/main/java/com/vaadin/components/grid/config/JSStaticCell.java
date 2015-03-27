@@ -20,4 +20,10 @@ public interface JSStaticCell {
 
     @JsProperty
     JSStaticCell setColspan(int colspan);
+
+    @JsProperty
+    String getClassName();
+
+    @JsProperty
+    JSStaticCell setClassName(String s);
 }

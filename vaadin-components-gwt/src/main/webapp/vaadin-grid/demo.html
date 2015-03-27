@@ -8,6 +8,18 @@
 
 <link href="vaadin-grid.html" rel="import">
 <script src="demodata.js"></script>
+<style>
+td.red, th.red, .red th, .red td, td.foot1, .foot1 td {
+  background: mistyrose !important;
+}
+td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
+  background: aliceblue !important;
+}
+.foot1, .foot2 {
+  font-weight: bold !important;
+  text-align: center;
+}
+</style>
 </head>
 <body>
   <script>
@@ -244,13 +256,13 @@
   <v-grid>
   <table>
     <thead>
-      <tr>
+      <tr class="blue">
         <th><button>I'm a button</button></th>
         <th colspan="2">Status</th>
       </tr>
-      <tr default>
+      <tr default class="red">
         <th>Name</th>
-        <th>Value</th>
+        <th class="blue">Value</th>
         <th>Progress</th>
       </tr>
     </thead>
@@ -266,6 +278,14 @@
         <td>0.8</td>
       </tr>
     </tbody>
+    <tfoot>
+      <tr class="foot1">
+        <th colspan=3>This is a footer line in a cell</th>
+      </tr>
+      <tr class="foot2">
+        <th colspan=3><span>Some widgets in a footer</span> <input type=text/> <button>Click</button></th>
+      </tr>
+    </tfoot>
   </table>
   </v-grid>
   </li>
@@ -275,15 +295,13 @@
 
   <v-grid id="mySelGrid" selection-mode="single">
   <table>
-    <head>
-    <thead>
+    <thead hidden>
       <tr>
         <th>Name</th>
         <th>Value</th>
         <th>Progress</th>
       </tr>
     </thead>
-    </head>
   </table>
   </v-grid>
   <button id="mySelButton">Random select</button>

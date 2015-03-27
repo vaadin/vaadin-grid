@@ -1,4 +1,4 @@
-package com.vaadin.components.grid.head;
+package com.vaadin.components.grid.table;
 
 import java.util.Arrays;
 
