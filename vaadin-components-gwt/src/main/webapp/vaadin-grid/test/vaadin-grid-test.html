@@ -1058,9 +1058,9 @@
                     grid.rows = 12;
                     grid.style.width = '50%';
                     waitUntil(function() {
-                      return width(grid) == width(inner);
+                      return height(grid) != height(inner);
                     }, function() {
-                      assert.isFalse(height(grid) == height(inner));
+                      assert.equal(width(grid), width(inner));
                       assert.isTrue(assertHeightByRows(12));
                       assert.isFalse(assertSameDimensions());
                       done();
