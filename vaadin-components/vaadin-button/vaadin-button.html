@@ -8,84 +8,79 @@
 </dom-module>
 
 <script>
-VButton = Polymer({
-  is: 'v-button',
+  VButton = Polymer({
+    is: 'v-button',
 
-  keyPresses: {
-    'ENTER_KEY': 'click',
-    32: 'click'
-  },
+    keyPresses: {
+      'ENTER_KEY': 'click',
+      32: 'click'
+    },
 
-  ready: function() {
-    // Enable CSS ":active" styles on Mobile Safari
-    // TODO this should be a common mixin that all component should include
-    window.vaadin = window.vaadin || {}
-    if(!window.vaadin.cssActiveFixApplied) {
-      document.addEventListener("touchstart", function() {},false);
-      window.vaadin.cssActiveFixApplied = true;
+    ready: function() {
+      // Enable CSS ":active" styles on Mobile Safari
+      // TODO this should be a common mixin that all component should include
+      window.vaadin = window.vaadin || {}
+      if (!window.vaadin.cssActiveFixApplied) {
+        document.addEventListener("touchstart", function() {}, false);
+        window.vaadin.cssActiveFixApplied = true;
+      }
+
+      this.disabledChanged();
+    },
+
+    properties: {
+      /**
+       * Sets whether this widget is disabled.
+       *
+       * @attribute disabled
+       * @type boolean
+       */
+      disabled: {
+        reflectToAttribute: true,
+        type: Boolean,
+        observer: 'disabledChanged'
+      },
+
+      /**
+       * Sets whether this button is focused when clicking with the mouse or tapping with a finger.
+       *
+       * By default v-button elements are only focusable with the keyboard TAB key or programmatically
+       * using the focus() method. Setting this property to true allows the button to gain focus also
+       * when clicking or tapping it.
+       *
+       * @attribute pointerFocus
+       * @type boolean
+       */
+      pointerFocus: {
+        type: Boolean,
+        reflectToAttribute: true
+      }
+    },
+
+    disabledChanged: function() {
+      var disabled = this.hasAttribute('disabled');
+      this.toggleAttribute('aria-disabled', disabled);
+      this.tabIndex = disabled ? -1 : 0;
+    },
+
+    listeners: {
+      'mousedown': '_mousedown',
+      'click': '_click'
+    },
+
+    _mousedown: function(e) {
+      if (!this.pointerFocus) {
+        e.preventDefault();
+      }
+    },
+
+    _click: function(e) {
+      if (this.disabled) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        return false;
+      }
     }
-
-    this.disabledChanged();
-  },
-
-  published: {
-    /**
-     * Sets whether this widget is disabled.
-     *
-     * @attribute disabled
-     * @type boolean
-     */
-    disabled: { reflect: true, type: Boolean },
-
-    /**
-     * Sets whether this button is focused when clicking with the mouse or tapping with a finger.
-     *
-     * By default v-button elements are only focusable with the keyboard TAB key or programmatically
-     * using the focus() method. Setting this property to true allows the button to gain focus also
-     * when clicking or tapping it.
-     *
-     * @attribute pointerFocus
-     * @type boolean
-     */
-    pointerFocus: { reflect: true, type: Boolean }
-  },
-
-  bind: {
-    disabled: 'disabledChanged'
-  },
-
-  disabledChanged: function() {
-    var disabled = this.hasAttribute('disabled');
-    this.toggleAttribute('aria-disabled', disabled);
-    this.tabIndex = disabled ? -1 : 0;
-  },
-
-  attributeChanged: function(name, type, value) {
-    switch(name) {
-      case 'disabled':
-        this.disabled = typeof value == "string";
-        break;
-    }
-  },
-
-  listeners: {
-    'mousedown': '_mousedown',
-    'click' : '_click'
-  },
-
-  _mousedown: function(e) {
-    if (!this.hasAttribute("pointerfocus")) {
-      e.preventDefault();
-    }
-  },
-
-  _click: function(e) {
-    if (this.hasAttribute("disabled")) {
-      e.preventDefault();
-      e.stopPropagation();
-      e.stopImmediatePropagation();
-      return false;
-    }
-  }
-});
+  });
 </script>

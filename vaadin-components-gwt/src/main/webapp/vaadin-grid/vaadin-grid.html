@@ -12,67 +12,13 @@
   </template>
 </dom-module>
 
-
 <script>
   var prototype = {
     is: "v-grid",
 
     grid: undefined,
 
-    published: {
-
-      /**
-       * Declares the selection model of the Grid to one of the built-in/preconfigured selection modes.
-       *
-       * @attribute selection-mode
-       * @type String
-       */
-      selectionMode: {
-        reflect: true,
-        type: String
-      },
-
-      /**
-       * Disables the grid functionality. At least the following should be disabled (handled by the GWT code):
-       *   row editor
-       *   scrolling
-       *   changing sort order
-       *   focusing
-       *   changing selection
-       *
-       * @attribute disabled
-       * @type boolean
-       */
-      disabled: {
-        reflect: true,
-        type: Boolean
-      },
-
-      /**
-       * Enables the row editor feature (double click/tap or or Enter key in a content row activates the editing mode)
-       *
-       * @attribute editable
-       * @type boolean
-       */
-      editable: {
-        reflect: true,
-        type: Boolean
-      },
-
-      /**
-       * Sets the number of frozen columns in this grid. Setting the count to 0
-       * means that no data columns will be frozen, but the built-in selection
-       * checkbox column will still be frozen if it's in use. Setting the count to
-       * -1 will also disable the selection column.
-       *
-       * @attribute frozen-columns
-       * @type String
-       */
-      frozenColumns: {
-        reflect: true,
-        type: String
-      },
-
+    properties: {
       /**
        * Declares the theme used for this grid instance. The grid does not load the custom theme CSS file,
        * it expects that the correct styles are provided by the current HTML page.
@@ -83,34 +29,9 @@
        * @type String
        */
       theme: {
-        reflect: true,
-        type: String
-      },
-
-      /**
-       * Declares the number of visible rows in the grid. Implicitly sets the height
-       * in the inline style, overriding any previous height. Setting style.height
-       * in this case should be ignored if possible.
-       *
-       * @attribute rows
-       * @type String
-       */
-      rows: {
-        reflect: true,
-        type: Number
+        type: String,
+        reflectToAttribute: true
       }
-    },
-
-    bind: {
-      selectionMode: 'grid.setSelectionMode',
-      disabled: 'grid.setDisabled',
-      editable: 'editableChanged',
-      frozenColumns: 'grid.setFrozenColumns',
-      rows: 'grid.setRows',
-    },
-
-    editableChanged: function(editable) {
-      this.editor.enabled = editable;
     },
 
     attributeChanged: function(name, type, value) {
@@ -122,27 +43,17 @@
             return !isNaN(x);
           });
           break;
-        case 'selection-mode':
-          this.selectionMode = value;
-          break;
         case 'disabled':
           this.disabled = typeof value == "string";
           break;
         case 'editable':
           this.editable = typeof value == "string";
           break;
-        case 'frozen-columns':
-          this.frozenColumns = value;
-          break;
-        case 'theme':
-          this.theme = value;
-          break;
-        case 'rows':
-          this.rows = value;
-          break;
         case 'style':
           this.grid.redraw();
           break;
+        default:
+          this[Polymer.CaseMap.dashToCamelCase(name)] = value;
       }
     },
 
@@ -165,54 +76,47 @@
       this.setAttribute('selected-rows', this.selectedRows.join());
     },
 
-    selectionModeChanged: function(mode) {
-      this.grid.setSelectionMode(mode);
-    },
-
-    created: function() {
-      this.grid = new vaadin.GridComponent();
-    },
-
     ready: function() {
-      this.grid.init(this, this.lightDom.querySelector("table"), this.localDom);
+      this.grid = new vaadin.GridComponent();
+      this.grid.init(this, Polymer.dom(this).querySelector("table"), Polymer.dom(this.root));
 
       var _this = this;
       this.editor = {
-        gridEditor: _this.grid.getEditor(),
-
         get enabled() {
-          return this.gridEditor.isEnabled();
+          return _this.grid.getEditor().isEnabled();
         },
         set enabled(enabled) {
-          _this.editable = enabled;
-          this.gridEditor.setEnabled(enabled);
+          _this.grid.getEditor().setEnabled(enabled);
+          if (_this.editable !== enabled) {
+            _this.editable = enabled;
+          }
         },
         get handler() {
-          return this.gridEditor.getHandler();
+          return _this.grid.getEditor().getHandler();
         },
         set handler(handler) {
-          this.gridEditor.setHandler(handler);
+          _this.grid.getEditor().setHandler(handler);
         },
         get saveButtonText() {
-          return this.gridEditor.getSaveButtonText();
+          return _this.grid.getEditor().getSaveButtonText();
         },
         set saveButtonText(saveButtonText) {
-          this.gridEditor.setSaveButtonText(saveButtonText);
+          _this.grid.getEditor().setSaveButtonText(saveButtonText);
         },
         get cancelButtonText() {
-          return this.gridEditor.getSaveButtonText();
+          return _this.grid.getEditor().getSaveButtonText();
         },
         set cancelButtonText(cancelButtonText) {
-          this.gridEditor.setCancelButtonText(cancelButtonText);
+          _this.grid.getEditor().setCancelButtonText(cancelButtonText);
         },
         editRow: function(row) {
-          this.gridEditor.editRow(row);
+          _this.grid.getEditor().editRow(row);
         },
         save: function() {
-          this.gridEditor.save();
+          _this.grid.getEditor().save();
         },
         cancel: function() {
-          this.gridEditor.cancel();
+          _this.grid.getEditor().cancel();
         }
 
       };
@@ -307,7 +211,7 @@
       };
 
       // Set read-only properties
-      ["data", "editor", "header", "footer"].forEach(function(prop){
+      ["data", "editor", "header", "footer"].forEach(function(prop) {
         Object.defineProperty(_this, prop, {
           writable: false
         });
@@ -325,10 +229,11 @@
       });
 
       setTimeout(function() {
-        for (var i in _this.attributes) {
+        for (var i = 0; i < _this.attributes.length; i++) {
           _this.attributeChanged(_this.attributes[i].nodeName, null, _this.attributes[i].nodeValue);
         }
       }, 1);
+
     },
 
     /**
@@ -472,6 +377,76 @@
     },
     set cellClassName(cellClassName) {
       this.grid.setCellClassName(cellClassName);
+    },
+    /**
+     * Declares the selection model of the Grid to one of the built-in/preconfigured selection modes.
+     *
+     * @attribute selection-mode
+     * @type String
+     */
+    get selectionMode() {
+      return this.grid.getSelectionMode();
+    },
+    set selectionMode(selectionMode) {
+      this.grid.setSelectionMode(selectionMode);
+      this.reflectPropertyToAttribute("selectionMode");
+    },
+    /**
+     * Disables the grid functionality.
+     *
+     * @attribute disabled
+     * @type boolean
+     */
+    get disabled() {
+      return this.grid.isDisabled();
+    },
+    set disabled(disabled) {
+      this.grid.setDisabled(selectionMode);
+      this.reflectPropertyToAttribute("disabled");
+    },
+    /**
+     * Enables the row editor feature (double click/tap or or Enter key in a content row activates the editing mode)
+     *
+     * @attribute editable
+     * @type boolean
+     */
+    get editable() {
+      return this.editor.enabled;
+    },
+    set editable(editable) {
+      this.editor.enabled = editable;
+      this.reflectPropertyToAttribute("editable");
+    },
+    /**
+     * Sets the number of frozen columns in this grid. Setting the count to 0
+     * means that no data columns will be frozen, but the built-in selection
+     * checkbox column will still be frozen if it's in use. Setting the count to
+     * -1 will also disable the selection column.
+     *
+     * @attribute frozen-columns
+     * @type Number
+     */
+    get frozenColumns() {
+      return this.grid.getFrozenColumns();
+    },
+    set frozenColumns(frozenColumns) {
+      this.grid.setFrozenColumns(frozenColumns);
+      this.reflectPropertyToAttribute("frozenColumns");
+    },
+    /**
+     * Declares the number of visible rows in the grid. Implicitly sets the height
+     * in the inline style, overriding any previous height. Setting style.height
+     * in this case should be ignored if possible.
+     *
+     * @attribute rows
+     * @type Number
+     */
+    get rows() {
+      return this.grid.getRows();
+    },
+    set rows(rows) {
+      this.grid.setRows(rows);
+      this.reflectPropertyToAttribute("rows");
     },
   };
 

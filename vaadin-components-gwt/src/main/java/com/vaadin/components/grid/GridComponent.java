@@ -23,12 +23,15 @@ import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.widgets.WidgetsUtils;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
+import com.google.gwt.user.client.Timer;
 import com.vaadin.client.data.AbstractRemoteDataSource;
 import com.vaadin.client.data.DataSource;
 import com.vaadin.client.widget.grid.selection.SelectionEvent;
 import com.vaadin.client.widget.grid.selection.SelectionHandler;
+import com.vaadin.client.widget.grid.selection.SelectionModel;
 import com.vaadin.client.widget.grid.selection.SelectionModelMulti;
 import com.vaadin.client.widget.grid.selection.SelectionModelNone;
+import com.vaadin.client.widget.grid.selection.SelectionModelSingle;
 import com.vaadin.client.widget.grid.sort.SortEvent;
 import com.vaadin.client.widget.grid.sort.SortHandler;
 import com.vaadin.client.widget.grid.sort.SortOrder;
@@ -38,7 +41,6 @@ import com.vaadin.client.widgets.Grid.SelectionMode;
 import com.vaadin.components.common.js.JS;
 import com.vaadin.components.common.js.JSArray;
 import com.vaadin.components.common.js.JSEnums;
-import com.vaadin.components.common.js.JSValidate;
 import com.vaadin.components.common.util.DOMUtils;
 import com.vaadin.components.common.util.Elements;
 import com.vaadin.components.grid.config.JSCellClassName;
@@ -176,8 +178,12 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
         grid.setEnabled(!disabled);
     }
 
-    public void setFrozenColumns(String frozenColumn) {
-        grid.setFrozenColumnCount(JSValidate.Integer.val(frozenColumn));
+    public int getFrozenColumns() {
+        return grid.getFrozenColumnCount();
+    }
+
+    public void setFrozenColumns(int frozenColumn) {
+        grid.setFrozenColumnCount(frozenColumn);
     }
 
     public void scrollToRow(int index, String scrollDestination) {
@@ -256,7 +262,17 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
     public void setDataSource(JavaScriptObject data) {
         if (JsUtils.isFunction(data)) {
             grid.setDataSource(new GridJsFuncDataSource(data, this));
-            redrawer.redraw(true);
+            new Timer() {
+                @Override
+                public void run() {
+                    if (getDataSource().size() == 0
+                            || !$(container).find(".v-grid-body .v-grid-row")
+                                    .isEmpty()) {
+                        redraw(true);
+                        cancel();
+                    }
+                }
+            }.scheduleRepeating(10);
         } else {
             throw new RuntimeException("Unknown data source type: " + data
                     + ". Arrays and Functions are supported only.");
@@ -353,6 +369,17 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
         }
     }
 
+    public String getSelectionMode() {
+        SelectionModel<Object> selectionModel = grid.getSelectionModel();
+        if (selectionModel instanceof SelectionModelMulti) {
+            return SelectionMode.MULTI.name().toLowerCase();
+        } else if (selectionModel instanceof SelectionModelSingle) {
+            return SelectionMode.SINGLE.name().toLowerCase();
+        } else {
+            return SelectionMode.NONE.name().toLowerCase();
+        }
+    }
+
     @Override
     public void onBrowserEvent(Event event) {
         refresh();
@@ -441,11 +468,12 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
         redrawer.redraw(force);
     }
 
-    // TODO: we are using String instead of int because polymer passes a string
-    // instead of the number when using the 'bind:' directive, when the value
-    // is set as an attribute, the 'published:' works as expected though.
-    public void setRows(String rows) {
-        redrawer.setSize(JSValidate.Integer.val(rows));
+    public int getRows() {
+        return redrawer.getSize();
+    }
+
+    public void setRows(int rows) {
+        redrawer.setSize(rows);
     }
 
     @Override

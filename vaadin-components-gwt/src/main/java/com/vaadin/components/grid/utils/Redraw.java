@@ -22,7 +22,6 @@ public class Redraw extends Timer {
     boolean forceRedraw = false;
     private int defaultRows, numberRows, width, height;
 
-
     public Redraw(GridComponent gridComponent) {
         grid = gridComponent.getGrid();
     }
@@ -30,7 +29,8 @@ public class Redraw extends Timer {
     public void setContainer(Element containerElement) {
         container = $(containerElement);
         // Use gQuery resize plugin to observe resize changes in the container.
-        container.as(Resize.Resize).resize(new Function(){
+        container.as(Resize.Resize).resize(new Function() {
+            @Override
             public void f() {
                 redraw(false);
             }
@@ -44,12 +44,14 @@ public class Redraw extends Timer {
         schedule(50);
     }
 
+    @Override
     public void run() {
         if (defaultRows == 0) {
             defaultRows = (int) grid.getHeightByRows();
             if (numberRows == 0) {
                 numberRows = defaultRows;
             }
+
         }
 
         int w = container.width();
@@ -108,6 +110,7 @@ public class Redraw extends Timer {
     void setHeightByRows(int rows) {
         // grid.setHeightByRows(rows);
         int h = $(grid).find("tr td").height() + 1;
+        rows = Integer.parseInt(String.valueOf(rows));
         rows += grid.isHeaderVisible() ? grid.getHeaderRowCount() : 0;
         rows += grid.isFooterVisible() ? grid.getFooterRowCount() : 0;
         height = h * rows;

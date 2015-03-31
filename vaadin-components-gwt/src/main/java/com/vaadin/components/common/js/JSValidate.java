@@ -49,8 +49,8 @@ public enum JSValidate {
     public <T> T attr(Element el, String s, Object defaultIfEmpty,
             Object defaultIfNull) {
         return val(
-                el != null && JsUtils.hasAttribute(el, s) ? el.getAttribute(s)
-                        : null, defaultIfEmpty, defaultIfNull);
+                el != null && el.hasAttribute(s) ? el.getAttribute(s) : null,
+                defaultIfEmpty, defaultIfNull);
     }
 
     public <T> T val(String s) {

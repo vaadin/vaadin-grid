@@ -68,7 +68,24 @@
       };
 
       var gridContainsText = function(_grid, text) {
-        return _grid.localDom.querySelector(".v-grid").innerHTML.indexOf(text) > -1;
+        return Polymer.dom(_grid.root).querySelector(".v-grid").innerHTML.indexOf(text) > -1;
+      };
+
+      var local = function() {
+        return Polymer.dom(grid.root);
+      };
+      var light = function() {
+        return Polymer.dom(grid);
+      };
+
+      var qLocal = function(selector) {
+        return local().querySelector(selector);
+      };
+      var qaLocal = function(selector) {
+        return local().querySelectorAll(selector);
+      };
+      var qLight = function(selector) {
+        return light().querySelector(selector);
       };
 
       var editorHandler = {
@@ -119,7 +136,7 @@
       });
 
       test('light dom table header gets rendered in the grid', function() {
-        var row = grid.localDom.querySelector(".v-grid-header .v-grid-row");
+        var row = qLocal(".v-grid-header .v-grid-row");
         var cells = row.childNodes;
 
         assert.isTrue(cells[0].innerHTML == 'Name');
@@ -127,39 +144,21 @@
       });
 
       test('light dom table body gets rendered in the grid', function() {
-        var row = grid.localDom.querySelector(".v-grid-body .v-grid-row");
+        var row = qLocal(".v-grid-body .v-grid-row");
         var cells = row.childNodes;
 
         assert.isTrue(cells[0].innerHTML == 'Grid');
         assert.isTrue(cells[1].innerHTML == '10000');
       });
 
-      /* TODO: Revisit once light dom changes refelect to grid.
-        test('changes to the light dom cells get reflected to composed dom', function(done) {
-          var tableHeaderCell = grid.lightDom.querySelector("thead th");
-          tableHeaderCell.innerHTML = "TestH";
-
-          var tableBodyCell = grid.lightDom.querySelector("tbody td");
-          tableBodyCell.innerHTML = "TestB";
-
-          waitUntilGridReady(grid, function() {
-            var gridHeaderCell = grid.localDom.querySelector(".v-grid-header .v-grid-cell");
-            assert.equal(gridHeaderCell.innerHTML, 'TestH');
-            var gridBodyCell = grid.localDom.querySelector(".v-grid-body .v-grid-cell");
-            assert.isTrue(gridBodyCell.innerHTML == 'TestB');
-            done();
-          });
-        });
-        */
-
       test('row declarative select', function() {
         var spy = sinon.spy();
         grid.addEventListener("select", spy);
 
         grid.setAttribute("selected-rows", "0");
-        assert.ok(grid.localDom.querySelector(".v-grid-body .v-grid-row-selected"));
+        assert.ok(qLocal(".v-grid-body .v-grid-row-selected"));
         grid.setAttribute("selected-rows", "");
-        assert.notOk(grid.localDom.querySelector(".v-grid-body .v-grid-row-selected"));
+        assert.notOk(qLocal(".v-grid-body .v-grid-row-selected"));
 
         assert.equal(spy.callCount, 2);
       });
@@ -168,7 +167,7 @@
         var spy = sinon.spy();
         grid.addEventListener("select", spy);
 
-        var cell = grid.localDom.querySelector(".v-grid-body .v-grid-cell");
+        var cell = qLocal(".v-grid-body .v-grid-cell");
         cell.click();
         assert.equal(grid.getAttribute("selected-rows"), "0");
         cell.click();
@@ -177,40 +176,21 @@
         assert.equal(spy.callCount, 2);
       });
 
-      /* TODO: Revisit once light dom changes refelect to grid.
-        test('add new row to the light dom', function(done) {
-          var tBodyRow = document.createElement("tr");
-          tBodyRow.innerHTML = "<td>Test</td><td>99</td>";
-
-          var tBody = grid.lightDom.querySelector("table tbody");
-          tBody.appendChild(tBodyRow);
-
-          waitUntilGridReady(grid, function() {
-            var rows = grid.localDom.querySelector(".v-grid-body").childNodes;
-            var cells = rows[rows.length - 1].childNodes;
-
-            assert.isTrue(cells[0].innerHTML == 'Test');
-            assert.isTrue(cells[1].innerHTML == '99');
-            done();
-          });
-        });
-        */
-
       test('switch between selection modes: property', function() {
         var checkBoxQuery = "input[type='checkbox']";
 
         grid.selectionMode = "single";
         assert.equal(grid.getAttribute("selection-mode"), "single");
-        assert.notOk(grid.localDom.querySelector(checkBoxQuery));
+        assert.notOk(qLocal(checkBoxQuery));
 
         grid.selectionMode = "multi";
         assert.equal(grid.getAttribute("selection-mode"), "multi");
-        var checkBoxes = grid.localDom.querySelectorAll(checkBoxQuery);
+        var checkBoxes = qaLocal(checkBoxQuery);
         assert.isTrue(checkBoxes.length > 0);
 
         grid.selectionMode = "none";
         assert.equal(grid.getAttribute("selection-mode"), "none");
-        assert.notOk(grid.localDom.querySelector(checkBoxQuery));
+        assert.notOk(qLocal(checkBoxQuery));
       });
 
       test('switch between selection modes: attribute', function() {
@@ -218,7 +198,7 @@
 
         grid.setAttribute("selection-mode", "single");
         var cellQuery = ".v-grid-body .v-grid-cell";
-        grid.localDom.querySelector(cellQuery).click();
+        qLocal(cellQuery).click();
         assert.equal(grid.selectionMode, "single");
         expect(grid.selectedRows).to.eql([0]);
 
@@ -239,11 +219,11 @@
         grid.selectionMode = "single";
         grid.selectedRows = [1];
         assert.equal(grid.getAttribute("selected-rows"), "1");
-        var rows = grid.localDom.querySelectorAll(rowQuery);
+        var rows = qaLocal(rowQuery);
         assert.isFalse(rows[0].classList.contains(selectedStyle));
         assert.isTrue(rows[1].classList.contains(selectedStyle));
         grid.selectedRows = "";
-        assert.equal(grid.localDom.querySelectorAll(rowQuery + "." + selectedStyle).length, 0);
+        assert.equal(qaLocal(rowQuery + "." + selectedStyle).length, 0);
 
         grid.setAttribute("selected-rows", "0");
         expect(grid.selectedRows).to.eql([0]);
@@ -251,7 +231,7 @@
         expect(grid.selectedRows).to.be.empty;
 
         var cellQuery = ".v-grid-body .v-grid-cell";
-        grid.localDom.querySelector(cellQuery).click();
+        qLocal(cellQuery).click();
         expect(grid.selectedRows).to.eql([0]);
 
         assert.equal(spy.callCount, 5);
@@ -267,11 +247,11 @@
         grid.selectionMode = "multi";
         grid.selectedRows = "0,1";
         assert.equal(grid.getAttribute("selected-rows"), "0,1");
-        var rows = grid.localDom.querySelectorAll(rowQuery);
+        var rows = qaLocal(rowQuery);
         assert.isTrue(rows[0].classList.contains(selectedStyle));
         assert.isTrue(rows[1].classList.contains(selectedStyle));
         grid.selectedRows = "0";
-        assert.equal(grid.localDom.querySelectorAll(rowQuery + "." + selectedStyle).length, 1);
+        assert.equal(qaLocal(rowQuery + "." + selectedStyle).length, 1);
 
         grid.setAttribute("selected-rows", "0,1");
         expect(grid.selectedRows).to.eql([0, 1]);
@@ -523,7 +503,7 @@
         waitUntil(function() {
           return gridContainsText(grid, "testHtml");
         }, function() {
-          var headers = grid.localDom.querySelectorAll(".v-grid-header .v-grid-row th");
+          var headers = qaLocal(".v-grid-header .v-grid-row th");
           assert.equal(headers[0].innerHTML, "testHtml");
           assert.equal(headers[1].innerHTML, "foo");
 
@@ -546,7 +526,7 @@
           return gridContainsText(grid, "testHtml");
         }, function() {
 
-          var headers = grid.localDom.querySelectorAll(".v-grid-header .v-grid-row th");
+          var headers = qaLocal(".v-grid-header .v-grid-row th");
           assert.equal(headers[grid.columns.length - 1].innerHTML, "testHtml");
 
           c.headerHtml = "testHtml2";
@@ -567,7 +547,7 @@
         waitUntil(function() {
           return gridContainsText(grid, "testHtml");
         }, function() {
-          var headers = grid.localDom.querySelectorAll(".v-grid-header .v-grid-row th");
+          var headers = qaLocal(".v-grid-header .v-grid-row th");
           assert.equal(headers[0].innerHTML, "testHtml");
           done();
         });
@@ -638,7 +618,7 @@
         grid = wrapper.querySelector("v-grid");
 
         waitUntil(function() {
-          return grid.querySelector(".v-grid-body");
+          return qLocal(".v-grid-body");
         }, function() {
           grid.columns.push({
             name: "foo",
@@ -663,7 +643,7 @@
         waitUntil(function() {
           return gridContainsText(grid, "v-grid-cell frozen");
         }, function() {
-          var headers = grid.localDom.querySelectorAll(".v-grid-header .v-grid-row th");
+          var headers = qaLocal(".v-grid-header .v-grid-row th");
           assert.isTrue(headers[0].classList.contains("frozen"));
           done();
         }, done);
@@ -672,10 +652,10 @@
 
       test('frozen column: unfreeze selection column', function() {
         grid.selectionMode = "multi";
-        assert.ok(grid.querySelector(".frozen"));
+        assert.ok(qLocal(".frozen"));
 
         grid.frozenColumns = -1;
-        assert.notOk(grid.querySelector(".frozen"));
+        assert.notOk(qLocal(".frozen"));
       });
 
       test('rowClassName', function() {
@@ -684,14 +664,14 @@
         assert.notOk(grid.rowClassName);
         var rowClassName = function(row) {
           gridEquals = gridEquals && row.grid == grid;
-          elementEquals = elementEquals && row.element == grid.querySelectorAll(".v-grid-body .v-grid-row")[row.index];
+          elementEquals = elementEquals && row.element == qaLocal(".v-grid-body .v-grid-row")[row.index];
           return row.index + "_" + row.data[0];
         };
 
         grid.rowClassName = rowClassName;
 
         assert.isTrue(elementEquals && gridEquals);
-        assert.isTrue(grid.querySelector(".v-grid-body .v-grid-row").classList.contains("0_Grid"));
+        assert.isTrue(qLocal(".v-grid-body .v-grid-row").classList.contains("0_Grid"));
         assert.equal(grid.rowClassName, rowClassName);
       });
 
@@ -703,7 +683,7 @@
         assert.notOk(grid.cellClassName);
         var cellClassName = function(cell) {
           var columnIndex = cell.columnName == "name" ? 0 : 1;
-          var cellElement = grid.querySelectorAll(".v-grid-body .v-grid-row")[cell.row.index].querySelectorAll(".v-grid-cell")[columnIndex];
+          var cellElement = qaLocal(".v-grid-body .v-grid-row")[cell.row.index].querySelectorAll(".v-grid-cell")[columnIndex];
           elementEquals = elementEquals && cell.element == cellElement;
           return cell.columnName;
         };
@@ -711,7 +691,7 @@
         grid.cellClassName = cellClassName;
 
         assert.isTrue(elementEquals);
-        assert.isTrue(grid.querySelector(".v-grid-body .v-grid-row .v-grid-cell").classList.contains("name"));
+        assert.isTrue(qLocal(".v-grid-body .v-grid-row .v-grid-cell").classList.contains("name"));
         assert.equal(grid.cellClassName, cellClassName);
       });
 
@@ -746,11 +726,11 @@
         grid.editor.enabled = true;
 
         grid.editor.editRow(0);
-        assert.equal(grid.querySelector(".v-grid-editor input").value, "Grid");
+        assert.equal(qLocal(".v-grid-editor input").value, "Grid");
         grid.editor.cancel();
         assert.isFalse(gridContainsText(grid, "v-grid-editor"));
         grid.editor.editRow(1);
-        assert.equal(grid.querySelector(".v-grid-editor input").value, "VaadinX");
+        assert.equal(qLocal(".v-grid-editor input").value, "VaadinX");
         grid.editor.save();
         assert.isFalse(gridContainsText(grid, "v-grid-editor"));
 
@@ -764,12 +744,12 @@
         grid.editor.enabled = true;
 
         grid.editor.editRow(0);
-        var fields = grid.querySelectorAll(".v-grid-editor input");
+        var fields = qaLocal(".v-grid-editor input");
         fields[0].value = "fail";
         grid.editor.save();
 
         assert.isTrue(gridContainsText(grid, "Save failed"));
-        var cells = grid.querySelectorAll(".v-grid-editor-cells > div");
+        var cells = qaLocal(".v-grid-editor-cells > div");
         assert.isTrue(cells[0].classList.contains("error"));
         assert.isFalse(cells[1].classList.contains("error"));
 
@@ -789,10 +769,10 @@
         grid.editor.enabled = true;
 
         grid.editor.editRow(0);
-        var cells = grid.querySelectorAll(".v-grid-editor .v-grid-editor-cells > div");
+        var cells = qaLocal(".v-grid-editor .v-grid-editor-cells > div");
         assert.lengthOf(cells, 2);
 
-        var editors = grid.querySelectorAll(".v-grid-editor .v-grid-editor-cells > div *");
+        var editors = qaLocal(".v-grid-editor .v-grid-editor-cells > div *");
         assert.lengthOf(editors, 0);
       });
 
@@ -801,8 +781,8 @@
         grid.editor.handler = editorHandler;
 
         var editor1, editor2;
-        editorHandler.save = function(req){
-          if (!editor1){
+        editorHandler.save = function(req) {
+          if (!editor1) {
             editor1 = req.getCellEditor(grid.columns[0]);
             req.failure();
           } else {
@@ -847,7 +827,7 @@
         waitUntil(function() {
           return gridContainsText(grid, "2345.67");
         }, function() {
-          var cells = grid.querySelectorAll(".v-grid-body .v-grid-cell");
+          var cells = qaLocal(".v-grid-body .v-grid-cell");
           assert.equal(cells[0].innerHTML, "John");
           assert.equal(cells[2].innerHTML, "1234.56");
           assert.equal(cells[3].innerHTML, "Jane");
@@ -872,7 +852,7 @@
         waitUntil(function() {
           return gridContainsText(grid, "2345.67");
         }, function() {
-          var cells = grid.querySelectorAll(".v-grid-body .v-grid-cell");
+          var cells = qaLocal(".v-grid-body .v-grid-cell");
           assert.equal(cells[0].innerHTML, "John");
           assert.equal(cells[2].innerHTML, "1234.56");
           assert.equal(cells[3].innerHTML, "Jane");
@@ -887,7 +867,7 @@
         grid.selectionMode = "multi";
 
         waitUntil(function() {
-          return grid.localDom.querySelector("input[type='checkbox']");
+          return qLocal("input[type='checkbox']");
         }, function() {
           var mydata = [
             false,
@@ -902,7 +882,7 @@
           waitUntil(function() {
             return gridContainsText(grid, "false");
           }, function() {
-            var cells = grid.querySelectorAll(".v-grid-body .v-grid-cell");
+            var cells = qaLocal(".v-grid-body .v-grid-cell");
             assert.equal(cells[3].innerHTML, "true");
             done();
           }, done);
@@ -915,7 +895,7 @@
         grid.selectionMode = "multi";
 
         waitUntil(function() {
-          return grid.localDom.querySelector("input[type='checkbox']");
+          return qLocal("input[type='checkbox']");
         }, function() {
           var mydata = [
             "Lorem",
@@ -930,7 +910,7 @@
           waitUntil(function() {
             return gridContainsText(grid, "Lorem");
           }, function() {
-            var cells = grid.querySelectorAll(".v-grid-body .v-grid-cell");
+            var cells = qaLocal(".v-grid-body .v-grid-cell");
             assert.equal(cells[3].innerHTML, "Ipsum");
             done();
           }, done);
@@ -957,7 +937,7 @@
         waitUntil(function() {
           return gridContainsText(grid, "cellsready");
         }, function() {
-          var cells = grid.querySelectorAll(".v-grid-body .v-grid-cell");
+          var cells = qaLocal(".v-grid-body .v-grid-cell");
           assert.equal(cells[0].innerHTML, "1");
           assert.equal(cells[1].innerHTML, "2");
           assert.equal(cells[2].innerHTML, "");
@@ -970,30 +950,34 @@
 
       test('redraw', function(done) {
         function width(e) {
-          return pxval(e,'width');
+          return pxval(e, 'width');
         }
+
         function height(e) {
-          return pxval(e,'height');
+          return pxval(e, 'height');
         }
+
         function pxval(e, prop) {
-          return parseInt(e.ownerDocument.defaultView.getComputedStyle(e).getPropertyValue(prop).replace('px',''));
+          return parseInt(e.ownerDocument.defaultView.getComputedStyle(e).getPropertyValue(prop).replace('px', ''));
         }
+
         function assertSameDimensions() {
           return width(grid) == width(inner) && height(grid) == height(inner);
         }
+
         function assertHeightByRows(rows) {
           h = height(inner);
           h1 = headers * thHeight + rows * tdHeight;
           // IE and FF add an aditional pixel to each row
           h2 = h1 + rows + headers;
-          return h == h1 || h == h2;
+          return h == h1 ||  h == h2;
         }
-        var grid = document.querySelector("#gridwrapper v-grid");
-        var inner = document.querySelector("#gridwrapper v-grid div.v-grid");
-        var tbody = grid.lightDom.querySelector('table tbody');
-        var thHeight = height(grid.querySelector('thead tr th'));
-        var headers = grid.querySelectorAll('thead tr').length;
-        var tdHeight = height(grid.querySelector('tbody tr td'));
+
+        var inner = qLocal("div.v-grid");
+        var tbody = qLight('table tbody');
+        var thHeight = height(qLocal('thead tr th'));
+        var headers = qaLocal('thead tr').length;
+        var tdHeight = height(qLocal('tbody tr td'));
 
         waitUntil(function() {
           return assertSameDimensions();
@@ -1121,12 +1105,12 @@
           cell.content = input;
 
           waitUntil(function() {
-            return grid.querySelector(".v-grid-" + section + " .v-grid-cell > input");
+            return qLocal(".v-grid-" + section + " .v-grid-cell > input");
           }, function() {
             cell.colspan = 2;
 
             waitUntil(function() {
-              return grid.querySelectorAll(".v-grid-" + section + " .v-grid-cell")[1].style.display === "none";
+              return qaLocal(".v-grid-" + section + " .v-grid-cell")[1].style.display === "none";
             }, function() {
               done[section] = true;
             }, done);
@@ -1156,7 +1140,7 @@
           waitUntil(function() {
             return gridContainsText(grid, section + "testcontent");
           }, function() {
-            var cells = grid.querySelectorAll(".v-grid-" + section + " .v-grid-cell");
+            var cells = qaLocal(".v-grid-" + section + " .v-grid-cell");
             assert.equal(cells[3].innerHTML, section + "testcontent");
             done[section] = true;
           }, done);
@@ -1178,7 +1162,7 @@
           waitUntil(function() {
             return gridContainsText(grid, section + "testcontent");
           }, function() {
-            assert.equal(grid.querySelectorAll(".v-grid-" + section + " .v-grid-cell")[3].innerHTML, "Value");
+            assert.equal(qaLocal(".v-grid-" + section + " .v-grid-cell")[3].innerHTML, "Value");
             done[section] = true;
           }, done);
         });
@@ -1197,9 +1181,9 @@
           grid[section].addRow(0, [null, input]);
 
           waitUntil(function() {
-            return grid.querySelector(".v-grid-" + section + " .v-grid-cell > input");
+            return qLocal(".v-grid-" + section + " .v-grid-cell > input");
           }, function() {
-            var cells = grid.querySelectorAll(".v-grid-" + section + " .v-grid-cell");
+            var cells = qaLocal(".v-grid-" + section + " .v-grid-cell");
             assert.equal(cells[0].innerHTML, "");
             assert.equal(cells[1].firstElementChild, input);
             assert.equal(cells[2].innerHTML, "0");
@@ -1222,14 +1206,14 @@
           waitUntil(function() {
             return gridContainsText(grid, "testcontent");
           }, function() {
-            assert.lengthOf(grid.querySelectorAll(".v-grid-" + section + " .v-grid-row"), 2);
+            assert.lengthOf(qaLocal(".v-grid-" + section + " .v-grid-row"), 2);
 
             grid[section].removeRow(0);
 
             waitUntil(function() {
-              return grid.querySelectorAll(".v-grid-" + section + " .v-grid-row").length === 1;
+              return qaLocal(".v-grid-" + section + " .v-grid-row").length === 1;
             }, function() {
-              var cells = grid.querySelectorAll(".v-grid-" + section + " .v-grid-cell");
+              var cells = qaLocal(".v-grid-" + section + " .v-grid-cell");
               assert.equal(cells[1].innerHTML, "testcontent");
               done[section] = true;
             }, done);
@@ -1253,7 +1237,7 @@
           waitUntil(function() {
             return gridContainsText(grid, "second");
           }, function() {
-            var rows = grid.querySelectorAll(".v-grid-" + section + " .v-grid-row");
+            var rows = qaLocal(".v-grid-" + section + " .v-grid-row");
             assert.isTrue(rows[0].classList.contains("first"));
             assert.isFalse(rows[0].classList.contains("second"));
             assert.isFalse(rows[1].classList.contains("first"));
@@ -1277,9 +1261,9 @@
         grid.footer.hidden = true;
 
         waitUntil(function() {
-          return grid.querySelector(".v-grid-header").innerHTML === "";
+          return qLocal(".v-grid-header").innerHTML === "";
         }, function() {
-          assert.equal(grid.querySelector(".v-grid-footer").innerHTML, "");
+          assert.equal(qLocal(".v-grid-footer").innerHTML, "");
           done();
         }, done);
       });
@@ -1312,47 +1296,48 @@
       test('DOM: headers & footers', function(done) {
         removeGrid();
         wrapper.innerHTML = "<v-grid><table>" +
-           "<thead hidden><tr class='red'><td colspan='2'></td></tr><tr class='pink'><th></th><th></th></tr></thead>" +
-           "<tfoot><tr class='foot1'><td colspan='2'></td></tr><tr class='foot2'><td></td><td></td></tr></tfoot>" +
-           "</table></v-grid>";
-        var grid = wrapper.querySelector("v-grid");
+          "<thead hidden><tr class='red'><td colspan='2'></td></tr><tr class='pink'><th></th><th></th></tr></thead>" +
+          "<tfoot><tr class='foot1'><td colspan='2'></td></tr><tr class='foot2'><td></td><td></td></tr></tfoot>" +
+          "</table></v-grid>";
+        grid = wrapper.querySelector("v-grid");
 
         waitUntil(function() {
-          return grid.querySelector(".v-grid-body");
+          return qLocal(".v-grid-body");
         }, function() {
-          assert.equal(0, grid.querySelectorAll("thead tr").length);
-          assert.equal(1, grid.querySelectorAll("tfoot tr.foot1").length);
-          assert.equal(1, grid.querySelectorAll("tfoot tr.foot2").length);
-          assert.equal(1, grid.querySelectorAll("tfoot td[colspan='2']").length);
+            assert.equal(0, qaLocal("thead tr").length);
+            assert.equal(1, qaLocal("tfoot tr.foot1").length);
+            assert.equal(1, qaLocal("tfoot tr.foot2").length);
+            assert.equal(1, qaLocal("tfoot td[colspan='2']").length);
 
-          grid.lightDom.querySelector("thead").setAttribute('hidden', false)
-          waitUntil(function() {
-            return grid.querySelectorAll("thead tr").length > 0;
-          }, function(){
-            assert.equal(1, grid.querySelectorAll("thead tr.red").length);
-            assert.equal(1, grid.querySelectorAll("thead tr.pink").length);
-            assert.equal(1, grid.querySelectorAll("thead th[colspan='2']").length);
-            done();
-          }, done);
+            qLight("thead").setAttribute('hidden', false)
+            waitUntil(function() {
+              return qaLocal("thead tr").length > 0;
+            }, function(){
+              assert.equal(1, qaLocal("thead tr.red").length);
+              assert.equal(1, qaLocal("thead tr.pink").length);
+              assert.equal(1, qaLocal("thead th[colspan='2']").length);
+              done();
+            }, done);
+
         }, done);
       });
 
       test('DOM: mutation', function(done) {
         waitUntil(function() {
-          return grid.querySelector(".v-grid-body");
+          return qLocal(".v-grid-body");
         }, function() {
-          var nrows = grid.querySelectorAll("tbody tr").length;
-          var nheads = grid.querySelectorAll("thead tr").length;
-          grid.lightDom.querySelector("thead").innerHTML += grid.lightDom.querySelector("table thead").innerHTML;
-          grid.lightDom.querySelector("tbody").innerHTML += grid.lightDom.querySelector("table tbody").innerHTML;
-          assert.equal("Name", grid.querySelector("th").textContent);
-          grid.lightDom.querySelector("th").textContent = "foo";
+          var nrows = qaLocal("tbody tr").length;
+          var nheads = qaLocal("thead tr").length;
+          qLight("thead").innerHTML += qLight("table thead").innerHTML;
+          qLight("tbody").innerHTML += qLight("table tbody").innerHTML;
+          assert.equal("Name", qLocal("th").textContent);
+          qLight("th").textContent = "foo";
           waitUntil(function() {
-            return grid.querySelector("tbody tr") && grid.querySelectorAll("tbody tr").length == nrows * 2;
+            return qLocal("tbody tr") && qaLocal("tbody tr").length == nrows * 2;
           }, function() {
-            assert.equal(grid.querySelectorAll("tbody tr").length, nrows * 2);
-            assert.equal(grid.querySelectorAll("thead tr").length, nheads * 2);
-            assert.equal("foo", grid.querySelector("th").textContent);
+            assert.equal(qaLocal("tbody tr").length, nrows * 2);
+            assert.equal(qaLocal("thead tr").length, nheads * 2);
+            assert.equal("foo", qLocal("th").textContent);
             done();
           }, done);
         }, done);
