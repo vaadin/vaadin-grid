@@ -139,7 +139,8 @@ public class GridLightDomTable implements MutationListener {
                         JavaScriptObject cell = arguments(0);
                         Element element = JsUtils.prop(cell, "element");
                         Object data = JsUtils.prop(cell, "data");
-                        element.setInnerHTML(String.valueOf(data));
+                        element.setInnerHTML(data != null ? String
+                                .valueOf(data) : "");
                     }
                 }));
                 column.setHeaderHtml($th.html());

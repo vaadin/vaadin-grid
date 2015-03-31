@@ -284,6 +284,45 @@
         assert.equal(spy.callCount, 4);
       });
 
+      test('selected rows before data iterations', function(done) {
+        removeGrid(grid);
+
+        var wrapper = document.getElementById("gridwrapper");
+        wrapper.innerHTML = "<v-grid><table><thead><tr><th>Name</th><th>Value</th></tr></thead>" +
+          "<tbody><tr><td>Grid</td><td>10000</td></tr><tr><td>VaadinX</td><td>1000</td></tr></tbody></table></v-grid>";
+        grid = wrapper.querySelector("v-grid");
+
+        grid.selectionMode = "multi";
+        grid.selectedRows = [1];
+
+        waitUntil(function() {
+          return gridContainsText(grid, "VaadinX");
+        }, function() {
+          expect(grid.selectedRows).to.eql([1]);
+          done();
+        }, done);
+      });
+
+      test('selected rows before data iterations 2', function() {
+        var wrapper = document.getElementById("gridwrapper");
+
+        var _grid = grid;
+        _grid.style.visibility = "hidden";
+        document.body.appendChild(_grid);
+
+        wrapper.innerHTML = "<v-grid><table><thead><tr><th>Name</th><th>Value</th></tr></thead>" +
+          "<tbody><tr><td>Grid</td><td>10000</td></tr><tr><td>VaadinX</td><td>1000</td></tr></tbody></table></v-grid>";
+        grid = wrapper.querySelector("v-grid");
+
+        grid.selectionMode = "multi";
+        grid.selectedRows = [0, 1];
+
+        //In this case the indices are still cached to selection model
+        expect(grid.selectedRows).to.eql([0, 1]);
+      });
+
+
+
       test('deselect function', function() {
         var spy = sinon.spy();
         grid.addEventListener("select", spy);
@@ -633,11 +672,6 @@
       });
 
       test('frozen column', function(done) {
-        var setFrozenColumns = function(value) {
-          grid.frozenColumns = value;
-        };
-        expect(setFrozenColumns.bind(grid, -2)).to.throw("count must be between -1 and the current number of columns (2)");
-
         grid.frozenColumns = 1;
 
         waitUntil(function() {
@@ -923,6 +957,7 @@
         grid.columns.splice(0, 1);
         grid.columns.push(first);
         grid.columns.splice(1, 1);
+        grid.grid.setRows(5);
 
 
         var mydata = [
