@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayMixed;
+import com.google.gwt.query.client.Function;
+import com.google.gwt.query.client.js.JsUtils;
 
 /**
  * Class with static utilities for @JsType
@@ -44,17 +46,30 @@ public abstract class JS {
         return Object(dataItem) !== dataItem;
     }-*/;
 
-    public static native void defineSetter(Object jsObject,
-            String propertyName, JavaScriptObject setter)
+    public static void definePropertyAccessors(Object jso, String propertyName,
+            Function setter, Function getter) {
+        JavaScriptObject setterJSO = setter != null ? JsUtils
+                .wrapFunction(setter) : null;
+        JavaScriptObject getterJSO = getter != null ? JsUtils
+                .wrapFunction(getter) : null;
+        definePropertyAccessors((JavaScriptObject) jso, propertyName,
+                setterJSO, getterJSO);
+    }
+
+    public static native void definePropertyAccessors(
+            JavaScriptObject jsObject, String propertyName,
+            JavaScriptObject setter, JavaScriptObject getter)
     /*-{
       var _value = jsObject[propertyName];
 
       Object.defineProperty(jsObject, propertyName, {
         get: function() {
-            return _value;
+            return getter ? getter() : _value;
         },
         set: function(value) {
-            setter(value);
+            if (setter){
+                setter(value);
+            }
             _value = value;
         }
       });

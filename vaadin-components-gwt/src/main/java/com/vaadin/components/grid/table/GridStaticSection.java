@@ -87,15 +87,14 @@ public class GridStaticSection {
 
     private void bind(JSStaticCell cell, String propertyName,
             final Function function) {
-        JS.defineSetter(cell, propertyName,
-                JsUtils.wrapFunction(new Function() {
-                    @Override
-                    public void f() {
-                        Object newValue = arguments(0);
-                        function.f(newValue);
-                        gridComponent.redraw();
-                    }
-                }));
+        JS.definePropertyAccessors(cell, propertyName, new Function() {
+            @Override
+            public void f() {
+                Object newValue = arguments(0);
+                function.f(newValue);
+                gridComponent.redraw();
+            }
+        }, null);
     }
 
     public JSStaticCell getHeaderCell(int rowIndex, Object columnId) {

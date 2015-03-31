@@ -112,15 +112,14 @@ public final class GridColumn extends Column<Object, Object> {
     }
 
     private void bind(String propertyName, final Function function) {
-        JS.defineSetter(getJsColumn(), propertyName,
-                JsUtils.wrapFunction(new Function() {
-                    @Override
-                    public void f() {
-                        Object newValue = arguments(0);
-                        function.f(newValue);
-                        gridComponent.redraw();
-                    }
-                }));
+        JS.definePropertyAccessors(getJsColumn(), propertyName, new Function() {
+            @Override
+            public void f() {
+                Object newValue = arguments(0);
+                function.f(newValue);
+                gridComponent.redraw();
+            }
+        }, null);
     }
 
     public JSColumn getJsColumn() {
@@ -132,11 +131,28 @@ public final class GridColumn extends Column<Object, Object> {
             @Override
             public void render(RendererCellReference cell, Object data) {
                 JavaScriptObject cellJso = JavaScriptObject.createObject();
-                JsUtils.prop(cellJso, "element", cell.getElement());
+                JS.definePropertyAccessors(cellJso, "element", null,
+                        new Function() {
+                            @Override
+                            public Object f(Object... params) {
+                                return cell.getElement();
+                            }
+                        });
                 JsUtils.prop(cellJso, "data", data);
-                JsUtils.prop(cellJso, "index", cell.getColumnIndex());
-                JsUtils.prop(cellJso, "rowIndex", cell.getRowIndex());
-
+                JS.definePropertyAccessors(cellJso, "index", null,
+                        new Function() {
+                            @Override
+                            public Object f(Object... params) {
+                                return cell.getColumnIndex();
+                            }
+                        });
+                JS.definePropertyAccessors(cellJso, "rowIndex", null,
+                        new Function() {
+                            @Override
+                            public Object f(Object... params) {
+                                return cell.getRowIndex();
+                            }
+                        });
                 JsUtils.jsni(renderer, "call", renderer, cellJso);
             }
         });

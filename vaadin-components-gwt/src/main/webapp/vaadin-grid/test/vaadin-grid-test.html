@@ -614,6 +614,42 @@
         }, done, done);
       });
 
+      test('renderer: cell values on change', function(done) {
+        var mydata = [
+          ["John", "TestFoo"],
+          ["Jane", "TestBar"],
+        ];
+
+        grid.data.source = mydata;
+
+        grid.columns[1].renderer = function(cell) {
+          cell.element.innerHTML = cell.data;
+          cell.element.cell = cell;
+        };
+
+        waitUntil(function() {
+          return gridContainsText(grid, "TestFoo");
+        }, function() {
+          var cell = grid.querySelectorAll(".v-grid-body .v-grid-cell")[3].cell;
+          assert.equal(cell.rowIndex, 1);
+          assert.equal(cell.index, 1);
+
+          mydata.splice(0, 1);
+          mydata[0].splice(0, 1);
+          grid.data.dataRemoved(0, 1);
+
+          grid.columns.splice(0, 1);
+          waitUntil(function() {
+            return !gridContainsText(grid, "TestFoo");
+          }, function() {
+            assert.equal(cell.rowIndex, 0);
+            assert.equal(cell.index, 0);
+            done();
+          }, done);
+        }, done);
+
+      });
+
       test('initial property values', function() {
         assert.equal(grid.columns[0].headerHtml, "Name");
       });
@@ -1339,20 +1375,20 @@
         waitUntil(function() {
           return qLocal(".v-grid-body");
         }, function() {
-            assert.equal(0, qaLocal("thead tr").length);
-            assert.equal(1, qaLocal("tfoot tr.foot1").length);
-            assert.equal(1, qaLocal("tfoot tr.foot2").length);
-            assert.equal(1, qaLocal("tfoot td[colspan='2']").length);
+          assert.equal(0, qaLocal("thead tr").length);
+          assert.equal(1, qaLocal("tfoot tr.foot1").length);
+          assert.equal(1, qaLocal("tfoot tr.foot2").length);
+          assert.equal(1, qaLocal("tfoot td[colspan='2']").length);
 
-            qLight("thead").setAttribute('hidden', false)
-            waitUntil(function() {
-              return qaLocal("thead tr").length > 0;
-            }, function(){
-              assert.equal(1, qaLocal("thead tr.red").length);
-              assert.equal(1, qaLocal("thead tr.pink").length);
-              assert.equal(1, qaLocal("thead th[colspan='2']").length);
-              done();
-            }, done);
+          qLight("thead").setAttribute('hidden', false)
+          waitUntil(function() {
+            return qaLocal("thead tr").length > 0;
+          }, function() {
+            assert.equal(1, qaLocal("thead tr.red").length);
+            assert.equal(1, qaLocal("thead tr.pink").length);
+            assert.equal(1, qaLocal("thead th[colspan='2']").length);
+            done();
+          }, done);
 
         }, done);
       });
