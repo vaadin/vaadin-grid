@@ -1312,7 +1312,7 @@
       test('DOM: headers & footers', function(done) {
         removeGrid();
         wrapper.innerHTML = "<v-grid><table>" +
-           "<thead><tr class='red'><td colspan='2'></td></tr><tr class='pink'><th></th><th></th></tr></thead>" +
+           "<thead hidden><tr class='red'><td colspan='2'></td></tr><tr class='pink'><th></th><th></th></tr></thead>" +
            "<tfoot><tr class='foot1'><td colspan='2'></td></tr><tr class='foot2'><td></td><td></td></tr></tfoot>" +
            "</table></v-grid>";
         var grid = wrapper.querySelector("v-grid");
@@ -1320,13 +1320,20 @@
         waitUntil(function() {
           return grid.querySelector(".v-grid-body");
         }, function() {
-          assert.equal(1, grid.querySelectorAll("thead tr.red").length);
-          assert.equal(1, grid.querySelectorAll("thead tr.pink").length);
+          assert.equal(0, grid.querySelectorAll("thead tr").length);
           assert.equal(1, grid.querySelectorAll("tfoot tr.foot1").length);
           assert.equal(1, grid.querySelectorAll("tfoot tr.foot2").length);
-          assert.equal(1, grid.querySelectorAll("thead th[colspan='2']").length);
           assert.equal(1, grid.querySelectorAll("tfoot td[colspan='2']").length);
-          done();
+
+          grid.lightDom.querySelector("thead").setAttribute('hidden', false)
+          waitUntil(function() {
+            return grid.querySelectorAll("thead tr").length > 0;
+          }, function(){
+            assert.equal(1, grid.querySelectorAll("thead tr.red").length);
+            assert.equal(1, grid.querySelectorAll("thead tr.pink").length);
+            assert.equal(1, grid.querySelectorAll("thead th[colspan='2']").length);
+            done();
+          }, done);
         }, done);
       });
 
