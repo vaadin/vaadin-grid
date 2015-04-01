@@ -1,7 +1,7 @@
 package com.vaadin.components.grid.config;
 
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.query.client.js.JsUtils;
+import com.vaadin.components.common.js.JS;
 
 /**
  * GWT API for the rowClassName JavaScript function.
@@ -12,6 +12,6 @@ public final class JSRowClassName extends JavaScriptObject {
     }
 
     public String getStyle(JSRow row) {
-        return JsUtils.jsni(this, "call", this, row);
+        return JS.exec(this, row);
     }
 }

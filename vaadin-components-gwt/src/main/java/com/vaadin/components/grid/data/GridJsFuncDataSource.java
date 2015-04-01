@@ -58,7 +58,7 @@ public class GridJsFuncDataSource extends GridDataSource {
             }
         }));
 
-        JsUtils.jsni(jsFunction, "call", jsFunction, jsDataRequest);
+        JS.exec(jsFunction, jsDataRequest);
     }
 
 }

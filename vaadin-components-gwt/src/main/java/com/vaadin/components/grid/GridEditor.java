@@ -1,13 +1,18 @@
 package com.vaadin.components.grid;
 
+import static com.google.gwt.query.client.GQuery.$;
+import static com.google.gwt.query.client.GQuery.console;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.js.JsExport;
 import com.google.gwt.core.client.js.JsNamespace;
 import com.google.gwt.core.client.js.JsType;
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.js.JsUtils;
@@ -34,13 +39,14 @@ public class GridEditor {
     private final GridComponent gridComponent;
     private Element container;
     private JSEditorHandler handler;
-    private boolean enabled;
 
-    private final Map<JSColumn, Element> editors = new HashMap<>();
+    private final Map<JSColumn, Widget> editors = new HashMap<>();
 
     public GridEditor(GridComponent gridComponent) {
         this.gridComponent = gridComponent;
         this.grid = gridComponent.getGrid();
+        this.handler =  (JSEditorHandler)JavaScriptObject.createObject();
+        configureGridEditor();
     }
 
     public void setContainer(Element containerElement) {
@@ -48,14 +54,11 @@ public class GridEditor {
     }
 
     public boolean isEnabled() {
-        return enabled;
+        return grid.isEditorEnabled();
     }
 
     public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-        if (handler != null) {
-            grid.setEditorEnabled(enabled);
-        }
+        grid.setEditorEnabled(enabled);
     }
 
     public String getSaveButtonText() {
@@ -88,35 +91,6 @@ public class GridEditor {
 
     public void setHandler(JSEditorHandler handler) {
         this.handler = handler;
-        grid.setEditorHandler(new EditorHandler<Object>() {
-            @Override
-            public void bind(EditorRequest<Object> request) {
-                JsUtils.jsni(handler.getBind(), "call", handler.getBind(),
-                        createJSEditorRequest(request, false));
-            }
-
-            @Override
-            public void cancel(EditorRequest<Object> request) {
-                JsUtils.jsni(handler.getCancel(), "call", handler.getCancel(),
-                        createJSEditorRequest(request, true));
-                editors.clear();
-            }
-
-            @Override
-            public void save(EditorRequest<Object> request) {
-                JsUtils.jsni(handler.getSave(), "call", handler.getSave(),
-                        createJSEditorRequest(request, true));
-                gridComponent.refresh();
-            }
-
-            @Override
-            public Widget getWidget(Column<?, Object> column) {
-                Element editor = getEditor(((GridColumn) column).getJsColumn());
-                return editor != null ? new SimplePanel(editor) {
-                } : null;
-            }
-        });
-        grid.setEditorEnabled(enabled);
     }
 
     public JSEditorHandler getHandler() {
@@ -161,20 +135,68 @@ public class GridEditor {
         result.setGetCellEditor(JsUtils.wrapFunction(new Function() {
             @Override
             public Object f(Object... args) {
-                return getEditor(arguments(0));
+                return getEditor(arguments(0)).getElement();
             }
         }));
         return result;
     }
 
-    private Element getEditor(JSColumn jsColumn) {
-        if (!editors.containsKey(jsColumn)) {
-            editors.put(
-                    jsColumn,
-                    JsUtils.jsni(handler.getGetCellEditor(), "call",
-                            handler.getGetCellEditor(), jsColumn));
-        }
-        return editors.get(jsColumn);
+    private void configureGridEditor() {
+        grid.setEditorHandler(new EditorHandler<Object>() {
+            @Override
+            public void bind(EditorRequest<Object> request) {
+                if (handler.getBind() != null) {
+                    JS.exec(handler.getBind(), createJSEditorRequest(request, false));
+                } else {
+                    for (Column<?, Object> c : grid.getColumns()) {
+                        if (c.isEditable()) {
+                            String value = String.valueOf(c.getValue(request.getRow()));
+                            $(getWidget(c)).val(value);
+                        }
+                    }
+                    request.success();
+                }
+            }
+            @Override
+            public void cancel(EditorRequest<Object> request) {
+                if (handler.getCancel() != null) {
+                    JS.exec(handler.getCancel(), createJSEditorRequest(request, true));
+                } else {
+                    request.success();
+                }
+                editors.clear();
+            }
+            @Override
+            public void save(EditorRequest<Object> request) {
+                if (handler.getSave() != null) {
+                    JS.exec(handler.getSave(), createJSEditorRequest(request, true));
+                    gridComponent.refresh();
+                } else {
+                    request.success();
+                    console.log("No editor save method set. You must define 'grid.editor.handler.save = function(req){}'.");
+                }
+            }
+            @Override
+            public Widget getWidget(Column<?, Object> column) {
+                return getEditor(((GridColumn) column).getJsColumn());
+            }
+        });
     }
 
+    private Widget getEditor(JSColumn jscol) {
+        Widget w = editors.get(jscol);
+        if (w == null) {
+            Element e;
+            if (handler.getGetCellEditor() != null) {
+                e = JS.exec(handler.getGetCellEditor(), jscol);
+            } else {
+                e = Document.get().createTextInputElement();
+            }
+            if (e != null) {
+                w = new SimplePanel(e){};
+                editors.put(jscol, w);
+            }
+        }
+        return w;
+    }
 }

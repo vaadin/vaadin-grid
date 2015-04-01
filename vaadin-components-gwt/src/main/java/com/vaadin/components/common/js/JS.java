@@ -81,4 +81,8 @@ public abstract class JS {
           jsObject[propertyName] = _value;
       }
     }-*/;
+
+    public static <T> T exec(Object o, Object arg) {
+        return JsUtils.jsni((JavaScriptObject)o, "call", (JavaScriptObject)o, arg);
+    }
 }

@@ -139,7 +139,7 @@ public final class GridColumn extends Column<Object, Object> {
                                 return cell.getRowIndex();
                             }
                         });
-                JsUtils.jsni(renderer, "call", renderer, cellJso);
+                JS.exec(renderer, cellJso);
             }
         });
     }
@@ -155,8 +155,7 @@ public final class GridColumn extends Column<Object, Object> {
         }
         Object result = null;
         if (jsColumn.generatedValue() != null) {
-            result = JsUtils.jsni(jsColumn.generatedValue(), "call",
-                    jsColumn.generatedValue(), dataItem);
+            result = JS.exec(jsColumn.generatedValue(), dataItem);
         } else {
             if (JS.isPrimitiveType(dataItem)) {
                 if (getColumnIndex() == 0) {
@@ -177,5 +176,4 @@ public final class GridColumn extends Column<Object, Object> {
     private int getColumnIndex() {
         return gridComponent.getColumns().indexOf(jsColumn);
     }
-
 }

@@ -1,7 +1,7 @@
 package com.vaadin.components.grid.config;
 
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.query.client.js.JsUtils;
+import com.vaadin.components.common.js.JS;
 
 /**
  * GWT API for the cellClassName JavaScript function.
@@ -12,6 +12,6 @@ public final class JSCellClassName extends JavaScriptObject {
     }
 
     public String getStyle(JSCell cell) {
-        return JsUtils.jsni(this, "call", this, cell);
+        return JS.exec(this, cell);
     }
 }

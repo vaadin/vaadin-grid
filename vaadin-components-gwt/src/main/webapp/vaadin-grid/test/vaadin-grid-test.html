@@ -687,6 +687,17 @@
         assert.equal(editor1, editor2);
       });
 
+      test('editor: default editor', function() {
+        grid.editor.enabled = true;
+        grid.editor.editRow(0);
+
+        assert.equal("Grid", grid.querySelector('tbody tr td').textContent);
+        assert.equal("Grid", grid.querySelector('input').value);
+
+        grid.querySelector('input').value = "Foo";
+        grid.editor.save();
+      });
+
       test('data: object type', function(done) {
         grid.columns[0].name = "firstname";
         grid.columns[1].name = "lastname";

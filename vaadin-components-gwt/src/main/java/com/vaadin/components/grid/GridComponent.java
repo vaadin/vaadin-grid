@@ -35,7 +35,6 @@ import com.vaadin.client.widget.grid.selection.SelectionModelSingle;
 import com.vaadin.client.widget.grid.sort.SortEvent;
 import com.vaadin.client.widget.grid.sort.SortHandler;
 import com.vaadin.client.widget.grid.sort.SortOrder;
-import com.vaadin.client.widgets.Grid;
 import com.vaadin.client.widgets.Grid.Column;
 import com.vaadin.client.widgets.Grid.SelectionMode;
 import com.vaadin.components.common.js.JS;
@@ -506,7 +505,7 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
         Scheduler.get().scheduleFixedPeriod(new RepeatingCommand() {
             public boolean execute() {
                 if (!isWorkPending()) {
-                    JsUtils.jsni(f, "call", f);
+                    JS.exec(f, null);
                     return false;
                 }
                 return true;
