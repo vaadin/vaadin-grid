@@ -88,14 +88,6 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
   </table>
   </v-grid>
 
-  <script>
-      waitUntilGridReady("childrenInCells", function(grid) {
-        grid.columns[2].renderer = function(cell) {
-          cell.element.innerHTML = cell.data;
-        };
-      });
-    </script>
-
   </li>
 
   <li>

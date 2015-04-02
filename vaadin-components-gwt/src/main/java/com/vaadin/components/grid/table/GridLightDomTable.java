@@ -4,8 +4,11 @@ import static com.google.gwt.query.client.GQuery.$;
 
 import java.util.List;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
+import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.observe.Observe;
 import com.google.gwt.query.client.plugins.observe.Observe.Changes.MutationRecord;
 import com.google.gwt.query.client.plugins.observe.Observe.MutationListener;
@@ -28,12 +31,16 @@ import com.vaadin.components.grid.data.GridDomTableDataSource;
 public class GridLightDomTable implements MutationListener {
 
     private String lastConfigString = null;
-    private GQuery $light, $thead, $tfoot, $head_tr, $foot_tr;
+    private final GQuery $light;
+    private GQuery $thead;
+    private GQuery $tfoot;
+    private GQuery $head_tr;
+    private GQuery $foot_tr;
     private final Grid<Object> grid;
     private final GridComponent gridComponent;
     protected final JSArray<JSColumn> jsColumns = JSArray.createArray().cast();
     int defaultHeaderRow, numberHeaderRows, numberColumns, numberFooterRows;
-    private GridDomTableDataSource ds;
+    private final GridDomTableDataSource ds;
 
     public GridLightDomTable(Element tableElement, GridComponent grid) {
         this.gridComponent = grid;
@@ -74,7 +81,7 @@ public class GridLightDomTable implements MutationListener {
             // headers or footers
             gridComponent.setColumns(jsColumns);
 
-            if(numberColumns > 0) {
+            if (numberColumns > 0) {
                 if (numberHeaderRows > 0) {
                     // Configure Headers
                     configureHeadersFooters(true);
@@ -122,6 +129,15 @@ public class GridLightDomTable implements MutationListener {
                 column.setWidth(JSValidate.Pixel.attr($th, "width"));
                 column.setMinWidth(JSValidate.Pixel.attr($th, "min-width"));
                 column.setMaxWidth(JSValidate.Pixel.attr($th, "max-width"));
+                column.setRenderer(JsUtils.wrapFunction(new Function() {
+                    @Override
+                    public void f() {
+                        JavaScriptObject cell = arguments(0);
+                        Element element = JsUtils.prop(cell, "element");
+                        Object data = JsUtils.prop(cell, "data");
+                        element.setInnerHTML(String.valueOf(data));
+                    }
+                }));
                 column.setHeaderHtml($th.html());
             }
         }
@@ -148,8 +164,10 @@ public class GridLightDomTable implements MutationListener {
             }
         }
         for (int i = 0; i < nrows; i++) {
-            StaticRow<?> row = isHeader ? grid.getHeaderRow(i) : grid.getFooterRow(i);
-            List<Column<?, Object>> dataColumns = gridComponent.getDataColumns();
+            StaticRow<?> row = isHeader ? grid.getHeaderRow(i) : grid
+                    .getFooterRow(i);
+            List<Column<?, Object>> dataColumns = gridComponent
+                    .getDataColumns();
             GQuery $tr = $rows.eq(i);
             GQuery $ths = $tr.children("th, td");
             String className = JSValidate.String.attr($tr, "class");
@@ -161,12 +179,15 @@ public class GridLightDomTable implements MutationListener {
                 final GQuery $th = $ths.eq(j);
                 Column<?, Object> column = dataColumns.get(j);
                 StaticCell cell = row.getCell(column);
-                JSStaticCell js = gridComponent.getStaticSection().assureJSStaticCell(cell);
+                JSStaticCell js = gridComponent.getStaticSection()
+                        .assureJSStaticCell(cell);
                 js.setContent($th.html());
                 // TODO: for some reason this not work without a timeout
                 new Timer() {
+                    @Override
                     public void run() {
-                        js.setColspan(JSValidate.Integer.attr($th, "colspan", 0, 1));
+                        js.setColspan(JSValidate.Integer.attr($th, "colspan",
+                                0, 1));
                     }
                 }.schedule(0);
                 className = JSValidate.String.attr($th, "class");
@@ -177,13 +198,17 @@ public class GridLightDomTable implements MutationListener {
         }
         // TODO: remove timer when #17327 is fixed
         new Timer() {
+            @Override
             public void run() {
                 if (isHeader) {
-                    gridComponent.getStaticSection().setDefaultHeader(defaultHeaderRow);
-                    grid.setHeaderVisible(!(boolean)JSValidate.Boolean.attr($thead, "hidden"));
+                    gridComponent.getStaticSection().setDefaultHeader(
+                            defaultHeaderRow);
+                    grid.setHeaderVisible(!(boolean) JSValidate.Boolean.attr(
+                            $thead, "hidden"));
                 } else {
                     if (!$foot_tr.isEmpty()) {
-                      grid.setFooterVisible(!(boolean)JSValidate.Boolean.attr($tfoot, "hidden"));
+                        grid.setFooterVisible(!(boolean) JSValidate.Boolean
+                                .attr($tfoot, "hidden"));
                     }
                 }
             }
@@ -200,7 +225,7 @@ public class GridLightDomTable implements MutationListener {
         boolean headerChanged = false;
         for (MutationRecord r : mutations) {
             GQuery g = $(r.removedNodes()).add($(r.addedNodes()))
-                    // Find the parents of the mutated nodes
+            // Find the parents of the mutated nodes
                     .closest("tbody,thead,tfoot");
             if (!headerChanged
                     && (!g.filter("thead,tfoot").isEmpty() || r.attributeName() != null)) {
