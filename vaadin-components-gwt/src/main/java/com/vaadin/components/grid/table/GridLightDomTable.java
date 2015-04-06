@@ -104,6 +104,10 @@ public class GridLightDomTable implements MutationListener {
             for (int j = 0; j < $ths.size(); j++) {
                 if (jsColumns.size() <= j) {
                     JSColumn column = JS.createJsType(JSColumn.class);
+                    String name = $ths.eq(j).attr("name");
+                    if (!name.isEmpty()) {
+                        column.setName(name);
+                    }
                     jsColumns.add(column);
                 }
                 contents.add($ths.eq(j).html());
