@@ -168,12 +168,10 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
           req.success(data.slice(req.index, req.index + req.count), data.length);
         };
 
-        // Maps to simple Renderer interface instance in GWT
         var valueRenderer = function(cell) {
-          cell.element.innerHTML = vaadin.Utils.formatCurrency(cell.data);
+          cell.element.innerHTML = '$' + cell.data;
         };
 
-        // Maps to ComplexRenderer subclass in GWT
         var progressRenderer = function(cell) {
           var child = document.createElement("progress");
           child.setAttribute('value', cell.data);

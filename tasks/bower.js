@@ -50,13 +50,7 @@ gulp.task('bower:stage-imports', ['bower:stage-components'], function() {
              .pipe(gulp.dest(checkoutPath));
 });
 
-gulp.task('bower:fix-object-observe', ['bower:stage-imports'], function() {
-  return gulp.src(checkoutPath + '/vaadin-grid/*')
-    .pipe(replace(/object.observe/mg, 'object-observe'))
-    .pipe(gulp.dest(checkoutPath + '/vaadin-grid/'));
-});
-
-gulp.task('stage:bower', ['bower:stage-components', 'bower:stage-imports', 'bower:stage-bower.json', 'bower:fix-object-observe']);
+gulp.task('stage:bower', ['bower:stage-components', 'bower:stage-imports', 'bower:stage-bower.json']);
 
 gulp.task('bower:create-commit', ['stage:bower'], function(){
   if(args.release) {

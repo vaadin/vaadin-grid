@@ -38,7 +38,6 @@ public class GridLightDomTable implements MutationListener {
     private GQuery $foot_tr;
     private final Grid<Object> grid;
     private final GridComponent gridComponent;
-    protected final JSArray<JSColumn> jsColumns = JSArray.createArray().cast();
     int defaultHeaderRow, numberHeaderRows, numberColumns, numberFooterRows;
     private final GridDomTableDataSource ds;
 
@@ -54,6 +53,7 @@ public class GridLightDomTable implements MutationListener {
         $light.as(Observe.Observe).mutation(
                 Observe.createMutationInit().attributes(true).childList(true)
                         .subtree(true), this);
+
     }
 
     public void parseDom() {
@@ -77,10 +77,6 @@ public class GridLightDomTable implements MutationListener {
             // Create the jsColumns array
             configureColumns();
 
-            // We need to set columns to the grid before configuring
-            // headers or footers
-            gridComponent.setColumns(jsColumns);
-
             if (numberColumns > 0) {
                 if (numberHeaderRows > 0) {
                     // Configure Headers
@@ -95,6 +91,8 @@ public class GridLightDomTable implements MutationListener {
     }
 
     private void configureColumns() {
+        JSArray<JSColumn> jsColumns = gridComponent.getColumns();
+
         // Clear columns array
         jsColumns.setLength(0);
         for (int i = 0; i < numberHeaderRows; i++) {
@@ -146,6 +144,8 @@ public class GridLightDomTable implements MutationListener {
                 column.setHeaderHtml($th.html());
             }
         }
+
+        gridComponent.setColumns(jsColumns);
     }
 
     private void configureHeadersFooters(final boolean isHeader) {

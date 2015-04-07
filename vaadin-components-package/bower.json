@@ -15,7 +15,6 @@
   ],
   "dependencies": {
     "polymer": "Polymer/polymer#v0.8.0",
-    "webcomponentsjs": "~0.5.4",
-    "object-observe": "https://github.com/MaxArt2501/object-observe.git#0.2.1"
+    "webcomponentsjs": "~0.5.4"
   }
 }

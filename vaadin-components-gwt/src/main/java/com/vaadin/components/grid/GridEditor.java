@@ -19,14 +19,13 @@ import com.vaadin.client.widgets.Grid;
 import com.vaadin.client.widgets.Grid.Column;
 import com.vaadin.components.common.js.JS;
 import com.vaadin.components.common.js.JSArray;
-import com.vaadin.components.common.util.Elements;
 import com.vaadin.components.grid.config.JSColumn;
 import com.vaadin.components.grid.config.JSEditorHandler;
 import com.vaadin.components.grid.config.JSEditorRequest;
 import com.vaadin.components.grid.data.DataItemContainer;
 import com.vaadin.components.grid.table.GridColumn;
 
-@JsNamespace(Elements.VAADIN_JS_NAMESPACE)
+@JsNamespace(JS.VAADIN_JS_NAMESPACE)
 @JsExport
 @JsType
 public class GridEditor {

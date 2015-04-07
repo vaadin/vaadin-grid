@@ -31,7 +31,6 @@ gulp.task('cdn:stage-components', ['cdn:clean'], function() {
 
   return gulp.src(paths)
     .pipe(replace(/(src|href)=("|')(.*?)\.\.\/\.\.\/bower_components\/(.*?)\//mg, '$1=$2$4/'))
-    .pipe(replace(/object.observe/mg, 'object-observe'))
     .pipe(gulp.dest(stagingPath));
 });
 

@@ -654,6 +654,20 @@
         assert.equal(grid.columns[0].headerHtml, "Name");
       });
 
+      test('replace columns array', function(done) {
+        assert.isTrue(gridContainsText(grid, "Name"))
+        grid.columns = [{
+          headerHtml: "<b>Foo</b>",
+        },{
+          headerHtml: "<b>Bar</b>",
+        }]
+        waitUntil(function() {
+          return !gridContainsText(grid, "Name")
+            && gridContainsText(grid, "Foo")
+            && gridContainsText(grid, "Bar");
+        }, done);
+      });
+
       test('modify columns array', function(done) {
         var col = grid.columns[0];
         grid.columns.splice(1, 1);

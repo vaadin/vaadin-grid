@@ -16,6 +16,9 @@ import com.google.gwt.query.client.js.JsUtils;
  */
 public abstract class JS {
 
+    // This has to match with the @JsNamespace of the package-info of exported components
+    public static final String VAADIN_JS_NAMESPACE = "vaadin";
+
     @SuppressWarnings("unchecked")
     public static <T> T createJsType(Class<T> clz) {
         if (clz == JsArrayMixed.class || clz == JSArray.class) {

@@ -18,12 +18,11 @@ import com.vaadin.client.widgets.Grid.StaticSection.StaticCell;
 import com.vaadin.client.widgets.Grid.StaticSection.StaticRow;
 import com.vaadin.components.common.js.JS;
 import com.vaadin.components.common.js.JSArray;
-import com.vaadin.components.common.util.Elements;
 import com.vaadin.components.grid.GridComponent;
 import com.vaadin.components.grid.config.JSStaticCell;
 import com.vaadin.shared.ui.grid.GridStaticCellType;
 
-@JsNamespace(Elements.VAADIN_JS_NAMESPACE)
+@JsNamespace(JS.VAADIN_JS_NAMESPACE)
 @JsExport
 @JsType
 public class GridStaticSection {

@@ -39,8 +39,6 @@ import com.vaadin.client.widgets.Grid.SelectionMode;
 import com.vaadin.components.common.js.JS;
 import com.vaadin.components.common.js.JSArray;
 import com.vaadin.components.common.js.JSEnums;
-import com.vaadin.components.common.util.DOMUtils;
-import com.vaadin.components.common.util.Elements;
 import com.vaadin.components.grid.GridSelectionModel.GridSelectionModelMulti;
 import com.vaadin.components.grid.GridSelectionModel.GridSelectionModelNone;
 import com.vaadin.components.grid.GridSelectionModel.GridSelectionModelSingle;
@@ -64,7 +62,7 @@ import com.vaadin.shared.ui.grid.ScrollDestination;
 /**
  * Class to export Vaadin Grid to JS.
  */
-@JsNamespace(Elements.VAADIN_JS_NAMESPACE)
+@JsNamespace(JS.VAADIN_JS_NAMESPACE)
 @JsExport
 @JsType
 public class GridComponent implements SelectionHandler<Object>, EventListener,
@@ -81,14 +79,12 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
 
     private Element container;
     private JSArray<JSColumn> cols;
-
     public GridComponent() {
         grid = new Grid<Object>();
         grid.setSelectionModel(new GridSelectionModelSingle());
         grid.addSelectionHandler(this);
         grid.addSortHandler(this);
         cols = JS.createArray();
-        observeColumnArray();
         redrawer = new Redraw(this);
         editor = new GridEditor(this);
         staticSection = new GridStaticSection(this);
@@ -294,10 +290,6 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public void setColumns(JSArray<JSColumn> columns) {
-        if (this.cols != null) {
-            DOMUtils.unobserve(this.cols);
-        }
-
         Collection<JSColumn> gCols = new ArrayList<JSColumn>();
         for (Column<?, Object> gCol : getDataColumns()) {
             gCols.add(((GridColumn) gCol).getJsColumn());
@@ -329,7 +321,6 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
             grid.setColumnOrder(array);
         }
         this.cols = columns;
-        observeColumnArray();
     }
 
     /**
@@ -344,15 +335,6 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
             result = result.subList(1, result.size());
         }
         return result;
-    }
-
-    private void observeColumnArray() {
-        DOMUtils.observe(this.cols, new EventListener() {
-            @Override
-            public void onBrowserEvent(Event event) {
-                setColumns(GridComponent.this.cols);
-            }
-        });
     }
 
     public void setSelectionMode(String selectionMode) {
