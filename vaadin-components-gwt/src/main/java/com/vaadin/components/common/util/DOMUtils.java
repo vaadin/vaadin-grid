@@ -19,37 +19,9 @@ import com.google.gwt.query.client.plugins.ajax.Ajax;
 import com.google.gwt.query.client.plugins.deferred.PromiseFunction;
 import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Timer;
-import com.vaadin.components.common.html.HTMLElement;
 import com.vaadin.components.common.js.JSArray;
 
 public class DOMUtils {
-    public static boolean getAttrBooleanValue(HTMLElement el, String attr, boolean def) {
-        return Boolean.valueOf(getAttrValue(el, attr, String.valueOf(def)));
-
-    }
-
-    public static int getAttrIntValue(HTMLElement el, String attr, int def) {
-        return (int) getAttrFloatValue(el, attr, def);
-    }
-
-    public static double getAttrDoubleValue(HTMLElement el, String attr,
-            double def) {
-        return getAttrFloatValue(el, attr, (float) def);
-    }
-
-    public static String getAttrValue(HTMLElement el, String attr, String def) {
-        String val = el.getAttribute(attr);
-        return val == null || val.isEmpty() ? def : val;
-    }
-
-    public static float getAttrFloatValue(HTMLElement el, String attr, float def) {
-        try {
-            return Float.valueOf(getAttrValue(el, attr, String.valueOf(def)));
-        } catch (NumberFormatException e) {
-            return 0;
-        }
-    }
-
     public static Promise ready() {
         return new PromiseFunction() {
             public void f(final com.google.gwt.query.client.Promise.Deferred dfd) {
@@ -130,22 +102,6 @@ public class DOMUtils {
                 }
             });
         }
-    }
-
-    public static void loadVaadinTheme(HTMLElement container, HTMLElement el, HTMLElement style, String def) {
-        loadVaadinTheme(container, el, style, def, postThemeLoad);
-    }
-
-    private static void loadVaadinTheme(HTMLElement container, HTMLElement el, HTMLElement style, String def, Function f) {
-        String theme = getAttrValue(el, "theme", def);
-        if (theme == null) {
-            return;
-        }
-        if ($(style).text().contains(theme)) {
-            return;
-        }
-        loadTheme($(container), $(style), theme);
-        waitUntilThemeLoaded($(style), f);
     }
 
     public static GQuery linksAndScripts(final GQuery g) {
