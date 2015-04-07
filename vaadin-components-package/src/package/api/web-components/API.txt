@@ -24,7 +24,7 @@ Or if you are not interested on using all vaadin components but just one of them
 If you want to support non Web Components ready browsers, put this line at the top of your page header:
 ```
   # replace [...] by the folder where you installed your components
-  <script src="[...]/webcomponentsjs/webcomponents.js"></script>
+  <script src="[...]/webcomponentsjs/webcomponents-lite.js"></script>
 ```
 
 Then load Vaadin web components importing the appropriate webcomponent file:
