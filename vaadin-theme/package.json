@@ -23,14 +23,16 @@
   },
   "dependencies": {
     "gulp": "latest",
-    "gulp-util": "latest",
+    "gulp-autoprefixer": "latest",
+    "gulp-if": "latest",
+    "gulp-insert": "latest",
     "gulp-rename": "latest",
     "gulp-replace": "latest",
-    "gulp-insert": "latest",
     "gulp-sass": "latest",
     "gulp-sourcemaps": "latest",
-    "gulp-autoprefixer": "latest",
     "gulp-strip-css-comments": "latest",
+    "gulp-util": "latest",
+    "lazypipe": "latest",
     "yargs": "latest"
   }
 }

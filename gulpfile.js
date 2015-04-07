@@ -13,7 +13,8 @@ var json = require('gulp-json-editor');
 var replace = require('gulp-replace');
 require('web-component-tester').gulp.init(gulp);
 
-var vaadintheme = require("./vaadin-theme/gulpfile");
+var insert = require('gulp-insert');
+var vaadintheme = require("./vaadin-theme");
 var sassdoc = require('sassdoc');
 var args = require('yargs').argv;
 
@@ -182,39 +183,40 @@ gulp.task('all', ['clean'], function() {
   });
 });
 
-gulp.task('css', function() {
-  if (args.component) {
-    // Get component list from command line arguments
-    var components = args.component.split(',');
-  } else {
-    // Read component list from vaadin-theme.scss
-    var components = [];
-    var vaadinThemeStr = fs.readFileSync(pwd + '/vaadin-theme/vaadin-theme.scss').toString();
+/**
+ * Use cases:
+ *    `gulp css` - compiles sass and creates separated css files for each component in their directories
+ *    `gulp css:button` - compiles sass and creates the "vaadin-components/vaadin-button/vaadin-button.css"
+ *    `gulp css:grid` - compiles sass and creates the "vaadin-components/vaadin-grid/vaadin-grid.css"
+ *    `gulp css:grid-gwt` - compiles sass and creates the "vaadin-components-gwt/src/main/webapp/vaadin-grid/vaadin-grid.css"
+ */
 
-    var regexp = /@import\s+["']components\/(\w+)\//gi;
-    var matches;
-    while ((matches = regexp.exec(vaadinThemeStr)) !== null) {
-      components.push(matches[1]);
-    }
-  }
-
-  // Compile each component individually to their corresponding folder
-  for (var i=0; i < components.length; i++) {
-    var component = components[i].trim();
-    var input = pwd + '/vaadin-theme/vaadin-theme.scss';
-    var output = pwd + '/vaadin-components/vaadin-' + component + '/vaadin-' + component + ".css";
-    args.component = component;
-
-    gutil.log("Compiling CSS for " + component);
-    vaadintheme.compile(input, output, args);
-
-    // Grid theme is also compiled to the GWT package folder
-    if(component == 'grid') {
-      vaadintheme.compile(input, pwd + '/' + gwtproject +  '/src/main/webapp/vaadin-grid/vaadin-grid.css', args);
-    }
-  }
+var components = [
+  {"name": "button", "dir": "vaadin-components/", "filename": "vaadin-button"},
+  {"name": "grid", "dir": "vaadin-components/", "filename": "vaadin-grid"},
+  {"name": "grid", "dir": gwtproject + "/src/main/webapp/", "filename": "vaadin-grid", "taskname": "grid-gwt"}
+];
+components.forEach(function(component) {
+  // create task to compile scss for separate component
+  gulp.task('css:' + (component.taskname || component.name), function() {
+    return gulp.src('vaadin-theme/vaadin-theme.scss')
+      .pipe(insert.prepend("$v-included-components: " + component.name + ";" ))
+      .pipe(vaadintheme())
+      .pipe(rename(function (path) {
+        path.basename = component.filename;
+      }))
+      .pipe(gulp.dest(component.dir + component.filename + '/'));
+  });
 });
 
+var cssTasks = [];
+components.forEach(function(component) {
+  cssTasks.push('css:' + (component.taskname || component.name));
+});
+gulp.task('css', cssTasks);
+
+
+  
 gulp.task('sassdoc', function () {
   var options = {
     dest: pwd + '/vaadin-theme/docs',

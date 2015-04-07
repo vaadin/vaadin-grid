@@ -52,6 +52,8 @@ name as the input but a different file type), in the same folder as the input.
 You can also specify an explicit output path as a second argument for the command:
 
     $ vaadin-theme custom-theme.scss path/to/output.css
+    
+and use flags `--debug` and `--watch`.
 
 ## Using themes
 
