@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <title></title>
+  <script src="common.js"></script>
+  <script src="../../../../../bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+  <script src="../../../../../bower_components/web-component-tester/browser.js"></script>
+
+  <link rel="import" href="../vaadin-grid.html">
+</head>
+<body>
+  <div id="gridwrapper"></div>
+
+  <script>
+    describe('static sections', function() {
+      beforeEach(function(done) {
+        waitUntilGridReady(grid, function() {
+          initializeGrid(done);
+        });
+      });
+
+      describe('header.defaultRow', function() {
+        it('should be 0 by default', function() {
+          expect(grid.header.defaultRow).to.equal(0);
+        });
+
+        it('should fail when set to a nonexisting row', function() {
+          expect(function() {
+            grid.header.defaultRow = 1;
+          }).to.throw('Row with index 1 does not exist');
+        });
+
+        it('should set the defaultRow', function() {
+          grid.header.addRow();
+
+          // sorting indicator moves to the default row, so we'll
+          // use that to assert that default row has changed.
+          grid.columns[0].sortable = true;
+          grid.sortOrder = [{column: 0, direction: 'asc'}];
+
+          grid.header.defaultRow = 1;
+
+          var cells = qaLocal('.v-grid-header .v-grid-cell');
+          expect(cells[2].classList[1]).to.equal('sort-asc');
+        });
+      });
+
+    ['header', 'footer'].forEach(function(section) {
+
+        describe(section, function() {
+          it('should be readonly', function() {
+            var originalValue = grid[section];
+
+            grid[section] = undefined;
+
+            expect(grid[section]).to.equal(originalValue);
+          });
+
+          describe('getCell', function() {
+            it('should return correct cell using indeces', function() {
+              var cell = grid[section].getCell(0,0);
+
+              expect(cell.content).to.equal('Name');
+            });
+
+            it('should return correct cell using identifier', function() {
+              grid.columns[0].name = 'foo';
+
+              var cell = grid[section].getCell(0, 'foo');
+
+              expect(cell.content).to.equal('Name');
+            });
+
+            it('should return correct cell from appended row', function() {
+              grid[section].addRow(1, [section + 'foo']);
+
+              var cell = grid[section].getCell(1, 0);
+
+              expect(cell.content).to.equal(section + 'foo');
+            });
+          });
+
+          describe('cell', function() {
+            describe('content', function() {
+              it('should set content', function() {
+                var cell = grid[section].getCell(0,0);
+                cell.content = 'foo';
+
+                expect(grid[section].getCell(0,0).content).to.equal('foo');
+              });
+
+              it('should set html content', function() {
+                var cell = grid[section].getCell(0, 0);
+
+                var input = document.createElement('input');
+                cell.content = input;
+
+                expect(qLocal('.v-grid-' + section + ' .v-grid-cell > input')).to.not.be.undefined;
+              });
+            });
+
+            describe('hidden', function() {
+              it('should clear innerHTML', function() {
+                grid[section].hidden = true;
+
+                expect(qLocal('.v-grid-' + section).innerHTML).to.be.empty;
+              });
+            });
+
+            describe('colspan', function() {
+              it('should hide spanned cells', function() {
+                var cell = grid[section].getCell(0, 0);
+
+                cell.colspan = 2;
+
+                expect(qaLocal(".v-grid-" + section + " .v-grid-cell")[1].style.display).to.equal('none');
+              });
+            });
+          });
+
+          describe('addRow', function() {
+            it('should append new row', function() {
+              grid[section].addRow();
+
+              grid[section].getCell(1,0).content = 'foo';
+              grid[section].getCell(1,1).content = 'bar';
+
+              var cells = qaLocal('.v-grid-' + section + ' .v-grid-cell');
+              expect(cells[0].innerHTML).to.equal('Name');
+              expect(cells[1].innerHTML).to.equal('Value');
+              expect(cells[2].innerHTML).to.equal('foo');
+              expect(cells[3].innerHTML).to.equal('bar');
+            });
+
+            it('should insert new row to correct index', function() {
+              grid[section].addRow(0);
+
+              grid[section].getCell(0,0).content = 'foo';
+              grid[section].getCell(0,1).content = 'bar';
+
+              var cells = qaLocal('.v-grid-' + section + ' .v-grid-cell');
+              expect(cells[0].innerHTML).to.equal('foo');
+              expect(cells[1].innerHTML).to.equal('bar');
+              expect(cells[2].innerHTML).to.equal('Name');
+              expect(cells[3].innerHTML).to.equal('Value');
+            });
+
+            it('should insert content to a new row', function() {
+              grid[section].addRow(0, ['foo', 'bar']);
+
+              var cells = qaLocal(".v-grid-" + section + " .v-grid-cell");
+              expect(cells[0].innerHTML).to.equal('foo');
+              expect(cells[1].innerHTML).to.equal('bar');
+            });
+          });
+
+          describe('removeRow', function() {
+            it('should remove first row', function() {
+              grid[section].removeRow();
+
+              expect(qaLocal('.v-grid-' + section + ' .v-grid-cell')).to.be.empty;
+            });
+
+            it('should remove a specific row', function() {
+              grid[section].addRow(0, ['foo', 'bar']);
+
+              grid[section].removeRow(1);
+
+              expect(qaLocal('.v-grid-' + section + ' .v-grid-cell')).to.have.length(2);
+            });
+          });
+
+          describe('setRowClassName', function() {
+            it('should set the classname of a specific row', function() {
+              grid[section].addRow();
+
+              grid[section].setRowClassName(1, 'second');
+
+              var rows = qaLocal(".v-grid-" + section + " .v-grid-row");
+              expect(rows[1].classList[1]).to.equal('second');
+            });
+          });
+        });
+      });
+    });
+  </script>
+</body>
+</html>

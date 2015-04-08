@@ -68,7 +68,7 @@ import com.vaadin.shared.ui.grid.ScrollDestination;
 public class GridComponent implements SelectionHandler<Object>, EventListener,
         SortHandler<Object> {
 
-    private final Grid<Object> grid;
+    private final ViolatedGrid grid;
     private JSArray<JSSortOrder> jsSort;
 
     private boolean updating = false;
@@ -80,7 +80,7 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
     private Element container;
     private JSArray<JSColumn> cols;
     public GridComponent() {
-        grid = new Grid<Object>();
+        grid = new ViolatedGrid();
         grid.setSelectionModel(new GridSelectionModelSingle());
         grid.addSelectionHandler(this);
         grid.addSortHandler(this);
@@ -115,7 +115,7 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
         this.jsSort = jsOrders;
     }
 
-    public Grid<Object> getGrid() {
+    public ViolatedGrid getGrid() {
         return grid;
     }
 
@@ -492,5 +492,9 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
         }
         $(container).trigger("sort");
         refresh();
+    }
+
+    public boolean isWorkPending() {
+        return grid.isWorkPending();
     }
 }

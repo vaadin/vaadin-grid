@@ -12,13 +12,13 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.vaadin.client.widgets.Grid;
 import com.vaadin.client.widgets.Grid.Column;
 import com.vaadin.client.widgets.Grid.StaticSection.StaticCell;
 import com.vaadin.client.widgets.Grid.StaticSection.StaticRow;
 import com.vaadin.components.common.js.JS;
 import com.vaadin.components.common.js.JSArray;
 import com.vaadin.components.grid.GridComponent;
+import com.vaadin.components.grid.ViolatedGrid;
 import com.vaadin.components.grid.config.JSStaticCell;
 import com.vaadin.shared.ui.grid.GridStaticCellType;
 
@@ -28,7 +28,7 @@ import com.vaadin.shared.ui.grid.GridStaticCellType;
 public class GridStaticSection {
 
     private final GridComponent gridComponent;
-    private final Grid<Object> grid;
+    private final ViolatedGrid grid;
     private final Map<StaticCell, JSStaticCell> cells = new HashMap<>();
 
     public GridStaticSection(GridComponent gridComponent) {
@@ -50,13 +50,13 @@ public class GridStaticSection {
                 jsCell.setContent(cell.getHtml());
             }
 
-            bind(jsCell, "colspan", new Function() {
+            bind(jsCell, cell, "colspan", new Function() {
                 @Override
                 public void f() {
                     cell.setColspan(((Double) arguments(0)).intValue());
                 }
             });
-            bind(jsCell, "content", new Function() {
+            bind(jsCell, cell, "content", new Function() {
                 @Override
                 public void f() {
                     Object content = arguments(0);
@@ -71,7 +71,7 @@ public class GridStaticSection {
                     }
                 }
             });
-            bind(jsCell, "className", new Function() {
+            bind(jsCell, cell, "className", new Function() {
                 @Override
                 public void f() {
                     cell.setStyleName(arguments(0));
@@ -84,17 +84,19 @@ public class GridStaticSection {
         return cells.get(cell);
     }
 
-    private void bind(JSStaticCell cell, String propertyName,
-            final Function function) {
+    private void bind(JSStaticCell cell, StaticCell staticCell,
+            String propertyName, final Function function) {
         JS.definePropertyAccessors(cell, propertyName, new Function() {
             @Override
             public void f() {
                 Object newValue = arguments(0);
                 function.f(newValue);
                 gridComponent.redraw();
+                grid.refreshStaticSection(staticCell);
             }
         }, null);
     }
+
 
     public JSStaticCell getHeaderCell(int rowIndex, Object columnId) {
         Column<?, ?> column = gridComponent
@@ -116,6 +118,8 @@ public class GridStaticSection {
         if (cellContent != null) {
             setStaticRowCellContent(row, cellContent);
         }
+
+        grid.refreshHeader();
         gridComponent.redraw();
     }
 
@@ -125,6 +129,8 @@ public class GridStaticSection {
         if (cellContent != null) {
             setStaticRowCellContent(row, cellContent);
         }
+
+        grid.refreshFooter();
         gridComponent.redraw();
     }
 
@@ -147,26 +153,31 @@ public class GridStaticSection {
 
     public void removeHeader(int rowIndex) {
         grid.removeHeaderRow(rowIndex);
+        grid.refreshHeader();
         gridComponent.redraw();
     }
 
     public void removeFooter(int rowIndex) {
         grid.removeFooterRow(rowIndex);
+        grid.refreshFooter();
         gridComponent.redraw();
     }
 
     public void setHeaderRowClassName(int rowIndex, String styleName) {
         grid.getHeaderRow(rowIndex).setStyleName(styleName);
+        grid.refreshHeader();
         gridComponent.redraw();
     }
 
     public void setFooterRowClassName(int rowIndex, String styleName) {
         grid.getFooterRow(rowIndex).setStyleName(styleName);
+        grid.refreshFooter();
         gridComponent.redraw();
     }
 
     public void setDefaultHeader(int rowIndex) {
         grid.setDefaultHeaderRow(grid.getHeaderRow(rowIndex));
+        grid.refreshHeader();
         gridComponent.redraw();
     }
 
@@ -187,6 +198,7 @@ public class GridStaticSection {
 
     public void setHeaderHidden(boolean hidden) {
         grid.setHeaderVisible(!hidden);
+        grid.refreshHeader();
         gridComponent.redraw(true);
     }
 
@@ -196,6 +208,7 @@ public class GridStaticSection {
 
     public void setFooterHidden(boolean hidden) {
         grid.setFooterVisible(!hidden);
+        grid.refreshFooter();
         gridComponent.redraw(true);
     }
 }

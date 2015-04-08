@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <title></title>
+  <script src="common.js" />
+  <script src="../../../../bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+  <script src="../../../../bower_components/web-component-tester/browser.js"></script>
+
+  <link rel="import" href="../vaadin-grid.html">
+</head>
+<body>
+
+<div id="gridwrapper"></div>
+
+<script>
+  describe('attributes', function() {
+    beforeEach(function(done) {
+      waitUntilGridReady(grid, function() {
+        initializeGrid(done);
+      });
+    });
+
+    describe('selection-mode', function() {
+      it('should set selectionMode to none', function() {
+        grid.setAttribute('selection-mode', 'none');
+
+        expect(grid.selectionMode).to.equal('none');
+      });
+
+      it('should set selectionMode to single', function() {
+        grid.setAttribute('selection-mode', 'single');
+
+        expect(grid.selectionMode).to.equal('single');
+      });
+
+      it('should set selectionMode to multi', function() {
+        grid.setAttribute('selection-mode', 'multi');
+
+        expect(grid.selectionMode).to.equal('multi');
+      });
+
+      it('should should remove selectionMode property', function() {
+        grid.setAttribute('selection-mode', 'none');
+        grid.removeAttribute('selection-mode');
+
+        // 'single' is the default
+        expect(grid.selectionMode).to.equal('single');
+      });
+
+      // TODO: throws an error, but for some reason expect doesn't catch it.
+      it.skip('should fail setting the value to foobar', function() {
+        expect(function() {
+          grid.setAttribute('selection-mode', 'foobar');
+        }).to.throw(Object);
+      });
+    });
+  });
+</script>
+</body>
+</html>

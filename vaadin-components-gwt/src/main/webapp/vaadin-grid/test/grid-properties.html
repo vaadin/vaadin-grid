@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <title></title>
+  <script src="common.js" />
+  <script src="../../../../bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+  <script src="../../../../bower_components/web-component-tester/browser.js"></script>
+
+  <link rel="import" href="../vaadin-grid.html">
+</head>
+<body>
+
+<div id="gridwrapper"></div>
+
+<script>
+  describe('properties', function() {
+    beforeEach(function(done) {
+      waitUntilGridReady(grid, function() {
+        initializeGrid(done);
+      });
+    });
+
+    describe('selectionMode', function() {
+      var checkBoxQuery = "input[type='checkbox']";
+
+      it('should be single by default', function() {
+        expect(grid.selectionMode).to.equal('single');
+      });
+
+      it('should be use default value when removing the value', function() {
+        grid.selectionMode = 'none';
+
+        grid.selectionMode = undefined;
+
+        expect(grid.selectionMode).to.equal('single');
+      });
+
+      it('should set selection-mode to none', function() {
+        grid.selectionMode = 'none';
+
+        expect(grid.getAttribute('selection-mode')).to.equal('none');
+        expect(qLocal(checkBoxQuery)).to.be.undefined;
+      });
+
+      it('should set selection-mode to single', function() {
+        grid.selectionMode = 'single';
+
+        expect(grid.getAttribute('selection-mode')).to.equal('single');
+        expect(qLocal(checkBoxQuery)).to.be.undefined;
+      });
+
+      it('should set selection-mode to multi', function() {
+        grid.selectionMode = 'multi';
+
+        expect(grid.getAttribute('selection-mode')).to.equal('multi');
+        expect(qLocal(checkBoxQuery)).to.not.be.undefined;
+      });
+
+      it('should fail setting the value to foobar', function() {
+        expect(function() {
+          grid.selectionMode = 'foobar';
+        }).to.throw(Object);
+      });
+    });
+  });
+</script>
+</body>
+</html>
