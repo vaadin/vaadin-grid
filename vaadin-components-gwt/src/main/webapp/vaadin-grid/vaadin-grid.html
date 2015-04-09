@@ -62,7 +62,8 @@
     attributeChanged: function(name, type, value) {
       switch (name) {
         case 'selected-rows':
-          this.selectedRows = value.split(',').map(function(x) {
+          this.selectedRows = /^\[.*\]$/.test(value) ? JSON.parse(value) : value.split(/[, ]+/)
+          .map(function(x) {
             return parseInt(x, 10);
           }).filter(function(x) {
             return !isNaN(x);
