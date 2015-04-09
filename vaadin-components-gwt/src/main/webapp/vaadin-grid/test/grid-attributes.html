@@ -55,6 +55,42 @@
         }).to.throw(Object);
       });
     });
+
+    describe('selected-rows', function() {
+      describe('with mode: single', function() {
+        beforeEach(function() {
+          grid.setAttribute('selection-mode', 'single');
+        });
+
+        it('should set a single value to selectedRows', function() {
+          grid.setAttribute('selected-rows', '0');
+
+          expect(grid.selectedRows).to.contain(0);
+        });
+
+        it('should set the last value to selectedRows', function() {
+          grid.setAttribute('selected-rows', '0,1');
+
+          expect(grid.selectedRows).to.contain(1);
+        });
+
+        it('should set empty to selectedRows when setting empty value', function() {
+          grid.setAttribute('selected-rows', '0');
+
+          grid.setAttribute('selected-rows', '');
+
+          expect(grid.selectedRows).to.be.empty;
+        });
+
+        it('should set empty to selectedRows when removing attribute', function() {
+          grid.setAttribute('selected-rows', '0');
+
+          grid.removeAttribute('selected-rows');
+
+          expect(grid.selectedRows).to.be.empty;
+        });
+      });
+    });
   });
 </script>
 </body>

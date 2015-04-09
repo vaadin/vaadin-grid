@@ -63,6 +63,49 @@
         }).to.throw(Object);
       });
     });
+
+    describe('selectedRows', function() {
+      it('should add \'row-selected\' class to the selected row', function() {
+        grid.selectedRows = [1];
+
+        expect(qaLocal('.v-grid-body .v-grid-row-selected')).to.have.length(1);
+      });
+
+      it('should fire \'select\' event', function() {
+        var spy = sinon.spy();
+        grid.addEventListener('select', spy);
+
+        grid.selectedRows = [0];
+
+        expect(spy.args[0][0]).to.have.property('type', 'select');
+      });
+
+      describe('with mode: single', function() {
+        beforeEach(function() {
+          grid.selectionMode = 'single';
+        });
+
+        it('should set a single value to selected-rows', function() {
+          grid.selectedRows = [1];
+
+          expect(grid.getAttribute('selected-rows')).to.equal('1');
+        });
+
+        it('should set the last value from an array to selected-rows', function() {
+          grid.selectedRows = [0,1];
+
+          expect(grid.getAttribute('selected-rows')).to.equal('1');
+        });
+
+        it('should clear the selected-rows value when given an invalid row', function() {
+          grid.selectedRows = [1];
+
+          grid.selectedRows = 'foobar';
+
+          expect(grid.getAttribute('selected-rows')).to.equal('');
+        });
+      });
+    });
   });
 </script>
 </body>

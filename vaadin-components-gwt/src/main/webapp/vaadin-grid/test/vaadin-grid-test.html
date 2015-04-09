@@ -176,34 +176,6 @@
         assert.equal(spy.callCount, 2);
       });
 
-      test('selected rows: single', function() {
-        var spy = sinon.spy();
-        grid.addEventListener("select", spy);
-
-        var rowQuery = ".v-grid-body .v-grid-row";
-        var selectedStyle = "v-grid-row-selected";
-
-        grid.selectionMode = "single";
-        grid.selectedRows = [1];
-        assert.equal(grid.getAttribute("selected-rows"), "1");
-        var rows = qaLocal(rowQuery);
-        assert.isFalse(rows[0].classList.contains(selectedStyle));
-        assert.isTrue(rows[1].classList.contains(selectedStyle));
-        grid.selectedRows = "";
-        assert.equal(qaLocal(rowQuery + "." + selectedStyle).length, 0);
-
-        grid.setAttribute("selected-rows", "0");
-        expect(grid.selectedRows).to.eql([0]);
-        grid.setAttribute("selected-rows", "");
-        expect(grid.selectedRows).to.be.empty;
-
-        var cellQuery = ".v-grid-body .v-grid-cell";
-        qLocal(cellQuery).click();
-        expect(grid.selectedRows).to.eql([0]);
-
-        assert.equal(spy.callCount, 5);
-      });
-
       test('selected rows: multi', function() {
         var spy = sinon.spy();
         grid.addEventListener("select", spy);
