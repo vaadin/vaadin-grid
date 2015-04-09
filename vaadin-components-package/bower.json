@@ -6,6 +6,9 @@
   ],
   "description": "Vaadin Grid web component",
   "license": "Apache License 2.0",
+  "keywords": [
+    "web-components"
+  ],
   "ignore": [
     "**/.*",
     "**/node_modules",
