@@ -1,102 +1,19 @@
 "use strict";
-var _ = require('lodash');
 var gulp = require('gulp');
 require('require-dir')('./tasks');
 var common = require('./tasks/common');
-
-var gutil = require('gulp-util');
-var chalk = require('chalk');
-var cmd = require('child_process');
-var fs = require('fs-extra');
-var rename = require('gulp-rename');
-var json = require('gulp-json-editor');
-var replace = require('gulp-replace');
 require('web-component-tester').gulp.init(gulp);
-
 var args = require('yargs').argv;
 
-var pwd = process.cwd();
-var gwtproject = 'vaadin-components-gwt';
-var target = pwd + '/target';
 var version = '0.2.0';
-var major = version.replace(/(\d+\.\d+\.).*$/, '$1');
-var patch = ~~((new Date().getTime() / 1000 - 1420070400) / 60)
-var tag =  args.version || major + patch; // will rename the tag variable in a separate patch
-
-function system(command, cb) {
-  cmd.exec(command, function(err, stdout, stderr) {
-    if (err) {
-        gutil.log(stderr);
-        throw err;
-    }
-    if (cb) {
-        cb(err);
-    }
-  });
-}
-
-function compileGwt(cb, pretty) {
-  gutil.log('Updating Maven dependencies ...');
-  system('mvn compile -q -am -pl ' + gwtproject, function(){
-    gutil.log('Compiling GWT components ...');
-    var command = 'mvn package -q -am -pl ' + gwtproject + (pretty ? ' -Ppretty' : '');
-    system(command, function(){
-      gutil.log('GWT components compilation succeeded.')
-      if (cb) cb();
-    });
-  });
-}
-
-function copyGwtModule(component, moduleName, version, cb) {
-  var warDir = 'vaadin-components-gwt/target/vaadin-components-gwt-' + version + '/';
-  var modulePath = warDir + moduleName + '/';
-  var webDir = 'vaadin-components-gwt/src/main/webapp/';
-  var webComponentDir = webDir + component + '/';
-  var componentDir = 'vaadin-components/' + component;
-
-  process.chdir(pwd);
-  fs.mkdirsSync(componentDir);
-
-  gulp.src(webComponentDir + '**/*')
-  .pipe(replace(new RegExp('^.*script.*' + moduleName + '.*$','mg'), ''))
-  .pipe(replace(/(src|href)=("|')([\.\/]*)\.\.\/bower_components\//mg, '$1=$2$3../../bower_components/'))
-  .pipe(gulp.dest(componentDir));
-
-  gulp.src(modulePath + moduleName +  '-import.html')
-  .pipe(rename(function (path) {
-    path.basename = component + "-import";
-  }))
-  .pipe(gulp.dest(componentDir));
-
-  gulp.src(componentDir + 'deferred')
-  .pipe(gulp.dest(componentDir));
-
-  if (cb) cb();
-}
 
 gulp.task('default', function() {
-  console.log('\n  Use:\n    gulp <clean|gwt[:pretty]|css|sassdoc|test[:validation:sauce]|stage|deploy[:bower:cdn:zip]|all>\n');
+  console.log('\n  Use:\n    gulp <clean|gwt[ --gwt-pretty]|css|sassdoc|test[:validation:sauce]|stage|deploy[:bower:cdn:zip]|all>\n');
 });
 
-gulp.task('clean', function(cb) {
-  fs.removeSync(target);
-  fs.mkdirsSync(target);
-  system('mvn clean', cb);
-});
+gulp.task('clean', ['clean:gwt', 'clean:bower', 'clean:cdn', 'clean:zip']);
 
-gulp.task('gwt:pretty', function(cb) {
-  compileGwt(function() {
-    copyGwtModule('vaadin-grid', 'VaadinGrid', version);
-    cb();
-  }, true);
-});
-
-gulp.task('gwt', function(cb) {
-  compileGwt(function() {
-    copyGwtModule('vaadin-grid', 'VaadinGrid', version);
-    cb();
-  });
-});
+gulp.task('gwt', ['gwt:compile', 'gwt:copy']);
 
 gulp.task('deploy', ['deploy:bower', 'deploy:cdn', 'deploy:zip']);
 
@@ -165,17 +82,4 @@ gulp.task('test:sauce', function(done) {
       'Linux/android@5.0'],
     'vaadin-components / ' + version,
      done)
-});
-
-gulp.task('all', ['clean'], function() {
-  // Compile themes
-  gulp.start('css');
-
-  // Compile Gwt
-  compileGwt(function() {
-    copyGwtModule('vaadin-grid', 'VaadinGrid', version, function() {
-      // Deploy everything
-      gulp.start('deploy')
-    });
-  });
 });

@@ -13,11 +13,11 @@ var stagingBasePath = config.paths.staging.cdn;
 var stagingPath = stagingBasePath + '/' + config.version;
 var version = args.release || args.autoRevert ? config.version : config.snapshotVersion;
 
-gulp.task('cdn:clean', function() {
+gulp.task('clean:cdn', function() {
   fs.removeSync(stagingBasePath);
 });
 
-gulp.task('cdn:stage-components', ['cdn:clean'], function() {
+gulp.task('cdn:stage-components', ['clean:cdn'], function() {
   var files = fs.readdirSync('vaadin-components');
 
   var paths = _.map(files, function(n) {
@@ -34,7 +34,7 @@ gulp.task('cdn:stage-components', ['cdn:clean'], function() {
     .pipe(gulp.dest(stagingPath));
 });
 
-gulp.task('cdn:install-dependencies', ['cdn:clean'], function() {
+gulp.task('cdn:install-dependencies', ['clean:cdn'], function() {
   return bower({
     directory: stagingPath,
     forceLatest: true,

@@ -16,11 +16,11 @@ var filename = 'vaadin-components-' + version + '.zip';
 var majorMinorVersion = version.replace(/(\d+\.\d+)(\.|-)(.*)/, '$1');
 
 
-gulp.task('zip:clean', function() {
+gulp.task('clean:zip', function() {
   fs.removeSync(stagingPath);
 });
 
-gulp.task('stage:zip', ['zip:clean', 'stage:cdn'], function() {
+gulp.task('stage:zip', ['clean:zip', 'stage:cdn'], function() {
   return gulp.src(config.paths.staging.cdn + '/' + version + '/**/*')
     .pipe(zip(filename))
     .pipe(gulp.dest(stagingPath));
