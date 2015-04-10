@@ -588,15 +588,24 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
     editable
     >
   <table >
+    <colgroup>
+      <col>
+      <col sortable>
+      <col width=40>
+      <col min-width=200>
+      <col>
+      <col flex=100>
+      <col flex=0>
+    </colgroup>
     <thead>
       <tr>
         <th>Name</th>
-        <th sortable>Value</th>
-        <th width=40>Progress</th>
-        <th min-width=200>foo</th>
+        <th>Value</th>
+        <th>Progress</th>
+        <th>foo</th>
         <th>bar</th>
-        <th flex=100>foo</th>
-        <th flex=0>bar</th>
+        <th>foo</th>
+        <th>bar</th>
       </tr>
     </thead>
     <tbody>

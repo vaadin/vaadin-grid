@@ -19,8 +19,6 @@ public final class GridColumn extends Column<Object, Object> {
     private final JSColumn jsColumn;
     private final Grid<Object> grid;
     private final GridComponent gridComponent;
-    private JavaScriptObject valueGenerator;
-    private String name;
 
     public static GridColumn addColumn(JSColumn jsColumn,
             GridComponent gridComponent) {
@@ -52,12 +50,6 @@ public final class GridColumn extends Column<Object, Object> {
                 setExpandRatio(((Double) arguments(0)).intValue());
             }
         });
-        bind("name", new Function() {
-            @Override
-            public void f() {
-                name = arguments(0);
-            }
-        });
         bind("sortable", new Function() {
             @Override
             public void f() {
@@ -74,12 +66,6 @@ public final class GridColumn extends Column<Object, Object> {
             @Override
             public void f() {
                 setColumnRenderer(arguments(0));
-            }
-        });
-        bind("generatedValue", new Function() {
-            @Override
-            public void f() {
-                valueGenerator = arguments(0);
             }
         });
         bind("minWidth", new Function() {
@@ -168,9 +154,9 @@ public final class GridColumn extends Column<Object, Object> {
             dataItem = ((DataItemContainer) dataItem).getDataItem();
         }
         Object result = null;
-        if (valueGenerator != null) {
-            result = JsUtils.jsni(valueGenerator, "call", valueGenerator,
-                    dataItem);
+        if (jsColumn.generatedValue() != null) {
+            result = JsUtils.jsni(jsColumn.generatedValue(), "call",
+                    jsColumn.generatedValue(), dataItem);
         } else {
             if (JS.isPrimitiveType(dataItem)) {
                 if (getColumnIndex() == 0) {
@@ -181,12 +167,10 @@ public final class GridColumn extends Column<Object, Object> {
                     result = ((JsArrayMixed) dataItem)
                             .getObject(getColumnIndex());
                 } else {
-                    Properties p = ((JavaScriptObject) dataItem).cast();
-                    result = p.getObject(name);
+                    result = ((Properties) dataItem).getObject(jsColumn.name());
                 }
             }
         }
-
         return result;
     }
 

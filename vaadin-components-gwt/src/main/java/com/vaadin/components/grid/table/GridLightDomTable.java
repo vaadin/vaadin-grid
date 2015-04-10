@@ -36,6 +36,7 @@ public class GridLightDomTable implements MutationListener {
     private GQuery $tfoot;
     private GQuery $head_tr;
     private GQuery $foot_tr;
+    private GQuery $cols;
     private final Grid<Object> grid;
     private final GridComponent gridComponent;
     int defaultHeaderRow, numberHeaderRows, numberColumns, numberFooterRows;
@@ -65,7 +66,8 @@ public class GridLightDomTable implements MutationListener {
         if ($tfoot.isEmpty()) {
             $tfoot = $("<tfoot>").appendTo($light);
         }
-        String txt = $thead.toString() + $tfoot.toString();
+        $cols = $light.find("colgroup");
+        String txt = $thead.toString() + $cols.toString() + $tfoot.toString();
         if (!txt.equals(lastConfigString)) {
             lastConfigString = txt;
 
@@ -91,60 +93,53 @@ public class GridLightDomTable implements MutationListener {
     }
 
     private void configureColumns() {
-        JSArray<JSColumn> jsColumns = gridComponent.getColumns();
-
-        // Clear columns array
-        jsColumns.setLength(0);
-        for (int i = 0; i < numberHeaderRows; i++) {
+        for (int i = 0, max = 0; i < numberHeaderRows; i++) {
             GQuery $ths = $head_tr.eq(i).children("th, td");
+            max = Math.max(max, $ths.size());
 
-            JSArray<Object> contents = JSArray.createArray().cast();
-            for (int j = 0; j < $ths.size(); j++) {
-                if (jsColumns.size() <= j) {
-                    JSColumn column = JS.createJsType(JSColumn.class);
-                    String name = $ths.eq(j).attr("name");
-                    if (!name.isEmpty()) {
-                        column.setName(name);
-                    }
-                    jsColumns.add(column);
-                }
-                contents.add($ths.eq(j).html());
-            }
             // The default row should be the last row in the header which has
             // the largest number of th elements, or the last header row which
             // contains a th element with the sortable attribute
-            if (!$ths.filter("[sortable]").isEmpty()
-                    || $ths.size() == jsColumns.size()) {
+            if ($ths.size() == max
+                    || !$ths.filter("[sortable]").isEmpty()) {
                 defaultHeaderRow = i;
             }
         }
 
-        numberColumns = jsColumns.length();
-        if (numberColumns > 0) {
-            GQuery $ths = $head_tr.eq(defaultHeaderRow).children("th");
-            for (int i = 0; i < $ths.size(); i++) {
-                GQuery $th = $ths.eq(i);
-                JSColumn column = jsColumns.get(i);
-                column.setSortable(JSValidate.Boolean.attr($th, "sortable"));
-                column.setReadOnly(JSValidate.Boolean.attr($th, "read-only"));
-                column.setFlex(JSValidate.Integer.attr($th, "flex", 0, 1));
-                column.setWidth(JSValidate.Pixel.attr($th, "width"));
-                column.setMinWidth(JSValidate.Pixel.attr($th, "min-width"));
-                column.setMaxWidth(JSValidate.Pixel.attr($th, "max-width"));
-                column.setRenderer(JsUtils.wrapFunction(new Function() {
-                    @Override
-                    public void f() {
-                        JavaScriptObject cell = arguments(0);
-                        Element element = JsUtils.prop(cell, "element");
-                        Object data = JsUtils.prop(cell, "data");
-                        element.setInnerHTML(data != null ? String
-                                .valueOf(data) : "");
-                    }
-                }));
-                column.setHeaderHtml($th.html());
-            }
+        if (!$cols.isEmpty()) {
+            configureColumnsFromDom($cols.children("col"));
+        } else {
+            configureColumnsFromDom($head_tr.eq(defaultHeaderRow).children("th"));
         }
+    }
 
+    private void configureColumnsFromDom(GQuery $ths) {
+        JSArray<JSColumn> jsColumns = gridComponent.getColumns();
+        jsColumns.setLength(0);
+        numberColumns = $ths.size();
+        for (int i = 0; i < numberColumns; i++) {
+            GQuery $th = $ths.eq(i);
+            JSColumn column = JS.createJsType(JSColumn.class);
+            jsColumns.add(column);
+            column.setSortable(JSValidate.Boolean.attr($th, "sortable"));
+            column.setReadOnly(JSValidate.Boolean.attr($th, "read-only"));
+            column.setFlex(JSValidate.Integer.attr($th, "flex", 0, 1));
+            column.setWidth(JSValidate.Pixel.attr($th, "width"));
+            column.setMinWidth(JSValidate.Pixel.attr($th, "min-width"));
+            column.setMaxWidth(JSValidate.Pixel.attr($th, "max-width"));
+            column.setName(JSValidate.String.attr($th, "name"));
+            column.setRenderer(JsUtils.wrapFunction(new Function() {
+                @Override
+                public void f() {
+                    JavaScriptObject cell = arguments(0);
+                    Element element = JsUtils.prop(cell, "element");
+                    Object data = JsUtils.prop(cell, "data");
+                    element.setInnerHTML(data != null ? String
+                            .valueOf(data) : "");
+                }
+            }));
+            column.setHeaderHtml($th.html());
+        }
         gridComponent.setColumns(jsColumns);
     }
 
@@ -180,7 +175,7 @@ public class GridLightDomTable implements MutationListener {
                 row.setStyleName(className);
             }
 
-            for (int j = 0; j < $ths.size(); j++) {
+            for (int j = 0; j < $ths.size() && j < numberColumns; j++) {
                 final GQuery $th = $ths.eq(j);
                 Column<?, Object> column = dataColumns.get(j);
                 StaticCell cell = row.getCell(column);
