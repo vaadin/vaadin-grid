@@ -218,6 +218,19 @@
           expect(selectListener.args[0][0]).to.have.property('type', 'select');
         });
 
+        it('should cache selectedRows until data source is loaded', function() {
+          grid.data.source = function(req) {
+            expect(grid.selectedRows).to.eql([0,1,2]);
+
+            req.success(['foo'], 1);
+
+            expect(grid.selectedRows).to.eql([0]);
+          };
+
+          grid.selectionMode = 'multi';
+          grid.selectedRows = [0,1,2];
+        });
+
         describe('with mode: single', function() {
           beforeEach(function() {
             grid.selectionMode = 'single';
