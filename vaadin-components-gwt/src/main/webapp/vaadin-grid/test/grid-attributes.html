@@ -15,6 +15,14 @@
 
 <script>
   describe('attributes', function() {
+    function setSelectionMode(mode) {
+      grid.setAttribute('selection-mode', mode);
+    };
+
+    function setSelectedRows(rows) {
+      grid.setAttribute('selected-rows', rows);
+    };
+
     beforeEach(function(done) {
       waitUntilGridReady(grid, function() {
         initializeGrid(done);
@@ -23,25 +31,25 @@
 
     describe('selection-mode', function() {
       it('should set selectionMode to none', function() {
-        grid.setAttribute('selection-mode', 'none');
+        setSelectionMode('none');
 
         expect(grid.selectionMode).to.equal('none');
       });
 
       it('should set selectionMode to single', function() {
-        grid.setAttribute('selection-mode', 'single');
+        setSelectionMode('single');
 
         expect(grid.selectionMode).to.equal('single');
       });
 
       it('should set selectionMode to multi', function() {
-        grid.setAttribute('selection-mode', 'multi');
+        setSelectionMode('multi');
 
         expect(grid.selectionMode).to.equal('multi');
       });
 
       it('should should remove selectionMode property', function() {
-        grid.setAttribute('selection-mode', 'none');
+        setSelectionMode('none');
         grid.removeAttribute('selection-mode');
 
         // 'single' is the default
@@ -51,7 +59,7 @@
       // TODO: throws an error, but for some reason expect doesn't catch it.
       it.skip('should fail setting the value to foobar', function() {
         expect(function() {
-          grid.setAttribute('selection-mode', 'foobar');
+          setSelectionMode('foobar');
         }).to.throw(Object);
       });
     });
@@ -59,35 +67,67 @@
     describe('selected-rows', function() {
       describe('with mode: single', function() {
         beforeEach(function() {
-          grid.setAttribute('selection-mode', 'single');
+          setSelectionMode('single');
         });
 
         it('should set a single value to selectedRows', function() {
-          grid.setAttribute('selected-rows', '0');
+          setSelectedRows('0');
 
           expect(grid.selectedRows).to.contain(0);
         });
 
         it('should set the last value to selectedRows', function() {
-          grid.setAttribute('selected-rows', '0,1');
+          setSelectedRows('0,1');
 
           expect(grid.selectedRows).to.contain(1);
         });
 
         it('should set empty to selectedRows when setting empty value', function() {
-          grid.setAttribute('selected-rows', '0');
+          setSelectedRows('0');
 
-          grid.setAttribute('selected-rows', '');
+          setSelectedRows('');
 
           expect(grid.selectedRows).to.be.empty;
         });
 
-        it('should set empty to selectedRows when removing attribute', function() {
-          grid.setAttribute('selected-rows', '0');
+        // TODO: https://github.com/vaadin/components/issues/3
+        it.skip('should set empty to selectedRows when removing attribute', function() {
+          setSelectedRows('0');
 
           grid.removeAttribute('selected-rows');
 
           expect(grid.selectedRows).to.be.empty;
+        });
+      });
+
+      describe('with selection-mode: multi', function() {
+        beforeEach(function() {
+          setSelectionMode('multi');
+        });
+
+        it('should set a single value to selectedRows', function() {
+          setSelectedRows('1');
+
+          expect(grid.selectedRows).to.include(1);
+        });
+
+        it('should set multiple values to selectedRows', function() {
+          setSelectedRows('0 , 1');
+
+          expect(grid.selectedRows).to.include.members([0,1]);
+        });
+
+        it('should set empty to selectedRows', function() {
+          setSelectedRows('');
+
+          expect(grid.selectedRows).to.be.empty;
+        });
+
+        it('should leave out invalid values', function() {
+          setSelectedRows('1, foobar, 0');
+
+          expect(grid.selectedRows).to.include.members([0,1]);
+          expect(grid.selectedRows).to.not.include('foobar');
         });
       });
     });

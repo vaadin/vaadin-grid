@@ -21,6 +21,14 @@
       });
     });
 
+    function getSelectionMode() {
+      return grid.getAttribute('selection-mode');
+    };
+
+    function getSelectedRows() {
+      return grid.getAttribute('selected-rows');
+    };
+
     describe('selectionMode', function() {
       var checkBoxQuery = "input[type='checkbox']";
 
@@ -39,21 +47,21 @@
       it('should set selection-mode to none', function() {
         grid.selectionMode = 'none';
 
-        expect(grid.getAttribute('selection-mode')).to.equal('none');
+        expect(getSelectionMode()).to.equal('none');
         expect(qLocal(checkBoxQuery)).to.be.undefined;
       });
 
       it('should set selection-mode to single', function() {
         grid.selectionMode = 'single';
 
-        expect(grid.getAttribute('selection-mode')).to.equal('single');
+        expect(getSelectionMode()).to.equal('single');
         expect(qLocal(checkBoxQuery)).to.be.undefined;
       });
 
       it('should set selection-mode to multi', function() {
         grid.selectionMode = 'multi';
 
-        expect(grid.getAttribute('selection-mode')).to.equal('multi');
+        expect(getSelectionMode()).to.equal('multi');
         expect(qLocal(checkBoxQuery)).to.not.be.undefined;
       });
 
@@ -88,13 +96,13 @@
         it('should set a single value to selected-rows', function() {
           grid.selectedRows = [1];
 
-          expect(grid.getAttribute('selected-rows')).to.equal('1');
+          expect(getSelectedRows()).to.equal('1');
         });
 
         it('should set the last value from an array to selected-rows', function() {
           grid.selectedRows = [0,1];
 
-          expect(grid.getAttribute('selected-rows')).to.equal('1');
+          expect(getSelectedRows()).to.equal('1');
         });
 
         it('should clear the selected-rows value when given an invalid row', function() {
@@ -102,7 +110,51 @@
 
           grid.selectedRows = 'foobar';
 
-          expect(grid.getAttribute('selected-rows')).to.equal('');
+          expect(getSelectedRows()).to.equal('');
+        });
+      });
+
+      describe('with selectionMode: multi', function() {
+        beforeEach(function () {
+          grid.selectionMode = 'multi';
+        });
+
+        it('should set a single value to selection-mode', function() {
+          grid.selectedRows = [1];
+
+          expect(getSelectedRows()).to.equal('1');
+        });
+
+        it('should set multiple values to selection-mode', function() {
+          grid.selectedRows = [0,1];
+
+          expect(getSelectedRows()).to.equal('0,1');
+        });
+
+        // TODO: https://github.com/vaadin/components/issues/2
+        it.skip('should remove selection-mode when set to undefined', function() {
+          grid.selectedRows = [0];
+
+          grid.selectedRows = undefined;
+
+          expect(grid.getAttribute('selected-rows')).to.be.undefined;
+        });
+
+        it('should set selection-mode to empty', function() {
+          grid.selectedRows = [0];
+
+          grid.selectedRows = [];
+
+          expect(getSelectedRows()).to.be.empty;
+        });
+
+        it('should fire a \'select\' event', function() {
+          var spy = sinon.spy();
+          grid.addEventListener('select', spy);
+
+          grid.selectedRows = [0,1];
+
+          expect(spy.calledOnce).to.be.true;
         });
       });
     });
