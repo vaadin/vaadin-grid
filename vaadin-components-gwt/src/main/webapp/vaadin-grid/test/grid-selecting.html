@@ -479,6 +479,52 @@
         });
       });
     });
+
+    describe('deselecting rows using API', function() {
+      it('should fire \'select\' event', function() {
+        grid.selectedRows = [0];
+
+        grid.deselect(0);
+
+        expect(selectListener.calledTwice).to.be.true;
+      });
+
+      describe('with selectionMode: single', function() {
+        beforeEach(function() {
+          grid.selectionMode = 'single';
+        });
+
+        it('should deselect a row', function() {
+          grid.selectedRows = [0];
+
+          grid.deselect(0);
+
+          expect(grid.selectedRows).to.be.empty;
+        });
+
+        it('should not deselect other rows', function() {
+          grid.selectedRows = [0];
+
+          grid.deselect(1);
+
+          expect(getSelectedRowsAttr()).to.equal('0');
+        });
+      });
+
+      describe('with selectionMode: multi', function() {
+        beforeEach(function() {
+          grid.selectionMode = 'multi';
+        });
+
+        it('should deselect a single row', function() {
+          grid.selectedRows = [0,1];
+
+          grid.deselect(0);
+
+          expect(getSelectedRowsAttr()).to.equal('1');
+        });
+      });
+    });
   });
 </script>
 </body>

@@ -151,32 +151,6 @@
         assert.isTrue(cells[1].innerHTML == '10000');
       });
 
-      test('deselect function', function() {
-        var spy = sinon.spy();
-        grid.addEventListener("select", spy);
-
-        grid.selectionMode = "multi";
-        grid.selectedRows = [0, 1];
-        grid.deselect(0);
-        expect(grid.selectedRows).to.eql([1]);
-
-        grid.deselect(1);
-        expect(grid.selectedRows).to.be.empty;
-
-        grid.selectedRows = [0, 1];
-        grid.deselect(2);
-        expect(grid.selectedRows).to.eql([0, 1]);
-
-        grid.selectionMode = "single";
-        grid.select(1);
-        grid.deselect(0);
-        expect(grid.selectedRows).not.to.be.empty;
-        grid.deselect(1);
-        expect(grid.selectedRows).to.be.empty;
-
-        assert.equal(spy.callCount, 6);
-      });
-
       test('scrollToRow function', function(done) {
         infiniteDataSource.size = 100;
         grid.data.source = infiniteDataSource;
