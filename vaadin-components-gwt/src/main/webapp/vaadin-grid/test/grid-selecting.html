@@ -15,42 +15,57 @@
 
 <script>
   describe('selecting rows', function() {
+    var selectListener;
+
     beforeEach(function(done) {
       waitUntilGridReady(grid, function() {
-        initializeGrid(done);
+        initializeGrid(function() {
+          selectListener = sinon.spy();
+          grid.addEventListener('select', selectListener);
+
+          done();
+        });
       });
     });
 
+    function getSelectionModeAttr() {
+      return grid.getAttribute('selection-mode');
+    };
+
+    function getSelectedRowsAttr() {
+      return grid.getAttribute('selected-rows');
+    };
+
+    function setSelectionModeAttr(mode) {
+      grid.setAttribute('selection-mode', mode);
+    };
+
+    function setSelectedRowsAttr(rows) {
+      grid.setAttribute('selected-rows', rows);
+    };
+
     describe('using attributes', function() {
-      function setSelectionMode(mode) {
-        grid.setAttribute('selection-mode', mode);
-      };
-
-      function setSelectedRows(rows) {
-        grid.setAttribute('selected-rows', rows);
-      };
-
       describe('selection-mode', function() {
         it('should set selectionMode to none', function() {
-          setSelectionMode('none');
+          setSelectionModeAttr('none');
 
           expect(grid.selectionMode).to.equal('none');
         });
 
         it('should set selectionMode to single', function() {
-          setSelectionMode('single');
+          setSelectionModeAttr('single');
 
           expect(grid.selectionMode).to.equal('single');
         });
 
         it('should set selectionMode to multi', function() {
-          setSelectionMode('multi');
+          setSelectionModeAttr('multi');
 
           expect(grid.selectionMode).to.equal('multi');
         });
 
         it('should should remove selectionMode property', function() {
-          setSelectionMode('none');
+          setSelectionModeAttr('none');
           grid.removeAttribute('selection-mode');
 
           // 'single' is the default
@@ -60,7 +75,7 @@
         // TODO: throws an error, but for some reason expect doesn't catch it.
         it.skip('should fail setting the value to foobar', function() {
           expect(function() {
-            setSelectionMode('foobar');
+            setSelectionModeAttr('foobar');
           }).to.throw(Object);
         });
       });
@@ -68,32 +83,32 @@
       describe('selected-rows', function() {
         describe('with mode: single', function() {
           beforeEach(function() {
-            setSelectionMode('single');
+            setSelectionModeAttr('single');
           });
 
           it('should set a single value to selectedRows', function() {
-            setSelectedRows('0');
+            setSelectedRowsAttr('0');
 
             expect(grid.selectedRows).to.contain(0);
           });
 
           it('should set the last value to selectedRows', function() {
-            setSelectedRows('0,1');
+            setSelectedRowsAttr('0,1');
 
             expect(grid.selectedRows).to.contain(1);
           });
 
           it('should set empty to selectedRows when setting empty value', function() {
-            setSelectedRows('0');
+            setSelectedRowsAttr('0');
 
-            setSelectedRows('');
+            setSelectedRowsAttr('');
 
             expect(grid.selectedRows).to.be.empty;
           });
 
           // TODO: https://github.com/vaadin/components/issues/3
           it.skip('should set empty to selectedRows when removing attribute', function() {
-            setSelectedRows('0');
+            setSelectedRowsAttr('0');
 
             grid.removeAttribute('selected-rows');
 
@@ -103,46 +118,50 @@
 
         describe('with selection-mode: multi', function() {
           beforeEach(function() {
-            setSelectionMode('multi');
+            setSelectionModeAttr('multi');
           });
 
           it('should set a single value to selectedRows', function() {
-            setSelectedRows('1');
+            setSelectedRowsAttr('1');
 
             expect(grid.selectedRows).to.include(1);
           });
 
           it('should set multiple values to selectedRows', function() {
-            setSelectedRows('0 , 1');
+            setSelectedRowsAttr('0 , 1');
 
             expect(grid.selectedRows).to.include.members([0,1]);
           });
 
           it('should set empty to selectedRows', function() {
-            setSelectedRows('');
+            setSelectedRowsAttr('');
 
             expect(grid.selectedRows).to.be.empty;
           });
 
           it('should leave out invalid values', function() {
-            setSelectedRows('1, foobar, 0');
+            setSelectedRowsAttr('1, foobar, 0');
 
             expect(grid.selectedRows).to.include.members([0,1]);
             expect(grid.selectedRows).to.not.include('foobar');
+          });
+        });
+
+        describe('with selection-mode: none', function() {
+          beforeEach(function() {
+            setSelectionModeAttr('none');
+          });
+
+          it('should not set any rows', function() {
+            setSelectedRowsAttr('0');
+
+            expect(grid.selectedRows).to.be.empty;
           });
         });
       });
     });
 
     describe('using properties', function() {
-      function getSelectionMode() {
-        return grid.getAttribute('selection-mode');
-      };
-
-      function getSelectedRows() {
-        return grid.getAttribute('selected-rows');
-      };
-
       describe('selectionMode', function() {
         var checkBoxQuery = "input[type='checkbox']";
 
@@ -161,21 +180,21 @@
         it('should set selection-mode to none', function() {
           grid.selectionMode = 'none';
 
-          expect(getSelectionMode()).to.equal('none');
+          expect(getSelectionModeAttr()).to.equal('none');
           expect(qLocal(checkBoxQuery)).to.be.undefined;
         });
 
         it('should set selection-mode to single', function() {
           grid.selectionMode = 'single';
 
-          expect(getSelectionMode()).to.equal('single');
+          expect(getSelectionModeAttr()).to.equal('single');
           expect(qLocal(checkBoxQuery)).to.be.undefined;
         });
 
         it('should set selection-mode to multi', function() {
           grid.selectionMode = 'multi';
 
-          expect(getSelectionMode()).to.equal('multi');
+          expect(getSelectionModeAttr()).to.equal('multi');
           expect(qLocal(checkBoxQuery)).to.not.be.undefined;
         });
 
@@ -194,12 +213,9 @@
         });
 
         it('should fire \'select\' event', function() {
-          var spy = sinon.spy();
-          grid.addEventListener('select', spy);
-
           grid.selectedRows = [0];
 
-          expect(spy.args[0][0]).to.have.property('type', 'select');
+          expect(selectListener.args[0][0]).to.have.property('type', 'select');
         });
 
         describe('with mode: single', function() {
@@ -210,13 +226,13 @@
           it('should set a single value to selected-rows', function() {
             grid.selectedRows = [1];
 
-            expect(getSelectedRows()).to.equal('1');
+            expect(getSelectedRowsAttr()).to.equal('1');
           });
 
           it('should set the last value from an array to selected-rows', function() {
             grid.selectedRows = [0,1];
 
-            expect(getSelectedRows()).to.equal('1');
+            expect(getSelectedRowsAttr()).to.equal('1');
           });
 
           it('should clear the selected-rows value when given an invalid row', function() {
@@ -224,7 +240,7 @@
 
             grid.selectedRows = 'foobar';
 
-            expect(getSelectedRows()).to.equal('');
+            expect(getSelectedRowsAttr()).to.equal('');
           });
         });
 
@@ -236,13 +252,13 @@
           it('should set a single value to selection-mode', function() {
             grid.selectedRows = [1];
 
-            expect(getSelectedRows()).to.equal('1');
+            expect(getSelectedRowsAttr()).to.equal('1');
           });
 
           it('should set multiple values to selection-mode', function() {
             grid.selectedRows = [0,1];
 
-            expect(getSelectedRows()).to.equal('0,1');
+            expect(getSelectedRowsAttr()).to.equal('0,1');
           });
 
           // TODO: https://github.com/vaadin/components/issues/2
@@ -259,17 +275,96 @@
 
             grid.selectedRows = [];
 
-            expect(getSelectedRows()).to.be.empty;
+            expect(getSelectedRowsAttr()).to.be.empty;
           });
 
           it('should fire a \'select\' event', function() {
-            var spy = sinon.spy();
-            grid.addEventListener('select', spy);
-
             grid.selectedRows = [0,1];
 
-            expect(spy.calledOnce).to.be.true;
+            expect(selectListener.calledOnce).to.be.true;
           });
+        });
+
+        describe('with selectionMode: none', function() {
+          beforeEach(function() {
+            grid.selectionMode = 'none';
+          });
+
+          it('should not select any rows', function() {
+            grid.selectedRows = [0];
+
+            expect(getSelectedRowsAttr()).to.be.null;
+          });
+        });
+      });
+    });
+
+    describe('by clicking', function() {
+      function getFirstCell() {
+        return qLocal('.v-grid-body .v-grid-cell');
+      }
+
+      function clickFirstCell() {
+        return getFirstCell().click();
+      }
+
+      it('should fire a \'select\' event', function() {
+        clickFirstCell();
+
+        expect(selectListener.calledOnce).to.be.true;
+      });
+
+      describe('with selection-mode: single', function() {
+        beforeEach(function() {
+          setSelectionModeAttr('single');
+        });
+
+        it('should select a row', function() {
+          clickFirstCell();
+
+          expect(getSelectedRowsAttr()).to.equal('0');
+        });
+
+        it('should deselect the row on clicking again', function() {
+          clickFirstCell();
+
+          clickFirstCell();
+
+          expect(getSelectedRowsAttr()).to.be.empty;
+        });
+      });
+
+      describe('with selection-mode: multi', function() {
+        beforeEach(function() {
+          setSelectionModeAttr('multi');
+        });
+
+        it('should only focus a clicked cell', function() {
+          clickFirstCell();
+
+          expect(getSelectedRowsAttr()).to.be.null;
+          expect(getFirstCell().getAttribute('class')).to.contain('focus');
+        });
+
+        // TODO: apparently clicking checkboxes isn't going to happen using JS...
+        it.skip('should select multiple rows', function() {
+          var inputs = qaLocal('input');
+          inputs[0].checked = true;
+          inputs[1].click();
+
+          expect(getSelectedRowsAttr()).to.equal('0,1');
+        });
+      });
+
+      describe('with selection-mode: none', function() {
+        beforeEach(function() {
+          setSelectionModeAttr('none');
+        });
+
+        it('should not select a row', function() {
+          clickFirstCell();
+
+          expect(getSelectedRowsAttr()).to.be.null;
         });
       });
     });

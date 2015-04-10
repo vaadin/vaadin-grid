@@ -151,19 +151,6 @@
         assert.isTrue(cells[1].innerHTML == '10000');
       });
 
-      test('row click select', function() {
-        var spy = sinon.spy();
-        grid.addEventListener("select", spy);
-
-        var cell = qLocal(".v-grid-body .v-grid-cell");
-        cell.click();
-        assert.equal(grid.getAttribute("selected-rows"), "0");
-        cell.click();
-        assert.isTrue(grid.getAttribute("selected-rows") === "");
-
-        assert.equal(spy.callCount, 2);
-      });
-
       test('select function', function() {
         var spy = sinon.spy();
         grid.addEventListener("select", spy);
