@@ -151,28 +151,6 @@
         assert.isTrue(cells[1].innerHTML == '10000');
       });
 
-      test('select function', function() {
-        var spy = sinon.spy();
-        grid.addEventListener("select", spy);
-
-        grid.selectionMode = "multi";
-        grid.select(0);
-        grid.select(1);
-        expect(grid.selectedRows).to.eql([0, 1]);
-
-        grid.selectionMode = "single";
-        expect(grid.selectedRows).to.be.empty;
-
-        grid.select(0);
-        grid.select(1);
-        expect(grid.selectedRows).to.eql([1]);
-
-        grid.select(2);
-        assert.equal(1, grid.selectedRows[0]);
-
-        assert.equal(spy.callCount, 4);
-      });
-
       test('selected rows before data iterations', function(done) {
         removeGrid(grid);
 

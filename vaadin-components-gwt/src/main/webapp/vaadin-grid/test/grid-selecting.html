@@ -3,7 +3,7 @@
 <head lang="en">
   <meta charset="UTF-8">
   <title></title>
-  <script src="common.js" />
+  <script src="common.js"></script>
   <script src="../../bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
   <script src="../../bower_components/web-component-tester/browser.js"></script>
 
@@ -242,6 +242,22 @@
 
             expect(getSelectedRowsAttr()).to.equal('');
           });
+
+          it('should clear the selection when changing mode to none', function() {
+            grid.selectedRows = [0];
+
+            grid.selectionMode = 'none';
+
+            expect(grid.selectedRows).to.be.empty;
+          });
+
+          it('should clear selection when changing mode to multi', function() {
+            grid.selectedRows = [1];
+
+            grid.selectionMode = 'multi';
+
+            expect(grid.selectedRows).to.be.empty;
+          });
         });
 
         describe('with selectionMode: multi', function() {
@@ -282,6 +298,30 @@
             grid.selectedRows = [0,1];
 
             expect(selectListener.calledOnce).to.be.true;
+          });
+
+          it('should clear the selection when changing mode to none', function() {
+            grid.selectedRows = [0,1];
+
+            grid.selectionMode = 'none';
+
+            expect(grid.selectedRows).to.be.empty;
+          });
+
+          it('should clear selection when changing mode to single', function() {
+            grid.selectedRows = [1];
+
+            grid.selectionMode = 'single';
+
+            expect(grid.selectedRows).to.be.empty;
+          });
+
+          it('should remove multiple selections when changing mode to single', function() {
+            grid.selectedRows = [0,1];
+
+            grid.selectionMode = 'single';
+
+            expect(grid.selectedRows).to.be.empty;
           });
         });
 
@@ -363,6 +403,64 @@
 
         it('should not select a row', function() {
           clickFirstCell();
+
+          expect(getSelectedRowsAttr()).to.be.null;
+        });
+      });
+    });
+
+    describe('by using API', function() {
+      it('should fire a \'select\' event', function() {
+        grid.select(0);
+
+        expect(selectListener.calledOnce).to.be.true;
+      });
+
+      it('should not select invalid row', function() {
+        grid.select('foo');
+
+        expect(getSelectedRowsAttr()).to.be.null;
+      });
+
+      describe('with selectionMode: single', function() {
+        beforeEach(function() {
+          grid.selectionMode = 'single';
+        });
+
+        it('should select a row', function() {
+          grid.select(1);
+
+          expect(getSelectedRowsAttr()).to.equal('1');
+        });
+
+        it('should select another row', function() {
+          grid.select(1);
+          grid.select(0);
+
+          expect(getSelectedRowsAttr()).to.equal('0');
+        });
+      });
+
+      describe('with selectionMode: multi', function() {
+        beforeEach(function() {
+          grid.selectionMode = 'multi';
+        })
+
+        it('should select multiple rows', function() {
+          grid.select(0);
+          grid.select(1);
+
+          expect(getSelectedRowsAttr()).to.equal('0,1');
+        });
+      });
+
+      describe('with selectionMode: none', function() {
+        beforeEach(function() {
+          grid.selectionMode = 'none';
+        });
+
+        it('should not select a row', function() {
+          grid.select(0);
 
           expect(getSelectedRowsAttr()).to.be.null;
         });
