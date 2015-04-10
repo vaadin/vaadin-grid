@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <title></title>
+  <script src="../../bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+  <script src="../../bower_components/web-component-tester/browser.js"></script>
+  <script src="../../VaadinGrid/VaadinGrid.nocache.js"></script>
+  <script src="common.js"></script>
+
+  <link rel="import" href="../vaadin-grid.html">
+</head>
+<body>
+
+<div id="gridwrapper"></div>
+
+<script>
+  describe.feature('rendering light DOM', function() {
+    it('light dom table header gets rendered in the grid', function() {
+      var row = qLocal(".v-grid-header .v-grid-row");
+      var cells = row.childNodes;
+
+      assert.isTrue(cells[0].innerHTML == 'Name');
+      assert.isTrue(cells[1].innerHTML == 'Value');
+    });
+
+    it('light dom table body gets rendered in the grid', function() {
+      var row = qLocal(".v-grid-body .v-grid-row");
+      var cells = row.childNodes;
+
+      assert.isTrue(cells[0].innerHTML == 'Grid');
+      assert.isTrue(cells[1].innerHTML == '10000');
+    });
+  });
+</script>

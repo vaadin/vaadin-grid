@@ -32,8 +32,11 @@ function waitUntil(check, exec, onTimeout) {
     assert.fail();
     onTimeout();
   }, 5000);
-}
+};
 
+function gridContainsText(_grid, text) {
+  return Polymer.dom(_grid.root).querySelector(".v-grid").innerHTML.indexOf(text) > -1;
+};
 
 function initializeGrid(done) {
   wrapper = document.getElementById("gridwrapper");
