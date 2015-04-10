@@ -1,3 +1,17 @@
+var grid, wrapper;
+
+describe.feature = function(description, suite) {
+  describe(description, function() {
+    beforeEach(function(done) {
+      waitUntilGridReady(grid, function() {
+        initializeGrid(done);
+      });
+    });
+
+    suite();
+  });
+};
+
 function waitUntilGridReady(grid, done) {
   waitUntil(function() {
     return !grid || grid.grid.isWorkPending() === false;
@@ -20,7 +34,6 @@ function waitUntil(check, exec, onTimeout) {
   }, 5000);
 }
 
-var grid, wrapper;
 
 function initializeGrid(done) {
   wrapper = document.getElementById("gridwrapper");
