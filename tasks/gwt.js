@@ -31,7 +31,7 @@ function system(command, cb) {
   });
 };
 
-gulp.task('gwt:compile', function(done) {
+gulp.task('gwt:compile', ['gwt:clean-maven'], function(done) {
   gutil.log('Updating Maven dependencies ...');
   system('mvn compile -q -am -pl ' + gwtproject, function() {
     gutil.log('Compiling GWT components ...');
@@ -58,6 +58,7 @@ gulp.task('clean:gwt', ['gwt:clean-maven'], function() {
 gulp.task('gwt:copy-files', ['gwt:compile', 'clean:gwt'], function() {
   return gulp.src(webComponentDir + '**/*')
           .pipe(replace(new RegExp('^.*script.*' + moduleName + '.*$','mg'), ''))
+          .pipe(replace(/(src|href)=("|')([\.\.\/]*)\/bower_components\//mg, '$1=$2$3/../bower_components/'))
           .pipe(gulp.dest(componentDir));
 });
 
