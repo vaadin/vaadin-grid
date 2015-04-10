@@ -74,6 +74,8 @@ import com.vaadin.shared.ui.grid.ScrollDestination;
 public class GridComponent implements SelectionHandler<Object>, EventListener,
         SortHandler<Object> {
 
+    public final int defaultHeightByRows;
+
     private final ViolatedGrid grid;
     private JSArray<JSSortOrder> jsSort;
 
@@ -88,6 +90,7 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
 
     public GridComponent() {
         grid = new ViolatedGrid();
+        defaultHeightByRows = (int)grid.getHeightByRows();
         grid.setSelectionModel(new IndexBasedSelectionModelSingle());
         grid.addSelectionHandler(this);
         grid.addSortHandler(this);
@@ -266,7 +269,11 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
 
     public void setDataSource(JavaScriptObject data) {
         if (JsUtils.isFunction(data)) {
-            grid.setDataSource(new GridJsFuncDataSource(data, this));
+            // We cannot attach ds to the grid until we get the async
+            // response that brings the number of rows in the table
+            // otherwise we set a size of zero and grid will never
+            // request for more rows.
+            new GridJsFuncDataSource(data, this);
         } else {
             throw new RuntimeException("Unknown data source type: " + data
                     + ". Arrays and Functions are supported only.");
@@ -285,7 +292,7 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
     public void refresh() {
         final JsArrayInteger a = getSelectedRows();
         ((GridDataSource) grid.getDataSource()).refresh();
-        redrawer.redraw(true);
+        redraw(true);
         if (a.length() > 0) {
             $(container).delay(5, new Function() {
                 @Override

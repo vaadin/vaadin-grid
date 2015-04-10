@@ -15,6 +15,7 @@ import com.vaadin.components.grid.data.GridDataSource;
  * Right now we need to notify the grid for size changed.
  */
 public class Redraw extends Timer {
+    private final GridComponent gridComponent;
     private final Grid<?> grid;
     private GQuery container;
     boolean heightByRows = false;
@@ -23,7 +24,8 @@ public class Redraw extends Timer {
     private int defaultRows, numberRows, width, height;
 
     public Redraw(GridComponent gridComponent) {
-        grid = gridComponent.getGrid();
+        this.gridComponent = gridComponent;
+        this.grid = gridComponent.getGrid();
     }
 
     public void setContainer(Element containerElement) {
@@ -41,17 +43,16 @@ public class Redraw extends Timer {
         if (forceRedraw = force) {
             height = 0;
         }
-        schedule(50);
+        schedule(force ? 1 : 30);
     }
 
     @Override
     public void run() {
         if (defaultRows == 0) {
-            defaultRows = (int) grid.getHeightByRows();
+            defaultRows = gridComponent.defaultHeightByRows;
             if (numberRows == 0) {
                 numberRows = defaultRows;
             }
-
         }
 
         int w = container.width();
@@ -66,18 +67,16 @@ public class Redraw extends Timer {
         }
 
         // If height is set using the 'rows' attribute, we always use it.
-        if (forceRedraw || heightByRows) {
-            if (numberRows != defaultRows) {
-                numberRows = defaultRows;
-                setHeightByRows(numberRows);
-            }
+        if (heightByRows) {
+            setHeightByRows(defaultRows);
         } else {
             int h = container.height();
-            if (h != height) {
+            if (Math.abs(h - height) > 1) {
                 // Let see whether our container has a height set in CCS or it's
                 // auto. The only way to know it is comparing container and grid
-                // sizes.
-                heightAuto = h == $(grid).innerHeight();
+                // sizes. For some reason in chrome grid height sometime differs
+                // in 1 pixel with its container
+                heightAuto = Math.abs(h - $(grid).innerHeight()) <= 1;
                 if (!heightAuto) {
                     // Container has a fixed height, so setting it to 100% makes
                     // the grid expand to fill all the space. It also makes the
@@ -93,10 +92,7 @@ public class Redraw extends Timer {
                     GridDataSource ds = (GridDataSource) grid.getDataSource();
                     int nsize = Math.min(ds == null ? 0 : ds.size(),
                             defaultRows);
-                    if (nsize != numberRows) {
-                        numberRows = nsize;
-                        setHeightByRows(numberRows);
-                    }
+                    setHeightByRows(nsize);
                 }
                 grid.resetSizesFromDom();
             }
@@ -109,12 +105,17 @@ public class Redraw extends Timer {
     // have performance problems in FF.
     void setHeightByRows(int rows) {
         // grid.setHeightByRows(rows);
-        int h = $(grid).find("tr td").height() + 1;
-        rows = Integer.parseInt(String.valueOf(rows));
-        rows += grid.isHeaderVisible() ? grid.getHeaderRowCount() : 0;
-        rows += grid.isFooterVisible() ? grid.getFooterRowCount() : 0;
-        height = h * rows;
-        grid.setHeight(height + "px");
+        if (rows > 0) {
+            rows = Integer.parseInt(String.valueOf(rows));
+            rows += grid.isHeaderVisible() ? grid.getHeaderRowCount() : 0;
+            rows += grid.isFooterVisible() ? grid.getFooterRowCount() : 0;
+            if (forceRedraw || rows != numberRows) {
+                numberRows = rows;
+                int h = $(grid).find("tr td").height() + 1;
+                height = h * rows;
+                grid.setHeight(height + "px");
+            }
+        }
     }
 
     public void setSize(int size) {

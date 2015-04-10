@@ -21,44 +21,56 @@ public class GridJsFuncDataSource extends GridDataSource {
         super(grid);
         assert JsUtils.isFunction(jso);
         jsFunction = jso;
+        // We need to do a first query to DB in order to get the initial size
+        // and then attach the data-source to the grid, otherwise the grid will
+        // never call the requestRows method when size is zero.
+        doRequest(0, 0, null);
     }
 
     @Override
     protected void requestRows(
             final int firstRowIndex,
             final int numberOfRows,
-            final com.vaadin.client.data.AbstractRemoteDataSource.RequestRowsCallback<Object> callback) {
+            final RequestRowsCallback<Object> callback) {
 
+        doRequest(firstRowIndex, numberOfRows, callback);
+    }
+
+    private void doRequest(int idx, int count, Object cb) {
         JSDataRequest jsDataRequest = JS.createJsType(JSDataRequest.class);
-        jsDataRequest.setIndex(firstRowIndex);
-        jsDataRequest.setCount(numberOfRows);
+        jsDataRequest.setIndex(idx);
+        jsDataRequest.setCount(count);
         jsDataRequest.setSortOrder(gridComponent.getSortOrder());
-        // jsDataRequest.setFilterData();
         jsDataRequest.setSuccess(JsUtils.wrapFunction(new Function() {
             @Override
             public void f() {
                 List<Object> list = JS.asList(arguments(0));
+                Double totalSize = arguments(1);
+
                 for (int i = 0; i < list.size(); i++) {
                     if (JS.isPrimitiveType(list.get(i))) {
                         list.set(i, new DataItemContainer(list.get(i)));
                     }
                 }
 
-                Object totalSize = arguments(1);
                 if (totalSize != null) {
-                    size = ((Double) totalSize).intValue();
+                    size(totalSize.intValue());
                 }
-                callback.onResponse(list, size);
+
+                if (cb != null) {
+                    ((RequestRowsCallback)cb).onResponse(list, size());
+                }
             }
         }));
-        jsDataRequest.setFailure(JsUtils.wrapFunction(new Function() {
-            @Override
-            public void f() {
-                callback.onResponse(Collections.emptyList(), size);
-            }
-        }));
+        if (cb != null) {
+            jsDataRequest.setFailure(JsUtils.wrapFunction(new Function() {
+                @Override
+                public void f() {
+                    ((RequestRowsCallback)cb).onResponse(Collections.emptyList(), size());
+                }
+            }));
+        }
 
         JS.exec(jsFunction, jsDataRequest);
     }
-
 }

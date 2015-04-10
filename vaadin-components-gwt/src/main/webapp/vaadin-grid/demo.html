@@ -197,11 +197,14 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
     </thead>
   </table>
   </v-grid>
+    <button id="updateButton">update</button>
+    <button id="addButton">add</button>
+    <button id="removeButton">remove</button>
   <script>
-      waitUntilGridReady("myMapGrid", function(grid) {
-        var data = [{ name: "Grid", value: 10000, progress: 0.8 },
-                { name: "Vaadin X", value: 999999, progress: 0.01 }];
+    var data = [{ name: "Grid", value: 10000, progress: 0.8 },
+      { name: "Vaadin X", value: 999999, progress: 0.01 }];
 
+      waitUntilGridReady("myMapGrid", function(grid) {
         grid.data.source = function(req) {
           req.success(data.slice(req.index, req.index + req.count), data.length);
         };
@@ -212,6 +215,28 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
 
         grid.columns[1].name = "value";
         grid.columns[2].name = "progress";
+      });
+
+      document.querySelector('#updateButton').addEventListener('click', function(e) {
+        var grid = document.querySelector('#myMapGrid');
+
+        var updatedItem = {name: "Button X", value: Math.round(Math.random() * 1000), progress: Math.random()};
+        data[0] = updatedItem;
+        grid.data.dataUpdated(0, [updatedItem]);
+      });
+
+      document.querySelector('#addButton').addEventListener('click', function(e) {
+        var grid = document.querySelector('#myMapGrid');
+
+        data.splice(0, 0, {name: "Button " + data.length, value: 111, progress: 0.01});
+        grid.data.dataAdded(0, 1);
+      });
+
+      document.querySelector('#removeButton').addEventListener('click', function(e) {
+        var grid = document.querySelector('#myMapGrid');
+
+        data.splice(0, 1);
+        grid.data.dataRemoved(0, 1);
       });
   </script>
   </li>
