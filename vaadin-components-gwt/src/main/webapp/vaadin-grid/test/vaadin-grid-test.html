@@ -265,42 +265,6 @@
         assert.equal(grid.theme, "bar");
       });
 
-      test('sortOrder property', function() {
-        grid.sortOrder = [];
-        assert.lengthOf(grid.sortOrder, 0);
-
-        grid.sortOrder = [{
-          column: 0,
-          direction: "desc"
-        }];
-
-        assert.lengthOf(grid.sortOrder, 1);
-        var sortOrder = grid.sortOrder[0];
-        assert.equal(sortOrder.column, 0);
-        assert.equal(sortOrder.direction, "desc");
-
-        grid.sortOrder = [];
-        assert.lengthOf(grid.sortOrder, 0);
-
-        var assignInvalidSortOrder = function() {
-          grid.sortOrder = [{
-            column: 0,
-            direction: "ascending"
-          }];
-        };
-        expect(assignInvalidSortOrder).to.throw("Invalid sort direction");
-        assert.lengthOf(grid.sortOrder, 0);
-
-        grid.sortOrder = [{
-          column: 0,
-          direction: "asc"
-        }, {
-          column: 1
-        }];
-        assert.lengthOf(grid.sortOrder, 2);
-        assert.equal(grid.sortOrder[1].direction, "asc");
-      });
-
       test('add new column', function() {
         grid.addColumn({
           name: "foo",

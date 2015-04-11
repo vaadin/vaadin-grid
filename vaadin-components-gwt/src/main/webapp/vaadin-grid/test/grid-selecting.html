@@ -342,7 +342,7 @@
           it('should not select any rows', function() {
             grid.selectedRows = [0];
 
-            expect(getSelectedRowsAttr()).to.be.null;
+            expect(getSelectedRowsAttr()).to.equal('');
           });
         });
       });
@@ -391,7 +391,7 @@
         it('should only focus a clicked cell', function() {
           clickFirstCell();
 
-          expect(getSelectedRowsAttr()).to.be.null;
+          expect(getSelectedRowsAttr()).to.equal('');
           expect(getFirstCell().getAttribute('class')).to.contain('focus');
         });
 
@@ -413,7 +413,7 @@
         it('should not select a row', function() {
           clickFirstCell();
 
-          expect(getSelectedRowsAttr()).to.be.null;
+          expect(getSelectedRowsAttr()).to.equal('');
         });
       });
     });
@@ -428,7 +428,7 @@
       it('should not select invalid row', function() {
         grid.select('foo');
 
-        expect(getSelectedRowsAttr()).to.be.null;
+        expect(getSelectedRowsAttr()).to.equal('');
       });
 
       describe('with selectionMode: single', function() {
@@ -471,7 +471,7 @@
         it('should not select a row', function() {
           grid.select(0);
 
-          expect(getSelectedRowsAttr()).to.be.null;
+          expect(getSelectedRowsAttr()).to.equal('');
         });
       });
     });
