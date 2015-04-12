@@ -12,6 +12,8 @@ import java.util.List;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayInteger;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.core.client.js.JsExport;
 import com.google.gwt.core.client.js.JsNamespace;
 import com.google.gwt.core.client.js.JsNoExport;
@@ -495,6 +497,20 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
     }
 
     public boolean isWorkPending() {
-        return grid.isWorkPending();
+        return grid.getDataSource() == null
+                || ((GridDataSource) grid.getDataSource()).isWaitingForData()
+                || redrawer.isRunning() || grid.isWorkPending();
+    }
+
+    public void onReady(JavaScriptObject f) {
+        Scheduler.get().scheduleFixedPeriod(new RepeatingCommand() {
+            public boolean execute() {
+                if (!isWorkPending()) {
+                    JsUtils.jsni(f, "call", f);
+                    return false;
+                }
+                return true;
+            }
+        }, 30);
     }
 }
