@@ -244,6 +244,7 @@
         },
         set: function(newValue) {
           this.grid.setScrollTop(newValue);
+          return this;
         },
         enumerable: true,
         configurable: false
@@ -260,6 +261,9 @@
 
     /**
      * Scrolls to a certain row, using user-specified scroll destination.
+     * Since its asynchronous nature, this method returns a 'thenable'
+     * so as you can use the 'then()' method to be notified when the data
+     * request finished and the scroll is actually moved.
      *
      * @method scrollToRow
      * @param {number} index - zero-based index of the row to scroll to.
@@ -267,24 +271,33 @@
      */
     scrollToRow: function(index, scrollDestination) {
       this.grid.scrollToRow(index, scrollDestination);
+      return this;
     },
 
     /**
      * Scrolls to the beginning of the very first row.
+     * Since its asynchronous nature, this method returns a 'thenable'
+     * so as you can use the 'then()' method to be notified when the data
+     * request finished and the scroll is actually moved.
      *
      * @method scrollToStart
      */
     scrollToStart: function() {
       this.grid.scrollToStart();
+      return this;
     },
 
     /**
      * Scrolls to the end of the very last row.
+     * Since its asynchronous nature, this method returns a 'thenable'
+     * so as you can use the 'then()' method to be notified when the data
+     * request finished and the scroll is actually moved.
      *
      * @method scrollToEnd
      */
     scrollToEnd: function() {
       this.grid.scrollToEnd();
+      return this;
     },
 
     /**
@@ -457,6 +470,9 @@
       this.grid.setRows(rows);
       this.reflectPropertyToAttribute("rows");
     },
+    then: function(cb) {
+      return this.grid.then(cb);
+    }
   };
 
   function loadComponent() {

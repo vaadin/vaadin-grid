@@ -1,6 +1,7 @@
 package com.vaadin.components.grid;
 
 import static com.google.gwt.query.client.GQuery.$;
+import static com.google.gwt.query.client.GQuery.browser;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,6 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.google.gwt.core.client.JavaScriptException;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayInteger;
 import com.google.gwt.core.client.Scheduler;
@@ -22,9 +24,11 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.TableElement;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.js.JsUtils;
+import com.google.gwt.query.client.js.JsUtils.JsFunction;
 import com.google.gwt.query.client.plugins.widgets.WidgetsUtils;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
+import com.google.gwt.user.client.Window;
 import com.vaadin.client.data.DataSource;
 import com.vaadin.client.widget.grid.selection.SelectionEvent;
 import com.vaadin.client.widget.grid.selection.SelectionHandler;
@@ -39,6 +43,7 @@ import com.vaadin.client.widgets.Grid.SelectionMode;
 import com.vaadin.components.common.js.JS;
 import com.vaadin.components.common.js.JSArray;
 import com.vaadin.components.common.js.JSEnums;
+import com.vaadin.components.common.js.JSPromise;
 import com.vaadin.components.common.js.JSValidate;
 import com.vaadin.components.grid.IndexBasedSelectionModel.IndexBasedSelectionModelMulti;
 import com.vaadin.components.grid.IndexBasedSelectionModel.IndexBasedSelectionModelNone;
@@ -492,15 +497,50 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
     }
 
     public void onReady(JavaScriptObject f) {
+        onReady(new JsFunction(f));
+    }
+
+    @JsNoExport
+    public void onReady(final Function f) {
         Scheduler.get().scheduleFixedPeriod(new RepeatingCommand() {
             @Override
             public boolean execute() {
                 if (!isWorkPending()) {
-                    JS.exec(f, null);
+                    f.f();
                     return false;
                 }
                 return true;
             }
         }, 30);
     }
+
+    private static String ua = Window.Navigator.getUserAgent().toLowerCase();
+    private static boolean ie = browser.msie || browser.mozilla && ua.contains("trident");
+
+    public Object then(JavaScriptObject f) {
+        // IE does not have support for native promises.
+        if (ie) {
+            JSPromise p = new JSPromise();
+            onReady(new Function() {
+                public void f() {
+                    try {
+                        Object v = JS.exec(f, null);
+                        p.dfd.resolve(v);
+                    } catch (JavaScriptException e) {
+                        p.dfd.reject(e.getThrown());
+                    }
+                }
+            });
+            return p;
+        } else {
+            return nativePromise(f);
+        }
+    }
+
+    private native JavaScriptObject nativePromise(JavaScriptObject f) /*-{
+        var _this = this;
+        return new Promise(function(resolve, reject) {
+          _this.onReady(resolve);
+        }).then(f);
+    }-*/;
 }
