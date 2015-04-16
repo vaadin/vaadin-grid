@@ -32,6 +32,11 @@ function system(command, cb) {
 };
 
 gulp.task('gwt:compile', ['gwt:clean-maven'], function(done) {
+  if(args.gwtSkipCompile) {
+    done();
+    return;
+  }
+
   gutil.log('Updating Maven dependencies ...');
   system('mvn compile -q -am -pl ' + gwtproject, function() {
     gutil.log('Compiling GWT components ...');
@@ -47,10 +52,19 @@ gulp.task('gwt:compile', ['gwt:clean-maven'], function(done) {
 gulp.task('gwt:copy', ['gwt:copy-files', 'gwt:copy-imports', 'gwt:copy-deferred']);
 
 gulp.task('gwt:clean-maven', function(done) {
+  if(args.gwtSkipClean) {
+    done();
+    return;
+  }
+
   system('mvn clean', done);
 });
 
 gulp.task('clean:gwt', ['gwt:clean-maven'], function() {
+  if(args.gwtSkipClean) {
+    return;
+  }
+
   fs.removeSync(componentDir);
   fs.mkdirsSync(componentDir);
 });
