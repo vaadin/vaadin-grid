@@ -74,12 +74,13 @@ gulp.task('test:vaadin', function(done) {
 gulp.task('test:sauce', function(done) {
   common.testSauce(
     [],
-    ['Windows 7/chrome@41',
-      'Windows 7/firefox@36',
-      'Windows 7/internet explorer@11',
-      'OS X 10.10/safari@8.0',
-      'OS X 10.10/iphone@8.1',
-      'Linux/android@5.0'],
+    ['Windows 7/chrome@41'
+      //,'Windows 7/firefox@36'
+      //,'Windows 7/internet explorer@11'
+      //,'OS X 10.10/safari@8.0'
+      //,'OS X 10.10/iphone@8.1'
+      //,'Linux/android@5.0'
+      ],
     'vaadin-components / ' + version,
      done)
 });
