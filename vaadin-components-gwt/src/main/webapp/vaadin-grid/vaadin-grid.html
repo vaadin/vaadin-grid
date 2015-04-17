@@ -338,6 +338,8 @@
      */
     addColumn: function(column, beforeColumn) {
       this.grid.addColumn(column, beforeColumn);
+
+      return this;
     },
 
     /**
@@ -348,6 +350,8 @@
      */
     removeColumn: function(id) {
       this.grid.removeColumn(id);
+
+      return this;
     },
 
     /**
