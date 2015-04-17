@@ -40,7 +40,200 @@
       columns: {
         type: Array,
         observer: 'columnsChanged'
-      }
+      },
+
+      editor: {
+        type: Object,
+        readOnly: true,
+        value: function() {
+          var _this = this;
+          return {
+            get enabled() {
+              return _this.grid.getEditor().isEnabled();
+            },
+            set enabled(enabled) {
+              _this.grid.getEditor().setEnabled(enabled);
+              if (_this.editable !== enabled) {
+                _this.editable = enabled;
+              }
+            },
+            get handler() {
+              return _this.grid.getEditor().getHandler();
+            },
+            set handler(handler) {
+              _this.grid.getEditor().setHandler(handler);
+            },
+            get saveButtonText() {
+              return _this.grid.getEditor().getSaveButtonText();
+            },
+            set saveButtonText(saveButtonText) {
+              _this.grid.getEditor().setSaveButtonText(saveButtonText);
+            },
+            get cancelButtonText() {
+              return _this.grid.getEditor().getSaveButtonText();
+            },
+            set cancelButtonText(cancelButtonText) {
+              _this.grid.getEditor().setCancelButtonText(cancelButtonText);
+            },
+            editRow: function(row) {
+              _this.grid.getEditor().editRow(row);
+            },
+            save: function() {
+              _this.grid.getEditor().save();
+            },
+            cancel: function() {
+              _this.grid.getEditor().cancel();
+            }
+          };
+        },
+      },
+      data: {
+        type: Object,
+        readOnly: true,
+        value: function() {
+          var _this = this;
+          return {
+
+            get source() {
+              return this._source;
+            },
+            set source(source) {
+              var sourceFunction = source;
+              if (Array.isArray(source)) {
+                sourceFunction = function(req) {
+                  var array = source.slice(req.index, req.index + req.count);
+                  req.success(array, source.length);
+                };
+              }
+              _this.grid.setDataSource(sourceFunction);
+
+              this._source = source;
+            },
+
+            dataUpdated: function(firstIndex, itemsData) {
+              _this.grid.getDataSource().dataUpdated(firstIndex, itemsData);
+            },
+            dataRemoved: function(firstIndex, numberOfItems) {
+              _this.grid.getDataSource().dataRemoved(firstIndex, numberOfItems);
+            },
+            dataAdded: function(firstIndex, numberOfItems) {
+              _this.grid.getDataSource().dataAdded(firstIndex, numberOfItems);
+            },
+            resetData: function(estimatedNewSize) {
+              _this.grid.getDataSource().resetData(estimatedNewSize);
+            },
+
+          };
+        }
+      },
+
+      header: {
+        type: Object,
+        readOnly: true,
+        value: function() {
+          var _this = this;
+          return {
+            getCell: function(rowIndex, columnId) {
+              return _this.grid.getStaticSection().getHeaderCell(rowIndex, columnId);
+            },
+            addRow: function(rowIndex, cellContent) {
+              _this.grid.getStaticSection().addHeader(rowIndex, cellContent);
+            },
+            removeRow: function(rowIndex) {
+              _this.grid.getStaticSection().removeHeader(rowIndex);
+            },
+            setRowClassName: function(rowIndex, className) {
+              _this.grid.getStaticSection().setHeaderRowClassName(rowIndex, className);
+            },
+            /**
+             * Sets the default row of the header. The default row is a special header
+             * row providing a user interface for sorting columns.
+             *
+             * @attribute rowIndex
+             * @type number
+             */
+            get defaultRow() {
+              return _this.grid.getStaticSection().getDefaultHeader();
+            },
+            set defaultRow(rowIndex) {
+              _this.grid.getStaticSection().setDefaultHeader(rowIndex);
+            },
+            get hidden() {
+              return _this.grid.getStaticSection().isHeaderHidden();
+            },
+            set hidden(hidden) {
+              _this.grid.getStaticSection().setHeaderHidden(hidden);
+            }
+
+          };
+        }
+      },
+
+      footer: {
+        type: Object,
+        readOnly: true,
+        value: function() {
+          var _this = this;
+          return {
+            getCell: function(rowIndex, columnId) {
+              return _this.grid.getStaticSection().getFooterCell(rowIndex, columnId);
+            },
+            addRow: function(rowIndex, cellContent) {
+              _this.grid.getStaticSection().addFooter(rowIndex, cellContent);
+            },
+            removeRow: function(rowIndex) {
+              _this.grid.getStaticSection().removeFooter(rowIndex);
+            },
+            setRowClassName: function(rowIndex, className) {
+              _this.grid.getStaticSection().setFooterRowClassName(rowIndex, className);
+            },
+            get hidden() {
+              return _this.grid.getStaticSection().isFooterHidden();
+            },
+            set hidden(hidden) {
+              _this.grid.getStaticSection().setFooterHidden(hidden);
+            }
+          };
+        }
+      },
+
+      selection: {
+        type: Object,
+        readOnly: true,
+        value: function() {
+          var _this = this;
+          return {
+            select: function(index) {
+              _this.grid.getSelectionModel().select(index);
+            },
+            deselect: function(index) {
+              _this.grid.getSelectionModel().deselect(index);
+            },
+            clear: function() {
+              _this.grid.getSelectionModel().clear();
+            },
+            selectAll: function() {
+              _this.grid.getSelectionModel().selectAll();
+            },
+            selected: function(mapper, from, to) {
+              return _this.grid.getSelectionModel().selected(mapper, from, to);
+            },
+            deselected: function(mapper, from, to) {
+              return _this.grid.getSelectionModel().deselected(mapper, from, to);
+            },
+            get size() {
+              return _this.grid.getSelectionModel().size();
+            },
+            get mode() {
+              return _this.grid.getSelectionMode();
+            },
+            set mode(mode) {
+              _this.grid.setSelectionMode(mode);
+              _this.serializeValueToAttribute(_this.selection.mode, "selection-mode");
+            }
+          };
+        }
+      },
     },
 
     columnsChanged: function() {
@@ -53,7 +246,7 @@
         var _this = this;
         newcols._obs = function() {
           _this.grid.setColumns(newcols);
-        }
+        };
         Polymer.ArrayObserve.observe(newcols, newcols._obs);
       }
       this.grid.setColumns(newcols);
@@ -61,14 +254,6 @@
 
     attributeChanged: function(name, type, value) {
       switch (name) {
-        case 'selected-rows':
-          this.selectedRows = /^\[.*\]$/.test(value) ? JSON.parse(value) : value.split(/[, ]+/)
-          .map(function(x) {
-            return parseInt(x, 10);
-          }).filter(function(x) {
-            return !isNaN(x);
-          });
-          break;
         case 'disabled':
           this.disabled = typeof value == "string";
           break;
@@ -78,6 +263,9 @@
         case 'style':
           this.grid.redraw();
           break;
+        case 'selection-mode':
+          this.selection.mode = value;
+          break;
         default:
           this[Polymer.CaseMap.dashToCamelCase(name)] = value;
       }
@@ -85,16 +273,13 @@
 
     listeners: {
       /**
-       * @event sort
-       */
-      /**
        * @event select
        */
       'select': 'onSelect'
     },
 
     onSelect: function() {
-      this.setAttribute('selected-rows', this.selectedRows.join());
+      this.serializeValueToAttribute(this.selection.mode, "selection-mode");
     },
 
     ready: function() {
@@ -102,135 +287,6 @@
       this.grid.init(this, Polymer.dom(this).querySelector("table"), Polymer.dom(this.root));
 
       var _this = this;
-      this.editor = {
-        get enabled() {
-          return _this.grid.getEditor().isEnabled();
-        },
-        set enabled(enabled) {
-          _this.grid.getEditor().setEnabled(enabled);
-          if (_this.editable !== enabled) {
-            _this.editable = enabled;
-          }
-        },
-        get handler() {
-          return _this.grid.getEditor().getHandler();
-        },
-        set handler(handler) {
-          _this.grid.getEditor().setHandler(handler);
-        },
-        get saveButtonText() {
-          return _this.grid.getEditor().getSaveButtonText();
-        },
-        set saveButtonText(saveButtonText) {
-          _this.grid.getEditor().setSaveButtonText(saveButtonText);
-        },
-        get cancelButtonText() {
-          return _this.grid.getEditor().getSaveButtonText();
-        },
-        set cancelButtonText(cancelButtonText) {
-          _this.grid.getEditor().setCancelButtonText(cancelButtonText);
-        },
-        editRow: function(row) {
-          _this.grid.getEditor().editRow(row);
-        },
-        save: function() {
-          _this.grid.getEditor().save();
-        },
-        cancel: function() {
-          _this.grid.getEditor().cancel();
-        }
-
-      };
-
-      this.data = {
-
-        get source() {
-          return this._source;
-        },
-        set source(source) {
-          var sourceFunction = source;
-          if (Array.isArray(source)) {
-            sourceFunction = function(req) {
-              var array = source.slice(req.index, req.index + req.count);
-              req.success(array, source.length);
-            };
-          }
-          _this.grid.setDataSource(sourceFunction);
-
-          this._source = source;
-        },
-
-        dataUpdated: function(firstIndex, itemsData) {
-          _this.grid.getDataSource().dataUpdated(firstIndex, itemsData);
-        },
-        dataRemoved: function(firstIndex, numberOfItems) {
-          _this.grid.getDataSource().dataRemoved(firstIndex, numberOfItems);
-        },
-        dataAdded: function(firstIndex, numberOfItems) {
-          _this.grid.getDataSource().dataAdded(firstIndex, numberOfItems);
-        },
-        resetData: function(estimatedNewSize) {
-          _this.grid.getDataSource().resetData(estimatedNewSize);
-        },
-
-      };
-
-      this.header = {
-        getCell: function(rowIndex, columnId) {
-          return _this.grid.getStaticSection().getHeaderCell(rowIndex, columnId);
-        },
-        addRow: function(rowIndex, cellContent) {
-          _this.grid.getStaticSection().addHeader(rowIndex, cellContent);
-        },
-        removeRow: function(rowIndex) {
-          _this.grid.getStaticSection().removeHeader(rowIndex);
-        },
-        setRowClassName: function(rowIndex, className) {
-          _this.grid.getStaticSection().setHeaderRowClassName(rowIndex, className);
-        },
-        /**
-         * Sets the default row of the header. The default row is a special header
-         * row providing a user interface for sorting columns.
-         *
-         * @attribute rowIndex
-         * @type number
-         */
-        get defaultRow() {
-          return _this.grid.getStaticSection().getDefaultHeader();
-        },
-        set defaultRow(rowIndex) {
-          _this.grid.getStaticSection().setDefaultHeader(rowIndex);
-        },
-        get hidden() {
-          return _this.grid.getStaticSection().isHeaderHidden();
-        },
-        set hidden(hidden) {
-          _this.grid.getStaticSection().setHeaderHidden(hidden);
-        }
-
-      };
-
-      this.footer = {
-        getCell: function(rowIndex, columnId) {
-          return _this.grid.getStaticSection().getFooterCell(rowIndex, columnId);
-        },
-        addRow: function(rowIndex, cellContent) {
-          _this.grid.getStaticSection().addFooter(rowIndex, cellContent);
-        },
-        removeRow: function(rowIndex) {
-          _this.grid.getStaticSection().removeFooter(rowIndex);
-        },
-        setRowClassName: function(rowIndex, className) {
-          _this.grid.getStaticSection().setFooterRowClassName(rowIndex, className);
-        },
-        get hidden() {
-          return _this.grid.getStaticSection().isFooterHidden();
-        },
-        set hidden(hidden) {
-          _this.grid.getStaticSection().setFooterHidden(hidden);
-        }
-      };
-
       // Set read-only properties
       ["data", "editor", "header", "footer"].forEach(function(prop) {
         Object.defineProperty(_this, prop, {
@@ -301,35 +357,6 @@
     },
 
     /**
-     * Selects certain row
-     *
-     * @method select
-     * @param {Object} value
-     */
-    select: function(value) {
-      var array = this.selectedRows;
-      if (array.indexOf(value) == -1) {
-        array.push(value);
-        this.selectedRows = array;
-      }
-    },
-
-    /**
-     * Deselects certain row
-     *
-     * @method deselect
-     * @param {Object} value
-     */
-    deselect: function(value) {
-      var array = this.selectedRows;
-      var index = array.indexOf(value);
-      if (index > -1) {
-        array.splice(index, 1);
-        this.selectedRows = array;
-      }
-    },
-
-    /**
      * Adds new column
      *
      * @method addColumn
@@ -348,19 +375,6 @@
      */
     removeColumn: function(id) {
       this.grid.removeColumn(id);
-    },
-
-    /**
-     * The selected rows array
-     *
-     * @attribute selectedRows
-     * @type array
-     */
-    set selectedRows(r) {
-      return this.grid.setSelectedRows(r);
-    },
-    get selectedRows() {
-      return this.grid.getSelectedRows();
     },
 
     /**
@@ -399,19 +413,6 @@
     },
     set cellClassName(cellClassName) {
       this.grid.setCellClassName(cellClassName);
-    },
-    /**
-     * Declares the selection model of the Grid to one of the built-in/preconfigured selection modes.
-     *
-     * @attribute selection-mode
-     * @type String
-     */
-    get selectionMode() {
-      return this.grid.getSelectionMode();
-    },
-    set selectionMode(selectionMode) {
-      this.grid.setSelectionMode(selectionMode);
-      this.reflectPropertyToAttribute("selectionMode");
     },
     /**
      * Disables the grid functionality.

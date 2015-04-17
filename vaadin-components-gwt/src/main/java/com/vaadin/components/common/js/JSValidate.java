@@ -10,11 +10,13 @@ import com.google.gwt.regexp.shared.RegExp;
  * A collection of validations for JS values.
  */
 public enum JSValidate {
+    //@formatter:off
     String("string value", "(.+)", String.class, "", ""),
     Pixel("pixel value", "([\\d\\.]+)(px)?$", String.class, "", ""),
     Integer("int value", "([+-]?\\d+)", Integer.class, 0, 0),
     Double("double value", "([+-]?[\\d\\.]+)", Double.class, 0, 0),
     Boolean("boolean value", "(|true|false)", Boolean.class, true, false);
+    //@formatter:on
 
     private final String message;
     private final RegExp regex;
@@ -57,9 +59,15 @@ public enum JSValidate {
         return val(s, defaultIfEmpty, defaultIfNull);
     }
 
+    public <T> T val(Object o, Object defaultIfEmpty, Object defaultIfNull) {
+        java.lang.String string = JS.isUndefinedOrNull(o) ? null
+                : java.lang.String.valueOf(o);
+        return val(string, defaultIfEmpty, defaultIfNull);
+    }
+
     @SuppressWarnings("unchecked")
     public <T> T val(String s, Object defaultIfEmpty, Object defaultIfNull) {
-        if (s == null) {
+        if (s == null || JS.isUndefinedOrNull(s)) {
             return (T) defaultIfNull;
         }
         if (s.trim().isEmpty()) {

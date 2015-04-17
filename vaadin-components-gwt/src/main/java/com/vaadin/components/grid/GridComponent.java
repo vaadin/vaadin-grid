@@ -7,13 +7,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import com.google.gwt.core.client.JavaScriptException;
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.client.JsArrayInteger;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.core.client.js.JsExport;
@@ -29,25 +26,21 @@ import com.google.gwt.query.client.plugins.widgets.WidgetsUtils;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Window;
-import com.vaadin.client.data.DataSource;
+import com.google.gwt.user.client.ui.CheckBox;
+import com.vaadin.client.widget.grid.events.SelectAllEvent;
+import com.vaadin.client.widget.grid.events.SelectAllHandler;
 import com.vaadin.client.widget.grid.selection.SelectionEvent;
 import com.vaadin.client.widget.grid.selection.SelectionHandler;
 import com.vaadin.client.widget.grid.selection.SelectionModel;
-import com.vaadin.client.widget.grid.selection.SelectionModelMulti;
-import com.vaadin.client.widget.grid.selection.SelectionModelSingle;
 import com.vaadin.client.widget.grid.sort.SortEvent;
 import com.vaadin.client.widget.grid.sort.SortHandler;
 import com.vaadin.client.widget.grid.sort.SortOrder;
 import com.vaadin.client.widgets.Grid.Column;
-import com.vaadin.client.widgets.Grid.SelectionMode;
 import com.vaadin.components.common.js.JS;
 import com.vaadin.components.common.js.JSArray;
 import com.vaadin.components.common.js.JSEnums;
 import com.vaadin.components.common.js.JSPromise;
 import com.vaadin.components.common.js.JSValidate;
-import com.vaadin.components.grid.IndexBasedSelectionModel.IndexBasedSelectionModelMulti;
-import com.vaadin.components.grid.IndexBasedSelectionModel.IndexBasedSelectionModelNone;
-import com.vaadin.components.grid.IndexBasedSelectionModel.IndexBasedSelectionModelSingle;
 import com.vaadin.components.grid.config.JSCellClassName;
 import com.vaadin.components.grid.config.JSColumn;
 import com.vaadin.components.grid.config.JSRowClassName;
@@ -55,6 +48,9 @@ import com.vaadin.components.grid.config.JSSortOrder;
 import com.vaadin.components.grid.data.GridDataSource;
 import com.vaadin.components.grid.data.GridDomTableDataSource;
 import com.vaadin.components.grid.data.GridJsFuncDataSource;
+import com.vaadin.components.grid.selection.IndexBasedSelectionMode;
+import com.vaadin.components.grid.selection.IndexBasedSelectionModel;
+import com.vaadin.components.grid.selection.IndexBasedSelectionModelSingle;
 import com.vaadin.components.grid.table.GridColumn;
 import com.vaadin.components.grid.table.GridLightDomTable;
 import com.vaadin.components.grid.table.GridStaticSection;
@@ -72,7 +68,7 @@ import com.vaadin.shared.ui.grid.ScrollDestination;
 @JsExport
 @JsType
 public class GridComponent implements SelectionHandler<Object>, EventListener,
-        SortHandler<Object> {
+        SortHandler<Object>, SelectAllHandler<Object> {
 
     public final int defaultHeightByRows;
 
@@ -90,10 +86,12 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
 
     public GridComponent() {
         grid = new ViolatedGrid();
-        defaultHeightByRows = (int)grid.getHeightByRows();
+        defaultHeightByRows = (int) grid.getHeightByRows();
         grid.setSelectionModel(new IndexBasedSelectionModelSingle());
         grid.addSelectionHandler(this);
         grid.addSortHandler(this);
+        grid.addSelectAllHandler(this);
+
         cols = JS.createArray();
         redrawer = new Redraw(this);
         editor = new GridEditor(this);
@@ -280,27 +278,32 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
         }
     }
 
-    public DataSource<Object> getDataSource() {
-        return grid.getDataSource();
+    public GridDataSource getDataSource() {
+        return (GridDataSource) grid.getDataSource();
     }
 
-    @JsNoExport
     public IndexBasedSelectionModel getSelectionModel() {
         return (IndexBasedSelectionModel) grid.getSelectionModel();
     }
 
     public void refresh() {
-        final JsArrayInteger a = getSelectedRows();
+        updating = true;
+        IndexBasedSelectionModel selectionModel = getSelectionModel();
+        final JSArray<?> a = selectionModel.selected(null, null, null);
         ((GridDataSource) grid.getDataSource()).refresh();
         redraw(true);
         if (a.length() > 0) {
             $(container).delay(5, new Function() {
                 @Override
                 public void f() {
-                    setSelectedRows(a);
+                    for (int i = 0; i < a.length(); i++) {
+                        int value = JSValidate.Integer.val(a.get(i), -1, -1);
+                        selectionModel.select(value, true);
+                    }
                 }
             });
         }
+        updating = false;
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -346,84 +349,31 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
     @JsNoExport
     public List<Column<?, Object>> getDataColumns() {
         List<Column<?, Object>> result = grid.getColumns();
-        if (getSelectionModel() instanceof IndexBasedSelectionModelMulti) {
+        if (getSelectionModel().getMode() == IndexBasedSelectionMode.MULTI) {
             result = result.subList(1, result.size());
         }
         return result;
     }
 
     public void setSelectionMode(String selectionMode) {
-        SelectionMode mode = JSEnums.Selection.val(selectionMode);
-        if (!getSelectionMode().equalsIgnoreCase(mode.name())) {
-            if (mode == SelectionMode.MULTI) {
-                grid.setSelectionModel(new IndexBasedSelectionModelMulti());
-                // Remove check-box for selecting all in the header
-                grid.getDefaultHeaderRow().getCell(grid.getColumn(0))
-                        .setText("");
-            } else if (mode == SelectionMode.SINGLE) {
-                grid.setSelectionModel(new IndexBasedSelectionModelSingle());
-            } else {
-                grid.setSelectionModel(new IndexBasedSelectionModelNone());
-            }
+        if (!getSelectionMode().equalsIgnoreCase(selectionMode)) {
+            updating = true;
+            IndexBasedSelectionMode mode = JSEnums.Selection.val(selectionMode);
+            grid.setSelectionModel(mode.createModel());
+            getSelectionModel().reset();
+            updateSelectAllCheckBox();
+            redraw();
+            updating = false;
         }
     }
 
     public String getSelectionMode() {
-        SelectionModel<Object> selectionModel = grid.getSelectionModel();
-        if (selectionModel instanceof SelectionModelMulti) {
-            return SelectionMode.MULTI.name().toLowerCase();
-        } else if (selectionModel instanceof SelectionModelSingle) {
-            return SelectionMode.SINGLE.name().toLowerCase();
-        } else {
-            return SelectionMode.NONE.name().toLowerCase();
-        }
+        return getSelectionModel().getMode().name().toLowerCase();
     }
 
     @Override
     public void onBrowserEvent(Event event) {
         refresh();
-    }
-
-    public void setSelectedRows(JsArrayInteger selectedJso) {
-        if (!(getSelectionModel() instanceof IndexBasedSelectionModelNone)) {
-            updating = true;
-
-            HashSet<Object> previouslySelected = new HashSet<Object>(
-                    getSelectionModel().getSelectedIndexes());
-
-            Set<Integer> selected = new HashSet<Integer>();
-            for (int i = selectedJso.length() - 1; i >= 0; i--) {
-                try {
-                    int index = JSValidate.Integer.val(String
-                            .valueOf(selectedJso.get(i)));
-                    selected.add(index);
-                    if (getSelectionModel() instanceof IndexBasedSelectionModelSingle) {
-                        break;
-                    }
-                } catch (RuntimeException e) {
-                    // NOP
-                }
-            }
-
-            getSelectionModel().setSelectedIndexes(selected);
-            updating = false;
-
-            if (!previouslySelected.equals(getSelectionModel()
-                    .getSelectedIndexes())) {
-                onSelect(null);
-            }
-        }
-    }
-
-    public JsArrayInteger getSelectedRows() {
-        JsArrayInteger selectedJso = JsArrayInteger.createArray().cast();
-        selectedJso.setLength(0);
-
-        for (Integer i : getSelectionModel().getSelectedIndexes()) {
-            selectedJso.push(i);
-        }
-
-        return selectedJso;
     }
 
     public JSRowClassName getRowClassName() {
@@ -524,12 +474,14 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
     public Object then(JavaScriptObject f) {
         // IE does not have support for native promises.
         if (browser.msie
-        // FIXME: static initializers in exported classes cause unexpected
-        // errors
-                || (browser.mozilla && (Window.Navigator.getUserAgent()
-                        .toLowerCase().contains("trident")))) {
+                // FIXME: static initializers in exported classes cause
+                // unexpected errors
+                || browser.mozilla
+                && Window.Navigator.getUserAgent().toLowerCase()
+                        .contains("trident")) {
             JSPromise p = new JSPromise();
             onReady(new Function() {
+                @Override
                 public void f() {
                     try {
                         Object v = JS.exec(f, null);
@@ -545,10 +497,50 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
         }
     }
 
-    private native JavaScriptObject nativePromise(JavaScriptObject f) /*-{
+    private native JavaScriptObject nativePromise(JavaScriptObject f)
+    /*-{
         var _this = this;
         return new Promise(function(resolve, reject) {
           _this.onReady(resolve);
         }).then(f);
     }-*/;
+
+    @JsNoExport
+    @Override
+    public void onSelectAll(SelectAllEvent<Object> event) {
+        if (!updating) {
+            updating = true;
+            if (event.getSelectionModel() != getSelectionModel()) {
+                grid.setSelectionModel(event.getSelectionModel());
+            } else {
+                boolean all = getSelectAllCheckBox().getValue();
+                setSelectionMode(all ? IndexBasedSelectionMode.ALL.name()
+                        : IndexBasedSelectionMode.MULTI.name());
+            }
+            updateSelectAllCheckBox();
+            updating = false;
+            onSelect(null);
+            getSelectionModel().reset();
+        }
+    }
+
+    private void updateSelectAllCheckBox() {
+        CheckBox selectAllCheckBox = getSelectAllCheckBox();
+        if (selectAllCheckBox != null) {
+            selectAllCheckBox
+                    .setValue(
+                            getSelectionModel().getMode() == IndexBasedSelectionMode.ALL,
+                            false);
+        }
+    }
+
+    private CheckBox getSelectAllCheckBox() {
+        CheckBox result = null;
+        if (getSelectionModel() instanceof SelectionModel.Multi) {
+            result = (CheckBox) grid.getDefaultHeaderRow()
+                    .getCell(grid.getColumn(0)).getWidget();
+        }
+        return result;
+    }
+
 }

@@ -14,7 +14,7 @@ import com.vaadin.components.grid.GridComponent;
 @JsType
 public abstract class GridDataSource extends AbstractRemoteDataSource<Object> {
     private int size = 0;
-    private int defaultRows;
+    private final int defaultRows;
 
     protected final GridComponent gridComponent;
 
@@ -87,17 +87,7 @@ public abstract class GridDataSource extends AbstractRemoteDataSource<Object> {
     protected void resetDataAndSize(int newSize) {
         super.resetDataAndSize(newSize);
 
-        // If selected rows contains values that are out of bounds, remove them.
-        JSArray<Double> selectedRows = gridComponent.getSelectedRows().cast();
-        boolean changed = false;
-        for (int i = 0; i < selectedRows.length(); i++) {
-            if (selectedRows.get(i) >= size) {
-                selectedRows.remove(selectedRows.get(i--));
-                changed = true;
-            }
-        }
-        if (changed) {
-            gridComponent.setSelectedRows(selectedRows.cast());
-        }
+        gridComponent.getSelectionModel().dataSizeUpdated(newSize);
+
     }
 }

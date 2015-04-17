@@ -306,88 +306,64 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
   </li>
 
   <li>
-  <h3>Single selection</h3>
+    <h3>Selection</h3>
 
-  <v-grid id="mySelGrid" selection-mode="single">
-  <table>
-    <thead hidden>
-      <tr>
-        <th>Name</th>
-        <th>Value</th>
-        <th>Progress</th>
-      </tr>
-    </thead>
-  </table>
-  </v-grid>
-  <button id="mySelButton">Random select</button>
-  Selected: <span id="mySelLabel">-1</span>
+    <v-grid id="myMultiSelGrid" selection-mode="multi">
+      <table>
 
-  <script>
-      waitUntilGridReady("mySelGrid", function(grid) {
-        var data = [ [ "Gridddd", 10000, 0.8 ], [ "Vaadin X", 999999, 0.01 ],
-                 [ "designer", 43256, 0.01 ], [ "TK", 1967, 0.05 ] ];
+        <head>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Value</th>
+              <th>Progress</th>
+            </tr>
+          </thead>
+        </head>
+      </table>
+    </v-grid>
+    <div id="smbuttons">
+      <input type="radio" name="selectionmode" value="single">single</input>
+      <input type="radio" name="selectionmode" value="multi" checked="checked">multi</input>
+      <input type="radio" name="selectionmode" value="all">all</input>
+      <input type="radio" name="selectionmode" value="disabled">disabled</input>
+    </div>
+    <div id="sizelabel"></div>
+    <div id="deselectedlabel" style="overflow: hidden; text-overflow: ellipsis;"></div>
+    <div id="selectedlabel" style="overflow: hidden; text-overflow: ellipsis;"></div>
+    <script>
+      waitUntilGridReady("myMultiSelGrid", function(grid) {
+        grid.data.source = myBigData;
 
-        var button = document.getElementById("mySelButton");
-        var label = document.getElementById("mySelLabel");
+        var updateFields = function(event) {
+          document.getElementById("sizelabel").innerText = "selection.size: " + grid.selection.size;
 
-        grid.data.source = function(req) {
-          req.success(data.slice(req.index, req.index + req.count), data.length);
+          var selectedLabel = document.getElementById("selectedlabel");
+          if (grid.selection.mode === "all"){
+            selectedLabel.style.color = "#f00";
+            selectedLabel.innerText = "selection.selected() PREFER deselected() WITH SELECTION MODE \"all\"): " + grid.selection.selected();
+          } else {
+            selectedLabel.style.color = "#000";
+            selectedLabel.innerText = "selection.selected(): " + grid.selection.selected();
+          }
+          document.getElementById("deselectedlabel").innerText = "selection.deselected(): " + grid.selection.deselected();
+
+          document.querySelector("input[name='selectionmode'][checked='checked']").removeAttribute("checked");
+          document.querySelector("input[name='selectionmode'][value='"+ grid.selection.mode +"']").setAttribute("checked", "checked");
         };
 
-        grid.addEventListener("select", function(event) {
-          label.innerText = grid.selectedRows;
-        });
+        var modeListener = function(e) {
+          grid.selection.mode = e.target.value;
+          updateFields();
+        };
+        var radios = document.querySelectorAll("input[name='selectionmode']");
+        for (var i = 0; i< radios.length; i++) {
+          radios[i].addEventListener("click", modeListener);
+        }
 
-        button.addEventListener("click", function(event) {
-          grid.selectedRows = [Math.floor(Math.random() * data.length)];
-        });
+        grid.addEventListener("select", updateFields);
       });
     </script>
-  </li>
-
-  <li>
-  <h3>Multi selection</h3>
-
-  <v-grid id="myMultiSelGrid">
-  <table>
-    <head>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Value</th>
-        <th>Progress</th>
-      </tr>
-    </thead>
-    </head>
-  </table>
-  </v-grid>
-  <button id="myMultiSelButton">Random select</button>
-  Selected: <span id="myMultiSelLabel">-1</span>
-
-  <script>
-      waitUntilGridReady("myMultiSelGrid", function(grid) {
-        var data = [ [ "Gridddd", 10000, 0.8 ], [ "Vaadin X", 999999, 0.01 ],
-                 [ "designer", 43256, 0.01 ], [ "TK", 1967, 0.05 ] ];
-
-        var button = document.getElementById("myMultiSelButton");
-        var label = document.getElementById("myMultiSelLabel");
-
-        grid.selectionMode = "multi";
-        grid.data.source = function(req) {
-          req.success(data.slice(req.index, req.index + req.count), data.length);
-        };
-
-        grid.addEventListener("select", function(event) {
-          label.innerText = grid.selectedRows;
-        });
-
-        button.addEventListener("click", function(event) {
-          var a = Math.floor(Math.random() * data.length);
-          var b = Math.floor(Math.random() * data.length);
-          grid.selectedRows = [a, b];
-        });
-      });
-  </script>
   </li>
 
   <li>

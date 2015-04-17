@@ -16,7 +16,8 @@ import com.google.gwt.query.client.js.JsUtils;
  */
 public abstract class JS {
 
-    // This has to match with the @JsNamespace of the package-info of exported components
+    // This has to match with the @JsNamespace of the package-info of exported
+    // components
     public static final String VAADIN_JS_NAMESPACE = "vaadin";
 
     @SuppressWarnings("unchecked")
@@ -83,6 +84,12 @@ public abstract class JS {
     }-*/;
 
     public static <T> T exec(Object o, Object arg) {
-        return JsUtils.jsni((JavaScriptObject)o, "call", (JavaScriptObject)o, arg);
+        return JsUtils.jsni((JavaScriptObject) o, "call", (JavaScriptObject) o,
+                arg);
     }
+
+    public static native boolean isUndefinedOrNull(Object o)
+    /*-{
+      return o === undefined || o === null;
+    }-*/;
 }

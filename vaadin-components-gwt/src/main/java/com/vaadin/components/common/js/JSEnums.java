@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.vaadin.client.widgets.Grid.SelectionMode;
+import com.vaadin.components.grid.selection.IndexBasedSelectionMode;
 import com.vaadin.shared.data.sort.SortDirection;
 
 /**
@@ -13,7 +13,7 @@ import com.vaadin.shared.data.sort.SortDirection;
  */
 public enum JSEnums {
     Direction("sort direction", SortDirection.values(), "asc", "asc", "desc"), Selection(
-            "selection mode", SelectionMode.values(), "single");
+            "selection mode", IndexBasedSelectionMode.values(), "single");
 
     public String def;
     private Enum<?>[] enums;

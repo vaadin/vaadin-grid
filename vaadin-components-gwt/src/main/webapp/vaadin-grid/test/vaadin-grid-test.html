@@ -495,7 +495,7 @@
       });
 
       test('frozen column: unfreeze selection column', function() {
-        grid.selectionMode = "multi";
+        grid.selection.mode = "multi";
         assert.ok(qLocal(".frozen"));
 
         grid.frozenColumns = -1;
@@ -719,7 +719,7 @@
 
       test('data: boolean type', function(done) {
         grid.columns.splice(0, 1);
-        grid.selectionMode = "multi";
+        grid.selection.mode = "multi";
 
         waitUntil(function() {
           return qLocal("input[type='checkbox']");
@@ -747,7 +747,7 @@
 
       test('data: string type', function(done) {
         grid.columns.splice(0, 1);
-        grid.selectionMode = "multi";
+        grid.selection.mode = "multi";
 
         waitUntil(function() {
           return qLocal("input[type='checkbox']");
