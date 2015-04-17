@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <title></title>
+  <script src="../../bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+  <script src="../../bower_components/web-component-tester/browser.js"></script>
+  <script src="../../VaadinGrid/VaadinGrid.nocache.js"></script>
+  <script src="common.js"></script>
+
+  <link rel="import" href="../vaadin-grid.html">
+</head>
+<body>
+
+<div id="gridwrapper"></div>
+
+<script>
+  describe.feature('scrolling rows', function() {
+    function infiniteDataSource(req) {
+      var data = [];
+      for (var i = req.index; i < req.index + req.count; i++) {
+        data.push(["foo " + i, "bar " + i]);
+      }
+      req.success(data, this.size);
+    };
+
+    it('scrollToRow function', function(done) {
+      infiniteDataSource.size = 100;
+      grid.data.source = infiniteDataSource;
+
+      expect(grid.scrollToRow.bind(grid, -10)).to.throw("Row index");
+
+      waitUntil(function() {
+        return gridContainsText(grid, "foo 0");
+      }, function() {
+        assert.isFalse(gridContainsText(grid, "foo 50"));
+
+        grid.scrollToRow(50);
+
+        waitUntil(function() {
+          return gridContainsText(grid, "foo 50");
+        }, function() {
+          assert.isFalse(gridContainsText(grid, "foo 0"));
+          expect(grid.scrollToRow.bind(grid, 100)).to.throw("Row index");
+
+          done();
+        }, done);
+      }, done);
+    });
+
+    it('scrollToRow with destination', function(done) {
+      infiniteDataSource.size = 100;
+      grid.data.source = infiniteDataSource;
+
+      waitUntil(function() {
+        return gridContainsText(grid, "foo 0");
+      }, function() {
+        grid.scrollToRow(50, "start");
+
+        waitUntil(function() {
+          return gridContainsText(grid, "foo 50");
+        }, function() {
+
+          assert.isTrue(gridContainsText(grid, "foo 52"));
+          assert.isFalse(gridContainsText(grid, "foo 49"));
+
+          grid.scrollToRow(70, "end");
+
+          waitUntil(function() {
+            return gridContainsText(grid, "foo 70");
+          }, function() {
+            assert.isFalse(gridContainsText(grid, "foo 72"));
+            assert.isTrue(gridContainsText(grid, "foo 69"));
+
+            done();
+          }, done);
+        }, done);
+
+
+      }, done);
+    });
+
+    it('scrollToStart and scrollToEnd functions', function(done) {
+      infiniteDataSource.size = 100;
+      grid.data.source = infiniteDataSource;
+
+      waitUntil(function() {
+        return gridContainsText(grid, "foo 0");
+      }, function() {
+
+        grid.scrollToEnd();
+
+        waitUntil(function() {
+          return gridContainsText(grid, "foo 99");
+        }, function() {
+
+          grid.scrollToStart();
+
+          waitUntil(function() {
+            return gridContainsText(grid, "foo 0");
+          }, done, done);
+        }, done);
+      }, done);
+    });
+
+    it('scrollTop property', function(done) {
+      infiniteDataSource.size = 100;
+      grid.data.source = infiniteDataSource;
+
+      assert.equal(grid.scrollTop, 0);
+
+      waitUntil(function() {
+        return gridContainsText(grid, "foo 0");
+      }, function() {
+
+        grid.scrollToRow(1, "start");
+
+        var rowHeight = grid.scrollTop;
+        expect(rowHeight).to.be.above(0);
+
+        grid.scrollToRow(50, "start");
+        waitUntil(function() {
+          return gridContainsText(grid, "foo 50");
+        }, function() {
+          assert.equal(grid.scrollTop, rowHeight * 50);
+
+          done();
+        }, done);
+      }, done);
+    });
+  });
+</script>

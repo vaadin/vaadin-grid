@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <title></title>
+  <script src="../../bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+  <script src="../../bower_components/web-component-tester/browser.js"></script>
+  <script src="../../VaadinGrid/VaadinGrid.nocache.js"></script>
+  <script src="common.js"></script>
+
+  <link rel="import" href="../vaadin-grid.html">
+</head>
+<body>
+
+<div id="gridwrapper"></div>
+
+<script>
+  describe.feature('editing columns', function() {
+    describe('using renderer', function() {
+      var data;
+
+      beforeEach(function() {
+        data = [
+          ["John", "TestFoo"],
+          ["Jane", "TestBar"],
+        ];
+
+        grid.data.source = data;
+
+        return grid.then(function() {
+          expect(gridContainsText(grid, 'TestFoo')).to.be.true;
+          expect(gridContainsText(grid, 'TestBar')).to.be.true;
+        });
+      });
+
+      it('should update innerHTML', function() {
+        grid.columns[0].renderer = function(cell) {
+          cell.element.innerHTML = "<b>" + cell.data + "</b>";
+        };
+
+        return grid.then(function() {
+          expect(gridContainsText(grid, '<b>John</b>')).to.be.true;
+        });
+      });
+
+      it('should handle row removed from data', function() {
+        grid.columns[1].renderer = function(cell) {
+          cell.element.innerHTML = cell.data;
+          cell.element.cell = cell;
+        };
+
+        data.splice(0, 1);
+        grid.data.dataRemoved(0, 1);
+
+        return grid.then(function() {
+          expect(gridContainsText(grid, 'TestFoo')).to.be.false;
+          expect(gridContainsText(grid, 'TestBar')).to.be.true;
+        });
+      });
+
+      it('should handle column removed from data', function() {
+        grid.columns[1].renderer = function(cell) {
+          cell.element.innerHTML = cell.data;
+          cell.element.cell = cell;
+        };
+
+        data[0].splice(0, 1);
+        data[1].splice(0, 1);
+        grid.data.dataUpdated(0, 2);
+
+        return grid.then(function() {
+          expect(gridContainsText(grid, 'TestFoo')).to.be.false;
+          expect(gridContainsText(grid, 'TestBar')).to.be.false;
+        });
+      });
+    });
+
+    describe('by modifying columns array', function() {
+      describe('replacing the array', function() {
+        it('should modify columns', function() {
+          grid.columns = [{
+            headerHtml: "<b>Foo</b>"
+          }];
+
+          return grid.then(function() {
+            expect(gridContainsText(grid, 'Name')).to.be.false;
+            expect(gridContainsText(grid, 'Foo')).to.be.true;
+          });
+        });
+      });
+
+      describe('by modifying columns directly', function() {
+        it('should update the innerHTML when modifying headerHtml', function() {
+          grid.columns[0].headerHtml = "testHtml";
+
+          return grid.then(function() {
+            var headers = qaLocal(".v-grid-header .v-grid-row th");
+
+            expect(headers[0].innerHTML).to.equal("testHtml");
+          });
+        });
+      });
+    });
+
+    describe('removing columns', function() {
+      describe('using removeColumn', function() {
+        it('should remove column', function() {
+          expect(gridContainsText(grid, 'Name')).to.be.true;
+
+          return grid.removeColumn(0).then(function() {
+            expect(gridContainsText(grid, 'Name')).to.be.false;
+          });
+        });
+      });
+
+      describe('by modifying columns array', function() {
+        it('should remove column', function() {
+          expect(gridContainsText(grid, 'Name')).to.be.true;
+
+          grid.columns.splice(0, 1);
+
+          return grid.then(function() {
+            expect(gridContainsText(grid, 'Name')).to.be.false;
+          });
+          ;
+        });
+      });
+
+      describe('adding columns', function() {
+        describe('using addColumn', function() {
+          it('should add a new column', function() {
+            var column = {
+              name: "foo",
+              headerHtml: "<b>Foo</b>",
+              sortable: true,
+              minWidth: "100px",
+              maxWidth: "200px",
+              width: "150px",
+              flex: 1
+            };
+
+            return grid.addColumn(column).then(function() {
+              var c = grid.columns[grid.columns.length - 1];
+              expect(c).to.eql(column);
+            });
+          });
+
+          it('should throw an error when adding before non-existing column', function() {
+            expect(grid.addColumn.bind(grid, {
+              name: "foo"
+            }, -1)).to.throw("Column not found.");
+
+            expect(grid.addColumn.bind(grid, {
+              name: "foo"
+            }, 100)).to.throw("Column not found.");
+
+            expect(grid.addColumn.bind(grid, {
+              name: "foo"
+            }, 'bar')).to.throw("Column not found.");
+          });
+
+          it('should add new column before using index', function() {
+            return grid.addColumn({
+              name: "foo",
+              headerHtml: "foo"
+            }, 1).then(function() {
+              var headers = qaLocal(".v-grid-header .v-grid-row th");
+
+              expect(headers[0].innerHTML).to.equal('Name');
+              expect(headers[1].innerHTML).to.equal('foo');
+              expect(headers[2].innerHTML).to.equal('Value');
+            });
+          });
+
+          it('should add new column before using name', function() {
+            grid.columns[1].name = 'Value';
+
+            return grid.then(function() {
+              return grid.addColumn({
+                name: "foo",
+                headerHtml: "foo"
+              }, 'Value');
+            }).then(function() {
+              var headers = qaLocal(".v-grid-header .v-grid-row th");
+
+              expect(headers[0].innerHTML).to.equal('Name');
+              expect(headers[1].innerHTML).to.equal('foo');
+              expect(headers[2].innerHTML).to.equal('Value');
+            });
+          });
+        });
+
+        describe('using generated value', function() {
+          it('should add a generated column', function() {
+            return grid.addColumn({
+              generatedValue: function(dataItem) {
+                return "foo " + dataItem[0];
+              }
+            }).then(function() {
+              expect(gridContainsText(grid, 'foo Grid'));
+            });
+          });
+        });
+
+        describe('by modifying columns array', function() {
+          it('should add a new column to an empty grid', function() {
+            grid.data.source = [];
+            grid.columns = [];
+
+            grid.columns.push({
+              name: "foo",
+              headerHtml: "fooheader"
+            });
+
+            return grid.then(function() {
+              expect(gridContainsText(grid, 'fooheader')).to.be.true;
+            });
+          });
+        });
+      });
+
+      describe('frozen columns', function() {
+        it('should add class \'frozen\'', function() {
+          grid.frozenColumns = 1;
+
+          return grid.then(function() {
+            var headers = qaLocal(".v-grid-header .v-grid-row th");
+
+            expect(headers[0].classList.contains('frozen')).to.be.true;
+          });
+        });
+
+        it('frozen column: unfreeze selection column', function() {
+          grid.selectionMode = 'multi';
+
+          return grid.then(function() {
+            assert.ok(qLocal(".frozen"));
+            grid.frozenColumns = -1;
+
+            return grid;
+          }).then(function() {
+            assert.notOk(qLocal(".frozen"));
+          });
+        });
+      });
+    });
+  });
+</script>
+</body>
+</html>

@@ -2,21 +2,19 @@ var grid, wrapper;
 
 describe.feature = function(description, suite) {
   describe(description, function() {
-    beforeEach(function(done) {
-      waitUntilGridReady(grid, function() {
-        initializeGrid(done);
-      });
+    beforeEach(function() {
+      if(!grid) {
+        return initializeGrid();
+      } else {
+        return grid.then(function() {
+          return initializeGrid();
+        });
+      }
     });
 
     suite();
   });
 };
-
-function waitUntilGridReady(grid, done) {
-  waitUntil(function() {
-    return !grid || grid.grid.isWorkPending() === false;
-  }, done, done);
-}
 
 function waitUntil(check, exec, onTimeout) {
   var id = setInterval(function() {
@@ -32,10 +30,13 @@ function waitUntil(check, exec, onTimeout) {
     assert.fail();
     onTimeout();
   }, 5000);
-}
+};
 
+function gridContainsText(_grid, text) {
+  return Polymer.dom(_grid.root).querySelector(".v-grid").innerHTML.indexOf(text) > -1;
+};
 
-function initializeGrid(done) {
+function initializeGrid() {
   wrapper = document.getElementById("gridwrapper");
   wrapper.innerHTML = "<v-grid>" +
   "                     <table>" +
@@ -60,12 +61,12 @@ function initializeGrid(done) {
   "                         <td>Name</td>" +
   "                         <td>Value</td>" +
   "                       </tr>" +
-  "                     </tfoot>"+
+  "                     </tfoot>" +
   "                     </table>" +
   "                     </v-grid>";
   grid = wrapper.querySelector("v-grid");
 
-  waitUntilGridReady(grid, done);
+  return grid;
 };
 
 var local = function() {

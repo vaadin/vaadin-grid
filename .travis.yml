@@ -1,0 +1,8 @@
+language: java
+install: npm install
+jdk: oraclejdk8
+script:
+  - gulp clean
+  - gulp css
+  - gulp gwt
+  - gulp test:sauce

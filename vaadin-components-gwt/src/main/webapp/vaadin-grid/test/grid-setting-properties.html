@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <title></title>
+  <script src="../../bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+  <script src="../../bower_components/web-component-tester/browser.js"></script>
+  <script src="../../VaadinGrid/VaadinGrid.nocache.js"></script>
+  <script src="common.js"></script>
+
+  <link rel="import" href="../vaadin-grid.html">
+</head>
+<body>
+
+<div id="gridwrapper"></div>
+
+<script>
+  describe.feature('setting properties', function() {
+
+    it('theme property', function() {
+      grid.theme = "foo";
+      assert.equal(grid.getAttribute("theme"), "foo");
+
+      grid.setAttribute("theme", "bar");
+      assert.equal(grid.theme, "bar");
+    });
+
+    it('rowClassName', function() {
+      var gridEquals = true;
+      var elementEquals = true;
+      assert.notOk(grid.rowClassName);
+      var rowClassName = function(row) {
+        gridEquals = gridEquals && row.grid == grid;
+        elementEquals = elementEquals && row.element == qaLocal(".v-grid-body .v-grid-row")[row.index];
+        return row.index + "_" + row.data[0];
+      };
+
+      grid.rowClassName = rowClassName;
+
+      assert.isTrue(elementEquals && gridEquals);
+      assert.isTrue(qLocal(".v-grid-body .v-grid-row").classList.contains("0_Grid"));
+      assert.equal(grid.rowClassName, rowClassName);
+    });
+
+    it('cellClassName', function() {
+      var elementEquals = true;
+
+      grid.columns[0].name = "name";
+      grid.columns[1].name = "value";
+      assert.notOk(grid.cellClassName);
+      var cellClassName = function(cell) {
+        var columnIndex = cell.columnName == "name" ? 0 : 1;
+        var cellElement = qaLocal(".v-grid-body .v-grid-row")[cell.row.index].querySelectorAll(".v-grid-cell")[columnIndex];
+        elementEquals = elementEquals && cell.element == cellElement;
+        return cell.columnName;
+      };
+
+      grid.cellClassName = cellClassName;
+
+      assert.isTrue(elementEquals);
+      assert.isTrue(qLocal(".v-grid-body .v-grid-row .v-grid-cell").classList.contains("name"));
+      assert.equal(grid.cellClassName, cellClassName);
+    });
+
+  });
+</script>
+
+</body>
+</html>
