@@ -521,12 +521,13 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
         }, 30);
     }
 
-    private static String ua = Window.Navigator.getUserAgent().toLowerCase();
-    private static boolean ie = browser.msie || browser.mozilla && ua.contains("trident");
-
     public Object then(JavaScriptObject f) {
         // IE does not have support for native promises.
-        if (ie) {
+        if (browser.msie
+        // FIXME: static initializers in exported classes cause unexpected
+        // errors
+                || (browser.mozilla && (Window.Navigator.getUserAgent()
+                        .toLowerCase().contains("trident")))) {
             JSPromise p = new JSPromise();
             onReady(new Function() {
                 public void f() {
