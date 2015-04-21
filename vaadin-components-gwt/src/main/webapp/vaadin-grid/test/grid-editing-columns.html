@@ -156,7 +156,7 @@
         return gridContainsText(grid, "TestFoo");
       }, function() {
         var cell = grid.querySelectorAll(".v-grid-body .v-grid-cell")[3].cell;
-        assert.equal(cell.rowIndex, 1);
+        assert.equal(cell.row.index, 1);
         assert.equal(cell.index, 1);
 
         mydata.splice(0, 1);
@@ -167,7 +167,7 @@
         waitUntil(function() {
           return !gridContainsText(grid, "TestFoo");
         }, function() {
-          assert.equal(cell.rowIndex, 0);
+          assert.equal(cell.row.index, 0);
           assert.equal(cell.index, 0);
           done();
         }, done);

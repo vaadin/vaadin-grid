@@ -7,32 +7,28 @@ import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.js.JsUtils;
 import com.vaadin.client.renderers.Renderer;
 import com.vaadin.client.widget.grid.RendererCellReference;
-import com.vaadin.client.widgets.Grid;
 import com.vaadin.client.widgets.Grid.Column;
 import com.vaadin.components.common.js.JS;
 import com.vaadin.components.grid.GridComponent;
+import com.vaadin.components.grid.config.JSCell;
 import com.vaadin.components.grid.config.JSColumn;
 import com.vaadin.components.grid.data.DataItemContainer;
 
 public final class GridColumn extends Column<Object, Object> {
 
     private final JSColumn jsColumn;
-    private final Grid<Object> grid;
     private final GridComponent gridComponent;
 
     public static GridColumn addColumn(JSColumn jsColumn,
             GridComponent gridComponent) {
-        GridColumn result = new GridColumn(jsColumn, gridComponent.getGrid(),
-                gridComponent);
+        GridColumn result = new GridColumn(jsColumn, gridComponent);
         gridComponent.getGrid().addColumn(result);
         result.bindProperties();
         return result;
     }
 
-    private GridColumn(JSColumn jsColumn, Grid<Object> grid,
-            GridComponent gridComponent) {
+    private GridColumn(JSColumn jsColumn, GridComponent gridComponent) {
         this.jsColumn = jsColumn;
-        this.grid = grid;
         this.gridComponent = gridComponent;
     }
 
@@ -40,8 +36,8 @@ public final class GridColumn extends Column<Object, Object> {
         bind("headerHtml", new Function() {
             @Override
             public void f() {
-                grid.getDefaultHeaderRow().getCell(GridColumn.this)
-                        .setHtml(arguments(0));
+                gridComponent.getGrid().getDefaultHeaderRow()
+                        .getCell(GridColumn.this).setHtml(arguments(0));
             }
         });
         bind("flex", new Function() {
@@ -65,7 +61,14 @@ public final class GridColumn extends Column<Object, Object> {
         bind("renderer", new Function() {
             @Override
             public void f() {
-                setColumnRenderer(arguments(0));
+                setRenderer(new Renderer<Object>() {
+                    @Override
+                    public void render(RendererCellReference cell, Object data) {
+                        JSCell jsCell = JSCell.create(cell,
+                                gridComponent.getContainer());
+                        JS.exec(arguments(0), jsCell);
+                    }
+                });
             }
         });
         bind("minWidth", new Function() {
@@ -112,38 +115,6 @@ public final class GridColumn extends Column<Object, Object> {
         return jsColumn;
     }
 
-    private void setColumnRenderer(JavaScriptObject renderer) {
-        setRenderer(new Renderer<Object>() {
-            @Override
-            public void render(RendererCellReference cell, Object data) {
-                JavaScriptObject cellJso = JavaScriptObject.createObject();
-                JS.definePropertyAccessors(cellJso, "element", null,
-                        new Function() {
-                            @Override
-                            public Object f(Object... params) {
-                                return cell.getElement();
-                            }
-                        });
-                JsUtils.prop(cellJso, "data", data);
-                JS.definePropertyAccessors(cellJso, "index", null,
-                        new Function() {
-                            @Override
-                            public Object f(Object... params) {
-                                return cell.getColumnIndex();
-                            }
-                        });
-                JS.definePropertyAccessors(cellJso, "rowIndex", null,
-                        new Function() {
-                            @Override
-                            public Object f(Object... params) {
-                                return cell.getRowIndex();
-                            }
-                        });
-                JS.exec(renderer, cellJso);
-            }
-        });
-    }
-
     private double parseDouble(String cssPixelValue) {
         return Double.parseDouble(cssPixelValue.replaceAll("[^\\d]", ""));
     }
@@ -166,7 +137,8 @@ public final class GridColumn extends Column<Object, Object> {
                     result = ((JsArrayMixed) dataItem)
                             .getObject(getColumnIndex());
                 } else {
-                    result = ((Properties) dataItem).getObject(jsColumn.getName());
+                    result = ((Properties) dataItem).getObject(jsColumn
+                            .getName());
                 }
             }
         }

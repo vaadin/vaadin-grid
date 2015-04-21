@@ -127,6 +127,11 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
         return grid;
     }
 
+    @JsNoExport
+    public Element getContainer() {
+        return container;
+    }
+
     public void init(Element container, TableElement lightDomElement,
             Element gridContainer) {
         this.container = container;

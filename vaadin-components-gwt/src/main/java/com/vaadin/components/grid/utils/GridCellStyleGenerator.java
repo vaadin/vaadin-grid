@@ -3,19 +3,16 @@ package com.vaadin.components.grid.utils;
 import com.google.gwt.dom.client.Element;
 import com.vaadin.client.widget.grid.CellReference;
 import com.vaadin.client.widget.grid.CellStyleGenerator;
-import com.vaadin.components.common.js.JS;
 import com.vaadin.components.grid.config.JSCell;
 import com.vaadin.components.grid.config.JSCellClassName;
-import com.vaadin.components.grid.config.JSRow;
-import com.vaadin.components.grid.table.GridColumn;
 
 /**
  * A GWT/JavaScript bridge for Grid CellStyleGenerator.
  */
 public class GridCellStyleGenerator implements CellStyleGenerator<Object> {
 
-    private JSCellClassName cellClassName;
-    private Element container;
+    private final JSCellClassName cellClassName;
+    private final Element container;
 
     public GridCellStyleGenerator(JSCellClassName cellClassName,
             Element container) {
@@ -29,19 +26,8 @@ public class GridCellStyleGenerator implements CellStyleGenerator<Object> {
 
     @Override
     public String getStyle(CellReference<Object> cellReference) {
-        JSCell cell = JS.createJsType(JSCell.class);
-        String columnName = ((GridColumn) cellReference.getColumn())
-                .getJsColumn().getName();
-        cell.setColumnName(columnName);
-        cell.setElement(cellReference.getElement());
-
-        JSRow row = JS.createJsType(JSRow.class);
-        row.setIndex(cellReference.getRowIndex());
-        row.setData(cellReference.getRow());
-        row.setGrid(container);
-        row.setElement(cellReference.getElement().getParentElement());
-        cell.setRow(row);
-        return cellClassName.getStyle(cell);
+        JSCell jsCell = JSCell.create(cellReference, container);
+        return cellClassName.getStyle(jsCell);
     }
 
 }
