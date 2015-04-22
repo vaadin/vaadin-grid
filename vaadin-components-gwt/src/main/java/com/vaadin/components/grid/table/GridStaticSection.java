@@ -86,17 +86,12 @@ public class GridStaticSection {
 
     private void bind(JSStaticCell cell, StaticCell staticCell,
             String propertyName, final Function function) {
-        JS.definePropertyAccessors(cell, propertyName, new Function() {
-            @Override
-            public void f() {
-                Object newValue = arguments(0);
-                function.f(newValue);
-                gridComponent.redraw();
-                grid.refreshStaticSection(staticCell);
-            }
+        JS.definePropertyAccessors(cell, propertyName, v -> {
+            function.f(v);
+            gridComponent.redraw();
+            grid.refreshStaticSection(staticCell);
         }, null);
     }
-
 
     public JSStaticCell getHeaderCell(int rowIndex, Object columnId) {
         Column<?, ?> column = gridComponent

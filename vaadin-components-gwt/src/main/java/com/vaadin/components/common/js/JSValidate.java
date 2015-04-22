@@ -12,9 +12,9 @@ import com.google.gwt.regexp.shared.RegExp;
 public enum JSValidate {
     //@formatter:off
     String("string value", "(.+)", String.class, "", ""),
-    Pixel("pixel value", "([\\d\\.]+)(px)?$", String.class, "", ""),
+    Pixel("pixel value", "([\\d\\.]+)(px)?$", Double.class, null, null),
     Integer("int value", "([+-]?\\d+)", Integer.class, 0, 0),
-    Double("double value", "([+-]?[\\d\\.]+)", Double.class, 0, 0),
+    Double("double value", "([+-]?[\\d\\.]+)", Double.class, 0.0, 0.0),
     Boolean("boolean value", "(|true|false)", Boolean.class, true, false);
     //@formatter:on
 

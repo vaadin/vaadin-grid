@@ -100,8 +100,7 @@ public class GridLightDomTable implements MutationListener {
             // The default row should be the last row in the header which has
             // the largest number of th elements, or the last header row which
             // contains a th element with the sortable attribute
-            if ($ths.size() == max
-                    || !$ths.filter("[sortable]").isEmpty()) {
+            if ($ths.size() == max || !$ths.filter("[sortable]").isEmpty()) {
                 defaultHeaderRow = i;
             }
         }
@@ -109,7 +108,8 @@ public class GridLightDomTable implements MutationListener {
         if (!$cols.isEmpty()) {
             configureColumnsFromDom($cols.children("col"));
         } else {
-            configureColumnsFromDom($head_tr.eq(defaultHeaderRow).children("th"));
+            configureColumnsFromDom($head_tr.eq(defaultHeaderRow)
+                    .children("th"));
         }
     }
 
@@ -124,9 +124,20 @@ public class GridLightDomTable implements MutationListener {
             column.setSortable(JSValidate.Boolean.attr($th, "sortable"));
             column.setReadOnly(JSValidate.Boolean.attr($th, "read-only"));
             column.setFlex(JSValidate.Integer.attr($th, "flex", 0, 1));
-            column.setWidth(JSValidate.Pixel.attr($th, "width"));
-            column.setMinWidth(JSValidate.Pixel.attr($th, "min-width"));
-            column.setMaxWidth(JSValidate.Pixel.attr($th, "max-width"));
+
+            Double width = JSValidate.Pixel.attr($th, "width");
+            if (width != null) {
+                column.setWidth(width);
+            }
+            Double minWidth = JSValidate.Pixel.attr($th, "min-width");
+            if (minWidth != null) {
+                column.setMinWidth(minWidth);
+            }
+            Double maxWidth = JSValidate.Pixel.attr($th, "max-width");
+            if (maxWidth != null) {
+                column.setMaxWidth(maxWidth);
+            }
+
             column.setName(JSValidate.String.attr($th, "name"));
             column.setRenderer(JsUtils.wrapFunction(new Function() {
                 @Override
@@ -134,11 +145,11 @@ public class GridLightDomTable implements MutationListener {
                     JavaScriptObject cell = arguments(0);
                     Element element = JsUtils.prop(cell, "element");
                     Object data = JsUtils.prop(cell, "data");
-                    element.setInnerHTML(data != null ? String
-                            .valueOf(data) : "");
+                    element.setInnerHTML(data != null ? String.valueOf(data)
+                            : "");
                 }
             }));
-            column.setHeaderHtml($th.html());
+            column.setHeaderContent($th.html());
         }
         gridComponent.setColumns(jsColumns);
     }

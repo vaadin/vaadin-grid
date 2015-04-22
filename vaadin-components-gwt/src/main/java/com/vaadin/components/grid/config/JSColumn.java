@@ -18,22 +18,22 @@ public interface JSColumn {
     void setName(String s);
 
     @JsProperty
-    String getMinWidth();
+    double getMinWidth();
 
     @JsProperty
-    void setMinWidth(String s);
+    void setMinWidth(double d);
 
     @JsProperty
-    String getMaxWidth();
+    double getMaxWidth();
 
     @JsProperty
-    void setMaxWidth(String s);
+    void setMaxWidth(double d);
 
     @JsProperty
-    String getWidth();
+    double getWidth();
 
     @JsProperty
-    void setWidth(String s);
+    void setWidth(double d);
 
     @JsProperty
     int getFlex();
@@ -60,14 +60,14 @@ public interface JSColumn {
     void setRenderer(JavaScriptObject o);
 
     @JsProperty
-    JavaScriptObject getGeneratedValue();
+    JavaScriptObject getValueGenerator();
 
     @JsProperty
-    void setGeneratedValue(JavaScriptObject o);
+    void setValueGenerator(JavaScriptObject o);
 
     @JsProperty
-    String getHeaderHtml();
+    Object getHeaderContent();
 
     @JsProperty
-    void setHeaderHtml(String s);
+    void setHeaderContent(Object o);
 }

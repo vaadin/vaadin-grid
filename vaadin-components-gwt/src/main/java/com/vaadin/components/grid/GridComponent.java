@@ -165,7 +165,7 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
     private int getColumnIndexByIndexOrName(String indexOrName) {
         if (indexOrName.matches("[+-]?\\d+")) {
             int parsedInt = Integer.parseInt(indexOrName);
-            if (parsedInt >= 0 && parsedInt < cols.length()) {
+            if (parsedInt >= 0 && parsedInt < getDataColumns().size()) {
                 return parsedInt;
             }
         } else {

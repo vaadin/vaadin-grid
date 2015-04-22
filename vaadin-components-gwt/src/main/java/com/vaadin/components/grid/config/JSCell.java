@@ -3,7 +3,6 @@ package com.vaadin.components.grid.config;
 import com.google.gwt.core.client.js.JsProperty;
 import com.google.gwt.core.client.js.JsType;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.query.client.Function;
 import com.vaadin.client.widget.grid.CellReference;
 import com.vaadin.components.common.js.JS;
 import com.vaadin.components.grid.table.GridColumn;
@@ -18,50 +17,20 @@ public interface JSCell {
     static JSCell create(CellReference<Object> cell, Element container) {
         JSCell jsCell = JS.createJsType(JSCell.class);
         GridColumn column = (GridColumn) cell.getColumn();
-        JS.definePropertyAccessors(jsCell, "element", null, new Function() {
-            @Override
-            public Object f(Object... args) {
-                return cell.getElement();
-            }
-        });
-        JS.definePropertyAccessors(jsCell, "index", null, new Function() {
-            @Override
-            public Object f(Object... args) {
-                return cell.getColumnIndex();
-            }
-        });
-        JS.definePropertyAccessors(jsCell, "columnName", null, new Function() {
-            @Override
-            public Object f(Object... args) {
-                return column.getJsColumn().getName();
-            }
-        });
-        JS.definePropertyAccessors(jsCell, "data", null, new Function() {
-            @Override
-            public Object f(Object... args) {
-                return column.getValue(cell.getRow());
-            }
-        });
+        JS.definePropertyAccessors(jsCell, "element", null,
+                () -> cell.getElement());
+        JS.definePropertyAccessors(jsCell, "index", null,
+                () -> cell.getColumnIndex());
+        JS.definePropertyAccessors(jsCell, "columnName", null, () -> column
+                .getJsColumn().getName());
+        JS.definePropertyAccessors(jsCell, "data", null,
+                () -> column.getValue(cell.getRow()));
 
         JSRow row = JS.createJsType(JSRow.class);
-        JS.definePropertyAccessors(row, "index", null, new Function() {
-            @Override
-            public Object f(Object... args) {
-                return cell.getRowIndex();
-            }
-        });
-        JS.definePropertyAccessors(row, "data", null, new Function() {
-            @Override
-            public Object f(Object... args) {
-                return cell.getRow();
-            }
-        });
-        JS.definePropertyAccessors(row, "element", null, new Function() {
-            @Override
-            public Object f(Object... args) {
-                return cell.getElement().getParentElement();
-            }
-        });
+        JS.definePropertyAccessors(row, "index", null, () -> cell.getRowIndex());
+        JS.definePropertyAccessors(row, "data", null, () -> cell.getRow());
+        JS.definePropertyAccessors(row, "element", null, () -> cell
+                .getElement().getParentElement());
         row.setGrid(container);
         jsCell.setRow(row);
 

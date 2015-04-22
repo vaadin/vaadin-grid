@@ -51,16 +51,27 @@ public abstract class JS {
     }-*/;
 
     public static void definePropertyAccessors(Object jso, String propertyName,
-            Function setter, Function getter) {
+            Setter setter, Getter getter) {
         JavaScriptObject setterJSO = setter != null ? JsUtils
-                .wrapFunction(setter) : null;
+                .wrapFunction(new Function() {
+                    @Override
+                    public void f() {
+                        setter.setValue(arguments(0));
+                    }
+                }) : null;
+
         JavaScriptObject getterJSO = getter != null ? JsUtils
-                .wrapFunction(getter) : null;
+                .wrapFunction(new Function() {
+                    @Override
+                    public Object f(Object... args) {
+                        return getter.getValue();
+                    }
+                }) : null;
         definePropertyAccessors((JavaScriptObject) jso, propertyName,
                 setterJSO, getterJSO);
     }
 
-    public static native void definePropertyAccessors(
+    private static native void definePropertyAccessors(
             JavaScriptObject jsObject, String propertyName,
             JavaScriptObject setter, JavaScriptObject getter)
     /*-{
@@ -82,6 +93,14 @@ public abstract class JS {
           jsObject[propertyName] = _value;
       }
     }-*/;
+
+    public interface Setter {
+        void setValue(Object value);
+    }
+
+    public interface Getter {
+        Object getValue();
+    }
 
     public static <T> T exec(Object o, Object arg) {
         return JsUtils.jsni((JavaScriptObject) o, "call", (JavaScriptObject) o,

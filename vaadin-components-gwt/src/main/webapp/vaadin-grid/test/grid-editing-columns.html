@@ -26,7 +26,7 @@
     it('add new column', function() {
       grid.addColumn({
         name: "foo",
-        headerHtml: "<b>Foo</b>",
+        headerContent: "<b>Foo</b>",
         sortable: true,
         minWidth: "100px",
         maxWidth: "200px",
@@ -36,7 +36,7 @@
 
       var c = grid.columns[grid.columns.length - 1];
       assert.equal(c.name, "foo");
-      assert.equal(c.headerHtml, "<b>Foo</b>");
+      assert.equal(c.headerContent, "<b>Foo</b>");
       assert.equal(c.sortable, true);
       assert.notOk(c.editable);
       assert.equal(c.minWidth, "100px");
@@ -57,11 +57,11 @@
 
       grid.addColumn({
         name: "foo",
-        headerHtml: "foo"
+        headerContent: "foo"
       }, 0);
       grid.addColumn({
         name: "bar",
-        headerHtml: "testHtml"
+        headerContent: "testHtml"
       }, "foo");
 
       waitUntil(function() {
@@ -82,7 +82,7 @@
     it('edit new column', function(done) {
       var c = {
         name: "foo",
-        headerHtml: "testHtml"
+        headerContent: "testHtml"
       };
       grid.addColumn(c);
 
@@ -93,7 +93,7 @@
         var headers = qaLocal(".v-grid-header .v-grid-row th");
         assert.equal(headers[grid.columns.length - 1].innerHTML, "testHtml");
 
-        c.headerHtml = "testHtml2";
+        c.headerContent = "testHtml2";
 
         waitUntil(function() {
           return gridContainsText(grid, "testHtml2");
@@ -107,7 +107,7 @@
     });
 
     it('edit existing column', function(done) {
-      grid.columns[0].headerHtml = "testHtml";
+      grid.columns[0].headerContent = "testHtml";
       waitUntil(function() {
         return gridContainsText(grid, "testHtml");
       }, function() {
@@ -119,7 +119,7 @@
 
     it('generated value', function(done) {
       grid.addColumn({
-        generatedValue: function(dataItem) {
+        valueGenerator: function(dataItem) {
           return "foo " + dataItem[0];
         }
       });
@@ -176,21 +176,22 @@
     });
 
     it('initial property values', function() {
-      assert.equal(grid.columns[0].headerHtml, "Name");
+      assert.equal(grid.columns[0].headerContent, "Name");
     });
 
     it('replace columns array', function(done) {
-      assert.isTrue(gridContainsText(grid, "Name"))
+      assert.isTrue(gridContainsText(grid, "Name"));
       grid.columns = [{
-        headerHtml: "<b>Foo</b>",
+        headerContent: "<b>Foo</b>",
       },{
-        headerHtml: "<b>Bar</b>",
-      }]
+        headerContent: "<b>Bar</b>",
+      }];
       waitUntil(function() {
-        return !gridContainsText(grid, "Name")
-            && gridContainsText(grid, "Foo")
-            && gridContainsText(grid, "Bar");
+        return !gridContainsText(grid, "Name") &&
+        gridContainsText(grid, "Foo") &&
+        gridContainsText(grid, "Bar");
       }, done);
+      done();
     });
 
     it('modify columns array', function(done) {
@@ -201,7 +202,7 @@
         return !gridContainsText(grid, "Progress");
       }, function() {
         grid.columns.push({
-          headerHtml: "testHtml"
+          headerContent: "testHtml"
         });
         waitUntil(function() {
           return gridContainsText(grid, "testHtml");
@@ -212,7 +213,7 @@
     it('remove column', function(done) {
       grid.addColumn({
         name: "test",
-        headerHtml: "test"
+        headerContent: "test"
       });
       grid.removeColumn(0);
 
@@ -232,7 +233,7 @@
       grid.then(function() {
         grid.columns.push({
           name: "foo",
-          headerHtml: "fooheader"
+          headerContent: "fooheader"
         });
 
         return grid;
