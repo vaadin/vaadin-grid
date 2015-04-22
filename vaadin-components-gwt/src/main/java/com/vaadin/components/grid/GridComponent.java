@@ -72,7 +72,7 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
     private final ViolatedGrid grid;
     private JSArray<JSSortOrder> jsSort;
 
-    private boolean updating = false;
+    public boolean updating = true;
     private GridLightDomTable lightDom;
     private final Redraw redrawer;
     private final GridEditor editor;
@@ -156,6 +156,8 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
 
         redrawer.setContainer(container);
         redraw(true);
+
+        updating = false;
     }
 
     public JSColumn addColumn(JSColumn jsColumn, Object beforeColumnId) {

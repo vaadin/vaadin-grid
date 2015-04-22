@@ -191,7 +191,7 @@
 
         mydata.splice(0, 1);
         mydata[0].splice(0, 1);
-        grid.data.dataRemoved(0, 1);
+        grid.data.clearCache();
 
         grid.columns.splice(0, 1);
         waitUntil(function() {

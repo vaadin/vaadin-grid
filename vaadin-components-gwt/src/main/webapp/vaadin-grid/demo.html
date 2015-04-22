@@ -198,21 +198,21 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
 
         var updatedItem = {name: "Button X", value: Math.round(Math.random() * 1000), progress: Math.random()};
         data[0] = updatedItem;
-        grid.data.dataUpdated(0, [updatedItem]);
+        grid.data.clearCache();
       });
 
       document.querySelector('#addButton').addEventListener('click', function(e) {
         var grid = document.querySelector('#myMapGrid');
 
         data.splice(0, 0, {name: "Button " + data.length, value: 111, progress: 0.01});
-        grid.data.dataAdded(0, 1);
+        grid.data.clearCache(data.length);
       });
 
       document.querySelector('#removeButton').addEventListener('click', function(e) {
         var grid = document.querySelector('#myMapGrid');
 
         data.splice(0, 1);
-        grid.data.dataRemoved(0, 1);
+        grid.data.clearCache(data.length);
       });
   </script>
   </li>

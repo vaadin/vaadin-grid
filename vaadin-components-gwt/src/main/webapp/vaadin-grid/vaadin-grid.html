@@ -122,17 +122,8 @@
               _this.grid.setSortOrder(sortOrder);
             },
 
-            dataUpdated: function(firstIndex, itemsData) {
-              _this.grid.getDataSource().dataUpdated(firstIndex, itemsData);
-            },
-            dataRemoved: function(firstIndex, numberOfItems) {
-              _this.grid.getDataSource().dataRemoved(firstIndex, numberOfItems);
-            },
-            dataAdded: function(firstIndex, numberOfItems) {
-              _this.grid.getDataSource().dataAdded(firstIndex, numberOfItems);
-            },
-            resetData: function(estimatedNewSize) {
-              _this.grid.getDataSource().resetData(estimatedNewSize);
+            clearCache: function(estimatedNewSize) {
+              _this.grid.getDataSource().clearCache(estimatedNewSize);
             },
 
           };

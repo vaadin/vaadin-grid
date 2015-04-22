@@ -9,7 +9,7 @@ import com.google.gwt.core.client.js.JsType;
 import com.vaadin.client.data.AbstractRemoteDataSource;
 import com.vaadin.client.widgets.Grid.Column;
 import com.vaadin.components.common.js.JS;
-import com.vaadin.components.common.js.JSArray;
+import com.vaadin.components.common.js.JSValidate;
 import com.vaadin.components.grid.GridComponent;
 import com.vaadin.components.grid.table.GridColumn;
 import com.vaadin.shared.ui.grid.Range;
@@ -48,7 +48,10 @@ public abstract class GridDataSource extends AbstractRemoteDataSource<Object> {
                 // Grid stops calling requestRows when size is 0, if
                 // size changes we have to re-attach the data-source so
                 // as grid starts calling requestRows again
+                boolean wasUpdating = gridComponent.updating;
+                gridComponent.updating = true;
                 gridComponent.getGrid().setDataSource(this);
+                gridComponent.updating = wasUpdating;
             } else if (heightByRows) {
                 gridComponent.redraw(true);
             }
@@ -72,31 +75,8 @@ public abstract class GridDataSource extends AbstractRemoteDataSource<Object> {
         gridComponent.getSelectionModel().reset();
     }
 
-    public void dataUpdated(int firstIndex, JSArray<Object> itemsData) {
-        setRowData(firstIndex, itemsData.asList());
-        gridComponent.getSelectionModel().reset();
-        refresh();
-        gridComponent.redraw(false);
-    }
-
-    public void dataRemoved(int firstRowIndex, int count) {
-        removeRowData(firstRowIndex, count);
-        gridComponent.getSelectionModel().reset();
-        refresh();
-        gridComponent.redraw(true);
-    }
-
-    public void dataAdded(int firstRowIndex, int count) {
-        // cover the case when size was 0
-        size(size() + count);
-        insertRowData(firstRowIndex, count);
-        gridComponent.getSelectionModel().reset();
-        refresh();
-        gridComponent.redraw(true);
-    }
-
-    public void resetData(int newSize) {
-        resetDataAndSize(newSize);
+    public void clearCache(Double newSize) {
+        resetDataAndSize(JSValidate.Integer.val(newSize, size, size));
         gridComponent.getSelectionModel().reset();
     }
 
