@@ -22,7 +22,7 @@
       describe('using api', function() {
 
         function assignInvalidSortOrder() {
-          grid.sortOrder = [{
+          grid.data.sortOrder = [{
             column: 0,
             direction: "ascending" // Should be asc or desc
           }];
@@ -34,7 +34,7 @@
         });
 
         it('should set sortOrder property', function() {
-          grid.sortOrder = [{
+          grid.data.sortOrder = [{
             column: 0,
             direction: "desc"
           }];
@@ -43,16 +43,16 @@
         });
 
         it('should clear sort order', function() {
-          grid.sortOrder = [{
+          grid.data.sortOrder = [{
             column: 0,
             direction: "desc"
           }];
-          grid.sortOrder = [];
-          expect(grid.sortOrder).to.be.empty;
+          grid.data.sortOrder = [];
+          expect(grid.data.sortOrder).to.be.empty;
         });
 
         it('should preserve existing sort order on invalid value', function() {
-          grid.sortOrder = [{
+          grid.data.sortOrder = [{
             column: 0,
             direction: "desc"
           }];
@@ -61,13 +61,13 @@
         });
 
         it('should be able to sort with multiple columns', function() {
-          grid.sortOrder = [{
+          grid.data.sortOrder = [{
             column: 0,
             direction: "desc"
           }, {
             column: 1
           }];
-          assert.lengthOf(grid.sortOrder, 2);
+          assert.lengthOf(grid.data.sortOrder, 2);
           expect(qaLocal(".v-grid-header th")[0].classList.contains("sort-desc")).to.be.true;
           expect(qaLocal(".v-grid-header th")[1].classList.contains("sort-asc")).to.be.true;
         });
@@ -75,7 +75,7 @@
         it('should reset selection', function() {
           grid.selectedRows = [0];
 
-          grid.sortOrder = [{
+          grid.data.sortOrder = [{
             column: 0,
             direction: "desc"
           }];

@@ -41,9 +41,9 @@ import com.vaadin.components.common.js.JSArray;
 import com.vaadin.components.common.js.JSEnums;
 import com.vaadin.components.common.js.JSPromise;
 import com.vaadin.components.common.js.JSValidate;
-import com.vaadin.components.grid.config.JSCellClassName;
+import com.vaadin.components.grid.config.JSCell;
 import com.vaadin.components.grid.config.JSColumn;
-import com.vaadin.components.grid.config.JSRowClassName;
+import com.vaadin.components.grid.config.JSRow;
 import com.vaadin.components.grid.config.JSSortOrder;
 import com.vaadin.components.grid.data.GridDataSource;
 import com.vaadin.components.grid.data.GridDomTableDataSource;
@@ -54,8 +54,6 @@ import com.vaadin.components.grid.selection.IndexBasedSelectionModelSingle;
 import com.vaadin.components.grid.table.GridColumn;
 import com.vaadin.components.grid.table.GridLightDomTable;
 import com.vaadin.components.grid.table.GridStaticSection;
-import com.vaadin.components.grid.utils.GridCellStyleGenerator;
-import com.vaadin.components.grid.utils.GridRowStyleGenerator;
 import com.vaadin.components.grid.utils.Redraw;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.grid.HeightMode;
@@ -83,6 +81,9 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
 
     private Element container;
     private JSArray<JSColumn> cols;
+
+    private JavaScriptObject rowClassGenerator;
+    private JavaScriptObject cellClassGenerator;
 
     public GridComponent() {
         grid = new ViolatedGrid();
@@ -220,10 +221,6 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
 
     public double getScrollTop() {
         return grid.getScrollTop();
-    }
-
-    public void setScrollTop(double px) {
-        grid.setScrollTop(px);
     }
 
     public JSArray<JSColumn> getColumns() {
@@ -386,40 +383,24 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
         refresh();
     }
 
-    public JSRowClassName getRowClassName() {
-        JSRowClassName result = null;
-        if (grid.getRowStyleGenerator() != null) {
-            result = ((GridRowStyleGenerator) grid.getRowStyleGenerator())
-                    .getRowClassName();
-        }
-        return result;
+    public void setRowClassGenerator(JavaScriptObject generator) {
+        grid.setRowStyleGenerator(JS.isUndefinedOrNull(generator) ? null
+                : row -> JS.exec(generator, JSRow.create(row, container)));
+        this.rowClassGenerator = generator;
     }
 
-    public void setRowClassName(JSRowClassName rowClassName) {
-        if (rowClassName == null) {
-            grid.setRowStyleGenerator(null);
-        } else {
-            grid.setRowStyleGenerator(new GridRowStyleGenerator(rowClassName,
-                    container));
-        }
+    public JavaScriptObject getRowClassGenerator() {
+        return rowClassGenerator;
     }
 
-    public JSCellClassName getCellClassName() {
-        JSCellClassName result = null;
-        if (grid.getCellStyleGenerator() != null) {
-            result = ((GridCellStyleGenerator) grid.getCellStyleGenerator())
-                    .getCellClassName();
-        }
-        return result;
+    public void setCellClassGenerator(JavaScriptObject generator) {
+        grid.setCellStyleGenerator(JS.isUndefinedOrNull(generator) ? null
+                : cell -> JS.exec(generator, JSCell.create(cell, container)));
+        this.cellClassGenerator = generator;
     }
 
-    public void setCellClassName(JSCellClassName cellClass) {
-        if (cellClass == null) {
-            grid.setCellStyleGenerator(null);
-        } else {
-            grid.setCellStyleGenerator(new GridCellStyleGenerator(cellClass,
-                    container));
-        }
+    public JavaScriptObject getCellClassGenerator() {
+        return cellClassGenerator;
     }
 
     // TODO: remove this when grid resizes appropriately on container

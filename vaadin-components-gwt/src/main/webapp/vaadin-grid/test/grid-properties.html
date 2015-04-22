@@ -18,49 +18,42 @@
 
 <script>
   describe.feature('using properties', function() {
-    it('theme property', function() {
-      grid.theme = "foo";
-      assert.equal(grid.getAttribute("theme"), "foo");
 
-      grid.setAttribute("theme", "bar");
-      assert.equal(grid.theme, "bar");
-    });
-
-    it('rowClassName', function() {
+    it('rowClassGenerator', function() {
       var gridEquals = true;
       var elementEquals = true;
-      assert.notOk(grid.rowClassName);
-      var rowClassName = function(row) {
+      assert.notOk(grid.rowClassGenerator);
+      var rowClassGenerator = function(row) {
         gridEquals = gridEquals && row.grid == grid;
         elementEquals = elementEquals && row.element == qaLocal(".v-grid-body .v-grid-row")[row.index];
         return row.index + "_" + row.data[0];
       };
 
-      grid.rowClassName = rowClassName;
+      grid.rowClassGenerator = rowClassGenerator;
 
       assert.isTrue(elementEquals && gridEquals);
       assert.isTrue(qLocal(".v-grid-body .v-grid-row").classList.contains("0_Grid"));
-      assert.equal(grid.rowClassName, rowClassName);
+      assert.equal(grid.rowClassGenerator, rowClassGenerator);
     });
 
-    it('cellClassName', function() {
+    it('cellClassGenerator', function() {
       var elementEquals = true;
 
       grid.columns[0].name = "name";
       grid.columns[1].name = "value";
-      assert.notOk(grid.cellClassName);
-      var cellClassName = function(cell) {
+      assert.notOk(grid.cellClassGenerator);
+      var cellClassGenerator = function(cell) {
         var columnIndex = cell.columnName == "name" ? 0 : 1;
         var cellElement = qaLocal(".v-grid-body .v-grid-row")[cell.row.index].querySelectorAll(".v-grid-cell")[columnIndex];
         elementEquals = elementEquals && cell.element == cellElement;
         return cell.columnName;
       };
 
-      grid.cellClassName = cellClassName;
+      grid.cellClassGenerator = cellClassGenerator;
 
       assert.isTrue(elementEquals);
       assert.isTrue(qLocal(".v-grid-body .v-grid-row .v-grid-cell").classList.contains("name"));
-      assert.equal(grid.cellClassName, cellClassName);
+      assert.equal(grid.cellClassGenerator, cellClassGenerator);
     });
 
     it('should be enabled by default', function() {

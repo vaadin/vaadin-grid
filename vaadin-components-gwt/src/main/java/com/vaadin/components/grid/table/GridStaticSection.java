@@ -9,13 +9,13 @@ import com.google.gwt.core.client.js.JsNamespace;
 import com.google.gwt.core.client.js.JsNoExport;
 import com.google.gwt.core.client.js.JsType;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.vaadin.client.widgets.Grid.Column;
 import com.vaadin.client.widgets.Grid.StaticSection.StaticCell;
 import com.vaadin.client.widgets.Grid.StaticSection.StaticRow;
 import com.vaadin.components.common.js.JS;
+import com.vaadin.components.common.js.JS.Setter;
 import com.vaadin.components.common.js.JSArray;
 import com.vaadin.components.grid.GridComponent;
 import com.vaadin.components.grid.ViolatedGrid;
@@ -50,31 +50,17 @@ public class GridStaticSection {
                 jsCell.setContent(cell.getHtml());
             }
 
-            bind(jsCell, cell, "colspan", new Function() {
-                @Override
-                public void f() {
-                    cell.setColspan(((Double) arguments(0)).intValue());
-                }
-            });
-            bind(jsCell, cell, "content", new Function() {
-                @Override
-                public void f() {
-                    Object content = arguments(0);
-                    if (content == null) {
-                        cell.setHtml(null);
-                    } else if (JS.isPrimitiveType(content)
-                            || content instanceof Number) {
-                        cell.setHtml(String.valueOf(content));
-                    } else if (JsUtils.isElement(content)) {
-                        cell.setWidget(new SimplePanel((Element) content) {
-                        });
-                    }
-                }
-            });
-            bind(jsCell, cell, "className", new Function() {
-                @Override
-                public void f() {
-                    cell.setStyleName(arguments(0));
+            bind(jsCell, cell, "colspan",
+                    v -> cell.setColspan(((Double) v).intValue()));
+            bind(jsCell, cell, "className", v -> cell.setStyleName((String) v));
+            bind(jsCell, cell, "content", v -> {
+                if (v == null) {
+                    cell.setHtml(null);
+                } else if (JS.isPrimitiveType(v) || v instanceof Number) {
+                    cell.setHtml(String.valueOf(v));
+                } else if (JsUtils.isElement(v)) {
+                    cell.setWidget(new SimplePanel((Element) v) {
+                    });
                 }
             });
 
@@ -85,9 +71,9 @@ public class GridStaticSection {
     }
 
     private void bind(JSStaticCell cell, StaticCell staticCell,
-            String propertyName, final Function function) {
+            String propertyName, Setter setter) {
         JS.definePropertyAccessors(cell, propertyName, v -> {
-            function.f(v);
+            setter.setValue(v);
             gridComponent.redraw();
             grid.refreshStaticSection(staticCell);
         }, null);

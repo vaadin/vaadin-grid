@@ -19,19 +19,6 @@
 
     properties: {
       /**
-       * Declares the theme used for this grid instance. The grid does not load the custom theme CSS file,
-       * it expects that the correct styles are provided by the current HTML page.
-       *
-       * If not specified, the default theme variation is used (loaded automatically by the HTML import).
-       *
-       * @attribute theme
-       * @type String
-       */
-      theme: {
-        type: String,
-        reflectToAttribute: true
-      },
-      /**
        * The columns array
        *
        * @property columns
@@ -120,6 +107,19 @@
               _this.grid.setDataSource(sourceFunction);
 
               this._source = source;
+            },
+            /**
+             * Sets the sort order to use. Setting this causes the Grid to re-sort
+             * itself. If set to null, the sort order is cleared.
+             *
+             * @attribute sortOrder
+             * @type array
+             */
+            get sortOrder() {
+              return _this.grid.getSortOrder();
+            },
+            set sortOrder(sortOrder) {
+              _this.grid.setSortOrder(sortOrder);
             },
 
             dataUpdated: function(firstIndex, itemsData) {
@@ -325,26 +325,13 @@
           writable: false
         });
       });
-
-      Object.defineProperty(this, 'scrollTop', {
-        get: function() {
-          return this.grid.getScrollTop();
-        },
-        set: function(newValue) {
-          this.grid.setScrollTop(newValue);
-          return this;
-        },
-        enumerable: true,
-        configurable: false
-      });
-
       setTimeout(function() {
         for (var i = 0; i < _this.attributes.length; i++) {
           _this.attributeChanged(_this.attributes[i].nodeName, null, _this.attributes[i].nodeValue);
         }
       }, 1);
 
-      _this.columns = _this.grid.getColumns();
+      this.columns = _this.grid.getColumns();
     },
 
     /**
@@ -410,41 +397,28 @@
     },
 
     /**
-     * Sets the sort order to use. Setting this causes the Grid to re-sort
-     * itself. If set to null, the sort order is cleared.
-     *
-     * @attribute sortOrder
-     * @type array
-     */
-    get sortOrder() {
-      return this.grid.getSortOrder();
-    },
-    set sortOrder(sortOrder) {
-      this.grid.setSortOrder(sortOrder);
-    },
-    /**
      * Sets the style generator that is used for generating styles for rows.
      *
-     * @attribute rowClassName
+     * @attribute rowClassGenerator
      * @type object
      */
-    get rowClassName() {
-      return this.grid.getRowClassName();
+    get rowClassGenerator() {
+      return this.grid.getRowClassGenerator();
     },
-    set rowClassName(rowClassName) {
-      this.grid.setRowClassName(rowClassName);
+    set rowClassGenerator(rowClassGenerator) {
+      this.grid.setRowClassGenerator(rowClassGenerator);
     },
     /**
      * Sets the style generator that is used for generating styles for cells.
      *
-     * @attribute cellClassName
+     * @attribute cellClassGenerator
      * @type object
      */
-    get cellClassName() {
-      return this.grid.getCellClassName();
+    get cellClassGenerator() {
+      return this.grid.getCellClassGenerator();
     },
-    set cellClassName(cellClassName) {
-      this.grid.setCellClassName(cellClassName);
+    set cellClassGenerator(cellClassGenerator) {
+      this.grid.setCellClassGenerator(cellClassGenerator);
     },
     /**
      * Disables the grid functionality.

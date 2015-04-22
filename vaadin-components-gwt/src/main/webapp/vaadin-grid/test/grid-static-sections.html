@@ -32,7 +32,7 @@
           // sorting indicator moves to the default row, so we'll
           // use that to assert that default row has changed.
           grid.columns[0].sortable = true;
-          grid.sortOrder = [{column: 0, direction: 'asc'}];
+          grid.data.sortOrder = [{column: 0, direction: 'asc'}];
 
           grid.header.defaultRow = 1;
 
