@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+  <meta charset="UTF-8">
+  <title></title>
+  <script src="../../bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+  <script src="../../bower_components/web-component-tester/browser.js"></script>
+  <script src="../../VaadinGrid/VaadinGrid.nocache.js"></script>
+  <script src="common.js"></script>
+
+  <link rel="import" href="../vaadin-grid.html">
+</head>
+
+<body>
+
+<div id="gridwrapper"></div>
+
+<script>
+  describe.feature('rendering light DOM', function() {
+    it('light dom table header gets rendered in the grid', function() {
+      var row = qLocal(".v-grid-header .v-grid-row");
+      var cells = row.childNodes;
+
+      assert.isTrue(cells[0].innerHTML == 'Name');
+      assert.isTrue(cells[1].innerHTML == 'Value');
+    });
+
+    it('light dom table body gets rendered in the grid', function() {
+      var row = qLocal(".v-grid-body .v-grid-row");
+      var cells = row.childNodes;
+
+      assert.isTrue(cells[0].innerHTML == 'Grid');
+      assert.isTrue(cells[1].innerHTML == '10000');
+    });
+
+    function removeGrid() {
+      if (grid) {
+        grid.style.visibility = "hidden";
+        document.body.appendChild(grid);
+        grid = null;
+      }
+    }
+
+    // makes grid.then in afterEach to never finish...
+    it.skip('DOM: headers & footers', function(done) {
+//      removeGrid();
+      wrapper.innerHTML = "<v-grid><table>" +
+      "<thead hidden><tr class='red'><td colspan='2'></td></tr><tr class='pink'><th></th><th></th></tr></thead>" +
+      "<tfoot><tr class='foot1'><td colspan='2'></td></tr><tr class='foot2'><td></td><td></td></tr></tfoot>" +
+      "</table></v-grid>";
+      grid = wrapper.querySelector("v-grid");
+
+      waitUntil(function() {
+        return qLocal(".v-grid-body");
+      }, function() {
+        assert.equal(0, qaLocal("thead tr").length);
+        assert.equal(1, qaLocal("tfoot tr.foot1").length);
+        assert.equal(1, qaLocal("tfoot tr.foot2").length);
+        assert.equal(1, qaLocal("tfoot td[colspan='2']").length);
+
+        qLight("thead").setAttribute('hidden', false)
+        waitUntil(function() {
+          return qaLocal("thead tr").length > 0;
+        }, function() {
+          assert.equal(1, qaLocal("thead tr.red").length);
+          assert.equal(1, qaLocal("thead tr.pink").length);
+          assert.equal(1, qaLocal("thead th[colspan='2']").length);
+          done();
+        }, done);
+
+      }, done);
+    });
+
+    it('DOM: mutation', function(done) {
+      waitUntil(function() {
+        return qLocal(".v-grid-body");
+      }, function() {
+        var nrows = qaLocal("tbody tr").length;
+        var nheads = qaLocal("thead tr").length;
+        qLight("thead").innerHTML += qLight("table thead").innerHTML;
+        qLight("tbody").innerHTML += qLight("table tbody").innerHTML;
+        assert.equal("Name", qLocal("th").textContent);
+        qLight("th").textContent = "foo";
+        waitUntil(function() {
+          return qLocal("tbody tr") && qaLocal("tbody tr").length == nrows * 2;
+        }, function() {
+          assert.equal(qaLocal("tbody tr").length, nrows * 2);
+          assert.equal(qaLocal("thead tr").length, nheads * 2);
+          assert.equal("foo", qLocal("th").textContent);
+          done();
+        }, done);
+      }, done);
+    });
+  });
+</script>
+
+</body>
+</html>

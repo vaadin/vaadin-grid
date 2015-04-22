@@ -2,21 +2,23 @@ var grid, wrapper;
 
 describe.feature = function(description, suite) {
   describe(description, function() {
-    beforeEach(function(done) {
-      waitUntilGridReady(grid, function() {
-        initializeGrid(done);
+    before(function(done) {
+      initializeGrid();
+
+      waitUntil(function() {
+        return grid.then;
+      }, done, done);
+    });
+
+    afterEach(function() {
+      return grid.then(function() {
+        return initializeGrid();
       });
     });
 
     suite();
   });
 };
-
-function waitUntilGridReady(grid, done) {
-  waitUntil(function() {
-    return !grid || grid.grid.isWorkPending() === false;
-  }, done, done);
-}
 
 function waitUntil(check, exec, onTimeout) {
   var id = setInterval(function() {
@@ -35,7 +37,7 @@ function waitUntil(check, exec, onTimeout) {
 }
 
 
-function initializeGrid(done) {
+function initializeGrid() {
   wrapper = document.getElementById("gridwrapper");
   wrapper.innerHTML = "<v-grid>" +
   "                     <table>" +
@@ -65,7 +67,7 @@ function initializeGrid(done) {
   "                     </v-grid>";
   grid = wrapper.querySelector("v-grid");
 
-  waitUntilGridReady(grid, done);
+  return grid;
 };
 
 var local = function() {

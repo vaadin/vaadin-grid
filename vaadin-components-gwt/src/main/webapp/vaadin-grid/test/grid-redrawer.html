@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+  <meta charset="UTF-8">
+  <title></title>
+  <script src="../../bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+  <script src="../../bower_components/web-component-tester/browser.js"></script>
+  <script src="../../VaadinGrid/VaadinGrid.nocache.js"></script>
+  <script src="common.js"></script>
+
+  <link rel="import" href="../vaadin-grid.html">
+</head>
+
+<body>
+
+<div id="gridwrapper"></div>
+
+<script>
+  // fails
+  describe.feature('redrawer', function() {
+    it.skip('redraw', function(done) {
+      function width(e) {
+        return pxval(e, 'width');
+      }
+
+      function height(e) {
+        return pxval(e, 'height');
+      }
+
+      function pxval(e, prop) {
+        return parseInt(e.ownerDocument.defaultView.getComputedStyle(e).getPropertyValue(prop).replace('px', ''));
+      }
+
+      function assertSameDimensions() {
+        return width(grid) == width(inner) && height(grid) == height(inner);
+      }
+
+      function assertHeightByRows(rows) {
+        h = height(inner);
+        h1 = headers * thHeight + rows * tdHeight;
+        // IE and FF add an aditional pixel to each row
+        h2 = h1 + rows + headers;
+        return h == h1 ||  h == h2;
+      }
+
+      var inner = qLocal("div.v-grid");
+      var tbody = qLight('table tbody');
+      var thHeight = height(qLocal('thead tr th'));
+      var headers = qaLocal('thead tr').length;
+      var tdHeight = height(qLocal('tbody tr td'));
+
+      grid.then(function() {
+        assert.isTrue(assertSameDimensions());
+        assert.isTrue(assertHeightByRows(2));
+
+      // Increase the number of rows
+      tbody.innerHTML += tbody.innerHTML;
+      tbody.innerHTML += tbody.innerHTML;
+      tbody.innerHTML += tbody.innerHTML;
+      tbody.innerHTML += tbody.innerHTML;
+      // Maybe DOM.observer polyfill was not loaded
+      grid.grid.refresh();
+
+        return grid;
+      }).then(function() {
+        assert.isTrue(assertSameDimensions());
+        // grid has a limit of 10 data rows by default
+        assert.isTrue(assertHeightByRows(10));
+
+        // Restrict height by rows
+        grid.rows = 3;
+        return grid;
+      }).then(function() {
+        assert.isTrue(assertSameDimensions());
+        assert.isTrue(assertHeightByRows(3));
+        // unrestrict height by rows
+        grid.rows = 0;
+        return grid;
+      }).then(function() {
+        assert.isTrue(assertSameDimensions());
+        assert.isTrue(assertHeightByRows(10));
+
+        // Set fixed sizes
+        grid.style.width = '300px';
+        grid.style.height = '100px';
+        return grid;
+      }).then(function() {
+        assert.isTrue(assertSameDimensions());
+
+        // Cover all the page
+        grid.style.position = 'absolute';
+        grid.style.width = '100%';
+        grid.style.height = '100%';
+        return grid;
+      }).then(function() {
+        assert.isTrue(assertSameDimensions());
+        assert.equal(document.body.clientHeight, height(grid));
+        // For some reason in IE sometimes there is a slight difference of 1 pixels
+        assert.isTrue(Math.abs(document.body.clientWidth - width(grid)) <= 1);
+        // We can have different height for v-grid and the inner grid.
+        // Also we can define more than 10 rows.
+        grid.rows = 12;
+        grid.style.width = '50%';
+        return grid;
+      }).then(function() {
+        assert.isTrue(height(grid) != height(inner));
+        assert.equal(width(grid), width(inner));
+        assert.isTrue(assertHeightByRows(12));
+        assert.isFalse(assertSameDimensions());
+      }).then(done);
+    });
+  });
+</script>
+
+</body>
+</html>
