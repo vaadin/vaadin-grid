@@ -50,8 +50,8 @@ public class IndexBasedSelectionModelMulti extends SelectionModelMulti<Object>
     }
 
     @Override
-    public JSArray<?> selected(JavaScriptObject mapper, Integer from, Integer to) {
-        JSArray<?> result = JS.createArray();
+    public JSArray selected(JavaScriptObject mapper, Integer from, Integer to) {
+        JSArray result = JS.createArray();
         mapper = SelectionUtil.verifyMapper(mapper);
 
         int fromIndex = JSValidate.Integer.val(from, 0, 0);
@@ -64,7 +64,7 @@ public class IndexBasedSelectionModelMulti extends SelectionModelMulti<Object>
             Object mappedValue = JsUtils.jsni(mapper, "call", mapper,
                     selectedIndexes.get(i));
             if (mappedValue != null) {
-                result.add(JsUtils.cast(mappedValue));
+                result.add(mappedValue);
             }
         }
         return result;

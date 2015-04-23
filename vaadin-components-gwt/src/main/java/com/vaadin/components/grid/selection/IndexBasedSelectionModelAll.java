@@ -56,8 +56,8 @@ public class IndexBasedSelectionModelAll extends SelectionModelMulti<Object>
     }
 
     @Override
-    public JSArray<?> selected(JavaScriptObject mapper, Integer from, Integer to) {
-        JSArray<?> result = JS.createArray();
+    public JSArray selected(JavaScriptObject mapper, Integer from, Integer to) {
+        JSArray result = JS.createArray();
         mapper = SelectionUtil.verifyMapper(mapper);
 
         int size = size();
@@ -81,7 +81,7 @@ public class IndexBasedSelectionModelAll extends SelectionModelMulti<Object>
                     Object mappedValue = JsUtils.jsni(mapper, "call", mapper,
                             index);
                     if (mappedValue != null) {
-                        result.add(JsUtils.cast(mappedValue));
+                        result.add(mappedValue);
                     }
                 }
             }
@@ -92,9 +92,9 @@ public class IndexBasedSelectionModelAll extends SelectionModelMulti<Object>
     }
 
     @Override
-    public JSArray<?> deselected(JavaScriptObject mapper, Integer from,
+    public JSArray deselected(JavaScriptObject mapper, Integer from,
             Integer to) {
-        JSArray<?> result = JS.createArray();
+        JSArray result = JS.createArray();
         mapper = SelectionUtil.verifyMapper(mapper);
 
         int fromIndex = JSValidate.Integer.val(from, 0, 0);
@@ -107,7 +107,7 @@ public class IndexBasedSelectionModelAll extends SelectionModelMulti<Object>
             Object mappedValue = JsUtils.jsni(mapper, "call", mapper,
                     deselectedIndexes.get(i));
             if (mappedValue != null) {
-                result.add(JsUtils.cast(mappedValue));
+                result.add(mappedValue);
             }
         }
         return result;
