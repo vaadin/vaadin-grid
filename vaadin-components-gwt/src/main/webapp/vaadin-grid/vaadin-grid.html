@@ -229,15 +229,23 @@
           return {
             select: function(index) {
               _this.grid.getSelectionModel().select(index);
+
+              return _this;
             },
             deselect: function(index) {
               _this.grid.getSelectionModel().deselect(index);
+
+              return _this;
             },
             clear: function() {
               _this.grid.getSelectionModel().clear();
+
+              return _this;
             },
             selectAll: function() {
               _this.grid.getSelectionModel().selectAll();
+
+              return _this;
             },
             selected: function(mapper, from, to) {
               return _this.grid.getSelectionModel().selected(mapper, from, to);

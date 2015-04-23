@@ -31,34 +31,38 @@
 
       function setSelectionModeAttr(mode) {
         grid.setAttribute('selection-mode', mode);
+
+        return grid;
       };
 
       describe('using attributes', function() {
         describe('selection-mode', function() {
           it('should set selectionMode to disabled', function() {
-            setSelectionModeAttr('disabled');
-
-            expect(grid.selection.mode).to.equal('disabled');
+            return setSelectionModeAttr('disabled').then(function() {
+              expect(grid.selection.mode).to.equal('disabled');
+            });
           });
 
           it('should set selectionMode to single', function() {
-            setSelectionModeAttr('single');
-
-            expect(grid.selection.mode).to.equal('single');
+            return setSelectionModeAttr('single').then(function() {
+              expect(grid.selection.mode).to.equal('single');
+            });
           });
 
           it('should set selectionMode to multi', function() {
-            setSelectionModeAttr('multi');
-
-            expect(grid.selection.mode).to.equal('multi');
+            return setSelectionModeAttr('multi').then(function() {
+              expect(grid.selection.mode).to.equal('multi');
+            });
           });
 
           it('should should remove selectionMode property', function() {
             setSelectionModeAttr('disabled');
             grid.removeAttribute('selection-mode');
 
-            // 'single' is the default
-            expect(grid.selection.mode).to.equal('single');
+            return grid.then(function() {
+              // 'single' is the default
+              expect(grid.selection.mode).to.equal('single');
+            });
           });
 
           // TODO: throws an error, but for some reason expect doesn't catch it.
@@ -71,7 +75,7 @@
       });
 
       describe('using properties', function() {
-        describe('selectionMode', function() {
+        describe('selection.mode', function() {
           var checkBoxQuery = "input[type='checkbox']";
 
           it('should be single by default', function() {
@@ -89,22 +93,28 @@
           it('should set selection-mode to disabled', function() {
             grid.selection.mode = 'disabled';
 
-            expect(getSelectionModeAttr()).to.equal('disabled');
-            expect(qLocal(checkBoxQuery)).to.be.undefined;
+            return grid.then(function() {
+              expect(getSelectionModeAttr()).to.equal('disabled');
+              expect(qLocal(checkBoxQuery)).to.be.undefined;
+            });
           });
 
           it('should set selection-mode to single', function() {
             grid.selection.mode = 'single';
 
-            expect(getSelectionModeAttr()).to.equal('single');
-            expect(qLocal(checkBoxQuery)).to.be.undefined;
+            return grid.then(function() {
+              expect(getSelectionModeAttr()).to.equal('single');
+              expect(qLocal(checkBoxQuery)).to.be.undefined;
+            });
           });
 
           it('should set selection-mode to multi', function() {
             grid.selection.mode = 'multi';
 
-            expect(getSelectionModeAttr()).to.equal('multi');
-            expect(qLocal(checkBoxQuery)).to.not.be.undefined;
+            return grid.then(function() {
+              expect(getSelectionModeAttr()).to.equal('multi');
+              expect(qLocal(checkBoxQuery)).to.not.be.undefined;
+            });
           });
 
           it('should fail setting the value to foobar', function() {
@@ -114,39 +124,7 @@
           });
         });
 
-        describe('selectedRows', function() {
-          it('should add \'row-selected\' class to the selected row', function() {
-            grid.selection.select(1);
-
-            expect(qaLocal('.v-grid-body .v-grid-row-selected')).to.have.length(1);
-          });
-
-          it('should fire \'select\' event', function() {
-            grid.selection.select(0);
-
-            expect(selectListener.args[0][0]).to.have.property('type', 'select');
-          });
-
-          it('should cache selectedRows until data source is loaded', function(done) {
-            var isValueSet = false;
-            grid.data.source = function(req) {
-              if (isValueSet) {
-                expect(grid.selection.selected()).to.eql([0, 1, 2]);
-              }
-              req.success(['foo'], 1);
-              if (isValueSet) {
-                expect(grid.selection.selected()).to.eql([0]);
-                done();
-              }
-            };
-
-            grid.selection.mode = 'multi';
-            grid.selection.select(0);
-            grid.selection.select(1);
-            grid.selection.select(2);
-            isValueSet = true;
-          });
-
+        describe('selected', function() {
           describe('with mode: single', function() {
             beforeEach(function() {
               grid.selection.mode = 'single';
@@ -226,37 +204,45 @@
         }
 
         function clickFirstCell() {
-          return getFirstCell().click();
+          getFirstCell().click();
+
+          return grid;
         }
 
-        it('should fire a \'select\' event', function()  {
-          clickFirstCell();
+        before(function() {
+          // extra 'wait' added for IE11.
+          return grid;
+        });
 
-          expect(selectListener.calledOnce).to.be.true;
+        it('should fire a \'select\' event', function()  {
+          return clickFirstCell().then(function() {
+            expect(selectListener.calledOnce).to.be.true;
+            expect(selectListener.args[0][0]).to.have.property('type', 'select');
+          });
         });
 
         describe('with selection-mode: single', function() {
           beforeEach(function() {
-            setSelectionModeAttr('single');
+            return setSelectionModeAttr('single');
           });
 
           it('should select a row', function() {
-            clickFirstCell();
-
-            expect(grid.selection.selected()).to.eql([0]);
+            return clickFirstCell().then(function() {
+              expect(grid.selection.selected()).to.eql([0]);
+            });
           });
         });
 
         describe('with selection-mode: multi', function() {
           beforeEach(function() {
-            setSelectionModeAttr('multi');
+            return setSelectionModeAttr('multi');
           });
 
           it('should only focus a clicked cell', function() {
-            clickFirstCell();
-
-            expect(grid.selection.selected()).to.be.empty;
-            expect(getFirstCell().getAttribute('class')).to.contain('focus');
+            return clickFirstCell().then(function() {
+              expect(grid.selection.selected()).to.be.empty;
+              expect(getFirstCell().getAttribute('class')).to.contain('focus');
+            });
           });
 
           // TODO: apparently clicking checkboxes isn't going to happen using JS...
@@ -271,13 +257,13 @@
 
         describe('with selection-mode: disabled', function() {
           beforeEach(function() {
-            setSelectionModeAttr('disabled');
+            return setSelectionModeAttr('disabled');
           });
 
           it('should not select a row', function() {
-            clickFirstCell();
-
-            expect(grid.selection.selected()).to.be.empty;
+            return clickFirstCell().then(function() {
+              expect(grid.selection.selected()).to.be.empty;
+            });
           });
         });
       });
@@ -293,6 +279,12 @@
           grid.selection.select('foo');
 
           expect(grid.selection.selected()).to.be.empty;
+        });
+
+        it('should add \'row-selected\' class to the selected row', function() {
+          return grid.selection.select(1).then(function() {
+            expect(qaLocal('.v-grid-body .v-grid-row-selected')).to.have.length(1);
+          });
         });
 
         describe('with selectionMode: single', function() {
