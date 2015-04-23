@@ -590,25 +590,14 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
     >
   <table >
     <colgroup>
-      <col>
-      <col sortable>
-      <col width=40>
-      <col min-width=200>
-      <col>
-      <col flex=100>
-      <col flex=0>
+      <col sortable sort-direction="desc" header-text="Name">
+      <col sortable sort-direction="asc" header-text="Value">
+      <col width=40 header-text="Progress">
+      <col min-width=200 header-text="foo">
+      <col header-text="bar">
+      <col flex=100 header-text="foo">
+      <col flex=0 header-text="bar">
     </colgroup>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Value</th>
-        <th>Progress</th>
-        <th>foo</th>
-        <th>bar</th>
-        <th>foo</th>
-        <th>bar</th>
-      </tr>
-    </thead>
     <tbody>
       <tr>
         <td>Grid</td>

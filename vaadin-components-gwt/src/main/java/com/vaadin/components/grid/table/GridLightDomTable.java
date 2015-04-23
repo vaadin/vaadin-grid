@@ -22,6 +22,7 @@ import com.vaadin.components.common.js.JSArray;
 import com.vaadin.components.common.js.JSValidate;
 import com.vaadin.components.grid.GridComponent;
 import com.vaadin.components.grid.config.JSColumn;
+import com.vaadin.components.grid.config.JSSortOrder;
 import com.vaadin.components.grid.config.JSStaticCell;
 import com.vaadin.components.grid.data.GridDomTableDataSource;
 
@@ -117,6 +118,9 @@ public class GridLightDomTable implements MutationListener {
         JSArray<JSColumn> jsColumns = gridComponent.getColumns();
         jsColumns.setLength(0);
         numberColumns = $ths.size();
+
+        JSArray<JSSortOrder> sortOrders = JS.createArray();
+
         for (int i = 0; i < numberColumns; i++) {
             GQuery $th = $ths.eq(i);
             JSColumn column = JS.createJsType(JSColumn.class);
@@ -139,6 +143,13 @@ public class GridLightDomTable implements MutationListener {
             }
 
             column.setName(JSValidate.String.attr($th, "name"));
+            String direction = JSValidate.String.attr($th, "sort-direction");
+            if (!direction.isEmpty()) {
+                JSSortOrder jsSortOrder = JS.createJsType(JSSortOrder.class);
+                jsSortOrder.setDirection(direction);
+                jsSortOrder.setColumn(i);
+                sortOrders.add(jsSortOrder);
+            }
             column.setRenderer(JsUtils.wrapFunction(new Function() {
                 @Override
                 public void f() {
@@ -149,9 +160,18 @@ public class GridLightDomTable implements MutationListener {
                             : "");
                 }
             }));
-            column.setHeaderContent($th.html());
+
+            String headerHtml = JSValidate.String.attr($th, "header-text",
+                    $th.html(), $th.html());
+            if (headerHtml != null && !headerHtml.isEmpty()) {
+                column.setHeaderContent(headerHtml);
+            }
         }
         gridComponent.setColumns(jsColumns);
+
+        if (!sortOrders.isEmpty()) {
+            gridComponent.setSortOrder(sortOrders);
+        }
     }
 
     private void configureHeadersFooters(final boolean isHeader) {

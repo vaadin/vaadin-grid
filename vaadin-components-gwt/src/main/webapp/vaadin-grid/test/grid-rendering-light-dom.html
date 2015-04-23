@@ -92,6 +92,37 @@
         }, done);
       }, done);
     });
+
+    it('should have a sort-order', function(done) {
+      var ths = light().querySelectorAll("th");
+      ths[0].setAttribute("sort-direction", "asc");
+      ths[1].setAttribute("sort-direction", "desc");
+
+      grid.then(function(){
+        var sortOrder = grid.sortOrder;
+        expect(grid.sortOrder[0]).to.eql({column: 0, direction: "asc"});
+        expect(grid.sortOrder[1]).to.eql({column: 1, direction: "desc"});
+      }).then(done);
+    });
+
+    it('should apply header-text from a th element', function(done) {
+      light().querySelector("th").setAttribute("header-text", "foo");
+
+      grid.then(function(){
+        expect(grid.columns[0].headerHtml).to.eql("foo");
+      }).then(done);
+    });
+
+    it('should apply header-text from a col element', function(done) {
+      var col = document.createElement("col");
+      col.setAttribute("header-text", "foo");
+      light().querySelector("table").prependChild(col);
+
+      grid.then(function(){
+        expect(grid.columns[0].headerHtml).to.eql("foo");
+      }).then(done);
+    });
+
   });
 </script>
 
