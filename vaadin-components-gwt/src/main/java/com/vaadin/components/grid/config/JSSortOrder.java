@@ -13,11 +13,11 @@ public interface JSSortOrder {
     int getColumn();
 
     @JsProperty
-    JSSortOrder setColumn(int column);
+    void setColumn(int column);
 
     @JsProperty
     String getDirection();
 
     @JsProperty
-    JSSortOrder setDirection(String direction);
+    void setDirection(String direction);
 }

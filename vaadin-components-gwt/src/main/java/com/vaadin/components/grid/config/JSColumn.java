@@ -12,62 +12,62 @@ import com.google.gwt.core.client.js.JsType;
 public interface JSColumn {
 
     @JsProperty
-    String name();
+    String getName();
 
     @JsProperty
-    JSColumn setName(String s);
+    void setName(String s);
 
     @JsProperty
-    String minWidth();
+    String getMinWidth();
 
     @JsProperty
-    JSColumn setMinWidth(String s);
+    void setMinWidth(String s);
 
     @JsProperty
-    String maxWidth();
+    String getMaxWidth();
 
     @JsProperty
-    JSColumn setMaxWidth(String s);
+    void setMaxWidth(String s);
 
     @JsProperty
-    String width();
+    String getWidth();
 
     @JsProperty
-    JSColumn setWidth(String s);
+    void setWidth(String s);
 
     @JsProperty
-    int flex();
+    int getFlex();
 
     @JsProperty
-    JSColumn setFlex(int i);
+    void setFlex(int i);
 
     @JsProperty
-    boolean sortable();
+    boolean getSortable();
 
     @JsProperty
-    JSColumn setSortable(boolean b);
+    void setSortable(boolean b);
 
     @JsProperty
-    boolean readOnly();
+    boolean getReadOnly();
 
     @JsProperty
-    JSColumn setReadOnly(boolean b);
+    void setReadOnly(boolean b);
 
     @JsProperty
-    JavaScriptObject renderer();
+    JavaScriptObject getRenderer();
 
     @JsProperty
-    JSColumn setRenderer(JavaScriptObject o);
+    void setRenderer(JavaScriptObject o);
 
     @JsProperty
-    JavaScriptObject generatedValue();
+    JavaScriptObject getGeneratedValue();
 
     @JsProperty
-    JSColumn setGeneratedValue(JavaScriptObject o);
+    void setGeneratedValue(JavaScriptObject o);
 
     @JsProperty
-    String headerHtml();
+    String getHeaderHtml();
 
     @JsProperty
-    JSColumn setHeaderHtml(String s);
+    void setHeaderHtml(String s);
 }

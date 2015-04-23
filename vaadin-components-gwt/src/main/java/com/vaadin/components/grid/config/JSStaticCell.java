@@ -13,17 +13,17 @@ public interface JSStaticCell {
     Object getContent();
 
     @JsProperty
-    JSStaticCell setContent(Object content);
+    void setContent(Object content);
 
     @JsProperty
     int getColspan();
 
     @JsProperty
-    JSStaticCell setColspan(int colspan);
+    void setColspan(int colspan);
 
     @JsProperty
     String getClassName();
 
     @JsProperty
-    JSStaticCell setClassName(String s);
+    void setClassName(String s);
 }

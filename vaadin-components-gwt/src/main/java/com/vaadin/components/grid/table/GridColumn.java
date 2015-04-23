@@ -154,8 +154,8 @@ public final class GridColumn extends Column<Object, Object> {
             dataItem = ((DataItemContainer) dataItem).getDataItem();
         }
         Object result = null;
-        if (jsColumn.generatedValue() != null) {
-            result = JS.exec(jsColumn.generatedValue(), dataItem);
+        if (jsColumn.getGeneratedValue() != null) {
+            result = JS.exec(jsColumn.getGeneratedValue(), dataItem);
         } else {
             if (JS.isPrimitiveType(dataItem)) {
                 if (getColumnIndex() == 0) {
@@ -166,7 +166,7 @@ public final class GridColumn extends Column<Object, Object> {
                     result = ((JsArrayMixed) dataItem)
                             .getObject(getColumnIndex());
                 } else {
-                    result = ((Properties) dataItem).getObject(jsColumn.name());
+                    result = ((Properties) dataItem).getObject(jsColumn.getName());
                 }
             }
         }

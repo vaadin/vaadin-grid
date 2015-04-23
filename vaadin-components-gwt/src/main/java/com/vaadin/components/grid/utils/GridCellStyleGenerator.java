@@ -31,7 +31,7 @@ public class GridCellStyleGenerator implements CellStyleGenerator<Object> {
     public String getStyle(CellReference<Object> cellReference) {
         JSCell cell = JS.createJsType(JSCell.class);
         String columnName = ((GridColumn) cellReference.getColumn())
-                .getJsColumn().name();
+                .getJsColumn().getName();
         cell.setColumnName(columnName);
         cell.setElement(cellReference.getElement());
 

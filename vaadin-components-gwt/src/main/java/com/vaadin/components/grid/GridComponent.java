@@ -167,7 +167,7 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
             String idString = String.valueOf(indexOrName);
             for (int i = 0; i < cols.length(); i++) {
                 JSColumn jsColumn = cols.get(i);
-                if (idString.equals(jsColumn.name())) {
+                if (idString.equals(jsColumn.getName())) {
                     return i;
                 }
             }
@@ -440,8 +440,12 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
         jsSort.setLength(0);
         for (SortOrder order : event.getOrder()) {
             int idx = grid.getColumns().indexOf(order.getColumn());
-            jsSort.push(JS.createJsType(JSSortOrder.class).setColumn(idx)
-                    .setDirection(JSEnums.Direction.val(order.getDirection())));
+
+            JSSortOrder sortOrder = JS.createJsType(JSSortOrder.class);
+            sortOrder.setColumn(idx);
+            sortOrder.setDirection(JSEnums.Direction.val(order.getDirection()));
+
+            jsSort.push(sortOrder);
         }
         $(container).trigger("sort");
         refresh();
