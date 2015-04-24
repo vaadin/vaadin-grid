@@ -230,14 +230,12 @@
     it('add new column to an empty grid', function(done) {
       grid.columns = [];
 
-      grid.then(function() {
-        grid.columns.push({
-          name: "foo",
-          headerContent: "fooheader"
-        });
+      grid.columns.push({
+        name: "foo",
+        headerContent: "fooheader"
+      });
 
-        return grid;
-      }).then(function() {
+      grid.then(function() {
         expect(gridContainsText(grid, 'fooheader')).to.be.true;
         done();
       });

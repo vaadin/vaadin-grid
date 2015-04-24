@@ -14,7 +14,8 @@ describe.feature = function(description, suite) {
       return grid.then(function() {
 
         grid.selection.mode = 'single';
-        grid.columns = [{name: 'Name', headerHtml: 'Name'}, {name: 'Value', headerHtml: 'Value'}];
+        grid.frozenColumns = 0;
+        grid.columns = [{name: 'Name', headerContent: 'Name'}, {name: 'Value', headerContent: 'Value'}];
         grid.data.source = [['Grid', '10000'], ['VaadinX', '1000']];
 
         grid.disabled = false;
