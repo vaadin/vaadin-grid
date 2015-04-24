@@ -34,7 +34,7 @@
       /**
        * The columns array
        *
-       * @attribute columns
+       * @property columns
        * @type array
        */
       columns: {
@@ -42,6 +42,12 @@
         observer: 'columnsChanged'
       },
 
+      /**
+       * The row editor specific fields
+       *
+       * @property editor
+       * @type Object
+       */
       editor: {
         type: Object,
         readOnly: true,
@@ -87,6 +93,12 @@
           };
         },
       },
+      /**
+       * The data source object for the grid.
+       *
+       * @property data
+       * @type Object
+       */
       data: {
         type: Object,
         readOnly: true,
@@ -127,6 +139,12 @@
         }
       },
 
+      /**
+       * Object for manipulating header rows
+       *
+       * @property header
+       * @type Object
+       */
       header: {
         type: Object,
         readOnly: true,
@@ -169,6 +187,12 @@
         }
       },
 
+      /**
+       * Object for manipulating footer rows
+       *
+       * @property footer
+       * @type Object
+       */
       footer: {
         type: Object,
         readOnly: true,
