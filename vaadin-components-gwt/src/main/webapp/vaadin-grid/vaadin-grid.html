@@ -316,7 +316,6 @@
 
     ready: function() {
       this.grid = new vaadin.GridComponent();
-      this.grid.init(this, Polymer.dom(this).querySelector("table"), Polymer.dom(this.root));
 
       var _this = this;
       // Set read-only properties
@@ -332,6 +331,10 @@
       }, 1);
 
       this.columns = _this.grid.getColumns();
+    },
+
+    attached: function() {
+      this.grid.attached(this, Polymer.dom(this).querySelector("table"), Polymer.dom(this.root));
     },
 
     /**

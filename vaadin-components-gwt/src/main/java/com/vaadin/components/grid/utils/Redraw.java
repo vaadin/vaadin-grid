@@ -18,9 +18,9 @@ public class Redraw extends Timer {
     private final GridComponent gridComponent;
     private final Grid<?> grid;
     private GQuery container;
-    boolean heightByRows = false;
-    boolean heightAuto = false;
-    boolean forceRedraw = false;
+    private boolean heightByRows = false;
+    private boolean heightAuto = false;
+    private boolean forceRedraw = false;
     private int defaultRows, numberRows, width, height;
 
     public Redraw(GridComponent gridComponent) {
@@ -40,10 +40,12 @@ public class Redraw extends Timer {
     }
 
     public void redraw(boolean force) {
-        if (forceRedraw = force) {
-            height = 0;
+        if (container != null && container.parent() != null) {
+            if (forceRedraw = force) {
+                height = 0;
+            }
+            schedule(force ? 1 : 30);
         }
-        schedule(force ? 1 : 30);
     }
 
     @Override
@@ -111,7 +113,7 @@ public class Redraw extends Timer {
             rows += grid.isFooterVisible() ? grid.getFooterRowCount() : 0;
             if (forceRedraw || rows != numberRows) {
                 numberRows = rows;
-                int h = (int)clientHeight($(grid).find("tr td")) + 1;
+                int h = (int) clientHeight($(grid).find("tr td")) + 1;
                 height = h * rows;
                 grid.setHeight(height + "px");
             }

@@ -133,24 +133,28 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
         return container;
     }
 
-    public void init(Element container, TableElement lightDomElement,
+    public void attached(Element container, TableElement lightDomElement,
             Element gridContainer) {
-        this.container = container;
+        if (this.container == null) {
+            this.container = container;
 
-        if (lightDomElement != null) {
-            lightDom = new GridLightDomTable(lightDomElement, this);
-            // Check if we have the data in the DOM
-            GridDomTableDataSource ds = lightDom.getDomDataSource();
-            if (ds != null) {
-                grid.setDataSource(ds);
+            if (lightDomElement != null) {
+                lightDom = new GridLightDomTable(lightDomElement, this);
+                // Check if we have the data in the DOM
+                GridDomTableDataSource ds = lightDom.getDomDataSource();
+                if (ds != null) {
+                    grid.setDataSource(ds);
+                }
             }
+
+            gridContainer.appendChild(grid.getElement());
+            WidgetsUtils.attachWidget(grid, null);
+
+            editor.setContainer(container);
         }
 
-        gridContainer.appendChild(grid.getElement());
-        WidgetsUtils.attachWidget(grid, null);
-
         redrawer.setContainer(container);
-        editor.setContainer(container);
+        redraw(true);
     }
 
     public JSColumn addColumn(JSColumn jsColumn, String beforeColumn) {
