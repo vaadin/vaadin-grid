@@ -76,7 +76,7 @@ public class Redraw extends Timer {
                 // auto. The only way to know it is comparing container and grid
                 // sizes. For some reason in chrome grid height sometime differs
                 // in 1 pixel with its container
-                heightAuto = Math.abs(h - $(grid).innerHeight()) <= 1;
+                heightAuto = Math.abs(h - clientHeight($(grid))) <= 1;
                 if (!heightAuto) {
                     // Container has a fixed height, so setting it to 100% makes
                     // the grid expand to fill all the space. It also makes the
@@ -111,11 +111,15 @@ public class Redraw extends Timer {
             rows += grid.isFooterVisible() ? grid.getFooterRowCount() : 0;
             if (forceRedraw || rows != numberRows) {
                 numberRows = rows;
-                int h = $(grid).find("tr td").height() + 1;
+                int h = (int)clientHeight($(grid).find("tr td")) + 1;
                 height = h * rows;
                 grid.setHeight(height + "px");
             }
         }
+    }
+
+    double clientHeight(GQuery g) {
+        return g.isEmpty() ? 0d : g.prop("clientHeight", Double.class);
     }
 
     public void setSize(int size) {
