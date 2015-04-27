@@ -253,6 +253,7 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
     @JsNoExport
     @Override
     public void onSelect(SelectionEvent<Object> ev) {
+        updateSelectAllCheckBox();
         if (!updating) {
             $(container).trigger("select");
         }
@@ -540,10 +541,18 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
     private void updateSelectAllCheckBox() {
         CheckBox selectAllCheckBox = getSelectAllCheckBox();
         if (selectAllCheckBox != null) {
-            selectAllCheckBox
-                    .setValue(
-                            getSelectionModel().getMode() == IndexBasedSelectionMode.ALL,
-                            false);
+            boolean checked = getSelectionModel().getMode() == IndexBasedSelectionMode.ALL;
+            selectAllCheckBox.setValue(checked, false);
+
+            Element input = selectAllCheckBox.getElement()
+                    .getFirstChildElement();
+            if (checked) {
+                JsUtils.prop(input, "indeterminate", !getSelectionModel()
+                        .deselected(null, null, null).isEmpty());
+            } else {
+                JsUtils.prop(input, "indeterminate", !getSelectionModel()
+                        .selected(null, null, null).isEmpty());
+            }
         }
     }
 
