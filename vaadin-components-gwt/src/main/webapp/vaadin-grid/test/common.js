@@ -17,6 +17,8 @@ describe.feature = function(description, suite) {
         grid.columns = [{name: 'Name', headerHtml: 'Name'}, {name: 'Value', headerHtml: 'Value'}];
         grid.data.source = [['Grid', '10000'], ['VaadinX', '1000']];
 
+        grid.disabled = false;
+
         return grid;
       });
     });

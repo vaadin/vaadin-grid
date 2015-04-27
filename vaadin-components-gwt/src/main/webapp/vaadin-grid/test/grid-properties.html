@@ -62,7 +62,31 @@
       assert.isTrue(qLocal(".v-grid-body .v-grid-row .v-grid-cell").classList.contains("name"));
       assert.equal(grid.cellClassName, cellClassName);
     });
+
+    it('should be enabled by default', function() {
+      expect(grid.disabled).to.be.false;
+    });
+
+    it('should disable', function() {
+      grid.disabled = true;
+      expect(grid.disabled).to.be.true;
+    });
+
+    it('should reflect disabled to attribute', function() {
+      grid.disabled = true;
+      expect(grid.hasAttribute("disabled")).to.be.true;
+      grid.disabled = false;
+      expect(grid.hasAttribute("disabled")).to.be.false;
+    });
+
+    it('should apply disabled attribute', function() {
+      grid.setAttribute("disabled", true);
+      expect(grid.disabled).to.be.true;
+      grid.removeAttribute("disabled");
+      expect(grid.disabled).to.be.false;
+    });
   });
+
 </script>
 
 </body>

@@ -189,6 +189,10 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
         grid.setEnabled(!disabled);
     }
 
+    public boolean isDisabled() {
+        return !grid.isEnabled();
+    }
+
     public int getFrozenColumns() {
         return grid.getFrozenColumnCount();
     }
