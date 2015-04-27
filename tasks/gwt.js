@@ -60,6 +60,13 @@ gulp.task('gwt:clean-maven', function(done) {
   system('mvn clean', done);
 });
 
+gulp.task('test:gwt', function(done) {
+  cmd.exec('mvn test', function(err, stdout) {
+    gutil.log(stdout);
+    done();
+  });
+});
+
 gulp.task('clean:gwt', ['gwt:clean-maven'], function() {
   if(args.gwtSkipClean) {
     return;

@@ -43,9 +43,13 @@ public class GridEditor {
     private final Map<JSColumn, Widget> editors = new HashMap<>();
 
     public GridEditor(GridComponent gridComponent) {
+        this(gridComponent, (JSEditorHandler)JavaScriptObject.createObject());
+    }
+
+    protected GridEditor(GridComponent gridComponent, JSEditorHandler handler) {
         this.gridComponent = gridComponent;
         this.grid = gridComponent.getGrid();
-        this.handler =  (JSEditorHandler)JavaScriptObject.createObject();
+        this.handler =  handler;
         configureGridEditor();
     }
 
@@ -78,6 +82,10 @@ public class GridEditor {
     }
 
     public void editRow(int row) {
+        if(grid.isEditorActive()) {
+            cancel();
+        }
+
         grid.editRow(row);
     }
 
@@ -86,7 +94,9 @@ public class GridEditor {
     }
 
     public void cancel() {
-        grid.cancelEditor();
+        if(grid.isEditorActive()) {
+            grid.cancelEditor();
+        }
     }
 
     public void setHandler(JSEditorHandler handler) {

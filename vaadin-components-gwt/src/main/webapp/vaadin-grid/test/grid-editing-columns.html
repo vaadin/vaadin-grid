@@ -23,9 +23,10 @@
       return Polymer.dom(_grid.root).querySelector(".v-grid").innerHTML.indexOf(text) > -1;
     };
 
-    afterEach(function() {
+    beforeEach(function() {
       return grid.then(function() {
 
+        grid.selection.mode = 'single';
         grid.frozenColumns = 0;
         grid.columns = [{name: 'Name', headerContent: 'Name'}, {name: 'Value', headerContent: 'Value'}];
         grid.data.source = [['Grid', '10000'], ['VaadinX', '1000']];
@@ -190,19 +191,28 @@
       assert.equal(grid.columns[0].headerContent, "Name");
     });
 
-    it('replace columns array', function(done) {
-      assert.isTrue(gridContainsText(grid, "Name"));
-      grid.columns = [{
-        headerContent: "<b>Foo</b>",
-      },{
-        headerContent: "<b>Bar</b>",
-      }];
-      waitUntil(function() {
-        return !gridContainsText(grid, "Name") &&
-        gridContainsText(grid, "Foo") &&
-        gridContainsText(grid, "Bar");
-      }, done);
-      done();
+    describe('modifying columns array directly', function() {
+      it('should replace header content', function() {
+        expect(grid.querySelector('th').textContent).to.equal('Name');
+
+        grid.columns[0].headerContent = 'Foo';
+
+        return grid.then(function() {
+          expect(grid.querySelector('th').textContent).to.equal('Foo');
+        });
+      });
+
+      // fails because of replacing columns doesn't render row contents,
+      // see https://trello.com/c/8e27Tv3q/58-v-grid-bugs
+      it.skip('should render row contents', function() {
+        expect(grid.querySelectorAll('td').textContent).to.equal('Grid');
+
+        grid.columns = [{headerContent: 'Foo'}];
+
+        return grid.then(function() {
+          expect(grid.querySelectorAll('td').textContent).to.equal('Grid');
+        });
+      });
     });
 
     it('modify columns array', function(done) {

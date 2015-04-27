@@ -18,7 +18,6 @@
       <gwt.outputstyle>PRETTY</gwt.outputstyle>
       <jetty.version>8.1.12.v20130726</jetty.version>
       <vaadin.version>7.5-SNAPSHOT</vaadin.version>
-      <maven.test.skip>true</maven.test.skip>
       <gwt.outputstyle>OBF</gwt.outputstyle>
       <gwt.disableCastChecking>true</gwt.disableCastChecking>
       <gwt.disableClassMetadata>true</gwt.disableClassMetadata>
