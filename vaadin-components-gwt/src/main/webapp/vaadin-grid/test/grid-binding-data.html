@@ -23,6 +23,17 @@
       return Polymer.dom(_grid.root).querySelector(".v-grid").innerHTML.indexOf(text) > -1;
     };
 
+    afterEach(function() {
+      return grid.then(function() {
+
+        grid.selection.mode = 'single';
+        grid.columns = [{name: 'Name', headerHtml: 'Name'}, {name: 'Value', headerHtml: 'Value'}];
+        grid.data.source = [['Grid', '10000'], ['VaadinX', '1000']];
+
+        return grid;
+      });
+    });
+
     it('data: object type', function(done) {
       grid.columns[0].name = "firstname";
       grid.columns[1].name = "lastname";

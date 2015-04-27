@@ -23,6 +23,17 @@
       return Polymer.dom(_grid.root).querySelector(".v-grid").innerHTML.indexOf(text) > -1;
     };
 
+    afterEach(function() {
+      return grid.then(function() {
+
+        grid.frozenColumns = 0;
+        grid.columns = [{name: 'Name', headerContent: 'Name'}, {name: 'Value', headerContent: 'Value'}];
+        grid.data.source = [['Grid', '10000'], ['VaadinX', '1000']];
+
+        return grid;
+      });
+    });
+
     it('add new column', function() {
       grid.addColumn({
         name: "foo",

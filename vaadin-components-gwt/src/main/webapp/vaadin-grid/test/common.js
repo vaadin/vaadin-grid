@@ -10,20 +10,6 @@ describe.feature = function(description, suite) {
       }, done, done);
     });
 
-    afterEach(function() {
-      return grid.then(function() {
-
-        grid.selection.mode = 'single';
-        grid.frozenColumns = 0;
-        grid.columns = [{name: 'Name', headerContent: 'Name'}, {name: 'Value', headerContent: 'Value'}];
-        grid.data.source = [['Grid', '10000'], ['VaadinX', '1000']];
-
-        grid.disabled = false;
-
-        return grid;
-      });
-    });
-
     suite();
   });
 };
