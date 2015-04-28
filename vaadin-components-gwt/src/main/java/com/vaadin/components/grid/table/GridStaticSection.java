@@ -122,6 +122,14 @@ public class GridStaticSection {
         gridComponent.redraw();
     }
 
+    public int getFooterRowCount() {
+        return grid.getFooterRowCount();
+    }
+
+    public int getHeaderRowCount() {
+        return grid.getHeaderRowCount();
+    }
+
     private int getInteger(Object value, int defaultValue) {
         return value != null ? Integer.parseInt(String.valueOf(value))
                 : defaultValue;

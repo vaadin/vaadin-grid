@@ -181,8 +181,10 @@
             },
             set hidden(hidden) {
               _this.grid.getStaticSection().setHeaderHidden(hidden);
+            },
+            get rowCount() {
+              return _this.grid.getStaticSection().getHeaderRowCount();
             }
-
           };
         }
       },
@@ -216,6 +218,9 @@
             },
             set hidden(hidden) {
               _this.grid.getStaticSection().setFooterHidden(hidden);
+            },
+            get rowCount() {
+              return _this.grid.getStaticSection().getFooterRowCount();
             }
           };
         }
