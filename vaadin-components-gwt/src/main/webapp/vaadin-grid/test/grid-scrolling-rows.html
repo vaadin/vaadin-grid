@@ -31,78 +31,63 @@
       return Polymer.dom(_grid.root).querySelector(".v-grid").innerHTML.indexOf(text) > -1;
     };
 
-    it('scrollToRow function', function(done) {
+    before(function() {
       infiniteDataSource.size = 100;
       grid.data.source = infiniteDataSource;
+      grid.rows = 5;
 
-      expect(grid.scrollToRow.bind(grid, -10)).to.throw("Row index");
-
-      grid.then(function(){
-        assert.isTrue(gridContainsText(grid, "foo 0"));
-        assert.isFalse(gridContainsText(grid, "foo 50"));
-        return grid.scrollToRow(50);
-      }).then(function(){
-        assert.isTrue(gridContainsText(grid, "foo 50"));
-        assert.isFalse(gridContainsText(grid, "foo 0"));
-        expect(grid.scrollToRow.bind(grid, 100)).to.throw("Row index");
-      }).then(done);
+      return grid;
     });
 
-    it('scrollToRow with destination', function(done) {
-      infiniteDataSource.size = 100;
-      grid.data.source = infiniteDataSource;
-
-      waitUntil(function() {
-        return gridContainsText(grid, "foo 0");
-      }, function() {
-        grid.scrollToRow(50, "start");
-
-        waitUntil(function() {
-          return gridContainsText(grid, "foo 50");
-        }, function() {
-
-          assert.isTrue(gridContainsText(grid, "foo 52"));
-          assert.isFalse(gridContainsText(grid, "foo 49"));
-
-          grid.scrollToRow(70, "end");
-
-          waitUntil(function() {
-            return gridContainsText(grid, "foo 70");
-          }, function() {
-            assert.isFalse(gridContainsText(grid, "foo 72"));
-            assert.isTrue(gridContainsText(grid, "foo 69"));
-
-            done();
-          }, done);
-        }, done);
-
-
-      }, done);
+    it('should throw an error when scrolling to an invalid row', function() {
+      expect(grid.scrollToRow.bind(grid, -1)).to.throw("Row index");
+      expect(grid.scrollToRow.bind(grid, 100)).to.throw("Row index");
     });
 
-    it('scrollToStart and scrollToEnd functions', function(done) {
-      infiniteDataSource.size = 100;
-      grid.data.source = infiniteDataSource;
+    it('should scroll using scrollToRow', function() {
+      grid.scrollToStart();
 
-      waitUntil(function() {
-        return gridContainsText(grid, "foo 0");
-      }, function() {
-
-        grid.scrollToEnd();
-
-        waitUntil(function() {
-          return gridContainsText(grid, "foo 99");
-        }, function() {
-
-          grid.scrollToStart();
-
-          waitUntil(function() {
-            return gridContainsText(grid, "foo 0");
-          }, done, done);
-        }, done);
-      }, done);
+      return grid.scrollToRow(50)
+          .then(function() {
+            expect(gridContainsText(grid, 'foo 50')).to.be.true;
+          });
     });
 
+    describe('scrolling with destination', function() {
+      it('should scroll to start', function() {
+        return grid.scrollToRow(50, 'start')
+            .then(function() {
+              expect(gridContainsText(grid, 'foo 49')).to.be.false;
+              expect(gridContainsText(grid, 'foo 50')).to.be.true;
+            });
+      });
+
+      it('should scroll to end', function() {
+        return grid.scrollToRow(50, 'end')
+            .then(function() {
+              expect(gridContainsText(grid, 'foo 46')).to.be.true;
+              expect(gridContainsText(grid, 'foo 50')).to.be.true;
+            });
+      });
+    });
+
+    it('should scroll to end', function() {
+      grid.scrollToRow(0);
+
+      return grid.scrollToEnd()
+          .then(function() {
+            expect(gridContainsText(grid, 'foo 99')).to.be.true;
+          });
+    });
+
+    it('should scroll to start', function() {
+      grid.scrollToEnd();
+
+      return grid.scrollToStart()
+          .then(function() {
+            expect(gridContainsText(grid, 'foo 0')).to.be.true;
+          });
+    });
   });
 </script>
 

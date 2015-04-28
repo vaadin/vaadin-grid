@@ -10,6 +10,10 @@ describe.feature = function(description, suite) {
       }, done, done);
     });
 
+    after(function() {
+      return grid; //make sure everything is finished before moving on.
+    });
+
     suite();
   });
 };
