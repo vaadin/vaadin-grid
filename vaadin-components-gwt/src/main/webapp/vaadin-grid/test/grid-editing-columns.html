@@ -40,9 +40,9 @@
         name: "foo",
         headerContent: "<b>Foo</b>",
         sortable: true,
-        minWidth: "100px",
-        maxWidth: "200px",
-        width: "150px",
+        minWidth: 100,
+        maxWidth: 200,
+        width: 150,
         flex: 1,
       });
 
@@ -51,9 +51,9 @@
       assert.equal(c.headerContent, "<b>Foo</b>");
       assert.equal(c.sortable, true);
       assert.notOk(c.editable);
-      assert.equal(c.minWidth, "100px");
-      assert.equal(c.maxWidth, "200px");
-      assert.equal(c.width, "150px");
+      assert.equal(c.minWidth, 100);
+      assert.equal(c.maxWidth, 200);
+      assert.equal(c.width, 150);
       assert.equal(c.flex, 1);
     });
 
@@ -292,6 +292,12 @@
         expect(qaLocal(".v-grid-header .v-grid-cell")).to.have.length(1);
         return grid;
       });
+    });
+    
+    it('should reference header cell after adding a new column', function() {
+      grid.addColumn({name: "foo"});
+      grid.header.getCell(0, "foo").content = "foo";
+      expect(grid.columns[2].headerContent).to.eql("foo");
     });
 
   });

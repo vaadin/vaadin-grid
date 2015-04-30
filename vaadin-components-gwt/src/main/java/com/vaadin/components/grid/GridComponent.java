@@ -163,6 +163,7 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
             index = getColumnIndexByIndexOrName(beforeColumnId);
         }
         cols.add(jsColumn, index);
+        setColumns(cols);
         return jsColumn;
     }
 
