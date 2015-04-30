@@ -197,8 +197,7 @@ public class GridLightDomTable implements MutationListener {
         for (int i = 0; i < nrows; i++) {
             StaticRow<?> row = isHeader ? grid.getHeaderRow(i) : grid
                     .getFooterRow(i);
-            List<Column<?, Object>> dataColumns = gridComponent
-                    .getDataColumns();
+            List<GridColumn> dataColumns = gridComponent.getDataColumns();
             GQuery $tr = $rows.eq(i);
             GQuery $ths = $tr.children("th, td");
             String className = JSValidate.String.attr($tr, "class");

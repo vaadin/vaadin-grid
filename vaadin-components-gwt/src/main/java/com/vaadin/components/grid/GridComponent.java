@@ -6,7 +6,6 @@ import static com.google.gwt.query.client.GQuery.browser;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 
 import com.google.gwt.core.client.JavaScriptException;
@@ -113,8 +112,9 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
 
     public void setSortOrder(JSArray<JSSortOrder> jsOrders) {
         List<SortOrder> order = new ArrayList<SortOrder>();
+        List<GridColumn> dataColumns = getDataColumns();
         for (JSSortOrder jsOrder : jsOrders.asList()) {
-            Column<?, ?> column = grid.getColumn(jsOrder.getColumn());
+            Column<?, ?> column = dataColumns.get(jsOrder.getColumn());
             SortDirection direction = JSEnums.Direction.val(jsOrder
                     .getDirection());
             jsOrder.setDirection(JSEnums.Direction.val(direction));
@@ -157,27 +157,26 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
         redraw(true);
     }
 
-    public JSColumn addColumn(JSColumn jsColumn, String beforeColumn) {
-        int index = grid.getColumnCount();
-        if (beforeColumn != null) {
-            index = getColumnIndexByIndexOrName(beforeColumn);
+    public JSColumn addColumn(JSColumn jsColumn, Object beforeColumnId) {
+        int index = cols.length();
+        if (beforeColumnId != null) {
+            index = getColumnIndexByIndexOrName(beforeColumnId);
         }
         cols.add(jsColumn, index);
-
         return jsColumn;
     }
 
-    private int getColumnIndexByIndexOrName(String indexOrName) {
-        if (indexOrName.matches("[+-]?\\d+")) {
-            int parsedInt = Integer.parseInt(indexOrName);
-            if (parsedInt >= 0 && parsedInt < getDataColumns().size()) {
-                return parsedInt;
+    @JsNoExport
+    public int getColumnIndexByIndexOrName(Object indexOrName) {
+        String stringId = String.valueOf(indexOrName);
+        if (stringId.matches("[+-]?\\d+")) {
+            int index = JSValidate.Integer.val(stringId);
+            if (index >= 0 && index <= cols.size()) {
+                return index;
             }
         } else {
-            String idString = String.valueOf(indexOrName);
             for (int i = 0; i < cols.length(); i++) {
-                JSColumn jsColumn = cols.get(i);
-                if (idString.equals(jsColumn.getName())) {
+                if (stringId.equals(cols.get(i).getName())) {
                     return i;
                 }
             }
@@ -185,9 +184,8 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
         throw new IllegalArgumentException("Column not found.");
     }
 
-    public void removeColumn(String id) {
-        int index = getColumnIndexByIndexOrName(id);
-        cols.remove(cols.get(index));
+    public void removeColumn(String columnId) {
+        cols.remove(cols.get(getColumnIndexByIndexOrName(columnId)));
     }
 
     public void setDisabled(boolean disabled) {
@@ -233,22 +231,6 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
 
     public GridStaticSection getStaticSection() {
         return staticSection;
-    }
-
-    public Column<?, ?> getColumnByJSColumnNameOrIndex(Object columnId) {
-        Column<?, ?> column = null;
-        if (columnId instanceof Integer || JS.isPrimitiveType(columnId)) {
-            int index = getColumnIndexByIndexOrName(String.valueOf(columnId));
-            column = grid.getColumn(index);
-        } else {
-            for (Column<?, ?> gCol : getDataColumns()) {
-                if (((GridColumn) gCol).getJsColumn() == columnId) {
-                    column = gCol;
-                    break;
-                }
-            }
-        }
-        return column;
     }
 
     @JsNoExport
@@ -317,39 +299,36 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
         updating = false;
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void setColumns(JSArray<JSColumn> columns) {
-        Collection<JSColumn> gCols = new ArrayList<JSColumn>();
-        for (Column<?, Object> gCol : getDataColumns()) {
-            gCols.add(((GridColumn) gCol).getJsColumn());
+        // Add all missing columns to grid
+        Collection<JSColumn> currentColumns = new ArrayList<JSColumn>();
+        for (GridColumn c : getDataColumns()) {
+            currentColumns.add(c.getJsColumn());
         }
 
-        // Add all missing columns to grid
         for (JSColumn column : columns.asList()) {
-            if (!gCols.contains(column)) {
+            if (!currentColumns.contains(column)) {
                 GridColumn.addColumn(column, this);
             }
         }
+
         // Remove all non-included columns from grid
-        for (Column<?, Object> column : getDataColumns()) {
-            if (columns.indexOf(((GridColumn) column).getJsColumn()) == -1) {
+        for (GridColumn column : getDataColumns()) {
+            if (columns.indexOf(column.getJsColumn()) == -1) {
                 grid.removeColumn(column);
             }
         }
 
         // Fix column order
-        Column[] array = getDataColumns().toArray(new Column[0]);
-        Arrays.sort(array, new Comparator<Object>() {
-            @Override
-            public int compare(Object o1, Object o2) {
-                return columns.indexOf(((GridColumn) o1).getJsColumn()) > columns
-                        .indexOf(((GridColumn) o2).getJsColumn()) ? 1 : -1;
-            }
-        });
+        GridColumn[] array = getDataColumns().toArray(new GridColumn[0]);
+        Arrays.sort(array,
+                (o1, o2) -> columns.indexOf(o1.getJsColumn()) > columns
+                        .indexOf(o2.getJsColumn()) ? 1 : -1);
         if (array.length > 0) {
             grid.setColumnOrder(array);
         }
         this.cols = columns;
+
     }
 
     /**
@@ -357,10 +336,11 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
      * grid.getColumns() will contain the selection column as the first item so
      * it's excluded from the result.
      */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @JsNoExport
-    public List<Column<?, Object>> getDataColumns() {
-        List<Column<?, Object>> result = grid.getColumns();
-        if (getSelectionModel().getMode() == IndexBasedSelectionMode.MULTI) {
+    public List<GridColumn> getDataColumns() {
+        List result = grid.getColumns();
+        if (getSelectionModel() instanceof SelectionModel.Multi) {
             result = result.subList(1, result.size());
         }
         return result;
@@ -433,13 +413,11 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
             jsSort = JSArray.createArray().cast();
         }
         jsSort.setLength(0);
+        List<GridColumn> dataColumns = getDataColumns();
         for (SortOrder order : event.getOrder()) {
-            int idx = grid.getColumns().indexOf(order.getColumn());
-
             JSSortOrder sortOrder = JS.createJsType(JSSortOrder.class);
-            sortOrder.setColumn(idx);
+            sortOrder.setColumn(dataColumns.indexOf(order.getColumn()));
             sortOrder.setDirection(JSEnums.Direction.val(order.getDirection()));
-
             jsSort.push(sortOrder);
         }
         $(container).trigger("sort");

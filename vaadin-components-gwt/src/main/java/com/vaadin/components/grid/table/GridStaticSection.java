@@ -11,7 +11,6 @@ import com.google.gwt.core.client.js.JsType;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.vaadin.client.widgets.Grid.Column;
 import com.vaadin.client.widgets.Grid.StaticSection.StaticCell;
 import com.vaadin.client.widgets.Grid.StaticSection.StaticRow;
 import com.vaadin.components.common.js.JS;
@@ -80,15 +79,23 @@ public class GridStaticSection {
     }
 
     public JSStaticCell getHeaderCell(int rowIndex, Object columnId) {
-        Column<?, ?> column = gridComponent
-                .getColumnByJSColumnNameOrIndex(columnId);
+        GridColumn column = getColumnById(columnId);
+        return getHeaderCellByColumn(rowIndex, column);
+    }
+
+    @JsNoExport
+    public JSStaticCell getHeaderCellByColumn(int rowIndex, GridColumn column) {
         StaticCell cell = grid.getHeaderRow(rowIndex).getCell(column);
         return assureJSStaticCell(cell);
     }
 
+    private GridColumn getColumnById(Object columnId) {
+        return gridComponent.getDataColumns().get(
+                gridComponent.getColumnIndexByIndexOrName(columnId));
+    }
+
     public JSStaticCell getFooterCell(int rowIndex, Object columnId) {
-        Column<?, ?> column = gridComponent
-                .getColumnByJSColumnNameOrIndex(columnId);
+        GridColumn column = getColumnById(columnId);
         StaticCell cell = grid.getFooterRow(rowIndex).getCell(column);
         return assureJSStaticCell(cell);
     }
@@ -122,9 +129,9 @@ public class GridStaticSection {
 
     private void setStaticRowCellContent(StaticRow<?> row,
             JSArray<?> cellContent) {
-        List<Column<?, Object>> dataColumns = gridComponent.getDataColumns();
+        List<GridColumn> dataColumns = gridComponent.getDataColumns();
         for (int i = 0; i < dataColumns.size(); i++) {
-            Column<?, Object> column = dataColumns.get(i);
+            GridColumn column = dataColumns.get(i);
             if (i < cellContent.size()) {
                 StaticCell cell = row.getCell(column);
                 assureJSStaticCell(cell).setContent(cellContent.get(i));

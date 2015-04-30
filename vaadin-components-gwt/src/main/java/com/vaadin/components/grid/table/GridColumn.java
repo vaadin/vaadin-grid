@@ -34,8 +34,8 @@ public final class GridColumn extends Column<Object, Object> {
 
     private JSStaticCell getDefaultHeaderCellReference() {
         GridStaticSection staticSection = gridComponent.getStaticSection();
-        return staticSection.getHeaderCell(staticSection.getDefaultHeader(),
-                gridComponent.getDataColumns().indexOf(this));
+        return staticSection.getHeaderCellByColumn(staticSection.getDefaultHeader(),
+                this);
     }
 
     private void bindProperties() {

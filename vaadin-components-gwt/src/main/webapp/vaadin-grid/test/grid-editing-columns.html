@@ -282,6 +282,18 @@
       grid.frozenColumns = -1;
       assert.notOk(qLocal(".frozen"));
     });
+
+    it('should add a column to an empty grid with an index', function() {
+      grid.columns = [];
+      return grid.then(function() {
+        grid.addColumn({headerContent: "foo"}, 0);
+        return grid;
+      }).then(function() {
+        expect(qaLocal(".v-grid-header .v-grid-cell")).to.have.length(1);
+        return grid;
+      });
+    });
+
   });
 </script>
 

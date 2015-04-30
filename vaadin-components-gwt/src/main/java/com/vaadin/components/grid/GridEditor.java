@@ -43,13 +43,13 @@ public class GridEditor {
     private final Map<JSColumn, Widget> editors = new HashMap<>();
 
     public GridEditor(GridComponent gridComponent) {
-        this(gridComponent, (JSEditorHandler)JavaScriptObject.createObject());
+        this(gridComponent, (JSEditorHandler) JavaScriptObject.createObject());
     }
 
     protected GridEditor(GridComponent gridComponent, JSEditorHandler handler) {
         this.gridComponent = gridComponent;
         this.grid = gridComponent.getGrid();
-        this.handler =  handler;
+        this.handler = handler;
         configureGridEditor();
     }
 
@@ -82,7 +82,7 @@ public class GridEditor {
     }
 
     public void editRow(int row) {
-        if(grid.isEditorActive()) {
+        if (grid.isEditorActive()) {
             cancel();
         }
 
@@ -94,7 +94,7 @@ public class GridEditor {
     }
 
     public void cancel() {
-        if(grid.isEditorActive()) {
+        if (grid.isEditorActive()) {
             grid.cancelEditor();
         }
     }
@@ -132,10 +132,9 @@ public class GridEditor {
             public void f() {
                 JSArray<JSColumn> jsErrorColumns = arguments(1);
                 Collection<Column<?, Object>> errorColumns = new ArrayList<>();
-                for (Column<?, Object> column : gridComponent.getDataColumns()) {
+                for (GridColumn column : gridComponent.getDataColumns()) {
                     if (jsErrorColumns != null
-                            && jsErrorColumns.indexOf(((GridColumn) column)
-                                    .getJsColumn()) != -1) {
+                            && jsErrorColumns.indexOf(column.getJsColumn()) != -1) {
                         errorColumns.add(column);
                     }
                 }
@@ -156,36 +155,43 @@ public class GridEditor {
             @Override
             public void bind(EditorRequest<Object> request) {
                 if (handler.getBind() != null) {
-                    JS.exec(handler.getBind(), createJSEditorRequest(request, false));
+                    JS.exec(handler.getBind(),
+                            createJSEditorRequest(request, false));
                 } else {
                     for (Column<?, Object> c : grid.getColumns()) {
                         if (c.isEditable()) {
-                            String value = String.valueOf(c.getValue(request.getRow()));
+                            String value = String.valueOf(c.getValue(request
+                                    .getRow()));
                             $(getWidget(c)).val(value);
                         }
                     }
                     request.success();
                 }
             }
+
             @Override
             public void cancel(EditorRequest<Object> request) {
                 if (handler.getCancel() != null) {
-                    JS.exec(handler.getCancel(), createJSEditorRequest(request, true));
+                    JS.exec(handler.getCancel(),
+                            createJSEditorRequest(request, true));
                 } else {
                     request.success();
                 }
                 editors.clear();
             }
+
             @Override
             public void save(EditorRequest<Object> request) {
                 if (handler.getSave() != null) {
-                    JS.exec(handler.getSave(), createJSEditorRequest(request, true));
+                    JS.exec(handler.getSave(),
+                            createJSEditorRequest(request, true));
                     gridComponent.refresh();
                 } else {
                     request.success();
                     console.log("No editor save method set. You must define 'grid.editor.handler.save = function(req){}'.");
                 }
             }
+
             @Override
             public Widget getWidget(Column<?, Object> column) {
                 return getEditor(((GridColumn) column).getJsColumn());
@@ -203,7 +209,8 @@ public class GridEditor {
                 e = Document.get().createTextInputElement();
             }
             if (e != null) {
-                w = new SimplePanel(e){};
+                w = new SimplePanel(e) {
+                };
                 editors.put(jscol, w);
             }
         }

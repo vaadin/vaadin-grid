@@ -82,6 +82,19 @@
 
           expect(grid.selection.selected()).to.be.empty;
         });
+
+        it('should ignore selection column from index', function() {
+          var firstNonFrozenHeaderCell = qLocal.bind(this, ".v-grid-header .v-grid-cell:not(.frozen)");
+
+          firstNonFrozenHeaderCell().click();
+          expect(grid.data.sortOrder[0].column).to.eql(0);
+
+          grid.selection.mode = "multi";
+          firstNonFrozenHeaderCell().click();
+          expect(grid.data.sortOrder[0].column).to.eql(0);
+        });
+
+
       });
     });
   </script>
