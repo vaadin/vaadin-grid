@@ -943,10 +943,7 @@
 
     // Give some time to gwt async processes to run (we need this in FF)
     setTimeout(function() {
-      vaadin._v_grid_ready = true;
-      var evt = document.createEvent("HTMLEvents");
-      evt.initEvent("v-grid-ready", false, true);
-      document.dispatchEvent(evt);
+      document.dispatchEvent(new CustomEvent('v-grid-ready'));
     }, 5);
 
   } // End loadComponent function
