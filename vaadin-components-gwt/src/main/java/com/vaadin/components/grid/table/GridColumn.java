@@ -1,5 +1,9 @@
 package com.vaadin.components.grid.table;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.query.client.Properties;
@@ -13,11 +17,13 @@ import com.vaadin.components.grid.config.JSColumn;
 import com.vaadin.components.grid.config.JSStaticCell;
 import com.vaadin.components.grid.data.DataItemContainer;
 import com.vaadin.shared.ui.grid.GridConstants;
+import com.vaadin.shared.ui.grid.Range;
 
 public final class GridColumn extends Column<Object, Object> {
 
     private final JSColumn jsColumn;
     private final GridComponent gridComponent;
+    private final Map<Integer, Object> generatorCache = new HashMap<>();
 
     public static GridColumn addColumn(JSColumn jsColumn,
             GridComponent gridComponent) {
@@ -60,6 +66,8 @@ public final class GridColumn extends Column<Object, Object> {
         bind("width",
                 v -> setMaximumWidth(JS.isUndefinedOrNull(v) ? GridConstants.DEFAULT_COLUMN_WIDTH_PX
                         : (double) v));
+
+        bind("valueGenerator", v -> gridComponent.getDataSource().refresh());
     }
 
     private void bind(String propertyName, final Setter setter) {
@@ -80,7 +88,13 @@ public final class GridColumn extends Column<Object, Object> {
         }
         Object result = null;
         if (jsColumn.getValueGenerator() != null) {
-            result = JS.exec(jsColumn.getValueGenerator(), dataItem);
+            int index = gridComponent.getDataSource().indexOf(dataItem);
+            if (generatorCache.containsKey(index)) {
+                result = generatorCache.get(index);
+            } else {
+                result = JS.exec(jsColumn.getValueGenerator(), dataItem);
+                generatorCache.put(index, result);
+            }
         } else {
             if (JS.isPrimitiveType(dataItem)) {
                 if (getColumnIndex() == 0) {
@@ -101,6 +115,17 @@ public final class GridColumn extends Column<Object, Object> {
 
     private int getColumnIndex() {
         return gridComponent.getColumns().indexOf(jsColumn);
+    }
+
+    public void filterGeneratorCache(Range visibleRange, Range refreshRange) {
+        if (jsColumn.getValueGenerator() != null) {
+            for (Integer index : new HashSet<Integer>(generatorCache.keySet())) {
+                if (refreshRange.contains(index)
+                        || !visibleRange.contains(index)) {
+                    generatorCache.remove(index);
+                }
+            }
+        }
     }
 
 }

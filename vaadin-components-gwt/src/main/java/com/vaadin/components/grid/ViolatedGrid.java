@@ -1,5 +1,7 @@
 package com.vaadin.components.grid;
 
+import com.vaadin.client.widgets.Escalator;
+
 public class ViolatedGrid extends com.vaadin.client.widgets.Grid<Object> {
 
     public native boolean refreshHeader()
@@ -18,5 +20,10 @@ public class ViolatedGrid extends com.vaadin.client.widgets.Grid<Object> {
         } else {
             refreshFooter();
         }
+    }
+
+    @Override
+    public Escalator getEscalator() {
+        return super.getEscalator();
     }
 }

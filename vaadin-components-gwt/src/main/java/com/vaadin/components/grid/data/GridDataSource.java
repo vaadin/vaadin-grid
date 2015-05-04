@@ -1,13 +1,18 @@
 package com.vaadin.components.grid.data;
 
+import java.util.List;
+
 import com.google.gwt.core.client.js.JsExport;
 import com.google.gwt.core.client.js.JsNamespace;
 import com.google.gwt.core.client.js.JsNoExport;
 import com.google.gwt.core.client.js.JsType;
 import com.vaadin.client.data.AbstractRemoteDataSource;
+import com.vaadin.client.widgets.Grid.Column;
 import com.vaadin.components.common.js.JS;
 import com.vaadin.components.common.js.JSArray;
 import com.vaadin.components.grid.GridComponent;
+import com.vaadin.components.grid.table.GridColumn;
+import com.vaadin.shared.ui.grid.Range;
 
 @JsNamespace(JS.VAADIN_JS_NAMESPACE)
 @JsExport
@@ -48,6 +53,18 @@ public abstract class GridDataSource extends AbstractRemoteDataSource<Object> {
                 gridComponent.redraw(true);
             }
         }
+    }
+
+    @Override
+    protected void setRowData(int firstRowIndex, List<Object> rowData) {
+        Range visibleRange = gridComponent.getGrid().getEscalator()
+                .getVisibleRowRange();
+        Range refreshRange = Range.between(firstRowIndex, firstRowIndex
+                + rowData.size());
+        for (Column<?, Object> c : gridComponent.getDataColumns()) {
+            ((GridColumn) c).filterGeneratorCache(visibleRange, refreshRange);
+        }
+        super.setRowData(firstRowIndex, rowData);
     }
 
     public void refresh() {

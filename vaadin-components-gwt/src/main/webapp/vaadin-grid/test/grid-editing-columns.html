@@ -23,6 +23,10 @@
       return Polymer.dom(_grid.root).querySelector(".v-grid").innerHTML.indexOf(text) > -1;
     };
 
+    function getFirstCell() {
+      return qLocal('.v-grid-body .v-grid-cell');
+    }
+
     beforeEach(function() {
       return grid.then(function() {
 
@@ -139,6 +143,20 @@
       waitUntil(function() {
         return gridContainsText(grid, "foo Grid");
       }, done, done);
+    });
+
+    it('should not update the generated value', function(done) {
+      grid.columns[0].valueGenerator = function(dataItem) {
+        return Math.random();
+      };
+
+      grid.then(function() {
+        var generatedValue = getFirstCell().innerText;
+        grid.selection.select(0);
+        expect(generatedValue).to.eql(getFirstCell().innerText);
+        done();
+      });
+
     });
 
     it('renderer property', function(done) {
