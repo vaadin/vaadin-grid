@@ -67,6 +67,12 @@ gulp.task('test:gwt', function(done) {
   });
 });
 
+gulp.task('watch:gwt', function() {
+  var paths = ['vaadin-components-gwt/src/main/webapp/vaadin-grid/**/*'];
+
+  gulp.watch(paths, ['gwt']);
+});
+
 gulp.task('clean:gwt', ['gwt:clean-maven'], function() {
   if(args.gwtSkipClean) {
     return;
