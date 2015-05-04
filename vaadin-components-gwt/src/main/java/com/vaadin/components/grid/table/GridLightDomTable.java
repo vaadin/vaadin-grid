@@ -14,7 +14,6 @@ import com.google.gwt.query.client.plugins.observe.Observe.Changes.MutationRecor
 import com.google.gwt.query.client.plugins.observe.Observe.MutationListener;
 import com.google.gwt.user.client.Timer;
 import com.vaadin.client.widgets.Grid;
-import com.vaadin.client.widgets.Grid.Column;
 import com.vaadin.client.widgets.Grid.StaticSection.StaticCell;
 import com.vaadin.client.widgets.Grid.StaticSection.StaticRow;
 import com.vaadin.components.common.js.JS;
@@ -24,7 +23,6 @@ import com.vaadin.components.grid.GridComponent;
 import com.vaadin.components.grid.config.JSColumn;
 import com.vaadin.components.grid.config.JSSortOrder;
 import com.vaadin.components.grid.config.JSStaticCell;
-import com.vaadin.components.grid.data.GridDomTableDataSource;
 
 /**
  * This class represents a grid header configuration based on a DOM structure.
@@ -40,14 +38,13 @@ public class GridLightDomTable implements MutationListener {
     private GQuery $cols;
     private final Grid<Object> grid;
     private final GridComponent gridComponent;
-    int defaultHeaderRow, numberHeaderRows, numberColumns, numberFooterRows;
-    private final GridDomTableDataSource ds;
+    private int defaultHeaderRow, numberHeaderRows, numberColumns,
+            numberFooterRows;
 
-    public GridLightDomTable(Element tableElement, GridComponent grid) {
-        this.gridComponent = grid;
-        this.grid = grid.getGrid();
+    public GridLightDomTable(Element tableElement, GridComponent gridComponent) {
+        this.gridComponent = gridComponent;
+        this.grid = gridComponent.getGrid();
 
-        ds = GridDomTableDataSource.createInstance(tableElement, gridComponent);
         $light = $(tableElement);
 
         parseDom();
@@ -108,21 +105,18 @@ public class GridLightDomTable implements MutationListener {
 
         if (!$cols.isEmpty()) {
             configureColumnsFromDom($cols.children("col"));
-        } else {
-            configureColumnsFromDom($head_tr.eq(defaultHeaderRow)
-                    .children("th"));
         }
     }
 
-    private void configureColumnsFromDom(GQuery $ths) {
+    private void configureColumnsFromDom(GQuery columns) {
         JSArray<JSColumn> jsColumns = gridComponent.getColumns();
         jsColumns.setLength(0);
-        numberColumns = $ths.size();
+        numberColumns = columns.size();
 
         JSArray<JSSortOrder> sortOrders = JS.createArray();
 
         for (int i = 0; i < numberColumns; i++) {
-            GQuery $th = $ths.eq(i);
+            GQuery $th = columns.eq(i);
             JSColumn column = JS.createJsType(JSColumn.class);
             jsColumns.add(column);
             column.setSortable(JSValidate.Boolean.attr($th, "sortable"));
@@ -205,34 +199,38 @@ public class GridLightDomTable implements MutationListener {
                 row.setStyleName(className);
             }
 
-            for (int j = 0; j < $ths.size() && j < numberColumns; j++) {
+            for (int j = 0, colIndex = 0; j < $ths.size() && j < numberColumns; j++) {
                 final GQuery $th = $ths.eq(j);
-                Column<?, Object> column = dataColumns.get(j);
-                StaticCell cell = row.getCell(column);
+                StaticCell cell = row.getCell(dataColumns.get(colIndex));
                 JSStaticCell js = gridComponent.getStaticSection()
                         .assureJSStaticCell(cell);
                 js.setContent($th.html());
-                // TODO: for some reason this not work without a timeout
-                new Timer() {
-                    @Override
-                    public void run() {
-                        js.setColspan(JSValidate.Integer.attr($th, "colspan",
-                                0, 1));
-                    }
-                }.schedule(0);
+
                 className = JSValidate.String.attr($th, "class");
                 if (!className.isEmpty()) {
                     js.setClassName(className);
                 }
+
+                int colspan = JSValidate.Integer.attr($th, "colspan", 1, 1);
+                // TODO: for some reason this not work without a timeout
+                new Timer() {
+                    @Override
+                    public void run() {
+                        js.setColspan(colspan);
+                    }
+                }.schedule(0);
+                colIndex += colspan;
             }
         }
-        // TODO: remove timer when #17327 is fixed
+
+        if (isHeader) {
+            gridComponent.getStaticSection().setDefaultHeader(defaultHeaderRow);
+        }
+        // TODO: remove timer when #17326 is fixed
         new Timer() {
             @Override
             public void run() {
                 if (isHeader) {
-                    gridComponent.getStaticSection().setDefaultHeader(
-                            defaultHeaderRow);
                     grid.setHeaderVisible(!(boolean) JSValidate.Boolean.attr(
                             $thead, "hidden"));
                 } else {
@@ -243,10 +241,6 @@ public class GridLightDomTable implements MutationListener {
                 }
             }
         }.schedule(0);
-    }
-
-    public GridDomTableDataSource getDomDataSource() {
-        return ds;
     }
 
     @Override

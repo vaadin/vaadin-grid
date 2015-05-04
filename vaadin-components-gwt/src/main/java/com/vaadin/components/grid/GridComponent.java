@@ -141,7 +141,8 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
             if (lightDomElement != null) {
                 lightDom = new GridLightDomTable(lightDomElement, this);
                 // Check if we have the data in the DOM
-                GridDomTableDataSource ds = lightDom.getDomDataSource();
+                GridDomTableDataSource ds = GridDomTableDataSource
+                        .createInstance(lightDomElement, this);
                 if (ds != null) {
                     grid.setDataSource(ds);
                 }

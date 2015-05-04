@@ -39,12 +39,8 @@ function initializeGrid() {
   wrapper = document.getElementById("gridwrapper");
   wrapper.innerHTML = "<v-grid>" +
   "                     <table>" +
-  "                       <thead>" +
-  "                         <tr>" +
-  "                           <th>Name</th>" +
-  "                           <th>Value</th>" +
-  "                         </tr>" +
-  "                       </thead>" +
+  "                       <col header-text='Name'>" +
+  "                       <col header-text='Value'>" +
   "                       <tbody>" +
   "                         <tr>" +
   "                           <td>Grid</td>" +
