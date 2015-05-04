@@ -52,18 +52,11 @@ public class GridLightDomTable implements MutationListener {
         $light.as(Observe.Observe).mutation(
                 Observe.createMutationInit().attributes(true).childList(true)
                         .subtree(true), this);
-
     }
 
     public void parseDom() {
         $thead = $light.find("thead");
-        if ($thead.isEmpty()) {
-            $thead = $("<thead>").appendTo($light);
-        }
         $tfoot = $light.find("tfoot");
-        if ($tfoot.isEmpty()) {
-            $tfoot = $("<tfoot>").appendTo($light);
-        }
         $cols = $light.find("colgroup");
         String txt = $thead.toString() + $cols.toString() + $tfoot.toString();
         if (!txt.equals(lastConfigString)) {
@@ -87,6 +80,7 @@ public class GridLightDomTable implements MutationListener {
                     configureHeadersFooters(false);
                 }
             }
+            gridComponent.redraw(true);
         }
     }
 
@@ -245,27 +239,7 @@ public class GridLightDomTable implements MutationListener {
 
     @Override
     public void onMutation(List<MutationRecord> mutations) {
-        boolean dataChanged = false;
-        boolean headerChanged = false;
-        for (MutationRecord r : mutations) {
-            GQuery g = $(r.removedNodes()).add($(r.addedNodes()))
-            // Find the parents of the mutated nodes
-                    .closest("tbody,thead,tfoot");
-            if (!headerChanged
-                    && (!g.filter("thead,tfoot").isEmpty() || r.attributeName() != null)) {
-                headerChanged = true;
-            }
-            if (!dataChanged && !g.filter("tbody").isEmpty()) {
-                dataChanged = true;
-            }
-        }
-
-        if (headerChanged || !dataChanged) {
-            parseDom();
-            gridComponent.redraw(true);
-        }
-        if (dataChanged) {
-            gridComponent.refresh();
-        }
+        parseDom();
+        gridComponent.refresh();
     }
 }
