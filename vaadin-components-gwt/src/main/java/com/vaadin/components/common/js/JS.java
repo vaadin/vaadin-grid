@@ -79,7 +79,11 @@ public abstract class JS {
 
       Object.defineProperty(jsObject, propertyName, {
         get: function() {
-            return getter ? getter() : _value;
+            if (getter) {
+                var val = getter();
+                return isNaN(val) ? val : + val;
+            }
+            return _value;
         },
         set: function(value) {
             if (setter){

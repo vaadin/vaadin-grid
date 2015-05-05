@@ -318,7 +318,7 @@
       expect(grid.columns[2].headerContent).to.eql("foo");
     });
 
-    it('should support nested column names', function(done) {
+    it('should support nested column names', function() {
       grid.addColumn({
         name: "foo.bar.baz",
       });
@@ -329,13 +329,12 @@
           }
         }
       }];
-      grid.then(function() {
+      return grid.then(function() {
         expect(gridContainsText(grid, "testing")).to.be.true;
-        done();
       });
     });
 
-    it('should not return values from name path', function(done) {
+    it('should not return values from name path', function() {
       grid.addColumn({
         name: "foo.bar.baz",
       });
@@ -344,13 +343,12 @@
           bar: "testing"
         }
       }];
-      grid.then(function() {
+      return grid.then(function() {
         expect(gridContainsText(grid, "testing")).to.be.false;
-        done();
       });
     });
 
-    it('should allow undefined nested values', function(done) {
+    it('should allow undefined nested values', function() {
       grid.addColumn({
         name: "foo.bar.baz",
       });
@@ -359,9 +357,16 @@
           bar: undefined
         }
       }];
-      grid.then(function() {
+      return grid.then(function() {
         expect(qaLocal(".v-grid-body .v-grid-cell")[2].innerHTML).to.be.empty;
-        done();
+      });
+    });
+
+    it('should have the right default value if flex attribute exists', function() {
+      qLight("table col").setAttribute("flex", "");
+      return grid.then(function() {
+        expect(grid.columns[0].flex).to.eql(1);
+        expect(grid.columns[1].flex).to.eql(-1);
       });
     });
 
