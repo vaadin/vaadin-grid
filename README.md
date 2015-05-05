@@ -1,15 +1,22 @@
 # Vaadin Components
 
-A set of high-quality Web Components with a customizable Sass based theme.
+A set of high-quality Web Components built using Polymer.
+
+[![Sauce Test Status](https://saucelabs.com/browser-matrix/vaadin.svg)](https://saucelabs.com/u/vaadin)
+
+Learn more about [Vaadin Components.](https://vaadin.com/labs-components/)
+
+## Getting Started
+
+- For getting started, see our [README.md](vaadin-components-package/README.md) for users
+- For more usage examples, see [components-examples](https://tomivirkki.github.io/components-examples)
+
+## Overview of the repository
 
 The contained modules are:
 
 - **vaadin-components**:
   Polymer-based Web Components.
-
-- **vaadin-theme**:
-  Sass-based customizable theme, called [Valo](https://vaadin.com/valo),
-  for all Vaadin Components.
 
 - **vaadin-components-gwt**:
   The internal GWT implementations for some of the components,
@@ -22,77 +29,107 @@ The contained modules are:
 The main Git repository is located at https://dev.vaadin.com:29418/components,
 and is replicated in GitHub as a read-only repository.
 
+## Developing
 
-## Building
+### Setting up the project for the first time
 
-Install [Node.js](http://nodejs.org), and optionally
-[JDK8](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
-and [Maven](http://maven.apache.org/download.cgi), and be sure that they are
-available in your PATH. JDK8 and Maven are only necessary if you wish to test
-or develop the GWT-based components, such as vaadin-grid.
+  First, make sure you've installed all the necessary tooling:
+  - [Node.js](http://nodejs.org)
+  - [JDK8](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
+  - [Maven](http://maven.apache.org/download.cgi)
 
-1. Clone the project:
+- Install bower, gulp and web-component-tester, serve globally
+```shell
+$ npm install -g bower gulp web-component-tester serve
+```
+- Clone the project:
+```shell
+$ git clone https://github.com/vaadin/components.git
+$ cd components
+```
+- Install the project dependencies
+```shell
+$ npm install
+```
+### Building the project
 
-        $ git clone https://github.com/vaadin/components.git
-        $ cd components
+- Compile the GWT modules to JS.
+```shell
+$ gulp gwt
+```
+- Compile the theme
+```shell
+$ gulp css
+```
+### Serving the components
 
-2. Install the dependencies. Bower and Gulp need to be installed
-globally, other dependencies can be local:
+- Spin up a web server
+```shell
+$ serve
+```
+- Access the components through `http://localhost:3000/vaadin-components/`
+- If you wish to import components using the development URL, remember to manually install [Polymer](https://github.com/Polymer/polymer) as a dependency to your application.
+```shell
+$ cd your-application
+$ bower install polymer#0.8.0-rc4 --save
+```
+### Running automated tests
 
-        $ npm install -g bower gulp
-        $ npm install
+ - Run all tests locally
+```shell
+$ gulp test
+```
+ - Run a single browser locally
+```shell
+$ wct --local=chrome/firefox/safari
+```
+- Run and debug tests manually
+```shell
+$ serve
+$ open http://localhost:3000/vaadin-components/vaadin-grid/test/
+```
+### Development Protips
 
-3. *(Optional)* Compile the GWT modules to JS. Only necessary if you wish
-to test or develop those components:
+- Compiling GWT using "pretty" output
+```shell
+$ gulp gwt --gwt-pretty
+```
+- Adding file watcher for GWT compilation
+```shell
+$ gulp watch:gwt
+```
+- Running and debugging in GWT SuperDevMode
+```shell
+$ mvn -f vaadin-components-gwt/pom.xml gwt:run
+```
+- Adding source maps and file watcher for CSS development
+```shell
+$ gulp css --debug --watch
+```
+- Update your dependencies once in a while
+```shell
+$ npm install
+```
+## Packaging
 
-        $ gulp gwt
-
-  3.1. If you want to compile GWT using "pretty" output (easier to debug):
-
-        $ gulp clean gwt-pretty
-
-4. Compile the theme for all components:
-
-        $ gulp css
-
-  4.1. To compile the theme for just one component:
-
-        $ gulp css --component=button
-
-  4.2. Additionally you can produce a debug version of the styles (with
-  source maps), and start a watch task to monitor the source files for
-  any changes:
-
-        $ gulp css --component=button --debug --watch
-
-## Developing vaadin-theme
-
-The most convenient way to develop the vaadin-theme sub-project (i.e. Valo theme) is to use `npm link`. This will in effect install the "vaadin-theme"
-folder as a global package, using symbolic links, allowing you to run the `vaadin-theme`command as the end-user would:
-
-    $ cd vaadin-theme
-    $ npm link
-
+- Creating a zip package under `target/zip/`
+```shell
+$ gulp stage:zip OR
+$ gulp stage:zip --version=0.2-custom --release
+```
+- Copying bower.json and components under `target/bower/`
+```shell
+$ gulp stage:bower OR
+$ gulp stage:bower --version=0.2-custom --release
+```
 ## Demos / examples
 
-Start a server in either the root folder or the vaadin-components folder,
+Start a server in the root folder,
 and access one of the demo.html files inside the component folders, e.g:
-
-    $ cd vaadin-components
-    $ serve
-
-    Open http://localhost:3000/vaadin-grid/demo.html
-
-
-## Tests
-
-To run all tests:
-
-    $ gulp test
-
-This will compile the GWT modules, so you need to have that set up.
-
-
+```shell
+$ serve
+$ open http://localhost:3000/vaadin-components/vaadin-grid/demo.html
+```
 ## License
 
 Vaadin Components is licensed under the Apache License 2.0.

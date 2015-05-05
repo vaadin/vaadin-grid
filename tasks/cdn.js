@@ -46,9 +46,15 @@ gulp.task('cdn:stage-bower_components', ['cdn:install-dependencies'], function()
   fs.removeSync(stagingPath + '/vaadin-components');
 });
 
+gulp.task('cdn:stage-readme.md', ['clean:cdn'], function() {
+  return gulp.src('vaadin-components-package/README.md')
+    .pipe(gulp.dest(stagingPath));
+});
+
 gulp.task('stage:cdn',
   ['cdn:stage-components',
-    'cdn:stage-bower_components']);
+    'cdn:stage-bower_components',
+    'cdn:stage-readme.md']);
 
 gulp.task('deploy:cdn', ['stage:cdn'], function() {
   common.checkArguments(['cdnUsername', 'cdnDestination']);
