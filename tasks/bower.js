@@ -13,7 +13,7 @@ var args = require('yargs').argv;
 var gitRepository = 'git@github.com:vaadin-bower/vaadin-components.git';
 var checkoutPath = config.paths.staging.bower;
 var components = config.components;
-var version = config.version;
+var version = args.release || args.preRelease ? config.version : config.snapshotVersion;
 var snapshotVersion = config.snapshotVersion;
 
 gulp.task('clean:bower', function() {
