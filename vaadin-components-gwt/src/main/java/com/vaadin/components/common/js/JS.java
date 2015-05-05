@@ -111,4 +111,9 @@ public abstract class JS {
     /*-{
       return o === undefined || o === null;
     }-*/;
+
+    public static native boolean isObject(Object o)
+    /*-{
+      return typeof o === "object" && o !== null;
+    }-*/;
 }

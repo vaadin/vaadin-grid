@@ -1,12 +1,13 @@
 package com.vaadin.components.grid.table;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayMixed;
-import com.google.gwt.query.client.Properties;
 import com.google.gwt.query.client.js.JsUtils;
 import com.vaadin.client.widgets.Grid.Column;
 import com.vaadin.components.common.js.JS;
@@ -40,8 +41,8 @@ public final class GridColumn extends Column<Object, Object> {
 
     private JSStaticCell getDefaultHeaderCellReference() {
         GridStaticSection staticSection = gridComponent.getStaticSection();
-        return staticSection.getHeaderCellByColumn(staticSection.getDefaultHeader(),
-                this);
+        return staticSection.getHeaderCellByColumn(
+                staticSection.getDefaultHeader(), this);
     }
 
     private void bindProperties() {
@@ -105,10 +106,22 @@ public final class GridColumn extends Column<Object, Object> {
                     result = ((JsArrayMixed) dataItem)
                             .getObject(getColumnIndex());
                 } else {
-                    result = ((Properties) dataItem).getObject(jsColumn
-                            .getName());
+                    result = getNestedProperty(dataItem,
+                            Arrays.asList(jsColumn.getName().split("\\.")));
                 }
             }
+        }
+        return result;
+    }
+
+    private Object getNestedProperty(Object o, List<String> props) {
+        Object result = null;
+        if (props.isEmpty()) {
+            result = o;
+        } else if (JS.isObject(o)) {
+            result = getNestedProperty(
+                    JsUtils.prop((JavaScriptObject) o, props.get(0)),
+                    props.subList(1, props.size()));
         }
         return result;
     }

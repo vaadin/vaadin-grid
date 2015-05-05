@@ -311,11 +311,58 @@
         return grid;
       });
     });
-    
+
     it('should reference header cell after adding a new column', function() {
       grid.addColumn({name: "foo"});
       grid.header.getCell(0, "foo").content = "foo";
       expect(grid.columns[2].headerContent).to.eql("foo");
+    });
+
+    it('should support nested column names', function(done) {
+      grid.addColumn({
+        name: "foo.bar.baz",
+      });
+      grid.data.source = [{
+        foo: {
+          bar: {
+            baz: "testing"
+          }
+        }
+      }];
+      grid.then(function() {
+        expect(gridContainsText(grid, "testing")).to.be.true;
+        done();
+      });
+    });
+
+    it('should not return values from name path', function(done) {
+      grid.addColumn({
+        name: "foo.bar.baz",
+      });
+      grid.data.source = [{
+        foo: {
+          bar: "testing"
+        }
+      }];
+      grid.then(function() {
+        expect(gridContainsText(grid, "testing")).to.be.false;
+        done();
+      });
+    });
+
+    it('should allow undefined nested values', function(done) {
+      grid.addColumn({
+        name: "foo.bar.baz",
+      });
+      grid.data.source = [{
+        foo: {
+          bar: undefined
+        }
+      }];
+      grid.then(function() {
+        expect(qaLocal(".v-grid-body .v-grid-cell")[2].innerHTML).to.be.empty;
+        done();
+      });
     });
 
   });
