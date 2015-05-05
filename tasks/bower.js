@@ -44,13 +44,18 @@ gulp.task('bower:stage-bower.json', ['bower:clone'], function() {
              .pipe(gulp.dest(checkoutPath));
 });
 
+gulp.task('bower:stage-readme.md', ['bower:clone'], function() {
+  return gulp.src('vaadin-components-package/README.md')
+    .pipe(gulp.dest(checkoutPath));
+});
+
 gulp.task('bower:stage-imports', ['bower:stage-components'], function() {
   return gulp.src(checkoutPath + '/**/*.html')
              .pipe(replace(/(src|href)=("|')(.*?)(\.\.\/)+bower_components\//mg, '$1=$2$3../../'))
              .pipe(gulp.dest(checkoutPath));
 });
 
-gulp.task('stage:bower', ['bower:stage-components', 'bower:stage-imports', 'bower:stage-bower.json']);
+gulp.task('stage:bower', ['bower:stage-components', 'bower:stage-imports', 'bower:stage-bower.json', 'bower:stage-readme.md']);
 
 gulp.task('bower:create-commit', ['stage:bower'], function(){
   if(args.release) {
