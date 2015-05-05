@@ -10,8 +10,8 @@ var _ = require('lodash');
 var args = require('yargs').argv;
 
 var stagingBasePath = config.paths.staging.cdn;
-var stagingPath = stagingBasePath + '/' + config.version;
-var version = args.release || args.autoRevert ? config.version : config.snapshotVersion;
+var version = args.release || args.preRelease || args.autoRevert ? config.version : config.snapshotVersion;
+var stagingPath = stagingBasePath + '/' + version;
 
 gulp.task('clean:cdn', function() {
   fs.removeSync(stagingBasePath);
