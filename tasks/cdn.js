@@ -18,19 +18,9 @@ gulp.task('clean:cdn', function() {
 });
 
 gulp.task('cdn:stage-components', ['clean:cdn'], function() {
-  var files = fs.readdirSync('vaadin-components');
-
-  var paths = _.map(files, function(n) {
-    return 'vaadin-components/' + n + '/**/*';
-  }).concat([
-    '!**/.idea/**/*',
-    '!**/test/**/*',
-    '!**/demo*',
-    '!**/demo/*',
-    '!**/bigdata.js']);;
-
-  return gulp.src(paths)
-    .pipe(replace(/(src|href)=("|')(.*?)\.\.\/\.\.\/bower_components\/(.*?)\//mg, '$1=$2$4/'))
+  return gulp.src(['vaadin-components/**/*', '!**/test/**/*', '!**/test',
+    '!**/demo/**/*', '!**/demo*'])
+    .pipe(replace(/(src|href)=("|')(.*?)\.\.\/\.\.\/bower_components\/(.*?)\//mg, '$1=$2../$4/'))
     .pipe(gulp.dest(stagingPath));
 });
 
@@ -84,26 +74,36 @@ gulp.task('cdn-test:clean', function() {
 gulp.task('cdn-test:install-dependencies', function() {
   return bower({
     directory: stagingPath,
-    forceLatest: true,
     cmd: 'install'
-  }, [['web-component-tester']]);
+  }, [['web-component-tester#2.2.6']]);
 });
 
-gulp.task('cdn-test:stage', ['cdn-test:clean', 'cdn-test:install-dependencies'], function() {
-  return gulp.src('vaadin-components/**/test/**/*')
-    .pipe(replace(/(src|href)=("|')(.*?)\.\.\/\.\.\/(bower_components|node_modules)\/(.*?)\//mg, '$1=$2https://cdn.vaadin.com/vaadin-components/'+ version +'/$5/'))
-    .pipe(replace(/(src|href)=("|')(.*?)\.\.\//mg, '$1=$2https://cdn.vaadin.com/vaadin-components/'+ version +'/'))
-    .pipe(replace(/(src|href)=("|')(.*?)(web-component-tester)\//mg, '$1=$2../../../web-component-tester/'))
-    .pipe(gulp.dest(stagingPath + '/test/'));
+config.components.forEach(function (n) {
+  gulp.task('cdn-test:stage:' + n, ['cdn-test:clean', 'cdn-test:install-dependencies'], function() {
+    return gulp.src('vaadin-components/' + n + '/test/**/*')
+      .pipe(replace(/(src|href)=("|')(.*?)\.\.\/\.\.\/(bower_components|node_modules)\/(.*?)\//mg, '$1=$2https://cdn.vaadin.com/vaadin-components/'+ version + '/$5/'))
+      .pipe(replace(/(src|href)=("|')(.*?)\.\.\//mg, '$1=$2https://cdn.vaadin.com/vaadin-components/'+ version +'/' + n + '/'))
+      .pipe(replace(/(src|href)=("|')(.*?)(web-component-tester)\//mg, '$1=$2../../web-component-tester/'))
+      .pipe(gulp.dest(stagingPath + '/test/' + n + '/'));
+  });
 });
+
+gulp.task('cdn-test:stage', _.map(
+    _.reject(config.components, function(n) {
+      return n === 'vaadin-button'; }),
+  function (n) {
+    return 'cdn-test:stage:'+n;
+  }));
 
 gulp.task('verify:cdn', ['cdn-test:stage'], function(done) {
-  common.checkArguments(['cdnUsername', 'cdnDestination']);
+  if(args.autoRevert) {
+    common.checkArguments(['cdnUsername', 'cdnDestination']);
+  }
 
   // use unique browser combination because bower,cdn,zip verifications are run
   // at the same time and TeamCity test results will get mixed up if same browsers are used.
   common.testSauce(
-    ['target/cdn/' + version + '/test/**/test'],
+    ['target/cdn/' + version + '/test/**/index.html'],
     ['Windows 7/firefox@36'],
     'vaadin-components / cdn.vaadin.com / ' + version,
     function(err) {

@@ -1,3 +1,4 @@
+var _ = require('lodash');
 var args = require('yargs').argv;
 var bower = require('gulp-bower');
 var common = require('./common');
@@ -89,24 +90,33 @@ gulp.task('zip-test:install-wct', ['zip-test:download'], function() {
     cwd: stagingPath + '/test',
     directory: '.',
     cmd: 'install'
-  }, [['web-component-tester']]);
+  }, [['web-component-tester#2.2.6']]);
 });
 
-gulp.task('zip-test:stage-imports', ['zip-test:download'], function() {
-  // not the best regex in the world.. need help.. please.
-  return gulp.src('vaadin-components/**/test/**/*')
-    .pipe(replace(/(src|href)=("|')(.*?)\.\.\/\.\.\/\.\.\/\.\.\/(bower_components|node_modules)\//mg, '$1=$2../../../$3'))
-    .pipe(replace(/(src|href)=("|')(.*?)\.\.\/\.\.\/\.\.\/(bower_components|node_modules)\//mg, '$1=$2../../../$3'))
-    .pipe(replace(/(src|href)=("|')(.*?)\.\.\/(vaadin-)/mg, '$1=$2../../../$3$4'))
-    .pipe(gulp.dest(stagingPath + '/test/test/'));
+config.components.forEach(function (n) {
+  gulp.task('zip-test:stage:' + n, ['zip-test:download'], function() {
+    return gulp.src('vaadin-components/' + n + '/test/**/*')
+      .pipe(replace(/(src|href)=("|')(.*?)\.\.\/\.\.\/\.\.\/\.\.\/(bower_components|node_modules)\//mg, '$1=$2../../$3'))
+      .pipe(replace(/(src|href)=("|')(.*?)\.\.\/\.\.\/\.\.\/(bower_components|node_modules)\//mg, '$1=$2../../$3'))
+      .pipe(replace(/(src|href)=("|')(.*?)\.\.\/(vaadin-)/mg, '$1=$2../../' + n + '/$3$4'))
+      .pipe(gulp.dest(stagingPath + '/test/test/' + n + '/'));
+  });
 });
 
+gulp.task('zip-test:stage', _.map(
+  _.reject(config.components, function(n) {
+    return n === 'vaadin-button';
+  }), function (n) {
+    return 'zip-test:stage:'+n;
+  }));
 
-gulp.task('verify:zip', ['zip-test:unzip', 'zip-test:install-wct', 'zip-test:stage-imports'], function(done) {
-  common.checkArguments(['zipUsername', 'zipDestination']);
+gulp.task('verify:zip', ['zip-test:unzip', 'zip-test:install-wct', 'zip-test:stage'], function(done) {
+  if(args.autoRevert) {
+    common.checkArguments(['zipUsername', 'zipDestination']);
+  }
 
   common.testSauce(
-    ['target/zip/test/test/**/test'],
+    ['target/zip/test/test/**/index.html'],
     ['Windows 7/internet explorer@11'],
     'vaadin-components / vaadin.com / ' + version,
     function(err) {

@@ -105,11 +105,11 @@ gulp.task('bower-test:install-wct', ['bower-test:clean'], function() {
   return bower({
       cwd: checkoutPath + '/test',
       cmd: 'install'
-    }, [['web-component-tester']]);
+    }, [['web-component-tester#2.2.6']]);
 });
 
 gulp.task('bower-test:stage-imports', ['bower-test:install-vaadin-components'], function() {
-  return gulp.src('vaadin-components/**/test/**/*')
+  return gulp.src(['vaadin-components/**/test/**/*', '!**/vaadin-button/**'])
     .pipe(replace(/(src|href)=("|')(.*?)\.\.\/\.\.\/\.\.\/\.\.\/(bower_components|node_modules)\//mg, '$1=$2../../../$3'))
     .pipe(replace(/(src|href)=("|')(.*?)\.\.\/\.\.\/\.\.\/(bower_components|node_modules)\//mg, '$1=$2../../../$3'))
     .pipe(gulp.dest(checkoutPath + '/test/bower_components/vaadin-components/'));
@@ -119,7 +119,7 @@ gulp.task('bower-test:stage', ['bower-test:install-vaadin-components', 'bower-te
 
 gulp.task('verify:bower', ['bower-test:stage'], function(done) {
   common.testSauce(
-      [checkoutPath + '/test/bower_components/vaadin-components/**/test'],
+      [checkoutPath + '/test/bower_components/vaadin-components/**/test/index.html'],
     ['Windows 7/chrome@41'],
     'vaadin-components / bower / ' + version,
     function(err) {
