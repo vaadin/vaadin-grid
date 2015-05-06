@@ -287,7 +287,9 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
         updating = true;
         IndexBasedSelectionModel selectionModel = getSelectionModel();
         final JSArray<?> a = selectionModel.selected(null, null, null);
-        ((GridDataSource) grid.getDataSource()).refresh();
+        if (getDataSource() != null) {
+            getDataSource().refresh();
+        }
         redraw(true);
         if (a.length() > 0) {
             $(container).delay(5, new Function() {

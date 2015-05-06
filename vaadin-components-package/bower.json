@@ -17,6 +17,6 @@
     "**/tests"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#v0.8.0-rc.4"
+    "polymer": "Polymer/polymer#v0.8.0-rc.7"
   }
 }

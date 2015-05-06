@@ -37,7 +37,6 @@
        */
       editor: {
         type: Object,
-        readOnly: true,
         value: function() {
           var _this = this;
           return {
@@ -88,7 +87,6 @@
        */
       data: {
         type: Object,
-        readOnly: true,
         value: function() {
           var _this = this;
           return {
@@ -138,7 +136,6 @@
        */
       header: {
         type: Object,
-        readOnly: true,
         value: function() {
           var _this = this;
           return {
@@ -188,7 +185,6 @@
        */
       footer: {
         type: Object,
-        readOnly: true,
         value: function() {
           var _this = this;
           return {
@@ -219,7 +215,6 @@
 
       selection: {
         type: Object,
-        readOnly: true,
         value: function() {
           var _this = this;
           return {
@@ -313,9 +308,11 @@
       this.serializeValueToAttribute(this.selection.mode, "selection-mode");
     },
 
-    ready: function() {
+    created: function() {
       this.grid = new vaadin.GridComponent();
+    },
 
+    ready: function() {
       var _this = this;
       // Set read-only properties
       ["data", "editor", "header", "footer"].forEach(function(prop) {
