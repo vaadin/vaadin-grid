@@ -36,6 +36,9 @@
           })
           .map(function(n) {
             return n.textContent;
+          })
+          .reduce(function(result, n) {
+            return result + ', ' + n;
         }).value();
     }
 
@@ -47,17 +50,29 @@
       return grid;
     });
 
+    beforeEach(function() {
+      //reset position to an arbitrary row.
+      return grid.scrollToRow(24).then(function () {
+        // calling scrollToRow - scrollToRow - then seems to quite often
+        // run the callback in 'then' before the latter scrolling has finished.
+        // This is most likely caused by multiple timers being fired inside the Grid,
+        // and there's some gap between them - which makes grid.isWorkPending() to return
+        // 'false' too soon.
+        // Adding one 'then' in between the scrolling calls
+        // doesn't seem to remedy the situation. So let's add more.
+        return grid;
+      });
+    });
+
     it('should throw an error when scrolling to an invalid row', function() {
       expect(grid.scrollToRow.bind(grid, -1)).to.throw("Row index");
       expect(grid.scrollToRow.bind(grid, 100)).to.throw("Row index");
     });
 
     it('should scroll using scrollToRow', function() {
-      grid.scrollToStart();
-
       return grid.scrollToRow(50)
           .then(function() {
-            expect(firstColumnContents()).to.include('foo 50');
+            expect(firstColumnContents()).to.contain('foo 50');
           });
     });
 
@@ -65,37 +80,32 @@
       it('should scroll to start', function() {
         return grid.scrollToRow(50, 'start')
             .then(function() {
-              expect(firstColumnContents()).to.include('foo 50');
-              expect(firstColumnContents()).to.include('foo 54');
-
+              expect(firstColumnContents()).to.contain('foo 50');
+              expect(firstColumnContents()).to.contain('foo 54');
             });
       });
 
       it('should scroll to end', function() {
         return grid.scrollToRow(50, 'end')
             .then(function() {
-              expect(firstColumnContents()).to.include('foo 46');
-              expect(firstColumnContents()).to.include('foo 50');
+              expect(firstColumnContents()).to.contain('foo 46');
+              expect(firstColumnContents()).to.contain('foo 50');
             });
       });
     });
 
     it('should scroll to end', function() {
-      grid.scrollToRow(0);
-
       return grid.scrollToEnd()
           .then(function() {
-            expect(firstColumnContents()).to.include('foo 99');
+            expect(firstColumnContents()).to.contain('foo 99');
           });
     });
 
     it('should scroll to start', function() {
-      grid.scrollToEnd();
-
       return grid.scrollToStart()
           .then(function() {
-            expect(firstColumnContents()).to.include('foo 0');
-          });
+          expect(firstColumnContents()).to.contain('foo 0');
+        });
     });
   });
 </script>
