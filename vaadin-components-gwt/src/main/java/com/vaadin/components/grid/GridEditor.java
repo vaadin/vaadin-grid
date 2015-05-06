@@ -11,6 +11,7 @@ import java.util.Map;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.js.JsExport;
 import com.google.gwt.core.client.js.JsNamespace;
+import com.google.gwt.core.client.js.JsNoExport;
 import com.google.gwt.core.client.js.JsType;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
@@ -42,10 +43,12 @@ public class GridEditor {
 
     private final Map<JSColumn, Widget> editors = new HashMap<>();
 
+    @JsNoExport
     public GridEditor(GridComponent gridComponent) {
         this(gridComponent, (JSEditorHandler) JavaScriptObject.createObject());
     }
 
+    @JsNoExport
     protected GridEditor(GridComponent gridComponent, JSEditorHandler handler) {
         this.gridComponent = gridComponent;
         this.grid = gridComponent.getGrid();

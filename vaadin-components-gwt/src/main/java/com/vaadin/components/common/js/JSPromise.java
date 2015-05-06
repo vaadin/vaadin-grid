@@ -24,6 +24,7 @@ public class JSPromise {
     private Promise p;
     public Deferred dfd;
 
+    @JsNoExport
     public JSPromise() {
         dfd = GQuery.Deferred();
         p = dfd.promise();
