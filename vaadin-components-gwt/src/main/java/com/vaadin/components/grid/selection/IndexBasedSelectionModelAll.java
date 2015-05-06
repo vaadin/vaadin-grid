@@ -180,4 +180,12 @@ public class IndexBasedSelectionModelAll extends SelectionModelMulti<Object>
             grid.fireEvent(new SelectionEvent<Object>(grid, null, null, true));
         }
     }
+
+    @Override
+    public void startBatchSelect() {
+    }
+
+    @Override
+    public void commitBatchSelect() {
+    }
 }
