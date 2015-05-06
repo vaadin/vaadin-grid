@@ -51,10 +51,15 @@ gulp.task('cdn:stage-readme.md', ['clean:cdn'], function() {
     .pipe(gulp.dest(stagingPath));
 });
 
+gulp.task('cdn:stage-license.md', ['clean:cdn'], function() {
+  return gulp.src('LICENSE.md')
+    .pipe(gulp.dest(stagingPath));
+});
+
 gulp.task('stage:cdn',
   ['cdn:stage-components',
     'cdn:stage-bower_components',
-    'cdn:stage-readme.md']);
+    'cdn:stage-readme.md', 'cdn:stage-license.md']);
 
 gulp.task('deploy:cdn', ['stage:cdn'], function() {
   common.checkArguments(['cdnUsername', 'cdnDestination']);
