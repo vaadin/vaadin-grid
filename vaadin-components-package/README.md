@@ -4,7 +4,7 @@ A set of high-quality Web Components built using Polymer.
 
 Learn more about [Vaadin Components.](https://vaadin.com/labs-components/)
 
-For contributions and issues, see our project [Github Repository.](https://github.com/vaadin/components/)
+For contributions and issues, see the project's [Github Repository.](https://github.com/vaadin/components/)
 
 ## Installation
 - Bower
