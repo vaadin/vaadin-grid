@@ -15,7 +15,7 @@
   var prototype = {
     is: "v-grid",
 
-    grid: undefined,
+    _grid: undefined,
 
     properties: {
       /**
@@ -41,40 +41,40 @@
           var _this = this;
           return {
             get enabled() {
-              return _this.grid.getEditor().isEnabled();
+              return _this._grid.getEditor().isEnabled();
             },
             set enabled(enabled) {
-              _this.grid.getEditor().setEnabled(enabled);
+              _this._grid.getEditor().setEnabled(enabled);
               if (_this.editable !== enabled) {
                 _this.editable = enabled;
               }
             },
             get handler() {
-              return _this.grid.getEditor().getHandler();
+              return _this._grid.getEditor().getHandler();
             },
             set handler(handler) {
-              _this.grid.getEditor().setHandler(handler);
+              _this._grid.getEditor().setHandler(handler);
             },
             get saveButtonText() {
-              return _this.grid.getEditor().getSaveButtonText();
+              return _this._grid.getEditor().getSaveButtonText();
             },
             set saveButtonText(saveButtonText) {
-              _this.grid.getEditor().setSaveButtonText(saveButtonText);
+              _this._grid.getEditor().setSaveButtonText(saveButtonText);
             },
             get cancelButtonText() {
-              return _this.grid.getEditor().getSaveButtonText();
+              return _this._grid.getEditor().getSaveButtonText();
             },
             set cancelButtonText(cancelButtonText) {
-              _this.grid.getEditor().setCancelButtonText(cancelButtonText);
+              _this._grid.getEditor().setCancelButtonText(cancelButtonText);
             },
             editRow: function(row) {
-              _this.grid.getEditor().editRow(row);
+              _this._grid.getEditor().editRow(row);
             },
             save: function() {
-              _this.grid.getEditor().save();
+              _this._grid.getEditor().save();
             },
             cancel: function() {
-              _this.grid.getEditor().cancel();
+              _this._grid.getEditor().cancel();
             }
           };
         },
@@ -102,7 +102,7 @@
                   req.success(array, source.length);
                 };
               }
-              _this.grid.setDataSource(sourceFunction);
+              _this._grid.setDataSource(sourceFunction);
 
               this._source = source;
             },
@@ -114,14 +114,14 @@
              * @type array
              */
             get sortOrder() {
-              return _this.grid.getSortOrder();
+              return _this._grid.getSortOrder();
             },
             set sortOrder(sortOrder) {
-              _this.grid.setSortOrder(sortOrder);
+              _this._grid.setSortOrder(sortOrder);
             },
 
             clearCache: function(estimatedNewSize) {
-              _this.grid.getDataSource().clearCache(estimatedNewSize);
+              _this._grid.getDataSource().clearCache(estimatedNewSize);
             },
 
           };
@@ -140,16 +140,16 @@
           var _this = this;
           return {
             getCell: function(rowIndex, columnId) {
-              return _this.grid.getStaticSection().getHeaderCell(rowIndex, columnId);
+              return _this._grid.getStaticSection().getHeaderCell(rowIndex, columnId);
             },
             addRow: function(rowIndex, cellContent) {
-              _this.grid.getStaticSection().addHeader(rowIndex, cellContent);
+              _this._grid.getStaticSection().addHeader(rowIndex, cellContent);
             },
             removeRow: function(rowIndex) {
-              _this.grid.getStaticSection().removeHeader(rowIndex);
+              _this._grid.getStaticSection().removeHeader(rowIndex);
             },
             setRowClassName: function(rowIndex, className) {
-              _this.grid.getStaticSection().setHeaderRowClassName(rowIndex, className);
+              _this._grid.getStaticSection().setHeaderRowClassName(rowIndex, className);
             },
             /**
              * Sets the default row of the header. The default row is a special header
@@ -159,19 +159,19 @@
              * @type number
              */
             get defaultRow() {
-              return _this.grid.getStaticSection().getDefaultHeader();
+              return _this._grid.getStaticSection().getDefaultHeader();
             },
             set defaultRow(rowIndex) {
-              _this.grid.getStaticSection().setDefaultHeader(rowIndex);
+              _this._grid.getStaticSection().setDefaultHeader(rowIndex);
             },
             get hidden() {
-              return _this.grid.getStaticSection().isHeaderHidden();
+              return _this._grid.getStaticSection().isHeaderHidden();
             },
             set hidden(hidden) {
-              _this.grid.getStaticSection().setHeaderHidden(hidden);
+              _this._grid.getStaticSection().setHeaderHidden(hidden);
             },
             get rowCount() {
-              return _this.grid.getStaticSection().getHeaderRowCount();
+              return _this._grid.getStaticSection().getHeaderRowCount();
             }
           };
         }
@@ -189,25 +189,25 @@
           var _this = this;
           return {
             getCell: function(rowIndex, columnId) {
-              return _this.grid.getStaticSection().getFooterCell(rowIndex, columnId);
+              return _this._grid.getStaticSection().getFooterCell(rowIndex, columnId);
             },
             addRow: function(rowIndex, cellContent) {
-              _this.grid.getStaticSection().addFooter(rowIndex, cellContent);
+              _this._grid.getStaticSection().addFooter(rowIndex, cellContent);
             },
             removeRow: function(rowIndex) {
-              _this.grid.getStaticSection().removeFooter(rowIndex);
+              _this._grid.getStaticSection().removeFooter(rowIndex);
             },
             setRowClassName: function(rowIndex, className) {
-              _this.grid.getStaticSection().setFooterRowClassName(rowIndex, className);
+              _this._grid.getStaticSection().setFooterRowClassName(rowIndex, className);
             },
             get hidden() {
-              return _this.grid.getStaticSection().isFooterHidden();
+              return _this._grid.getStaticSection().isFooterHidden();
             },
             set hidden(hidden) {
-              _this.grid.getStaticSection().setFooterHidden(hidden);
+              _this._grid.getStaticSection().setFooterHidden(hidden);
             },
             get rowCount() {
-              return _this.grid.getStaticSection().getFooterRowCount();
+              return _this._grid.getStaticSection().getFooterRowCount();
             }
           };
         }
@@ -219,39 +219,39 @@
           var _this = this;
           return {
             select: function(index) {
-              _this.grid.getSelectionModel().select(index);
+              _this._grid.getSelectionModel().select(index);
 
               return _this;
             },
             deselect: function(index) {
-              _this.grid.getSelectionModel().deselect(index);
+              _this._grid.getSelectionModel().deselect(index);
 
               return _this;
             },
             clear: function() {
-              _this.grid.getSelectionModel().clear();
+              _this._grid.getSelectionModel().clear();
 
               return _this;
             },
             selectAll: function() {
-              _this.grid.getSelectionModel().selectAll();
+              _this._grid.getSelectionModel().selectAll();
 
               return _this;
             },
             selected: function(mapper, from, to) {
-              return _this.grid.getSelectionModel().selected(mapper, from, to);
+              return _this._grid.getSelectionModel().selected(mapper, from, to);
             },
             deselected: function(mapper, from, to) {
-              return _this.grid.getSelectionModel().deselected(mapper, from, to);
+              return _this._grid.getSelectionModel().deselected(mapper, from, to);
             },
             get size() {
-              return _this.grid.getSelectionModel().size();
+              return _this._grid.getSelectionModel().size();
             },
             get mode() {
-              return _this.grid.getSelectionMode();
+              return _this._grid.getSelectionMode();
             },
             set mode(mode) {
-              _this.grid.setSelectionMode(mode);
+              _this._grid.setSelectionMode(mode);
               _this.serializeValueToAttribute(_this.selection.mode, "selection-mode");
             }
           };
@@ -260,7 +260,7 @@
     },
 
     columnsChanged: function() {
-      var oldcols = this.grid.getColumns();
+      var oldcols = this._grid.getColumns();
       var newcols = this.columns;
       if (!oldcols._obs || newcols != oldcols) {
         if (oldcols._obs) {
@@ -268,11 +268,11 @@
         }
         var _this = this;
         newcols._obs = function() {
-          _this.grid.setColumns(newcols);
+          _this._grid.setColumns(newcols);
         };
         Polymer.ArrayObserve.observe(newcols, newcols._obs);
       }
-      this.grid.setColumns(newcols);
+      this._grid.setColumns(newcols);
     },
 
     attributeChanged: function(name, type, value) {
@@ -284,7 +284,7 @@
           this.editable = typeof value == "string";
           break;
         case 'style':
-          this.grid.redraw();
+          this._grid.redraw();
           break;
         case 'selection-mode':
           this.selection.mode = value;
@@ -309,7 +309,7 @@
     },
 
     created: function() {
-      this.grid = new vaadin.GridComponent();
+      this._grid = new vaadin.GridComponent();
     },
 
     ready: function() {
@@ -326,11 +326,11 @@
         }
       }, 1);
 
-      this.columns = _this.grid.getColumns();
+      this.columns = _this._grid.getColumns();
     },
 
     attached: function() {
-      this.grid.attached(this, Polymer.dom(this).querySelector("table"), Polymer.dom(this.root));
+      this._grid.attached(this, Polymer.dom(this).querySelector("table"), Polymer.dom(this.root));
     },
 
     /**
@@ -344,7 +344,7 @@
      * @param {string} scrollDestination - desired destination placement of scrolled-to-row.
      */
     scrollToRow: function(index, scrollDestination) {
-      this.grid.scrollToRow(index, scrollDestination);
+      this._grid.scrollToRow(index, scrollDestination);
       return this;
     },
 
@@ -357,7 +357,7 @@
      * @method scrollToStart
      */
     scrollToStart: function() {
-      this.grid.scrollToStart();
+      this._grid.scrollToStart();
       return this;
     },
 
@@ -370,7 +370,7 @@
      * @method scrollToEnd
      */
     scrollToEnd: function() {
-      this.grid.scrollToEnd();
+      this._grid.scrollToEnd();
       return this;
     },
 
@@ -382,7 +382,7 @@
      * @param {string} beforeColumn
      */
     addColumn: function(column, beforeColumn) {
-      this.grid.addColumn(column, beforeColumn);
+      this._grid.addColumn(column, beforeColumn);
     },
 
     /**
@@ -392,7 +392,7 @@
      * @param {string} id
      */
     removeColumn: function(id) {
-      this.grid.removeColumn(id);
+      this._grid.removeColumn(id);
     },
 
     /**
@@ -402,10 +402,10 @@
      * @type object
      */
     get rowClassGenerator() {
-      return this.grid.getRowClassGenerator();
+      return this._grid.getRowClassGenerator();
     },
     set rowClassGenerator(rowClassGenerator) {
-      this.grid.setRowClassGenerator(rowClassGenerator);
+      this._grid.setRowClassGenerator(rowClassGenerator);
     },
     /**
      * Sets the style generator that is used for generating styles for cells.
@@ -414,10 +414,10 @@
      * @type object
      */
     get cellClassGenerator() {
-      return this.grid.getCellClassGenerator();
+      return this._grid.getCellClassGenerator();
     },
     set cellClassGenerator(cellClassGenerator) {
-      this.grid.setCellClassGenerator(cellClassGenerator);
+      this._grid.setCellClassGenerator(cellClassGenerator);
     },
     /**
      * Disables the grid functionality.
@@ -426,10 +426,10 @@
      * @type boolean
      */
     get disabled() {
-      return this.grid.isDisabled();
+      return this._grid.isDisabled();
     },
     set disabled(disabled) {
-      this.grid.setDisabled(disabled);
+      this._grid.setDisabled(disabled);
       this.reflectPropertyToAttribute("disabled");
     },
     /**
@@ -455,10 +455,10 @@
      * @type Number
      */
     get frozenColumns() {
-      return this.grid.getFrozenColumns();
+      return this._grid.getFrozenColumns();
     },
     set frozenColumns(frozenColumns) {
-      this.grid.setFrozenColumns(frozenColumns);
+      this._grid.setFrozenColumns(frozenColumns);
       this.reflectPropertyToAttribute("frozenColumns");
     },
     /**
@@ -470,14 +470,14 @@
      * @type Number
      */
     get rows() {
-      return this.grid.getRows();
+      return this._grid.getRows();
     },
     set rows(rows) {
-      this.grid.setRows(rows);
+      this._grid.setRows(rows);
       this.reflectPropertyToAttribute("rows");
     },
     then: function(cb) {
-      return this.grid.then(cb);
+      return this._grid.then(cb);
     }
   };
 
