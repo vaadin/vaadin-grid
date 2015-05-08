@@ -33,7 +33,7 @@ public class ImportLinker extends CrossSiteIframeLinker {
                 js += ""
                         + "<script>\n"
                         + "$wnd = window; $doc = document;\n"
-                        + generateVadinScript(logger, context, artifacts, null);
+                        + generateVaadinScript(logger, context, artifacts, null);
                 for (CompilationResult result : artifacts.find(CompilationResult.class)) {
                     String strongName = result.getStrongName();
                     js += ""
@@ -54,7 +54,7 @@ public class ImportLinker extends CrossSiteIframeLinker {
         return toReturn;
     }
 
-    protected String generateVadinScript(TreeLogger logger,
+    protected String generateVaadinScript(TreeLogger logger,
             LinkerContext context, ArtifactSet artifacts, CompilationResult result)
             throws UnableToCompleteException {
           String selectionScriptText;
