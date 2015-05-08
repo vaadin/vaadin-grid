@@ -9,7 +9,7 @@ For contributions and issues, see our project [Github Repository.](https://githu
 ## Installation
 - Bower
 ```shell
-$ bower install vaadin-components#0.2-snapshot
+$ bower install vaadin-components#0.2.0
 ```
 ```html
 <!-- Import web component polyfills and the component you want into your HTML -->
@@ -25,8 +25,8 @@ $ bower install vaadin-components#0.2-snapshot
 <!-- Import web component polyfills and the component you want into your HTML -->
 <head>
   ...
-  <script src="https://cdn.vaadin.com/vaadin-components/0.2-snapshot/webcomponentsjs/webcomponents-lite.js"></script>
-  <link href="https://cdn.vaadin.com/vaadin-components/0.2-snapshot/vaadin-grid.html" rel="import">
+  <script src="https://cdn.vaadin.com/vaadin-components/0.2.0/webcomponentsjs/webcomponents-lite.js"></script>
+  <link href="https://cdn.vaadin.com/vaadin-components/0.2.0/vaadin-grid.html" rel="import">
   ...
 </head>
 ```
