@@ -25,7 +25,7 @@
       <gwt.closure>true</gwt.closure>
       <gwt.report>false</gwt.report>
       <git.bower.repo>git@vaadin-components.intra.itmill.com:/opt/git/</git.bower.repo>
-      <bower.components>vaadin-grid vaadin-button</bower.components>
+      <bower.components>vaadin-grid</bower.components>
     </properties>
 
     <profiles>

@@ -109,7 +109,7 @@ gulp.task('bower-test:install-wct', ['bower-test:clean'], function() {
 });
 
 gulp.task('bower-test:stage-imports', ['bower-test:install-vaadin-components'], function() {
-  return gulp.src(['vaadin-components/**/test/**/*', '!**/vaadin-button/**'])
+  return gulp.src(['vaadin-components/**/test/**/*'])
     .pipe(replace(/(src|href)=("|')(.*?)\.\.\/\.\.\/\.\.\/\.\.\/(bower_components|node_modules)\//mg, '$1=$2../../../$3'))
     .pipe(replace(/(src|href)=("|')(.*?)\.\.\/\.\.\/\.\.\/(bower_components|node_modules)\//mg, '$1=$2../../../$3'))
     .pipe(gulp.dest(checkoutPath + '/test/bower_components/vaadin-components/'));

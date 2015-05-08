@@ -103,12 +103,9 @@ config.components.forEach(function (n) {
   });
 });
 
-gulp.task('zip-test:stage', _.map(
-  _.reject(config.components, function(n) {
-    return n === 'vaadin-button';
-  }), function (n) {
+gulp.task('zip-test:stage', _.map(config.components, function(n) {
     return 'zip-test:stage:'+n;
-  }));
+}));
 
 gulp.task('verify:zip', ['zip-test:unzip', 'zip-test:install-wct', 'zip-test:stage'], function(done) {
   if(args.autoRevert) {

@@ -88,12 +88,9 @@ config.components.forEach(function (n) {
   });
 });
 
-gulp.task('cdn-test:stage', _.map(
-    _.reject(config.components, function(n) {
-      return n === 'vaadin-button'; }),
-  function (n) {
-    return 'cdn-test:stage:'+n;
-  }));
+gulp.task('cdn-test:stage', _.map(config.components, function (n) {
+    return 'cdn-test:stage:' + n;
+}));
 
 gulp.task('verify:cdn', ['cdn-test:stage'], function(done) {
   if(args.autoRevert) {

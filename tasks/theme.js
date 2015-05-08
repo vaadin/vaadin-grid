@@ -13,13 +13,11 @@ var gwtproject = 'vaadin-components-gwt';
 /**
  * Use cases:
  *    `gulp css` - compiles sass and creates separated css files for each component in their directories
- *    `gulp css:button` - compiles sass and creates the "vaadin-components/vaadin-button/vaadin-button.css"
  *    `gulp css:grid` - compiles sass and creates the "vaadin-components/vaadin-grid/vaadin-grid.css"
  *    `gulp css:grid-gwt` - compiles sass and creates the "vaadin-components-gwt/src/main/webapp/vaadin-grid/vaadin-grid.css"
  */
 
 var components = [
-  {"name": "button", "dir": "vaadin-components/", "filename": "vaadin-button"},
   {"name": "grid", "dir": "vaadin-components/", "filename": "vaadin-grid"},
   {"name": "grid", "dir": gwtproject + "/src/main/webapp/", "filename": "vaadin-grid", "taskname": "grid-gwt"}
 ];
