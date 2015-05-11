@@ -113,7 +113,7 @@ public class Redraw extends Timer {
             rows += grid.isFooterVisible() ? grid.getFooterRowCount() : 0;
             if (forceRedraw || rows != numberRows) {
                 numberRows = rows;
-                int h = (int) clientHeight($(grid).find("tr td")) + 1;
+                int h = (int) clientHeight($(grid).find("tr td"));
                 height = h * rows;
                 grid.setHeight(height + "px");
             }
@@ -121,7 +121,7 @@ public class Redraw extends Timer {
     }
 
     double clientHeight(GQuery g) {
-        return g.isEmpty() ? 0d : g.prop("clientHeight", Double.class);
+        return g.isEmpty() ? 0d : g.prop("offsetHeight", Double.class);
     }
 
     public void setSize(int size) {
