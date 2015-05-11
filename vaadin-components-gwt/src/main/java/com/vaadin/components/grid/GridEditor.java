@@ -210,13 +210,20 @@ public class GridEditor {
                 e = JS.exec(handler.getGetCellEditor(), jscol);
             } else {
                 e = Document.get().createTextInputElement();
+                e.addClassName("v-grid style-scope");
             }
             if (e != null) {
                 w = new SimplePanel(e) {
+                    @Override
+                    protected void onAttach() {
+                        super.onAttach();
+                        getElement().getParentElement().addClassName("v-grid style-scope");
+                    }
                 };
                 editors.put(jscol, w);
             }
         }
+
         return w;
     }
 }

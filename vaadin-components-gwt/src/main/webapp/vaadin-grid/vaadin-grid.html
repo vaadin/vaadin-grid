@@ -4,9 +4,350 @@
 
 <link rel='import' href='vaadin-grid-import.html'>
 <link rel='import' href='../bower_components/polymer/polymer.html'>
-<link rel="stylesheet" href="vaadin-grid.css" shim-shadowdom>
 
 <dom-module id="v-grid">
+    <style>
+      :host {
+        white-space: nowrap;
+        -webkit-tap-highlight-color: transparent;
+        -webkit-touch-callout: none;
+        transition: opacity 200ms;
+      }
+
+      :host(.loading) {
+        opacity: 0;
+      }
+
+      :host,
+      .v-grid-tablewrapper > table,
+      .v-grid-body,
+      .v-grid-header,
+      .v-grid-footer,
+      .v-grid-row {
+        display: block;
+        box-sizing: border-box;
+      }
+
+      .v-grid-cell {
+        display: -webkit-inline-flex;
+        display: inline-flex;
+        -webkit-align-items: center;
+        align-items: center;
+        box-sizing: border-box;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        background: #fff;
+      }
+
+      :host > div {
+        position: relative;
+        outline: none;
+      }
+
+      .v-grid-scroller {
+        position: absolute;
+        z-index: 1;
+        outline: none;
+        box-sizing: border-box;
+      }
+
+      .v-grid-scroller-horizontal {
+        left: 0;
+        right: 0;
+        bottom: 0;
+        overflow-y: hidden;
+        -ms-overflow-y: hidden;
+      }
+
+      .v-grid-scroller-vertical {
+        right: 0;
+        top: 0;
+        bottom: 0;
+        overflow-x: hidden;
+        -ms-overflow-x: hidden;
+      }
+
+      .v-grid-tablewrapper {
+        position: absolute;
+        overflow: hidden;
+        box-sizing: border-box;
+        z-index: 5;
+        outline: none;
+      }
+
+      .v-grid-header-deco,
+      .v-grid-footer-deco,
+      .v-grid-horizontal-scrollbar-deco {
+        position: absolute;
+        right: 0;
+        box-sizing: border-box;
+      }
+
+      .v-grid-header,
+      .v-grid-body,
+      .v-grid-footer {
+        position: absolute;
+        left: 0;
+        z-index: 10;
+      }
+
+      .v-grid-header,
+      .v-grid-header-deco {
+        top: 0;
+      }
+
+      .v-grid-footer,
+      .v-grid-footer-deco {
+        bottom: 0;
+      }
+
+      .v-grid-horizontal-scrollbar-deco {
+        left: 0;
+        bottom: 0;
+      }
+
+      .v-grid-body {
+        z-index: 0;
+        top: 0;
+      }
+
+      .v-grid-body .v-grid-row {
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+
+      .v-grid-editor {
+        position: absolute;
+        z-index: 20;
+        overflow: hidden;
+        left: 0;
+        right: 0;
+        background: #fff;
+        border: 1px solid;
+        margin-top: -1px;
+      }
+
+      .v-grid-editor-cells > div {
+        display: inline-block;
+      }
+
+      .v-grid-editor-footer {
+        display: -webkit-flex;
+        display: flex;
+        -webkit-align-items: center;
+        align-items: center;
+        box-sizing: border-box;
+      }
+
+      .v-grid-editor-message {
+        -webkit-flex: 1;
+        flex: 1;
+      }
+
+      :host {
+        font: 400 100%/1.1 Roboto, sans-serif;
+        color: rgba(0, 0, 0, 0.83);
+      }
+
+      .v-grid-cell {
+        padding: 0 16px;
+        height: 32px;
+      }
+
+      .v-grid-header,
+      .v-grid-header-deco {
+        box-shadow: 0px 3px 2px 0px rgba(0, 0, 0, 0.20);
+      }
+
+      .v-grid-header th {
+        background: #03A9F4;
+        color: #fff;
+        text-transform: uppercase;
+        font-weight: 600;
+        font-size: 0.8125em;
+        height: 32px;
+        border-right: 1px solid rgba(255, 255, 255, 0.3);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+      }
+
+      .v-grid-header-deco {
+        background: #03A9F4;
+        border-left: 1px solid rgba(255, 255, 255, 0.3);
+        z-index: 1;
+      }
+
+      .v-grid-header [class*="sort-"] {
+        position: relative;
+        padding-right: 32px;
+      }
+
+      .v-grid-header [class*="sort-"]:after {
+        position: absolute;
+        font-family: sans-serif;
+        content: "\25b2" " " attr(sort-order);
+        right: 12px;
+        font-size: 12px;
+      }
+
+      .v-grid-header .sort-desc:after {
+        content: "\25bc" " " attr(sort-order);
+      }
+
+      .v-grid-footer td,
+      .v-grid-footer-deco,
+      .v-grid-horizontal-scrollbar-deco {
+        background: #E6E6E6;
+        font-size: 0.8125em;
+        font-weight: 500;
+        color: rgba(0, 0, 0, 0.56);
+      }
+
+      .v-grid-footer td {
+        border-right: 1px solid rgba(255, 255, 255, 0.5);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+      }
+
+      .v-grid-footer-deco {
+        border-left: 1px solid rgba(255, 255, 255, 0.5);
+      }
+
+      .v-grid-horizontal-scrollbar-deco {
+        border-top: 1px solid rgba(255, 255, 255, 0.5);
+      }
+
+      .v-grid-header th:last-child,
+      .v-grid-footer td:last-child {
+        border-right: 0;
+      }
+
+      .v-grid-header tr:last-child th,
+      .v-grid-footer tr:last-child td {
+        border-bottom: 0;
+      }
+
+      /* TODO We need some other way of defining the frozen column divider than using the cell .*/
+
+      .v-grid-cell.frozen {
+        overflow: visible;
+        border-right: 0;
+      }
+
+      .v-grid-cell.frozen:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: -5px;
+        height: 100%;
+        width: 5px;
+        pointer-events: none;
+        background: linear-gradient(to right, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0));
+      }
+
+      .v-grid-row-selected > td {
+        background-color: #f2f2f2;
+      }
+
+      .v-grid-editor {
+        border: 1px solid rgba(0, 0, 0, 0.20);
+        box-shadow: rgba(0, 0, 0, 0.2) 0px 8px 17px 0px, rgba(0, 0, 0, 0.188235) 0px 6px 20px 0px;
+      }
+
+      .v-grid-editor input[type="text"], .v-grid-editor input:not([type]){
+        border: 0;
+        background: transparent;
+        font: inherit;
+        color: inherit;
+        outline: none;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+        width: 100%;
+        padding: 0;
+        box-sizing: border-box;
+        height: 100%;
+      }
+
+      .v-grid-editor input[type="text"]:focus {
+        border-bottom: 2px solid #03A9F4;
+      }
+
+      .v-grid-editor-cells > div {
+        margin-bottom: 10px;
+        padding: 0 16px;
+        height: 32px;
+        box-sizing: border-box;
+      }
+
+      .v-grid-editor-buttons button {
+        background: transparent;
+        border: 0;
+        padding: 0 16px;
+        font: inherit;
+        font-size: 14px;
+        color: #03A9F4;
+        text-transform: uppercase;
+        height: 42px;
+      }
+
+      .v-grid-cell:first-child .gwt-CheckBox {
+        display: inline-flex;
+      }
+      .v-grid-cell:first-child input[type="checkbox"] {
+        position: absolute;
+        opacity: 0;
+        left: -10px;
+      }
+      .v-grid-cell:first-child input[type="checkbox"]:focus{
+          outline: none;
+      }
+      .v-grid-cell:first-child input[type="checkbox"] + label {
+        position: relative;
+        left: 0px;
+        cursor: pointer;
+        width: 16px;
+        height: 16px;
+        display: block;
+      }
+      .v-grid-cell:first-child input[type="checkbox"]:focus + label{
+          border: 1px dotted grey;
+      }
+      .v-grid-cell:first-child input[type="checkbox"] + label:before {
+        -webkit-transition: all 0.3s ease-in-out;
+        -moz-transition: all 0.3s ease-in-out;
+        -ms-transition: all 0.3s ease-in-out;
+        transition: all 0.3s ease-in-out;
+        content: "";
+        position: absolute;
+        z-index: 1;
+        left: 0px;
+        width: 14px;
+        height: 14px;
+        border: 2px solid #e5e5e5;
+      }
+      .v-grid-cell:first-child input[type="checkbox"]:checked + label:before {
+        -webkit-transform: rotate(-45deg);
+        -moz-transform: rotate(-45deg);
+        -ms-transform: rotate(-45deg);
+        transform: rotate(-45deg);
+        height: 7px;
+        width: 16px;
+        border-color: #009688;
+        border-top-style: none;
+        border-right-style: none;
+      }
+      .v-grid-cell:first-child input[type="checkbox"]:indeterminate + label:before {
+        -webkit-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        transform: rotate(0deg);
+        width: 16px;
+        top: -8px;
+        border-color: #009688;
+        border-top-style: none;
+        border-right-style: none;
+        border-left-style: none;
+      }
+
+    </style>
   <template>
   </template>
 </dom-module>
@@ -14,6 +355,10 @@
 <script>
   var prototype = {
     is: "v-grid",
+
+    hostAttributes: {
+      class: "v-grid"
+    },
 
     _grid: undefined,
 
@@ -486,7 +831,9 @@
     // Give some time to gwt async processes to run (we need this in FF)
     setTimeout(function() {
       vaadin._v_grid_ready = true;
-      document.dispatchEvent(new Event('v-grid-ready'));
+      var evt = document.createEvent("HTMLEvents");
+      evt.initEvent("v-grid-ready", false, true);
+      document.dispatchEvent(evt);
     }, 5);
   }
 

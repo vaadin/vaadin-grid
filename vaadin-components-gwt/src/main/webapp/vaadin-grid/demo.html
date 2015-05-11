@@ -634,7 +634,7 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
 
         // Add a header row
         var colspanToggle = document.createElement("button");
-        colspanToggle.innerText = "Toggle colspan";
+        colspanToggle.innerHTML = "Toggle colspan";
         colspanToggle.addEventListener("click", function(){
           var cell = grid.header.getCell(0, 0);
           cell.colspan = cell.colspan == 1 ? 2 : 1;
