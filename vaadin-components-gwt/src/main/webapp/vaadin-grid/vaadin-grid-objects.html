@@ -1,0 +1,628 @@
+<!--
+Represents a column definition of the grid.
+-->
+<dom-module id="Column"></dom-module>
+<script>
+  Polymer({
+    is: 'Column',
+    properties: {
+      /**
+       * Must be a valid JS variable name so that the same name can be used in 
+       * the data source object fields.
+       */
+      name:  String,
+      /**
+       * Sets the content of this column in the default header row object
+       */
+      headerContent:  String,
+      /**
+       * Indicates whether the data in this column can be sorted by the end user
+       *
+       * @property sortable
+       * @type boolean
+       * @default false
+       */
+      sortable: false,
+      /**
+       * Indicates whether the data in this column can be edited using the row editor
+       *
+       * @property readOnly
+       * @type boolean
+       * @default false
+       */
+      readOnly: false,
+      /**
+       * Pixel values are supported only.
+       *
+       * @property minWidth
+       * @type number
+       * @default 10
+       */
+      minWidth: Number,
+      /**
+       * Pixel values are supported only.
+       */
+      maxWidth: Number,
+      /**
+       * Pixel values are supported only.
+       */
+      width: Number,
+      /**
+       * Defines the flex ratio of this column (expand ratio in Vaadin-speak). Expects an integer.
+       *
+       * @property flex
+       * @type number
+       * @default -1
+       */
+      flex: Number,
+      /**
+       * It is a function which should return the value of the column cell 
+       * (passed on to the renderer function if defined).
+       *  
+       *  Example:
+       *  ```
+       *  column.valueGenerator = function(row) {
+       *      return "> " + row.name;
+       *  };
+       *  ```
+       *
+       * Params:
+       *  - {Row} row – Reference to the Row object
+       *
+       * @property valueGenerator
+       * @type {function}
+       */
+      valueGenerator: Object,
+      /**
+       * It is a function which defines the custom renderer for this columns data items.
+       *
+       *  Example:
+       *  ```
+       *  column.renderer = function(cell) {
+       *      cell.element.innerHTML = '$' + cell.data;
+       *  };
+       *  ```
+       *
+       * Params:
+       *  - {Cell} cell – Reference to the Cell object
+       *
+       * @property renderer
+       * @type {function}
+       */
+      renderer: Object
+    }
+  });
+</script>
+
+<!--
+The object used to manipulate data in the grid.
+-->
+<dom-module id="Data"></dom-module>
+<script>
+  Polymer({
+    is: 'Data',
+    properties: {
+      /**
+       * The data source object for the grid.
+       * 
+       * If an array is used, it is wrapped with a function internally. 
+       * Reading the property value will still return the array.       *
+       *
+       *  Example:
+       *  ```
+       *  data.source = [
+       *      ["horse", 150, "domestic"],
+       *      ["wolf", 100, "wild"]
+       *  };
+       *  ```
+       * or
+       *  ```
+       *  var myArray = [...];
+       *  data.source = function(req) {
+       *      var from = req.index;
+       *      var to = req.index + req.count;
+       *      var array = myArray.slice(from, to);
+       *
+       *      req.success(array, data.length);
+       *  };
+       *  ```
+       *
+       * Params:
+       *  - {DataRequest} req – Reference to the DataRequest object
+       *
+       * @property source
+       * @type {Array|function}
+       */
+      source: Object,
+      /**
+       * The sort order.
+       * 
+       * @property source
+       * @type {Array<SortOrder>}
+       */
+      sortOrder: Array
+    }
+  });
+</script>
+
+<!--
+This is the object used when the grid request more data from datasources.
+-->
+<dom-module id="DataRequest"></dom-module>
+<script>
+  Polymer({
+    is: 'DataRequest',
+    properties: {
+      /**
+       * First data item index to fetch
+       */
+      index:  Number,
+
+      /**
+       * Number of data items to fetch
+       */
+      count:  Number
+    },
+    /**
+     * Callback function to pass along the data items to the grid and the total size of the data source.
+     *
+     *  Example:
+     *  ```
+     *  var myArray = [...];
+     *
+     *  var from = req.index;
+     *  var to = req.index + req.count;
+     *  var array = myArray.slice(from, to);
+     *
+     *  req.success(array, data.length);
+     *  ```
+     *
+     * @method success
+     * @param {Array<*>} items The subset of the data items
+     * @param {number} totalSize – The total quantity of the data items
+     */
+    success: function(items, totalSize) {},
+    /**
+     * Callback function to inform the grid that something failed when getting the data.
+     *
+     *  Example:
+     *  ```
+     *  req.failure();
+     *  ```
+     *
+     * @method failure
+     */
+    failure: function() {}
+  });
+</script>
+
+<!--
+Configuration object for the embedded editor.
+-->
+<dom-module id="Editor"></dom-module>
+<script>
+  Polymer({
+    is: 'Editor',
+    properties: {
+      /**
+       * Whether grid is editable or not
+       *
+       * @property enabled
+       * @type boolean
+       */
+      enabled: Boolean,
+      /**
+       * The save button caption
+       *
+       * @property saveButtonText
+       * @type String
+       * @default "Save"
+       */
+      saveButtonText: String,
+      /**
+       * The cancel button caption
+       *
+       * @property saveButtonText
+       * @type String
+       * @default "Cancel"
+       */
+      cancelButtonText: String,
+      /**
+       * The editor handler object the user should specify if the save and cancel 
+       * actions should be handled somehow (e.g. send the saved data back to the 
+       * server or just update a local array)
+       *
+       * @property handler
+       * @type {EditorHandler}
+       */
+      handler: Object
+    },
+    /**
+     * Activates the row editor for the given row index.
+     *
+     *  Example:
+     *  ```
+     *  editor.editRow(4);
+     *  ```
+     *
+     * Params:
+     *  - {number} rowIndex – The row index which should be edited
+     *
+     * @property editRow
+     * @type {function}
+     */
+    editRow: Object,
+    /**
+     * Invokes the editor.handler.save function, if a handler is defined
+     *
+     * @property save
+     * @type {function}
+     */
+    save: Object,
+    /**
+     * Invokes the editor.handler.cancel function, if a handler is defined
+     *
+     * @property cancel
+     * @type {function}
+     */
+    cancel: Object
+  });
+</script>
+
+<!--
+The Object with all methods necessary for handling editor actions.
+-->
+<dom-module id="EditorHandler"></dom-module>
+<script>
+  Polymer({
+    is: 'EditorHandler',
+    properties: {
+      /**
+       * Handles the setting of data into the custom editor elements.
+       * The default implementation expects that the editor element
+       * (returned by getCellEditor) has a ‘value’ property which it sets.
+       *
+       * Params:
+       *  - {EditorRequest} req – The editor handler request
+       *
+       * @property bind
+       * @type {function}
+       */
+      bind: Object,
+      /**
+       *
+       * Params:
+       *  - {EditorRequest} req – The editor handler request
+       *
+       * @property cancel
+       * @type {function}
+       */
+      cancel: Object,
+      /**
+       *
+       * Params:
+       *  - {EditorRequest} req – The editor handler request
+       *
+       * @property save
+       * @type {function}
+       */
+      save: Object,
+      /**
+       * Returns HTML elements which are used for the editors in the row editor. 
+       * This function is only called for the columns which have the editable 
+       * property set to true. The default implementation returns &lt;input> elements 
+       * for all editable columns.
+       *
+       * Params:
+       *  - {Column} column – The column object for which to provide an editor
+       *
+       * @property getCellEditor
+       * @type {function}
+       */
+      getCellEditor: Object
+    }
+  });
+</script>
+
+<!--
+The object passed to the EditorHandler when a edition action is performed.
+-->
+<dom-module id="EditorRequest"></dom-module>
+<script>
+  Polymer({
+    is: 'EditorRequest',
+    properties: {
+      /**
+       * The row index
+       */
+      rowIndex:  Number,
+      /**
+       * The item from the data source array which is edited
+       * 
+       * @property dataItem
+       * @type {*}
+       */
+      dataItem: Object,
+      /**
+       * Reference to the &lt;table is=v-grid> element
+       *
+       * @property grid
+       * @type {HTMLElement}
+       */
+      grid:  Object
+    },
+    /**
+     * The user should call this method to indicate that the request was handled successfully.
+     *
+     * @method success
+     * @param {number} rowIndex The index of the row modified rowObject: 
+     * the modified row as it could be used in the datasource.dataUpdated
+     */
+    success: function(rowIndex) {},
+    /**
+     * The user should call this method to indicate that the request was not handled successfully, 
+     * and pass the error message and any erroneous columns as parameters.
+     *
+     * @method failure
+     * @param {String} errorMsg The error message which should be shown in the row editor footer
+     * @param {Array<Column>} errorColumns The editors which have errors
+     */
+    failure: function(errorMsg, errorColumns) {},
+    /**
+     * This function should return the editor element for the referenced column 
+     * (same element which was created by the editor.handler.getCellEditor).
+     *
+     * @method getCellEditor
+     * @param {Column} column The column object for which to provide an editor
+     */
+    getCellEditor: function(column) {}
+  });
+</script>
+
+<!--
+Object for manipulating footer rows.
+-->
+<dom-module id="Footer"></dom-module>
+<script>
+  Polymer({
+    is: 'Footer',
+    properties: {
+      /**
+       * The number of columns which this cell should span/group
+       *
+       * @property colspan
+       * @type number
+       */
+      colspan: Number,
+      /**
+       * If set to true, visually hides all footers in the Grid
+       *
+       * @property hidden
+       * @type boolean
+       */
+      hidden: Boolean
+    },
+    /**
+     * Adds a new footer row.
+     *
+     * @method addRow
+     * @param {number} index The position where to insert the new footer row. If undefined, it is insert as the last row.
+     */
+    addRow: function(index) {},
+    /**
+     * Removes a specific footer row.
+     *
+     * @method removeRow
+     * @param {number} index The row index to remove.
+     */
+    removeRow: function(index) {},
+    /**
+     * Returns an object reference to a particular footer cell.
+     *
+     * @method getCell
+     * @param {number} rowIndex The row index.
+     * @param {number|string} column The column.
+     * @return {StaticCell} An object reference to a particular footer cell
+     */
+    getCell: function(rowIndex, column) {}
+  });
+</script>
+
+<!--
+Object for manipulating header rows
+-->
+<dom-module id="Header"></dom-module>
+<script>
+  Polymer({
+    is: 'Header',
+    properties: {
+      /**
+       * The number of columns which this cell should span/group
+       *
+       * @property colspan
+       * @type number
+       */
+      colspan: Number,
+      /**
+       * If set to true, visually hides all headers in the Grid
+       *
+       * @property hidden
+       * @type boolean
+       */
+      hidden: Boolean,
+      /**
+       * Sets the index of the default header row in the headers array
+       *
+       * @property defaultRow
+       * @type number
+       */
+      defaultRow: Number
+    },
+    /**
+     * Adds a new header row.
+     *
+     * @method addRow
+     * @param {number} index The position where to insert the new header row. If undefined, it is insert as the last row.
+     */
+    addRow: function(index) {},
+    /**
+     * Removes a specific header row.
+     *
+     * @method removeRow
+     * @param {number} index The row index to remove.
+     */
+    removeRow: function(index) {},
+    /**
+     * Returns an object reference to a particular header cell.
+     *
+     * @method getCell
+     * @param {number} rowIndex The row index.
+     * @param {number|string} column The column.
+     * @return {StaticCell} An object reference to a particular header cell
+     */
+    getCell: function(rowIndex, column) {}
+  });
+</script>
+
+<!--
+Represents a grid header/footer row configuration.
+-->
+<dom-module id="StaticCell"></dom-module>
+<script>
+  Polymer({
+    is: 'Row',
+    properties: {
+      /**
+       * The row index
+       */
+      index:  Number,
+      /**
+       * The row data object from the data source
+       *
+       * @property data
+       * @type {*}
+       */
+      data:  Object,
+      /**
+       * Reference to the &lt;table is=v-grid> element
+       *
+       * @property grid
+       * @type {HTMLElement}
+       */
+      grid:  Object,
+      /**
+       * Reference to the TR element
+       *
+       * @property element
+       * @type {HTMLElement}
+       */
+      element:  Object
+    }
+  });
+</script>
+
+<!--
+The Object used for configuring the selection model of the grid.
+-->
+<dom-module id="Selection"></dom-module>
+<script>
+  Polymer({
+    is: 'Selection',
+    properties: {
+      /**
+       * The mode
+       *
+       * @property mode
+       * @type {"single"|"multi"|"all"|"disabled"}
+       */
+      mode: String,
+      /**
+       * The size
+       */
+      size: Number
+    },
+    /**
+     * Selects certain row
+     *
+     * @method select
+     * @param {number} index – The row index
+     */
+    select: function(index) {},
+    /**
+     * Deselects certain row
+     *
+     * @method deselect
+     * @param {number} index – The row index
+     */
+    deselect: function(index) {},
+    /**
+     * Clears selection
+     *
+     * @method clear
+     */
+    clear: function() {},
+    /**
+     * Selects all rows
+     *
+     * @method selectAll
+     */
+    selectAll: function() {},
+    /**
+     * Gets selected row indexes
+     *
+     * @method selected
+     * @return {Array<Number>} The selected row indexes
+     */
+    selected: function() {},
+    /**
+     * Gets deselected row indexes
+     *
+     * @method deselected
+     * @return {Array<Number>} The deselected row indexes
+     */
+    deselected: function() {}
+  });
+</script>
+
+<!--
+Represents the sort configuration of a column.
+-->
+<dom-module id="SortOrder"></dom-module>
+<script>
+  Polymer({
+    is: 'SortOrder',
+    properties: {
+      /**
+       * The sort direction
+       * 
+       * @property direction
+       * @type {"asc"|"desc"}
+       */
+      direction:  String,
+      /**
+       * The index of column
+       */
+      column:  Number
+    }
+  });
+</script>
+
+<!--
+Represents a grid header/footer cell configuration.
+-->
+<dom-module id="StaticCell"></dom-module>
+<script>
+  Polymer({
+    is: 'StaticCell',
+    properties: {
+      /**
+       * The class name
+       */
+      className:  String,
+      /**
+       * The number of columns which this cell should span/group
+       */
+      colspan:  Number
+    }
+  });
+</script>

@@ -11,6 +11,12 @@
   }
 </style>
 
+<!-- Documentation of Objects used by v-grid -->
+<link rel='import' href='vaadin-grid-objects.html'>
+
+<!--
+Vaadin v-grid is a grid component fully configurable and customizable, plenty of features and with the mind set on performance.
+-->
 <dom-module id="v-grid">
 <style>
   /* Functional properties */
@@ -493,7 +499,7 @@
          * The row editor specific fields
          *
          * @property editor
-         * @type Object
+         * @type {Editor}
          */
         editor: {
           type: Object,
@@ -544,7 +550,7 @@
          * The data source object for the grid.
          *
          * @property data
-         * @type Object
+         * @type {Data}
          */
         data: {
           type: Object,
@@ -568,13 +574,6 @@
 
                 this._source = source;
               },
-              /**
-               * Sets the sort order to use. Setting this causes the Grid to re-sort
-               * itself. If set to null, the sort order is cleared.
-               *
-               * @attribute sortOrder
-               * @type array
-               */
               get sortOrder() {
                 return _this._grid.getSortOrder();
               },
@@ -594,7 +593,7 @@
          * Object for manipulating header rows
          *
          * @property header
-         * @type Object
+         * @type {Header}
          */
         header: {
           type: Object,
@@ -614,13 +613,6 @@
               setRowClassName: function(rowIndex, className) {
                 _this._grid.getStaticSection().setHeaderRowClassName(rowIndex, className);
               },
-              /**
-               * Sets the default row of the header. The default row is a special header
-               * row providing a user interface for sorting columns.
-               *
-               * @attribute rowIndex
-               * @type number
-               */
               get defaultRow() {
                 return _this._grid.getStaticSection().getDefaultHeader();
               },
@@ -644,7 +636,7 @@
          * Object for manipulating footer rows
          *
          * @property footer
-         * @type Object
+         * @type {Footer}
          */
         footer: {
           type: Object,
@@ -677,6 +669,12 @@
           }
         },
 
+        /**
+         * Selection model
+         *
+         * @property selection
+         * @type {Selection}
+         */
         selection: {
           type: Object,
           readOnly: true,
@@ -839,7 +837,7 @@
        * Adds new column
        *
        * @method addColumn
-       * @param {Object} column
+       * @param {Column} column
        * @param {string} beforeColumn
        */
       addColumn: function(column, beforeColumn) {
@@ -941,7 +939,7 @@
        * The columns array
        *
        * @property columns
-       * @type array
+       * @type {Array<Column>}
        */
       get columns() {
         return this._grid.getColumns();
