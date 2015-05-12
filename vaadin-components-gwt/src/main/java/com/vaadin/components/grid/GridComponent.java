@@ -96,6 +96,8 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
         redrawer = new Redraw(this);
         editor = new GridEditor(this);
         staticSection = new GridStaticSection(this);
+
+        grid.setStylePrimaryName("v-grid style-scope v-grid");
     }
 
     public GridEditor getEditor() {

@@ -39,7 +39,7 @@
         background: #fff;
       }
 
-      .v-grid {
+      :host > div {
         position: relative;
         outline: none;
       }
@@ -335,7 +335,7 @@
     is: "v-grid",
 
     hostAttributes: {
-      class: "style-scope v-grid"
+      class: "v-grid"
     },
 
     _grid: undefined,

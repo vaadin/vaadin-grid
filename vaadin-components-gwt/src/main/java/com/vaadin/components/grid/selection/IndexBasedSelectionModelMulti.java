@@ -1,9 +1,14 @@
 package com.vaadin.components.grid.selection;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.query.client.js.JsUtils;
+import com.google.gwt.user.client.DOM;
 import com.vaadin.client.data.DataSource.RowHandle;
+import com.vaadin.client.renderers.Renderer;
+import com.vaadin.client.widget.grid.RendererCellReference;
 import com.vaadin.client.widget.grid.events.SelectAllEvent;
+import com.vaadin.client.widget.grid.selection.MultiSelectionRenderer;
 import com.vaadin.client.widget.grid.selection.SelectionEvent;
 import com.vaadin.client.widget.grid.selection.SelectionModelMulti;
 import com.vaadin.client.widgets.Grid;
@@ -20,6 +25,7 @@ public class IndexBasedSelectionModelMulti extends SelectionModelMulti<Object>
     private Grid<Object> grid;
     private final JSArray<Double> selectedIndexes = JS.createArray();
     private boolean dataSizeUpdated = false;
+    private Renderer<Boolean> renderer;
 
     @Override
     protected boolean selectByHandle(RowHandle<Object> handle) {
@@ -41,6 +47,17 @@ public class IndexBasedSelectionModelMulti extends SelectionModelMulti<Object>
     public void setGrid(Grid<Object> grid) {
         this.grid = grid;
         super.setGrid(grid);
+
+        this.renderer = new MultiSelectionRenderer(grid) {
+            @Override
+            public void init(RendererCellReference cell) {
+                InputElement checkbox = InputElement.as(DOM.createInputCheck());
+                checkbox.addClassName("v-grid style-scope");
+                cell.getElement().removeAllChildren();
+                cell.getElement().appendChild(checkbox);
+            }
+        };
+
     }
 
     @Override
@@ -151,5 +168,10 @@ public class IndexBasedSelectionModelMulti extends SelectionModelMulti<Object>
 
     @Override
     public void commitBatchSelect() {
+    }
+
+    @Override
+    public Renderer<Boolean> getSelectionColumnRenderer() {
+        return renderer;
     }
 }

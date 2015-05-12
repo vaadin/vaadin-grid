@@ -50,8 +50,6 @@ public class Redraw extends Timer {
 
     @Override
     public void run() {
-        $("*", grid).addClass("style-scope", "v-grid");
-
         if (defaultRows == 0) {
             defaultRows = gridComponent.defaultHeightByRows;
             if (numberRows == 0) {
