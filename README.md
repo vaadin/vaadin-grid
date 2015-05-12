@@ -88,6 +88,14 @@ $ wct --local=chrome/firefox/safari
 $ serve
 $ open http://localhost:3000/vaadin-components/vaadin-grid/test/
 ```
+- Gather references for visual tests
+```shell
+$ gemini gather visual-test --screenshots-dir=visual-test
+```
+- Run visual tests
+```shell
+$ gemini test visual-test --screenshots-dir=visual-test
+```
 ### Development Protips
 
 - Compiling GWT using "pretty" output

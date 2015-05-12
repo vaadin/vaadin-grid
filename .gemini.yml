@@ -1,0 +1,45 @@
+rootUrl: http://replaced.when.running
+gridUrl: http://replaced.when.running
+
+plugins:
+  express:
+    port: 2000
+  sauce: true
+
+browsers:
+  chrome:
+    os: "Windows"
+    os_version: "8.1"
+    browserName: "chrome"
+    version: "42"
+  firefox:
+    os: "Windows"
+    os_version: "8.1"
+    browserName: "firefox"
+    version: "37"
+  ie:
+    os: "Windows"
+    os_version: "8.1"
+    browserName: "internet explorer"
+    version: "11"
+#  Sauce: OSX no worky before this is fixed: https://github.com/Saulis/gemini-express/issues/1
+#  safari:
+#    os: "OS X"
+#    os_version: "Yosemite"
+#    browserName: "safari"
+#    version: "8"
+#  Sauce: browser doesn't start properly...
+#  iphone:
+#    os: "OS X"
+#    os_version: "Yosemite"
+#    browserName: "iphone"
+#    version: "8.2"
+#    deviceName: "iPhone Simulator"
+#    device-orientation: "portrait"
+#  Sauce: executing JS seems to crash the emulator...
+#  android:
+#    platform: "Linux"
+#    browserName: "android"
+#    version: "5.1"
+#    deviceName: "Android Emulator"
+#    device-orientation: "portrait"
