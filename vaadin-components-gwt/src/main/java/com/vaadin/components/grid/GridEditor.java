@@ -157,6 +157,7 @@ public class GridEditor {
         grid.setEditorHandler(new EditorHandler<Object>() {
             @Override
             public void bind(EditorRequest<Object> request) {
+                gridComponent.redraw();
                 if (handler.getBind() != null) {
                     JS.exec(handler.getBind(),
                             createJSEditorRequest(request, false));

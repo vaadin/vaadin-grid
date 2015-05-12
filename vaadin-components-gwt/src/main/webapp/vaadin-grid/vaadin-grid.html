@@ -6,30 +6,29 @@
 <link rel='import' href='../bower_components/polymer/polymer.html'>
 
 <dom-module id="v-grid">
-  <template>
-    <style is="x-style">
-      v-grid {
+    <style>
+      :host {
         white-space: nowrap;
         -webkit-tap-highlight-color: transparent;
         -webkit-touch-callout: none;
         transition: opacity 200ms;
       }
 
-      v-grid.loading {
+      :host(.loading) {
         opacity: 0;
       }
 
-      v-grid,
-      v-grid::shadow .v-grid-tablewrapper > table,
-      v-grid::shadow .v-grid-body,
-      v-grid::shadow .v-grid-header,
-      v-grid::shadow .v-grid-footer,
-      v-grid::shadow .v-grid-row {
+      :host,
+      .v-grid-tablewrapper > table,
+      .v-grid-body,
+      .v-grid-header,
+      .v-grid-footer,
+      .v-grid-row {
         display: block;
         box-sizing: border-box;
       }
 
-      v-grid::shadow .v-grid-cell {
+      .v-grid-cell {
         display: -webkit-inline-flex;
         display: inline-flex;
         -webkit-align-items: center;
@@ -40,19 +39,19 @@
         background: #fff;
       }
 
-      v-grid::shadow .v-grid {
+      .v-grid {
         position: relative;
         outline: none;
       }
 
-      v-grid::shadow .v-grid-scroller {
+      .v-grid-scroller {
         position: absolute;
         z-index: 1;
         outline: none;
         box-sizing: border-box;
       }
 
-      v-grid::shadow .v-grid-scroller-horizontal {
+      .v-grid-scroller-horizontal {
         left: 0;
         right: 0;
         bottom: 0;
@@ -60,7 +59,7 @@
         -ms-overflow-y: hidden;
       }
 
-      v-grid::shadow .v-grid-scroller-vertical {
+      .v-grid-scroller-vertical {
         right: 0;
         top: 0;
         bottom: 0;
@@ -68,7 +67,7 @@
         -ms-overflow-x: hidden;
       }
 
-      v-grid::shadow .v-grid-tablewrapper {
+      .v-grid-tablewrapper {
         position: absolute;
         overflow: hidden;
         box-sizing: border-box;
@@ -76,49 +75,49 @@
         outline: none;
       }
 
-      v-grid::shadow .v-grid-header-deco,
-      v-grid::shadow .v-grid-footer-deco,
-      v-grid::shadow .v-grid-horizontal-scrollbar-deco {
+      .v-grid-header-deco,
+      .v-grid-footer-deco,
+      .v-grid-horizontal-scrollbar-deco {
         position: absolute;
         right: 0;
         box-sizing: border-box;
       }
 
-      v-grid::shadow .v-grid-header,
-      v-grid::shadow .v-grid-body,
-      v-grid::shadow .v-grid-footer {
+      .v-grid-header,
+      .v-grid-body,
+      .v-grid-footer {
         position: absolute;
         left: 0;
         z-index: 10;
       }
 
-      v-grid::shadow .v-grid-header,
-      v-grid::shadow .v-grid-header-deco {
+      .v-grid-header,
+      .v-grid-header-deco {
         top: 0;
       }
 
-      v-grid::shadow .v-grid-footer,
-      v-grid::shadow .v-grid-footer-deco {
+      .v-grid-footer,
+      .v-grid-footer-deco {
         bottom: 0;
       }
 
-      v-grid::shadow .v-grid-horizontal-scrollbar-deco {
+      .v-grid-horizontal-scrollbar-deco {
         left: 0;
         bottom: 0;
       }
 
-      v-grid::shadow .v-grid-body {
+      .v-grid-body {
         z-index: 0;
         top: 0;
       }
 
-      v-grid::shadow .v-grid-body .v-grid-row {
+      .v-grid-body .v-grid-row {
         position: absolute;
         top: 0;
         left: 0;
       }
 
-      v-grid::shadow .v-grid-editor {
+      .v-grid-editor {
         position: absolute;
         z-index: 20;
         overflow: hidden;
@@ -129,11 +128,11 @@
         margin-top: -1px;
       }
 
-      v-grid::shadow .v-grid-editor-cells > div {
+      .v-grid-editor-cells > div {
         display: inline-block;
       }
 
-      v-grid::shadow .v-grid-editor-footer {
+      .v-grid-editor-footer {
         display: -webkit-flex;
         display: flex;
         -webkit-align-items: center;
@@ -141,27 +140,27 @@
         box-sizing: border-box;
       }
 
-      v-grid::shadow .v-grid-editor-message {
+      .v-grid-editor-message {
         -webkit-flex: 1;
         flex: 1;
       }
 
-      v-grid {
+      :host {
         font: 400 100%/1.1 Roboto, sans-serif;
         color: rgba(0, 0, 0, 0.83);
       }
 
-      v-grid::shadow .v-grid-cell {
+      .v-grid-cell {
         padding: 0 16px;
         height: 32px;
       }
 
-      v-grid::shadow .v-grid-header,
-      v-grid::shadow .v-grid-header-deco {
+      .v-grid-header,
+      .v-grid-header-deco {
         box-shadow: 0px 3px 2px 0px rgba(0, 0, 0, 0.20);
       }
 
-      v-grid::shadow .v-grid-header th {
+      .v-grid-header th {
         background: #03A9F4;
         color: #fff;
         text-transform: uppercase;
@@ -172,18 +171,18 @@
         border-bottom: 1px solid rgba(255, 255, 255, 0.3);
       }
 
-      v-grid::shadow .v-grid-header-deco {
+      .v-grid-header-deco {
         background: #03A9F4;
         border-left: 1px solid rgba(255, 255, 255, 0.3);
         z-index: 1;
       }
 
-      v-grid::shadow .v-grid-header [class*="sort-"] {
+      .v-grid-header [class*="sort-"] {
         position: relative;
         padding-right: 32px;
       }
 
-      v-grid::shadow .v-grid-header [class*="sort-"]:after {
+      .v-grid-header [class*="sort-"]:after {
         position: absolute;
         font-family: sans-serif;
         content: "\25b2" " " attr(sort-order);
@@ -191,50 +190,50 @@
         font-size: 12px;
       }
 
-      v-grid::shadow .v-grid-header .sort-desc:after {
+      .v-grid-header .sort-desc:after {
         content: "\25bc" " " attr(sort-order);
       }
 
-      v-grid::shadow .v-grid-footer td,
-      v-grid::shadow .v-grid-footer-deco,
-      v-grid::shadow .v-grid-horizontal-scrollbar-deco {
+      .v-grid-footer td,
+      .v-grid-footer-deco,
+      .v-grid-horizontal-scrollbar-deco {
         background: #E6E6E6;
         font-size: 0.8125em;
         font-weight: 500;
         color: rgba(0, 0, 0, 0.56);
       }
 
-      v-grid::shadow .v-grid-footer td {
+      .v-grid-footer td {
         border-right: 1px solid rgba(255, 255, 255, 0.5);
         border-bottom: 1px solid rgba(255, 255, 255, 0.5);
       }
 
-      v-grid::shadow .v-grid-footer-deco {
+      .v-grid-footer-deco {
         border-left: 1px solid rgba(255, 255, 255, 0.5);
       }
 
-      v-grid::shadow .v-grid-horizontal-scrollbar-deco {
+      .v-grid-horizontal-scrollbar-deco {
         border-top: 1px solid rgba(255, 255, 255, 0.5);
       }
 
-      v-grid::shadow .v-grid-header th:last-child,
-      v-grid::shadow .v-grid-footer td:last-child {
+      .v-grid-header th:last-child,
+      .v-grid-footer td:last-child {
         border-right: 0;
       }
 
-      v-grid::shadow .v-grid-header tr:last-child th,
-      v-grid::shadow .v-grid-footer tr:last-child td {
+      .v-grid-header tr:last-child th,
+      .v-grid-footer tr:last-child td {
         border-bottom: 0;
       }
 
       /* TODO We need some other way of defining the frozen column divider than using the cell .*/
 
-      v-grid::shadow .v-grid-cell.frozen {
+      .v-grid-cell.frozen {
         overflow: visible;
         border-right: 0;
       }
 
-      v-grid::shadow .v-grid-cell.frozen:before {
+      .v-grid-cell.frozen:before {
         content: "";
         position: absolute;
         top: 0;
@@ -245,13 +244,13 @@
         background: linear-gradient(to right, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0));
       }
 
-      v-grid::shadow .v-grid-row-selected > td {
+      .v-grid-row-selected > td {
         background-color: #f2f2f2;
       }
 
       /* TODO should have proper scoping to the selection column */
 
-      v-grid::shadow .v-grid-cell:first-child input[type="checkbox"] {
+      .v-grid-cell:first-child input[type="checkbox"] {
         outline: none;
         text-align: center;
         width: 16px;
@@ -262,7 +261,7 @@
         -ms-appearance: none;
       }
 
-      v-grid::shadow .v-grid-cell:first-child input[type="checkbox"]:after {
+      .v-grid-cell:first-child input[type="checkbox"]:after {
         content: "-";
         display: inline-block;
         box-sizing: border-box;
@@ -276,23 +275,23 @@
         font-weight: bold;
       }
 
-      v-grid::shadow .v-grid-cell:first-child input[type="checkbox"]:checked:after {
+      .v-grid-cell:first-child input[type="checkbox"]:checked:after {
         content: url('data:image/svg+xml;utf8,<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg"><rect fill="#03A9F4" x="0" y="0" width="16" height="16" rx="2"></rect><path d="M2.30128328,8.66325539 L5.96894952,12.2453987 C6.3607616,12.6280744 6.98750215,12.6243779 7.37477302,12.237107 L13.9047732,5.70710678 C14.2952975,5.31658249 14.2952975,4.68341751 13.9047732,4.29289322 C13.5142489,3.90236893 12.881084,3.90236893 12.4905597,4.29289322 L5.96055946,10.8228934 L7.36638296,10.8146018 L3.69871672,7.2324585 C3.30361307,6.84656791 2.67049214,6.85403657 2.28460155,7.24914022 C1.89871096,7.64424388 1.90617962,8.2773648 2.30128328,8.66325539 L2.30128328,8.66325539 Z" fill="#FFFFFF"></path></svg>');
         background: #03A9F4;
         border: 0;
       }
 
-      v-grid::shadow .v-grid-cell:first-child input[type="checkbox"]:indeterminate:after {
+      .v-grid-cell:first-child input[type="checkbox"]:indeterminate:after {
         background: #03A9F4;
         color: #fff;
       }
 
-      v-grid::shadow .v-grid-editor {
+      .v-grid-editor {
         border: 1px solid rgba(0, 0, 0, 0.20);
         box-shadow: rgba(0, 0, 0, 0.2) 0px 8px 17px 0px, rgba(0, 0, 0, 0.188235) 0px 6px 20px 0px;
       }
 
-      v-grid::shadow .v-grid-editor input[type="text"], v-grid::shadow .v-grid-editor input:not([type]){
+      .v-grid-editor input[type="text"], .v-grid-editor input:not([type]){
         border: 0;
         background: transparent;
         font: inherit;
@@ -305,18 +304,18 @@
         height: 100%;
       }
 
-      v-grid::shadow .v-grid-editor input[type="text"]:focus {
+      .v-grid-editor input[type="text"]:focus {
         border-bottom: 2px solid #03A9F4;
       }
 
-      v-grid::shadow .v-grid-editor-cells > div {
+      .v-grid-editor-cells > div {
         margin-bottom: 10px;
         padding: 0 16px;
         height: 32px;
         box-sizing: border-box;
       }
 
-      v-grid::shadow .v-grid-editor-buttons button {
+      .v-grid-editor-buttons button {
         background: transparent;
         border: 0;
         padding: 0 16px;
@@ -327,12 +326,17 @@
         height: 42px;
       }
     </style>
+  <template>
   </template>
 </dom-module>
 
 <script>
   var prototype = {
     is: "v-grid",
+
+    hostAttributes: {
+      class: "style-scope v-grid"
+    },
 
     _grid: undefined,
 
