@@ -517,6 +517,7 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
 
             Element input = selectAllCheckBox.getElement()
                     .getFirstChildElement();
+            input.addClassName("v-grid style-scope");
             if (checked) {
                 JsUtils.prop(input, "indeterminate", !getSelectionModel()
                         .deselected(null, null, null).isEmpty());
