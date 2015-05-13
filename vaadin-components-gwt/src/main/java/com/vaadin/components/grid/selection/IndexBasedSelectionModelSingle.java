@@ -2,7 +2,6 @@ package com.vaadin.components.grid.selection;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.query.client.js.JsUtils;
-import com.vaadin.client.data.DataSource.RowHandle;
 import com.vaadin.client.widget.grid.selection.SelectionEvent;
 import com.vaadin.client.widget.grid.selection.SelectionModelSingle;
 import com.vaadin.client.widgets.Grid;
@@ -21,13 +20,13 @@ public class IndexBasedSelectionModelSingle extends
     private boolean dataSizeUpdated = false;
 
     @Override
-    protected boolean selectByHandle(RowHandle<Object> handle) {
-        return select(SelectionUtil.getRowIndex(grid, handle), true);
+    public boolean select(Object row) {
+        return select(SelectionUtil.getRowIndexByRow(grid, row), false);
     }
 
     @Override
-    protected boolean deselectByHandle(RowHandle<Object> handle) {
-        return deselect(SelectionUtil.getRowIndex(grid, handle), true);
+    public boolean deselect(Object row) {
+        return deselect(SelectionUtil.getRowIndexByRow(grid, row), false);
     }
 
     @Override
