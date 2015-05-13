@@ -514,17 +514,11 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
         if (selectAllCheckBox != null) {
             boolean checked = getSelectionModel().getMode() == IndexBasedSelectionMode.ALL;
             selectAllCheckBox.setValue(checked, false);
-
-            Element input = selectAllCheckBox.getElement()
-                    .getFirstChildElement();
-            input.addClassName("v-grid style-scope");
-            if (checked) {
-                JsUtils.prop(input, "indeterminate", !getSelectionModel()
-                        .deselected(null, null, null).isEmpty());
-            } else {
-                JsUtils.prop(input, "indeterminate", !getSelectionModel()
-                        .selected(null, null, null).isEmpty());
-            }
+            $(selectAllCheckBox).children().addClass("v-grid", "style-scope");
+            boolean indeterminate = !(checked ? getSelectionModel()
+                        .deselected(null, null, null) : getSelectionModel()
+                        .selected(null, null, null)).isEmpty();
+            $(selectAllCheckBox).find("input").prop("indeterminate", indeterminate);
         }
     }
 

@@ -288,18 +288,18 @@
         height: 42px;
       }
 
-      v-grid::shadow .gwt-CheckBox {
+      .v-grid-cell:first-child .gwt-CheckBox {
         display: inline-flex;
       }
-      v-grid::shadow input[type="checkbox"] {
+      .v-grid-cell:first-child input[type="checkbox"] {
         position: absolute;
         opacity: 0;
         left: -10px;
       }
-      v-grid::shadow input[type="checkbox"]:focus{
+      .v-grid-cell:first-child input[type="checkbox"]:focus{
           outline: none;
       }
-      v-grid::shadow input[type="checkbox"] + label {
+      .v-grid-cell:first-child input[type="checkbox"] + label {
         position: relative;
         left: 0px;
         cursor: pointer;
@@ -307,10 +307,10 @@
         height: 16px;
         display: block;
       }
-      v-grid::shadow input[type="checkbox"]:focus + label{
+      .v-grid-cell:first-child input[type="checkbox"]:focus + label{
           border: 1px dotted grey;
       }
-      v-grid::shadow input[type="checkbox"] + label:before {
+      .v-grid-cell:first-child input[type="checkbox"] + label:before {
         -webkit-transition: all 0.3s ease-in-out;
         -moz-transition: all 0.3s ease-in-out;
         -ms-transition: all 0.3s ease-in-out;
@@ -323,7 +323,7 @@
         height: 14px;
         border: 2px solid #e5e5e5;
       }
-      v-grid::shadow input[type="checkbox"]:checked + label:before {
+      .v-grid-cell:first-child input[type="checkbox"]:checked + label:before {
         -webkit-transform: rotate(-45deg);
         -moz-transform: rotate(-45deg);
         -ms-transform: rotate(-45deg);
@@ -334,7 +334,7 @@
         border-top-style: none;
         border-right-style: none;
       }
-      v-grid::shadow input[type="checkbox"]:indeterminate + label:before {
+      .v-grid-cell:first-child input[type="checkbox"]:indeterminate + label:before {
         -webkit-transform: rotate(0deg);
         -moz-transform: rotate(0deg);
         -ms-transform: rotate(0deg);

@@ -24,12 +24,13 @@ public abstract class IndexBasedSelectionModelMultiAbstract extends
                 InputElement checkbox = Document.get()
                         .createCheckInputElement();
                 LabelElement label = Document.get().createLabelElement();
-                checkbox.addClassName("v-grid style-scope");
                 checkbox.setId(DOM.createUniqueId());
                 label.setHtmlFor(checkbox.getId());
                 cell.getElement().removeAllChildren();
                 cell.getElement().appendChild(checkbox);
                 cell.getElement().appendChild(label);
+                checkbox.addClassName("v-grid style-scope");
+                label.addClassName("v-grid style-scope");
             }
         };
     }
