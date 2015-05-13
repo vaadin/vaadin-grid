@@ -5,7 +5,6 @@ import com.google.gwt.query.client.js.JsUtils;
 import com.vaadin.client.data.DataSource.RowHandle;
 import com.vaadin.client.widget.grid.events.SelectAllEvent;
 import com.vaadin.client.widget.grid.selection.SelectionEvent;
-import com.vaadin.client.widget.grid.selection.SelectionModelMulti;
 import com.vaadin.client.widgets.Grid;
 import com.vaadin.components.common.js.JS;
 import com.vaadin.components.common.js.JSArray;
@@ -14,8 +13,8 @@ import com.vaadin.components.common.js.JSValidate;
 /**
  * An {@link IndexBasedSelectionModel} for inverted multiselection.
  */
-public class IndexBasedSelectionModelAll extends SelectionModelMulti<Object>
-        implements IndexBasedSelectionModel {
+public class IndexBasedSelectionModelAll extends
+        IndexBasedSelectionModelMultiAbstract {
 
     private Grid<Object> grid;
     private final JSArray<Double> deselectedIndexes = JS.createArray();
@@ -92,8 +91,7 @@ public class IndexBasedSelectionModelAll extends SelectionModelMulti<Object>
     }
 
     @Override
-    public JSArray deselected(JavaScriptObject mapper, Integer from,
-            Integer to) {
+    public JSArray deselected(JavaScriptObject mapper, Integer from, Integer to) {
         JSArray result = JS.createArray();
         mapper = SelectionUtil.verifyMapper(mapper);
 
@@ -179,13 +177,5 @@ public class IndexBasedSelectionModelAll extends SelectionModelMulti<Object>
         if (changed) {
             grid.fireEvent(new SelectionEvent<Object>(grid, null, null, true));
         }
-    }
-
-    @Override
-    public void startBatchSelect() {
-    }
-
-    @Override
-    public void commitBatchSelect() {
     }
 }
