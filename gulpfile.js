@@ -5,7 +5,7 @@ var common = require('./tasks/common');
 require('web-component-tester').gulp.init(gulp);
 var args = require('yargs').argv;
 
-var version = '0.2.0';
+var version = '0.2.1';
 
 gulp.task('default', function() {
   console.log('\n  Use:\n    gulp <clean|gwt[ --gwt-pretty]|test[:validation:sauce]|stage|deploy[:bower:cdn:zip]>\n');

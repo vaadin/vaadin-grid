@@ -8,7 +8,7 @@ var replace = require('gulp-replace');
 
 var pwd = process.cwd();
 var gwtproject = 'vaadin-components-gwt';
-var version = '0.2.0';
+var version = '0.2.1';
 var major = version.replace(/(\d+\.\d+\.).*$/, '$1');
 var patch = ~~((new Date().getTime() / 1000 - 1420070400) / 60)
 var tag =  args.version || major + patch; // will rename the tag variable in a separate patch

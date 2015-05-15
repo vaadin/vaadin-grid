@@ -1,6 +1,6 @@
 {
   "name": "vaadin-components",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A set of high-quality Web Components with a customizable Sass based theme",
   "author": "Vaadin Ltd",
   "license": "Apache License 2.0",
