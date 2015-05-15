@@ -245,6 +245,8 @@
    specificity of the ".v-grid-header th" more than this, and we can't
    override the border */
   .v-grid-cell.frozen.frozen {
+    position: relative;
+    z-index: 1;
     border-right: 0;
     box-shadow: 1px 0 0 0 rgba(0,0,0,0.04),
                 2px 0 0 0 rgba(0,0,0,0.04),
