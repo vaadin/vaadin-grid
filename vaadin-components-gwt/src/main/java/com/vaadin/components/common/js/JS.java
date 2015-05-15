@@ -81,7 +81,7 @@ public abstract class JS {
         get: function() {
             if (getter) {
                 var val = getter();
-                return isNaN(val) ? val : + val;
+                return !isNaN(parseFloat(val)) && isFinite(val) ? + val : val;
             }
             return _value;
         },
