@@ -5,6 +5,12 @@
 <link rel='import' href='vaadin-grid-import.html'>
 <link rel='import' href='../bower_components/polymer/polymer.html'>
 
+<style>
+  v-grid > table {
+    display: none;
+  }
+</style>
+
 <dom-module id="v-grid">
 <style>
   /* Functional properties */
@@ -19,6 +25,11 @@
 
   :host(.loading) {
     opacity: 0;
+    height: 0;
+  }
+
+  v-grid:not(.loading) {
+    transition: opacity 200ms;
   }
 
   :host,
@@ -773,6 +784,13 @@
 
       attached: function() {
         this._grid.attached(this, Polymer.dom(this).querySelector("table"), Polymer.dom(this.root));
+
+        // hide until fully loaded
+        var classList = this.classList;
+        classList.add('loading');
+        this.then(function() {
+          classList.remove('loading');
+        });
       },
 
       /**
