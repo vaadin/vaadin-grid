@@ -14,6 +14,7 @@
     -webkit-tap-highlight-color: transparent;
     -webkit-touch-callout: none;
     transition: opacity 200ms;
+    cursor: default;
   }
 
   :host(.loading) {
@@ -117,6 +118,11 @@
     position: absolute;
     top: 0;
     left: 0;
+  }
+
+  :host(:not([selection-mode])) .v-grid-body,
+  :host([selection-mode="single"]) .v-grid-body {
+    cursor: pointer;
   }
 
   .v-grid-editor {
