@@ -57,10 +57,6 @@ $ npm install
 ```shell
 $ gulp gwt
 ```
-- Compile the theme
-```shell
-$ gulp css
-```
 ### Serving the components
 
 - Spin up a web server
@@ -71,7 +67,7 @@ $ serve
 - If you wish to import components using the development URL, remember to manually install [Polymer](https://github.com/Polymer/polymer) as a dependency to your application.
 ```shell
 $ cd your-application
-$ bower install polymer#0.8.0-rc4 --save
+$ bower install polymer#0.8.0-rc.7 --save
 ```
 ### Running automated tests
 

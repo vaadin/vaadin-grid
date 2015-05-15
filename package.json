@@ -14,8 +14,7 @@
     "gulp-json-editor": "latest",
     "gulp-replace": "latest",
     "yargs": "latest",
-    "web-component-tester": "2.2.6",
-    "sassdoc": "latest"
+    "web-component-tester": "2.2.6"
   },
   "devDependencies": {
     "chalk": "latest",

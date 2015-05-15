@@ -8,7 +8,7 @@ var args = require('yargs').argv;
 var version = '0.2.0';
 
 gulp.task('default', function() {
-  console.log('\n  Use:\n    gulp <clean|gwt[ --gwt-pretty]|css|sassdoc|test[:validation:sauce]|stage|deploy[:bower:cdn:zip]|all>\n');
+  console.log('\n  Use:\n    gulp <clean|gwt[ --gwt-pretty]|test[:validation:sauce]|stage|deploy[:bower:cdn:zip]>\n');
 });
 
 gulp.task('clean', ['clean:gwt', 'clean:bower', 'clean:cdn', 'clean:zip']);
