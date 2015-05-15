@@ -68,6 +68,6 @@ public class GridDomTableDataSource extends GridDataSource {
             GridComponent grid) {
         GridDomTableDataSource dataSource = new GridDomTableDataSource(table,
                 grid);
-        return dataSource.size() > 0 ? dataSource : null;
+        return dataSource;
     }
 }
