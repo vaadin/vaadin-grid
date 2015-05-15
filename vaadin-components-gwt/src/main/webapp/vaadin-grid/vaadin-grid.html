@@ -191,13 +191,19 @@
   .v-grid-header [class*="sort-"]:after {
     position: absolute;
     font-family: sans-serif;
-    content: "\25b2" " " attr(sort-order);
+    content: url(sort-asc.svg) " " attr(sort-order);
     right: 12px;
     font-size: 12px;
+    width: 11px;
+    height: 5px;
   }
 
   .v-grid-header .sort-desc:after {
-    content: "\25bc" " " attr(sort-order);
+    content: url(sort-desc.svg) " " attr(sort-order);
+  }
+
+  .v-grid-header [class*="sort-"][sort-order]:after {
+    right: 20px;
   }
 
   .v-grid-footer td,

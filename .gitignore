@@ -19,8 +19,9 @@ vaadin-components/**/*.css.map
 npm-debug.log
 vaadin-components-gwt/src/main/webapp/vaadin-grid.css
 vaadin-components-gwt/src/main/webapp/bower_components
-vaadin-components/vaadin-grid/bigdata.js
+vaadin-components/vaadin-grid/demodata.js
 vaadin-components/vaadin-grid/vaadin-grid.html
 vaadin-components/vaadin-grid/vaadin-grid-import.html
 vaadin-components/vaadin-grid/demo.html
 vaadin-components/vaadin-grid/test
+vaadin-components/vaadin-grid/*.svg
