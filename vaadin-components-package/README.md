@@ -26,7 +26,7 @@ $ bower install vaadin-components#0.2.1
 <head>
   ...
   <script src="https://cdn.vaadin.com/vaadin-components/0.2.1/webcomponentsjs/webcomponents-lite.js"></script>
-  <link href="https://cdn.vaadin.com/vaadin-components/0.2.1/vaadin-grid.html" rel="import">
+  <link href="https://cdn.vaadin.com/vaadin-components/0.2.1/vaadin-grid/vaadin-grid.html" rel="import">
   ...
 </head>
 ```
