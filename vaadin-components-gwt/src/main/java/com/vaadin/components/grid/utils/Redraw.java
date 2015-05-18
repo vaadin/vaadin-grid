@@ -3,9 +3,7 @@ package com.vaadin.components.grid.utils;
 import static com.google.gwt.query.client.GQuery.$;
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
-import com.google.gwt.query.client.plugins.Resize;
 import com.google.gwt.user.client.Timer;
 import com.vaadin.client.widgets.Grid;
 import com.vaadin.components.grid.GridComponent;
@@ -30,13 +28,6 @@ public class Redraw extends Timer {
 
     public void setContainer(Element containerElement) {
         container = $(containerElement);
-        // Use gQuery resize plugin to observe resize changes in the container.
-        container.as(Resize.Resize).resize(new Function() {
-            @Override
-            public void f() {
-                redraw(false);
-            }
-        });
     }
 
     public void redraw(boolean force) {

@@ -61,10 +61,6 @@
       return grid;
     });
 
-    var gridContainsText = function(_grid, text) {
-      return Polymer.dom(_grid.root).querySelector(".v-grid").innerHTML.indexOf(text) > -1;
-    };
-
     it('editor: enabled', function() {
       grid.columns[0].name = "name";
       grid.columns[1].name = "value";

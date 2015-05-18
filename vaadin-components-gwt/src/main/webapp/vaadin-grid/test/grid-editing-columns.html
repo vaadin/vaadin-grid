@@ -19,10 +19,6 @@
 <script>
   describe.feature('editing columns', function() {
 
-    var gridContainsText = function(_grid, text) {
-      return Polymer.dom(_grid.root).querySelector(".v-grid").innerHTML.indexOf(text) > -1;
-    };
-
     function getFirstCell() {
       return qLocal('.v-grid-body .v-grid-cell');
     }

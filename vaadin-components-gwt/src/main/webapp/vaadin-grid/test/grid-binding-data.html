@@ -19,10 +19,6 @@
 <script>
   describe.feature('binding data', function() {
 
-    var gridContainsText = function(_grid, text) {
-      return Polymer.dom(_grid.root).querySelector(".v-grid").innerHTML.indexOf(text) > -1;
-    };
-
     afterEach(function() {
       return grid.then(function() {
 

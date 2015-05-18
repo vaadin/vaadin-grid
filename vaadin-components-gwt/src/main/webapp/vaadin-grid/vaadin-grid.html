@@ -458,8 +458,28 @@
   :focus .v-grid-row-focused:before {
     opacity: 1;
   }
+
+  #measure {
+    width: 100% !important;
+    height: 100% !important;
+    z-index: -1 !important;
+    pointer-events: none !important;
+    position: relative !important;
+    float: left !important;
+    margin-left: -100% !important;
+    opacity: 0 !important;
+  }
+
+  #measureobject {
+    position: absolute !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
 </style>
   <template>
+    <div id="measure" class="v-grid">
+      <object id="measureobject" class="v-grid" type="text/html"></object>
+    </div>
   </template>
 </dom-module>
 
@@ -780,6 +800,20 @@
         }, 1);
 
         this.columns = _this._grid.getColumns();
+
+        this._bindResizeListener();
+
+      },
+
+      _bindResizeListener: function() {
+        var _this = this;
+        this.$.measureobject.addEventListener("load", function() {
+          this.contentDocument.defaultView.addEventListener('resize', function(e) {
+            _this._grid.redraw();
+          });
+          _this._grid.redraw();
+        });
+        this.$.measureobject.data = "about:blank";
       },
 
       attached: function() {

@@ -18,6 +18,10 @@ describe.feature = function(description, suite) {
   });
 };
 
+function gridContainsText(_grid, text) {
+  return Polymer.dom(_grid.root).querySelector(".v-grid-tablewrapper").parentElement.innerHTML.indexOf(text) > -1;
+}
+
 function waitUntil(check, exec, onTimeout) {
   var id = setInterval(function() {
     if (check()) {
