@@ -104,10 +104,6 @@ $ gulp watch:gwt
 ```shell
 $ mvn -f vaadin-components-gwt/pom.xml gwt:run
 ```
-- Adding source maps and file watcher for CSS development
-```shell
-$ gulp css --debug --watch
-```
 - Update your dependencies once in a while
 ```shell
 $ npm install
