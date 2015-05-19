@@ -5,7 +5,6 @@ import com.google.gwt.query.client.js.JsUtils;
 import com.vaadin.client.data.DataSource.RowHandle;
 import com.vaadin.client.widget.grid.events.SelectAllEvent;
 import com.vaadin.client.widget.grid.selection.SelectionEvent;
-import com.vaadin.client.widgets.Grid;
 import com.vaadin.components.common.js.JS;
 import com.vaadin.components.common.js.JSArray;
 import com.vaadin.components.common.js.JSValidate;
@@ -16,7 +15,6 @@ import com.vaadin.components.common.js.JSValidate;
 public class IndexBasedSelectionModelMulti extends
         IndexBasedSelectionModelMultiAbstract {
 
-    private Grid<Object> grid;
     private final JSArray<Double> selectedIndexes = JS.createArray();
     private boolean dataSizeUpdated = false;
 
@@ -37,21 +35,15 @@ public class IndexBasedSelectionModelMulti extends
     }
 
     @Override
-    public void setGrid(Grid<Object> grid) {
-        this.grid = grid;
-        super.setGrid(grid);
-
-    }
-
-    @Override
     public void reset() {
         selectedIndexes.setLength(0);
         grid.fireEvent(new SelectionEvent<Object>(grid, null, null, true));
     }
 
     @Override
-    public JSArray selected(JavaScriptObject mapper, Integer from, Integer to) {
-        JSArray result = JS.createArray();
+    public JSArray<Object> selected(JavaScriptObject mapper, Integer from,
+            Integer to) {
+        JSArray<Object> result = JS.createArray();
         mapper = SelectionUtil.verifyMapper(mapper);
 
         int fromIndex = JSValidate.Integer.val(from, 0, 0);
@@ -71,7 +63,7 @@ public class IndexBasedSelectionModelMulti extends
     }
 
     @Override
-    public JSArray<?> deselected(JavaScriptObject mapper, Integer from,
+    public JSArray<Object> deselected(JavaScriptObject mapper, Integer from,
             Integer to) {
         return JS.createArray();
     }

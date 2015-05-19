@@ -14,11 +14,14 @@ public abstract class IndexBasedSelectionModelMultiAbstract extends
         SelectionModelMulti<Object> implements IndexBasedSelectionModel {
 
     private Renderer<Boolean> renderer;
+    protected Grid<Object> grid;
+    private boolean allowSelection = true;
 
     @Override
     public void setGrid(Grid<Object> grid) {
         super.setGrid(grid);
-        this.renderer = new MultiSelectionRenderer(grid) {
+        this.grid = grid;
+        this.renderer = new MultiSelectionRenderer<Object>(grid) {
             @Override
             public void init(RendererCellReference cell) {
                 InputElement checkbox = Document.get()
@@ -32,10 +35,29 @@ public abstract class IndexBasedSelectionModelMultiAbstract extends
                 checkbox.addClassName("v-grid style-scope");
                 label.addClassName("v-grid style-scope");
             }
+
+            @Override
+            protected void setSelected(int logicalRow, boolean select) {
+                if (allowSelection) {
+                    super.setSelected(logicalRow, select);
+                    allowSelection = false;
+                }
+            }
         };
     }
 
+    @Override
     public Renderer<Boolean> getSelectionColumnRenderer() {
         return renderer;
+    }
+
+    @Override
+    public void startBatchSelect() {
+        allowSelection = true;
+    }
+
+    @Override
+    public void commitBatchSelect() {
+        allowSelection = true;
     }
 }

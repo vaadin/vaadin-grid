@@ -49,10 +49,6 @@
             <artifactId>observe-plugin</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.googlecode.gwtquery.plugins</groupId>
-            <artifactId>resize-plugin</artifactId>
-        </dependency>
-        <dependency>
           <groupId>com.vaadin</groupId>
           <artifactId>vaadin-widgets</artifactId>
         </dependency>

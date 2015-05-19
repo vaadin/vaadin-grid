@@ -503,9 +503,9 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
                         : IndexBasedSelectionMode.MULTI.name());
             }
             updateSelectAllCheckBox();
+            getSelectionModel().reset();
             updating = false;
             onSelect(null);
-            getSelectionModel().reset();
         }
     }
 
@@ -515,10 +515,11 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
             boolean checked = getSelectionModel().getMode() == IndexBasedSelectionMode.ALL;
             selectAllCheckBox.setValue(checked, false);
             $(selectAllCheckBox).children().addClass("v-grid", "style-scope");
-            boolean indeterminate = !(checked ? getSelectionModel()
-                        .deselected(null, null, null) : getSelectionModel()
-                        .selected(null, null, null)).isEmpty();
-            $(selectAllCheckBox).find("input").prop("indeterminate", indeterminate);
+            boolean indeterminate = !(checked ? getSelectionModel().deselected(
+                    null, null, null) : getSelectionModel().selected(null,
+                    null, null)).isEmpty();
+            $(selectAllCheckBox).find("input").prop("indeterminate",
+                    indeterminate);
         }
     }
 

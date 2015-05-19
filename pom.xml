@@ -174,12 +174,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.googlecode.gwtquery.plugins</groupId>
-            <artifactId>resize-plugin</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
           <groupId>com.vaadin</groupId>
           <artifactId>vaadin-widgets</artifactId>
           <version>${vaadin.version}</version>

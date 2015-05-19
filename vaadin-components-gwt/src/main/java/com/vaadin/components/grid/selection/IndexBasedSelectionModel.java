@@ -29,12 +29,12 @@ public interface IndexBasedSelectionModel extends SelectionModel<Object> {
     /**
      * Returns an array mapped from the selected indexes.
      */
-    JSArray<?> selected(JavaScriptObject mapper, Integer from, Integer to);
+    JSArray<Object> selected(JavaScriptObject mapper, Integer from, Integer to);
 
     /**
      * Returns an array mapped from the deselected indexes.
      */
-    JSArray<?> deselected(JavaScriptObject mapper, Integer from, Integer to);
+    JSArray<Object> deselected(JavaScriptObject mapper, Integer from, Integer to);
 
     /**
      * Returns the count of selected items.
