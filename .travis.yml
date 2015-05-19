@@ -1,0 +1,7 @@
+language: java
+install: npm install
+jdk: oraclejdk8
+script:
+  - gulp clean
+  - gulp gwt
+  - gulp test:validation
