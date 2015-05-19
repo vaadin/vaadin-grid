@@ -758,6 +758,7 @@
 
       ready: function() {
         var _this = this;
+
         // Set read-only properties
         ["data", "editor", "header", "footer"].forEach(function(prop) {
           Object.defineProperty(_this, prop, {
@@ -770,7 +771,6 @@
           }
         }, 1);
 
-        this._bindResizeListener();
       },
 
       _bindResizeListener: function() {
@@ -779,19 +779,26 @@
           this.contentDocument.defaultView.addEventListener('resize', function(e) {
             _this._grid.redraw();
           });
-          _this._grid.redraw();
+
+          _this.then(function() {
+            // ...because one then just isn't enough.
+            _this.then(function() {
+              _this._grid.redraw();
+            });
+          });
         });
         this.$.measureobject.data = "about:blank";
       },
 
       attached: function() {
-        this._grid.attached(this, Polymer.dom(this).querySelector("table"), Polymer.dom(this.root));
+        var _this = this;
+        _this._grid.attached(this, Polymer.dom(this).querySelector("table"), Polymer.dom(this.root));
+        this._bindResizeListener();
 
         // hide until fully loaded
-        var classList = this.classList;
-        classList.add('loading');
-        this.then(function() {
-          classList.remove('loading');
+        _this.toggleClass('loading', true);
+        _this.then(function() {
+          _this.toggleClass('loading', false);
         });
       },
 
