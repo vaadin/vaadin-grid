@@ -128,6 +128,23 @@
         });
       });
 
+      describe('grid with a fixed height (issue #8)', function() {
+        before(function() {
+          grid.columns[0].sortable = true;
+          grid.style.height = "500px";
+        });
+
+        it('should keep the correct height after sorting', function() {
+          var firstNonFrozenHeaderCell = qLocal.bind(this, ".v-grid-header .v-grid-cell:not(.frozen)");
+
+          firstNonFrozenHeaderCell().click();
+
+          return grid.then(function() {
+            expect(qaLocal('.v-grid')[2].style.height).to.equal('100%');
+          });
+        });
+      });
+
       describe('using scaled dimensions', function() {
         beforeEach(function() {
           grid.style.position = 'absolute';
