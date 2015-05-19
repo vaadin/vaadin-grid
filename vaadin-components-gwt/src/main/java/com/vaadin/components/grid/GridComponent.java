@@ -21,6 +21,9 @@ import com.google.gwt.dom.client.TableElement;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.js.JsUtils.JsFunction;
+import com.google.gwt.query.client.plugins.observe.Observe;
+import com.google.gwt.query.client.plugins.observe.Observe.Changes.ChangeRecord;
+import com.google.gwt.query.client.plugins.observe.Observe.ObserveListener;
 import com.google.gwt.query.client.plugins.widgets.WidgetsUtils;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
@@ -92,7 +95,7 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
         grid.addSortHandler(this);
         grid.addSelectAllHandler(this);
 
-        cols = JS.createArray();
+        setColumns(JS.createArray());
         redrawer = new Redraw(this);
         editor = new GridEditor(this);
         staticSection = new GridStaticSection(this);
@@ -335,8 +338,15 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
         if (array.length > 0) {
             grid.setColumnOrder(array);
         }
-        this.cols = columns;
 
+        if (cols != columns) {
+            Observe.unobserve(cols);
+            Observe.observe(cols = columns, new ObserveListener() {
+                public void onChange(List<ChangeRecord> changes) {
+                    setColumns(cols);
+                }
+            });
+        }
     }
 
     /**

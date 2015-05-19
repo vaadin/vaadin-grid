@@ -490,17 +490,6 @@
 
       properties: {
         /**
-         * The columns array
-         *
-         * @property columns
-         * @type array
-         */
-        columns: {
-          type: Array,
-          observer: 'columnsChanged'
-        },
-
-        /**
          * The row editor specific fields
          *
          * @property editor
@@ -730,22 +719,6 @@
         },
       },
 
-      columnsChanged: function() {
-//        var oldcols = this._grid.getColumns();
-        var newcols = this.columns;
-//        if (!oldcols._obs || newcols != oldcols) {
-//          if (oldcols._obs) {
-//            Polymer.ArrayObserve.unobserve(oldcols, oldcols._obs);
-//          }
-//          var _this = this;
-//          newcols._obs = function() {
-//            _this._grid.setColumns(newcols);
-//          };
-//          Polymer.ArrayObserve.observe(newcols, newcols._obs);
-//        }
-        this._grid.setColumns(newcols);
-      },
-
       attributeChanged: function(name, type, value) {
         switch (name) {
           case 'disabled':
@@ -797,10 +770,7 @@
           }
         }, 1);
 
-        this.columns = _this._grid.getColumns();
-
         this._bindResizeListener();
-
       },
 
       _bindResizeListener: function() {
@@ -968,6 +938,25 @@
         this._grid.setRows(rows);
         this.reflectPropertyToAttribute("rows");
       },
+      /**
+       * The columns array
+       *
+       * @property columns
+       * @type array
+       */
+      get columns() {
+        return this._grid.getColumns();
+      },
+      set columns(cols) {
+        this._grid.setColumns(cols);
+      },
+      /**
+       * Executes a callback when the grid has finished any pending work.
+       *
+       * @method them
+       * @param {Function} callback
+       * @return a chainable promise
+       */
       then: function(cb) {
         return this._grid.then(cb);
       }
