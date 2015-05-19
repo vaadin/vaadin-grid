@@ -770,7 +770,6 @@
           }
         }, 1);
 
-        this._bindResizeListener();
       },
 
       _bindResizeListener: function() {
@@ -779,19 +778,26 @@
           this.contentDocument.defaultView.addEventListener('resize', function(e) {
             _this._grid.redraw();
           });
-          _this._grid.redraw();
+
+          _this.then(function() {
+            // ...because one then just isn't enough.
+            _this.then(function() {
+              _this._grid.redraw();
+            });
+          });
         });
         this.$.measureobject.data = "about:blank";
       },
 
       attached: function() {
+        var _this = this;
         this._grid.attached(this, Polymer.dom(this).querySelector("table"), Polymer.dom(this.root));
+        this._bindResizeListener();
 
         // hide until fully loaded
-        var classList = this.classList;
-        classList.add('loading');
+        this.toggleClass('loading', true);
         this.then(function() {
-          classList.remove('loading');
+          _this.toggleClass('loading', false);
         });
       },
 
