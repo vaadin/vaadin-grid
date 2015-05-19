@@ -336,7 +336,7 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
   </li>
 
   <li>
-  <h3>Simplest possible polymer x-repeat from array of objects</h3>
+  <h3>Simplest possible polymer dom-repeat from array of objects</h3>
     <dom-module id="my-grid-with-template">
       <template>
         <v-grid selectionMode='multi'>
@@ -345,7 +345,7 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
             <col header-text="Value">
             <col header-text="Progress">
             <tbody>
-            <template is="x-repeat" items="{{mydata}}">
+            <template is="dom-repeat" items="{{mydata}}">
               <tr>
                 <td>{{item.name}}</td>
                 <td>{{item.value}}</td>
@@ -372,14 +372,14 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
   </li>
 
   <li>
-    <h3>Simplest possible polymer x-repeat from simple array</h3>
+    <h3>Simplest possible polymer dom-repeat from simple array</h3>
     <dom-module id="my-grid-with-template2">
       <template>
         <v-grid selectionMode='multi'>
           <table>
             <col header-text="Name">
             <tbody>
-            <template is="x-repeat" items="{{mydata}}">
+            <template is="dom-repeat" items="{{mydata}}">
               <tr>
                 <td>{{item}}</td>
               </tr>
@@ -404,7 +404,7 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
   </li>
 
   <li>
-  <h3>Simplest possible polymer x-repeat from array of objects and selection multiple</h3>
+  <h3>Simplest possible polymer dom-repeat from array of objects and selection multiple</h3>
     <dom-module id="my-grid-with-template-multi">
       <template>
         <v-grid selectionMode='multi'>
@@ -413,7 +413,7 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
             <col header-text="Value">
             <col header-text="Progress">
             <tbody>
-            <template is="x-repeat" items="{{mydata}}">
+            <template is="dom-repeat" items="{{mydata}}">
               <tr>
                 <td>{{item.name}}</td>
                 <td>{{item.value}}</td>

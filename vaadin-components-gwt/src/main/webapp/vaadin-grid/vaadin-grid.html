@@ -480,6 +480,7 @@
     <div id="measure" class="v-grid">
       <object id="measureobject" class="v-grid" type="text/html"></object>
     </div>
+    <content></content>
   </template>
 </dom-module>
 
@@ -733,18 +734,18 @@
       },
 
       columnsChanged: function() {
-        var oldcols = this._grid.getColumns();
+//        var oldcols = this._grid.getColumns();
         var newcols = this.columns;
-        if (!oldcols._obs || newcols != oldcols) {
-          if (oldcols._obs) {
-            Polymer.ArrayObserve.unobserve(oldcols, oldcols._obs);
-          }
-          var _this = this;
-          newcols._obs = function() {
-            _this._grid.setColumns(newcols);
-          };
-          Polymer.ArrayObserve.observe(newcols, newcols._obs);
-        }
+//        if (!oldcols._obs || newcols != oldcols) {
+//          if (oldcols._obs) {
+//            Polymer.ArrayObserve.unobserve(oldcols, oldcols._obs);
+//          }
+//          var _this = this;
+//          newcols._obs = function() {
+//            _this._grid.setColumns(newcols);
+//          };
+//          Polymer.ArrayObserve.observe(newcols, newcols._obs);
+//        }
         this._grid.setColumns(newcols);
       },
 
