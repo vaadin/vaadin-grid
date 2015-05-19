@@ -68,7 +68,12 @@ public final class GridColumn extends Column<Object, Object> {
                 v -> setMaximumWidth(JS.isUndefinedOrNull(v) ? GridConstants.DEFAULT_COLUMN_WIDTH_PX
                         : (double) v));
 
-        bind("valueGenerator", v -> gridComponent.getDataSource().refresh());
+        bind("valueGenerator", v -> {
+            boolean wasUpdating = gridComponent.updating;
+            gridComponent.updating = true;
+            gridComponent.getDataSource().refresh();
+            gridComponent.updating = wasUpdating;
+        });
     }
 
     private void bind(String propertyName, final Setter setter) {

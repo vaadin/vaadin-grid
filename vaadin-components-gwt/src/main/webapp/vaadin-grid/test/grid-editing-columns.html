@@ -141,6 +141,15 @@
       }, done, done);
     });
 
+    it('setting valueGenerator shouldnt fire select', function() {
+      var selectListener = sinon.spy();
+      grid.addEventListener('select', selectListener);
+
+      grid.selection.mode = "multi";
+      grid.columns[0].valueGenerator = function() { return 1; };
+      expect(selectListener.notCalled).to.be.true;
+    });
+
     it('should not update the generated value', function(done) {
       grid.columns[0].valueGenerator = function(dataItem) {
         return Math.random();
