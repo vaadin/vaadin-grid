@@ -210,7 +210,7 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
     }
 
     public void setFrozenColumns(int frozenColumn) {
-        grid.setFrozenColumnCount(frozenColumn);
+        grid.setFrozenColumnCount(JSValidate.Integer.val(frozenColumn, 0, 0));
     }
 
     public void scrollToRow(int index, String scrollDestination) {

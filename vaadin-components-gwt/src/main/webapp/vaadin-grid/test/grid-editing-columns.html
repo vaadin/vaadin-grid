@@ -298,6 +298,14 @@
 
     });
 
+    it('frozen column declarative', function() {
+      grid.setAttribute("frozen-columns", "1");
+
+      return grid.then(function() {
+        expect(function(){grid.selection.mode = "multi";}).not.to.throw();
+      });
+    });
+
     it('frozen column: unfreeze selection column', function() {
       grid.selection.mode = "multi";
       assert.ok(qLocal(".frozen"));

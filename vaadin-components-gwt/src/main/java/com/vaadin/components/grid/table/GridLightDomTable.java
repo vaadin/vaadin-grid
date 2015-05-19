@@ -158,7 +158,12 @@ public class GridLightDomTable implements MutationListener {
         gridComponent.setColumns(jsColumns);
 
         if (!sortOrders.isEmpty()) {
-            gridComponent.setSortOrder(sortOrders);
+            gridComponent.then(JsUtils.wrapFunction(new Function() {
+                @Override
+                public void f() {
+                    gridComponent.setSortOrder(sortOrders);
+                };
+            }));
         }
     }
 
