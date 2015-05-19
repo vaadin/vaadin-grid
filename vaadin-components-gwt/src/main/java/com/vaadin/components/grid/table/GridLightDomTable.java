@@ -240,6 +240,6 @@ public class GridLightDomTable implements MutationListener {
     @Override
     public void onMutation(List<MutationRecord> mutations) {
         parseDom();
-        gridComponent.refresh();
+        gridComponent.forceRefresh();
     }
 }

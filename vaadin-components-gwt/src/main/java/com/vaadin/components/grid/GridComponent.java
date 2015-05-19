@@ -288,14 +288,18 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
         return (IndexBasedSelectionModel) grid.getSelectionModel();
     }
 
-    public void refresh() {
+    public void forceRefresh() {
+        refresh(true);
+    }
+
+    public void refresh(boolean forceRedraw) {
         updating = true;
         IndexBasedSelectionModel selectionModel = getSelectionModel();
         final JSArray<?> a = selectionModel.selected(null, null, null);
         if (getDataSource() != null) {
             getDataSource().refresh();
         }
-        redraw(true);
+        redraw(forceRedraw);
         if (a.length() > 0) {
             $(container).delay(5, new Function() {
                 @Override
@@ -382,7 +386,7 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
 
     @Override
     public void onBrowserEvent(Event event) {
-        refresh();
+        forceRefresh();
     }
 
     public void setRowClassGenerator(JavaScriptObject generator) {
@@ -439,7 +443,7 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
             jsSort.push(sortOrder);
         }
         $(container).trigger("sort");
-        refresh();
+        refresh(false);
     }
 
     public boolean isWorkPending() {
