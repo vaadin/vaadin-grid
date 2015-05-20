@@ -191,8 +191,7 @@ public class GridEditor {
                             createJSEditorRequest(request, true));
                     gridComponent.refresh();
                 } else {
-                    request.success();
-                    console.log("No editor save method set. You must define 'grid.editor.handler.save = function(req){}'.");
+                    request.failure("'grid.editor.handler.save' is undefined. Please refer to the documentation for more information.", null);
                 }
             }
 
