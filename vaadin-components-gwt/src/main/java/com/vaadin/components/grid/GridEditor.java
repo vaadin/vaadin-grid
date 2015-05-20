@@ -170,6 +170,7 @@ public class GridEditor {
                     }
                     request.success();
                 }
+                clearTextSelection();
             }
 
             @Override
@@ -199,6 +200,15 @@ public class GridEditor {
             public Widget getWidget(Column<?, Object> column) {
                 return getEditor(((GridColumn) column).getJsColumn());
             }
+
+            private native void clearTextSelection() /*-{
+              if($doc.selection && $doc.selection.empty) {
+                document.selection.empty();
+              } else if($wnd.getSelection) {
+                var sel = $wnd.getSelection();
+                sel.removeAllRanges();
+              }
+            }-*/;
         });
     }
 
