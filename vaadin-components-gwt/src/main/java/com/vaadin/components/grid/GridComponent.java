@@ -439,7 +439,15 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
             jsSort.push(sortOrder);
         }
         $(container).trigger("sort");
-        refresh();
+
+        clearDataSourceCache();
+    }
+
+    private void clearDataSourceCache() {
+        GridDataSource dataSource = getDataSource();
+        if(dataSource != null) {
+            dataSource.clearCache(null);
+        }
     }
 
     public boolean isWorkPending() {
