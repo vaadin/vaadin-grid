@@ -383,6 +383,28 @@
       });
     });
 
+    it('should size columns with width property', function() {
+      grid.columns[0].width = 100;
+      return grid.then(function(){
+        expect(qLocal(".v-grid-cell").offsetWidth).to.eql(100);
+      });
+    });
+
+    it('should size columns with minWidth property', function() {
+      grid.columns[0].width = 100;
+      grid.columns[0].minWidth = 150;
+      return grid.then(function(){
+        expect(qLocal(".v-grid-cell").offsetWidth).to.eql(150);
+      });
+    });
+
+    it('should size columns with maxWidth property', function() {
+      grid.columns[0].maxWidth = 100;
+      return grid.then(function(){
+        expect(qLocal(".v-grid-cell").offsetWidth).to.eql(100);
+      });
+    });
+
   });
 </script>
 

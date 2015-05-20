@@ -65,7 +65,7 @@ public final class GridColumn extends Column<Object, Object> {
                 v -> setMaximumWidth(JS.isUndefinedOrNull(v) ? GridConstants.DEFAULT_MAX_WIDTH
                         : (double) v));
         bind("width",
-                v -> setMaximumWidth(JS.isUndefinedOrNull(v) ? GridConstants.DEFAULT_COLUMN_WIDTH_PX
+                v -> setWidth(JS.isUndefinedOrNull(v) ? GridConstants.DEFAULT_COLUMN_WIDTH_PX
                         : (double) v));
 
         bind("valueGenerator", v -> {
