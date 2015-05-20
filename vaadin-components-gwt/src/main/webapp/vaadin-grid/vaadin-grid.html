@@ -497,6 +497,7 @@
          */
         editor: {
           type: Object,
+          readOnly: true,
           value: function() {
             var _this = this;
             return {
@@ -547,6 +548,7 @@
          */
         data: {
           type: Object,
+          readOnly: true,
           value: function() {
             var _this = this;
             return {
@@ -596,6 +598,7 @@
          */
         header: {
           type: Object,
+          readOnly: true,
           value: function() {
             var _this = this;
             return {
@@ -645,6 +648,7 @@
          */
         footer: {
           type: Object,
+          readOnly: true,
           value: function() {
             var _this = this;
             return {
@@ -675,6 +679,7 @@
 
         selection: {
           type: Object,
+          readOnly: true,
           value: function() {
             var _this = this;
             return {
@@ -758,12 +763,6 @@
 
       ready: function() {
         var _this = this;
-        // Set read-only properties
-        ["data", "editor", "header", "footer"].forEach(function(prop) {
-          Object.defineProperty(_this, prop, {
-            writable: false
-          });
-        });
         setTimeout(function() {
           for (var i = 0; i < _this.attributes.length; i++) {
             _this.attributeChanged(_this.attributes[i].nodeName, null, _this.attributes[i].nodeValue);
