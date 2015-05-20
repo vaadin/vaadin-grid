@@ -342,6 +342,7 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
         if (cols != columns) {
             Observe.unobserve(cols);
             Observe.observe(cols = columns, new ObserveListener() {
+                @Override
                 public void onChange(List<ChangeRecord> changes) {
                     setColumns(cols);
                 }
@@ -369,6 +370,7 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
             updating = true;
             IndexBasedSelectionMode mode = JSEnums.Selection.val(selectionMode);
             grid.setSelectionModel(mode.createModel());
+            $(container).trigger("selectionmodechange");
             getSelectionModel().reset();
             updateSelectAllCheckBox();
             redraw();
@@ -515,6 +517,7 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
             updating = true;
             if (event.getSelectionModel() != getSelectionModel()) {
                 grid.setSelectionModel(event.getSelectionModel());
+                $(container).trigger("selectionmodechange");
             } else {
                 boolean all = getSelectAllCheckBox().getValue();
                 setSelectionMode(all ? IndexBasedSelectionMode.ALL.name()

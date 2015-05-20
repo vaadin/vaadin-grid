@@ -745,10 +745,13 @@ Vaadin v-grid is a grid component fully configurable and customizable, plenty of
         /**
          * @event select
          */
-        'select': 'onSelect'
+        /**
+         * @event selectionmodechange
+         */
+        'selectionmodechange': 'onSelectionModeChange'
       },
 
-      onSelect: function() {
+      onSelectionModeChange: function() {
         this.serializeValueToAttribute(this.selection.mode, "selection-mode");
       },
 
