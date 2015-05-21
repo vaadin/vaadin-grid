@@ -7,9 +7,6 @@
 
     <source path="" />
 
-    <add-linker name="xsiframe"/>
-    <define-linker name="importlinker" class="com.vaadin.components.ImportLinker" />
-    <add-linker name="importlinker" />
     <collapse-all-properties value="true" />
 
     <set-property name="user.agent" value="safari,gecko1_8,ie10" />

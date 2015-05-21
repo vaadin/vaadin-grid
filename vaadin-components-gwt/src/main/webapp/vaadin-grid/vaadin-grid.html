@@ -2,8 +2,8 @@
 @element v-grid
 -->
 
-<link rel='import' href='vaadin-grid-import.html'>
 <link rel='import' href='../bower_components/polymer/polymer.html'>
+<script type="text/javascript" language="javascript" src="VaadinGridImport.nocache.js"></script>
 
 <style>
   v-grid > table {
@@ -391,7 +391,6 @@ Vaadin v-grid is a grid component fully configurable and customizable, plenty of
 </dom-module>
 
 <script>
-  function loadComponent() {
     VGrid = Polymer({
       is: "v-grid",
 
@@ -803,20 +802,4 @@ Vaadin v-grid is a grid component fully configurable and customizable, plenty of
         return this._grid.then(callback);
       }
     }); // End Polymer prototype
-
-    // Give some time to gwt async processes to run (we need this in FF)
-    setTimeout(function() {
-      vaadin._v_grid_ready = true;
-      document.dispatchEvent(new CustomEvent('v-grid-ready'));
-    }, 5);
-
-  } // End loadComponent function
-
-  if (window.vaadin && window.vaadin.GridComponent) {
-    loadComponent();
-  } else {
-    document.addEventListener("v-grid-loaded", function() {
-      loadComponent();
-    });
-  }
 </script>

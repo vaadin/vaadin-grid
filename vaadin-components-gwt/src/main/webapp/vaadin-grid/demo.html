@@ -6,7 +6,7 @@
 <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
 <script src="../VaadinGrid/VaadinGrid.nocache.js"></script>
 
-<link href="vaadin-grid.html" rel="import">
+<script src="sdm.js"></script>
 <script src="demodata.js"></script>
 <style>
 td.red, th.red, .red th, .red td, td.foot1, .foot1 td {
@@ -23,16 +23,28 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
 </head>
 <body>
   <script>
-    function waitUntilGridReady(id, cb) {
-      if (window.vaadin && vaadin._v_grid_ready) {
-        cb(document.getElementById(id));
+    var vGridReady = false;
+
+    window.addEventListener("WebComponentsReady", function(){
+      if ("VGrid" in window) {
+        // Good to go
+        vGridReady = true;
       } else {
-        document.addEventListener("v-grid-ready", function(){
-          cb(document.getElementById(id));
+        // We're on SDM so extra attention is needed
+        handleSDMinit(function(){
+          vGridReady = true;
         });
       }
+    });
+
+    function execute(id, cb) {
+      if (vGridReady) {
+        cb(document.getElementById(id));
+      } else {
+        setTimeout(execute, 200, id, cb);
+      }
     }
-    </script>
+  </script>
 
 <ol>
   <li>
@@ -95,7 +107,7 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
   <script>
       // We need to wait until the WC has been initialized
       // It could take a long if we are compiling SDM
-      waitUntilGridReady("myGrid", function(grid) {
+      execute("myGrid", function(grid) {
         var data = [ [ "Grid", 10000, 0.8 ], [ "Vaadin X", 999999, 0.01 ],
                  [ "designer", 999999, 0.01 ] ];
 
@@ -118,7 +130,7 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
   </v-grid>
 
   <script>
-      waitUntilGridReady("myBigGrid", function(grid) {
+      execute("myBigGrid", function(grid) {
 
         grid.data.source = function(req) {
           setTimeout(function() {
@@ -141,7 +153,7 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
   </table>
   </v-grid>
   <script>
-      waitUntilGridReady("myFormatGrid", function(grid) {
+      execute("myFormatGrid", function(grid) {
         var data = [ [ "Grid", 10000, 0.8 ], [ "Vaadin X", 999999, 0.01 ], ];
 
         grid.data.source = function(req) {
@@ -180,7 +192,7 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
     var data = [{ name: "Grid", value: 10000, progress: 0.8 },
       { name: "Vaadin X", value: 999999, progress: 0.01 }];
 
-      waitUntilGridReady("myMapGrid", function(grid) {
+      execute("myMapGrid", function(grid) {
         grid.data.source = function(req) {
           req.success(data.slice(req.index, req.index + req.count), data.length);
         };
@@ -226,7 +238,7 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
     </table>
   </v-grid>
   <script>
-    waitUntilGridReady("with-single-column", function(grid) {
+    execute("with-single-column", function(grid) {
       var data = [
         "Grid",
         "Vaadin X"
@@ -301,7 +313,7 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
     <div id="deselectedlabel" style="overflow: hidden; text-overflow: ellipsis;"></div>
     <div id="selectedlabel" style="overflow: hidden; text-overflow: ellipsis;"></div>
     <script>
-      waitUntilGridReady("myMultiSelGrid", function(grid) {
+      execute("myMultiSelGrid", function(grid) {
         grid.data.source = myBigData;
 
         var updateFields = function(event) {
@@ -358,6 +370,7 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
       </template>
     </dom-module>
     <script>
+    execute("my-grid-with-template", function(grid) {
       Polymer({
         is: 'my-grid-with-template',
         ready: function() {
@@ -367,6 +380,7 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
           ];
         }
       }) ;
+    });
     </script>
     <my-grid-with-template></my-grid-with-template>
   </li>
@@ -390,6 +404,7 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
       </template>
     </dom-module>
     <script>
+    execute("my-grid-with-template2", function(grid) {
       Polymer({
         is: 'my-grid-with-template2',
         ready: function() {
@@ -399,6 +414,7 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
           ];
         }
       }) ;
+    });
     </script>
     <my-grid-with-template2></my-grid-with-template2>
   </li>
@@ -426,6 +442,7 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
       </template>
     </dom-module>
     <script>
+    execute("my-grid-with-template-multi", function(grid) {
       Polymer({
         is: 'my-grid-with-template-multi',
         ready: function() {
@@ -434,7 +451,8 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
             {"name": "Vaadin X", "value": "999999", "progress": 0.8}
           ];
         }
-      }) ;
+      });
+    });
     </script>
     <my-grid-with-template-multi></my-grid-with-template-multi>
   </li>
@@ -452,7 +470,7 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
     Sort: <span id="mySortLabel"></span>
 
     <script>
-        waitUntilGridReady("mySortGrid", function(grid) {
+        execute("mySortGrid", function(grid) {
           var data = [ [ "Gridddd", 10000, 0.8 ], [ "Vaadin X", 999999, 0.01 ],
                        [ "designer", 43256, 0.01 ], [ "TK", 1967, 0.05 ] ];
 
@@ -575,7 +593,7 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
     <button id="headervisibility">Toggle header visibility</button>
     <button id="footervisibility">Toggle footer visibility</button>
     <script>
-      waitUntilGridReady("staticsections", function(grid) {
+      execute("staticsections", function(grid) {
         // Remove the header row
         grid.header.removeRow(0);
 

@@ -1,8 +1,5 @@
 package com.vaadin.components.grid;
 
-import static com.google.gwt.query.client.GQuery.$;
-import static com.google.gwt.query.client.GQuery.document;
-
 import com.google.gwt.core.client.EntryPoint;
 
 /**
@@ -10,7 +7,7 @@ import com.google.gwt.core.client.EntryPoint;
  */
 public class GridEntryPoint implements EntryPoint {
 
+    @Override
     public void onModuleLoad() {
-        $(document).trigger("v-grid-loaded");
     }
 }

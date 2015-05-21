@@ -16,7 +16,9 @@ import com.google.gwt.core.client.js.JsExport;
 import com.google.gwt.core.client.js.JsNamespace;
 import com.google.gwt.core.client.js.JsNoExport;
 import com.google.gwt.core.client.js.JsType;
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.TableElement;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.js.JsUtils;
@@ -247,8 +249,14 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
     public void onSelect(SelectionEvent<Object> ev) {
         updateSelectAllCheckBox();
         if (!updating) {
-            $(container).trigger("select");
+            triggerEvent("select");
         }
+    }
+
+    private void triggerEvent(String eventName) {
+        NativeEvent event = Document.get().createHtmlEvent(eventName, false,
+                true);
+        container.dispatchEvent(event);
     }
 
     public void setColumnWidth(int column, int widht) {
@@ -370,7 +378,7 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
             updating = true;
             IndexBasedSelectionMode mode = JSEnums.Selection.val(selectionMode);
             grid.setSelectionModel(mode.createModel());
-            $(container).trigger("selectionmodechange");
+            triggerEvent("selectionmodechange");
             getSelectionModel().reset();
             updateSelectAllCheckBox();
             redraw();
@@ -440,14 +448,14 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
             sortOrder.setDirection(JSEnums.Direction.val(order.getDirection()));
             jsSort.push(sortOrder);
         }
-        $(container).trigger("sort");
+        triggerEvent("sort");
 
         clearDataSourceCache();
     }
 
     private void clearDataSourceCache() {
         GridDataSource dataSource = getDataSource();
-        if(dataSource != null) {
+        if (dataSource != null) {
             dataSource.clearCache(null);
         }
     }
@@ -517,7 +525,7 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
             updating = true;
             if (event.getSelectionModel() != getSelectionModel()) {
                 grid.setSelectionModel(event.getSelectionModel());
-                $(container).trigger("selectionmodechange");
+                triggerEvent("selectionmodechange");
             } else {
                 boolean all = getSelectAllCheckBox().getValue();
                 setSelectionMode(all ? IndexBasedSelectionMode.ALL.name()

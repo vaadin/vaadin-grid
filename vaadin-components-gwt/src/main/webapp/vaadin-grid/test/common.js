@@ -1,4 +1,15 @@
-var grid, wrapper;
+var grid, wrapper, vGridReady = false;
+
+window.addEventListener("WebComponentsReady", function(){
+  if ("VGrid" in window) {
+    vGridReady = true;
+  } else {
+    webComponentHref = "../vaadin-grid.html";
+    handleSDMinit(function(){
+      vGridReady = true;
+    });
+  }
+});
 
 describe.feature = function(description, suite) {
   describe(description, function() {
@@ -6,7 +17,7 @@ describe.feature = function(description, suite) {
       initializeGrid();
 
       waitUntil(function() {
-        return grid.then;
+        return vGridReady && grid.then;
       }, done, done);
     });
 

@@ -14,10 +14,19 @@
 
     <properties>
         <git.bower.repo>git@github.com:vaadin-bower</git.bower.repo>
-        <module.names>VaadinComponents VaadinGrid VaadinSlider VaadinProgressBar Valo Angular</module.names>
+        <module.name>com.vaadin.components.grid.VaadinGrid</module.name>
         <modulePathPrefix></modulePathPrefix>
         <gwt.loglevel>WARN</gwt.loglevel>
     </properties>
+    
+    <profiles>
+        <profile>
+            <id>compile</id>
+            <properties>
+                <module.name>com.vaadin.components.grid.VaadinGridImport</module.name>
+            </properties>
+        </profile>
+    </profiles>
 
     <dependencies>
         <dependency>

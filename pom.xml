@@ -227,6 +227,7 @@
                     <runTarget>/</runTarget>
                     <gen>${project.build.directory}/gen</gen>
                     <workDir>target</workDir>
+                    <module>${module.name}</module>
                 </configuration>
                 <executions>
                     <execution>

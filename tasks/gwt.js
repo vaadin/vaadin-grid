@@ -40,7 +40,7 @@ gulp.task('gwt:compile', ['gwt:clean-maven'], function(done) {
   gutil.log('Updating Maven dependencies ...');
   system('mvn compile -q -am -pl ' + gwtproject, function() {
     gutil.log('Compiling GWT components ...');
-    var command = 'mvn package -q -am -pl ' + gwtproject + (args.gwtPretty ? ' -Ppretty' : '');
+    var command = 'mvn package -q -am -pl ' + gwtproject + (args.gwtPretty ? ' -Ppretty' : '') + " -P compile";
     system(command, function() {
       gutil.log('GWT components compilation succeeded.')
 
@@ -84,24 +84,19 @@ gulp.task('clean:gwt', ['gwt:clean-maven'], function() {
 
 gulp.task('gwt:copy-files', ['gwt:compile', 'clean:gwt'], function() {
   return gulp.src(webComponentDir + '**/*')
-          .pipe(replace(new RegExp('^.*script.*' + moduleName + '.*$','mg'), ''))
+          .pipe(replace(new RegExp('^.*script.*\.\./\.\..*' + moduleName + '.*'+ moduleName +'.*$','mg'), '  <link rel="import" href="../'+component+'.html">'))
+          .pipe(replace(new RegExp('^.*script.*\.\..*' + moduleName + '.*'+ moduleName +'.*$','mg'), '  <link rel="import" href="'+component+'.html">'))
           .pipe(replace(/(src|href)=("|')([\.\.\/]*)\/bower_components\//mg, '$1=$2$3/../bower_components/'))
           .pipe(gulp.dest(componentDir));
 });
 
 gulp.task('gwt:copy-imports', ['gwt:compile', 'clean:gwt'], function() {
   var warDir = 'vaadin-components-gwt/target/vaadin-components-gwt-' + version + '/';
-  var modulePath = warDir + moduleName + '/';
-
-  return gulp.src(modulePath + moduleName +  '-import.html')
-    .pipe(rename(function (path) {
-      path.basename = "vaadin-grid-import";
-    }))
-    .pipe(gulp.dest(componentDir));
+  var modulePath = warDir + moduleName + 'Import/';
+  return gulp.src(modulePath + moduleName +'Import.nocache.js').pipe(gulp.dest(componentDir));
 });
 
 gulp.task('gwt:copy-deferred', ['gwt:compile', 'clean:gwt'], function() {
   return gulp.src(componentDir + 'deferred')
           .pipe(gulp.dest(componentDir));
 });
-
