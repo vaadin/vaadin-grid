@@ -441,7 +441,7 @@ Vaadin v-grid is a grid component fully configurable and customizable, plenty of
 
   /* Focus styles */
 
-  .v-grid-row-focused:before {
+  .v-grid-row-focused:after {
     content: "";
     position: absolute;
     z-index: 1;
@@ -455,7 +455,7 @@ Vaadin v-grid is a grid component fully configurable and customizable, plenty of
     transition: opacity 300ms;
   }
 
-  :focus .v-grid-row-focused:before {
+  :focus .v-grid-row-focused:after {
     opacity: 1;
   }
 
