@@ -287,6 +287,5 @@
     </build>
     <modules>
       <module>vaadin-components-gwt</module>
-      <module>vaadin-components-package</module>
     </modules>
 </project>
