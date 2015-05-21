@@ -5,8 +5,8 @@ var userhome = process.env.HOME || process.env.HOMEPATH || process.env.USERPROFI
 
 module.exports = {
   components: ['vaadin-grid'],
-  snapshotVersion: '0.2-snapshot',
-  version: args.version || '0.2-snapshot',
+  snapshotVersion: '0.3.0-snapshot',
+  version: args.version || '0.3.0-snapshot',
   paths: {
     staging: {
       bower: 'target/bower',

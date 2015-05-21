@@ -65,7 +65,7 @@ $ serve
 - If you wish to import components using the development URL, remember to manually install [Polymer](https://github.com/Polymer/polymer) as a dependency to your application.
 ```shell
 $ cd your-application
-$ bower install polymer#0.8.0-rc.7 --save
+$ bower install polymer#0.9.0 --save
 ```
 ### Running automated tests
 
@@ -113,12 +113,12 @@ $ npm install
 - Creating a zip package under `target/zip/`
 ```shell
 $ gulp stage:zip OR
-$ gulp stage:zip --version=0.2-custom --release
+$ gulp stage:zip --version=0.3-custom --release
 ```
 - Copying bower.json and components under `target/bower/`
 ```shell
 $ gulp stage:bower OR
-$ gulp stage:bower --version=0.2-custom --release
+$ gulp stage:bower --version=0.3-custom --release
 ```
 ## Demos / examples
 
