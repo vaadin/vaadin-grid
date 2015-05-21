@@ -958,10 +958,10 @@ Vaadin v-grid is a grid component fully configurable and customizable, plenty of
        *
        * @method them
        * @param {Function} callback
-       * @return a chainable promise
+       * @return {Promise}
        */
-      then: function(cb) {
-        return this._grid.then(cb);
+      then: function(callback) {
+        return this._grid.then(callback);
       }
     }); // End Polymer prototype
 
