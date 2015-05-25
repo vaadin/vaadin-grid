@@ -136,36 +136,6 @@ Vaadin v-grid is a grid component fully configurable and customizable, plenty of
     cursor: pointer;
   }
 
-  .v-grid-editor {
-    position: absolute;
-    z-index: 20;
-    overflow: hidden;
-    left: 0;
-    right: 0;
-    margin-top: -1px;
-  }
-
-  .v-grid-editor-cells {
-    position: relative;
-  }
-
-  .v-grid-editor-cells > div {
-    display: inline-block;
-  }
-
-  .v-grid-editor-footer {
-    display: -webkit-flex;
-    display: flex;
-    -webkit-align-items: center;
-    align-items: center;
-    box-sizing: border-box;
-  }
-
-  .v-grid-editor-message {
-    -webkit-flex: 1;
-    flex: 1;
-  }
-
   /* Theming properties */
 
   :host {
@@ -273,70 +243,6 @@ Vaadin v-grid is a grid component fully configurable and customizable, plenty of
 
   .v-grid-row-selected > td {
     background-color: #f2f2f2;
-  }
-
-  .v-grid-editor {
-    background: #fff;
-    box-shadow: 0 0 0 1px rgba(0,0,0,0.15),
-                0 8px 17px 0 rgba(0,0,0,0.2),
-                0 6px 20px 0 rgba(0,0,0,0.188235);
-    margin-top: -5px;
-  }
-
-  .v-grid-editor[style*="bottom"] {
-    margin-top: 0;
-    margin-bottom: -5px;
-  }
-
-  .v-grid-editor input[type="text"],
-  .v-grid-editor input:not([type]) {
-    box-sizing: border-box;
-    width: 100%;
-    height: 100%;
-    padding: 0 0 1px;
-    font: inherit;
-    color: inherit;
-    border: 0;
-    border-bottom: 1px solid rgba(0,0,0,0.2);
-    background: transparent;
-    outline: none;
-    transition: all 200ms;
-  }
-
-  .v-grid-editor input[type="text"]:focus {
-    border-bottom: 2px solid #03A9F4;
-    padding-bottom: 0;
-  }
-
-  .v-grid-editor-cells > div {
-    box-sizing: border-box;
-    margin: 5px 0;
-    padding: 5px 16px;
-    height: 42px;
-  }
-
-  .v-grid-editor-buttons button {
-    height: 32px;
-    padding: 0 11px;
-    margin: 5px;
-    font: inherit;
-    font-size: 14px;
-    color: #03A9F4;
-    text-transform: uppercase;
-    background: transparent;
-    border: 0;
-    border-radius: 3px;
-    outline: none;
-    cursor: pointer;
-    transition: all 200ms;
-  }
-
-  .v-grid-editor-buttons button:focus {
-    box-shadow: 0 2px 6px 0 rgba(0,0,0,0.5);
-  }
-
-  .v-grid-editor-buttons button:active:focus {
-    box-shadow: none;
   }
 
   input[type="checkbox"] {
@@ -492,57 +398,6 @@ Vaadin v-grid is a grid component fully configurable and customizable, plenty of
       _grid: undefined,
 
       properties: {
-        /**
-         * The row editor specific fields
-         *
-         * @property editor
-         * @type {Editor}
-         */
-        editor: {
-          type: Object,
-          readOnly: true,
-          value: function() {
-            var _this = this;
-            return {
-              get enabled() {
-                return _this._grid.getEditor().isEnabled();
-              },
-              set enabled(enabled) {
-                _this._grid.getEditor().setEnabled(enabled);
-                if (_this.editable !== enabled) {
-                  _this.editable = enabled;
-                }
-              },
-              get handler() {
-                return _this._grid.getEditor().getHandler();
-              },
-              set handler(handler) {
-                _this._grid.getEditor().setHandler(handler);
-              },
-              get saveButtonText() {
-                return _this._grid.getEditor().getSaveButtonText();
-              },
-              set saveButtonText(saveButtonText) {
-                _this._grid.getEditor().setSaveButtonText(saveButtonText);
-              },
-              get cancelButtonText() {
-                return _this._grid.getEditor().getSaveButtonText();
-              },
-              set cancelButtonText(cancelButtonText) {
-                _this._grid.getEditor().setCancelButtonText(cancelButtonText);
-              },
-              editRow: function(row) {
-                _this._grid.getEditor().editRow(row);
-              },
-              save: function() {
-                _this._grid.getEditor().save();
-              },
-              cancel: function() {
-                _this._grid.getEditor().cancel();
-              }
-            };
-          },
-        },
         /**
          * The data source object for the grid.
          *
@@ -724,9 +579,6 @@ Vaadin v-grid is a grid component fully configurable and customizable, plenty of
           case 'disabled':
             this.disabled = typeof value == "string";
             break;
-          case 'editable':
-            this.editable = typeof value == "string";
-            break;
           case 'style':
             this._grid.redraw();
             break;
@@ -896,19 +748,6 @@ Vaadin v-grid is a grid component fully configurable and customizable, plenty of
       set disabled(disabled) {
         this._grid.setDisabled(disabled);
         this.reflectPropertyToAttribute("disabled");
-      },
-      /**
-       * Enables the row editor feature (double click/tap or or Enter key in a content row activates the editing mode)
-       *
-       * @attribute editable
-       * @type boolean
-       */
-      get editable() {
-        return this.editor.enabled;
-      },
-      set editable(editable) {
-        this.editor.enabled = editable;
-        this.reflectPropertyToAttribute("editable");
       },
       /**
        * Sets the number of frozen columns in this grid. Setting the count to 0

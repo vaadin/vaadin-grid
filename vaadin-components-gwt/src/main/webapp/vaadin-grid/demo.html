@@ -484,58 +484,6 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
   </li>
 
   <li>
-    <h3>Row editor</h3>
-    <v-grid id='editableGrid' style='width: 200px'>
-      <table>
-        <col header-text="Name">
-        <col header-text="Value">
-        <tbody>
-          <tr>
-            <td>Grid</td>
-            <td>10000</td>
-          </tr>
-          <tr>
-            <td>VaadinX</td>
-            <td>1000</td>
-          </tr>
-        </tbody>
-      </table>
-    </v-grid>
-
-    <script>
-      waitUntilGridReady("editableGrid", function(grid) {
-        grid.columns[0].name = "name";
-        grid.columns[1].name = "value";
-        grid.editor.enabled = true;
-        grid.editor.saveButtonText = "Ok";
-        grid.editor.cancelButtonText = "Nope";
-        grid.editor.handler = {
-          getCellEditor: function(columnObject) {
-            return document.createElement("input");
-          },
-          bind: function(req) {
-            for (var i = 0; i < req.grid.columns.length; i++) {
-              var col = req.grid.columns[i];
-              var el = req.getCellEditor(col);
-              el.value = req.dataItem[i];
-            }
-            req.success();
-          },
-          save: function(req) {
-            for (var i = 0; i < req.grid.columns.length; i++) {
-              var col = req.grid.columns[i];
-              var el = req.getCellEditor(col);
-              var cell = grid.lightDom.querySelectorAll("tbody tr")[req.rowIndex].querySelectorAll("td")[i];
-              cell.innerHTML = el.value;
-            }
-            req.success();
-          }
-        };
-      });
-    </script>
-  </li>
-
-  <li>
   <h3>DOM API</h3>
   <v-grid
     selection-mode='disabled'
@@ -543,7 +491,6 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
     rows=3
     frozen-columns= '-1'
     style='width: 100%'
-    editable
     >
   <table >
     <colgroup>
