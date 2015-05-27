@@ -29,6 +29,51 @@
     transition: none;
   }
 
+  @keyframes v-grid-spin-360 {
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  @-webkit-keyframes v-grid-spin-360 {
+    100% {
+      -webkit-transform: rotate(360deg);
+      transform: rotate(360deg);
+    }
+  }
+
+  .v-grid-tablewrapper:before {
+    display: none;
+  }
+
+  .v-grid-loading-data .v-grid-tablewrapper:before {
+    display: block;
+    content: "";
+    position: absolute;
+    margin-left: -8px;
+    margin-top: -8px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid #03A9F4;
+    border-top-color: transparent;
+    border-right-color: transparent;
+    top: 50%;
+    left: 50%;
+    -webkit-animation: v-grid-spin-360 400ms linear infinite;
+    animation: v-grid-spin-360 400ms linear infinite;
+  }
+
+  .v-grid-body .v-grid-cell:not(.frozen) {
+    transition: opacity 300ms 0ms;
+    opacity: 1;
+  }
+
+  .v-grid-body .v-grid-cell:empty:not(.frozen) {
+    opacity: 0;
+    transition-delay: 700ms;
+  }
+
   :host,
   .v-grid-tablewrapper > table,
   .v-grid-body,
@@ -378,6 +423,7 @@
     width: 100% !important;
     height: 100% !important;
   }
+
 </style>
   <template>
     <div id="measure" class="v-grid">
