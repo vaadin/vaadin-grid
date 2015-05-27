@@ -60,12 +60,6 @@ public interface JSColumn {
     void setRenderer(JavaScriptObject o);
 
     @JsProperty
-    JavaScriptObject getValueGenerator();
-
-    @JsProperty
-    void setValueGenerator(JavaScriptObject o);
-
-    @JsProperty
     Object getHeaderContent();
 
     @JsProperty

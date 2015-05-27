@@ -127,41 +127,6 @@
       });
     });
 
-    it('generated value', function(done) {
-      grid.addColumn({
-        valueGenerator: function(dataItem) {
-          return "foo " + dataItem[0];
-        }
-      });
-
-      waitUntil(function() {
-        return gridContainsText(grid, "foo Grid");
-      }, done, done);
-    });
-
-    it('setting valueGenerator shouldnt fire select', function() {
-      var selectListener = sinon.spy();
-      grid.addEventListener('select', selectListener);
-
-      grid.selection.mode = "multi";
-      grid.columns[0].valueGenerator = function() { return 1; };
-      expect(selectListener.notCalled).to.be.true;
-    });
-
-    it('should not update the generated value', function(done) {
-      grid.columns[0].valueGenerator = function(dataItem) {
-        return Math.random();
-      };
-
-      grid.then(function() {
-        var generatedValue = getFirstCell().innerText;
-        grid.selection.select(0);
-        expect(generatedValue).to.eql(getFirstCell().innerText);
-        done();
-      });
-
-    });
-
     it('renderer property', function(done) {
       grid.columns[0].renderer = function(cell) {
         cell.element.innerHTML = "<b>" + cell.data + "</b>";

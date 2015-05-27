@@ -197,8 +197,8 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
           req.success(data.slice(req.index, req.index + req.count), data.length);
         };
 
-        grid.columns[0].valueGenerator = function(rowObject, columnIndex) {
-          return "> " + rowObject.name;
+        grid.columns[0].renderer = function(cell) {
+          cell.element.innerHTML = '> ' + cell.row.data.name;
         };
 
         grid.columns[1].name = "value";
