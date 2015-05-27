@@ -114,12 +114,12 @@ $ npm install
 - Creating a zip package under `target/zip/`
 ```shell
 $ gulp stage:zip OR
-$ gulp stage:zip --version=0.3-custom --release
+$ gulp stage:zip --version=0.3.0-custom --release
 ```
 - Copying bower.json and components under `target/bower/`
 ```shell
 $ gulp stage:bower OR
-$ gulp stage:bower --version=0.3-custom --release
+$ gulp stage:bower --version=0.3.0-custom --release
 ```
 ## Demos / examples
 
