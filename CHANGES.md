@@ -3,6 +3,7 @@
 
 ### `<v-grid>`
 - Drag selection is now disabled.
+- Row editor is now disabled.
 - Issues fixed:
   - Grid doesn't work when using selection-mode multi, frozen columns and sortable columns. (#7)
   - Grid height is recalculated incorrectly when sorting a grid with a fixed height. (#8)
