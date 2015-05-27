@@ -60,6 +60,8 @@ public class GridJsFuncDataSource extends GridDataSource {
                 if (cb != null) {
                     ((RequestRowsCallback)cb).onResponse(list, size());
                 }
+
+                gridComponent.setLoadingDataClass(false);
             }
         }));
         if (cb != null) {
@@ -67,10 +69,11 @@ public class GridJsFuncDataSource extends GridDataSource {
                 @Override
                 public void f() {
                     ((RequestRowsCallback)cb).onResponse(Collections.emptyList(), size());
+                    gridComponent.setLoadingDataClass(false);
                 }
             }));
         }
-
+        gridComponent.setLoadingDataClass(true);
         JS.exec(jsFunction, jsDataRequest);
     }
 }
