@@ -41,7 +41,7 @@ We offer three ways to use Vaadin Components in your project: Bower, CDN and ZIP
  $ bower install --save vaadin-components
  ```
 
- This will download Vaadin Components and its dependencies to the `bower_components` folder inside your projectâ€™s folder.
+ This will download Vaadin Components and its dependencies to the `bower_components` folder inside your project's folder.
 
 - ##### CDN
 
@@ -108,7 +108,7 @@ We offer three ways to use Vaadin Components in your project: Bower, CDN and ZIP
               var json = JSON.parse(xhr.responseText);
               
               // Use the returned data array directly as the data source 
-              // (keeping all the data source items in the browserâ€™s memory)
+              // (keeping all the data source items in the browser's memory)
               grid.data.source = json.results;
             }
           }
