@@ -7,7 +7,7 @@ Learn more about [Vaadin Components.](https://vaadin.com/labs-components/)
 ## Getting Started
 
 - For getting started, see our [README.md](vaadin-components-package/README.md) for users
-- For more usage examples, see [components-examples](https://tomivirkki.github.io/components-examples)
+- For more usage examples, see [components-examples](https://vaadin.github.io/components-examples)
 
 ## Overview of the repository
 

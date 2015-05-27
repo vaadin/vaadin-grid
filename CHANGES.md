@@ -35,7 +35,7 @@
   - Sorting rows
   - Editing headers, footers and columns dynamically
   - Inline row editing
-  - For more, see the [Examples](http://tomivirkki.github.io/components-examples/)
+  - For more, see the [Examples](http://vaadin.github.io/components-examples/)
 
 
 ### `<v-button>`, `<v-slider>` and `<v-progress-bar>`
