@@ -8,7 +8,7 @@ For contributions and issues, see the project's [Github repository](https://gith
 
 View live examples and source code side-by-side for individual custom elements.
 
-- [&lt;**v-grid**&gt;](http://vaadin.github.io/components-examples/v-grid/) â€“ Data grid for showing large amounts of tabular data ([API](http://vaadin.github.io/components-apidoc/#v-grid))
+- [&lt;**v-grid**&gt;](http://vaadin.github.io/components-examples/v-grid/) - Data grid for showing large amounts of tabular data ([API](http://vaadin.github.io/components-apidoc/#v-grid))
 
 
 ### Quickstart
