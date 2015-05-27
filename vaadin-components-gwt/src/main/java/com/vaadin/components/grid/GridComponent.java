@@ -561,4 +561,13 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
         return result;
     }
 
+    public void setLoadingDataClass(boolean loadingData) {
+        String loadingDataClassName = "v-grid-loading-data";
+
+        if(loadingData) {
+            this.getGridElement().addClassName(loadingDataClassName);
+        } else {
+            this.getGridElement().removeClassName(loadingDataClassName);
+        }
+    }
 }
