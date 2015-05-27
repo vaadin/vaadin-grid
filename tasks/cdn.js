@@ -19,7 +19,7 @@ gulp.task('clean:cdn', function() {
 
 gulp.task('cdn:stage-components', ['clean:cdn'], function() {
   return gulp.src(['vaadin-components/**/*', '!**/test/**/*', '!**/test',
-    '!**/demo/**/*', '!**/demo*'])
+    '!**/demo/**/*', '!**/demo*', '!**/sdm.js'])
     .pipe(replace(/(src|href)=("|')(.*?)\.\.\/\.\.\/bower_components\/(.*?)\//mg, '$1=$2../$4/'))
     .pipe(gulp.dest(stagingPath));
 });

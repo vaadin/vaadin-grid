@@ -34,7 +34,13 @@ gulp.task('bower:clone', ['clean:bower'], function(done) {
 
 gulp.task('bower:stage-components', ['bower:clone'], function() {
   _.forEach(components, function(component) {
-    fs.copySync('vaadin-components/' + component, checkoutPath + '/' + component);
+    var stagingPath = checkoutPath + '/' + component;
+
+    fs.copySync('vaadin-components/' + component, stagingPath);
+
+    fs.removeSync(stagingPath + '/**/demo*');
+    fs.removeSync(stagingPath + '/**/sdm.js');
+    fs.removeSync(stagingPath + '/**/test');
   });
 });
 
