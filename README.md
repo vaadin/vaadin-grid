@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/vaadin/components.svg?branch=master)](https://travis-ci.org/vaadin/components)
 # Vaadin Components
 
 A set of high-quality Web Components built using Polymer.
