@@ -1,17 +1,13 @@
 package com.vaadin.components.grid.data;
 
-import java.util.List;
-
 import com.google.gwt.core.client.js.JsExport;
 import com.google.gwt.core.client.js.JsNamespace;
 import com.google.gwt.core.client.js.JsNoExport;
 import com.google.gwt.core.client.js.JsType;
 import com.vaadin.client.data.AbstractRemoteDataSource;
-import com.vaadin.client.widgets.Grid.Column;
 import com.vaadin.components.common.js.JS;
 import com.vaadin.components.common.js.JSValidate;
 import com.vaadin.components.grid.GridComponent;
-import com.vaadin.components.grid.table.GridColumn;
 import com.vaadin.shared.ui.grid.Range;
 
 @JsNamespace(JS.VAADIN_JS_NAMESPACE)
@@ -64,7 +60,15 @@ public abstract class GridDataSource extends AbstractRemoteDataSource<Object> {
     }
 
     public void clearCache(Double newSize) {
-        resetDataAndSize(JSValidate.Integer.val(newSize, size, size));
+        Integer intSize = JSValidate.Integer.val(newSize, size, size);
+        if (intSize == size) {
+            Range range = getCachedRange();
+            requestRows(range.getStart(), range.length(),
+                    new RequestRowsCallback<Object>(this, range) {
+                    });
+        } else {
+            resetDataAndSize(intSize);
+        }
         gridComponent.getSelectionModel().reset();
     }
 
