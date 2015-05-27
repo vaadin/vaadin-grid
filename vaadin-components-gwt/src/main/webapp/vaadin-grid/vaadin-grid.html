@@ -23,7 +23,7 @@
     cursor: default;
   }
 
-  :host(.loading) {
+  :host(.v-grid-loading) {
     opacity: 0;
     height: 0;
     transition: none;
@@ -686,9 +686,9 @@
         this._bindResizeListener();
 
         // hide until fully loaded
-        this.toggleClass('loading', true);
+        this.toggleClass('v-grid-loading', true);
         this.then(function() {
-          _this.toggleClass('loading', false);
+          _this.toggleClass('v-grid-loading', false);
         });
       },
 
