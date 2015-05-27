@@ -103,8 +103,8 @@ We offer three ways to use Vaadin Components in your project: Bower, CDN and ZIP
         // Fetch some JSON data from a URL
         var xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function() {
-          if (xhr.readyState == XMLHttpRequest.DONE ) {
-            if(xhr.status == 200){
+          if (xhr.readyState == XMLHttpRequest.DONE) {
+            if (xhr.status == 200) {
               var json = JSON.parse(xhr.responseText);
               
               // Use the returned data array directly as the data source
@@ -123,7 +123,7 @@ We offer three ways to use Vaadin Components in your project: Bower, CDN and ZIP
         
         // Add a renderer for the picture column
         grid.columns[1].renderer = function(cell) {
-            cell.element.innerHTML = '<img src="'+cell.data+'" style="width:24px;">';
+            cell.element.innerHTML = '<img src="' + cell.data + '" style="width: 24px;">';
         }
       });
     </script>
