@@ -135,7 +135,7 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
         grid.data.source = function(req) {
           setTimeout(function() {
             req.success(myBigData.slice(req.index, req.index + req.count), myBigData.length);
-          }, req.index ? 800 : 0);
+          }, req.index ? 1200 : 0);
         };
       });
       // Note: myBigData is defined at the end of the page
