@@ -58,18 +58,6 @@ public abstract class GridDataSource extends AbstractRemoteDataSource<Object> {
         }
     }
 
-    @Override
-    protected void setRowData(int firstRowIndex, List<Object> rowData) {
-        Range visibleRange = gridComponent.getGrid().getEscalator()
-                .getVisibleRowRange();
-        Range refreshRange = Range.between(firstRowIndex, firstRowIndex
-                + rowData.size());
-        for (Column<?, Object> c : gridComponent.getDataColumns()) {
-            ((GridColumn) c).filterGeneratorCache(visibleRange, refreshRange);
-        }
-        super.setRowData(firstRowIndex, rowData);
-    }
-
     public void refresh() {
         resetDataAndSize(size());
         gridComponent.getSelectionModel().reset();

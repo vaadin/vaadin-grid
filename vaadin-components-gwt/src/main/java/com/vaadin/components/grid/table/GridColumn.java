@@ -24,7 +24,6 @@ public final class GridColumn extends Column<Object, Object> {
 
     private final JSColumn jsColumn;
     private final GridComponent gridComponent;
-    private final Map<Integer, Object> generatorCache = new HashMap<>();
 
     public static GridColumn addColumn(JSColumn jsColumn,
             GridComponent gridComponent) {
@@ -67,13 +66,6 @@ public final class GridColumn extends Column<Object, Object> {
         bind("width",
                 v -> setWidth(JS.isUndefinedOrNull(v) ? GridConstants.DEFAULT_COLUMN_WIDTH_PX
                         : (double) v));
-
-        bind("valueGenerator", v -> {
-            boolean wasUpdating = gridComponent.updating;
-            gridComponent.updating = true;
-            gridComponent.getDataSource().refresh();
-            gridComponent.updating = wasUpdating;
-        });
     }
 
     private void bind(String propertyName, final Setter setter) {
@@ -93,27 +85,17 @@ public final class GridColumn extends Column<Object, Object> {
             dataItem = ((DataItemContainer) dataItem).getDataItem();
         }
         Object result = null;
-        if (jsColumn.getValueGenerator() != null) {
-            int index = gridComponent.getDataSource().indexOf(dataItem);
-            if (generatorCache.containsKey(index)) {
-                result = generatorCache.get(index);
-            } else {
-                result = JS.exec(jsColumn.getValueGenerator(), dataItem);
-                generatorCache.put(index, result);
+        if (JS.isPrimitiveType(dataItem)) {
+            if (getColumnIndex() == 0) {
+                result = dataItem;
             }
         } else {
-            if (JS.isPrimitiveType(dataItem)) {
-                if (getColumnIndex() == 0) {
-                    result = dataItem;
-                }
+            if (JsUtils.isArray((JavaScriptObject) dataItem)) {
+                result = ((JsArrayMixed) dataItem)
+                        .getObject(getColumnIndex());
             } else {
-                if (JsUtils.isArray((JavaScriptObject) dataItem)) {
-                    result = ((JsArrayMixed) dataItem)
-                            .getObject(getColumnIndex());
-                } else {
-                    result = getNestedProperty(dataItem,
-                            Arrays.asList(jsColumn.getName().split("\\.")));
-                }
+                result = getNestedProperty(dataItem,
+                        Arrays.asList(jsColumn.getName().split("\\.")));
             }
         }
         return result;
@@ -134,16 +116,4 @@ public final class GridColumn extends Column<Object, Object> {
     private int getColumnIndex() {
         return gridComponent.getColumns().indexOf(jsColumn);
     }
-
-    public void filterGeneratorCache(Range visibleRange, Range refreshRange) {
-        if (jsColumn.getValueGenerator() != null) {
-            for (Integer index : new HashSet<Integer>(generatorCache.keySet())) {
-                if (refreshRange.contains(index)
-                        || !visibleRange.contains(index)) {
-                    generatorCache.remove(index);
-                }
-            }
-        }
-    }
-
 }
