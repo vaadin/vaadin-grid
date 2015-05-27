@@ -2,13 +2,13 @@
 
 Vaadin Components is an evolving set of custom HTML elements, built using [Polymer](https://www.polymer-project.org), for building mobile and desktop web applications in modern browsers.
 
-For contributions and issues, see the project's [Github repository](https://github.com/vaadin/components).
+For contributions and issues, see the project’s [Github repository](https://github.com/vaadin/components).
 
 ### Examples &amp; API Docs
 
 View live examples and source code side-by-side for individual custom elements.
 
-- [&lt;**v-grid**&gt;](http://vaadin.github.io/components-examples/v-grid/) - Data grid for showing large amounts of tabular data ([API](http://vaadin.github.io/components-apidoc/#v-grid))
+- [&lt;**v-grid**&gt;](http://vaadin.github.io/components-examples/v-grid/) – Data grid for showing large amounts of tabular data ([API](http://vaadin.github.io/components-apidoc/#v-grid))
 
 
 ### Quickstart
@@ -16,7 +16,7 @@ View live examples and source code side-by-side for individual custom elements.
  Get a quick test-drive of the custom elements by forking one of the following JSFiddles:
 
 - &lt;**v-grid**&gt;
- - [Data generated on-the-fly](https://jsfiddle.net/jounik/tvk1235r/)
+ - [Data generated on-the-fly](http://jsfiddle.net/jounik/tvk1235r/)
  - [JSON data from a URL](http://jsfiddle.net/jounik/tLour4gv/)
 
 
@@ -41,7 +41,7 @@ We offer three ways to use Vaadin Components in your project: Bower, CDN and ZIP
  $ bower install --save vaadin-components
  ```
 
- This will download Vaadin Components and its dependencies to the `bower_components` folder inside your project's folder.
+ This will download Vaadin Components and its dependencies to the `bower_components` folder inside your project’s folder.
 
 - ##### CDN
 
@@ -108,7 +108,7 @@ We offer three ways to use Vaadin Components in your project: Bower, CDN and ZIP
               var json = JSON.parse(xhr.responseText);
               
               // Use the returned data array directly as the data source 
-              // (keeping all the data source items in the browser's memory)
+              // (keeping all the data source items in the browser’s memory)
               grid.data.source = json.results;
             }
           }
