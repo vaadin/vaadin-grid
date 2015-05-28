@@ -50,13 +50,8 @@ gulp.task('bower:stage-bower.json', ['bower:clone'], function() {
              .pipe(gulp.dest(checkoutPath));
 });
 
-gulp.task('bower:stage-readme.md', ['bower:clone'], function() {
-  return gulp.src('vaadin-components-package/README.md')
-    .pipe(gulp.dest(checkoutPath));
-});
-
-gulp.task('bower:stage-license.md', ['bower:clone'], function() {
-  return gulp.src('LICENSE.md')
+gulp.task('bower:stage-bundled.md', ['bower:clone'], function() {
+  return gulp.src(['vaadin-components-package/README.md', 'LICENSE.md', 'CHANGES.md'])
     .pipe(gulp.dest(checkoutPath));
 });
 
@@ -67,7 +62,7 @@ gulp.task('bower:stage-imports', ['bower:stage-components'], function() {
 });
 
 gulp.task('stage:bower', ['bower:stage-components', 'bower:stage-imports',
-  'bower:stage-bower.json', 'bower:stage-readme.md', 'bower:stage-license.md']);
+  'bower:stage-bower.json', 'bower:stage-bundled.md']);
 
 gulp.task('bower:create-commit', ['stage:bower'], function(){
   if(args.release) {

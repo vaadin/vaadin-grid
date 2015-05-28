@@ -3,6 +3,7 @@ var config = require('./config');
 var common = require('./common')
 var gulp = require('gulp');
 var fs = require('fs-extra');
+var markdown = require('gulp-markdown');
 var replace = require('gulp-replace');
 var rsync = require('gulp-rsync');
 var gutil = require('gulp-util');
@@ -36,20 +37,16 @@ gulp.task('cdn:stage-bower_components', ['cdn:install-dependencies'], function()
   fs.removeSync(stagingPath + '/vaadin-components');
 });
 
-gulp.task('cdn:stage-readme.md', ['clean:cdn'], function() {
-  return gulp.src('vaadin-components-package/README.md')
-    .pipe(gulp.dest(stagingPath));
-});
-
-gulp.task('cdn:stage-license.md', ['clean:cdn'], function() {
-  return gulp.src('LICENSE.md')
+gulp.task('cdn:stage-bundled.html', ['clean:cdn'], function() {
+  return gulp.src(['vaadin-components-package/README.md', 'LICENSE.md', 'CHANGES.md'])
+    .pipe(markdown())
     .pipe(gulp.dest(stagingPath));
 });
 
 gulp.task('stage:cdn',
   ['cdn:stage-components',
     'cdn:stage-bower_components',
-    'cdn:stage-readme.md', 'cdn:stage-license.md']);
+    'cdn:stage-bundled.html']);
 
 gulp.task('deploy:cdn', ['stage:cdn'], function() {
   common.checkArguments(['cdnUsername', 'cdnDestination']);

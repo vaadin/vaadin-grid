@@ -6,15 +6,16 @@
   "license": "Apache License 2.0",
   "dependencies": {
     "bower": "latest",
-    "gulp": "latest",
-    "gulp-util": "latest",
-    "gulp-git": "latest",
     "fs-extra": "latest",
-    "gulp-rename": "latest",
+    "gulp": "latest",
+    "gulp-git": "latest",
     "gulp-json-editor": "latest",
+    "gulp-markdown": "^1.0.0",
+    "gulp-rename": "latest",
     "gulp-replace": "latest",
-    "yargs": "latest",
-    "web-component-tester": "2.2.6"
+    "gulp-util": "latest",
+    "web-component-tester": "2.2.6",
+    "yargs": "latest"
   },
   "devDependencies": {
     "chalk": "latest",
