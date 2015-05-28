@@ -35,7 +35,7 @@ We offer three ways to use Vaadin Components in your project: Bower, CDN and ZIP
 
 - ##### Bower
 
- We recommend using [Bower](http://bower.io) for managing your front-end dependencies. Follow the [Bower installation instructions](http://bower.io/#install-bower), the run the following command inside your project folder:
+ We recommend using [Bower](http://bower.io) for managing your front-end dependencies. Follow the [Bower installation instructions](http://bower.io/#install-bower), then run the following command inside your project folder:
 
  ```shell
  $ bower install --save vaadin-components#0.3.0-beta1
