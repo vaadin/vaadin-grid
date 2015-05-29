@@ -654,13 +654,11 @@
       },
 
       ready: function() {
-        var _this = this;
-        setTimeout(function() {
-          for (var i = 0; i < _this.attributes.length; i++) {
-            _this.attributeChanged(_this.attributes[i].nodeName, null, _this.attributes[i].nodeValue);
+        this.async(function() {
+          for (var i = 0; i < this.attributes.length; i++) {
+            this.attributeChanged(this.attributes[i].nodeName, null, this.attributes[i].nodeValue);
           }
-        }, 1);
-
+        });
       },
 
       _bindResizeListener: function() {
