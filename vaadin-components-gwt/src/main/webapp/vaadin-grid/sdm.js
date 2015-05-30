@@ -25,27 +25,14 @@ function _waitForVGrid(done) {
     if ("VGrid" in window) {
       clearInterval(id);
 
-      var first = document.querySelector("v-grid");
-      // After the first Grid on the page is ready, fire done callback
-      _scheduleRefresh(first, done);
+      done();
 
       // Schedule a refresh for each Grid
       [].forEach.call(document.querySelectorAll("v-grid"), function(grid) {
-        _scheduleRefresh(grid);
+        setTimeout(function() {
+          grid._grid.updateSize();
+        }, 1);
       });
     }
-  }, 200);
-}
-
-function _scheduleRefresh(grid, callback) {
-  setTimeout(function() {
-    grid._grid.refresh();
-    grid.then(function() {
-      grid._grid.refresh();
-
-      if (callback) {
-        callback();
-      }
-    });
   }, 200);
 }

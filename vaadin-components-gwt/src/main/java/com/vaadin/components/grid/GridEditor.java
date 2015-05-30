@@ -189,7 +189,7 @@ public class GridEditor {
                 if (handler.getSave() != null) {
                     JS.exec(handler.getSave(),
                             createJSEditorRequest(request, true));
-                    gridComponent.refresh();
+                    gridComponent.getDataSource().clearCache(null);
                 } else {
                     request.failure("'grid.editor.handler.save' is undefined. Please refer to the documentation for more information.", null);
                 }

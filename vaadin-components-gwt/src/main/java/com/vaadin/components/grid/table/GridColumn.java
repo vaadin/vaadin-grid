@@ -1,10 +1,7 @@
 package com.vaadin.components.grid.table;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayMixed;
@@ -18,7 +15,6 @@ import com.vaadin.components.grid.config.JSColumn;
 import com.vaadin.components.grid.config.JSStaticCell;
 import com.vaadin.components.grid.data.DataItemContainer;
 import com.vaadin.shared.ui.grid.GridConstants;
-import com.vaadin.shared.ui.grid.Range;
 
 public final class GridColumn extends Column<Object, Object> {
 
@@ -47,7 +43,7 @@ public final class GridColumn extends Column<Object, Object> {
     private void bindProperties() {
         JS.definePropertyAccessors(jsColumn, "headerContent", v -> {
             getDefaultHeaderCellReference().setContent(v);
-            gridComponent.redraw();
+            gridComponent.updateWidth();
         }, () -> getDefaultHeaderCellReference().getContent());
 
         bind("flex", v -> setExpandRatio(((Double) v).intValue()));
@@ -71,7 +67,7 @@ public final class GridColumn extends Column<Object, Object> {
     private void bind(String propertyName, final Setter setter) {
         JS.definePropertyAccessors(jsColumn, propertyName, v -> {
             setter.setValue(v);
-            gridComponent.redraw();
+            gridComponent.updateWidth();
         }, null);
     }
 
@@ -91,8 +87,7 @@ public final class GridColumn extends Column<Object, Object> {
             }
         } else {
             if (JsUtils.isArray((JavaScriptObject) dataItem)) {
-                result = ((JsArrayMixed) dataItem)
-                        .getObject(getColumnIndex());
+                result = ((JsArrayMixed) dataItem).getObject(getColumnIndex());
             } else {
                 result = getNestedProperty(dataItem,
                         Arrays.asList(jsColumn.getName().split("\\.")));

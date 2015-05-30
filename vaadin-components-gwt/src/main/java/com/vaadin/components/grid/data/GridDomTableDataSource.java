@@ -25,7 +25,7 @@ public class GridDomTableDataSource extends GridDataSource {
         super(grid);
         assert TableElement.is(table);
         this.table = table.cast();
-        size(rows().size());
+        setSize(rows().size());
     }
 
     private GQuery rows() {
@@ -57,7 +57,7 @@ public class GridDomTableDataSource extends GridDataSource {
     public void refresh() {
         // on refresh we reset the cache and recompute size.
         tableRows = null;
-        size(rows().size());
+        setSize(rows().size());
         super.refresh();
     }
 

@@ -80,7 +80,6 @@ public class GridLightDomTable implements MutationListener {
                     configureHeadersFooters(false);
                 }
             }
-            gridComponent.redraw(true);
         }
     }
 
@@ -202,7 +201,7 @@ public class GridLightDomTable implements MutationListener {
                 final GQuery $th = $ths.eq(j);
                 StaticCell cell = row.getCell(dataColumns.get(colIndex));
                 JSStaticCell js = gridComponent.getStaticSection()
-                        .assureJSStaticCell(cell);
+                        .obtainJSStaticCell(cell);
                 js.setContent($th.html());
 
                 className = JSValidate.String.attr($th, "class");
@@ -245,6 +244,6 @@ public class GridLightDomTable implements MutationListener {
     @Override
     public void onMutation(List<MutationRecord> mutations) {
         parseDom();
-        gridComponent.refresh();
+        gridComponent.getDataSource().refresh();
     }
 }
