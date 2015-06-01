@@ -302,7 +302,7 @@ public class Escalator extends Widget implements RequiresResize,
     static class JsniUtil {
         public static class TouchHandlerBundle {
 
-            private static final double FLICK_POLL_FREQUENCY = 100d;
+            private static final double FLICK_POLL_FREQUENCY = 75d;
 
             /**
              * A <a href=
@@ -517,25 +517,24 @@ public class Escalator extends Widget implements RequiresResize,
                      * But if the sample is too fresh, we might introduce noise
                      * in our sampling, so we use the older sample instead. it
                      * might be less accurate, but it's smoother.
-                     * 
+                     *
                      * flickPage?1 is the most recent one, while flickPage?2 is
                      * the previous one.
                      */
 
-                    final double finalPageY;
-                    final double finalPageX;
-                    double deltaT = flickTimestamp - flickStartTime;
+                    final double deltaY;
+                    final double deltaX;
+                    final double deltaT;
                     boolean onlyOneSample = flickPageX2 < 0 || flickPageY2 < 0;
                     if (onlyOneSample) {
-                        finalPageX = latestTouchMoveEvent.getPageX();
-                        finalPageY = latestTouchMoveEvent.getPageY();
+                        deltaX = latestTouchMoveEvent.getPageX() - flickPageX1;
+                        deltaY = latestTouchMoveEvent.getPageY() - flickPageY1;
+                        deltaT = flickTimestamp - flickStartTime;
                     } else {
-                        finalPageY = flickPageY2;
-                        finalPageX = flickPageX2;
+                        deltaX = latestTouchMoveEvent.getPageX() - flickPageX2;
+                        deltaY = latestTouchMoveEvent.getPageY() - flickPageY2;
+                        deltaT = FLICK_POLL_FREQUENCY;
                     }
-
-                    double deltaX = finalPageX - flickPageX1;
-                    double deltaY = finalPageY - flickPageY1;
 
                     escalator.scroller
                             .handleFlickScroll(deltaX, deltaY, deltaT);
