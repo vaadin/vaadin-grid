@@ -8,8 +8,8 @@ Vaadin Components is an evolving set of custom HTML elements, built using [Polym
 
 ## Using the components
 
-- ##### [Getting Started instructions](http://vaadin.github.io/components-examples/)
-- ##### [Discussion](https://vaadin.com/forum/#!/category/9848927/)
+##### - [Getting Started instructions](http://vaadin.github.io/components-examples/)
+##### - [Discussion](https://vaadin.com/forum/#!/category/9848927/)
 
 
 ## Overview of this repository
@@ -37,19 +37,22 @@ First, make sure you've installed all the necessary tooling:
 - [Maven](http://maven.apache.org/download.cgi)
 
 Then do the following:
+
 1. Install [bower](https://www.npmjs.com/package/bower), [gulp](https://www.npmjs.com/package/gulp), [web-component-tester](https://www.npmjs.com/package/web-component-tester) and [serve](https://www.npmjs.com/package/serve) globally:
-```shell
-$ npm install -g bower gulp web-component-tester serve
-```
+ ```shell
+ $ npm install -g bower gulp web-component-tester serve
+ ```
+
 2. Clone the project:
-```shell
-$ git clone https://github.com/vaadin/components.git
-$ cd components
-```
+ ```shell
+ $ git clone https://github.com/vaadin/components.git
+ $ cd components
+ ```
+
 3. Install the project dependencies:
-```shell
-$ npm install
-```
+ ```shell
+ $ npm install
+ ```
 
 ### Building the project
 
