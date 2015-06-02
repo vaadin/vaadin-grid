@@ -456,6 +456,7 @@ public class Escalator extends Widget implements RequiresResize,
                 if (event.getNativeEvent().getTouches().length() == 0 && Math.abs(velocity) > 10) {
                     animation.run(duration);
                 }
+                event.getNativeEvent().preventDefault();
             }
         }
 
