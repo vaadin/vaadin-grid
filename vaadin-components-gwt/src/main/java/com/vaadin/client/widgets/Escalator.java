@@ -1,12 +1,12 @@
 /*
  * Copyright 2000-2014 Vaadin Ltd.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -55,7 +55,6 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -131,7 +130,7 @@ import com.vaadin.shared.util.SharedUtil;
 
  Each RowContainer can be thought to have three levels of
  indices for any given displayed row (but the distinction
- matters primarily for the BodyRowContainerImpl, because of 
+ matters primarily for the BodyRowContainerImpl, because of
  the way it scrolls through data):
 
  - Logical index
@@ -150,8 +149,8 @@ import com.vaadin.shared.util.SharedUtil;
  (because of 0-based indices). In Header and
  FooterRowContainers, you are safe to assume that the logical
  index is the same as the physical index. But because the
- BodyRowContainerImpl never displays large data sources 
- entirely in the DOM, a physical index usually has no 
+ BodyRowContainerImpl never displays large data sources
+ entirely in the DOM, a physical index usually has no
  apparent direct relationship with its logical index.
 
  VISUAL INDEX is the index relating to the order that you
@@ -186,14 +185,14 @@ import com.vaadin.shared.util.SharedUtil;
  * implement such an interface), makes it possible for JSNI to indirectly refer
  * to the inner class, by invoking methods and fields in the non-inner-class
  * API.
- * 
+ *
  * @see Escalator.Scroller
  */
 abstract class JsniWorkaround {
     /**
      * A JavaScript function that handles the scroll DOM event, and passes it on
      * to Java code.
-     * 
+     *
      * @see #createScrollListenerFunction(Escalator)
      * @see Escalator#onScroll()
      * @see Escalator.Scroller#onScroll()
@@ -203,7 +202,7 @@ abstract class JsniWorkaround {
     /**
      * A JavaScript function that handles the mousewheel DOM event, and passes
      * it on to Java code.
-     * 
+     *
      * @see #createMousewheelListenerFunction(Escalator)
      * @see Escalator#onScroll()
      * @see Escalator.Scroller#onScroll()
@@ -213,7 +212,7 @@ abstract class JsniWorkaround {
     /**
      * A JavaScript function that handles the touch start DOM event, and passes
      * it on to Java code.
-     * 
+     *
      * @see TouchHandlerBundle#touchStart(Escalator.JsniUtil.TouchHandlerBundle.CustomTouchEvent)
      */
     protected JavaScriptObject touchStartFunction;
@@ -221,7 +220,7 @@ abstract class JsniWorkaround {
     /**
      * A JavaScript function that handles the touch move DOM event, and passes
      * it on to Java code.
-     * 
+     *
      * @see TouchHandlerBundle#touchMove(Escalator.JsniUtil.TouchHandlerBundle.CustomTouchEvent)
      */
     protected JavaScriptObject touchMoveFunction;
@@ -229,7 +228,7 @@ abstract class JsniWorkaround {
     /**
      * A JavaScript function that handles the touch end and cancel DOM events,
      * and passes them on to Java code.
-     * 
+     *
      * @see TouchHandlerBundle#touchEnd(Escalator.JsniUtil.TouchHandlerBundle.CustomTouchEvent)
      */
     protected JavaScriptObject touchEndFunction;
@@ -249,7 +248,7 @@ abstract class JsniWorkaround {
     /**
      * A method that constructs the JavaScript function that will be stored into
      * {@link #scrollListenerFunction}.
-     * 
+     *
      * @param esc
      *            a reference to the current instance of {@link Escalator}
      * @see Escalator#onScroll()
@@ -260,7 +259,7 @@ abstract class JsniWorkaround {
     /**
      * A method that constructs the JavaScript function that will be stored into
      * {@link #mousewheelListenerFunction}.
-     * 
+     *
      * @param esc
      *            a reference to the current instance of {@link Escalator}
      * @see Escalator#onScroll()
@@ -272,7 +271,7 @@ abstract class JsniWorkaround {
 /**
  * A low-level table-like widget that features a scrolling virtual viewport and
  * lazily generated rows.
- * 
+ *
  * @since 7.4
  * @author Vaadin Ltd
  */
@@ -342,105 +341,7 @@ public class Escalator extends Widget implements RequiresResize,
                 }-*/;
             }
 
-            private double touches = 0;
-            private int lastX = 0;
-            private int lastY = 0;
-            private boolean snappedScrollEnabled = true;
-            private double deltaX = 0;
-            private double deltaY = 0;
-
             private final Escalator escalator;
-
-            private CustomTouchEvent latestTouchMoveEvent;
-
-            /** The timestamp of {@link #flickPageX1} and {@link #flickPageY1} */
-            private double flickStartTime = 0;
-
-            /** The timestamp of {@link #flickPageX2} and {@link #flickPageY2} */
-            private double flickTimestamp = 0;
-
-            /** The most recent flick touch reference Y */
-            private double flickPageY1 = -1;
-            /** The most recent flick touch reference X */
-            private double flickPageX1 = -1;
-
-            /** The previous flick touch reference Y, before {@link #flickPageY1} */
-            private double flickPageY2 = -1;
-            /** The previous flick touch reference X, before {@link #flickPageX1} */
-            private double flickPageX2 = -1;
-
-            /**
-             * This animation callback guarantees the fact that we don't scroll
-             * the grid more than once per visible frame.
-             * 
-             * It seems that there will never be more touch events than there
-             * are rendered frames, but there's no guarantee for that. If it was
-             * guaranteed, we probably could do all of this immediately in
-             * {@link #touchMove(CustomTouchEvent)}, instead of deferring it
-             * over here.
-             */
-            private AnimationCallback mover = new AnimationCallback() {
-
-                @Override
-                public void execute(double timestamp) {
-                    if (touches != 1) {
-                        return;
-                    }
-
-                    final int x = latestTouchMoveEvent.getPageX();
-                    final int y = latestTouchMoveEvent.getPageY();
-
-                    /*
-                     * Check if we need a new flick coordinate sample ( more
-                     * than FLICK_POLL_FREQUENCY ms have passed since the last
-                     * sample )
-                     */
-                    if (System.currentTimeMillis() - flickTimestamp > FLICK_POLL_FREQUENCY) {
-
-                        flickTimestamp = System.currentTimeMillis();
-                        // Set target coordinates
-                        flickPageY2 = y;
-                        flickPageX2 = x;
-                    } else {
-                    }
-
-                    deltaX = x - lastX;
-                    deltaY = y - lastY;
-                    lastX = x;
-                    lastY = y;
-
-                    // snap the scroll to the major axes, at first.
-                    if (false && snappedScrollEnabled) {
-                        final double oldDeltaX = deltaX;
-                        final double oldDeltaY = deltaY;
-
-                        /*
-                         * Scrolling snaps to 40 degrees vs. flick scroll's 30
-                         * degrees, since slow movements have poor resolution -
-                         * it's easy to interpret a slight angle as a steep
-                         * angle, since the sample rate is "unnecessarily" high.
-                         * 40 simply felt better than 30.
-                         */
-                        final double[] snapped = Escalator.snapDeltas(deltaX,
-                                deltaY, RATIO_OF_40_DEGREES);
-                        deltaX = snapped[0];
-                        deltaY = snapped[1];
-
-                        /*
-                         * if the snap failed once, let's follow the pointer
-                         * from now on.
-                         */
-                        if (oldDeltaX != 0 && deltaX == oldDeltaX
-                                && oldDeltaY != 0 && deltaY == oldDeltaY) {
-                            snappedScrollEnabled = false;
-                        }
-                    }
-
-                    moveScrollFromEvent(escalator, -deltaX, -deltaY,
-                            latestTouchMoveEvent.getNativeEvent());
-                }
-            };
-            private AnimationHandle animationHandle;
 
             public TouchHandlerBundle(final Escalator escalator) {
                 this.escalator = escalator;
@@ -472,36 +373,29 @@ public class Escalator extends Widget implements RequiresResize,
                     self.@com.vaadin.client.widgets.Escalator.JsniUtil.TouchHandlerBundle::touchEnd(*)(e);
                 });
             }-*/;
-            
-            static class IV {
-                static double i_duration = Window.getClientHeight() * 1.5; // (ms) duration of the inertial scrolling simulation. Devices with larger screens take longer durations (phone vs tablet is around 500ms vs 1500ms). This is a fixed value and does not influence speed and amount of momentum.
-                static double i_speedLimit =  1.2;                      // set maximum speed. Higher values will allow faster scroll (which comes down to a bigger offset for the duration of the momentum scroll) note: touch motion determines actual speed, this is just a limit.
-                static int i_moveThreshold =  10;                     // (ms) determines if a swipe occurred: time between last updated movement @ touchmove and time @ touchend, if smaller than this value, trigger inertial scrolling
-                static int i_offsetThreshold = 30;                       // (px) determines, together with i_offsetThreshold if a swipe occurred: if calculated offset is above this threshold
-                static int i_startThreshold = 10;                        // (px) how many pixels finger needs to move before a direction (horizontal or vertical) is chosen. This will make the direction detection more accurate, but can introduce a delay when starting the swipe if set too high
-                static double i_acceleration = 0.5;                      // increase the multiplier by this value, each time the user swipes again when still scrolling. The multiplier is used to multiply the offset. Set to 0 to disable.
-                static int i_accelerationT = 250;                    
-            }
-            
-            double startTs, moveTs, endTs, touchTime, maxOffset, offset, multiplier = 1, vel;
-            int pageX, pageY, moveX, moveY, distance, elemW, elemH;
-            Element elem;
-            boolean go, vertical = true;
-            
-            
+
+
+            // (ms) duration of the inertial scrolling simulation. Devices with larger screens take
+            // longer durations (phone vs tablet is around 500ms vs 1500ms). This is a fixed value
+            // and does not influence speed and amount of momentum.
+            private static int duration = (int)(Window.getClientHeight() * 1.5);
+
+            private double moveTs, offset, velocity = 0;
+            private int moveX, moveY;
+            boolean vertical = true;
+
             Animation animation = new Animation() {
                 public void onUpdate(double progress) {
                     getScroll().setScrollPosByDelta(offset * progress);
                 }
                 public double interpolate(double progress) {
-                    return Math.sqrt(1 - (progress - 1) * (progress - 1));                 
+                    return Math.sqrt(1 - (progress - 1) * (progress - 1));
                 };
                 protected void onComplete() {
-                    vel = 1;
                     escalator.body.domSorter.reschedule();
                 };
             };
-            
+
             private ScrollbarBundle getScroll() {
                 return vertical ? escalator.verticalScrollbar : escalator.horizontalScrollbar;
             }
@@ -511,88 +405,51 @@ public class Escalator extends Widget implements RequiresResize,
                     return;
                 }
 
-                startTs = moveTs = Duration.currentTimeMillis();
-                pageX = moveX = event.getNativeEvent().getTouches().get(0).getPageX();
-                pageY = moveY = event.getNativeEvent().getTouches().get(0).getPageY();
+                moveTs = Duration.currentTimeMillis();
+                moveX = event.getNativeEvent().getTouches().get(0).getPageX();
+                moveY = event.getNativeEvent().getTouches().get(0).getPageY();
 
-                if (animation.isRunning()) {
-                    multiplier += vel;
-                } else {
-                    multiplier = 1;
+                if (!animation.isRunning()) {
+                    velocity = 0;
                 }
                 animation.cancel();
             }
-            
+
+
             public void touchMove(final CustomTouchEvent event) {
+                if (event.getNativeEvent().getTouches().length() != 1) {
+                    return;
+                }
+
                 double now = Duration.currentTimeMillis();
+                double elapsed = now - moveTs;
+
                 int x = event.getNativeEvent().getTouches().get(0).getPageX();
                 int y = event.getNativeEvent().getTouches().get(0).getPageY();
                 vertical = Math.abs(moveY - y) > Math.abs(moveX - x);
-                distance = vertical ? (moveY - y) : (moveX - x);
-                vel = Math.abs(distance / (now - moveTs));
-                
-                getScroll().setScrollPosByDelta(distance);
+                int delta = vertical ? (moveY - y) : (moveX - x);
+
+                double v = 1000 * delta / (1 + elapsed);
+                velocity = 0.8 * v + 0.2 * velocity;
+
+                getScroll().setScrollPosByDelta(delta);
+
+                moveTs = now;
                 moveY = y;
                 moveX = x;
-                moveTs = now;
-                
+
                 event.getNativeEvent().preventDefault();
             }
-            
-            public void touchEnd(final CustomTouchEvent event) {
-                offset = Math.pow(vel, 2) * distance * multiplier;
-                console.log(offset);
-//                offset = (distance < 0) ? - multiplier * offset : multiplier * offset;
-                
-//                console.log("OFF", offset, distance, multiplier, acc);
-                            
-//                console.log(touchTime, IV.i_moveThreshold, offset, IV.i_offsetThreshold);
-                if ( Math.abs(offset) > (IV.i_offsetThreshold)) {
-                    console.log("RUN", offset, pageY, moveY, IV.i_duration);
-                    animation.run((int)IV.i_duration);
-                }
-            }
 
-//            public void touchEnd(final CustomTouchEvent event) {
-//                touches = event.getNativeEvent().getTouches().length();
-//                console.log("END " + touches);
-////                console.log("END", flickStartTime, System.currentTimeMillis(), System.currentTimeMillis() -  flickStartTime);
-//
-//                if (touches == 0 /*&& System.currentTimeMillis() - flickStartTime < 200 */) {
-//                    console.log("END", acceleration);
-//
-//                    /*
-//                     * We want to smooth the flick calculations here. We have
-//                     * taken a frame of reference every FLICK_POLL_FREQUENCY.
-//                     * But if the sample is too fresh, we might introduce noise
-//                     * in our sampling, so we use the older sample instead. it
-//                     * might be less accurate, but it's smoother.
-//                     * 
-//                     * flickPage?1 is the most recent one, while flickPage?2 is
-//                     * the previous one.
-//                     */
-//
-//                    final double finalPageY;
-//                    final double finalPageX;
-//                    double deltaT = flickTimestamp - flickStartTime;
-////                    boolean onlyOneSample = flickPageX2 < 0 || flickPageY2 < 0;
-////                    if (onlyOneSample) {
-//                        finalPageX = latestTouchMoveEvent.getPageX();
-//                        finalPageY = latestTouchMoveEvent.getPageY();
-////                    } else {
-////                        finalPageY = flickPageY2;
-////                        finalPageX = flickPageX2;
-////                    }
-//
-//                    double deltaX = finalPageX - flickPageX1;
-//                    double deltaY = finalPageY - flickPageY1;
-//
-//                    escalator.scroller
-//                            .handleFlickScroll(deltaX , deltaY , deltaT);
-//                    acceleration *= 2;
-////                    escalator.body.domSorter.reschedule();
-//                }
-//            }
+
+            public void touchEnd(final CustomTouchEvent event) {
+                if (event.getNativeEvent().getTouches().length() != 0 || Math.abs(velocity) < 10) {
+                    return;
+                }
+
+                offset = 0.8 * velocity;
+                animation.run(duration);
+            }
         }
 
         public static void moveScrollFromEvent(final Escalator escalator,
@@ -643,7 +500,7 @@ public class Escalator extends Widget implements RequiresResize,
         /**
          * Creates a new animation callback to handle touch-scrolling flick with
          * inertia.
-         * 
+         *
          * @param deltaX
          *            the last scrolling delta in the x-axis in a touchmove
          * @param deltaY
@@ -655,7 +512,7 @@ public class Escalator extends Widget implements RequiresResize,
                 final double deltaT) {
             velX = Math.max(Math.min(deltaX / deltaT, MAX_SPEED), -MAX_SPEED);
             velY = Math.max(Math.min(deltaY / deltaT, MAX_SPEED), -MAX_SPEED);
-            
+
             lastLeft = horizontalScrollbar.getScrollPos();
             lastTop = verticalScrollbar.getScrollPos();
 
@@ -833,7 +690,7 @@ public class Escalator extends Widget implements RequiresResize,
 
             return $entry(function(e) {
                 var target = e.target || e.srcElement; // IE8 uses e.scrElement
-            
+
                 // in case the scroll event was native (i.e. scrollbars were dragged, or
                 // the scrollTop/Left was manually modified), the bundles have old cache
                 // values. We need to make sure that the caches are kept up to date.
@@ -854,7 +711,7 @@ public class Escalator extends Widget implements RequiresResize,
             return $entry(function(e) {
                 var deltaX = e.deltaX ? e.deltaX : -0.5*e.wheelDeltaX;
                 var deltaY = e.deltaY ? e.deltaY : -0.5*e.wheelDeltaY;
-                
+
                 // IE8 has only delta y
                 if (isNaN(deltaY)) {
                     deltaY = -0.5*e.wheelDelta;
@@ -1143,7 +1000,7 @@ public class Escalator extends Widget implements RequiresResize,
 
         /**
          * Handles a touch-based flick scroll.
-         * 
+         *
          * @param deltaX
          *            the last scrolling delta in the x-axis in a touchmove
          * @param deltaY
@@ -1268,7 +1125,7 @@ public class Escalator extends Widget implements RequiresResize,
          * <p>
          * <em>Note:</em> To actually <em>create</em> such an element, use
          * {@link #createCellElement(int, int)} instead.
-         * 
+         *
          * @return the tag name for the element to represent cells as
          * @see #createCellElement(int, int)
          */
@@ -1285,7 +1142,7 @@ public class Escalator extends Widget implements RequiresResize,
          * <em>Implementation detail:</em> This method does no DOM modifications
          * (i.e. is very cheap to call) if there is no data for rows or columns
          * when this method is called.
-         * 
+         *
          * @see #hasColumnAndRowData()
          */
         @Override
@@ -1308,7 +1165,7 @@ public class Escalator extends Widget implements RequiresResize,
          * <em>Implementation detail:</em> This method does no DOM modifications
          * (i.e. is very cheap to call) if there are no rows in the DOM when
          * this method is called.
-         * 
+         *
          * @see #hasSomethingInDom()
          */
         @Override
@@ -1333,7 +1190,7 @@ public class Escalator extends Widget implements RequiresResize,
          * <p>
          * The implementation must call {@link #paintRemoveRow(Element, int)}
          * for each row that is removed from the DOM.
-         * 
+         *
          * @param index
          *            the logical index of the first removed row
          * @param numberOfRows
@@ -1351,7 +1208,7 @@ public class Escalator extends Widget implements RequiresResize,
          * <p>
          * This method must be called for each removed DOM row by any
          * {@link #paintRemoveRows(int, int)} implementation.
-         * 
+         *
          * @param tr
          *            the row element to remove.
          */
@@ -1408,9 +1265,9 @@ public class Escalator extends Widget implements RequiresResize,
          * <p>
          * Any extra content, such as spacers for the body, should not be
          * included in this count.
-         * 
+         *
          * @since 7.5.0
-         * 
+         *
          * @return the actual DOM count of rows
          */
         public abstract int getDomRowCount();
@@ -1421,7 +1278,7 @@ public class Escalator extends Widget implements RequiresResize,
          * <em>Implementation detail:</em> This method does no DOM modifications
          * (i.e. is very cheap to call) if there is no data for columns when
          * this method is called.
-         * 
+         *
          * @see #hasColumnAndRowData()
          */
         @Override
@@ -1469,7 +1326,7 @@ public class Escalator extends Widget implements RequiresResize,
         /**
          * Actually add rows into the DOM, now that everything can be
          * calculated.
-         * 
+         *
          * @param visualIndex
          *            the DOM index to add rows into
          * @param numberOfRows
@@ -1532,7 +1389,7 @@ public class Escalator extends Widget implements RequiresResize,
          * {@link EscalatorUpdater#postAttach(Row, Iterable) postAttach} before
          * and after inserting the row, respectively. The row should have its
          * cells already inserted.
-         * 
+         *
          * @param referenceRow
          *            the row after which to insert or null if insert as first
          * @param tr
@@ -1597,7 +1454,7 @@ public class Escalator extends Widget implements RequiresResize,
          * <em>Implementation detail:</em> This method does no DOM modifications
          * (i.e. is very cheap to call) if there is no data for columns when
          * this method is called.
-         * 
+         *
          * @see #hasColumnAndRowData()
          */
         @Override
@@ -1634,10 +1491,10 @@ public class Escalator extends Widget implements RequiresResize,
 
         /**
          * Create and setup an empty cell element.
-         * 
+         *
          * @param width
          *            the width of the cell, in pixels
-         * 
+         *
          * @return a set-up empty cell element
          */
         public TableCellElement createCellElement(final double width) {
@@ -1662,7 +1519,7 @@ public class Escalator extends Widget implements RequiresResize,
 
         /**
          * Gets the child element that is visually at a certain index
-         * 
+         *
          * @param index
          *            the index of the element to retrieve
          * @return the element at position {@code index}
@@ -1721,7 +1578,7 @@ public class Escalator extends Widget implements RequiresResize,
          * Precondition: The row must be already attached to the DOM and the
          * FlyweightCell instances corresponding to the new columns added to
          * {@code flyweightRow}.
-         * 
+         *
          * @param tr
          *            the row in which to insert the cells
          * @param logicalRowIndex
@@ -1811,9 +1668,9 @@ public class Escalator extends Widget implements RequiresResize,
          * <p>
          * In practice, this applies for all header and footer rows. For body
          * rows, it applies for all rows except spacer rows.
-         * 
+         *
          * @since 7.5.0
-         * 
+         *
          * @param tr
          *            the row element to check for if it is or has elements that
          *            can be frozen
@@ -1825,7 +1682,7 @@ public class Escalator extends Widget implements RequiresResize,
         /**
          * Iterates through all the cells in a column and returns the width of
          * the widest element in this RowContainer.
-         * 
+         *
          * @param index
          *            the index of the column to inspect
          * @return the pixel width of the widest element in the indicated column
@@ -1914,7 +1771,7 @@ public class Escalator extends Widget implements RequiresResize,
 
         /**
          * The primary style name for the container.
-         * 
+         *
          * @param primaryStyleName
          *            the style name to use as prefix for all row and cell style
          *            names.
@@ -1944,7 +1801,7 @@ public class Escalator extends Widget implements RequiresResize,
 
         /**
          * Returns the primary style name of the container.
-         * 
+         *
          * @return The primary style name or <code>null</code> if not set.
          */
         protected String getStylePrimaryName() {
@@ -2008,7 +1865,7 @@ public class Escalator extends Widget implements RequiresResize,
          * <em>Note:</em> This method does not calculate what a row's top
          * position should be. It just returns an assigned value, correct or
          * not.
-         * 
+         *
          * @param tr
          *            the table row element to measure
          * @return the current top position for {@code tr}
@@ -2123,7 +1980,7 @@ public class Escalator extends Widget implements RequiresResize,
                 /*
                  * To get the actual width of the contents, we need to get the
                  * cell content without any hardcoded height or width.
-                 * 
+                 *
                  * But we don't want to modify the existing column, because that
                  * might trigger some unnecessary listeners and whatnot. So,
                  * instead, we make a deep clone of that cell, but without any
@@ -2176,9 +2033,9 @@ public class Escalator extends Widget implements RequiresResize,
          * <p>
          * Note that {@link Escalator#getBody() the body} will calculate its
          * height, while the others will return a precomputed value.
-         * 
+         *
          * @since 7.5.0
-         * 
+         *
          * @return the height of this table section
          */
         protected abstract double getHeightOfSection();
@@ -2234,7 +2091,7 @@ public class Escalator extends Widget implements RequiresResize,
              * temporarily shrunk and then re-expanded. This leads to the fact
              * that the scroll position is scooted up a bit. This means that we
              * need to reset the position here.
-             * 
+             *
              * If Escalator, at some point, gets a JIT evaluation functionality,
              * this re-setting is a strong candidate for removal.
              */
@@ -2423,14 +2280,14 @@ public class Escalator extends Widget implements RequiresResize,
          * The order in which row elements are rendered visually in the browser,
          * with the help of CSS tricks. Usually has nothing to do with the DOM
          * order.
-         * 
+         *
          * @see #sortDomElements()
          */
         private final LinkedList<TableRowElement> visualRowOrder = new LinkedList<TableRowElement>();
 
         /**
          * The logical index of the topmost row.
-         * 
+         *
          * @deprecated Use the accessors {@link #setTopRowLogicalIndex(int)},
          *             {@link #updateTopRowLogicalIndex(int)} and
          *             {@link #getTopRowLogicalIndex()} instead
@@ -2683,15 +2540,6 @@ public class Escalator extends Widget implements RequiresResize,
 
             if (rowsWereMoved) {
                 fireRowVisibilityChangeEvent();
-
-                if (scroller.touchHandlerBundle.touches == 0) {
-                    /*
-                     * this will never be called on touch scrolling. That is
-                     * handled separately and explicitly by
-                     * TouchHandlerBundle.touchEnd();
-                     */
-                    domSorter.reschedule();
-                }
             }
         }
 
@@ -2723,7 +2571,7 @@ public class Escalator extends Widget implements RequiresResize,
              * TODO: this method should probably only add physical rows, and not
              * populate them - let everything be populated as appropriate by the
              * logic that follows.
-             * 
+             *
              * This also would lead to the fact that paintInsertRows wouldn't
              * need to return anything.
              */
@@ -2767,7 +2615,7 @@ public class Escalator extends Widget implements RequiresResize,
                 /*
                  * At this point, we have added new escalator rows, if so
                  * needed.
-                 * 
+                 *
                  * If more rows were added than the new escalator rows can
                  * account for, we need to start to spin the escalator to update
                  * the remaining rows aswell.
@@ -2809,7 +2657,7 @@ public class Escalator extends Widget implements RequiresResize,
         /**
          * Move escalator rows around, and make sure everything gets
          * appropriately repositioned and repainted.
-         * 
+         *
          * @param visualSourceRange
          *            the range of rows to move to a new place
          * @param visualTargetIndex
@@ -2852,7 +2700,7 @@ public class Escalator extends Widget implements RequiresResize,
              * about. Having 10 rows, if we move 0..1 to index 10 (to the end of
              * the collection), the target range will end up being 8..9, instead
              * of 10..11.
-             * 
+             *
              * This applies only if we move elements forward in the collection,
              * not backward.
              */
@@ -2934,7 +2782,7 @@ public class Escalator extends Widget implements RequiresResize,
          * position with 27.5px will move the viewport 27.5px down, and place
          * the row at 20px.</dd>
          * </dl>
-         * 
+         *
          * @param yDelta
          *            the delta of pixels by which to move the viewport and
          *            content. A positive value moves everything downwards,
@@ -2976,7 +2824,7 @@ public class Escalator extends Widget implements RequiresResize,
          * <p>
          * If Escalator already is at (or beyond) max capacity, this method does
          * nothing to the DOM.
-         * 
+         *
          * @param index
          *            the index at which to add new escalator rows.
          *            <em>Note:</em>It is assumed that the index is both the
@@ -3046,7 +2894,7 @@ public class Escalator extends Widget implements RequiresResize,
             /*
              * Removing spacers as the very first step will correct the
              * scrollbars and row offsets right away.
-             * 
+             *
              * TODO: actually, it kinda sounds like a Grid feature that a spacer
              * would be associated with a particular row. Maybe it would be
              * better to have a spacer separate from rows, and simply collapse
@@ -3070,15 +2918,15 @@ public class Escalator extends Widget implements RequiresResize,
 
             /*
              * Adjust scroll position in one of two scenarios:
-             * 
+             *
              * 1) Rows were removed above. Then we just need to adjust the
              * scrollbar by the height of the removed rows.
-             * 
+             *
              * 2) There are no logical rows above, and at least the first (if
              * not more) visual row is removed. Then we need to snap the scroll
              * position to the first visible row (i.e. reset scroll position to
              * absolute 0)
-             * 
+             *
              * The logic is optimized in such a way that the
              * moveViewportAndContent is called only once, to avoid extra
              * reflows, and thus the code might seem a bit obscure.
@@ -3174,17 +3022,17 @@ public class Escalator extends Widget implements RequiresResize,
 
                     /*
                      * Two things (or a combination thereof) can happen:
-                     * 
+                     *
                      * 1) We're scrolled to the bottom, the last rows are
                      * removed. SOLUTION: moveAndUpdateEscalatorRows the
                      * bottommost rows, and place them at the top to be
                      * refreshed.
-                     * 
+                     *
                      * 2) We're scrolled somewhere in the middle, arbitrary rows
                      * are removed. SOLUTION: moveAndUpdateEscalatorRows the
                      * removed rows, and place them at the bottom to be
                      * refreshed.
-                     * 
+                     *
                      * Since a combination can also happen, we need to handle
                      * this in a smart way, all while avoiding
                      * double-refreshing.
@@ -3229,7 +3077,7 @@ public class Escalator extends Widget implements RequiresResize,
                          * fixed automatically. Because the amount of rows is
                          * decreased, the viewport is pushed up as the scrollbar
                          * shrinks. So no need to do anything there.
-                         * 
+                         *
                          * TODO [[optimize]]: This might lead to a double body
                          * refresh. Needs investigation.
                          */
@@ -3258,12 +3106,12 @@ public class Escalator extends Widget implements RequiresResize,
                         /*
                          * We're in a combination, where we need to both scroll
                          * up AND show new rows at the bottom.
-                         * 
+                         *
                          * Example: Scrolled down to show the second to last
                          * row. Remove two. Viewport scrolls up, revealing the
                          * row above row. The last element collapses up and into
                          * view.
-                         * 
+                         *
                          * Reminder: this use case handles only the case when
                          * there are enough escalator rows to still render a
                          * full view. I.e. all escalator rows will _always_ be
@@ -3275,7 +3123,7 @@ public class Escalator extends Widget implements RequiresResize,
                          * |3| ==> |*| ==> |5| <- newly rendered
                          * |4|     |*|
                          *  5       5
-                         *  
+                         *
                          *  1       1      |1| <- newly rendered
                          * |2|     |*|     |4|
                          * |3| ==> |*| ==> |5| <- newly rendered
@@ -3285,7 +3133,7 @@ public class Escalator extends Widget implements RequiresResize,
 
                         /*
                          * STEP 1:
-                         * 
+                         *
                          * reorganize deprecated escalator rows to bottom, but
                          * don't re-render anything yet
                          */
@@ -3314,14 +3162,14 @@ public class Escalator extends Widget implements RequiresResize,
 
                         /*
                          * STEP 2:
-                         * 
+                         *
                          * manually scroll
                          */
                         /*-
                          *  1      |1| <-- newly rendered (by scrolling)
                          * |4|     |4|
                          * |*| ==> |*|
-                         * |*|       
+                         * |*|
                          *  5       5
                          */
                         final double newScrollTop = contentBottom
@@ -3346,14 +3194,14 @@ public class Escalator extends Widget implements RequiresResize,
 
                         /*
                          * STEP 3:
-                         * 
+                         *
                          * update remaining escalator rows
                          */
                         /*-
                          * |1|     |1|
                          * |4| ==> |4|
                          * |*|     |5| <-- newly rendered
-                         *           
+                         *
                          *  5
                          */
 
@@ -3427,7 +3275,7 @@ public class Escalator extends Widget implements RequiresResize,
              *  :       :      |4| <- newly rendered
              * |5|     |5|     |5|
              * |6| ==> |*| ==> |7|
-             * |7|     |7|     
+             * |7|     |7|
              */
 
             final int logicalTargetIndex = getLogicalRowIndex(visualRowOrder
@@ -3480,7 +3328,7 @@ public class Escalator extends Widget implements RequiresResize,
          * <li>convertToVisual([35..1]) &rarr; [0..-1] <em>(empty)</em>
          * <li>convertToVisual([0..100]) &rarr; [0..9]
          * </ul>
-         * 
+         *
          * @return a logical range converted to a visual range, truncated to the
          *         current viewport. The first visual row has the index 0.
          */
@@ -3592,14 +3440,14 @@ public class Escalator extends Widget implements RequiresResize,
             /*
              * This method indeed has a smell very similar to paintRemoveRows
              * and paintInsertRows.
-             * 
+             *
              * Unfortunately, those the code can't trivially be shared, since
              * there are some slight differences in the respective
              * responsibilities. The "paint" methods fake the addition and
              * removal of rows, and make sure to either push existing data out
              * of view, or draw new data into view. Only in some special cases
              * will the DOM element count change.
-             * 
+             *
              * This method, however, has the explicit responsibility to verify
              * that when "something" happens, we still have the correct amount
              * of escalator rows in the DOM, and if not, we make sure to modify
@@ -3649,7 +3497,7 @@ public class Escalator extends Widget implements RequiresResize,
                      * index, we thank for the added escalator rows, but since
                      * they're painted in the wrong CSS position, we need to
                      * move them to their actual locations.
-                     * 
+                     *
                      * Note: this is the second (see body.paintInsertRows)
                      * occasion where fillAndPopulateEscalatorRowsIfNeeded would
                      * behave "more correctly" if it only would add escalator
@@ -3662,17 +3510,17 @@ public class Escalator extends Widget implements RequiresResize,
                 } else {
                     /*
                      * TODO [[optimize]]
-                     * 
+                     *
                      * We're scrolled so far down that all rows can't be simply
                      * appended at the end, since we might start displaying
                      * escalator rows that don't exist. To avoid the mess that
                      * is body.paintRemoveRows, this is a dirty hack that dumbs
                      * the problem down to a more basic and already-solved
                      * problem:
-                     * 
+                     *
                      * 1) scroll all the way up 2) add the missing escalator
                      * rows 3) scroll back to the original position.
-                     * 
+                     *
                      * Letting the browser scroll back to our original position
                      * will automatically solve any possible overflow problems,
                      * since the browser will not allow us to scroll beyond the
@@ -3705,7 +3553,7 @@ public class Escalator extends Widget implements RequiresResize,
                  * extra escalator row at the bottom, we'll probably end up with
                  * blank space at the bottom of the escalator, and one extra row
                  * above the header.
-                 * 
+                 *
                  * Experimentation idea #1: calculate "scrollbottom" vs content
                  * bottom and remove one row from top, rest from bottom. This
                  * FAILED, since setHeight has already happened, thus we never
@@ -3781,7 +3629,7 @@ public class Escalator extends Widget implements RequiresResize,
 
         /**
          * Sorts the rows in the DOM to correspond to the visual order.
-         * 
+         *
          * @see #visualRowOrder
          */
         private void sortDomElements() {
@@ -3803,13 +3651,13 @@ public class Escalator extends Widget implements RequiresResize,
 
             /*
              * Two cases handled simultaneously:
-             * 
+             *
              * 1) No focus on rows. We iterate visualRowOrder backwards, and
              * take the respective element in the DOM, and place it as the first
              * child in the body element. Then we take the next-to-last from
              * visualRowOrder, and put that first, pushing the previous row as
              * the second child. And so on...
-             * 
+             *
              * 2) Focus on some row within Escalator body. Again, we iterate
              * visualRowOrder backwards. This time, we use the focused row as a
              * pivot: Instead of placing rows from the bottom of visualRowOrder
@@ -3873,7 +3721,7 @@ public class Escalator extends Widget implements RequiresResize,
 
         /**
          * Get the {@literal <tbody>} row that contains (or has) focus.
-         * 
+         *
          * @return The {@literal <tbody>} row that contains a focused DOM
          *         element, or <code>null</code> if focus is outside of a body
          *         row.
@@ -3938,7 +3786,7 @@ public class Escalator extends Widget implements RequiresResize,
          * A correct result requires that both {@link #getDefaultRowHeight()} is
          * consistent, and the placement and height of all spacers above the
          * given logical index are consistent.
-         * 
+         *
          * @param logicalIndex
          *            the logical index of the row for which to calculate the
          *            top position
@@ -4031,7 +3879,7 @@ public class Escalator extends Widget implements RequiresResize,
 
             /**
              * Returns the actual width in the DOM.
-             * 
+             *
              * @return the width in pixels in the DOM. Returns -1 if the column
              *         needs measuring, but has not been yet measured
              */
@@ -4040,7 +3888,7 @@ public class Escalator extends Widget implements RequiresResize,
                  * This might return an untrue value (e.g. during init/onload),
                  * since we haven't had a proper chance to actually calculate
                  * widths yet.
-                 * 
+                 *
                  * This is fixed during Escalator.onLoad, by the call to
                  * "measureAndSetWidthIfNeeded", which fixes "everything".
                  */
@@ -4082,7 +3930,7 @@ public class Escalator extends Widget implements RequiresResize,
          */
         /**
          * A cached array of all the calculated column widths.
-         * 
+         *
          * @see #getCalculatedColumnWidths()
          */
         private double[] widthsArray = null;
@@ -4093,7 +3941,7 @@ public class Escalator extends Widget implements RequiresResize,
          * <em>Implementation detail:</em> This method does no DOM modifications
          * (i.e. is very cheap to call) if there are no rows in the DOM when
          * this method is called.
-         * 
+         *
          * @see #hasSomethingInDom()
          */
         @Override
@@ -4148,7 +3996,7 @@ public class Escalator extends Widget implements RequiresResize,
              * reveal further colspans, modifying the DOM structure once again,
              * ending in a cascade of updates. Because we don't know how the
              * data is updated.
-             * 
+             *
              * So, instead, we don't do anything. The client code is responsible
              * for re-rendering the content (if so desired). Everything Just
              * Works (TM) if colspans aren't used.
@@ -4189,7 +4037,7 @@ public class Escalator extends Widget implements RequiresResize,
 
         /**
          * Calculate the width of a row, as the sum of columns' widths.
-         * 
+         *
          * @return the width of a row, in pixels
          */
         public double calculateRowWidth() {
@@ -4219,7 +4067,7 @@ public class Escalator extends Widget implements RequiresResize,
          * <em>Implementation detail:</em> This method does no DOM modifications
          * (i.e. is very cheap to call) if there is no data for rows when this
          * method is called.
-         * 
+         *
          * @see #hasColumnAndRowData()
          */
         @Override
@@ -4298,7 +4146,7 @@ public class Escalator extends Widget implements RequiresResize,
              * affect surrounding colspans, modifying the DOM structure once
              * again, ending in a cascade of updates. Because we don't know how
              * the data is updated.
-             * 
+             *
              * So, instead, we don't do anything. The client code is responsible
              * for re-rendering the content (if so desired). Everything Just
              * Works (TM) if colspans aren't used.
@@ -4430,7 +4278,7 @@ public class Escalator extends Widget implements RequiresResize,
 
         /**
          * Calculates the width of the columns in a given range.
-         * 
+         *
          * @param columns
          *            the columns to calculate
          * @return the total width of the columns in the given
@@ -4754,7 +4602,7 @@ public class Escalator extends Widget implements RequiresResize,
                     /*
                      * We can't use adjustScrollPos here, probably because of a
                      * bookkeeping-related race condition.
-                     * 
+                     *
                      * This particular situation is easier, however, since we
                      * know exactly how many pixels we need to move (heightDiff)
                      * and all elements below the spacer always need to move
@@ -4780,7 +4628,7 @@ public class Escalator extends Widget implements RequiresResize,
                          * If the scroll top is in the middle of the modified
                          * spacer, we want to scroll the viewport up as usual,
                          * but we don't want to scroll past the top of it.
-                         * 
+                         *
                          * Math.max ensures this (remember: the result is going
                          * to be negative).
                          */
@@ -4880,7 +4728,7 @@ public class Escalator extends Widget implements RequiresResize,
             /**
              * Crop the decorator element so that it doesn't overlap the header
              * and footer sections.
-             * 
+             *
              * @param bodyTop
              *            the top cordinate of the escalator body
              * @param bodyBottom
@@ -5049,7 +4897,7 @@ public class Escalator extends Widget implements RequiresResize,
 
         /**
          * Calculates the sum of all spacers.
-         * 
+         *
          * @return sum of all spacers, or 0 if no spacers present
          */
         public double getSpacerHeightsSum() {
@@ -5058,7 +4906,7 @@ public class Escalator extends Widget implements RequiresResize,
 
         /**
          * Calculates the sum of all spacers from one row index onwards.
-         * 
+         *
          * @param logicalRowIndex
          *            the spacer to include as the first calculated spacer
          * @return the sum of all spacers from {@code logicalRowIndex} and
@@ -5074,7 +4922,7 @@ public class Escalator extends Widget implements RequiresResize,
         /**
          * Get all spacers from one pixel point onwards.
          * <p>
-         * 
+         *
          * In this method, the {@link SpacerInclusionStrategy} has the following
          * meaning when a spacer lies in the middle of either pixel argument:
          * <dl>
@@ -5085,7 +4933,7 @@ public class Escalator extends Widget implements RequiresResize,
          * <dt>{@link SpacerInclusionStrategy#NONE NONE}
          * <dd>ignore the spacer
          * </dl>
-         * 
+         *
          * @param px
          *            the pixel point after which to return all spacers
          * @param strategy
@@ -5120,7 +4968,7 @@ public class Escalator extends Widget implements RequiresResize,
 
         /**
          * Gets the spacers currently rendered in the DOM.
-         * 
+         *
          * @return an unmodifiable (but live) collection of the spacers
          *         currently in the DOM
          */
@@ -5143,7 +4991,7 @@ public class Escalator extends Widget implements RequiresResize,
          * <dt>{@link SpacerInclusionStrategy#NONE NONE}
          * <dd>ignore that spacer
          * </dl>
-         * 
+         *
          * @param rangeTop
          *            the top pixel point
          * @param topInclusion
@@ -5262,7 +5110,7 @@ public class Escalator extends Widget implements RequiresResize,
         /**
          * Gets the amount of pixels occupied by spacers from the top until a
          * certain spot from the top of the body.
-         * 
+         *
          * @param px
          *            pixels counted from the top
          * @return the pixels occupied by spacers up until {@code px}
@@ -5276,7 +5124,7 @@ public class Escalator extends Widget implements RequiresResize,
         /**
          * Gets the amount of pixels occupied by spacers until a logical row
          * index.
-         * 
+         *
          * @param logicalIndex
          *            a logical row index
          * @return the pixels occupied by spacers up until {@code logicalIndex}
@@ -5297,7 +5145,7 @@ public class Escalator extends Widget implements RequiresResize,
 
         /**
          * Gets the height of the spacer for a row index.
-         * 
+         *
          * @param rowIndex
          *            the index of the row where the spacer should be
          * @return the height of the spacer at index {@code rowIndex}, or 0 if
@@ -5456,7 +5304,7 @@ public class Escalator extends Widget implements RequiresResize,
          * <p>
          * <em>Note:</em> This method does not check for the validity of any
          * arguments.
-         * 
+         *
          * @param index
          *            the index of first row to move
          * @param numberOfRows
@@ -5529,7 +5377,7 @@ public class Escalator extends Widget implements RequiresResize,
     /**
      * Utility class for parsing and storing SubPart request string attributes
      * for Grid and Escalator.
-     * 
+     *
      * @since 7.5.0
      */
     public static class SubPartArguments {
@@ -5616,7 +5464,7 @@ public class Escalator extends Widget implements RequiresResize,
     /**
      * TODO: investigate whether this field is now unnecessary, as
      * {@link ScrollbarBundle} now caches its values.
-     * 
+     *
      * @deprecated maybe...
      */
     @Deprecated
@@ -5625,7 +5473,7 @@ public class Escalator extends Widget implements RequiresResize,
     /**
      * TODO: investigate whether this field is now unnecessary, as
      * {@link ScrollbarBundle} now caches its values.
-     * 
+     *
      * @deprecated maybe...
      */
     @Deprecated
@@ -5790,7 +5638,7 @@ public class Escalator extends Widget implements RequiresResize,
         /*
          * Because of all the IE hacks we've done above, we now have scrollbars
          * hiding underneath a lot of DOM elements.
-         * 
+         *
          * This leads to problems with OSX (and many touch-only devices) when
          * scrollbars are only shown when scrolling, as the scrollbar elements
          * are hidden underneath everything. We trust that the scrollbars behave
@@ -5825,7 +5673,7 @@ public class Escalator extends Widget implements RequiresResize,
                  * after it is first detached and then reattached to the DOM.
                  * This only applies to a bare Escalator; inside a Grid
                  * everything works fine either way.
-                 * 
+                 *
                  * The three autodetectRowHeightLater calls above seem obvious
                  * suspects at first. However, they don't seem to have anything
                  * to do with the issue, as they are no-ops in the
@@ -5837,13 +5685,13 @@ public class Escalator extends Widget implements RequiresResize,
 
         /*
          * Note: There's no need to explicitly insert rows into the body.
-         * 
+         *
          * recalculateElementSizes will recalculate the height of the body. This
          * has the side-effect that as the body's size grows bigger (i.e. from 0
          * to its actual height), more escalator rows are populated. Those
          * escalator rows are then immediately rendered. This, in effect, is the
          * same thing as inserting those rows.
-         * 
+         *
          * In fact, having an extra paintInsertRows here would lead to duplicate
          * rows.
          */
@@ -5939,7 +5787,7 @@ public class Escalator extends Widget implements RequiresResize,
     /**
      * Check whether there are both columns and any row data (for either
      * headers, body or footer).
-     * 
+     *
      * @return <code>true</code> iff header, body or footer has rows && there
      *         are columns
      */
@@ -5950,7 +5798,7 @@ public class Escalator extends Widget implements RequiresResize,
 
     /**
      * Check whether there are any cells in the DOM.
-     * 
+     *
      * @return <code>true</code> iff header, body or footer has any child
      *         elements
      */
@@ -5961,7 +5809,7 @@ public class Escalator extends Widget implements RequiresResize,
 
     /**
      * Returns the row container for the header in this Escalator.
-     * 
+     *
      * @return the header. Never <code>null</code>
      */
     public RowContainer getHeader() {
@@ -5970,7 +5818,7 @@ public class Escalator extends Widget implements RequiresResize,
 
     /**
      * Returns the row container for the body in this Escalator.
-     * 
+     *
      * @return the body. Never <code>null</code>
      */
     public BodyRowContainer getBody() {
@@ -5979,7 +5827,7 @@ public class Escalator extends Widget implements RequiresResize,
 
     /**
      * Returns the row container for the footer in this Escalator.
-     * 
+     *
      * @return the footer. Never <code>null</code>
      */
     public RowContainer getFooter() {
@@ -5988,7 +5836,7 @@ public class Escalator extends Widget implements RequiresResize,
 
     /**
      * Returns the configuration object for the columns in this Escalator.
-     * 
+     *
      * @return the configuration object for the columns in this Escalator. Never
      *         <code>null</code>
      */
@@ -6012,7 +5860,7 @@ public class Escalator extends Widget implements RequiresResize,
      * <p>
      * If Escalator is currently not in {@link HeightMode#CSS}, the given value
      * is remembered, and applied once the mode is applied.
-     * 
+     *
      * @see #setHeightMode(HeightMode)
      */
     @Override
@@ -6052,7 +5900,7 @@ public class Escalator extends Widget implements RequiresResize,
     /**
      * Returns the vertical scroll offset. Note that this is not necessarily the
      * same as the {@code scrollTop} attribute in the DOM.
-     * 
+     *
      * @return the logical vertical scroll offset
      */
     public double getScrollTop() {
@@ -6062,7 +5910,7 @@ public class Escalator extends Widget implements RequiresResize,
     /**
      * Sets the vertical scroll offset. Note that this will not necessarily
      * become the same as the {@code scrollTop} attribute in the DOM.
-     * 
+     *
      * @param scrollTop
      *            the number of pixels to scroll vertically
      */
@@ -6073,7 +5921,7 @@ public class Escalator extends Widget implements RequiresResize,
     /**
      * Returns the logical horizontal scroll offset. Note that this is not
      * necessarily the same as the {@code scrollLeft} attribute in the DOM.
-     * 
+     *
      * @return the logical horizontal scroll offset
      */
     public double getScrollLeft() {
@@ -6083,7 +5931,7 @@ public class Escalator extends Widget implements RequiresResize,
     /**
      * Sets the logical horizontal scroll offset. Note that will not necessarily
      * become the same as the {@code scrollLeft} attribute in the DOM.
-     * 
+     *
      * @param scrollLeft
      *            the number of pixels to scroll horizontally
      */
@@ -6094,7 +5942,7 @@ public class Escalator extends Widget implements RequiresResize,
     /**
      * Returns the scroll width for the escalator. Note that this is not
      * necessary the same as {@code Element.scrollWidth} in the DOM.
-     * 
+     *
      * @since 7.5.0
      * @return the scroll width in pixels
      */
@@ -6105,7 +5953,7 @@ public class Escalator extends Widget implements RequiresResize,
     /**
      * Returns the scroll height for the escalator. Note that this is not
      * necessary the same as {@code Element.scrollHeight} in the DOM.
-     * 
+     *
      * @since 7.5.0
      * @return the scroll height in pixels
      */
@@ -6117,7 +5965,7 @@ public class Escalator extends Widget implements RequiresResize,
      * Scrolls the body horizontally so that the column at the given index is
      * visible and there is at least {@code padding} pixels in the direction of
      * the given scroll destination.
-     * 
+     *
      * @param columnIndex
      *            the index of the column to scroll to
      * @param destination
@@ -6160,7 +6008,7 @@ public class Escalator extends Widget implements RequiresResize,
      * Scrolls the body vertically so that the row at the given index is visible
      * and there is at least {@literal padding} pixels to the given scroll
      * destination.
-     * 
+     *
      * @param rowIndex
      *            the index of the logical row to scroll to
      * @param destination
@@ -6196,7 +6044,7 @@ public class Escalator extends Widget implements RequiresResize,
      * Scrolls the body vertically so that the spacer at the given row index is
      * visible and there is at least {@literal padding} pixesl to the given
      * scroll destination.
-     * 
+     *
      * @since 7.5.0
      * @param spacerIndex
      *            the row index of the spacer to scroll to
@@ -6224,7 +6072,7 @@ public class Escalator extends Widget implements RequiresResize,
      * <p>
      * If a spacer is not open at that index, this method behaves like
      * {@link #scrollToRow(int, ScrollDestination, int)}
-     * 
+     *
      * @since 7.5.0
      * @param rowIndex
      *            the index of the logical row to scroll to. -1 takes the
@@ -6340,7 +6188,7 @@ public class Escalator extends Widget implements RequiresResize,
     /**
      * Snap deltas of x and y to the major four axes (up, down, left, right)
      * with a threshold of a number of degrees from those axes.
-     * 
+     *
      * @param deltaX
      *            the delta in the x axis
      * @param deltaY
@@ -6373,7 +6221,7 @@ public class Escalator extends Widget implements RequiresResize,
      * Adds an event handler that gets notified when the range of visible rows
      * changes e.g. because of scrolling, row resizing or spacers
      * appearing/disappearing.
-     * 
+     *
      * @param rowVisibilityChangeHandler
      *            the event handler
      * @return a handler registration for the added handler
@@ -6401,7 +6249,7 @@ public class Escalator extends Widget implements RequiresResize,
 
     /**
      * Gets the logical index range of currently visible rows.
-     * 
+     *
      * @return logical index range of visible rows
      */
     public Range getVisibleRowRange() {
@@ -6416,7 +6264,7 @@ public class Escalator extends Widget implements RequiresResize,
     /**
      * Returns the widget from a cell node or <code>null</code> if there is no
      * widget in the cell
-     * 
+     *
      * @param cellNode
      *            The cell node
      */
@@ -6464,7 +6312,7 @@ public class Escalator extends Widget implements RequiresResize,
      * <p>
      * If Escalator is currently not in {@link HeightMode#ROW}, the given value
      * is remembered, and applied once the mode is applied.
-     * 
+     *
      * @param rows
      *            the number of rows that should be visible in Escalator's body
      * @throws IllegalArgumentException
@@ -6493,7 +6341,7 @@ public class Escalator extends Widget implements RequiresResize,
      * {@link #getHeightMode()} is {@link HeightMode#ROW}.
      * <p>
      * By default, it is 10.
-     * 
+     *
      * @return the amount of rows that are being shown in Escalator's body
      * @see #setHeightByRows(double)
      */
@@ -6533,7 +6381,7 @@ public class Escalator extends Widget implements RequiresResize,
      * inserted or removed, the widget will resize itself to still display the
      * required amount of rows in its body. It also takes the horizontal
      * scrollbar into account.
-     * 
+     *
      * @param heightMode
      *            the mode in to which Escalator should be set
      */
@@ -6543,7 +6391,7 @@ public class Escalator extends Widget implements RequiresResize,
          * widget dimensions (height/width) on each state change event. The
          * original design was to have setHeight an setHeightByRow be equals,
          * and whichever was called the latest was considered in effect.
-         * 
+         *
          * But, because of Vaadin always calling setHeight on the widget, this
          * approach doesn't work.
          */
@@ -6569,7 +6417,7 @@ public class Escalator extends Widget implements RequiresResize,
      * Returns the current {@link HeightMode} the Escalator is in.
      * <p>
      * Defaults to {@link HeightMode#CSS}.
-     * 
+     *
      * @return the current HeightMode
      */
     public HeightMode getHeightMode() {
@@ -6578,7 +6426,7 @@ public class Escalator extends Widget implements RequiresResize,
 
     /**
      * Returns the {@link RowContainer} which contains the element.
-     * 
+     *
      * @param element
      *            the element to check for
      * @return the container the element is in or <code>null</code> if element
@@ -6603,7 +6451,7 @@ public class Escalator extends Widget implements RequiresResize,
      * <p>
      * If a direction is locked, the escalator will refuse to scroll in that
      * direction.
-     * 
+     *
      * @param direction
      *            the orientation of the scroll to set the lock status
      * @param locked
@@ -6626,7 +6474,7 @@ public class Escalator extends Widget implements RequiresResize,
 
     /**
      * Checks whether or not an direction is locked for scrolling.
-     * 
+     *
      * @param direction
      *            the direction of the scroll of which to check the lock status
      * @return <code>true</code> iff the direction is locked
@@ -6645,7 +6493,7 @@ public class Escalator extends Widget implements RequiresResize,
 
     /**
      * Adds a scroll handler to this escalator
-     * 
+     *
      * @param handler
      *            the scroll handler to add
      * @return a handler registration for the registered scroll handler
@@ -6671,7 +6519,7 @@ public class Escalator extends Widget implements RequiresResize,
     /**
      * Gets the maximum number of body rows that can be visible on the screen at
      * once.
-     * 
+     *
      * @return the maximum capacity
      */
     public int getMaxVisibleRowCount() {
@@ -6681,7 +6529,7 @@ public class Escalator extends Widget implements RequiresResize,
     /**
      * Gets the escalator's inner width. This is the entire width in pixels,
      * without the vertical scrollbar.
-     * 
+     *
      * @return escalator's inner width
      */
     public double getInnerWidth() {
