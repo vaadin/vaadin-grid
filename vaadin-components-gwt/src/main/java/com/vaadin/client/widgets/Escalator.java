@@ -380,19 +380,31 @@ public class Escalator extends Widget implements RequiresResize,
             // and does not influence speed and amount of momentum.
             private static int duration = (int)(Window.getClientHeight() * 1.5);
 
-            private double moveTs, offset, velocity = 0;
-            private int moveX, moveY;
-            boolean vertical = true;
+            private double moveTs, velocity = 0;
+            private int moveX, moveY, multiplicator = 1;
+            private boolean vertical = true;
 
-            Animation animation = new Animation() {
+            private Animation animation = new Animation() {
+                private double position = 0;
+                private double offset = 0;
                 public void onUpdate(double progress) {
-                    getScroll().setScrollPosByDelta(offset * progress);
+                    getScroll().setScrollPos(position + (offset * progress));
                 }
                 public double interpolate(double progress) {
                     return Math.sqrt(1 - (progress - 1) * (progress - 1));
                 };
                 protected void onComplete() {
                     escalator.body.domSorter.reschedule();
+                };
+                public void run(int duration) {
+                    double maxRw = -getScroll().getScrollPos();
+                    double maxFw = getScroll().getScrollSize() - getScroll().getOffsetSize() + maxRw;
+                    if (maxRw < 0 && maxFw > 0) {
+                        offset = 0.8 * velocity * multiplicator;
+                        offset = Math.min(Math.max(offset, maxRw), maxFw);
+                        position = getScroll().getScrollPos();
+                        super.run(duration);
+                    }
                 };
             };
 
@@ -410,11 +422,12 @@ public class Escalator extends Widget implements RequiresResize,
                 moveY = event.getNativeEvent().getTouches().get(0).getPageY();
 
                 if (!animation.isRunning()) {
-                    velocity = 0;
+                    velocity = multiplicator = 1;
+                } else {
+                    multiplicator ++;
                 }
                 animation.cancel();
             }
-
 
             public void touchMove(final CustomTouchEvent event) {
                 if (event.getNativeEvent().getTouches().length() != 1) {
@@ -441,14 +454,10 @@ public class Escalator extends Widget implements RequiresResize,
                 event.getNativeEvent().preventDefault();
             }
 
-
             public void touchEnd(final CustomTouchEvent event) {
-                if (event.getNativeEvent().getTouches().length() != 0 || Math.abs(velocity) < 10) {
-                    return;
+                if (event.getNativeEvent().getTouches().length() == 0 && Math.abs(velocity) > 10) {
+                    animation.run(duration);
                 }
-
-                offset = 0.8 * velocity;
-                animation.run(duration);
             }
         }
 
