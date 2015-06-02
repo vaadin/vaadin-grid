@@ -31,6 +31,7 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.google.gwt.animation.client.Animation;
 import com.google.gwt.animation.client.AnimationScheduler;
 import com.google.gwt.animation.client.AnimationScheduler.AnimationCallback;
 import com.google.gwt.animation.client.AnimationScheduler.AnimationHandle;
@@ -472,6 +473,21 @@ public class Escalator extends Widget implements RequiresResize,
                 });
             }-*/;
             
+            static class IV {
+                static double i_duration = Window.getClientHeight() * 1.5; // (ms) duration of the inertial scrolling simulation. Devices with larger screens take longer durations (phone vs tablet is around 500ms vs 1500ms). This is a fixed value and does not influence speed and amount of momentum.
+                static double i_speedLimit =  1.2;                      // set maximum speed. Higher values will allow faster scroll (which comes down to a bigger offset for the duration of the momentum scroll) note: touch motion determines actual speed, this is just a limit.
+                static int i_moveThreshold =  10;                     // (ms) determines if a swipe occurred: time between last updated movement @ touchmove and time @ touchend, if smaller than this value, trigger inertial scrolling
+                static int i_offsetThreshold = 30;                       // (px) determines, together with i_offsetThreshold if a swipe occurred: if calculated offset is above this threshold
+                static int i_startThreshold = 10;                        // (px) how many pixels finger needs to move before a direction (horizontal or vertical) is chosen. This will make the direction detection more accurate, but can introduce a delay when starting the swipe if set too high
+                static double i_acceleration = 0.5;                      // increase the multiplier by this value, each time the user swipes again when still scrolling. The multiplier is used to multiply the offset. Set to 0 to disable.
+                static int i_accelerationT = 250;                    
+            }
+            
+            double startTs, moveTs, endTs, touchTime, maxOffset, offset, multiplier = 1, acc;
+            int pageX, pageY, moveX, moveY, distance, elemW, elemH;
+            Element elem;
+            boolean go, vertical;
+            
             
             CustomTouchEvent startEvent;
             int acceleration = 1;
@@ -481,54 +497,89 @@ public class Escalator extends Widget implements RequiresResize,
                     acceleration = 1;
                 }
             };
+            
+            Animation animation = new Animation() {
+                public void run(int duration) {
+                    if (getScroll().getOffsetSize() > getScroll().getScrollPos()) {
+                        super.run(duration);
+                    }
+                }
+                public void onUpdate(double progress) {
+                    console.log("U", distance * progress);
+                    getScroll().setScrollPos(distance * progress);
+                }
+                public double interpolate(double progress) {
+                    return ((progress - 1) * (progress - 1) * (progress - 1) * (progress - 1) * (progress - 1) + 1);
+                };
+                protected void onComplete() {
+                };
+            };
+            
+            private ScrollbarBundle getScroll() {
+                return vertical ? escalator.verticalScrollbar : escalator.horizontalScrollbar;
+            }
 
             public void touchStart(final CustomTouchEvent event) {
+                startTs = moveTs = Duration.currentTimeMillis();
+                
                 touches = event.getNativeEvent().getTouches().length();
                 if (touches != 1) {
                     return;
                 }
-
-                this.startEvent = event;
-                t.schedule(50);
+                pageX = moveX = event.getNativeEvent().getTouches().get(0).getPageX();
+                pageY = moveY = event.getNativeEvent().getTouches().get(0).getPageY();
                 
-                if (System.currentTimeMillis() - flickStartTime > 500) {
-                    lastX = startEvent.getPageX();
-                    lastY = startEvent.getPageY();
-                    // Reset flick parameters
-                    flickPageX1 = lastX;
-                    flickPageX2 = -1;
-                    flickPageY1 = lastY;
-                    flickPageY2 = -1;
-                    flickStartTime = System.currentTimeMillis();
-                    flickTimestamp = 0;
-                    snappedScrollEnabled = true;
+                if (animation.isRunning()) {
+                    multiplier += acceleration;
                 } else {
-                    latestTouchMoveEvent = event;
+                    multiplier = 1;
                 }
+                console.log("Start mul" + multiplier);
+                animation.cancel();
             }
             
             public void touchMove(final CustomTouchEvent event) {
-                t.cancel();
-                /*
-                 * since we only use the getPageX/Y, and calculate the diff
-                 * within the handler, we don't need to calculate any
-                 * intermediate deltas.
-                 */
-                latestTouchMoveEvent = event;
-
-                if (animationHandle != null) {
-                    animationHandle.cancel();
-                }
-                animationHandle = AnimationScheduler.get()
-                        .requestAnimationFrame(mover, escalator.bodyElem);
+                double now = Duration.currentTimeMillis();
                 event.getNativeEvent().preventDefault();
+                int x = event.getNativeEvent().getTouches().get(0).getPageX();
+                int y = event.getNativeEvent().getTouches().get(0).getPageY();
+                
+                go = now - moveTs > IV.i_moveThreshold && (Math.abs(moveX - x) > IV.i_startThreshold || Math.abs(moveY - y) > IV.i_startThreshold);
+//                console.log(go, now - moveTs, IV.i_moveThreshold , Math.abs(moveX - x),  IV.i_startThreshold, Math.abs(moveY - y), IV.i_startThreshold);
+                if (go) {
+                    vertical = Math.abs(moveY - y) > Math.abs(moveX - x);
+                    distance = vertical ? moveY - y : moveX - x;
+                    getScroll().setScrollPosByDelta(distance);
+                    moveY = y;
+                    moveX = x;
+                }
+                moveTs = now;
+            }
+            
+            public void touchEnd(final CustomTouchEvent event) {
+//                touches = event.getNativeEvent().getTouches().length();
+//                if (touches == 0) {
+//                    endTs = Duration.currentTimeMillis();
+//                    touchTime = endTs - startTs;
+//
+//                    distance = vertical ? moveY - pageY : moveX - pageY;
+//                    acc = Math.abs(distance / (touchTime));
+//
+//                    offset = Math.pow(acc, 2) * distance;
+//                    offset = (distance < 0) ? - multiplier * offset : multiplier * offset;
+//                                
+//                    console.log(touchTime, IV.i_moveThreshold, offset, IV.i_offsetThreshold);
+//                    if ((touchTime < IV.i_moveThreshold) && offset != 0 && Math.abs(offset) > (IV.i_offsetThreshold)) {
+//                        animation.run(900);
+//                    }
+//                }
             }
 
-            public void touchEnd(final CustomTouchEvent event) {
-                touches = event.getNativeEvent().getTouches().length();
-                console.log("END " + touches);
-//                console.log("END", flickStartTime, System.currentTimeMillis(), System.currentTimeMillis() -  flickStartTime);
-
+//            public void touchEnd(final CustomTouchEvent event) {
+//                touches = event.getNativeEvent().getTouches().length();
+//                console.log("END " + touches);
+////                console.log("END", flickStartTime, System.currentTimeMillis(), System.currentTimeMillis() -  flickStartTime);
+//
 //                if (touches == 0 /*&& System.currentTimeMillis() - flickStartTime < 200 */) {
 //                    console.log("END", acceleration);
 //
@@ -546,14 +597,14 @@ public class Escalator extends Widget implements RequiresResize,
 //                    final double finalPageY;
 //                    final double finalPageX;
 //                    double deltaT = flickTimestamp - flickStartTime;
-//                    boolean onlyOneSample = flickPageX2 < 0 || flickPageY2 < 0;
-//                    if (onlyOneSample) {
+////                    boolean onlyOneSample = flickPageX2 < 0 || flickPageY2 < 0;
+////                    if (onlyOneSample) {
 //                        finalPageX = latestTouchMoveEvent.getPageX();
 //                        finalPageY = latestTouchMoveEvent.getPageY();
-//                    } else {
-//                        finalPageY = flickPageY2;
-//                        finalPageX = flickPageX2;
-//                    }
+////                    } else {
+////                        finalPageY = flickPageY2;
+////                        finalPageX = flickPageX2;
+////                    }
 //
 //                    double deltaX = finalPageX - flickPageX1;
 //                    double deltaY = finalPageY - flickPageY1;
@@ -563,7 +614,7 @@ public class Escalator extends Widget implements RequiresResize,
 //                    acceleration *= 2;
 ////                    escalator.body.domSorter.reschedule();
 //                }
-            }
+//            }
         }
 
         public static void moveScrollFromEvent(final Escalator escalator,
