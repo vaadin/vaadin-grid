@@ -442,7 +442,7 @@ public class Escalator extends Widget implements RequiresResize,
                 vertical = Math.abs(moveY - y) > Math.abs(moveX - x);
                 int delta = vertical ? (moveY - y) : (moveX - x);
 
-                double v = 1000 * delta / (1 + elapsed);
+                double v = Math.sqrt(getScroll().getScrollSize()) * delta / (1 + elapsed);
                 velocity = 0.8 * v + 0.2 * velocity;
 
                 getScroll().setScrollPosByDelta(delta);
