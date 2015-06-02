@@ -15,8 +15,6 @@
  */
 package com.vaadin.client.widgets;
 
-import static com.google.gwt.query.client.GQuery.console;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -75,6 +73,7 @@ import com.vaadin.client.widget.escalator.PositionFunction.AbsolutePosition;
 import com.vaadin.client.widget.escalator.PositionFunction.Translate3DPosition;
 import com.vaadin.client.widget.escalator.PositionFunction.TranslatePosition;
 import com.vaadin.client.widget.escalator.PositionFunction.WebkitTranslate3DPosition;
+import com.vaadin.client.widget.escalator.Row;
 import com.vaadin.client.widget.escalator.RowContainer;
 import com.vaadin.client.widget.escalator.RowContainer.BodyRowContainer;
 import com.vaadin.client.widget.escalator.RowVisibilityChangeEvent;
@@ -305,8 +304,6 @@ public class Escalator extends Widget implements RequiresResize,
     static class JsniUtil {
         public static class TouchHandlerBundle {
 
-            private static final double FLICK_POLL_FREQUENCY = 100d;
-
             /**
              * A <a href=
              * "http://www.gwtproject.org/doc/latest/DevGuideCodingBasicsOverlay.html"
@@ -487,117 +484,6 @@ public class Escalator extends Widget implements RequiresResize,
         }
     }
 
-    /**
-     * The animation callback that handles the animation of a touch-scrolling
-     * flick with inertia.
-     */
-    private class FlickScrollAnimator implements AnimationCallback {
-        private static final double MIN_MAGNITUDE = 0.005;
-        private static final double MAX_SPEED = 500;
-
-        private double velX;
-        private double velY;
-        private double prevTime = 0;
-        private int millisLeft;
-        private double xFric;
-        private double yFric;
-
-        private boolean cancelled = false;
-        private double lastLeft;
-        private double lastTop;
-
-        /**
-         * Creates a new animation callback to handle touch-scrolling flick with
-         * inertia.
-         *
-         * @param deltaX
-         *            the last scrolling delta in the x-axis in a touchmove
-         * @param deltaY
-         *            the last scrolling delta in the y-axis in a touchmove
-         * @param lastTime
-         *            the timestamp of the last touchmove
-         */
-        public FlickScrollAnimator(final double deltaX, final double deltaY,
-                final double deltaT) {
-            velX = Math.max(Math.min(deltaX / deltaT, MAX_SPEED), -MAX_SPEED);
-            velY = Math.max(Math.min(deltaY / deltaT, MAX_SPEED), -MAX_SPEED);
-
-            lastLeft = horizontalScrollbar.getScrollPos();
-            lastTop = verticalScrollbar.getScrollPos();
-
-            /*
-             * If we're scrolling mainly in one of the four major directions,
-             * and only a teeny bit to any other side, snap the scroll to that
-             * major direction instead.
-             */
-            final double[] snapDeltas = Escalator.snapDeltas(velX, velY,
-                    RATIO_OF_30_DEGREES);
-            velX = snapDeltas[0];
-            velY = snapDeltas[1];
-
-            if (velX * velX + velY * velY > MIN_MAGNITUDE) {
-                millisLeft = 1500;
-                xFric = velX / millisLeft;
-                yFric = velY / millisLeft;
-            } else {
-                millisLeft = 0;
-            }
-
-        }
-
-        @Override
-        public void execute(final double doNotUseThisTimestamp) {
-            /*
-             * We cannot use the timestamp provided to this method since it is
-             * of a format that cannot be determined at will. Therefore, we need
-             * a timestamp format that we can handle, so our calculations are
-             * correct.
-             */
-
-            if (millisLeft <= 0 || cancelled) {
-                scroller.currentFlickScroller = null;
-                return;
-            }
-
-            final double timestamp = Duration.currentTimeMillis();
-            if (prevTime == 0) {
-                prevTime = timestamp;
-                AnimationScheduler.get().requestAnimationFrame(this);
-                return;
-            }
-
-            double currentLeft = horizontalScrollbar.getScrollPos();
-            double currentTop = verticalScrollbar.getScrollPos();
-
-            final double timeDiff = timestamp - prevTime;
-            double left = currentLeft - velX * timeDiff;
-            setScrollLeft(left);
-            velX -= xFric * timeDiff;
-
-            double top = currentTop - velY * timeDiff;
-            setScrollTop(top);
-            velY -= yFric * timeDiff;
-
-            cancelBecauseOfEdgeOrCornerMaybe();
-
-            prevTime = timestamp;
-            millisLeft -= timeDiff;
-            lastLeft = currentLeft;
-            lastTop = currentTop;
-            AnimationScheduler.get().requestAnimationFrame(this);
-        }
-
-        private void cancelBecauseOfEdgeOrCornerMaybe() {
-            if (lastLeft == horizontalScrollbar.getScrollPos()
-                    && lastTop == verticalScrollbar.getScrollPos()) {
-                cancel();
-            }
-        }
-
-        public void cancel() {
-            cancelled = true;
-        }
-    }
 
     /**
      * ScrollDestination case-specific handling logic.
@@ -677,11 +563,6 @@ public class Escalator extends Widget implements RequiresResize,
     private class Scroller extends JsniWorkaround {
         private double lastScrollTop = 0;
         private double lastScrollLeft = 0;
-        /**
-         * The current flick scroll animator. This is <code>null</code> if the
-         * view isn't animating a flick scroll at the moment.
-         */
-        private FlickScrollAnimator currentFlickScroller;
 
         public Scroller() {
             super(Escalator.this);
@@ -1000,34 +881,6 @@ public class Escalator extends Widget implements RequiresResize,
                 // this would be IE8, but we don't support it with touch
             }
         }-*/;
-
-        private void cancelFlickScroll() {
-            if (currentFlickScroller != null) {
-                currentFlickScroller.cancel();
-            }
-        }
-
-        /**
-         * Handles a touch-based flick scroll.
-         *
-         * @param deltaX
-         *            the last scrolling delta in the x-axis in a touchmove
-         * @param deltaY
-         *            the last scrolling delta in the y-axis in a touchmove
-         * @param lastTime
-         *            the timestamp of the last touchmove
-         */
-        public void handleFlickScroll(double deltaX, double deltaY,
-                double deltaT) {
-            console.log("HANDLE", deltaX, deltaY, deltaY);
-            if (currentFlickScroller != null) {
-                currentFlickScroller.cancel();
-            }
-            currentFlickScroller = new FlickScrollAnimator(deltaX, deltaY,
-                    deltaT);
-            AnimationScheduler.get()
-                    .requestAnimationFrame(currentFlickScroller);
-        }
 
         public void scrollToColumn(final int columnIndex,
                 final ScrollDestination destination, final int padding) {
@@ -2367,9 +2220,8 @@ public class Escalator extends Widget implements RequiresResize,
             private boolean sortIfConditionsMet() {
                 boolean enoughFramesHavePassed = framesPassed >= REQUIRED_FRAMES_PASSED;
                 boolean enoughTimeHasPassed = (Duration.currentTimeMillis() - startTime) >= SORT_DELAY_MILLIS;
-                boolean notAnimatingFlick = (scroller.currentFlickScroller == null);
                 boolean conditionsMet = enoughFramesHavePassed
-                        && enoughTimeHasPassed && notAnimatingFlick;
+                        && enoughTimeHasPassed;
 
                 if (conditionsMet) {
                     resetConditions();
