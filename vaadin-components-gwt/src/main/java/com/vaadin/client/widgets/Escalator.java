@@ -422,6 +422,7 @@ public class Escalator extends Widget implements RequiresResize,
                     velocity = multiplicator = 1;
                 } else {
                     multiplicator ++;
+                    velocity = 1;
                 }
                 animation.cancel();
             }
