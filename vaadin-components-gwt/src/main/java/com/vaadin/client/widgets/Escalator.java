@@ -483,35 +483,22 @@ public class Escalator extends Widget implements RequiresResize,
                 static int i_accelerationT = 250;                    
             }
             
-            double startTs, moveTs, endTs, touchTime, maxOffset, offset, multiplier = 1, acc;
+            double startTs, moveTs, endTs, touchTime, maxOffset, offset, multiplier = 1, vel;
             int pageX, pageY, moveX, moveY, distance, elemW, elemH;
             Element elem;
-            boolean go, vertical;
+            boolean go, vertical = true;
             
-            
-            CustomTouchEvent startEvent;
-            int acceleration = 1;
-            Timer t = new Timer() {
-                public void run() {
-                    escalator.scroller.cancelFlickScroll();
-                    acceleration = 1;
-                }
-            };
             
             Animation animation = new Animation() {
-                public void run(int duration) {
-                    if (getScroll().getOffsetSize() > getScroll().getScrollPos()) {
-                        super.run(duration);
-                    }
-                }
                 public void onUpdate(double progress) {
-                    console.log("U", distance * progress);
-                    getScroll().setScrollPos(distance * progress);
+                    getScroll().setScrollPosByDelta(offset * progress);
                 }
                 public double interpolate(double progress) {
-                    return ((progress - 1) * (progress - 1) * (progress - 1) * (progress - 1) * (progress - 1) + 1);
+                    return Math.sqrt(1 - (progress - 1) * (progress - 1));                 
                 };
                 protected void onComplete() {
+                    vel = 1;
+                    escalator.body.domSorter.reschedule();
                 };
             };
             
@@ -520,59 +507,50 @@ public class Escalator extends Widget implements RequiresResize,
             }
 
             public void touchStart(final CustomTouchEvent event) {
-                startTs = moveTs = Duration.currentTimeMillis();
-                
-                touches = event.getNativeEvent().getTouches().length();
-                if (touches != 1) {
+                if (event.getNativeEvent().getTouches().length() != 1) {
                     return;
                 }
+
+                startTs = moveTs = Duration.currentTimeMillis();
                 pageX = moveX = event.getNativeEvent().getTouches().get(0).getPageX();
                 pageY = moveY = event.getNativeEvent().getTouches().get(0).getPageY();
-                
+
                 if (animation.isRunning()) {
-                    multiplier += acceleration;
+                    multiplier += vel;
                 } else {
                     multiplier = 1;
                 }
-                console.log("Start mul" + multiplier);
                 animation.cancel();
             }
             
             public void touchMove(final CustomTouchEvent event) {
                 double now = Duration.currentTimeMillis();
-                event.getNativeEvent().preventDefault();
                 int x = event.getNativeEvent().getTouches().get(0).getPageX();
                 int y = event.getNativeEvent().getTouches().get(0).getPageY();
+                vertical = Math.abs(moveY - y) > Math.abs(moveX - x);
+                distance = vertical ? (moveY - y) : (moveX - x);
+                vel = Math.abs(distance / (now - moveTs));
                 
-                go = now - moveTs > IV.i_moveThreshold && (Math.abs(moveX - x) > IV.i_startThreshold || Math.abs(moveY - y) > IV.i_startThreshold);
-//                console.log(go, now - moveTs, IV.i_moveThreshold , Math.abs(moveX - x),  IV.i_startThreshold, Math.abs(moveY - y), IV.i_startThreshold);
-                if (go) {
-                    vertical = Math.abs(moveY - y) > Math.abs(moveX - x);
-                    distance = vertical ? moveY - y : moveX - x;
-                    getScroll().setScrollPosByDelta(distance);
-                    moveY = y;
-                    moveX = x;
-                }
+                getScroll().setScrollPosByDelta(distance);
+                moveY = y;
+                moveX = x;
                 moveTs = now;
+                
+                event.getNativeEvent().preventDefault();
             }
             
             public void touchEnd(final CustomTouchEvent event) {
-//                touches = event.getNativeEvent().getTouches().length();
-//                if (touches == 0) {
-//                    endTs = Duration.currentTimeMillis();
-//                    touchTime = endTs - startTs;
-//
-//                    distance = vertical ? moveY - pageY : moveX - pageY;
-//                    acc = Math.abs(distance / (touchTime));
-//
-//                    offset = Math.pow(acc, 2) * distance;
-//                    offset = (distance < 0) ? - multiplier * offset : multiplier * offset;
-//                                
-//                    console.log(touchTime, IV.i_moveThreshold, offset, IV.i_offsetThreshold);
-//                    if ((touchTime < IV.i_moveThreshold) && offset != 0 && Math.abs(offset) > (IV.i_offsetThreshold)) {
-//                        animation.run(900);
-//                    }
-//                }
+                offset = Math.pow(vel, 2) * distance * multiplier;
+                console.log(offset);
+//                offset = (distance < 0) ? - multiplier * offset : multiplier * offset;
+                
+//                console.log("OFF", offset, distance, multiplier, acc);
+                            
+//                console.log(touchTime, IV.i_moveThreshold, offset, IV.i_offsetThreshold);
+                if ( Math.abs(offset) > (IV.i_offsetThreshold)) {
+                    console.log("RUN", offset, pageY, moveY, IV.i_duration);
+                    animation.run((int)IV.i_duration);
+                }
             }
 
 //            public void touchEnd(final CustomTouchEvent event) {
