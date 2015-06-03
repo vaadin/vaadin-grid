@@ -49,6 +49,11 @@ function waitUntil(check, exec, onTimeout) {
   }, 5000);
 }
 
+function triggerMouseEvent (node, eventType) {
+  var clickEvent = document.createEvent('MouseEvents');
+  clickEvent.initEvent(eventType, true, true);
+  node.dispatchEvent(clickEvent);
+}
 
 function initializeGrid() {
   wrapper = document.getElementById("gridwrapper");

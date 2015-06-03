@@ -111,6 +111,7 @@
           waitUntil(function() {
             return Polymer.dom(grid.root).querySelector(".v-grid-body .v-grid-cell");
           },function(){
+            expect(grid.offsetHeight).to.be.at.least(30);
             wrapper.removeChild(tmp);
             done();
           });

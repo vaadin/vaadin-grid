@@ -243,6 +243,15 @@
               expect(grid.selection.selected()).to.eql([0]);
             });
           });
+
+          it('should deselect a selected row', function() {
+            return clickFirstCell().then(function() {
+              clickFirstCell();
+            }).then(function() {
+              expect(grid.selection.selected()).to.be.empty;
+            });
+          });
+
         });
 
         describe('with selection-mode: multi', function() {
@@ -257,13 +266,35 @@
             });
           });
 
-          // TODO: apparently clicking checkboxes isn't going to happen using JS...
-          it.skip('should select multiple rows', function() {
-            var inputs = qaLocal('input');
-            inputs[0].checked = true;
-            inputs[1].click();
 
-            expect(getSelectedRowsAttr()).to.equal('0,1');
+          it('should select multiple rows', function() {
+            var inputs = qaLocal('.v-grid-body input');
+            triggerMouseEvent(inputs[0], "mousedown");
+            triggerMouseEvent(inputs[1], "mousedown");
+            expect(grid.selection.selected()).to.eql([0, 1]);
+          });
+
+          it('should deselect multiple rows', function() {
+            var inputs = qaLocal('.v-grid-body input');
+            triggerMouseEvent(inputs[0], "mousedown");
+            triggerMouseEvent(inputs[1], "mousedown");
+            triggerMouseEvent(inputs[0], "mousedown");
+            triggerMouseEvent(inputs[1], "mousedown");
+            expect(grid.selection.selected()).to.be.empty;
+          });
+
+          it('should select all rows', function() {
+            var inputs = qaLocal('.v-grid-header input');
+            triggerMouseEvent(inputs[0], "click");
+            expect(grid.selection.selected()).to.eql([0, 1]);
+          });
+
+          it('should deselect all rows', function() {
+            var inputs = qaLocal('.v-grid-header input');
+            triggerMouseEvent(inputs[0], "click");
+            inputs = qaLocal('.v-grid-header input');
+            triggerMouseEvent(inputs[0], "click");
+            expect(grid.selection.selected()).to.be.empty;
           });
         });
 
