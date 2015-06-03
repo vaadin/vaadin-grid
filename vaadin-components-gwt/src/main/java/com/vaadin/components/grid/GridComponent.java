@@ -19,6 +19,7 @@ import com.google.gwt.core.client.js.JsType;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.TableElement;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.js.JsUtils;
@@ -27,8 +28,7 @@ import com.google.gwt.query.client.plugins.observe.Observe;
 import com.google.gwt.query.client.plugins.observe.Observe.Changes.ChangeRecord;
 import com.google.gwt.query.client.plugins.observe.Observe.ObserveListener;
 import com.google.gwt.query.client.plugins.widgets.WidgetsUtils;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.EventListener;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.vaadin.client.widget.grid.events.SelectAllEvent;
@@ -58,9 +58,7 @@ import com.vaadin.components.grid.selection.IndexBasedSelectionModelSingle;
 import com.vaadin.components.grid.table.GridColumn;
 import com.vaadin.components.grid.table.GridLightDomTable;
 import com.vaadin.components.grid.table.GridStaticSection;
-import com.vaadin.components.grid.utils.Redraw;
 import com.vaadin.shared.data.sort.SortDirection;
-import com.vaadin.shared.ui.grid.HeightMode;
 import com.vaadin.shared.ui.grid.ScrollDestination;
 
 /**
@@ -69,17 +67,15 @@ import com.vaadin.shared.ui.grid.ScrollDestination;
 @JsNamespace(JS.VAADIN_JS_NAMESPACE)
 @JsExport
 @JsType
-public class GridComponent implements SelectionHandler<Object>, EventListener,
+public class GridComponent implements SelectionHandler<Object>,
         SortHandler<Object>, SelectAllHandler<Object> {
-
-    public final int defaultHeightByRows;
 
     private final ViolatedGrid grid;
     private JSArray<JSSortOrder> jsSort;
+    private int rows = -1;
 
     public boolean updating = true;
     private GridLightDomTable lightDom;
-    private final Redraw redrawer;
     private final GridEditor editor;
     private final GridStaticSection staticSection;
 
@@ -89,16 +85,17 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
     private JavaScriptObject rowClassGenerator;
     private JavaScriptObject cellClassGenerator;
 
+    public static final int MAX_AUTO_ROWS = 10;
+
     public GridComponent() {
         grid = new ViolatedGrid();
-        defaultHeightByRows = (int) grid.getHeightByRows();
         grid.setSelectionModel(new IndexBasedSelectionModelSingle());
         grid.addSelectionHandler(this);
         grid.addSortHandler(this);
         grid.addSelectAllHandler(this);
+        grid.getElement().getStyle().setHeight(0, Unit.PX);
 
         setColumns(JS.createArray());
-        redrawer = new Redraw(this);
         editor = new GridEditor(this);
         staticSection = new GridStaticSection(this);
 
@@ -161,10 +158,10 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
             editor.setContainer(container);
         }
 
-        redrawer.setContainer(container);
-        redraw(true);
-
         updating = false;
+
+        Scheduler.get().scheduleFinally(() -> updateHeight());
+
     }
 
     public JSColumn addColumn(JSColumn jsColumn, Object beforeColumnId) {
@@ -259,18 +256,6 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
         container.dispatchEvent(event);
     }
 
-    public void setColumnWidth(int column, int widht) {
-        grid.getColumn(column).setWidth(widht);
-    }
-
-    public String getHeightMode() {
-        return grid.getHeightMode().toString();
-    }
-
-    public void setHeightMode(String mode) {
-        grid.setHeightMode(HeightMode.valueOf(mode));
-    }
-
     public void setHeight(String height) {
         grid.setHeight(height);
     }
@@ -294,28 +279,6 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
 
     public IndexBasedSelectionModel getSelectionModel() {
         return (IndexBasedSelectionModel) grid.getSelectionModel();
-    }
-
-    public void refresh() {
-        updating = true;
-        IndexBasedSelectionModel selectionModel = getSelectionModel();
-        final JSArray<?> a = selectionModel.selected(null, null, null);
-        if (getDataSource() != null) {
-            getDataSource().refresh();
-        }
-        redraw(true);
-        if (a.length() > 0) {
-            $(container).delay(5, new Function() {
-                @Override
-                public void f() {
-                    for (int i = 0; i < a.length(); i++) {
-                        int value = JSValidate.Integer.val(a.get(i), -1, -1);
-                        selectionModel.select(value, true);
-                    }
-                }
-            });
-        }
-        updating = false;
     }
 
     public void setColumns(JSArray<JSColumn> columns) {
@@ -356,6 +319,10 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
                 }
             });
         }
+
+        if (getDataSource() != null) {
+            getDataSource().refresh();
+        }
     }
 
     /**
@@ -381,18 +348,13 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
             triggerEvent("selectionmodechange");
             getSelectionModel().reset();
             updateSelectAllCheckBox();
-            redraw();
+            updateWidth();
             updating = false;
         }
     }
 
     public String getSelectionMode() {
         return getSelectionModel().getMode().name().toLowerCase();
-    }
-
-    @Override
-    public void onBrowserEvent(Event event) {
-        refresh();
     }
 
     public void setRowClassGenerator(JavaScriptObject generator) {
@@ -415,23 +377,48 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
         return cellClassGenerator;
     }
 
-    // TODO: remove this when grid resizes appropriately on container
-    // and data changes.
-    public void redraw() {
-        redraw(false);
+    private final Timer sizeUpdater = new Timer() {
+        @Override
+        public void run() {
+            grid.resetSizesFromDom();
+            updateWidth();
+            updateHeight();
+        }
+    };
+
+    public void updateSize() {
+        sizeUpdater.schedule(50);
     }
 
     @JsNoExport
-    public void redraw(boolean force) {
-        redrawer.redraw(force);
+    public void updateWidth() {
+        grid.setWidth("100%");
+        Scheduler.get().scheduleDeferred(() -> grid.recalculateColumnWidths());
+    }
+
+    @JsNoExport
+    public void updateHeight() {
+        grid.setHeight("100%");
+
+        if (container.getClientHeight() == 0) {
+            if (rows > 0) {
+                grid.setHeightByRows(rows);
+            } else {
+                GridDataSource ds = getDataSource();
+                if (ds != null && ds.size() > 0) {
+                    grid.setHeightByRows(Math.min(ds.size(), MAX_AUTO_ROWS));
+                }
+            }
+        }
     }
 
     public int getRows() {
-        return redrawer.getSize();
+        return rows;
     }
 
     public void setRows(int rows) {
-        redrawer.setSize(rows);
+        this.rows = JSValidate.Integer.val(rows, -1, -1);
+        updateHeight();
     }
 
     @Override
@@ -463,7 +450,7 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
     public boolean isWorkPending() {
         return grid.getDataSource() == null
                 || ((GridDataSource) grid.getDataSource()).isWaitingForData()
-                || redrawer.isRunning() || grid.isWorkPending();
+                || grid.isWorkPending() || sizeUpdater.isRunning();
     }
 
     public void onReady(JavaScriptObject f) {
@@ -565,10 +552,11 @@ public class GridComponent implements SelectionHandler<Object>, EventListener,
     public void setLoadingDataClass(boolean loadingData) {
         String loadingDataClassName = "v-grid-loading-data";
 
-        if(loadingData) {
+        if (loadingData) {
             this.getGridElement().addClassName(loadingDataClassName);
         } else {
             this.getGridElement().removeClassName(loadingDataClassName);
         }
     }
+
 }

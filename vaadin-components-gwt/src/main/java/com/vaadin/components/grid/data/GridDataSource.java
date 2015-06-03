@@ -15,13 +15,11 @@ import com.vaadin.shared.ui.grid.Range;
 @JsType
 public abstract class GridDataSource extends AbstractRemoteDataSource<Object> {
     private int size = 0;
-    private final int defaultRows;
 
     protected final GridComponent gridComponent;
 
     public GridDataSource(GridComponent gridComponent) {
         this.gridComponent = gridComponent;
-        defaultRows = gridComponent.defaultHeightByRows;
     }
 
     @Override
@@ -35,10 +33,9 @@ public abstract class GridDataSource extends AbstractRemoteDataSource<Object> {
     }
 
     @JsNoExport
-    public void size(int nsize) {
+    public void setSize(int nsize) {
         if (nsize != size) {
             boolean isEmpty = size == 0;
-            boolean heightByRows = nsize < defaultRows || size < defaultRows;
             size = nsize;
             if (isEmpty) {
                 // Grid stops calling requestRows when size is 0, if
@@ -48,9 +45,9 @@ public abstract class GridDataSource extends AbstractRemoteDataSource<Object> {
                 gridComponent.updating = true;
                 gridComponent.getGrid().setDataSource(this);
                 gridComponent.updating = wasUpdating;
-            } else if (heightByRows) {
-                gridComponent.redraw(true);
             }
+
+            gridComponent.updateHeight();
         }
     }
 

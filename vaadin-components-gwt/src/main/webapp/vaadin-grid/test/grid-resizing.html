@@ -17,20 +17,17 @@
 <div id="gridwrapper"></div>
 
 <script>
-  describe.feature('redrawer', function() {
+  describe.feature('resizing', function() {
     function width(e) {
-      return pxval(e, 'width');
+      return e.offsetWidth;
     }
 
     function height(e) {
-      return pxval(e, 'height');
+      return e.offsetHeight;
     }
 
-    function pxval(e, prop) {
-      return parseInt(e.ownerDocument.defaultView.getComputedStyle(e).getPropertyValue(prop).replace('px', ''));
-    }
 
-    describe('redraw', function() {
+    describe('resizing', function() {
       function assertHeightByRows(rows) {
         var headersHeight = headers * thHeight;
         var footersHeight = footers * tfHeight;
@@ -91,6 +88,36 @@
         });
       });
 
+      it('should work if originally invisible', function(done) {
+        var wrapper = document.getElementById("gridwrapper");
+        var tmp = document.createElement("div");
+        wrapper.appendChild(tmp);
+        tmp.innerHTML = "<v-grid style='display: none'>" +
+        "                     <table>" +
+        "                       <col header-text='Name'>" +
+        "                       <tr>" +
+        "                         <td>Grid</td>" +
+        "                       </tr>" +
+        "                     </table>" +
+        "                   </v-grid>";
+
+        var grid = tmp.querySelector("v-grid");
+
+        waitUntil(function() {
+          return grid.then;
+        },function() {
+          grid.removeAttribute("style");
+
+          waitUntil(function() {
+            return Polymer.dom(grid.root).querySelector(".v-grid-body .v-grid-cell");
+          },function(){
+            wrapper.removeChild(tmp);
+            done();
+          });
+        });
+
+      });
+
       describe('using limited row visibility', function() {
         before(function() {
           // Increase the number of rows
@@ -129,6 +156,18 @@
             assertHeightByRows(10); // default
           });
         });
+
+        it('should have the original height after rows removed', function() {
+          var originalHeight = grid.offsetHeight;
+          grid.rows = 5;
+
+          return grid.then(function() {
+            grid.rows = 0;
+          }).then(function() {
+            expect(grid.offsetHeight).to.eql(originalHeight);
+          });
+        });
+
       });
 
       it('should redraw with fixed dimensions', function() {
@@ -142,7 +181,7 @@
         });
       });
 
-      describe('grid with a fixed height (issue #8)', function() {
+      describe('grid with a fixed height', function() {
         it('should keep the correct height after sorting', function() {
           grid.columns[0].sortable = true;
           grid.style.height = "500px";
@@ -154,6 +193,26 @@
             expect(qaLocal('.v-grid')[3].style.height).to.equal('100%');
           });
         });
+
+        it('should have the original height after explicit height is removed', function(done) {
+          grid.then(function(){
+            var originalHeight = grid.offsetHeight;
+            expect(originalHeight).not.to.eql(0);
+
+            grid.style.height = "200px";
+
+            grid.then(function() {
+              grid.removeAttribute("style");
+            }).then(function() {
+              setTimeout(function() {
+                expect(grid.offsetHeight).to.eql(originalHeight);
+                done();
+              },1000);
+            });
+          });
+        });
+
+
       });
 
       describe('using scaled dimensions', function() {
@@ -166,7 +225,9 @@
         });
 
         it('should redraw with scaled dimensions', function() {
+          return grid.then(function() {
             assertSameDimensions();
+          });
         });
 
         it('should match dimensions with the surrounding div', function() {
@@ -176,22 +237,6 @@
           expect(Math.abs(document.body.clientWidth - width(grid))).to.be.at.most(1);
         })
 
-        it('should allow different dimensions for v-grid and inner div', function() {
-          // We can have different height for v-grid and the inner grid.
-          // Also we can define more than 10 rows.
-          tbody.innerHTML += tbody.innerHTML; //4
-          tbody.innerHTML += tbody.innerHTML; //8
-          tbody.innerHTML += tbody.innerHTML; //16
-
-          grid.rows = 12;
-          grid.style.width = '50%';
-
-          return grid.then(function() {
-            expect(height(grid)).to.not.equal(height(inner));
-            assert.equal(width(grid), width(inner));
-            assertHeightByRows(12);
-          });
-        });
       });
     });
   });

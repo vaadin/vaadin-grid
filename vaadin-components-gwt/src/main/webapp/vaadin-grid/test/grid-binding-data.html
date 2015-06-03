@@ -18,163 +18,88 @@
 <script>
   describe.feature('binding data', function() {
 
-    afterEach(function() {
-      return grid.then(function() {
-
-        grid.selection.mode = 'single';
-        grid.columns = [{name: 'Name', headerHtml: 'Name'}, {name: 'Value', headerHtml: 'Value'}];
-        grid.data.source = [['Grid', '10000'], ['VaadinX', '1000']];
-
-        return grid;
-      });
-    });
-
-    it('data: object type', function(done) {
+    it('data: object type', function() {
       grid.columns[0].name = "firstname";
-      grid.columns[1].name = "lastname";
-      grid.columns.push({
-        name: 'salary',
-        headerHtml: "Salary"
-      });
+      grid.columns[1].name = 'salary';
 
-      var mydata = [{
+      grid.data.source = [{
         firstname: "John",
-        lastname: "Doe",
         salary: 1234.56
       }, {
         firstname: "Jane",
-        lastname: "Doe",
         salary: 2345.67
       }, ];
 
-      grid.data.source = function(request) {
-        request.success(mydata.slice(request.index, request.index +
-        request.count), mydata.length);
-      };
-
-
-      waitUntil(function() {
-        return gridContainsText(grid, "2345.67");
-      }, function() {
+      return grid.then(function() {
         var cells = qaLocal(".v-grid-body .v-grid-cell");
         assert.equal(cells[0].innerHTML, "John");
-        assert.equal(cells[2].innerHTML, "1234.56");
-        assert.equal(cells[3].innerHTML, "Jane");
-        assert.equal(cells[4].innerHTML, "Doe");
-        done();
-      }, done);
-
-    });
-
-    it('data: array type', function(done) {
-      grid.columns.push({
-        headerHtml: "Salary"
+        assert.equal(cells[1].innerHTML, "1234.56");
+        assert.equal(cells[2].innerHTML, "Jane");
       });
 
-      mydata = [
-        ["John", "Doe", 1234.56],
-        ["Jane", "Doe", 2345.67],
+    });
+
+    it('data: array type', function() {
+      grid.data.source = [
+        ["John", 1234.56],
+        ["Jane", 2345.67],
       ];
 
-      grid.data.source = mydata;
-
-      waitUntil(function() {
-        return gridContainsText(grid, "2345.67");
-      }, function() {
+      return grid.then(function(){
         var cells = qaLocal(".v-grid-body .v-grid-cell");
         assert.equal(cells[0].innerHTML, "John");
-        assert.equal(cells[2].innerHTML, "1234.56");
-        assert.equal(cells[3].innerHTML, "Jane");
-        assert.equal(cells[4].innerHTML, "Doe");
-        done();
-      }, done);
+        assert.equal(cells[1].innerHTML, "1234.56");
+        assert.equal(cells[2].innerHTML, "Jane");
+      });
 
     });
 
-    it('data: boolean type', function(done) {
-      grid.columns.splice(0, 1);
-      grid.selection.mode = "multi";
+    it('data: boolean type', function() {
 
-      waitUntil(function() {
-        return qLocal("input[type='checkbox']");
-      }, function() {
-        var mydata = [
-          false,
-          true,
-        ];
+      grid.data.source = [
+        false,
+        true,
+      ];
 
-        grid.data.source = function(request) {
-          request.success(mydata.slice(request.index, request.index +
-          request.count), mydata.length);
-        };
-
-        waitUntil(function() {
-          return gridContainsText(grid, "false");
-        }, function() {
-          var cells = qaLocal(".v-grid-body .v-grid-cell");
-          assert.equal(cells[3].innerHTML, "true");
-          done();
-        }, done);
-      }, done);
+      return grid.then(function(){
+        var cells = qaLocal(".v-grid-body .v-grid-cell");
+        assert.equal(cells[2].innerHTML, "true");
+      });
 
     });
 
-    it('data: string type', function(done) {
-      grid.columns.splice(0, 1);
-      grid.selection.mode = "multi";
-
-      waitUntil(function() {
-        return qLocal("input[type='checkbox']");
-      }, function() {
-        var mydata = [
+    it('data: string type', function() {
+        grid.data.source = [
           "Lorem",
           "Ipsum",
         ];
 
-        grid.data.source = function(request) {
-          request.success(mydata.slice(request.index, request.index +
-          request.count), mydata.length);
-        };
-
-        waitUntil(function() {
-          return gridContainsText(grid, "Lorem");
-        }, function() {
+        return grid.then(function(){
           var cells = qaLocal(".v-grid-body .v-grid-cell");
-          assert.equal(cells[3].innerHTML, "Ipsum");
-          done();
-        }, done);
-      }, done);
+          assert.equal(cells[2].innerHTML, "Ipsum");
+        });
 
     });
 
-    it('data: non-object types', function(done) {
+    it('data: non-object types', function() {
       var first = grid.columns[0];
       grid.columns.splice(0, 1);
       grid.columns.push(first);
       grid.columns.splice(1, 1);
-      grid._grid.setRows(5);
+      grid.style.height = "400px";
 
-
-      var mydata = [
-        1, 2, null, undefined, 1, "cellsready"
+      grid.data.source = [
+        1, 2, null, undefined, 1
       ];
 
-      grid.data.source = function(request) {
-        request.success(mydata.slice(request.index, request.index +
-        request.count), mydata.length);
-      };
-
-      waitUntil(function() {
-        return gridContainsText(grid, "cellsready");
-      }, function() {
+      return grid.then(function(){
         var cells = qaLocal(".v-grid-body .v-grid-cell");
         assert.equal(cells[0].innerHTML, "1");
         assert.equal(cells[1].innerHTML, "2");
         assert.equal(cells[2].innerHTML, "");
         assert.equal(cells[3].innerHTML, "");
         assert.equal(cells[4].innerHTML, "1");
-        done();
-      }, done);
+      });
 
     });
   });

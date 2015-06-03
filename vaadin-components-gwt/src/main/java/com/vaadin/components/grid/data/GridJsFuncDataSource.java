@@ -16,6 +16,7 @@ import com.vaadin.components.grid.config.JSDataRequest;
 public class GridJsFuncDataSource extends GridDataSource {
 
     private final JavaScriptObject jsFunction;
+    private boolean initialRowSetReceived;
 
     public GridJsFuncDataSource(JavaScriptObject jso, GridComponent grid) {
         super(grid);
@@ -28,9 +29,7 @@ public class GridJsFuncDataSource extends GridDataSource {
     }
 
     @Override
-    protected void requestRows(
-            final int firstRowIndex,
-            final int numberOfRows,
+    protected void requestRows(final int firstRowIndex, final int numberOfRows,
             final RequestRowsCallback<Object> callback) {
 
         doRequest(firstRowIndex, numberOfRows, callback);
@@ -54,21 +53,27 @@ public class GridJsFuncDataSource extends GridDataSource {
                 }
 
                 if (totalSize != null) {
-                    size(totalSize.intValue());
+                    setSize(totalSize.intValue());
                 }
 
                 if (cb != null) {
-                    ((RequestRowsCallback)cb).onResponse(list, size());
+                    ((RequestRowsCallback) cb).onResponse(list, size());
                 }
 
                 gridComponent.setLoadingDataClass(false);
+
+                if (!initialRowSetReceived && !list.isEmpty()) {
+                    initialRowSetReceived = true;
+                    gridComponent.updateWidth();
+                }
             }
         }));
         if (cb != null) {
             jsDataRequest.setFailure(JsUtils.wrapFunction(new Function() {
                 @Override
                 public void f() {
-                    ((RequestRowsCallback)cb).onResponse(Collections.emptyList(), size());
+                    ((RequestRowsCallback) cb).onResponse(
+                            Collections.emptyList(), size());
                     gridComponent.setLoadingDataClass(false);
                 }
             }));

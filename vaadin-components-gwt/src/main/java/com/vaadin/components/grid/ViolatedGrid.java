@@ -1,6 +1,5 @@
 package com.vaadin.components.grid;
 
-import com.vaadin.client.widgets.Escalator;
 
 public class ViolatedGrid extends com.vaadin.client.widgets.Grid<Object> {
 
@@ -22,8 +21,29 @@ public class ViolatedGrid extends com.vaadin.client.widgets.Grid<Object> {
         }
     }
 
+    /**
+     * The method is overridden for now to avoid IE related bugs and performance
+     * issues.
+     */
     @Override
-    public Escalator getEscalator() {
-        return super.getEscalator();
+    public void setHeightByRows(double bodyRows)
+            throws IllegalArgumentException {
+        // Header height
+        double headerRowHeight = getEscalator().getHeader()
+                .getDefaultRowHeight();
+        int headerRows = isHeaderVisible() ? getHeaderRowCount() : 0;
+        double headerHeight = headerRowHeight * headerRows;
+
+        // Body height
+        double bodyRowHeight = getEscalator().getBody().getDefaultRowHeight();
+        double bodyHeight = bodyRowHeight * bodyRows;
+
+        // Footer height
+        double footerRowHeight = getEscalator().getFooter()
+                .getDefaultRowHeight();
+        int footerRows = isFooterVisible() ? getFooterRowCount() : 0;
+        double footerHeight = footerRowHeight * footerRows;
+
+        setHeight(headerHeight + bodyHeight + footerHeight + "px");
     }
 }

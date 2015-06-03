@@ -98,6 +98,7 @@
   :host > div {
     position: relative;
     outline: none;
+    height: 100%;
   }
 
   .v-grid-scroller {
@@ -427,7 +428,7 @@
 </style>
   <template>
     <div id="measure" class="v-grid">
-      <object id="measureobject" class="v-grid" type="text/html"></object>
+      <iframe id="measureobject" class="v-grid"></iframe>
     </div>
     <content></content>
   </template>
@@ -621,9 +622,6 @@
           case 'disabled':
             this.disabled = typeof value == "string";
             break;
-          case 'style':
-            this._grid.redraw();
-            break;
           case 'selection-mode':
             this.selection.mode = value;
             break;
@@ -654,30 +652,23 @@
       },
 
       ready: function() {
-        var _this = this;
-        setTimeout(function() {
-          for (var i = 0; i < _this.attributes.length; i++) {
-            _this.attributeChanged(_this.attributes[i].nodeName, null, _this.attributes[i].nodeValue);
+        this.async(function() {
+          for (var i = 0; i < this.attributes.length; i++) {
+            this.attributeChanged(this.attributes[i].nodeName, null, this.attributes[i].nodeValue);
           }
-        }, 1);
-
+        });
       },
 
       _bindResizeListener: function() {
         var _this = this;
         this.$.measureobject.addEventListener("load", function() {
           this.contentDocument.defaultView.addEventListener('resize', function(e) {
-            _this._grid.redraw();
+            _this._grid.updateSize();
           });
-
-          _this.then(function() {
-            // ...because one then just isn't enough.
-            _this.then(function() {
-              _this._grid.redraw();
-            });
-          });
+          _this._grid.updateSize();
         });
-        this.$.measureobject.data = "about:blank";
+
+        this.$.measureobject.src = "about:blank";
       },
 
       attached: function() {
@@ -816,7 +807,8 @@
        * @type Number
        */
       get rows() {
-        return this._grid.getRows();
+        var rows = this._grid.getRows();
+        return rows > 0 ? rows : undefined;
       },
       set rows(rows) {
         this._grid.setRows(rows);
