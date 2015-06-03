@@ -410,21 +410,14 @@ public class Escalator extends Widget implements RequiresResize,
             }
 
             public void touchStart(final CustomTouchEvent event) {
-                if (event.getNativeEvent().getTouches().length() != 1) {
-                    return;
-                }
-
-                moveTs = Duration.currentTimeMillis();
-                moveX = event.getNativeEvent().getTouches().get(0).getPageX();
-                moveY = event.getNativeEvent().getTouches().get(0).getPageY();
-
-                if (!animation.isRunning()) {
-                    velocity = multiplicator = 1;
-                } else {
-                    multiplicator ++;
+                if (event.getNativeEvent().getTouches().length() == 1) {
+                    moveTs = Duration.currentTimeMillis();
+                    moveX = event.getNativeEvent().getTouches().get(0).getPageX();
+                    moveY = event.getNativeEvent().getTouches().get(0).getPageY();
+                    multiplicator = animation.isRunning() ? multiplicator + 1 : 1;
                     velocity = 1;
+                    animation.cancel();
                 }
-                animation.cancel();
             }
 
             public void touchMove(final CustomTouchEvent event) {
@@ -443,20 +436,18 @@ public class Escalator extends Widget implements RequiresResize,
                 double v = Math.sqrt(getScroll().getScrollSize()) * delta / (1 + elapsed);
                 velocity = 0.8 * v + 0.2 * velocity;
 
-                getScroll().setScrollPosByDelta(delta);
+                moveScrollFromEvent(escalator, moveX - x, moveY - y, event.getNativeEvent());
 
                 moveTs = now;
                 moveY = y;
                 moveX = x;
-
-                event.getNativeEvent().preventDefault();
             }
 
             public void touchEnd(final CustomTouchEvent event) {
                 if (event.getNativeEvent().getTouches().length() == 0 && Math.abs(velocity) > 10) {
                     animation.run(duration);
+                    event.getNativeEvent().preventDefault();
                 }
-                event.getNativeEvent().preventDefault();
             }
         }
 
