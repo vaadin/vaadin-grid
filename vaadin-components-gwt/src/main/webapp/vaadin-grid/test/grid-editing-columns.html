@@ -346,6 +346,23 @@
       });
     });
 
+    it('should size columns with width attribute', function() {
+      qLight("col").setAttribute("width", "110");
+      return grid.then(function(){
+        expect(grid.columns[0].width).to.eql(110);
+        expect(qLocal(".v-grid-cell").offsetWidth).to.eql(110);
+      });
+    });
+
+    it('should size columns with minWidth attribute', function() {
+      qLight("col").setAttribute("width", "110");
+      qLight("col").setAttribute("min-width", "130");
+      return grid.then(function(){
+        expect(grid.columns[0].width).to.eql(110);
+        expect(qLocal(".v-grid-cell").offsetWidth).to.eql(130);
+      });
+    });
+
     it('should size columns with width property', function() {
       grid.columns[0].width = 100;
       return grid.then(function(){
