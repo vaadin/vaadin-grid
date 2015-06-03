@@ -556,11 +556,6 @@ public class Escalator extends Widget implements RequiresResize,
     private class Scroller extends JsniWorkaround {
         private double lastScrollTop = 0;
         private double lastScrollLeft = 0;
-        /**
-         * The current flick scroll animator. This is <code>null</code> if the
-         * view isn't animating a flick scroll at the moment.
-         */
-        private FlickScrollAnimator currentFlickScroller;
 
         public Scroller() {
             super(Escalator.this);
@@ -2218,8 +2213,9 @@ public class Escalator extends Widget implements RequiresResize,
             private boolean sortIfConditionsMet() {
                 boolean enoughFramesHavePassed = framesPassed >= REQUIRED_FRAMES_PASSED;
                 boolean enoughTimeHasPassed = (Duration.currentTimeMillis() - startTime) >= SORT_DELAY_MILLIS;
+                boolean notAnimatingScroll = !scroller.touchHandlerBundle.animation.isRunning();
                 boolean conditionsMet = enoughFramesHavePassed
-                        && enoughTimeHasPassed;
+                        && enoughTimeHasPassed && notAnimatingScroll;
 
                 if (conditionsMet) {
                     resetConditions();
