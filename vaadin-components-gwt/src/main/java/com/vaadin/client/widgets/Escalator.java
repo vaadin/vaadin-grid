@@ -379,7 +379,7 @@ public class Escalator extends Widget implements RequiresResize,
 
             private double moveTs, velocity = 0;
             private int moveX, moveY, multiplicator = 1;
-            private boolean vertical = true;
+            private boolean vertical = true, started = false;
 
             private Animation animation = new Animation() {
                 private double position = 0;
@@ -391,6 +391,7 @@ public class Escalator extends Widget implements RequiresResize,
                     return Math.sqrt(1 - (progress - 1) * (progress - 1));
                 };
                 protected void onComplete() {
+                    started = false;
                     escalator.body.domSorter.reschedule();
                 };
                 public void run(int duration) {
@@ -417,6 +418,7 @@ public class Escalator extends Widget implements RequiresResize,
                     multiplicator = animation.isRunning() ? multiplicator + 1 : 1;
                     velocity = 1;
                     animation.cancel();
+                    started = true;
                 }
             }
 
@@ -437,6 +439,7 @@ public class Escalator extends Widget implements RequiresResize,
                 velocity = 0.8 * v + 0.2 * velocity;
 
                 moveScrollFromEvent(escalator, moveX - x, moveY - y, event.getNativeEvent());
+                escalator.body.domSorter.reschedule();
 
                 moveTs = now;
                 moveY = y;
@@ -445,8 +448,10 @@ public class Escalator extends Widget implements RequiresResize,
 
             public void touchEnd(final CustomTouchEvent event) {
                 if (event.getNativeEvent().getTouches().length() == 0 && Math.abs(velocity) > 10) {
-                    animation.run(duration);
                     event.getNativeEvent().preventDefault();
+                    animation.run(duration);
+                } else {
+                    started = false;
                 }
             }
         }
@@ -2213,9 +2218,9 @@ public class Escalator extends Widget implements RequiresResize,
             private boolean sortIfConditionsMet() {
                 boolean enoughFramesHavePassed = framesPassed >= REQUIRED_FRAMES_PASSED;
                 boolean enoughTimeHasPassed = (Duration.currentTimeMillis() - startTime) >= SORT_DELAY_MILLIS;
-                boolean notAnimatingScroll = !scroller.touchHandlerBundle.animation.isRunning();
+                boolean notTouchActivity = !scroller.touchHandlerBundle.started;
                 boolean conditionsMet = enoughFramesHavePassed
-                        && enoughTimeHasPassed && notAnimatingScroll;
+                        && enoughTimeHasPassed && notTouchActivity;
 
                 if (conditionsMet) {
                     resetConditions();
@@ -2395,6 +2400,7 @@ public class Escalator extends Widget implements RequiresResize,
 
             if (rowsWereMoved) {
                 fireRowVisibilityChangeEvent();
+                domSorter.reschedule();
             }
         }
 
