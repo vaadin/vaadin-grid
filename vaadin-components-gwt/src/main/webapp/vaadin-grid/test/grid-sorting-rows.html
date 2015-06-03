@@ -124,6 +124,34 @@
         });
       });
 
+      describe('by clicking', function() {
 
+        it('should sort by the first columns', function() {
+          grid.data.sortOrder = [];
+          var cells = qaLocal(".v-grid-header .v-grid-cell");
+          triggerMouseEvent(cells[1], "click");
+          expect(grid.data.sortOrder).to.eql([{
+            column: 0,
+            direction: "asc"
+          }]);
+        });
+
+        it('should sort by two columns', function() {
+          grid.data.sortOrder = [];
+          var cells = qaLocal(".v-grid-header .v-grid-cell");
+          triggerMouseEvent(cells[1], "click");
+          triggerMouseEvent(cells[2], "click", true);
+          triggerMouseEvent(cells[2], "click", true)
+          expect(grid.data.sortOrder).to
+            .eql([{
+              column: 0,
+              direction: "asc"
+            }, {
+              column: 1,
+              direction: "desc"
+            }]);
+        });
+      });
+      
     });
   </script>
