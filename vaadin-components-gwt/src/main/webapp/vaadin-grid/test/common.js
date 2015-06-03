@@ -49,11 +49,18 @@ function waitUntil(check, exec, onTimeout) {
   }, 5000);
 }
 
-function triggerMouseEvent (node, eventType, shiftKey) {
+function triggerMouseEvent (node, eventType, properties, shiftKey ) {
   var clickEvent = document.createEvent('MouseEvents');
   clickEvent.initMouseEvent(eventType, true, true, undefined, undefined,
     undefined, undefined, undefined, undefined, undefined, undefined, shiftKey,
     undefined, undefined, undefined);
+
+  for (var property in properties) {
+    if (properties.hasOwnProperty(property)) {
+      clickEvent[property] = properties[property];
+    }
+  }
+
   node.dispatchEvent(clickEvent);
 }
 

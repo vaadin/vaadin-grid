@@ -107,6 +107,25 @@
           expect(firstColumnContents()).to.contain('foo 0');
         });
     });
+
+    it('should scroll one page down', function(done) {
+      grid.scrollToStart();
+
+      grid.then(function(){
+        var tableWrapper = qLocal(".v-grid-tablewrapper");
+
+        var isIE = (navigator.userAgent.indexOf("Trident") != -1);
+        triggerMouseEvent(tableWrapper.firstChild, isIE ? "mousewheel" : "wheel", {
+          deltaY: tableWrapper.offsetHeight
+        });
+      }).then(function() {
+        waitUntil(function(){
+          return firstColumnContents().indexOf("foo 7") != -1;
+        }, done);
+      });
+    });
+
+
   });
 </script>
 

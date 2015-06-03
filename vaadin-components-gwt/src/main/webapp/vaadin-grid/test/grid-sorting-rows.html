@@ -140,8 +140,8 @@
           grid.data.sortOrder = [];
           var cells = qaLocal(".v-grid-header .v-grid-cell");
           triggerMouseEvent(cells[1], "click");
-          triggerMouseEvent(cells[2], "click", true);
-          triggerMouseEvent(cells[2], "click", true)
+          triggerMouseEvent(cells[2], "click", undefined, true);
+          triggerMouseEvent(cells[2], "click", undefined, true)
           expect(grid.data.sortOrder).to
             .eql([{
               column: 0,
