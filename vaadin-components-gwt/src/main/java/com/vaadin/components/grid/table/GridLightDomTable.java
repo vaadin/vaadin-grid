@@ -81,6 +81,7 @@ public class GridLightDomTable implements MutationListener {
                 }
             }
         }
+        gridComponent.updateSize();
     }
 
     private void configureColumns() {
