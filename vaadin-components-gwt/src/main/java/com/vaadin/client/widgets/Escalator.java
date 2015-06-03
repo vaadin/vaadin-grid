@@ -377,9 +377,9 @@ public class Escalator extends Widget implements RequiresResize,
             // and does not influence speed and amount of momentum.
             private static int duration = (int)(Window.getClientHeight() * 1.5);
 
-            private double moveTs, velocity = 0;
-            private int moveX, moveY, multiplicator = 1;
-            private boolean vertical = true, started = false;
+            private double previousT, velocity = 0;
+            private int previousX, previousY, velocityMultiplier = 1;
+            private boolean movingVertically = true, touchStarted = false;
 
             private Animation animation = new Animation() {
                 private double position = 0;
@@ -390,16 +390,15 @@ public class Escalator extends Widget implements RequiresResize,
                 public double interpolate(double progress) {
                     return Math.sqrt(1 - (progress - 1) * (progress - 1));
                 };
-                protected void onComplete() {
-                    started = false;
-                    escalator.body.domSorter.reschedule();
+                public void onComplete() {
+                    scrollingFinish();
                 };
                 public void run(int duration) {
-                    double maxRw = -getScroll().getScrollPos();
-                    double maxFw = getScroll().getScrollSize() - getScroll().getOffsetSize() + maxRw;
-                    if (maxRw < 0 && maxFw > 0) {
-                        offset = 0.8 * velocity * multiplicator;
-                        offset = Math.min(Math.max(offset, maxRw), maxFw);
+                    double minDelta = -getScroll().getScrollPos();
+                    double maxDelta = getScroll().getScrollSize() - getScroll().getOffsetSize() + minDelta;
+                    if (minDelta < 0 && maxDelta > 0) {
+                        offset = 0.8 * velocity * velocityMultiplier;
+                        offset = Math.min(Math.max(offset, minDelta), maxDelta);
                         position = getScroll().getScrollPos();
                         super.run(duration);
                     }
@@ -407,18 +406,18 @@ public class Escalator extends Widget implements RequiresResize,
             };
 
             private ScrollbarBundle getScroll() {
-                return vertical ? escalator.verticalScrollbar : escalator.horizontalScrollbar;
+                return movingVertically ? escalator.verticalScrollbar : escalator.horizontalScrollbar;
             }
 
             public void touchStart(final CustomTouchEvent event) {
                 if (event.getNativeEvent().getTouches().length() == 1) {
-                    moveTs = Duration.currentTimeMillis();
-                    moveX = event.getNativeEvent().getTouches().get(0).getPageX();
-                    moveY = event.getNativeEvent().getTouches().get(0).getPageY();
-                    multiplicator = animation.isRunning() ? multiplicator + 1 : 1;
+                    previousT = Duration.currentTimeMillis();
+                    previousX = event.getNativeEvent().getTouches().get(0).getPageX();
+                    previousY = event.getNativeEvent().getTouches().get(0).getPageY();
+                    velocityMultiplier = animation.isRunning() ? velocityMultiplier + 1 : 1;
                     velocity = 1;
                     animation.cancel();
-                    started = true;
+                    touchStarted = true;
                 }
             }
 
@@ -428,22 +427,24 @@ public class Escalator extends Widget implements RequiresResize,
                 }
 
                 double now = Duration.currentTimeMillis();
-                double elapsed = now - moveTs;
+                double elapsed = now - previousT;
 
                 int x = event.getNativeEvent().getTouches().get(0).getPageX();
                 int y = event.getNativeEvent().getTouches().get(0).getPageY();
-                vertical = Math.abs(moveY - y) > Math.abs(moveX - x);
-                int delta = vertical ? (moveY - y) : (moveX - x);
+                int deltaY = previousY - y;
+                int deltaX = previousX - x;
+                movingVertically = Math.abs(deltaY) > Math.abs(deltaX);
+                int delta = movingVertically ? deltaY : deltaX;
 
                 double v = Math.sqrt(getScroll().getScrollSize()) * delta / (1 + elapsed);
                 velocity = 0.8 * v + 0.2 * velocity;
 
-                moveScrollFromEvent(escalator, moveX - x, moveY - y, event.getNativeEvent());
+                moveScrollFromEvent(escalator, deltaX, deltaY, event.getNativeEvent());
                 escalator.body.domSorter.reschedule();
 
-                moveTs = now;
-                moveY = y;
-                moveX = x;
+                previousT = now;
+                previousY = y;
+                previousX = x;
             }
 
             public void touchEnd(final CustomTouchEvent event) {
@@ -451,8 +452,13 @@ public class Escalator extends Widget implements RequiresResize,
                     event.getNativeEvent().preventDefault();
                     animation.run(duration);
                 } else {
-                    started = false;
+                    scrollingFinish();
                 }
+            }
+
+            private void scrollingFinish() {
+                touchStarted = false;
+                escalator.body.domSorter.reschedule();
             }
         }
 
@@ -2218,7 +2224,7 @@ public class Escalator extends Widget implements RequiresResize,
             private boolean sortIfConditionsMet() {
                 boolean enoughFramesHavePassed = framesPassed >= REQUIRED_FRAMES_PASSED;
                 boolean enoughTimeHasPassed = (Duration.currentTimeMillis() - startTime) >= SORT_DELAY_MILLIS;
-                boolean notTouchActivity = !scroller.touchHandlerBundle.started;
+                boolean notTouchActivity = !scroller.touchHandlerBundle.touchStarted;
                 boolean conditionsMet = enoughFramesHavePassed
                         && enoughTimeHasPassed && notTouchActivity;
 
