@@ -1,11 +1,12 @@
 ## Vaadin Components v0.3.0 (2015-xx-xx)
-- Polymer updated to v0.9.0.
+- Polymer updated to v1.0.2.
 
 ### `<v-grid>`
 - Drag selection is now disabled.
 - Row editor is now disabled.
 - `Value Generator` is now removed because of feature overlaps with `Renderer` (#12)
 - Spinner added to visualize data loading. (#14)
+- Improved scrolling on touch devices. (#18)
 - Issues fixed:
   - Grid doesn't work when using selection-mode multi, frozen columns and sortable columns. (#7)
   - Grid height is recalculated incorrectly when sorting a grid with a fixed height. (#8)
