@@ -169,6 +169,10 @@
           });
         });
 
+        it('should be adjustable declaratively', function() {
+          grid.setAttribute("rows", 4);
+          expect(grid.rows).to.eql(4);
+        });
       });
 
       it('should redraw with fixed dimensions', function() {
