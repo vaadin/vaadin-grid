@@ -354,12 +354,24 @@
       });
     });
 
-    it('should size columns with minWidth attribute', function() {
+    it('should size columns with min-width attribute', function() {
       qLight("col").setAttribute("width", "110");
       qLight("col").setAttribute("min-width", "130");
       return grid.then(function(){
         expect(grid.columns[0].width).to.eql(110);
         expect(qLocal(".v-grid-cell").offsetWidth).to.eql(130);
+      });
+    });
+
+    it('should size columns with max-width attribute', function() {
+      qLight("col").setAttribute("width", "210");
+      qLight("col").setAttribute("max-width", "140");
+
+      return grid.then(function(){
+        expect(grid.columns[0].width).to.eql(210);
+        expect(grid.columns[0].maxWidth).to.eql(140);
+        // waiting for fix in the Grid.java
+        // expect(qLocal(".v-grid-cell").offsetWidth).to.eql(140);
       });
     });
 
