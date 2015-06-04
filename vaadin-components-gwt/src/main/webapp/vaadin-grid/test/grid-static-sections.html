@@ -81,6 +81,17 @@
     ['header', 'footer'].forEach(function(section) {
         describe(section, function() {
 
+          function appendThead() {
+            // Need to include thead element in the light dom for declarative tests
+            var colGroup = qLight("colgroup");
+            if (colGroup) {
+              colGroup.parentElement.removeChild(colGroup);
+              qLight("table").innerHTML =
+              "<thead><tr><th>Name</th><th>Value</th></tr></thead>" +
+              qLight("table").innerHTML;
+            }
+          };
+
           it('should be readonly', function() {
             var originalValue = grid[section];
 
@@ -130,20 +141,20 @@
 
                 expect(qLocal('.v-grid-' + section + ' .v-grid-cell > input')).to.not.be.undefined;
               });
+
+              it('should set content: declarative', function() {
+                appendThead();
+
+                var ldCell = section === 'header' ? 'thead th' : 'tfoot td';
+                qLight(ldCell).innerHTML = "<span class='foo'>bar</span>";
+
+                return grid.then(function(){
+                  expect(qLocal('.v-grid-' + section + ' .v-grid-cell .foo').innerHTML).to.eql("bar");
+                });
+              });
             });
 
             describe('hidden', function() {
-
-              function appendThead() {
-                // Need to include thead element in the light dom for declarative tests
-                var colGroup = qLight("colgroup");
-                if (colGroup) {
-                  colGroup.parentElement.removeChild(colGroup);
-                  qLight("table").innerHTML =
-                  "<thead><tr><th>Name</th><th>Value</th></tr></thead>" +
-                  qLight("table").innerHTML;
-                }
-              };
 
               it('should clear innerHTML', function() {
                 grid[section].hidden = true;
@@ -237,6 +248,20 @@
               expect(rows[1].classList.toString()).to.contain('second');
             });
           });
+
+          describe('declarative rows', function() {
+            it('should have 2 rows', function() {
+              appendThead();
+              var ldSection = section === 'header' ? 'thead' : 'tfoot';
+              qLight(ldSection).removeAttribute("hidden");
+              qLight(ldSection).innerHTML = '<tr><td>foo</td><td>bar</td></tr><tr><td>foo2</td><td>bar2</td></tr>';
+
+              return grid.then(function() {
+                expect(grid[section].rowCount).to.eql(2);
+              });
+            });
+          });
+
         });
       });
     });
