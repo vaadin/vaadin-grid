@@ -37,6 +37,8 @@ First, make sure you've installed all the necessary tooling:
 - [JDK8](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
 - [Maven](http://maven.apache.org/download.cgi)
 
+> If you encounter permission issues when running `npm` see [thread in StackOverFlow.com](http://stackoverflow.com/questions/16151018/npm-throws-error-without-sudo)
+
 Then do the following:
 
 1. Install [bower](https://www.npmjs.com/package/bower), [gulp](https://www.npmjs.com/package/gulp), [web-component-tester](https://www.npmjs.com/package/web-component-tester) and [serve](https://www.npmjs.com/package/serve) globally:
@@ -69,7 +71,7 @@ $ gulp gwt
 $ serve
 ```
 - Access the components through `http://localhost:3000/vaadin-components/`
-- If you wish to import components using the development URL, remember to manually install [Polymer](https://github.com/Polymer/polymer) as a dependency to your application.
+> If you wish to import components into your application using the development URL, remember to manually install [Polymer](https://github.com/Polymer/polymer) as a dependency.
 ```shell
 $ cd your-application
 $ bower install polymer --save
@@ -88,8 +90,8 @@ $ wct --local=chrome/firefox/safari
 - Run and debug tests manually:
 ```shell
 $ serve
-$ open http://localhost:3000/vaadin-components/vaadin-grid/test/
 ```
+  - Open http://localhost:3000/vaadin-components/vaadin-grid/test/
 - Gather references for visual tests:
 ```shell
 $ gemini gather visual-test --screenshots-dir=visual-test
@@ -98,6 +100,7 @@ $ gemini gather visual-test --screenshots-dir=visual-test
 ```shell
 $ gemini test visual-test --screenshots-dir=visual-test
 ```
+> You need to install `gemini`globally using `npm install -g gemini`. We use [SauceLabs](http://www.saucelabs.com) for visual testing, so you also need to have `SAUCE_USERNAME` and `SAUCE_ACCESS_KEY` set as environmental parameters.
 
 ### Development Protips
 
@@ -122,12 +125,18 @@ $ npm install
 
 - Creating a zip package under `target/zip/`:
 ```shell
-$ gulp stage:zip OR
+$ gulp stage:zip
+```
+or
+```shell
 $ gulp stage:zip --version=0.3.0-custom --release
 ```
 - Copying bower.json and components under `target/bower/`:
 ```shell
-$ gulp stage:bower OR
+$ gulp stage:bower
+```
+or
+```shell
 $ gulp stage:bower --version=0.3.0-custom --release
 ```
 
@@ -137,8 +146,9 @@ Start a server in the root folder,
 and access one of the demo.html files inside the component folders, e.g:
 ```shell
 $ serve
-$ open http://localhost:3000/vaadin-components/vaadin-grid/demo.html
 ```
+- Open http://localhost:3000/vaadin-components/vaadin-grid/demo.html
+
 
 ## License
 
