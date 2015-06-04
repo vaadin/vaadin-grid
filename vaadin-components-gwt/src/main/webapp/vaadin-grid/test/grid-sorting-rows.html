@@ -99,6 +99,22 @@
 
       describe('declaratively', function() {
 
+        it('should apply sortable attribute', function() {
+          qLight("table col").setAttribute("sortable", "");
+
+          return grid.then(function(){
+            expect(grid.columns[0].sortable).to.be.true;
+          });
+        });
+
+        it('should unapply sortable attribute', function() {
+          qLight("col").removeAttribute("sortable");
+
+          return grid.then(function(){
+            expect(grid.columns[0].sortable).to.be.false;
+          });
+        });
+
         it('should set sort-direction attribute', function(done) {
           qLight("col").setAttribute("sortable", "");
           qLight("col").setAttribute("sort-direction", "asc");
