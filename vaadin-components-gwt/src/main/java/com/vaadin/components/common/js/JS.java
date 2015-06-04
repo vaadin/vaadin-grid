@@ -64,7 +64,9 @@ public abstract class JS {
                 .wrapFunction(new Function() {
                     @Override
                     public Object f(Object... args) {
-                        return getter.getValue();
+                        JSArray<Object> array = JS.createArray();
+                        array.push(getter.getValue());
+                        return array;
                     }
                 }) : null;
         definePropertyAccessors((JavaScriptObject) jso, propertyName,
@@ -80,8 +82,7 @@ public abstract class JS {
       Object.defineProperty(jsObject, propertyName, {
         get: function() {
             if (getter) {
-                var val = getter();
-                return !isNaN(parseFloat(val)) && isFinite(val) ? + val : val;
+                return getter()[0];
             }
             return _value;
         },

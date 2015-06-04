@@ -4,11 +4,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.query.client.js.JsUtils;
 import com.vaadin.client.widgets.Grid.Column;
 import com.vaadin.components.common.js.JS;
 import com.vaadin.components.common.js.JS.Setter;
+import com.vaadin.components.common.js.JSArray;
 import com.vaadin.components.grid.GridComponent;
 import com.vaadin.components.grid.config.JSCell;
 import com.vaadin.components.grid.config.JSColumn;
@@ -87,7 +87,7 @@ public final class GridColumn extends Column<Object, Object> {
             }
         } else {
             if (JsUtils.isArray((JavaScriptObject) dataItem)) {
-                result = ((JsArrayMixed) dataItem).getObject(getColumnIndex());
+                result = ((JSArray<Object>) dataItem).get(getColumnIndex());
             } else {
                 result = getNestedProperty(dataItem,
                         Arrays.asList(jsColumn.getName().split("\\.")));

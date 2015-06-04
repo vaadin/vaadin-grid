@@ -137,6 +137,21 @@
       }, done, done);
     });
 
+    it('renderer primitive values', function() {
+      var nValue, bValue;
+      grid.columns[0].renderer = function(cell) {
+        nValue = cell.data;
+      };
+      grid.columns[1].renderer = function(cell) {
+        bValue = cell.data;
+      };
+      grid.data.source = [[0, true]];
+      return grid.then(function() {
+        expect(nValue).to.eql(0);
+        expect(bValue).to.eql(true);
+      });
+    });
+
     it('renderer: cell values on change', function(done) {
       var mydata = [
         ["John", "TestFoo"],
