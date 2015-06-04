@@ -183,6 +183,34 @@
                   expect(qaLocal(".v-grid-" + section + " .v-grid-cell")[1].style.display).to.equal('none');
                 });
               });
+
+              describe('colspan', function() {
+                it('should hide spanned cells', function() {
+                  var cell = grid[section].getCell(0, 0);
+
+                  cell.colspan = 2;
+
+                  return grid.then(function() {
+                    expect(qaLocal(".v-grid-" + section + " .v-grid-cell")[1].style.display).to.equal('none');
+                  });
+                });
+
+                it('should apply colspan attribute', function() {
+                  appendThead();
+
+                  var ldCell = section === 'header' ? 'thead th' : 'tfoot td';
+                  qLight(ldCell).innerHTML = "<span class='foo'>bar</span>";
+                  light().querySelectorAll(ldCell)[1].setAttribute("colspan", 2);
+
+                  var ldSection = section === 'header' ? 'thead' : 'tfoot';
+                  qLight(ldSection).removeAttribute("hidden");
+
+                  return grid.then(function() {
+                    expect(qaLocal(".v-grid-" + section + " .v-grid-cell")[1].getAttribute("colspan")).to.equal('2');
+                    expect(grid[section].getCell(0, 1).colspan).to.equal(2);
+                  });
+                });
+              });
             });
           });
 
