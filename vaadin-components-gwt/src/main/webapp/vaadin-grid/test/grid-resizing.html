@@ -40,8 +40,8 @@
       }
 
       function assertSameDimensions() {
-        expect(width(grid)).to.equal(width(inner));
-        expect(height(grid)).to.equal(height(inner));
+        expect(width(grid), 'width').to.equal(width(inner));
+        expect(height(grid), 'height').to.equal(height(inner));
       }
 
       var inner,
@@ -79,6 +79,7 @@
         });
       });
 
+      // TODO: fails sometimes because of https://github.com/vaadin/components/issues/19
       it('should redraw correctly after modifying body', function() {
         tbody.innerHTML += tbody.innerHTML;
 
@@ -104,19 +105,21 @@
         var grid = tmp.querySelector("v-grid");
 
         waitUntil(function() {
-          return grid.then;
-        },function() {
-          grid.removeAttribute("style");
+          return grid.then
+        }, function() {
+          expect(grid.offsetHeight).to.equal(0);
 
-          waitUntil(function() {
-            return Polymer.dom(grid.root).querySelector(".v-grid-body .v-grid-cell");
-          },function(){
-            expect(grid.offsetHeight).to.be.at.least(30);
-            wrapper.removeChild(tmp);
-            done();
-          });
+          //TODO: timeout here because of https://github.com/vaadin/components/issues/19
+          setTimeout(function() {
+            grid.removeAttribute("style");
+
+            grid.then(function() {
+              expect(grid.offsetHeight).to.be.at.least(30);
+              wrapper.removeChild(tmp);
+              done();
+            });
+          }, 500);
         });
-
       });
 
       describe('using limited row visibility', function() {
