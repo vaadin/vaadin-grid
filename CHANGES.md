@@ -2,6 +2,7 @@
 - Polymer updated to v1.0.2.
 
 ### `<v-grid>`
+- Vaadin Widgets updated to 7.5.0.beta1
 - Drag selection is now disabled.
 - Row editor is now disabled.
 - `Value Generator` is now removed because of feature overlaps with `Renderer` (#12)

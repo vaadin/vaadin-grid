@@ -17,7 +17,7 @@
       <gQueryVersion>1.4.4-SNAPSHOT</gQueryVersion>
       <gwt.outputstyle>PRETTY</gwt.outputstyle>
       <jetty.version>8.1.12.v20130726</jetty.version>
-      <vaadin.version>7.5-SNAPSHOT</vaadin.version>
+      <vaadin.version>7.5.0.beta1</vaadin.version>
       <gwt.outputstyle>OBF</gwt.outputstyle>
       <gwt.disableCastChecking>true</gwt.disableCastChecking>
       <gwt.disableClassMetadata>true</gwt.disableClassMetadata>
