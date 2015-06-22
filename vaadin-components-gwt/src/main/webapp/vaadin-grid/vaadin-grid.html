@@ -92,7 +92,6 @@
     box-sizing: border-box;
     overflow: hidden;
     text-overflow: ellipsis;
-    background: #fff;
   }
 
   :host > div {
@@ -182,13 +181,17 @@
   /* Theming properties */
 
   :host {
-    font: 400 100%/1.1 Roboto, sans-serif;
-    color: rgba(0, 0, 0, 0.83);
+    font: 400 13px Roboto, sans-serif;
+    color: rgba(0, 0, 0, 0.87);
   }
 
   .v-grid-cell {
     padding: 0 16px;
     height: 32px;
+  }
+
+  .v-grid tr:hover {
+    background: #eeeeee;
   }
 
   .v-grid-header,
@@ -197,18 +200,16 @@
   }
 
   .v-grid-header th {
-    background: #03A9F4;
-    color: #fff;
-    text-transform: uppercase;
-    font-weight: 600;
-    font-size: 0.8125em;
+    background-color: #ffffff;
+    font: 500 12px Roboto, sans-serif;
+    color: rgba(0, 0, 0, 0.54);
     height: 32px;
     border-right: 1px solid rgba(255, 255, 255, 0.3);
     border-bottom: 1px solid rgba(255, 255, 255, 0.3);
   }
 
   .v-grid-header-deco {
-    background: #03A9F4;
+    background: #fff;
     border-left: 1px solid rgba(255, 255, 255, 0.3);
     z-index: 1;
   }
@@ -239,7 +240,7 @@
   .v-grid-footer td,
   .v-grid-footer-deco,
   .v-grid-horizontal-scrollbar-deco {
-    background: #E6E6E6;
+    background: #fff;
     font-size: 0.8125em;
     font-weight: 500;
     color: rgba(0, 0, 0, 0.56);
@@ -284,8 +285,8 @@
                 4px 0 0 0 rgba(0,0,0,0.04);
   }
 
-  .v-grid-row-selected > td {
-    background-color: #f2f2f2;
+  .v-grid-row-selected {
+    background-color: #f5f5f5;
   }
 
   input[type="checkbox"] {
