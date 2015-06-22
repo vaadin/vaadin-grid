@@ -92,7 +92,6 @@
     box-sizing: border-box;
     overflow: hidden;
     text-overflow: ellipsis;
-    background: #fff;
   }
 
   :host > div {
@@ -182,13 +181,23 @@
   /* Theming properties */
 
   :host {
-    font: 400 100%/1.1 Roboto, sans-serif;
-    color: rgba(0, 0, 0, 0.83);
+    font: 400 13px Roboto, sans-serif;
+    color: rgba(0, 0, 0, 0.87);
   }
 
   .v-grid-cell {
-    padding: 0 16px;
-    height: 32px;
+    padding: 24px 24px 24px 24px;
+    height: 48px;
+  }
+
+  .v-grid tr:hover .v-grid-cell.frozen.frozen,
+  .v-grid tr:hover {
+    background: #eeeeee;
+  }
+
+  .v-grid-header tr:hover .v-grid-cell.frozen.frozen,
+  .v-grid-footer tr:hover .v-grid-cell.frozen.frozen {
+    background: #ffffff;
   }
 
   .v-grid-header,
@@ -197,23 +206,23 @@
   }
 
   .v-grid-header th {
-    background: #03A9F4;
-    color: #fff;
-    text-transform: uppercase;
-    font-weight: 600;
-    font-size: 0.8125em;
-    height: 32px;
+    background-color: #ffffff;
+    font: 500 12px Roboto, sans-serif;
+    color: rgba(0, 0, 0, 0.54);
+    height: 56px;
     border-right: 1px solid rgba(255, 255, 255, 0.3);
     border-bottom: 1px solid rgba(255, 255, 255, 0.3);
   }
 
   .v-grid-header-deco {
-    background: #03A9F4;
+    background: #fff;
     border-left: 1px solid rgba(255, 255, 255, 0.3);
     z-index: 1;
   }
 
   .v-grid-header [class*="sort-"] {
+    font: 500 12px Roboto, sans-serif;
+    color: rgba(0, 0, 0, 0.87);
     position: relative;
     padding-right: 32px;
   }
@@ -222,6 +231,10 @@
     position: absolute;
     font-family: sans-serif;
     content: url(sort-asc.svg) " " attr(sort-order);
+    color: rgba(0, 0, 0, 0.87);
+    /* if svg has un-even dimensions:
+    line-height: 1px;
+    */
     right: 12px;
     font-size: 12px;
     width: 11px;
@@ -229,17 +242,27 @@
   }
 
   .v-grid-header .sort-desc:after {
-    content: url(sort-desc.svg) " " attr(sort-order);
+    transform: rotate(180deg);
   }
 
   .v-grid-header [class*="sort-"][sort-order]:after {
     right: 20px;
   }
 
+  .v-grid-footer,
+  .v-grid-footer-deco {
+    box-shadow: 0px -3px 2px 0px rgba(0, 0, 0, 0.20);
+
+  }
+
+  .v-grid-footer td {
+    height: 56px;
+  }
+
   .v-grid-footer td,
   .v-grid-footer-deco,
   .v-grid-horizontal-scrollbar-deco {
-    background: #E6E6E6;
+    background: #fff;
     font-size: 0.8125em;
     font-weight: 500;
     color: rgba(0, 0, 0, 0.56);
@@ -252,6 +275,7 @@
 
   .v-grid-footer-deco {
     border-left: 1px solid rgba(255, 255, 255, 0.5);
+    z-index: 1;
   }
 
   .v-grid-horizontal-scrollbar-deco {
@@ -275,6 +299,7 @@
    specificity of the ".v-grid-header th" more than this, and we can't
    override the border */
   .v-grid-cell.frozen.frozen {
+    background-color: #ffffff;
     position: relative;
     z-index: 1;
     border-right: 0;
@@ -284,8 +309,9 @@
                 4px 0 0 0 rgba(0,0,0,0.04);
   }
 
-  .v-grid-row-selected > td {
-    background-color: #f2f2f2;
+  .v-grid-row-selected > .v-grid-cell.frozen.frozen,
+  .v-grid-row-selected {
+    background-color: #f5f5f5;
   }
 
   input[type="checkbox"] {
@@ -298,8 +324,8 @@
     left: 0;
     box-sizing: border-box;
     display: block;
-    width: 16px;
-    height: 16px;
+    width: 18px;
+    height: 18px;
     border: 2px solid rgba(0,0,0,0.3);
     border-radius: 2px;
     cursor: pointer;
@@ -310,18 +336,19 @@
     outline: none;
   }
 
-  input[type="checkbox"]:focus + label {
-    border-color: rgba(0,0,0,0.6);
-  }
+  /*issue #32*/
+  /*input[type="checkbox"]:focus + label {*/
+    /*border-color: rgba(0,0,0,0.3);*/
+  /*}*/
 
   input[type="checkbox"] + label:after {
     content: url("tick.svg");
     position: absolute;
-    top: -2px;
-    left: -2px;
+    top: -1px;
+    left: -1px;
     display: block;
-    width: 16px;
-    height: 16px;
+    width: 18px;
+    height: 18px;
     transition: all 200ms;
     -webkit-transform: scale(0);
     transform: scale(0);
@@ -341,7 +368,8 @@
 
   input[type="checkbox"]:indeterminate + label:after {
     content: "–";
-    font-size: 14px;
+    left: -2px;
+    font-size: 13px;
     text-align: center;
     -webkit-transform: none;
     transform: none;
@@ -351,10 +379,10 @@
   input[type="checkbox"] + label:before {
     content: "";
     position: absolute;
-    top: -14px;
-    left: -14px;
-    width: 40px;
-    height: 40px;
+    top: -13px;
+    left: -13px;
+    width: 41px;
+    height: 41px;
     border-radius: 50%;
     background: #666;
     opacity: 0;
@@ -376,9 +404,9 @@
 
   /* Small adjustments for the checkbox in the header */
 
-  .v-grid-header input[type="checkbox"] + label {
-    border-color: rgba(255,255,255,0.5);
-  }
+  /*.v-grid-header input[type="checkbox"] + label {*/
+    /*border-color: rgba(255,255,255,0.5);*/
+  /*}*/
 
   .v-grid-header input[type="checkbox"] + label:before {
     background: #fff;
