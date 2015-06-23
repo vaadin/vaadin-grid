@@ -442,7 +442,7 @@
 
       properties: {
         /**
-         * The data source object for the grid.
+         * Object for controlling and accessing the data source of the grid.
          *
          * @property data
          * @type {Data}
@@ -478,14 +478,13 @@
 
               clearCache: function(estimatedNewSize) {
                 _this._grid.getDataSource().clearCache(estimatedNewSize);
-              },
-
+              }
             };
           }
         },
 
         /**
-         * Object for manipulating header rows
+         * Object for controlling and accessing the header rows in the grid.
          *
          * @property header
          * @type {Header}
@@ -528,7 +527,7 @@
         },
 
         /**
-         * Object for manipulating footer rows
+         * Object for controlling and accessing the footer rows in the grid.
          *
          * @property footer
          * @type {Footer}
@@ -565,7 +564,7 @@
         },
 
         /**
-         * Selection model
+         * Object for controlling and accessing the selected rows in the grid.
          *
          * @property selection
          * @type {Selection}
@@ -614,7 +613,7 @@
               }
             };
           }
-        },
+        }
       },
 
       attributeChanged: function(name, type, value) {
@@ -685,13 +684,16 @@
 
       /**
        * Scrolls to a certain row, using user-specified scroll destination.
-       * Since its asynchronous nature, this method returns a 'thenable'
-       * so as you can use the 'then()' method to be notified when the data
-       * request finished and the scroll is actually moved.
+       *
+       * Scrolling happens asynchronously, so this method returns a 'thenable'
+       * which can be used to be notified when the scrolling is finished.
+       *
+       * Example: `grid.scrollToRow(10, 'end').then(doMoreStuff);`
        *
        * @method scrollToRow
-       * @param {number} index - zero-based index of the row to scroll to.
-       * @param {string} scrollDestination - desired destination placement of scrolled-to-row.
+       * @param {number} index - Zero-based index of the row to scroll to.
+       * @param {string} scrollDestination - Desired destination placement of scrolled-to-row. Valid values are `any`, `start`, `middle` and `end`. Defaults to `any`.
+       * @return {v-grid}
        */
       scrollToRow: function(index, scrollDestination) {
         this._grid.scrollToRow(index, scrollDestination);
@@ -699,12 +701,15 @@
       },
 
       /**
-       * Scrolls to the beginning of the very first row.
-       * Since its asynchronous nature, this method returns a 'thenable'
-       * so as you can use the 'then()' method to be notified when the data
-       * request finished and the scroll is actually moved.
+       * Scrolls to the beginning of the grid.
+       *
+       * Scrolling happens asynchronously, so this method returns a 'thenable'
+       * which can be used to be notified when the scrolling is finished.
+       *
+       * Example: `grid.scrollToStart().then(doMoreStuff);`
        *
        * @method scrollToStart
+       * @return {v-grid}
        */
       scrollToStart: function() {
         this._grid.scrollToStart();
@@ -712,12 +717,15 @@
       },
 
       /**
-       * Scrolls to the end of the very last row.
-       * Since its asynchronous nature, this method returns a 'thenable'
-       * so as you can use the 'then()' method to be notified when the data
-       * request finished and the scroll is actually moved.
+       * Scrolls to the end of the grid.
+       *
+       * Scrolling happens asynchronously, so this method returns a 'thenable'
+       * which can be used to be notified when the scrolling is finished.
+       *
+       * Example: `grid.scrollToEnd().then(doMoreStuff);`
        *
        * @method scrollToEnd
+       * @return {v-grid}
        */
       scrollToEnd: function() {
         this._grid.scrollToEnd();
@@ -725,30 +733,30 @@
       },
 
       /**
-       * Adds new column
+       * Adds a new column. Column is added at the end if `beforeColumn` is not defined.
        *
        * @method addColumn
-       * @param {Column} column
-       * @param {string} beforeColumn
+       * @param {Column} column - Column to be added.
+       * @param {string} beforeColumn - Index or id of the column before which the new column should be added.
        */
       addColumn: function(column, beforeColumn) {
         this._grid.addColumn(column, beforeColumn);
       },
 
       /**
-       * Removes column with certain id
+       * Removes a column with certain id
        *
        * @method removeColumn
-       * @param {string} id
+       * @param {string} id - Column to be removed.
        */
       removeColumn: function(id) {
         this._grid.removeColumn(id);
       },
 
       /**
-       * Sets the style generator that is used for generating styles for rows.
+       * The style generator that is used for generating styles for rows.
        *
-       * @attribute rowClassGenerator
+       * @property rowClassGenerator
        * @type object
        */
       get rowClassGenerator() {
@@ -757,10 +765,11 @@
       set rowClassGenerator(rowClassGenerator) {
         this._grid.setRowClassGenerator(rowClassGenerator);
       },
+
       /**
-       * Sets the style generator that is used for generating styles for cells.
+       * The style generator that is used for generating styles for cells.
        *
-       * @attribute cellClassGenerator
+       * @property cellClassGenerator
        * @type object
        */
       get cellClassGenerator() {
@@ -769,10 +778,13 @@
       set cellClassGenerator(cellClassGenerator) {
         this._grid.setCellClassGenerator(cellClassGenerator);
       },
+
       /**
-       * Disables the grid functionality.
+       * Disables the grid.
        *
-       * @attribute disabled
+       * Attribute: `disabled`
+       *
+       * @property disabled
        * @type boolean
        */
       get disabled() {
@@ -782,13 +794,16 @@
         this._grid.setDisabled(disabled);
         this.reflectPropertyToAttribute("disabled");
       },
+
       /**
-       * Sets the number of frozen columns in this grid. Setting the count to 0
+       * The number of frozen columns in this grid. Setting it to 0
        * means that no data columns will be frozen, but the built-in selection
        * checkbox column will still be frozen if it's in use. Setting the count to
        * -1 will also disable the selection column.
        *
-       * @attribute frozen-columns
+       * Attribute: `frozen-columns`
+       *
+       * @property frozenColumns
        * @type Number
        */
       get frozenColumns() {
@@ -798,12 +813,15 @@
         this._grid.setFrozenColumns(frozenColumns);
         this.reflectPropertyToAttribute("frozenColumns");
       },
+
       /**
-       * Declares the number of visible rows in the grid. Implicitly sets the height
+       * The number of visible rows in the grid. Implicitly sets the height
        * in the inline style, overriding any previous height. Setting style.height
        * in this case should be ignored if possible.
        *
-       * @attribute rows
+       * Attribute: `rows`
+       *
+       * @property rows
        * @type Number
        */
       get rows() {
@@ -814,8 +832,9 @@
         this._grid.setRows(rows);
         this.reflectPropertyToAttribute("rows");
       },
+
       /**
-       * The columns array
+       * The array of Columns attached to the grid.
        *
        * @property columns
        * @type {Array<Column>}
@@ -826,10 +845,11 @@
       set columns(cols) {
         this._grid.setColumns(cols);
       },
+
       /**
        * Executes a callback when the grid has finished any pending work.
        *
-       * @method them
+       * @method then
        * @param {Function} callback
        * @return {Promise}
        */
