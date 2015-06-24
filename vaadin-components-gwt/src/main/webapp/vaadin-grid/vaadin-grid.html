@@ -639,10 +639,10 @@
         /**
          * @event selectionmodechange
          */
-        'selectionmodechange': 'onSelectionModeChange'
+        'selectionmodechange': '_onSelectionModeChange'
       },
 
-      onSelectionModeChange: function() {
+      _onSelectionModeChange: function() {
         this.serializeValueToAttribute(this.selection.mode, "selection-mode");
       },
 
