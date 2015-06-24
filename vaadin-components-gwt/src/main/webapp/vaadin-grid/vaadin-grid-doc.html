@@ -14,10 +14,14 @@
       name:  String,
       /**
        * Content of the column in the default header row object.
+       *
+       * Attribute: `header-text`
        */
       headerContent:  String,
       /**
        * Enables sorting the data in the column by the end user.
+       *
+       * Attribute: `sortable`
        *
        * @property {boolean} sortable
        * @type {boolean}
@@ -27,6 +31,8 @@
       /**
        * Minimum width of the column in pixels.
        *
+       * Attribute: `min-width`
+       *
        * @property {number} minWidth
        * @type {number}
        * @default 10
@@ -34,14 +40,20 @@
       minWidth: Number,
       /**
        * Maximum width of the column in pixels.
+       *
+       * Attribute: `max-width`
        */
       maxWidth: Number,
       /**
        * Width of the column in pixels.
+       *
+       * Attribute: `width`
        */
       width: Number,
       /**
        * Flex ratio of the column (expand ratio in Vaadin-speak). Uses integers.
+       *
+       * Attribute: `flex`
        *
        * @property {number} flex
        * @type {number}
@@ -182,6 +194,8 @@ Object for accessing and controlling footer rows.
       /**
        * Number of columns which the cell should span/group.
        *
+       * Attribute: `colspan`
+       *
        * @property {number} colspan
        * @type {number}
        */
@@ -230,6 +244,8 @@ Object for accessing and controlling header rows.
     properties: {
       /**
        * Number of columns which the cell should span/group.
+       *
+       * Attribute: `colspan`
        *
        * @property {number} colspan
        * @type {number}
@@ -388,6 +404,8 @@ Object for defining the sorting order of the columns.
     properties: {
       /**
        * Sort direction.
+       *
+       * Attribute: `sort-direction`
        * 
        * @property {"asc"|"desc"} direction
        * @type {"asc"|"desc"}
