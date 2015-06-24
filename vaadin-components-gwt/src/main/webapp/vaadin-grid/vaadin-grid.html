@@ -444,7 +444,7 @@
         /**
          * Object for controlling and accessing the data source of the grid.
          *
-         * @property data
+         * @property {Data} data
          * @type {Data}
          */
         data: {
@@ -486,7 +486,7 @@
         /**
          * Object for controlling and accessing the header rows in the grid.
          *
-         * @property header
+         * @property {Header} header
          * @type {Header}
          */
         header: {
@@ -529,7 +529,7 @@
         /**
          * Object for controlling and accessing the footer rows in the grid.
          *
-         * @property footer
+         * @property {Footer} footer
          * @type {Footer}
          */
         footer: {
@@ -566,7 +566,7 @@
         /**
          * Object for controlling and accessing the selected rows in the grid.
          *
-         * @property selection
+         * @property {Selection} selection
          * @type {Selection}
          */
         selection: {
@@ -756,8 +756,8 @@
       /**
        * The style generator that is used for generating styles for rows.
        *
-       * @property rowClassGenerator
-       * @type object
+       * @property {object} rowClassGenerator
+       * @type {object}
        */
       get rowClassGenerator() {
         return this._grid.getRowClassGenerator();
@@ -769,8 +769,8 @@
       /**
        * The style generator that is used for generating styles for cells.
        *
-       * @property cellClassGenerator
-       * @type object
+       * @property {object} cellClassGenerator
+       * @type {object}
        */
       get cellClassGenerator() {
         return this._grid.getCellClassGenerator();
@@ -784,8 +784,8 @@
        *
        * Attribute: `disabled`
        *
-       * @property disabled
-       * @type boolean
+       * @property {boolean} disabled
+       * @type {boolean}
        */
       get disabled() {
         return this._grid.isDisabled();
@@ -803,8 +803,8 @@
        *
        * Attribute: `frozen-columns`
        *
-       * @property frozenColumns
-       * @type Number
+       * @property {number} frozenColumns
+       * @type {number}
        */
       get frozenColumns() {
         return this._grid.getFrozenColumns();
@@ -821,8 +821,8 @@
        *
        * Attribute: `rows`
        *
-       * @property rows
-       * @type Number
+       * @property {number} rows
+       * @type {number}
        */
       get rows() {
         var rows = this._grid.getRows();
@@ -836,7 +836,7 @@
       /**
        * The array of Columns attached to the grid.
        *
-       * @property columns
+       * @property {Array<Column>} columns
        * @type {Array<Column>}
        */
       get columns() {
