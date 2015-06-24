@@ -114,7 +114,6 @@ public class GridLightDomTable implements MutationListener {
             JSColumn column = JS.createJsType(JSColumn.class);
             jsColumns.add(column);
             column.setSortable(JSValidate.Boolean.attr($th, "sortable"));
-            column.setReadOnly(JSValidate.Boolean.attr($th, "read-only"));
             column.setFlex(JSValidate.Integer.attr($th, "flex", 1, -1));
 
             Double width = JSValidate.Pixel.attr($th, "width");
