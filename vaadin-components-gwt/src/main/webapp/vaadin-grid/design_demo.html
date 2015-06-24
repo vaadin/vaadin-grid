@@ -1,0 +1,119 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1" />
+  <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../VaadinGrid/VaadinGrid.nocache.js"></script>
+
+  <script src="sdm.js"></script>
+  <script src="demodata.js"></script>
+  <style>
+    td.red, th.red, .red th, .red td, td.foot1, .foot1 td {
+      background: mistyrose !important;
+    }
+    td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
+      background: aliceblue !important;
+    }
+    .foot1, .foot2 {
+      font-weight: bold !important;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+<script>
+  var vGridReady = false;
+
+  window.addEventListener("WebComponentsReady", function(){
+    console.log("xsw");
+    if ("VGrid" in window) {
+      // Good to go
+      vGridReady = true;
+    } else {
+      // We're on SDM so extra attention is needed
+      handleSDMinit(function(){
+        vGridReady = true;
+      });
+    }
+  });
+
+  function execute(id, cb) {
+    if (vGridReady) {
+      cb(document.getElementById(id));
+    } else {
+      setTimeout(execute, 200, id, cb);
+    }
+  }
+</script>
+
+<ol>
+  <li>
+    <h3>Selection</h3>
+
+    <v-grid id="myMultiSelGrid" selection-mode="multi">
+      <table>
+        <!--<col header-text="Name">-->
+        <!--<col header-text="Value">-->
+        <!--<col header-text="Progress">-->
+        <col sortable sort-direction="desc" header-text="Name">
+        <col sortable sort-direction="asc" header-text="Value">
+        <col sortable header-text="Progress">
+        <col sortable header-text="Data">
+        <col sortable header-text="Numeric">
+        <tfoot>
+          <tr>
+            <th colspan=5>Demo Footer</th>
+          </tr>
+        </tfoot>
+      </table>
+    </v-grid>
+    <div id="smbuttons">
+      <input type="radio" name="selectionmode" value="single">single</input>
+      <input type="radio" name="selectionmode" value="multi" checked="checked">multi</input>
+      <input type="radio" name="selectionmode" value="all">all</input>
+      <input type="radio" name="selectionmode" value="disabled">disabled</input>
+    </div>
+    <div id="sizelabel"></div>
+    <div id="deselectedlabel" style="overflow: hidden; text-overflow: ellipsis;"></div>
+    <div id="selectedlabel" style="overflow: hidden; text-overflow: ellipsis;"></div>
+    <script>
+      execute("myMultiSelGrid", function(grid) {
+        grid.data.source = myBigData;
+
+        var updateFields = function(event) {
+          document.getElementById("sizelabel").innerText = "selection.size: " + grid.selection.size;
+
+          var selectedLabel = document.getElementById("selectedlabel");
+          if (grid.selection.mode === "all"){
+            selectedLabel.style.color = "#f00";
+            selectedLabel.innerText = "selection.selected() PREFER deselected() WITH SELECTION MODE \"all\"): " + grid.selection.selected();
+          } else {
+            selectedLabel.style.color = "#000";
+            selectedLabel.innerText = "selection.selected(): " + grid.selection.selected();
+          }
+          document.getElementById("deselectedlabel").innerText = "selection.deselected(): " + grid.selection.deselected();
+
+          document.querySelector("input[name='selectionmode'][checked='checked']").removeAttribute("checked");
+          document.querySelector("input[name='selectionmode'][value='"+ grid.selection.mode +"']").setAttribute("checked", "checked");
+        };
+
+        var modeListener = function(e) {
+          grid.selection.mode = e.target.value;
+          updateFields();
+        };
+        var radios = document.querySelectorAll("input[name='selectionmode']");
+        for (var i = 0; i< radios.length; i++) {
+          radios[i].addEventListener("click", modeListener);
+        }
+
+        grid.addEventListener("select", updateFields);
+
+//        grid.footer.addRow(0, ["sum", "demo sum", "DEMO FOOTER"]);
+//        grid.footer.addRow(0, ["Hello", "World"]);
+      });
+    </script>
+  </li>
+</ol>
+</body>
+</html>
