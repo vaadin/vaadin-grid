@@ -148,7 +148,15 @@ Object used to request data from the data source.
       /**
        * Number of data items to fetch.
        */
-      count:  Number
+      count:  Number,
+
+      /**
+       * Sorting order of the fetched data items.
+       *
+       * @property {Array<SortOrder>} sortOrder
+       * @type {Array<SortOrder>}
+       * */
+      sortOrder: Object
     },
     /**
      * Callback function to pass along the data items to the grid and the total size of the data source.
