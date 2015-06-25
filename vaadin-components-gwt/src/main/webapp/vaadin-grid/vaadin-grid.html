@@ -11,6 +11,32 @@
   }
 </style>
 
+<!--
+Data grid for showing large amounts of tabular data.
+
+Basic usage:
+```html
+<v-grid>
+  <table>
+    <colgroup>
+      <col header-text="Name">
+      <col header-text="Value">
+      <col header-text="Progress">
+    </colgroup>
+    <tbody>
+      <tr>
+        <td>Project A</td><td>10000</td><td>0.8</td>
+      </tr>
+      <tr>
+        <td>Project B</td><td>999999</td><td>0.8</td>
+      </tr>
+    </tbody>
+  </table>
+</v-grid>
+```
+
+More examples available at http://vaadin.github.io/components-examples/v-grid/
+-->
 <dom-module id="v-grid">
 <style>
   /* Functional properties */
@@ -436,6 +462,7 @@
 
 <script>
     VGrid = Polymer({
+
       is: "v-grid",
 
       _grid: undefined,
