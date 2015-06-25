@@ -328,7 +328,7 @@ Object for accessing and controlling header rows.
 <!--
 Represents a grid header/footer row configuration.
 -->
-<dom-module id="StaticCell"></dom-module>
+<dom-module id="Row"></dom-module>
 <script>
   Polymer({
     is: 'Row',
@@ -461,9 +461,15 @@ Represents a grid header/footer cell configuration.
     is: 'StaticCell',
     properties: {
       /**
-       * Class name.
+       * Class name of the cell.
        */
       className:  String,
+
+      /**
+       * Contents of the cell.
+       */
+      content: Object,
+
       /**
        * Number of columns which the cell should span/group.
        */
