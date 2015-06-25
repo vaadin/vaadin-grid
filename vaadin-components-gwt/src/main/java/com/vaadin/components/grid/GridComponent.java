@@ -528,14 +528,20 @@ public class GridComponent implements SelectionHandler<Object>,
     private void updateSelectAllCheckBox() {
         CheckBox selectAllCheckBox = getSelectAllCheckBox();
         if (selectAllCheckBox != null) {
-            boolean checked = getSelectionModel().getMode() == IndexBasedSelectionMode.ALL;
-            selectAllCheckBox.setValue(checked, false);
             $(selectAllCheckBox).children().addClass("v-grid", "style-scope");
-            boolean indeterminate = !(checked ? getSelectionModel().deselected(
-                    null, null, null) : getSelectionModel().selected(null,
-                    null, null)).isEmpty();
-            $(selectAllCheckBox).find("input").prop("indeterminate",
-                    indeterminate);
+            boolean checked = getSelectionModel().getMode() == IndexBasedSelectionMode.ALL;
+            boolean indeterminate = false;
+            if (getSelectionModel().size() == 0) {
+              checked = false;
+            } else if (getSelectionModel().size() == getDataSource().size()) {
+              checked = true;
+            } else {
+              indeterminate = !(checked ? getSelectionModel().deselected(
+                      null, null, null) : getSelectionModel().selected(null,
+                      null, null)).isEmpty();
+            }
+            selectAllCheckBox.setValue(checked, false);
+            $(selectAllCheckBox).find("input").prop("indeterminate", indeterminate);
         }
     }
 
