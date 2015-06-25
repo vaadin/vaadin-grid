@@ -207,21 +207,20 @@ Object for accessing and controlling footer rows.
     is: 'Footer',
     properties: {
       /**
-       * Number of columns which the cell should span/group.
-       *
-       * Attribute: `colspan`
-       *
-       * @property {number} colspan
-       * @type {number}
-       */
-      colspan: Number,
-      /**
        * Hides all footers in the grid.
        *
        * @property {boolean} hidden
        * @type {boolean}
        */
-      hidden: Boolean
+      hidden: Boolean,
+
+      /**
+       * Number of rows in the footer.
+       *
+       * @property {number} rowCount
+       * @type {number}
+       */
+      rowCount: Number
     },
     /**
      * Adds a new footer row.
@@ -230,6 +229,7 @@ Object for accessing and controlling footer rows.
      * @param {number} index - Index of the new footer row. If undefined, it is inserted as the last row.
      */
     addRow: function(index) {},
+
     /**
      * Removes a specific footer row.
      *
@@ -237,6 +237,7 @@ Object for accessing and controlling footer rows.
      * @param {number} index - Index of the row to be removed.
      */
     removeRow: function(index) {},
+
     /**
      * Returns an object reference to a particular footer cell.
      *
@@ -245,7 +246,16 @@ Object for accessing and controlling footer rows.
      * @param {number|string} column - Index or name of the column.
      * @return {StaticCell} An object reference to a particular footer cell
      */
-    getCell: function(rowIndex, column) {}
+    getCell: function(rowIndex, column) {},
+
+    /**
+     * Sets the class name for a footer row.
+     *
+     * @method setRowClassName
+     * @param {number} rowIndex - Index of the row.
+     * @param {string} className - New class name
+     */
+    setRowClassName: function(rowIndex, className) {}
   });
 </script>
 
@@ -257,15 +267,6 @@ Object for accessing and controlling header rows.
   Polymer({
     is: 'Header',
     properties: {
-      /**
-       * Number of columns which the cell should span/group.
-       *
-       * Attribute: `colspan`
-       *
-       * @property {number} colspan
-       * @type {number}
-       */
-      colspan: Number,
       /**
        * Hides all headers in the grid.
        *
@@ -279,7 +280,15 @@ Object for accessing and controlling header rows.
        * @property {number} defaultRow
        * @type {number}
        */
-      defaultRow: Number
+      defaultRow: Number,
+
+      /**
+       * Number of rows in the header.
+       *
+       * @property {number} rowCount
+       * @type {number}
+       */
+      rowCount: Number
     },
     /**
      * Adds a new header row.
@@ -303,7 +312,16 @@ Object for accessing and controlling header rows.
      * @param {number|string} column - Index or name of the column.
      * @return {StaticCell} An object reference to a particular header cell
      */
-    getCell: function(rowIndex, column) {}
+    getCell: function(rowIndex, column) {},
+
+    /**
+     * Sets the class name for a header row.
+     *
+     * @method setRowClassName
+     * @param {number} rowIndex - Index of the row.
+     * @param {string} className - New class name
+     */
+    setRowClassName: function(rowIndex, className) {}
   });
 </script>
 
