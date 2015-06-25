@@ -85,14 +85,24 @@
   }
 
   .v-grid-cell {
-    display: -webkit-inline-flex;
-    display: inline-flex;
-    -webkit-align-items: center;
-    align-items: center;
+    display: inline-block;
+    text-align: left;
     box-sizing: border-box;
     overflow: hidden;
     text-overflow: ellipsis;
     background: #fff;
+  }
+
+  .v-grid-cell:before {
+    content: "";
+    height: 100%;
+  }
+  
+  .v-grid-cell.v-grid *,
+  .v-grid-cell.v-grid:before,
+  .v-grid-cell.v-grid:after {
+  	display: inline-block;
+  	vertical-align: middle;
   }
 
   :host > div {
@@ -225,7 +235,8 @@
     right: 12px;
     font-size: 12px;
     width: 11px;
-    height: 5px;
+    top: 50%;
+    margin-top: -0.5em;
   }
 
   .v-grid-header .sort-desc:after {
@@ -361,6 +372,10 @@
     -webkit-transform: scale(0.8);
     transform: scale(0.8);
     transition: all 180ms cubic-bezier(0.75,.0,0.25,1);
+    
+    /* The following is a Firefox specific property 
+    that intentionally disables the splash to avoid a bug */
+    -moz-appearance: scrollbar;
   }
 
   input[type="checkbox"] + label:active:before {
