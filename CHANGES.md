@@ -21,6 +21,9 @@
   - "Toggling display:none; on v-grid breaks sizing calculations"
   - "Fix bug with empty rows when using the `x-repeat` template"
   - "Fix the "v-grid-ready" event firing in IE"
+  - "Scrollbar not visible on OS X Safari" (#28)
+  - "Chrome OS X hides scrollbars even if System Preferences has 'Show scrollbars always' on" (#30)
+  - "Failed to execute write on Document" (#16)
 
 ***
 
