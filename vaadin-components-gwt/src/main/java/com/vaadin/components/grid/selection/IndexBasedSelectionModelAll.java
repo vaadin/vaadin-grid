@@ -128,11 +128,18 @@ public class IndexBasedSelectionModelAll extends
                 && (!dataSizeUpdated || index < grid.getDataSource().size())
                 && deselectedIndexes.indexOf((double) index) == -1) {
             deselectedIndexes.add((double) index);
+
             skipOwnEvents = JSValidate.Boolean.val(skipOwnEvents, false, false);
             if (!skipOwnEvents) {
                 grid.fireEvent(new SelectionEvent<Object>(grid, null, null,
                         false));
             }
+
+            if (size() == 0) {
+                clear();
+                return false;
+            }
+
             return true;
         }
         return false;
