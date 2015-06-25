@@ -27,3 +27,5 @@ vaadin-components/vaadin-grid/vaadin-grid-doc.html
 vaadin-components/vaadin-grid/demo.html
 vaadin-components/vaadin-grid/test
 vaadin-components/vaadin-grid/*.svg
+.idea
+*.iml
