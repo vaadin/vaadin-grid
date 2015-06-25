@@ -3,17 +3,36 @@ package com.vaadin.components.grid;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.IFrameElement;
+import com.google.gwt.query.client.GQuery;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.vaadin.client.BrowserInfo;
+import com.vaadin.client.WidgetUtil;
 
 public class ViolatedGrid extends com.vaadin.client.widgets.Grid<Object> {
 
     public ViolatedGrid() {
+        super();
         // This is needed for detecting the correct native scrollbar size in
         // (OS X) Chrome [https://github.com/vaadin/components/issues/30]
         if (BrowserInfo.get().isChrome()) {
             setWidgetUtilNativeScrollbarSize(getWidgetUtilNativeScrollbarSize());
+        }
+
+        // This hack is needed to fix scrollbars for OS X Safari
+        // [https://github.com/vaadin/components/issues/28]
+        //
+        // Dynamic scrollbars refuse to work on the stacking root directly so
+        // the wrapper is needed for creating an additional stacking context.
+        if (BrowserInfo.get().isSafari()
+                && WidgetUtil.getNativeScrollbarSize() == 0) {
+            GQuery scrollers = GQuery.$(".v-grid-scroller", this)
+                    .css("position", "relative")
+                    .wrap("<div style='position: absolute; z-index: 10' />");
+            scrollers.filter(".v-grid-scroller-vertical").parent()
+                    .css("right", "0");
+            scrollers.filter(".v-grid-scroller-horizontal").parent()
+                    .css("bottom", "0");
         }
     }
 
