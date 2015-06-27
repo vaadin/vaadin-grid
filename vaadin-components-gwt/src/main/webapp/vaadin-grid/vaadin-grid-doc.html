@@ -11,13 +11,13 @@
        * Must be a valid JS variable name so that the same name can be used in
        * the data source object fields.
        */
-      name:  String,
+      name: String,
       /**
        * Content of the column in the default header row object.
        *
        * Attribute: `header-text`
        */
-      headerContent:  String,
+      headerContent: String,
       /**
        * Enables sorting the data in the column by the end user.
        *
@@ -60,6 +60,7 @@
        * @default -1
        */
       flex: Number,
+
       /**
        * Custom renderer function for the columns data items.
        *
@@ -69,14 +70,11 @@
        *      cell.element.innerHTML = '$' + cell.data;
        *  };
        *  ```
-       *
-       * Params:
-       *  - {Cell} cell – Reference to the Cell object
-       *
        * @property {function} renderer
+       * @param {Cell} cell - Reference to the cell being rendered.
        * @type {function}
        */
-      renderer: Object
+      renderer: function(cell) {}
     }
   });
 </script>
@@ -474,6 +472,49 @@ Represents a grid header/footer cell configuration.
        * Number of columns which the cell should span/group.
        */
       colspan:  Number
+    }
+  });
+</script>
+
+<!--
+Cell object passed to a cell style generator.
+-->
+<dom-module id="Cell"></dom-module>
+<script>
+  Polymer({
+    is: 'Cell',
+    properties: {
+
+      /**
+       * Column name of the cell.
+       */
+      columnName: String,
+
+      /**
+       * HTML element of the cell.
+       *
+       * @property {HTMLElement} element
+       * @type {HTMLElement}
+       */
+      element: Object,
+
+      /**
+       * Parent row of the cell.
+       *
+       * @property {Row} row
+       * @type {Row}
+       */
+      row: Object,
+
+      /**
+       * Contents of the cell.
+       */
+      data: Object,
+
+      /**
+       * Column index of the cell.
+       */
+      index: Number
     }
   });
 </script>
