@@ -786,30 +786,53 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
         this._grid.removeColumn(id);
       },
 
-      /**
-       * The style generator that is used for generating styles for rows.
-       *
-       * @property {object} rowClassGenerator
-       * @type {object}
-       */
       get rowClassGenerator() {
         return this._grid.getRowClassGenerator();
       },
-      set rowClassGenerator(rowClassGenerator) {
-        this._grid.setRowClassGenerator(rowClassGenerator);
+
+      /**
+       * The style generator that is used for generating styles for rows.
+       *
+       * Example:
+       * ```
+       * grid.rowClassGenerator = function(row) {
+       *  var activity = row.data[2];
+       *  return 'activity-' + activity.toLowerCase();
+       * };
+       *```
+       *
+       * @property {function} rowClassGenerator
+       * @param {Row} row - Reference to the row being rendered.
+       * @type {function}
+       */
+      set rowClassGenerator(row) {
+        this._grid.setRowClassGenerator(row);
+      },
+
+      get cellClassGenerator() {
+        return this._grid.getCellClassGenerator();
       },
 
       /**
        * The style generator that is used for generating styles for cells.
        *
-       * @property {object} cellClassGenerator
-       * @type {object}
+       * Example:
+       * ```
+       * grid.cellClassGenerator = function(cell) {
+       *   if (cell.index == 2) {
+       *      var activity = cell.row.data[2];
+       *      return 'activity-' + activity.toLowerCase();
+       *    }
+       *    return '';
+       *  };
+       * ```
+       * @property {function} cellClassGenerator
+       * @param {Cell} cell - Reference to the cell being rendered.
+       * @type {function}
+       *
        */
-      get cellClassGenerator() {
-        return this._grid.getCellClassGenerator();
-      },
-      set cellClassGenerator(cellClassGenerator) {
-        this._grid.setCellClassGenerator(cellClassGenerator);
+      set cellClassGenerator(cell) {
+        this._grid.setCellClassGenerator(cell);
       },
 
       /**
