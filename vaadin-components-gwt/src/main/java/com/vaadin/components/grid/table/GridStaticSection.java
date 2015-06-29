@@ -52,16 +52,20 @@ public class GridStaticSection {
             bind(jsCell, cell, "colspan",
                     v -> cell.setColspan(((Double) v).intValue()));
             bind(jsCell, cell, "className", v -> cell.setStyleName((String) v));
-            bind(jsCell, cell, "content", v -> {
-                if (v == null) {
-                    cell.setHtml(null);
-                } else if (JS.isPrimitiveType(v) || v instanceof Number) {
-                    cell.setHtml(String.valueOf(v));
-                } else if (JsUtils.isElement(v)) {
-                    cell.setWidget(new SimplePanel((Element) v) {
+            bind(jsCell,
+                    cell,
+                    "content",
+                    v -> {
+                        if (v == null) {
+                            cell.setHtml(null);
+                        } else if (JS.isPrimitiveType(v) || v instanceof Number) {
+                            cell.setHtml("<span style='overflow: hidden;text-overflow: ellipsis;'>"
+                                    + String.valueOf(v) + "</span>");
+                        } else if (JsUtils.isElement(v)) {
+                            cell.setWidget(new SimplePanel((Element) v) {
+                            });
+                        }
                     });
-                }
-            });
 
             cells.put(cell, jsCell);
         }
