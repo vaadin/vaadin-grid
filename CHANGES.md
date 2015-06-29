@@ -24,6 +24,7 @@
   - "Scrollbar not visible on OS X Safari" (#28)
   - "Chrome OS X hides scrollbars even if System Preferences has 'Show scrollbars always' on" (#30)
   - "Failed to execute write on Document" (#16)
+  - "Select all checkbox does not reset" (#35)
   - "<v-grid> text-overflow: ellipsis; doesn’t work for cell content" (#10)
 
 ***
