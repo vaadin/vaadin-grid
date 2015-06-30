@@ -450,6 +450,28 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
     width: 100% !important;
     height: 100% !important;
   }
+  
+  /* The following is a workaround to https://dev.vaadin.com/ticket/18376 */
+  .v-grid-scroller[invisible]::-webkit-scrollbar {
+    border: none;
+  }
+
+  .v-grid-scroller[invisible]::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    border: 4px solid transparent;
+    background: rgba(0,0,0,.3);
+    -webkit-background-clip: content-box;
+    background-clip: content-box;
+  }
+
+
+  .v-grid-scroller-vertical[invisible]::-webkit-scrollbar-thumb {
+    min-height: 30px;
+  }
+
+  .v-grid-scroller-horizontal[invisible]::-webkit-scrollbar-thumb {
+    min-width: 30px;
+  }
 
 </style>
   <template>
