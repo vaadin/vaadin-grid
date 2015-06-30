@@ -85,12 +85,6 @@ public class IndexBasedSelectionModelMulti extends
                 grid.fireEvent(new SelectionEvent<Object>(grid, null, null,
                         false));
             }
-
-            if (isChecked()) {
-                selectAll();
-                return false;
-            }
-
             return true;
         }
         return false;
