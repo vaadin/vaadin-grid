@@ -9,6 +9,7 @@
 - `Value Generator` is now removed because of feature overlaps with `Renderer` (#12)
 - Spinner added to visualize data loading. (#14)
 - Improved scrolling on touch devices. (#18)
+- JSDocs revised.
 - Issues fixed:
   - Grid doesn't work when using selection-mode multi, frozen columns and sortable columns. (#7)
   - Grid height is recalculated incorrectly when sorting a grid with a fixed height. (#8)
