@@ -2,7 +2,7 @@
 @element v-grid
 -->
 
-<link rel='import' href='../bower_components/polymer/polymer.html'>
+<link rel='import' href='../../bower_components/polymer/polymer.html'>
 <script type="text/javascript" language="javascript" src="VaadinGridImport.nocache.js"></script>
 
 <style>
@@ -13,22 +13,32 @@
 
 <dom-module id="v-grid">
 <style>
-  /* Functional properties */
-
+  /* Host styles */
   :host {
-    white-space: nowrap;
     -webkit-tap-highlight-color: transparent;
     -webkit-touch-callout: none;
-    transition: opacity 200ms;
+    box-sizing: border-box;
+    display: block;
+    font: 400 13px/1.1 Roboto, sans-serif;
+    color: rgba(0, 0, 0, 0.87);
     cursor: default;
+    transition: opacity 200ms;
+    white-space: nowrap;
   }
 
   :host(.v-grid-loading) {
-    opacity: 0;
     height: 0;
+    opacity: 0;
     transition: none;
   }
 
+  :host > div {
+    height: 100%;
+    outline: none;
+    position: relative;
+  }
+
+  /* Anim */
   @keyframes v-grid-spin-360 {
     100% {
       transform: rotate(360deg);
@@ -42,135 +52,82 @@
     }
   }
 
+  /* Table wrapper */
+  .v-grid-tablewrapper {
+    box-sizing: border-box;
+    overflow: hidden;
+    outline: none;
+    position: absolute;
+    z-index: 5;
+  }
+
   .v-grid-tablewrapper:before {
     display: none;
   }
 
-  .v-grid-loading-data .v-grid-tablewrapper:before {
+  .v-grid-tablewrapper > table {
+    box-sizing: border-box;
     display: block;
-    content: "";
-    position: absolute;
-    margin-left: -8px;
-    margin-top: -8px;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    border: 2px solid #03A9F4;
-    border-top-color: transparent;
-    border-right-color: transparent;
-    top: 50%;
-    left: 50%;
+  }
+
+  .v-grid-loading-data .v-grid-tablewrapper:before {
     -webkit-animation: v-grid-spin-360 400ms linear infinite;
     animation: v-grid-spin-360 400ms linear infinite;
-  }
-
-  .v-grid-body .v-grid-cell:not(.frozen) {
-    transition: opacity 300ms 0ms;
-    opacity: 1;
-  }
-
-  .v-grid-body .v-grid-cell:empty:not(.frozen) {
-    opacity: 0;
-    transition-delay: 700ms;
-  }
-
-  :host,
-  .v-grid-tablewrapper > table,
-  .v-grid-body,
-  .v-grid-header,
-  .v-grid-footer,
-  .v-grid-row {
+    border: 2px solid #03A9F4;
+    border-radius: 50%;
+    border-right-color: transparent;
+    border-top-color: transparent;
+    content: "";
     display: block;
-    box-sizing: border-box;
+    height: 16px;
+    left: 50%;
+    margin-left: -8px;
+    margin-top: -8px;
+    position: absolute;
+    top: 50%;
+    width: 16px;
   }
 
-  .v-grid-cell {
-    display: -webkit-inline-flex;
-    display: inline-flex;
-    -webkit-align-items: center;
-    align-items: center;
-    box-sizing: border-box;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  :host > div {
-    position: relative;
-    outline: none;
-    height: 100%;
-  }
-
+  /* Scroller styles */
   .v-grid-scroller {
+    box-sizing: border-box;
+    outline: none;
     position: absolute;
     z-index: 1;
-    outline: none;
-    box-sizing: border-box;
   }
 
   .v-grid-scroller-horizontal {
+    bottom: 0;
     left: 0;
     right: 0;
-    bottom: 0;
     overflow-y: hidden;
     -ms-overflow-y: hidden;
   }
 
   .v-grid-scroller-vertical {
+    bottom: 0;
     right: 0;
     top: 0;
-    bottom: 0;
     overflow-x: hidden;
     -ms-overflow-x: hidden;
   }
 
-  .v-grid-tablewrapper {
-    position: absolute;
-    overflow: hidden;
-    box-sizing: border-box;
-    z-index: 5;
-    outline: none;
-  }
-
-  .v-grid-header-deco,
-  .v-grid-footer-deco,
   .v-grid-horizontal-scrollbar-deco {
+    bottom: 0;
+    box-sizing: border-box;
+    left: 0;
     position: absolute;
     right: 0;
-    box-sizing: border-box;
   }
 
-  .v-grid-header,
-  .v-grid-body,
-  .v-grid-footer {
-    position: absolute;
-    left: 0;
-    z-index: 10;
-  }
-
-  .v-grid-header,
-  .v-grid-header-deco {
-    top: 0;
-  }
-
-  .v-grid-footer,
-  .v-grid-footer-deco {
-    bottom: 0;
-  }
-
-  .v-grid-horizontal-scrollbar-deco {
-    left: 0;
-    bottom: 0;
-  }
-
+  /* Grid body */
   .v-grid-body {
-    z-index: 0;
-    top: 0;
-  }
-
-  .v-grid-body .v-grid-row {
+    box-sizing: border-box;
+    display: block;
+    left: 0;
     position: absolute;
     top: 0;
-    left: 0;
+    z-index: 0;
   }
 
   :host(:not([selection-mode])) .v-grid-body,
@@ -178,120 +135,187 @@
     cursor: pointer;
   }
 
-  /* Theming properties */
-
-  :host {
-    font: 400 13px/1.1 Roboto, sans-serif;
-    color: rgba(0, 0, 0, 0.87);
-  }
-
-  .v-grid-cell {
-    padding: 24px 24px 24px 24px;
+  .v-grid-body tr {
     height: 48px;
+    left: 0;
+    top: 0;
+    position: absolute;
   }
 
-  .v-grid tr:hover .v-grid-cell.frozen.frozen,
-  .v-grid tr:hover {
-    background: #eee;
+  .v-grid-body td {
+    opacity: 0;
   }
 
-  .v-grid-header tr:hover .v-grid-cell.frozen.frozen,
-  .v-grid-footer tr:hover .v-grid-cell.frozen.frozen {
-    background: #fff;
+  .v-grid-row-has-data td {
+    border-bottom: 1px solid #e3e3e3;
+    opacity: 1;
   }
 
-  .v-grid-header,
-  .v-grid-header-deco {
-    box-shadow: 0px 3px 2px 0px rgba(0, 0, 0, 0.20);
+  /* Row styles */
+  .v-grid-row {
+    box-sizing: border-box;
+    display: block;
   }
 
-  .v-grid-header th {
-    background-color: #fff;
-    font-weight: 500;
-    font-size: 12px;
-    color: rgba(0, 0, 0, 0.54);
-    height: 56px;
-    border-right: 1px solid rgba(255, 255, 255, 0.3);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  .v-grid-row:hover td {
+    background-color: #eeeeee;
   }
 
-  .v-grid-header-deco {
-    background: #fff;
-    border-left: 1px solid rgba(255, 255, 255, 0.3);
+  .v-grid-row-selected td {
+    background-color: #f5f5f5;
+  }
+
+  /* Focus styles */
+  .v-grid-row:after {
+    background-color: #03A9F4;
+    bottom: 0;
+    content: "";
+    height: 2px;
+    left: 0;
+    pointer-events: none;
+    position: absolute;
+    right: 0;
+    transition: all 0.16s ease-in-out;
+    transform: scaleX(0.0);
     z-index: 1;
   }
 
+  :focus .v-grid-row-focused:after {
+    transform: scaleX(1.0);
+  }
+
+  :focus .v-grid-row-focused {
+    -webkit-animation: v-grid-row-focused 820ms ease-in-out;
+    animation: v-grid-row-focused 820ms ease-in-out;
+  }
+
+  @keyframes v-grid-row-focused {
+    50% {
+      color: #03A9F4;
+    } 100% {
+      color: inherit;
+    }
+  }
+
+  /* Grid cell */
+  .v-grid-cell {
+    -webkit-align-items: center;
+    align-items: center;
+    background-color: white;
+    box-sizing: border-box;
+    display: -webkit-inline-flex;
+    display: inline-flex;
+    height: inherit;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: opacity 0.1s ease-in;
+  }
+
+  /* Grid header */
+  .v-grid-header {
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+    display: block;
+    left: 0;
+    position: absolute;
+    top: 0;
+    z-index: 10;
+  }
+
+  .v-grid-header tr {
+    color: rgba(0, 0, 0, 0.54);
+    font-size: 12px;
+    font-weight: 500;
+    height: 56px;
+  }
+
+  .v-grid-header-deco {
+    background-color: white;
+    border-left: 1px solid rgba(255, 255, 255, 0.3);
+    box-sizing: border-box;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 1;
+  }
+
+  /* Sorting */
   .v-grid-header [class*="sort-"] {
     font-weight: 500;
     font-size: 12px;
     color: rgba(0, 0, 0, 0.87);
     position: relative;
-    padding-right: 32px;
   }
 
   .v-grid-header [class*="sort-"]:after {
-    position: absolute;
-    font-family: sans-serif;
-    content: url(sort-asc.svg) " " attr(sort-order);
-    color: rgba(0, 0, 0, 0.87);
-    /* if svg has un-even dimensions:
-    line-height: 1px;
-    */
-    right: 12px;
-    font-size: 12px;
-    width: 11px;
-    height: 5px;
+    font-size: 8px;
+    padding-left: 8px;
+  }
+
+  .v-grid-header .sort-asc:after {
+    content: url(arrow-up.svg) " " attr(sort-order);
   }
 
   .v-grid-header .sort-desc:after {
-    transform: rotate(180deg);
+    content: url(arrow-down.svg) " " attr(sort-order);
   }
 
-  .v-grid-header [class*="sort-"][sort-order]:after {
-    right: 20px;
-  }
-
-  .v-grid-footer,
-  .v-grid-footer-deco {
-    box-shadow: 0px -3px 2px 0px rgba(0, 0, 0, 0.20);
-
+  /* Grid footer */
+  .v-grid-footer {
+    bottom: 0;
+    box-sizing: border-box;
+    display: block;
+    left: 0;
+    position: absolute;
+    z-index: 10;
   }
 
   .v-grid-footer td {
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.56);
     height: 56px;
   }
 
-  .v-grid-footer td,
-  .v-grid-footer-deco,
-  .v-grid-horizontal-scrollbar-deco {
-    background: #fff;
-    font-size: 0.8125em;
-    font-weight: 500;
-    color: rgba(0, 0, 0, 0.56);
-  }
-
-  .v-grid-footer td {
-    border-right: 1px solid rgba(255, 255, 255, 0.5);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
-  }
-
   .v-grid-footer-deco {
-    border-left: 1px solid rgba(255, 255, 255, 0.5);
+    bottom: 0;
+    box-sizing: border-box;
+    position: absolute;
+    right: 0;
     z-index: 1;
   }
 
-  .v-grid-horizontal-scrollbar-deco {
-    border-top: 1px solid rgba(255, 255, 255, 0.5);
+  /* Cell padding */
+  .v-grid-header th,
+  .v-grid-body td,
+  .v-grid-footer td {
+    padding: 0 56px 0 0;
+  }
+
+  .v-grid-header th:first-child,
+  .v-grid-body td:first-child,
+  .v-grid-footer td:first-child {
+    padding-left: 24px;
   }
 
   .v-grid-header th:last-child,
+  .v-grid-body td:last-child,
   .v-grid-footer td:last-child {
-    border-right: 0;
+    padding-right: 24px;
   }
 
-  .v-grid-header tr:last-child th,
-  .v-grid-footer tr:last-child td {
-    border-bottom: 0;
+  .v-grid-header th.frozen,
+  .v-grid-body td.frozen,
+  .v-grid-footer td.frozen {
+    border-right: 1px solid #e3e3e3;
+    padding: 0 24px 0 24px;
+  }
+
+  .v-grid-header th.frozen + th,
+  .v-grid-body td.frozen + td,
+  .v-grid-footer td.frozen + td {
+    padding-left: 24px;
+    padding-right: 24px;
   }
 
   /* TODO We need some other way of defining the frozen column divider than
@@ -301,21 +325,11 @@
    specificity of the ".v-grid-header th" more than this, and we can't
    override the border */
   .v-grid-cell.frozen.frozen {
-    background-color: #fff;
     position: relative;
     z-index: 1;
-    border-right: 0;
-    box-shadow: 1px 0 0 0 rgba(0,0,0,0.04),
-                2px 0 0 0 rgba(0,0,0,0.04),
-                3px 0 0 0 rgba(0,0,0,0.04),
-                4px 0 0 0 rgba(0,0,0,0.04);
   }
 
-  .v-grid-row-selected > .v-grid-cell.frozen.frozen,
-  .v-grid-row-selected {
-    background-color: #f5f5f5;
-  }
-
+  /* Input styles */
   input[type="checkbox"] {
     position: absolute;
     opacity: 0;
@@ -328,7 +342,7 @@
     display: block;
     width: 18px;
     height: 18px;
-    border: 2px solid rgba(0,0,0,0.3);
+    border: 2px solid #7a7a7a;
     border-radius: 2px;
     cursor: pointer;
     transition: background-color 120ms, border-color 120ms;
@@ -337,11 +351,6 @@
   input[type="checkbox"]:focus {
     outline: none;
   }
-
-  /*issue #32*/
-  /*input[type="checkbox"]:focus + label {*/
-    /*border-color: rgba(0,0,0,0.3);*/
-  /*}*/
 
   input[type="checkbox"] + label:after {
     content: url("tick.svg");
@@ -386,7 +395,7 @@
     width: 41px;
     height: 41px;
     border-radius: 50%;
-    background: #666;
+    background-color: #666;
     opacity: 0;
     -webkit-transform: scale(0.8);
     transform: scale(0.8);
@@ -401,41 +410,16 @@
   }
 
   input[type="checkbox"]:checked + label:before {
-    background: #03A9F4;
+    background-color: #03A9F4;
   }
 
   /* Small adjustments for the checkbox in the header */
-
-  /*.v-grid-header input[type="checkbox"] + label {*/
-    /*border-color: rgba(255,255,255,0.5);*/
-  /*}*/
-
   .v-grid-header input[type="checkbox"] + label:before {
-    background: #fff;
+    background-color: white;
   }
 
   .v-grid-header input[type="checkbox"] + label:after {
     transition: none;
-  }
-
-  /* Focus styles */
-
-  .v-grid-row-focused:after {
-    content: "";
-    position: absolute;
-    z-index: 1;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    border: 1px solid rgba(0,0,0,0.2);
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 300ms;
-  }
-
-  :focus .v-grid-row-focused:after {
-    opacity: 1;
   }
 
   #measure {
