@@ -29,12 +29,6 @@ public interface JSDataRequest {
     void setSortOrder(JSArray<JSSortOrder> sortOrder);
 
     @JsProperty
-    JSArray<?> getFilterData();
-
-    @JsProperty
-    void setFilterData(JSArray<?> filterData);
-
-    @JsProperty
     JavaScriptObject getSuccess();
 
     @JsProperty

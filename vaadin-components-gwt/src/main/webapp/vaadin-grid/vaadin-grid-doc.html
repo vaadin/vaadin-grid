@@ -1,54 +1,68 @@
-<!-- Documentation of v-grid -->
 <link rel='import' href='vaadin-grid.html'>
 
+<!-- Object for controlling and accessing the columns in the grid. -->
 <dom-module id="Column"></dom-module>
 <script>
   Polymer({
     is: 'Column',
     properties: {
       /**
+       * Name of the column.
        * Must be a valid JS variable name so that the same name can be used in
        * the data source object fields.
        */
-      name:  String,
+      name: String,
       /**
-       * Sets the content of this column in the default header row object
-       */
-      headerContent:  String,
-      /**
-       * Indicates whether the data in this column can be sorted by the end user
+       * Content of the column in the default header row object.
        *
-       * @property sortable
-       * @type boolean
+       * Attribute: `header-text`
+       */
+      headerContent: String,
+      /**
+       * Enables sorting the data in the column by the end user.
+       *
+       * Attribute: `sortable`
+       *
+       * @property {boolean} sortable
+       * @type {boolean}
        * @default false
        */
       sortable: false,
       /**
-       * Pixel values are supported only.
+       * Minimum width of the column in pixels.
        *
-       * @property minWidth
-       * @type number
+       * Attribute: `min-width`
+       *
+       * @property {number} minWidth
+       * @type {number}
        * @default 10
        */
       minWidth: Number,
       /**
-       * Pixel values are supported only.
+       * Maximum width of the column in pixels.
+       *
+       * Attribute: `max-width`
        */
       maxWidth: Number,
       /**
-       * Pixel values are supported only.
+       * Width of the column in pixels.
+       *
+       * Attribute: `width`
        */
       width: Number,
       /**
-       * Defines the flex ratio of this column (expand ratio in Vaadin-speak). Expects an integer.
+       * Flex ratio of the column (expand ratio in Vaadin-speak). Uses integers.
        *
-       * @property flex
-       * @type number
+       * Attribute: `flex`
+       *
+       * @property {number} flex
+       * @type {number}
        * @default -1
        */
       flex: Number,
+
       /**
-       * It is a function which defines the custom renderer for this columns data items.
+       * Custom renderer function for the columns data items.
        *
        *  Example:
        *  ```
@@ -56,20 +70,17 @@
        *      cell.element.innerHTML = '$' + cell.data;
        *  };
        *  ```
-       *
-       * Params:
-       *  - {Cell} cell – Reference to the Cell object
-       *
-       * @property renderer
+       * @property {function} renderer
+       * @param {Cell} cell - Reference to the cell being rendered.
        * @type {function}
        */
-      renderer: Object
+      renderer: function(cell) {}
     }
   });
 </script>
 
 <!--
-The object used to manipulate data in the grid.
+Object for accessing and controlling data source used in the grid.
 -->
 <dom-module id="Data"></dom-module>
 <script>
@@ -77,7 +88,7 @@ The object used to manipulate data in the grid.
     is: 'Data',
     properties: {
       /**
-       * The data source object for the grid.
+       * Data source for the grid.
        * 
        * If an array is used, it is wrapped with a function internally. 
        * Reading the property value will still return the array.       *
@@ -104,23 +115,30 @@ The object used to manipulate data in the grid.
        * Params:
        *  - {DataRequest} req – Reference to the DataRequest object
        *
-       * @property source
-       * @type {Array|function}
+       * @property {Array|Function} source
+       * @type {Array|Function}
        */
       source: Object,
       /**
-       * The sort order.
+       * Order of sorting.
        * 
-       * @property source
+       * @property {Array<SortOrder>} source
        * @type {Array<SortOrder>}
        */
-      sortOrder: Array
+      sortOrder: Array,
+
+      /**
+       * Clears the cache.
+       *
+       * @type {Function}
+       */
+      clearCache: Function
     }
   });
 </script>
 
 <!--
-This is the object used when the grid request more data from datasources.
+Object used to request data from the data source.
 -->
 <dom-module id="DataRequest"></dom-module>
 <script>
@@ -128,14 +146,22 @@ This is the object used when the grid request more data from datasources.
     is: 'DataRequest',
     properties: {
       /**
-       * First data item index to fetch
+       * Index of the first data item to fetch.
        */
       index:  Number,
 
       /**
-       * Number of data items to fetch
+       * Number of data items to fetch.
        */
-      count:  Number
+      count:  Number,
+
+      /**
+       * Sorting order of the fetched data items.
+       *
+       * @property {Array<SortOrder>} sortOrder
+       * @type {Array<SortOrder>}
+       * */
+      sortOrder: Object
     },
     /**
      * Callback function to pass along the data items to the grid and the total size of the data source.
@@ -152,12 +178,12 @@ This is the object used when the grid request more data from datasources.
      *  ```
      *
      * @method success
-     * @param {Array<*>} items The subset of the data items
-     * @param {number} totalSize – The total quantity of the data items
+     * @param {Array<*>} items - Fetched data items.
+     * @param {number} totalSize – Total quantity of the data items.
      */
     success: function(items, totalSize) {},
     /**
-     * Callback function to inform the grid that something failed when getting the data.
+     * Callback function to inform the grid that something failed while getting the data.
      *
      *  Example:
      *  ```
@@ -171,7 +197,7 @@ This is the object used when the grid request more data from datasources.
 </script>
 
 <!--
-Object for manipulating footer rows.
+Object for accessing and controlling footer rows.
 -->
 <dom-module id="Footer"></dom-module>
 <script>
@@ -179,48 +205,61 @@ Object for manipulating footer rows.
     is: 'Footer',
     properties: {
       /**
-       * The number of columns which this cell should span/group
+       * Hides all footers in the grid.
        *
-       * @property colspan
-       * @type number
+       * @property {boolean} hidden
+       * @default false
+       * @type {boolean}
        */
-      colspan: Number,
+      hidden: Boolean,
+
       /**
-       * If set to true, visually hides all footers in the Grid
+       * Number of rows in the footer.
        *
-       * @property hidden
-       * @type boolean
+       * @property {number} rowCount
+       * @type {number}
        */
-      hidden: Boolean
+      rowCount: Number
     },
     /**
      * Adds a new footer row.
      *
      * @method addRow
-     * @param {number} index The position where to insert the new footer row. If undefined, it is insert as the last row.
+     * @param {number} index - Index of the new footer row. If undefined, it is inserted as the last row.
      */
     addRow: function(index) {},
+
     /**
      * Removes a specific footer row.
      *
      * @method removeRow
-     * @param {number} index The row index to remove.
+     * @param {number} index - Index of the row to be removed.
      */
     removeRow: function(index) {},
+
     /**
      * Returns an object reference to a particular footer cell.
      *
      * @method getCell
-     * @param {number} rowIndex The row index.
-     * @param {number|string} column The column.
+     * @param {number} rowIndex - Index of the row.
+     * @param {number|string} column - Index or name of the column.
      * @return {StaticCell} An object reference to a particular footer cell
      */
-    getCell: function(rowIndex, column) {}
+    getCell: function(rowIndex, column) {},
+
+    /**
+     * Sets the class name for a footer row.
+     *
+     * @method setRowClassName
+     * @param {number} rowIndex - Index of the row.
+     * @param {string} className - New class name
+     */
+    setRowClassName: function(rowIndex, className) {}
   });
 </script>
 
 <!--
-Object for manipulating header rows
+Object for accessing and controlling header rows.
 -->
 <dom-module id="Header"></dom-module>
 <script>
@@ -228,83 +267,94 @@ Object for manipulating header rows
     is: 'Header',
     properties: {
       /**
-       * The number of columns which this cell should span/group
+       * Hides all headers in the grid.
        *
-       * @property colspan
-       * @type number
-       */
-      colspan: Number,
-      /**
-       * If set to true, visually hides all headers in the Grid
-       *
-       * @property hidden
-       * @type boolean
+       * @property {boolean} hidden
+       * @default false
+       * @type {boolean}
        */
       hidden: Boolean,
       /**
-       * Sets the index of the default header row in the headers array
+       * Index of the default header row if multiple header rows exist.
        *
-       * @property defaultRow
-       * @type number
+       * @property {number} defaultRow
+       * @type {number}
        */
-      defaultRow: Number
+      defaultRow: Number,
+
+      /**
+       * Number of rows in the header.
+       *
+       * @property {number} rowCount
+       * @type {number}
+       */
+      rowCount: Number
     },
     /**
      * Adds a new header row.
      *
      * @method addRow
-     * @param {number} index The position where to insert the new header row. If undefined, it is insert as the last row.
+     * @param {number} index - Index of the new header row. If undefined, it is inserted as the last row.
      */
     addRow: function(index) {},
     /**
      * Removes a specific header row.
      *
      * @method removeRow
-     * @param {number} index The row index to remove.
+     * @param {number} index - Index of the row to be removed.
      */
     removeRow: function(index) {},
     /**
      * Returns an object reference to a particular header cell.
      *
      * @method getCell
-     * @param {number} rowIndex The row index.
-     * @param {number|string} column The column.
+     * @param {number} rowIndex - Index of the row.
+     * @param {number|string} column - Index or name of the column.
      * @return {StaticCell} An object reference to a particular header cell
      */
-    getCell: function(rowIndex, column) {}
+    getCell: function(rowIndex, column) {},
+
+    /**
+     * Sets the class name for a header row.
+     *
+     * @method setRowClassName
+     * @param {number} rowIndex - Index of the row.
+     * @param {string} className - New class name
+     */
+    setRowClassName: function(rowIndex, className) {}
   });
 </script>
 
 <!--
-Represents a grid header/footer row configuration.
+Object referencing to a row and it's data.
 -->
-<dom-module id="StaticCell"></dom-module>
+<dom-module id="Row"></dom-module>
 <script>
   Polymer({
     is: 'Row',
     properties: {
       /**
-       * The row index
+       * Index of the row.
        */
       index:  Number,
       /**
-       * The row data object from the data source
+       * Data object of the row.
        *
-       * @property data
+       * @property {*} data
        * @type {*}
        */
       data:  Object,
       /**
-       * Reference to the &lt;table is=v-grid> element
+       * Reference to the &lt;v-grid> element
        *
-       * @property grid
+       * @property {HTMLElement} grid
        * @type {HTMLElement}
        */
       grid:  Object,
       /**
        * Reference to the TR element
        *
-       * @property element
+       * @property {HTMLElement} element
        * @type {HTMLElement}
        */
       element:  Object
@@ -313,7 +363,7 @@ Represents a grid header/footer row configuration.
 </script>
 
 <!--
-The Object used for configuring the selection model of the grid.
+Object for accessing and controlling selected rows of the grid.
 -->
 <dom-module id="Selection"></dom-module>
 <script>
@@ -321,62 +371,64 @@ The Object used for configuring the selection model of the grid.
     is: 'Selection',
     properties: {
       /**
-       * The mode
+       * Mode of the selection.
        *
-       * @property mode
+       * Attribute: `selection-mode`
+       *
+       * @property {"single"|"multi"|"all"|"disabled"} mode
        * @type {"single"|"multi"|"all"|"disabled"}
        */
       mode: String,
       /**
-       * The size
+       * Size of the selection.
        */
       size: Number
     },
     /**
-     * Selects certain row
+     * Selects a row.
      *
      * @method select
-     * @param {number} index – The row index
+     * @param {number} index – Index of the row.
      */
     select: function(index) {},
     /**
-     * Deselects certain row
+     * Deselects a row.
      *
      * @method deselect
-     * @param {number} index – The row index
+     * @param {number} index – Index of the row.
      */
     deselect: function(index) {},
     /**
-     * Clears selection
+     * Clears the selection.
      *
      * @method clear
      */
     clear: function() {},
     /**
-     * Selects all rows
+     * Selects all rows.
      *
      * @method selectAll
      */
     selectAll: function() {},
     /**
-     * Gets selected row indexes
+     * Selected row indexes.
      *
      * @method selected
-     * @return {Array<Number>} The selected row indexes
+     * @return {Array<number>} Indexes of the selected rows.
      */
     selected: function() {},
     /**
-     * Gets deselected row indexes
+     * Deselected row indexes.
      *
      * @method deselected
-     * @return {Array<Number>} The deselected row indexes
+     * @return {Array<number>} Indexes of the deselected rows.
      */
     deselected: function() {}
   });
 </script>
 
 <!--
-Represents the sort configuration of a column.
+Object for defining the sorting order of the columns.
 -->
 <dom-module id="SortOrder"></dom-module>
 <script>
@@ -384,14 +436,17 @@ Represents the sort configuration of a column.
     is: 'SortOrder',
     properties: {
       /**
-       * The sort direction
+       * Sort direction.
+       *
+       * Attribute: `sort-direction`
        * 
-       * @property direction
-       * @type {"asc"|"desc"}
+       * @property {string} direction
+       * @default "asc"
+       * @type {string}
        */
       direction:  String,
       /**
-       * The index of column
+       * Index of the column.
        */
       column:  Number
     }
@@ -407,13 +462,64 @@ Represents a grid header/footer cell configuration.
     is: 'StaticCell',
     properties: {
       /**
-       * The class name
+       * Class name of the cell.
        */
       className:  String,
+
       /**
-       * The number of columns which this cell should span/group
+       * Contents of the cell.
+       */
+      content: Object,
+
+      /**
+       * Number of columns which the cell should span/group.
+       *
+       * @default 0
        */
       colspan:  Number
+    }
+  });
+</script>
+
+<!--
+Object referencing to a cell and it's data.
+-->
+<dom-module id="Cell"></dom-module>
+<script>
+  Polymer({
+    is: 'Cell',
+    properties: {
+
+      /**
+       * Column name of the cell.
+       */
+      columnName: String,
+
+      /**
+       * HTML element of the cell.
+       *
+       * @property {HTMLElement} element
+       * @type {HTMLElement}
+       */
+      element: Object,
+
+      /**
+       * Parent row of the cell.
+       *
+       * @property {Row} row
+       * @type {Row}
+       */
+      row: Object,
+
+      /**
+       * Contents of the cell.
+       */
+      data: Object,
+
+      /**
+       * Column index of the cell.
+       */
+      index: Number
     }
   });
 </script>
