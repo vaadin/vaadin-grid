@@ -134,6 +134,12 @@ public class IndexBasedSelectionModelAll extends
                 grid.fireEvent(new SelectionEvent<Object>(grid, null, null,
                         false));
             }
+
+            if (size() == 0) {
+                clear();
+                return false;
+            }
+
             return true;
         }
         return false;

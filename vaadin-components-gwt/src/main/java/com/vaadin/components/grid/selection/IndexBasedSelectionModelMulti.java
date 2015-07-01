@@ -85,6 +85,12 @@ public class IndexBasedSelectionModelMulti extends
                 grid.fireEvent(new SelectionEvent<Object>(grid, null, null,
                         false));
             }
+
+            if (isChecked()) {
+                selectAll();
+                return false;
+            }
+
             return true;
         }
         return false;
@@ -94,11 +100,13 @@ public class IndexBasedSelectionModelMulti extends
     public boolean deselect(int index, boolean skipOwnEvents) {
         if (selectedIndexes.indexOf((double) index) != -1) {
             selectedIndexes.remove((double) index);
+
             skipOwnEvents = JSValidate.Boolean.val(skipOwnEvents, false, false);
             if (!skipOwnEvents) {
                 grid.fireEvent(new SelectionEvent<Object>(grid, null, null,
                         false));
             }
+
             return true;
         }
         return false;
