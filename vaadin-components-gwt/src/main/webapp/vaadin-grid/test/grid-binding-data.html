@@ -31,7 +31,7 @@
       }, ];
 
       return grid.then(function() {
-        var cells = qaLocal(".v-grid-body .v-grid-cell");
+        var cells = qaLocal(".v-grid-body .v-grid-cell > span");
         assert.equal(cells[0].innerHTML, "John");
         assert.equal(cells[1].innerHTML, "1234.56");
         assert.equal(cells[2].innerHTML, "Jane");
@@ -46,7 +46,7 @@
       ];
 
       return grid.then(function(){
-        var cells = qaLocal(".v-grid-body .v-grid-cell");
+        var cells = qaLocal(".v-grid-body .v-grid-cell > span");
         assert.equal(cells[0].innerHTML, "John");
         assert.equal(cells[1].innerHTML, "1234.56");
         assert.equal(cells[2].innerHTML, "Jane");
@@ -62,7 +62,7 @@
       ];
 
       return grid.then(function(){
-        var cells = qaLocal(".v-grid-body .v-grid-cell");
+        var cells = qaLocal(".v-grid-body .v-grid-cell > span");
         assert.equal(cells[2].innerHTML, "true");
       });
 
@@ -75,7 +75,7 @@
         ];
 
         return grid.then(function(){
-          var cells = qaLocal(".v-grid-body .v-grid-cell");
+          var cells = qaLocal(".v-grid-body .v-grid-cell > span");
           assert.equal(cells[2].innerHTML, "Ipsum");
         });
 
@@ -93,7 +93,7 @@
       ];
 
       return grid.then(function(){
-        var cells = qaLocal(".v-grid-body .v-grid-cell");
+        var cells = qaLocal(".v-grid-body .v-grid-cell > span");
         assert.equal(cells[0].innerHTML, "1");
         assert.equal(cells[1].innerHTML, "2");
         assert.equal(cells[2].innerHTML, "");

@@ -4,7 +4,6 @@ import static com.google.gwt.query.client.GQuery.$;
 
 import java.util.List;
 
-import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
@@ -137,16 +136,6 @@ public class GridLightDomTable implements MutationListener {
                 jsSortOrder.setColumn(i);
                 sortOrders.add(jsSortOrder);
             }
-            column.setRenderer(JsUtils.wrapFunction(new Function() {
-                @Override
-                public void f() {
-                    JavaScriptObject cell = arguments(0);
-                    Element element = JsUtils.prop(cell, "element");
-                    Object data = JsUtils.prop(cell, "data");
-                    element.setInnerHTML(data != null ? String.valueOf(data)
-                            : "");
-                }
-            }));
 
             String headerHtml = JSValidate.String.attr($th, "header-text",
                     $th.html(), $th.html());

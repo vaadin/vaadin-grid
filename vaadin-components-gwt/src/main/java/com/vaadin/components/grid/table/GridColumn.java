@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.query.client.js.JsUtils;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.vaadin.client.widgets.Grid.Column;
 import com.vaadin.components.common.js.JS;
 import com.vaadin.components.common.js.JS.Setter;
@@ -14,6 +15,7 @@ import com.vaadin.components.grid.config.JSCell;
 import com.vaadin.components.grid.config.JSColumn;
 import com.vaadin.components.grid.config.JSStaticCell;
 import com.vaadin.components.grid.data.DataItemContainer;
+import com.vaadin.components.grid.data.GridDomTableDataSource;
 import com.vaadin.shared.ui.grid.GridConstants;
 
 public final class GridColumn extends Column<Object, Object> {
@@ -32,6 +34,17 @@ public final class GridColumn extends Column<Object, Object> {
     private GridColumn(JSColumn jsColumn, GridComponent gridComponent) {
         this.jsColumn = jsColumn;
         this.gridComponent = gridComponent;
+
+        // Default renderer
+        setRenderer((cell, data) -> {
+            String innerHTML = JS.isUndefinedOrNull(data) ? "" : data
+                    .toString();
+            innerHTML = gridComponent.getDataSource() instanceof GridDomTableDataSource ? innerHTML
+                    : SafeHtmlUtils.htmlEscape(innerHTML);
+            cell.getElement().setInnerHTML(
+                    "<span style='overflow: hidden; text-overflow: ellipsis;'>"
+                            + innerHTML + "</span>");
+        });
     }
 
     private JSStaticCell getDefaultHeaderCellReference() {

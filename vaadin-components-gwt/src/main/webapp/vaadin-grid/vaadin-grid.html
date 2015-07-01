@@ -116,11 +116,9 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
     -webkit-align-items: center;
     align-items: center;
     box-sizing: border-box;
-    overflow: hidden;
-    text-overflow: ellipsis;
     background: #fff;
   }
-
+  
   :host > div {
     position: relative;
     outline: none;
@@ -251,7 +249,8 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
     right: 12px;
     font-size: 12px;
     width: 11px;
-    height: 5px;
+    top: 50%;
+    margin-top: -0.5em;
   }
 
   .v-grid-header .sort-desc:after {
