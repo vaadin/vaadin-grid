@@ -225,8 +225,11 @@
   .v-grid-header tr {
     color: rgba(0, 0, 0, 0.54);
     font-size: 12px;
-    font-weight: 500;
     height: 56px;
+  }
+
+  .v-grid-header th {
+    font-weight: 500;
   }
 
   .v-grid-header-deco {
@@ -289,7 +292,11 @@
   .v-grid-header th,
   .v-grid-body td,
   .v-grid-footer td {
-    padding: 0 56px 0 0;
+    /* Google Material Design specifies 56dp inbetween columns.
+       Columns are as wide as their widest item. This approach
+       might not be applicable for us, as we allow column expand
+       ratio, etc. */
+    padding: 0 0 0 0;
   }
 
   .v-grid-header th:first-child,
