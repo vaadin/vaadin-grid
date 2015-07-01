@@ -28,6 +28,7 @@ public abstract class IndexBasedSelectionModelMultiAbstract extends
                         .createCheckInputElement();
                 LabelElement label = Document.get().createLabelElement();
                 checkbox.setId(DOM.createUniqueId());
+                checkbox.setTabIndex(-1);
                 label.setHtmlFor(checkbox.getId());
                 cell.getElement().removeAllChildren();
                 cell.getElement().appendChild(checkbox);
