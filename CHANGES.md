@@ -9,6 +9,7 @@
 - `Value Generator` is now removed because of feature overlaps with `Renderer` (#12)
 - Spinner added to visualize data loading. (#14)
 - Improved scrolling on touch devices. (#18)
+- JSDocs revised.
 - Issues fixed:
   - Grid doesn't work when using selection-mode multi, frozen columns and sortable columns. (#7)
   - Grid height is recalculated incorrectly when sorting a grid with a fixed height. (#8)
@@ -21,6 +22,11 @@
   - "Toggling display:none; on v-grid breaks sizing calculations"
   - "Fix bug with empty rows when using the `x-repeat` template"
   - "Fix the "v-grid-ready" event firing in IE"
+  - "Scrollbar not visible on OS X Safari" (#28)
+  - "Chrome OS X hides scrollbars even if System Preferences has 'Show scrollbars always' on" (#30)
+  - "Failed to execute write on Document" (#16)
+  - "Select all checkbox does not reset" (#35)
+  - "<v-grid> text-overflow: ellipsis; doesn’t work for cell content" (#10)
 
 ***
 
