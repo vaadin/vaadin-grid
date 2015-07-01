@@ -278,6 +278,9 @@
             var inputs = qaLocal('.v-grid-body input');
             triggerMouseEvent(inputs[0], "mousedown");
             triggerMouseEvent(inputs[1], "mousedown");
+            // Selection mode changes after both rows have been selected which
+            // alters the DOM structure so we need to fetch the inputs again.
+            inputs = qaLocal('.v-grid-body input');
             triggerMouseEvent(inputs[0], "mousedown");
             triggerMouseEvent(inputs[1], "mousedown");
             expect(grid.selection.selected()).to.be.empty;

@@ -37,6 +37,11 @@ gulp.task('cdn:stage-bower_components', ['cdn:install-dependencies'], function()
   fs.removeSync(stagingPath + '/vaadin-components');
 });
 
+gulp.task('cdn:stage-vaadin-components.html', ['clean:cdn'], function() {
+  return gulp.src('vaadin-components-package/vaadin-components.html')
+    .pipe(gulp.dest(stagingPath));
+});
+
 gulp.task('cdn:stage-bundled.html', ['clean:cdn'], function() {
   return gulp.src(['vaadin-components-package/README.md', 'LICENSE.md', 'CHANGES.md'])
     .pipe(markdown())
@@ -46,7 +51,8 @@ gulp.task('cdn:stage-bundled.html', ['clean:cdn'], function() {
 gulp.task('stage:cdn',
   ['cdn:stage-components',
     'cdn:stage-bower_components',
-    'cdn:stage-bundled.html']);
+    'cdn:stage-bundled.html',
+    'cdn:stage-vaadin-components.html']);
 
 gulp.task('deploy:cdn', ['stage:cdn'], function() {
   common.checkArguments(['cdnUsername', 'cdnDestination']);

@@ -4,11 +4,12 @@
   "authors": [
     "Vaadin Ltd"
   ],
-  "description": "Vaadin Grid web component",
+  "description": "Vaadin Components is an evolving set of custom HTML elements, built using Polymer, for building mobile and desktop web applications in modern browsers.",
   "license": "Apache License 2.0",
   "keywords": [
     "web-components"
   ],
+  "main": "vaadin-components.html",
   "ignore": [
     "**/.*",
     "**/node_modules",

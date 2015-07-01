@@ -44,6 +44,11 @@ gulp.task('bower:stage-components', ['bower:clone'], function() {
   });
 });
 
+gulp.task('bower:stage-vaadin-components.html', ['bower:clone'], function() {
+  return gulp.src('vaadin-components-package/vaadin-components.html')
+    .pipe(gulp.dest(checkoutPath));
+});
+
 gulp.task('bower:stage-bower.json', ['bower:clone'], function() {
   return gulp.src('vaadin-components-package/bower.json')
              .pipe(json({version: version}))
@@ -62,7 +67,7 @@ gulp.task('bower:stage-imports', ['bower:stage-components'], function() {
 });
 
 gulp.task('stage:bower', ['bower:stage-components', 'bower:stage-imports',
-  'bower:stage-bower.json', 'bower:stage-bundled.md']);
+  'bower:stage-bower.json', 'bower:stage-bundled.md', 'bower:stage-vaadin-components.html']);
 
 gulp.task('bower:create-commit', ['stage:bower'], function(){
   if(args.release) {

@@ -48,12 +48,6 @@ public interface JSColumn {
     void setSortable(boolean b);
 
     @JsProperty
-    boolean getReadOnly();
-
-    @JsProperty
-    void setReadOnly(boolean b);
-
-    @JsProperty
     JavaScriptObject getRenderer();
 
     @JsProperty

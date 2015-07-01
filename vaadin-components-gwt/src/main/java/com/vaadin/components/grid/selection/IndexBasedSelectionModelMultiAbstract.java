@@ -61,4 +61,12 @@ public abstract class IndexBasedSelectionModelMultiAbstract extends
     public void commitBatchSelect() {
         allowSelection = true;
     }
+
+    public boolean isIndeterminate() {
+        return (size() > 0) ? size() != grid.getDataSource().size() : false;
+    }
+
+    public boolean isChecked() {
+        return (size() > 0) ? size() == grid.getDataSource().size() : false;
+    }
 }
