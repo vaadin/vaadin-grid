@@ -295,8 +295,13 @@
     /* Google Material Design specifies 56dp inbetween columns.
        Columns are as wide as their widest item. This approach
        might not be applicable for us, as we allow column expand
-       ratio, etc. */
-    padding: 0 0 0 0;
+       ratio, etc. Options 1, 2 and 3 listed below. */
+    /* Divide padding equally among cells. */
+       padding: 0 28px 0 28px;
+    /* Put all padding on right side.
+       padding: 0 56px 0 0; */
+    /* No padding, allow users to specify expand ratio.
+       padding: 0; */
   }
 
   .v-grid-header th:first-child,
