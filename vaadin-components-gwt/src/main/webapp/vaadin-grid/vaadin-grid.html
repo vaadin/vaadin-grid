@@ -333,37 +333,17 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
        might not be applicable for us, as we allow column expand
        ratio, etc. Options 1, 2 and 3 listed below. */
     /* Divide padding equally among cells. */
-       padding: 0 28px 0 28px;
+       padding: 0 24px 0 24px;
     /* Put all padding on right side.
        padding: 0 56px 0 0; */
     /* No padding, allow users to specify expand ratio.
        padding: 0; */
   }
 
-  .v-grid-header th:first-child,
-  .v-grid-body td:first-child,
-  .v-grid-footer td:first-child {
-    padding-left: 24px;
-  }
-
-  .v-grid-header th:last-child,
-  .v-grid-body td:last-child,
-  .v-grid-footer td:last-child {
-    padding-right: 24px;
-  }
-
   .v-grid-header th.frozen,
   .v-grid-body td.frozen,
   .v-grid-footer td.frozen {
     border-right: 1px solid #e3e3e3;
-    padding: 0 24px 0 24px;
-  }
-
-  .v-grid-header th.frozen + th,
-  .v-grid-body td.frozen + td,
-  .v-grid-footer td.frozen + td {
-    padding-left: 24px;
-    padding-right: 24px;
   }
 
   /* TODO We need some other way of defining the frozen column divider than
