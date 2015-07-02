@@ -202,17 +202,27 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
     position: absolute;
     right: 0;
     transition: all 0.16s ease-in-out;
+    -webkit-transform: scaleX(0.0);
     transform: scaleX(0.0);
     z-index: 1;
   }
 
   :focus .v-grid-row-focused:after {
+    -webkit-transform: scaleX(1.0);
     transform: scaleX(1.0);
   }
 
   :focus .v-grid-row-focused {
     -webkit-animation: v-grid-row-focused 820ms ease-in-out;
     animation: v-grid-row-focused 820ms ease-in-out;
+  }
+
+  @-webkit-keyframes v-grid-row-focused {
+    50% {
+      color: #03A9F4;
+    } 100% {
+      color: inherit;
+    }
   }
 
   @keyframes v-grid-row-focused {
