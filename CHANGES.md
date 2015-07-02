@@ -28,6 +28,7 @@
   - "Select all checkbox does not reset" (#35)
   - "<v-grid> text-overflow: ellipsis; doesn’t work for cell content" (#10)
   - "Wrong checkbox style state" (#32)
+  - "Horizontal scrollbar is hidden when scrolling vertically (OS X Chrome)" (#29)
 
 ***
 
