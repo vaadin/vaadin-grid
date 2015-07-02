@@ -1,5 +1,8 @@
 package com.vaadin.components.grid.data;
 
+import java.util.List;
+
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.js.JsExport;
 import com.google.gwt.core.client.js.JsNamespace;
 import com.google.gwt.core.client.js.JsNoExport;
@@ -75,5 +78,25 @@ public abstract class GridDataSource extends AbstractRemoteDataSource<Object> {
 
         gridComponent.getSelectionModel().dataSizeUpdated(newSize);
 
+    }
+
+    public void getItem(Double rowIndex, JavaScriptObject callback) {
+        Integer index = JSValidate.Integer.val(rowIndex, -1, -1);
+        if (index >= 0 && index < size()) {
+            Object row = getRow(index);
+            if (row != null) {
+                JS.exec(callback, row);
+            } else {
+                Range range = Range.withOnly(index);
+                requestRows(range.getStart(), range.length(),
+                        new RequestRowsCallback<Object>(this, range) {
+                            @Override
+                            public void onResponse(List<Object> rowData,
+                                    int totalSize) {
+                                JS.exec(callback, rowData.get(0));
+                            }
+                        });
+            }
+        }
     }
 }

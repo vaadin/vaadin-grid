@@ -92,7 +92,15 @@ function initializeGrid() {
   grid = wrapper.querySelector("v-grid");
 
   return grid;
-};
+}
+
+function infiniteDataSource(req) {
+  var data = [];
+  for (var i = req.index; i < req.index + req.count; i++) {
+    data.push(["foo " + i, "bar " + i]);
+  }
+  req.success(data, this.size);
+}
 
 var local = function() {
   return Polymer.dom(grid.root);

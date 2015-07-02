@@ -52,7 +52,10 @@ import com.vaadin.components.grid.config.JSSortOrder;
 import com.vaadin.components.grid.data.GridDataSource;
 import com.vaadin.components.grid.data.GridDomTableDataSource;
 import com.vaadin.components.grid.data.GridJsFuncDataSource;
-import com.vaadin.components.grid.selection.*;
+import com.vaadin.components.grid.selection.IndexBasedSelectionMode;
+import com.vaadin.components.grid.selection.IndexBasedSelectionModel;
+import com.vaadin.components.grid.selection.IndexBasedSelectionModelMultiAbstract;
+import com.vaadin.components.grid.selection.IndexBasedSelectionModelSingle;
 import com.vaadin.components.grid.table.GridColumn;
 import com.vaadin.components.grid.table.GridLightDomTable;
 import com.vaadin.components.grid.table.GridStaticSection;
@@ -128,6 +131,10 @@ public class GridComponent implements SelectionHandler<Object>,
 
     public ViolatedGrid getGrid() {
         return grid;
+    }
+
+    public void getItem(Double rowIndex, JavaScriptObject callback) {
+        getDataSource().getItem(rowIndex, callback);
     }
 
     @JsNoExport
@@ -528,8 +535,10 @@ public class GridComponent implements SelectionHandler<Object>,
         if (selectAllCheckBox != null) {
             $(selectAllCheckBox).children().addClass("v-grid", "style-scope");
             IndexBasedSelectionModelMultiAbstract model = (IndexBasedSelectionModelMultiAbstract) getSelectionModel();
-            $(selectAllCheckBox).find("input").prop("indeterminate", model.isIndeterminate());
-            selectAllCheckBox.setValue(model.isIndeterminate() ? true : model.isChecked(), false);
+            $(selectAllCheckBox).find("input").prop("indeterminate",
+                    model.isIndeterminate());
+            selectAllCheckBox.setValue(
+                    model.isIndeterminate() ? true : model.isChecked(), false);
         }
     }
 
