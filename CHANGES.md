@@ -3,6 +3,7 @@
 
 ### `<v-grid>`
 - Vaadin Widgets updated to 7.5.0.beta1.
+- Theme revised to comply better with Material Design guidelines.
 - Improved Grid resizing logic.
 - Drag selection is now disabled.
 - Row editor is now disabled.
@@ -30,6 +31,7 @@
   - "Wrong checkbox style state" (#32)
   - "Horizontal scrollbar is hidden when scrolling vertically (OS X Chrome)" (#29)
   - "Added data.getItem api"
+  - "Clicking an indeterminate select all -checkbox should select everything on "multi" mode" (#42)
 
 ***
 

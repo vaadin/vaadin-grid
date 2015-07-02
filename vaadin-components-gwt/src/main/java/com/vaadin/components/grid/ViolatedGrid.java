@@ -2,9 +2,11 @@ package com.vaadin.components.grid;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.vaadin.client.BrowserInfo;
 import com.vaadin.client.WidgetUtil;
@@ -112,5 +114,28 @@ public class ViolatedGrid extends com.vaadin.client.widgets.Grid<Object> {
         RootPanel.getBodyElement().removeChild(iFrame);
 
         return detectedScrollbarSize;
+    }
+
+    @Override
+    public void onBrowserEvent(Event event) {
+
+        // clicking on the select all checkbox moves focus away from the grid
+        // causing the :focus transition effect to be reapplied. Forcing focus on the grid
+        // will mitigate the issue.
+        focusGridIfSelectAllClicked(event);
+
+        super.onBrowserEvent(event);
+    }
+
+    private void focusGridIfSelectAllClicked(Event event) {
+        EventTarget target = event.getEventTarget();
+        if(Element.is(target)) {
+            Element targetElement = Element.as(target);
+
+            // Currently targeting all gwt-checkboxes, might need refinement in the future.
+            if(targetElement.getParentElement().hasClassName("gwt-CheckBox")) {
+                getElement().focus();
+            }
+        }
     }
 }
