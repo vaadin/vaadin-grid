@@ -27,6 +27,7 @@
   - "Failed to execute write on Document" (#16)
   - "Select all checkbox does not reset" (#35)
   - "<v-grid> text-overflow: ellipsis; doesn’t work for cell content" (#10)
+  - "Wrong checkbox style state" (#32)
 
 ***
 
