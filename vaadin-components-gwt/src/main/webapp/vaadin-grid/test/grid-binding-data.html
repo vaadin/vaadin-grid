@@ -158,6 +158,37 @@
       });
     });
 
+    it('should fetch primitive row data', function() {
+      grid.data.source = [1, 2, 3];
+
+      var dataItem;
+      return grid.then(function(){
+        grid.data.getItem(0, function(item) {
+          dataItem = item;
+        });
+        return grid;
+      }).then(function() {
+        expect(dataItem).to.eql(1);
+      });
+    });
+
+    it('should not fetch non-cached row data', function() {
+      infiniteDataSource.size = 1000;
+      var spy = sinon.spy(infiniteDataSource);
+      grid.data.source = spy;
+
+      var callCount = 0;
+      return grid.then(function(){
+        callCount = spy.callCount;
+        grid.data.getItem(900, function(item) {
+          // NOP
+        }, true);
+        return grid;
+      }).then(function() {
+        expect(spy.callCount).to.eql(callCount);
+      });
+    });
+
   });
 </script>
 

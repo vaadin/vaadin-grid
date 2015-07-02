@@ -14,7 +14,7 @@ import com.vaadin.components.grid.GridComponent;
 import com.vaadin.components.grid.config.JSCell;
 import com.vaadin.components.grid.config.JSColumn;
 import com.vaadin.components.grid.config.JSStaticCell;
-import com.vaadin.components.grid.data.DataItemContainer;
+import com.vaadin.components.grid.data.GridDataSource;
 import com.vaadin.components.grid.data.GridDomTableDataSource;
 import com.vaadin.shared.ui.grid.GridConstants;
 
@@ -90,9 +90,8 @@ public final class GridColumn extends Column<Object, Object> {
 
     @Override
     public Object getValue(Object dataItem) {
-        if (dataItem instanceof DataItemContainer) {
-            dataItem = ((DataItemContainer) dataItem).getDataItem();
-        }
+        dataItem = GridDataSource.extractDataItem(dataItem);
+
         Object result = null;
         if (JS.isPrimitiveType(dataItem)) {
             if (getColumnIndex() == 0) {

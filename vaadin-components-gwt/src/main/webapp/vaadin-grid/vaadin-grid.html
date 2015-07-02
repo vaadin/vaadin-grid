@@ -118,7 +118,7 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
     box-sizing: border-box;
     background: #fff;
   }
-  
+
   :host > div {
     position: relative;
     outline: none;
@@ -497,8 +497,8 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
               set sortOrder(sortOrder) {
                 _this._grid.setSortOrder(sortOrder);
               },
-              getItem(rowIndex, callback) {
-                _this._grid.getItem(rowIndex, callback);
+              getItem: function(rowIndex, callback, onlyCached) {
+                _this._grid.getItem(rowIndex, callback, onlyCached);
               },
               clearCache: function(estimatedNewSize) {
                 _this._grid.getDataSource().clearCache(estimatedNewSize);

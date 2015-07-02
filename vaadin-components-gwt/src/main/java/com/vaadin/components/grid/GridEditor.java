@@ -28,7 +28,7 @@ import com.vaadin.components.common.js.JSArray;
 import com.vaadin.components.grid.config.JSColumn;
 import com.vaadin.components.grid.config.JSEditorHandler;
 import com.vaadin.components.grid.config.JSEditorRequest;
-import com.vaadin.components.grid.data.DataItemContainer;
+import com.vaadin.components.grid.data.GridDataSource;
 import com.vaadin.components.grid.table.GridColumn;
 
 @JsNamespace(JS.VAADIN_JS_NAMESPACE)
@@ -115,10 +115,7 @@ public class GridEditor {
         JSEditorRequest result = JS.createJsType(JSEditorRequest.class);
         result.setRowIndex(request.getRowIndex());
 
-        Object dataItem = request.getRow();
-        if (dataItem instanceof DataItemContainer) {
-            dataItem = ((DataItemContainer) dataItem).getDataItem();
-        }
+        Object dataItem = GridDataSource.extractDataItem(request.getRow());
         result.setDataItem(dataItem);
         result.setGrid(container);
         result.setSuccess(JsUtils.wrapFunction(new Function() {

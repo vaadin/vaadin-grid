@@ -80,13 +80,14 @@ public abstract class GridDataSource extends AbstractRemoteDataSource<Object> {
 
     }
 
-    public void getItem(Double rowIndex, JavaScriptObject callback) {
+    public void getItem(Double rowIndex, JavaScriptObject callback,
+            boolean onlyCached) {
         Integer index = JSValidate.Integer.val(rowIndex, -1, -1);
         if (index >= 0 && index < size()) {
             Object row = getRow(index);
             if (row != null) {
-                JS.exec(callback, row);
-            } else {
+                JS.exec(callback, extractDataItem(row));
+            } else if (!onlyCached) {
                 Range range = Range.withOnly(index);
                 requestRows(range.getStart(), range.length(),
                         new RequestRowsCallback<Object>(this, range) {
@@ -98,5 +99,12 @@ public abstract class GridDataSource extends AbstractRemoteDataSource<Object> {
                         });
             }
         }
+    }
+
+    public static Object extractDataItem(Object itemOrContainer) {
+        if (itemOrContainer instanceof DataItemContainer) {
+            return ((DataItemContainer) itemOrContainer).getDataItem();
+        }
+        return itemOrContainer;
     }
 }

@@ -133,8 +133,9 @@ public class GridComponent implements SelectionHandler<Object>,
         return grid;
     }
 
-    public void getItem(Double rowIndex, JavaScriptObject callback) {
-        getDataSource().getItem(rowIndex, callback);
+    public void getItem(Double rowIndex, JavaScriptObject callback,
+            boolean onlyCached) {
+        getDataSource().getItem(rowIndex, callback, onlyCached);
     }
 
     @JsNoExport
