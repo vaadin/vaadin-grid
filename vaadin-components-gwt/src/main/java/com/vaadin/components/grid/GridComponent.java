@@ -529,7 +529,7 @@ public class GridComponent implements SelectionHandler<Object>,
             $(selectAllCheckBox).children().addClass("v-grid", "style-scope");
             IndexBasedSelectionModelMultiAbstract model = (IndexBasedSelectionModelMultiAbstract) getSelectionModel();
             $(selectAllCheckBox).find("input").prop("indeterminate", model.isIndeterminate());
-            selectAllCheckBox.setValue(model.isIndeterminate() ? true : model.isChecked(), false);
+            selectAllCheckBox.setValue(model.isChecked(), false);
         }
     }
 

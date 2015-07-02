@@ -20,20 +20,28 @@ public class ViolatedGrid extends com.vaadin.client.widgets.Grid<Object> {
             setWidgetUtilNativeScrollbarSize(getWidgetUtilNativeScrollbarSize());
         }
 
-        // This hack is needed to fix scrollbars for OS X Safari
-        // [https://github.com/vaadin/components/issues/28]
-        //
-        // Dynamic scrollbars refuse to work on the stacking root directly so
-        // the wrapper is needed for creating an additional stacking context.
-        if (BrowserInfo.get().isSafari()
-                && WidgetUtil.getNativeScrollbarSize() == 0) {
-            GQuery scrollers = GQuery.$(".v-grid-scroller", this)
-                    .css("position", "relative")
-                    .wrap("<div style='position: absolute; z-index: 10' />");
-            scrollers.filter(".v-grid-scroller-vertical").parent()
-                    .css("right", "0");
-            scrollers.filter(".v-grid-scroller-horizontal").parent()
-                    .css("bottom", "0");
+        if (WidgetUtil.getNativeScrollbarSize() == 0) {
+            // "invisible" scrollbars
+            if (BrowserInfo.get().isSafari()) {
+                // This hack is needed to fix scrollbars for OS X Safari
+                // [https://github.com/vaadin/components/issues/28]
+                //
+                // Dynamic scrollbars refuse to work on the stacking root
+                // directly so
+                // the wrapper is needed for creating an additional stacking
+                // context.
+                GQuery scrollers = GQuery
+                        .$(".v-grid-scroller", this)
+                        .css("position", "relative")
+                        .wrap("<div style='position: absolute; z-index: 10' />");
+                scrollers.filter(".v-grid-scroller-vertical").parent()
+                        .css("right", "0");
+                scrollers.filter(".v-grid-scroller-horizontal").parent()
+                        .css("bottom", "0");
+            } else if (BrowserInfo.get().isChrome()) {
+                // Fix for [https://github.com/vaadin/components/issues/29]
+                GQuery.$(".v-grid-scroller", this).attr("invisible", "");
+            }
         }
     }
 
