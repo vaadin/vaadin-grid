@@ -636,25 +636,25 @@
             grid.selection.select(0);
           });
 
-          it('should have a right size', function() {
+          it('should have zero size', function() {
             expect(grid.selection.size).to.eql(0);
           });
 
-          it('should have right deselections', function() {
+          it('should not have any deselections', function() {
             expect(grid.selection.deselected()).to.eql([]);
           });
 
-          it('should have right selections', function() {
+          it('should not have any selections', function() {
             expect(grid.selection.selected()).to.eql([]);
           });
 
-          it('should iterate right selections', function() {
+          it('should not iterate any selections', function() {
             var spy = sinon.spy();
             grid.selection.selected(spy);
             expect(spy.callCount).to.eql(0);
           });
 
-          it('should return right mapped value', function() {
+          it('should not return any mapped values', function() {
             var mapper = function(index){
               return "foo " + index;
             };
@@ -662,16 +662,65 @@
             expect(grid.selection.deselected(mapper)).to.eql([]);
           });
 
-          it('selectAll should work right', function() {
+          it('selectAll should not select rows', function() {
             grid.selection.selectAll();
             expect(grid.selection.selected()).to.eql([]);
           });
-
         });
-
       });
 
+      describe('changing selection mode', function() {
+        describe('by clicking', function() {
+          function clickOnSelectAll() {
+            var selectAllCheckBoxLabel = qLocal('label');
+            selectAllCheckBoxLabel.click();
+          }
 
+          before(function() {
+            grid.data.source = [0,1];
+
+            return grid;
+          });
+
+          it('should select all rows when none selected', function() {
+            grid.selection.mode = 'multi';
+
+            clickOnSelectAll();
+
+            expect(grid.selection.selected()).to.eql([0,1]);
+          });
+
+          // IE11 doesn't fire change events for indetermine checkboxes, so the
+          // feature doesn't actually work properly.
+          // https://connect.microsoft.com/IE/Feedback/Details/998355
+          var isIE = /*@cc_on!@*/false || !!document.documentMode;
+          if(!isIE) {
+            it('should select all rows when indetermine', function() {
+              grid.selection.mode = 'multi';
+              grid.selection.select(0);
+
+              clickOnSelectAll();
+
+              expect(grid.selection.selected()).to.eql([0,1]);
+            });
+
+            it('should select all rows when indetermine after deselecting', function() {
+              grid.selection.mode = 'all';
+              grid.selection.deselect(0);
+
+              clickOnSelectAll();
+              expect(grid.selection.selected()).to.eql([0,1]);
+            });
+          }
+          it('should deselect all rows when all selected', function() {
+            grid.selection.mode = 'all';
+
+            clickOnSelectAll();
+
+            expect(grid.selection.selected()).to.eql([]);
+          });
+        });
+      });
     });
   </script>
 </body>
