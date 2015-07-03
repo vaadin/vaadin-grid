@@ -202,6 +202,11 @@ import com.vaadin.shared.util.SharedUtil;
  * @since 7.4
  * @author Vaadin Ltd
  */
+
+/*
+ * Cloned from 7.5.0.beta1 to fix #31
+ * The proposed fix requires modifications in the private class <code>CellFocusHandler</code>
+ */
 public class Grid<T> extends ResizeComposite implements
         HasSelectionHandlers<T>, SubPartAware, DeferredWorker, HasWidgets,
         HasEnabled {
