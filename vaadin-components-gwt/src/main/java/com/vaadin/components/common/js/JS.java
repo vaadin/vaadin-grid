@@ -121,4 +121,14 @@ public abstract class JS {
     /*-{
       return typeof o === "object" && o !== null;
     }-*/;
+
+    public static native JavaScriptObject getError()
+    /*-{
+        return new Error();
+    }-*/;
+
+    public static native JavaScriptObject getUndefined()
+    /*-{
+        return undefined;
+    }-*/;
 }

@@ -112,8 +112,10 @@
       var callCount = 0;
       return grid.then(function(){
         callCount = spy.callCount;
-        grid.data.getItem(0, function(item) {
-          dataItem = item;
+        grid.data.getItem(0, function(err, item) {
+          if (!err) {
+            dataItem = item;
+          }
         });
         return grid;
       }).then(function() {
@@ -131,8 +133,10 @@
       var callCount = 0;
       return grid.then(function(){
         callCount = spy.callCount;
-        grid.data.getItem(900, function(item) {
-          dataItem = item;
+        grid.data.getItem(900, function(err, item) {
+          if (!err) {
+            dataItem = item;
+          }
         });
         return grid;
       }).then(function() {
@@ -147,13 +151,15 @@
       grid.data.source = spy;
 
       var callCount = 0;
+      var error;
       return grid.then(function(){
         callCount = spy.callCount;
-        grid.data.getItem(1000, function(item) {
-          // NOP
+        grid.data.getItem(1000, function(err, item) {
+          error = err;
         });
         return grid;
       }).then(function() {
+        expect(error).to.exist;
         expect(spy.callCount).to.eql(callCount);
       });
     });
@@ -163,8 +169,10 @@
 
       var dataItem;
       return grid.then(function(){
-        grid.data.getItem(0, function(item) {
-          dataItem = item;
+        grid.data.getItem(0, function(err, item) {
+          if (!err) {
+            dataItem = item;
+          }
         });
         return grid;
       }).then(function() {
@@ -178,13 +186,15 @@
       grid.data.source = spy;
 
       var callCount = 0;
+      var error;
       return grid.then(function(){
         callCount = spy.callCount;
-        grid.data.getItem(900, function(item) {
-          // NOP
+        grid.data.getItem(900, function(err, item) {
+          error = err;
         }, true);
         return grid;
       }).then(function() {
+        expect(error).to.exist;
         expect(spy.callCount).to.eql(callCount);
       });
     });
