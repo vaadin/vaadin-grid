@@ -38,7 +38,7 @@ We offer three ways to use Vaadin Components in your project: Bower, CDN and ZIP
  We recommend using [Bower](http://bower.io) for managing your front-end dependencies. Follow the [Bower installation instructions](http://bower.io/#install-bower), then run the following command inside your project folder:
 
  ```shell
- $ bower install --save vaadin-components#0.3.0-beta3
+ $ bower install --save vaadin-components#0.3.0-beta4
  ```
 
  This will download Vaadin Components and its dependencies to the `bower_components` folder inside your project&lsquo;s folder.
@@ -68,8 +68,8 @@ We offer three ways to use Vaadin Components in your project: Bower, CDN and ZIP
     <!-- Import Web Component polyfills and the components that you want -->
     
     <!-- CDN -->
-    <script src="https://cdn.vaadin.com/vaadin-components/0.3.0-beta3/webcomponentsjs/webcomponents-lite.js"></script>
-    <link href="https://cdn.vaadin.com/vaadin-components/0.3.0-beta3/vaadin-grid/vaadin-grid.html" rel="import">
+    <script src="https://cdn.vaadin.com/vaadin-components/0.3.0-beta4/webcomponentsjs/webcomponents-lite.js"></script>
+    <link href="https://cdn.vaadin.com/vaadin-components/0.3.0-beta4/vaadin-grid/vaadin-grid.html" rel="import">
     
     <!-- Bower -->
     <!-- <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
