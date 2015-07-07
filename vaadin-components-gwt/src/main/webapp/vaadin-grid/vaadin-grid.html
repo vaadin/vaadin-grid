@@ -243,7 +243,6 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
     display: inline-flex;
     height: inherit;
     overflow: hidden;
-    text-overflow: ellipsis;
     transition: opacity 0.1s ease-in;
   }
 
@@ -266,6 +265,7 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
 
   .v-grid-header th {
     font-weight: 500;
+    text-align: left;
   }
 
   .v-grid-header-deco {
@@ -441,11 +441,7 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
     background-color: #03A9F4;
   }
 
-  /* Small adjustments for the checkbox in the header */
-  .v-grid-header input[type="checkbox"] + label:before {
-    background-color: white;
-  }
-
+  /* Small adjustment for the checkbox in the header */
   .v-grid-header input[type="checkbox"] + label:after {
     transition: none;
   }
