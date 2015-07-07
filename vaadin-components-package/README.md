@@ -10,7 +10,7 @@ View live examples and source code side-by-side for individual custom elements.
 
 | Component | Description | Features |
 | --- | --- | --- |
-| <**v‑grid**> <br> [Examples](http://vaadin.github.io/components-examples/v-grid/), [API](http://vaadin.github.io/components-apidoc/#v-grid) | Data grid for showing large amounts of tabular data. | Lazy-loading, virtual scrolling, frozen/fixed columns, customizable headers and footers, custom cell renderers, touch support, keyboard navigation, sorting
+| <**v-grid**> <br> [Examples](http://vaadin.github.io/components-examples/v-grid/), [API](http://vaadin.github.io/components-apidoc/#v-grid) | Data grid for showing large amounts of tabular data. | Lazy-loading, virtual scrolling, frozen/fixed columns, customizable headers and footers, custom cell renderers, touch support, keyboard navigation, sorting
 
 
 ### Quickstart
