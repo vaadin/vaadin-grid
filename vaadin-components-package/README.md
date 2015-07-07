@@ -4,11 +4,13 @@ Vaadin Components is an evolving set of custom HTML elements, built using [Polym
 
 For contributions and issues, see the project&lsquo;s [Github repository](https://github.com/vaadin/components).
 
-### Examples &amp; API Docs
+### Component examples and documentation
 
 View live examples and source code side-by-side for individual custom elements.
 
-- [&lt;**v-grid**&gt;](http://vaadin.github.io/components-examples/v-grid/) &ndash; Data grid for showing large amounts of tabular data ([API](http://vaadin.github.io/components-apidoc/#v-grid))
+| Component | Description | Features |
+| --- | --- | --- |
+| <**v‑grid**> <br> [Examples](http://vaadin.github.io/components-examples/v-grid/), [API](http://vaadin.github.io/components-apidoc/#v-grid) | Data grid for showing large amounts of tabular data. | Lazy-loading, virtual scrolling, frozen/fixed columns, customizable headers and footers, custom cell renderers, touch support, keyboard navigation, sorting
 
 
 ### Quickstart
