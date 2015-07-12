@@ -102,6 +102,103 @@
       });
 
     });
+
+    it('should fetch cached row data', function() {
+      infiniteDataSource.size = 1000;
+      var spy = sinon.spy(infiniteDataSource);
+      grid.data.source = spy;
+
+      var dataItem;
+      var callCount = 0;
+      return grid.then(function(){
+        callCount = spy.callCount;
+        grid.data.getItem(0, function(err, item) {
+          if (!err) {
+            dataItem = item;
+          }
+        });
+        return grid;
+      }).then(function() {
+        expect(spy.callCount).to.eql(callCount);
+        expect(dataItem[0]).to.eql("foo 0");
+      });
+    });
+
+    it('should fetch non-cached row data', function() {
+      infiniteDataSource.size = 1000;
+      var spy = sinon.spy(infiniteDataSource);
+      grid.data.source = spy;
+
+      var dataItem;
+      var callCount = 0;
+      return grid.then(function(){
+        callCount = spy.callCount;
+        grid.data.getItem(900, function(err, item) {
+          if (!err) {
+            dataItem = item;
+          }
+        });
+        return grid;
+      }).then(function() {
+        expect(spy.callCount).to.eql(callCount + 1);
+        expect(dataItem[0]).to.eql("foo 900");
+      });
+    });
+
+    it('should not fetch data outside the data range', function() {
+      infiniteDataSource.size = 1000;
+      var spy = sinon.spy(infiniteDataSource);
+      grid.data.source = spy;
+
+      var callCount = 0;
+      var error;
+      return grid.then(function(){
+        callCount = spy.callCount;
+        grid.data.getItem(1000, function(err, item) {
+          error = err;
+        });
+        return grid;
+      }).then(function() {
+        expect(error).to.exist;
+        expect(spy.callCount).to.eql(callCount);
+      });
+    });
+
+    it('should fetch primitive row data', function() {
+      grid.data.source = [1, 2, 3];
+
+      var dataItem;
+      return grid.then(function(){
+        grid.data.getItem(0, function(err, item) {
+          if (!err) {
+            dataItem = item;
+          }
+        });
+        return grid;
+      }).then(function() {
+        expect(dataItem).to.eql(1);
+      });
+    });
+
+    it('should not fetch non-cached row data', function() {
+      infiniteDataSource.size = 1000;
+      var spy = sinon.spy(infiniteDataSource);
+      grid.data.source = spy;
+
+      var callCount = 0;
+      var error;
+      return grid.then(function(){
+        callCount = spy.callCount;
+        grid.data.getItem(900, function(err, item) {
+          error = err;
+        }, true);
+        return grid;
+      }).then(function() {
+        expect(error).to.exist;
+        expect(spy.callCount).to.eql(callCount);
+      });
+    });
+
   });
 </script>
 

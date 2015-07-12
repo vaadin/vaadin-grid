@@ -133,6 +133,18 @@ Object for accessing and controlling data source used in the grid.
        * @type {Function}
        */
       clearCache: Function
+      
+      /**
+       * Invokes the callback with row data of the provided row index as the
+       * parameter. If the row is not cached, it's fetched from the data source
+       * first.
+       *
+       * @method getItem
+       * @param {number} rowIndex - Index of the row.
+       * @param {Function} callback - Gets arguments (err, item) where item is the desired data item.
+       * @param {boolean} onlyCached - Only fetch cached rows (don't fall back to data source request).
+       */
+      getItem: Function
     }
   });
 </script>

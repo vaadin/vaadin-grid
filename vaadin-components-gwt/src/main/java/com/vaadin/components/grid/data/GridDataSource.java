@@ -1,9 +1,13 @@
 package com.vaadin.components.grid.data;
 
+import java.util.List;
+
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.js.JsExport;
 import com.google.gwt.core.client.js.JsNamespace;
 import com.google.gwt.core.client.js.JsNoExport;
 import com.google.gwt.core.client.js.JsType;
+import com.google.gwt.query.client.js.JsUtils;
 import com.vaadin.client.data.AbstractRemoteDataSource;
 import com.vaadin.components.common.js.JS;
 import com.vaadin.components.common.js.JSValidate;
@@ -75,5 +79,41 @@ public abstract class GridDataSource extends AbstractRemoteDataSource<Object> {
 
         gridComponent.getSelectionModel().dataSizeUpdated(newSize);
 
+    }
+
+    public void getItem(Double rowIndex, JavaScriptObject callback,
+            boolean onlyCached) {
+        Integer index = JSValidate.Integer.val(rowIndex, -1, -1);
+        if (index >= 0 && index < size()) {
+            Object row = getRow(index);
+            if (row != null) {
+                JsUtils.jsni(callback, "call", callback, JS.getUndefined(),
+                        extractDataItem(row));
+            } else if (onlyCached) {
+                JS.exec(callback, JS.getError("Unable to retrieve row #"
+                        + index + ", it has not been cached yet"));
+            } else {
+                Range range = Range.withOnly(index);
+                requestRows(range.getStart(), range.length(),
+                        new RequestRowsCallback<Object>(this, range) {
+                            @Override
+                            public void onResponse(List<Object> rowData,
+                                    int totalSize) {
+                                JsUtils.jsni(callback, "call", callback,
+                                        JS.getUndefined(), rowData.get(0));
+                            }
+                        });
+            }
+        } else {
+            JS.exec(callback, JS.getError("Index value #" + index
+                   + " is out of range"));
+        }
+    }
+
+    public static Object extractDataItem(Object itemOrContainer) {
+        if (itemOrContainer instanceof DataItemContainer) {
+            return ((DataItemContainer) itemOrContainer).getDataItem();
+        }
+        return itemOrContainer;
     }
 }

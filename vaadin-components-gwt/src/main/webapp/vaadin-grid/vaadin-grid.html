@@ -462,7 +462,7 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
     width: 100% !important;
     height: 100% !important;
   }
-  
+
   /* The following is a workaround to https://dev.vaadin.com/ticket/18376 */
   .v-grid-scroller[invisible]::-webkit-scrollbar {
     border: none;
@@ -536,7 +536,9 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
               set sortOrder(sortOrder) {
                 _this._grid.setSortOrder(sortOrder);
               },
-
+              getItem: function(rowIndex, callback, onlyCached) {
+                _this._grid.getItem(rowIndex, callback, onlyCached);
+              },
               clearCache: function(estimatedNewSize) {
                 _this._grid.getDataSource().clearCache(estimatedNewSize);
               }

@@ -30,6 +30,7 @@
   - "<v-grid> text-overflow: ellipsis; doesn’t work for cell content" (#10)
   - "Wrong checkbox style state" (#32)
   - "Horizontal scrollbar is hidden when scrolling vertically (OS X Chrome)" (#29)
+  - "Added data.getItem api"
   - "Clicking an indeterminate select all -checkbox should select everything on "multi" mode" (#42)
 
 ***

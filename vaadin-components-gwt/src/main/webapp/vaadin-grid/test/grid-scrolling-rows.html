@@ -19,14 +19,6 @@
 <script>
   describe.feature('scrolling rows', function() {
 
-    var infiniteDataSource = function(req) {
-      var data = [];
-      for (var i = req.index; i < req.index + req.count; i++) {
-        data.push(["foo " + i, "bar " + i]);
-      }
-      req.success(data, this.size);
-    };
-
     function firstColumnContents() {
       var cells = qaLocal('td');
 
