@@ -11,6 +11,7 @@
 - Spinner added to visualize data loading. (#14)
 - Improved scrolling on touch devices. (#18)
 - JSDocs revised.
+- Added data.getItem api for fetching data items by row index (#45)
 - Issues fixed:
   - Grid doesn't work when using selection-mode multi, frozen columns and sortable columns. (#7)
   - Grid height is recalculated incorrectly when sorting a grid with a fixed height. (#8)
@@ -30,8 +31,10 @@
   - "<v-grid> text-overflow: ellipsis; doesn’t work for cell content" (#10)
   - "Wrong checkbox style state" (#32)
   - "Horizontal scrollbar is hidden when scrolling vertically (OS X Chrome)" (#29)
-  - "Added data.getItem api"
   - "Clicking an indeterminate select all -checkbox should select everything on "multi" mode" (#42)
+  - Ignore navigation event bubbling from focused cell content (#31)
+  - Select All checkbox checkmark is offset by 1px (#49)
+  - Focus of input in cells are stolen (#31)
 
 ***
 
