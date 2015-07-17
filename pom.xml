@@ -48,7 +48,7 @@
           <gwt.outputstyle>PRETTY</gwt.outputstyle>
           <gwt.disableCastChecking>false</gwt.disableCastChecking>
           <gwt.disableClassMetadata>false</gwt.disableClassMetadata>
-          <gwt.enableAssertions>true</gwt.enableAssertions>
+          <gwt.enableAssertions>false</gwt.enableAssertions>
           <gwt.closure>false</gwt.closure>
         </properties>
       </profile>
