@@ -1,38 +1,26 @@
-var webComponentHref = "vaadin-grid.html";
 
-function handleSDMinit(done) {
-  // 1. Wait for GWT module to initialize
-  var id = setInterval(function() {
-    if (window.vaadin && window.vaadin.GridComponent) {
-      clearInterval(id);
-      // 2. GWT module is ready, add the web component import
-      _addWebComponentImport();
-      // 3. Wait for the web component to register
-      _waitForVGrid(done);
+// SuperDevMode loads .nocache.js asynchronously, so vaadin-grid.html
+// is executed before .nocache.js is processed. Here we wait until
+// window.vaadin.GridComponent exists, which implies that the nocache
+// file was loaded.
+(function() {
+  if (!window.vaadin || !window.vaadin.GridComponent) {
+    _whenReady = HTMLImports.whenReady;
+    _imported = false;
+    HTMLImports.whenReady = function(done) {
+      var id = setInterval(function() {
+        if (window.vaadin && window.vaadin.GridComponent) {
+          clearInterval(id);
+          if (!_imported) {
+            _imported = true;
+            var link = document.createElement("link");
+            link.setAttribute("rel", "import");
+            link.setAttribute("href", "vaadin-grid.html");
+            document.head.appendChild(link);
+          }
+          (HTMLImports.whenReady = _whenReady)(done);
+        }
+      }, 1);
     }
-  }, 200);
-}
-
-function _addWebComponentImport() {
-  var fileref = document.createElement("link");
-  fileref.setAttribute("rel", "import");
-  fileref.setAttribute("href", webComponentHref);
-  document.getElementsByTagName("head")[0].appendChild(fileref);
-}
-
-function _waitForVGrid(done) {
-  var id = setInterval(function() {
-    if ("VGrid" in window) {
-      clearInterval(id);
-
-      done();
-
-      // Schedule a refresh for each Grid
-      [].forEach.call(document.querySelectorAll("v-grid"), function(grid) {
-        setTimeout(function() {
-          grid._grid.updateSize();
-        }, 1);
-      });
-    }
-  }, 200);
-}
+  }
+})();
