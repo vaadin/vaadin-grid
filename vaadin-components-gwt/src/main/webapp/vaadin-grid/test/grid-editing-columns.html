@@ -74,9 +74,8 @@
         headerContent: "testHtml"
       }, "foo");
 
-      waitUntil(function() {
-        return gridContainsText(grid, "testHtml");
-      }, function() {
+      grid.then(function() {
+        assert.isTrue(gridContainsText(grid, "testHtml"));
         var headers = qaLocal(".v-grid-header .v-grid-row th > span");
         assert.equal(headers[0].innerHTML, "testHtml");
         assert.equal(headers[1].innerHTML, "foo");
@@ -85,8 +84,7 @@
           name: "baz"
         }, "foobar")).to.throw("Column not found.");
         done();
-      }, done);
-
+      });
     });
 
     it('edit new column', function(done) {
@@ -96,32 +94,28 @@
       };
       grid.addColumn(c);
 
-      waitUntil(function() {
-        return gridContainsText(grid, "testHtml");
-      }, function() {
+      grid.then(function() {
+        assert.isTrue(gridContainsText(grid, "testHtml"));
 
         var headers = qaLocal(".v-grid-header .v-grid-row th > span");
         assert.equal(headers[grid.columns.length - 1].innerHTML, "testHtml");
 
         c.headerContent = "testHtml2";
 
-        waitUntil(function() {
-          return gridContainsText(grid, "testHtml2");
-        }, function() {
+        grid.then(function() {
+          assert.isTrue(gridContainsText(grid, "testHtml2"));
+
           headers = qaLocal(".v-grid-header .v-grid-row th > span");
           assert.equal(headers[grid.columns.length - 1].innerHTML, "testHtml2");
           done();
-        }, done);
-
-      }, done);
-
+        });
+      });
     });
 
     it('edit existing column', function(done) {
       grid.columns[0].headerContent = "testHtml";
-      waitUntil(function() {
-        return gridContainsText(grid, "testHtml");
-      }, function() {
+      grid.then(function() {
+        assert.isTrue(gridContainsText(grid, "testHtml"));
         var headers = qaLocal(".v-grid-header .v-grid-row th > span");
         assert.equal(headers[0].innerHTML, "testHtml");
         done();
@@ -133,9 +127,10 @@
         cell.element.innerHTML = "<b>" + cell.data + "</b>";
       };
 
-      waitUntil(function() {
-        return gridContainsText(grid, "<b>Grid</b>");
-      }, done, done);
+      grid.then(function() {
+        assert.isTrue(gridContainsText(grid, "<b>Grid</b>"));
+        done();
+      });
     });
 
     it('renderer primitive values', function() {
@@ -166,9 +161,9 @@
         cell.element.cell = cell;
       };
 
-      waitUntil(function() {
-        return gridContainsText(grid, "TestFoo");
-      }, function() {
+      grid.then(function() {
+        assert.isTrue(gridContainsText(grid, "TestFoo"));
+
         var cell = grid.querySelectorAll(".v-grid-body .v-grid-cell")[3].cell;
         assert.equal(cell.row.index, 1);
         assert.equal(cell.index, 1);
@@ -178,14 +173,13 @@
         grid.data.clearCache();
 
         grid.columns.splice(0, 1);
-        waitUntil(function() {
-          return !gridContainsText(grid, "TestFoo");
-        }, function() {
+        grid.then(function() {
+          assert.isFalse(gridContainsText(grid, "TestFoo"));
           assert.equal(cell.row.index, 0);
           assert.equal(cell.index, 0);
           done();
-        }, done);
-      }, done);
+        });
+      });
 
     });
 
@@ -221,16 +215,16 @@
       var col = grid.columns[0];
       grid.columns.splice(1, 1);
 
-      waitUntil(function() {
-        return !gridContainsText(grid, "Progress");
-      }, function() {
+      grid.then(function() {
+        assert.isFalse(gridContainsText(grid, "Progress"));
         grid.columns.push({
           headerContent: "testHtml"
         });
-        waitUntil(function() {
-          return gridContainsText(grid, "testHtml");
-        }, done, done);
-      }, done);
+        grid.then(function() {
+          assert.isTrue(gridContainsText(grid, "testHtml"));
+          done();
+        });
+      });
     });
 
     it('remove column', function(done) {
@@ -240,14 +234,15 @@
       });
       grid.removeColumn(0);
 
-      waitUntil(function() {
-        return !gridContainsText(grid, "Name") && gridContainsText(grid, "test");
-      }, function() {
+      grid.then(function() {
+        assert.isFalse(gridContainsText(grid, "Name"));
+        assert.isTrue(gridContainsText(grid, "test"));
         grid.removeColumn("test");
-        waitUntil(function() {
-          return !gridContainsText(grid, "test");
-        }, done, done);
-      }, done);
+        grid.then(function() {
+          assert.isFalse(gridContainsText(grid, "test"));
+          done();
+        });
+      });
     });
 
     it('add new column to an empty grid', function(done) {
@@ -267,13 +262,13 @@
     it('frozen column', function(done) {
       grid.frozenColumns = 1;
 
-      waitUntil(function() {
-        return gridContainsText(grid, "v-grid-cell frozen");
-      }, function() {
+      grid.then(function() {
+        assert.isTrue(gridContainsText(grid, "v-grid-cell frozen"));
+
         var headers = qaLocal(".v-grid-header .v-grid-row th");
         assert.isTrue(headers[0].classList.contains("frozen"));
         done();
-      }, done);
+      });
 
     });
 

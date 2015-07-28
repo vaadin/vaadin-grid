@@ -110,10 +110,11 @@
         triggerMouseEvent(tableWrapper.firstChild, isIE ? "mousewheel" : "wheel", {
           deltaY: tableWrapper.offsetHeight
         });
-      }).then(function() {
-        waitUntil(function(){
-          return firstColumnContents().indexOf("foo 7") != -1;
-        }, done);
+
+        grid.then(function(){
+          assert.isTrue(firstColumnContents().indexOf("foo 7") > -1);
+          done();
+        });
       });
     });
 
