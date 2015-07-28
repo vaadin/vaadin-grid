@@ -24,11 +24,7 @@ function onRegister(e, cb) {
   waitUntil(function(){
     return !!e && e.constructor !== window.HTMLElement && e.constructor != window.HTMLUnknownElement;
   }, function() {
-    if (e.then) {
-      e.then(cb);
-    } else {
-      cb();
-    }
+    e.then && e.then(cb) || cb();
   });
 }
 
