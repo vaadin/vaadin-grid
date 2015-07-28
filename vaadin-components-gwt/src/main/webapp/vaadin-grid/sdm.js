@@ -7,6 +7,7 @@
   if (!window.vaadin || !window.vaadin.GridComponent) {
     _whenReady = HTMLImports.whenReady;
     _imported = false;
+    var gridHref = (window.location.pathname.match(/\/test\//) ? "../" : "") + "vaadin-grid.html";
     HTMLImports.whenReady = function(done) {
       var id = setInterval(function() {
         if (window.vaadin && window.vaadin.GridComponent) {
@@ -15,7 +16,7 @@
             _imported = true;
             var link = document.createElement("link");
             link.setAttribute("rel", "import");
-            link.setAttribute("href", "vaadin-grid.html");
+            link.setAttribute("href", gridHref);
             document.head.appendChild(link);
           }
           (HTMLImports.whenReady = _whenReady)(done);

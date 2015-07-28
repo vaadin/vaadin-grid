@@ -1,24 +1,11 @@
-var grid, wrapper, vGridReady = false;
-
-window.addEventListener("WebComponentsReady", function(){
-  if ("VGrid" in window) {
-    vGridReady = true;
-  } else {
-    webComponentHref = "../vaadin-grid.html";
-    handleSDMinit(function(){
-      vGridReady = true;
-    });
-  }
-});
+var grid, wrapper;
 
 describe.feature = function(description, suite) {
   describe(description, function() {
     before(function(done) {
-      initializeGrid();
-
-      waitUntil(function() {
-        return vGridReady && grid.then;
-      }, done, done);
+      HTMLImports.whenReady(function() {
+        initializeGrid(done);
+      });
     });
 
     after(function() {
@@ -33,6 +20,18 @@ function gridContainsText(_grid, text) {
   return Polymer.dom(_grid.root).querySelector(".v-grid-tablewrapper").parentElement.innerHTML.indexOf(text) > -1;
 }
 
+function onRegister(e, cb) {
+  waitUntil(function(){
+    return !!e && e.constructor !== window.HTMLElement && e.constructor != window.HTMLUnknownElement;
+  }, function() {
+    if (e.then) {
+      e.then(cb);
+    } else {
+      cb();
+    }
+  });
+}
+
 function waitUntil(check, exec, onTimeout) {
   var id = setInterval(function() {
     if (check()) {
@@ -40,7 +39,7 @@ function waitUntil(check, exec, onTimeout) {
       clearTimeout(timeoutId);
       exec();
     }
-  }, 100);
+  }, 50);
 
   var timeoutId = setTimeout(function() {
     clearInterval(id);
@@ -64,8 +63,7 @@ function triggerMouseEvent (node, eventType, properties, shiftKey ) {
   node.dispatchEvent(clickEvent);
 }
 
-
-function initializeGrid() {
+function initializeGrid(cb) {
   wrapper = document.getElementById("gridwrapper");
   wrapper.innerHTML = "<v-grid>" +
   "                     <table>" +
@@ -90,8 +88,7 @@ function initializeGrid() {
   "                     </table>" +
   "                     </v-grid>";
   grid = wrapper.querySelector("v-grid");
-
-  return grid;
+  onRegister(grid, cb);
 }
 
 function infiniteDataSource(req) {
