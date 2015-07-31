@@ -942,6 +942,16 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
       },
 
       /**
+       * An array containing items determining rows in the grid.
+       *
+       * @property {Array<Object>} columns
+       * @type {Array<Object>}
+       */
+      set items(items) {
+        this.data.source = items;
+      },
+
+      /**
        * Executes a callback when the grid has finished any pending work.
        *
        * @method then
