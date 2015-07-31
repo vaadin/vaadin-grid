@@ -83,10 +83,12 @@ gulp.task('clean:gwt', ['gwt:clean-maven'], function() {
 });
 
 gulp.task('gwt:copy-files', ['gwt:compile', 'clean:gwt'], function() {
-  return gulp.src(webComponentDir + '**/*')
+  return gulp.src([webComponentDir + '**/*', '!' + webComponentDir + 'sdm.js'])
           .pipe(replace(new RegExp('^.*script.*\.\./\.\..*' + moduleName + '.*'+ moduleName +'.*$','mg'), '  <link rel="import" href="../'+component+'.html">'))
           .pipe(replace(new RegExp('^.*script.*\.\..*' + moduleName + '.*'+ moduleName +'.*$','mg'), '  <link rel="import" href="'+component+'.html">'))
           .pipe(replace(/(src|href)=("|')([\.\.\/]*)\/bower_components\//mg, '$1=$2$3/../bower_components/'))
+          .pipe(replace(/^.*src="[\.\/]*sdm.js".*$/mg, ''))
+          .pipe(replace(/^.*<!-- .*(<.*VaadinGridImport.nocache.js.*) -->/mg, '$1'))
           .pipe(gulp.dest(componentDir));
 });
 

@@ -3,7 +3,7 @@
 -->
 
 <link rel='import' href='../bower_components/polymer/polymer.html'>
-<script type="text/javascript" language="javascript" src="VaadinGridImport.nocache.js"></script>
+<!-- <script src="VaadinGridImport.nocache.js"></script> -->
 
 <style>
   v-grid > table {
@@ -48,7 +48,7 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
     font: 400 13px/1.1 Roboto, sans-serif;
     color: rgba(0, 0, 0, 0.87);
     cursor: default;
-    transition: opacity 200ms;
+    transition: opacity 50ms;
     white-space: nowrap;
   }
 
@@ -939,6 +939,16 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
       },
       set columns(cols) {
         this._grid.setColumns(cols);
+      },
+
+      /**
+       * An array containing items determining rows in the grid.
+       *
+       * @property {Array<Object>} columns
+       * @type {Array<Object>}
+       */
+      set items(items) {
+        this.data.source = items;
       },
 
       /**

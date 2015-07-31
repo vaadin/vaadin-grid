@@ -9,7 +9,6 @@
   <script src="../../VaadinGrid/VaadinGrid.nocache.js"></script>
   <script src="../sdm.js"></script>
   <script src="common.js"></script>
-
 </head>
 
 <body>
@@ -79,13 +78,15 @@
         });
       });
 
-      // TODO: fails sometimes because of https://github.com/vaadin/components/issues/19
       it('should redraw correctly after modifying body', function() {
         tbody.innerHTML += tbody.innerHTML;
 
         return grid.then(function() {
           assertSameDimensions();
-          assertHeightByRows(4);
+          //TODO: timeout here because of https://github.com/vaadin/components/issues/19
+          setTimeout(function() {
+            assertHeightByRows(4);
+          }, 100)
         });
       });
 
@@ -104,9 +105,8 @@
 
         var grid = tmp.querySelector("v-grid");
 
-        waitUntil(function() {
-          return grid.then
-        }, function() {
+        // Usin onRegister because in FF the new grid takes a while to be initialized
+        onRegister(grid, function() {
           expect(grid.offsetHeight).to.equal(0);
 
           //TODO: timeout here because of https://github.com/vaadin/components/issues/19
@@ -118,7 +118,7 @@
               wrapper.removeChild(tmp);
               done();
             });
-          }, 500);
+          }, 100);
         });
       });
 
