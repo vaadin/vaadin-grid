@@ -1,9 +1,12 @@
 package com.vaadin.components.grid.table;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.vaadin.client.widgets.Grid.Column;
@@ -36,14 +39,35 @@ public final class GridColumn extends Column<Object, Object> {
         this.gridComponent = gridComponent;
 
         // Default renderer
+        Collection<Element> wrapperPool = new HashSet<Element>();
         setRenderer((cell, data) -> {
-            String innerHTML = JS.isUndefinedOrNull(data) ? "" : data
-                    .toString();
-            innerHTML = gridComponent.getDataSource() instanceof GridDomTableDataSource ? innerHTML
-                    : SafeHtmlUtils.htmlEscape(innerHTML);
-            cell.getElement().setInnerHTML(
-                    "<span style='overflow: hidden; text-overflow: ellipsis;'>"
-                            + innerHTML + "</span>");
+            String content = JS.isUndefinedOrNull(data) ? "" : data.toString();
+            Element element = cell.getElement();
+
+            // Search for an available wrapper from the pool
+            if (!element.hasChildNodes()) {
+                for (Element e : wrapperPool) {
+                    if (!e.hasParentElement()) {
+                        element.appendChild(e);
+                        break;
+                    }
+                }
+            }
+
+            if (!element.hasChildNodes()) {
+                // Need to create a new wrapper
+                content = gridComponent.getDataSource() instanceof GridDomTableDataSource ? content
+                        : SafeHtmlUtils.htmlEscape(content);
+                element.setInnerHTML("<span style='overflow: hidden; text-overflow: ellipsis;'>"
+                        + content + "</span>");
+                wrapperPool.add(element.getFirstChildElement());
+            } else {
+                if (gridComponent.getDataSource() instanceof GridDomTableDataSource) {
+                    element.getFirstChildElement().setInnerHTML(content);
+                } else {
+                    element.getFirstChildElement().setInnerText(content);
+                }
+            }
         });
     }
 
