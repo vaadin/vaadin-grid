@@ -1,10 +1,19 @@
 package com.vaadin.components.grid.selection;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.InputElement;
+import com.google.gwt.dom.client.LabelElement;
 import com.google.gwt.query.client.js.JsUtils;
+import com.google.gwt.user.client.DOM;
 import com.vaadin.client.data.DataSource.RowHandle;
+import com.vaadin.client.renderers.Renderer;
+import com.vaadin.client.widget.grid.RendererCellReference;
 import com.vaadin.client.widget.grid.events.SelectAllEvent;
+import com.vaadin.client.widget.grid.selection.MultiSelectionRenderer;
 import com.vaadin.client.widget.grid.selection.SelectionEvent;
+import com.vaadin.client.widget.grid.selection.SelectionModelMulti;
+import com.vaadin.client.widgets.Grid;
 import com.vaadin.components.common.js.JS;
 import com.vaadin.components.common.js.JSArray;
 import com.vaadin.components.common.js.JSValidate;
@@ -12,11 +21,73 @@ import com.vaadin.components.common.js.JSValidate;
 /**
  * An {@link IndexBasedSelectionModel} for multiple selection.
  */
-public class IndexBasedSelectionModelMulti extends
-        IndexBasedSelectionModelMultiAbstract {
+public class IndexBasedSelectionModelMulti extends SelectionModelMulti<Object>
+        implements IndexBasedSelectionModel {
 
-    private final JSArray<Double> selectedIndexes = JS.createArray();
+    private Renderer<Boolean> renderer;
+    protected Grid<Object> grid;
+    private boolean allowSelection = true;
+
+    private final JSArray<Double> indexes = JS.createArray();
+    private boolean invertedSelection = false;
     private boolean dataSizeUpdated = false;
+
+    @Override
+    public void setGrid(Grid<Object> grid) {
+        super.setGrid(grid);
+        this.grid = grid;
+        renderer = new MultiSelectionRenderer<Object>(grid) {
+            @Override
+            public void init(RendererCellReference cell) {
+                InputElement checkbox = Document.get()
+                        .createCheckInputElement();
+                LabelElement label = Document.get().createLabelElement();
+                checkbox.setId(DOM.createUniqueId());
+                checkbox.setTabIndex(-1);
+                label.setHtmlFor(checkbox.getId());
+                cell.getElement().removeAllChildren();
+                cell.getElement().appendChild(checkbox);
+                cell.getElement().appendChild(label);
+                checkbox.addClassName("v-grid style-scope");
+                label.addClassName("v-grid style-scope");
+            }
+
+            @Override
+            protected void setSelected(int logicalRow, boolean select) {
+                if (allowSelection) {
+                    super.setSelected(logicalRow, select);
+                    allowSelection = false;
+                }
+            }
+        };
+    }
+
+    @Override
+    public Renderer<Boolean> getSelectionColumnRenderer() {
+        return renderer;
+    }
+
+    @Override
+    public void startBatchSelect() {
+        allowSelection = true;
+    }
+
+    @Override
+    public void commitBatchSelect() {
+        allowSelection = true;
+    }
+
+    public boolean isIndeterminate() {
+        return (size() > 0) ? size() != grid.getDataSource().size() : false;
+    }
+
+    public boolean isChecked() {
+        return (size() > 0) ? size() == grid.getDataSource().size() : false;
+    }
+
+    public IndexBasedSelectionModelMulti(boolean invertedSelection) {
+        this.invertedSelection = invertedSelection;
+    }
 
     @Override
     protected boolean selectByHandle(RowHandle<Object> handle) {
@@ -30,33 +101,66 @@ public class IndexBasedSelectionModelMulti extends
 
     @Override
     public boolean isSelected(Object row) {
-        return selectedIndexes.indexOf((double) SelectionUtil.getRowIndexByRow(
-                grid, row)) != -1;
+        return invertedSelection ? indexes.indexOf((double) SelectionUtil
+                .getRowIndexByRow(grid, row)) == -1
+                : indexes.indexOf((double) SelectionUtil.getRowIndexByRow(grid,
+                        row)) != -1;
     }
 
     @Override
     public void reset() {
-        selectedIndexes.setLength(0);
+        invertedSelection = false;
+        indexes.setLength(0);
         grid.fireEvent(new SelectionEvent<Object>(grid, null, null, true));
     }
 
     @Override
     public JSArray<Object> selected(JavaScriptObject mapper, Integer from,
             Integer to) {
-        JSArray<Object> result = JS.createArray();
+        JSArray result = JS.createArray();
         mapper = SelectionUtil.verifyMapper(mapper);
+        if (invertedSelection) {
 
-        int fromIndex = JSValidate.Integer.val(from, 0, 0);
-        fromIndex = Math.min(fromIndex, selectedIndexes.length() - 1);
-        int defaultTo = selectedIndexes.length() - 1;
-        int toIndex = JSValidate.Integer.val(to, defaultTo, defaultTo);
-        toIndex = Math.min(toIndex, selectedIndexes.length() - 1);
+            int size = size();
 
-        for (int i = fromIndex; i <= toIndex; i++) {
-            Object mappedValue = JsUtils.jsni(mapper, "call", mapper,
-                    selectedIndexes.get(i));
-            if (mappedValue != null) {
-                result.add(mappedValue);
+            int fromIndex = JSValidate.Integer.val(from, 0, 0);
+            fromIndex = Math.min(Math.max(fromIndex, 0), size - 1);
+
+            int defaultTo = size() - 1;
+            int toIndex = JSValidate.Integer.val(to, defaultTo, defaultTo);
+            toIndex = Math.min(Math.max(toIndex, 0), size - 1);
+
+            int count = toIndex - fromIndex + 1;
+
+            int index = 0;
+            int selectedIndexCount = 0;
+            int addedSelectedIndexCount = 0;
+            while (addedSelectedIndexCount < count) {
+                if (indexes.indexOf((double) index) == -1) {
+                    if (selectedIndexCount++ >= fromIndex) {
+                        addedSelectedIndexCount++;
+                        Object mappedValue = JsUtils.jsni(mapper, "call",
+                                mapper, index);
+                        if (mappedValue != null) {
+                            result.add(mappedValue);
+                        }
+                    }
+                }
+                index++;
+            }
+        } else {
+            int fromIndex = JSValidate.Integer.val(from, 0, 0);
+            fromIndex = Math.min(fromIndex, indexes.length() - 1);
+            int defaultTo = indexes.length() - 1;
+            int toIndex = JSValidate.Integer.val(to, defaultTo, defaultTo);
+            toIndex = Math.min(toIndex, indexes.length() - 1);
+
+            for (int i = fromIndex; i <= toIndex; i++) {
+                Object mappedValue = JsUtils.jsni(mapper, "call", mapper,
+                        indexes.get(i));
+                if (mappedValue != null) {
+                    result.add(mappedValue);
+                }
             }
         }
         return result;
@@ -65,51 +169,112 @@ public class IndexBasedSelectionModelMulti extends
     @Override
     public JSArray<Object> deselected(JavaScriptObject mapper, Integer from,
             Integer to) {
-        return JS.createArray();
+        if (invertedSelection) {
+            JSArray result = JS.createArray();
+            mapper = SelectionUtil.verifyMapper(mapper);
+
+            int fromIndex = JSValidate.Integer.val(from, 0, 0);
+            fromIndex = Math.min(fromIndex, indexes.length() - 1);
+            int defaultTo = indexes.length() - 1;
+            int toIndex = JSValidate.Integer.val(to, defaultTo, defaultTo);
+            toIndex = Math.min(toIndex, indexes.length() - 1);
+
+            for (int i = fromIndex; i <= toIndex; i++) {
+                Object mappedValue = JsUtils.jsni(mapper, "call", mapper,
+                        indexes.get(i));
+                if (mappedValue != null) {
+                    result.add(mappedValue);
+                }
+            }
+            return result;
+        } else {
+            return JS.createArray();
+        }
     }
 
     @Override
     public int size() {
-        return selectedIndexes.length();
+        return invertedSelection ? grid.getDataSource().size()
+                - indexes.length() : indexes.length();
     }
 
     @Override
     public boolean select(int index, boolean skipOwnEvents) {
-        if (index >= 0
-                && (!dataSizeUpdated || index < grid.getDataSource().size())
-                && selectedIndexes.indexOf((double) index) == -1) {
-            selectedIndexes.add((double) index);
-
-            skipOwnEvents = JSValidate.Boolean.val(skipOwnEvents, false, false);
-            if (!skipOwnEvents) {
-                grid.fireEvent(new SelectionEvent<Object>(grid, null, null,
-                        false));
+        if (invertedSelection) {
+            if (indexes.indexOf((double) index) != -1) {
+                indexes.remove((double) index);
+                skipOwnEvents = JSValidate.Boolean.val(skipOwnEvents, false,
+                        false);
+                if (!skipOwnEvents) {
+                    grid.fireEvent(new SelectionEvent<Object>(grid, null, null,
+                            false));
+                }
+                return true;
             }
+            return false;
+        } else {
+            if (index >= 0
+                    && (!dataSizeUpdated || index < grid.getDataSource().size())
+                    && indexes.indexOf((double) index) == -1) {
+                indexes.add((double) index);
 
-            if (isChecked()) {
-                selectAll();
-                return false;
+                skipOwnEvents = JSValidate.Boolean.val(skipOwnEvents, false,
+                        false);
+                if (!skipOwnEvents) {
+                    grid.fireEvent(new SelectionEvent<Object>(grid, null, null,
+                            false));
+                }
+
+                if (isChecked()) {
+                    selectAll();
+                    return false;
+                }
+
+                return true;
             }
-
-            return true;
+            return false;
         }
-        return false;
     }
 
     @Override
     public boolean deselect(int index, boolean skipOwnEvents) {
-        if (selectedIndexes.indexOf((double) index) != -1) {
-            selectedIndexes.remove((double) index);
+        if (invertedSelection) {
+            if (index >= 0
+                    && (!dataSizeUpdated || index < grid.getDataSource().size())
+                    && indexes.indexOf((double) index) == -1) {
+                indexes.add((double) index);
 
-            skipOwnEvents = JSValidate.Boolean.val(skipOwnEvents, false, false);
-            if (!skipOwnEvents) {
-                grid.fireEvent(new SelectionEvent<Object>(grid, null, null,
-                        false));
+                skipOwnEvents = JSValidate.Boolean.val(skipOwnEvents, false,
+                        false);
+                if (!skipOwnEvents) {
+                    grid.fireEvent(new SelectionEvent<Object>(grid, null, null,
+                            false));
+                }
+
+                if (size() == 0) {
+                    clear();
+                    return false;
+                }
+
+                return true;
             }
+            return false;
+        } else {
+            if (indexes.indexOf((double) index) != -1) {
+                indexes.remove((double) index);
 
-            return true;
+                skipOwnEvents = JSValidate.Boolean.val(skipOwnEvents, false,
+                        false);
+                if (!skipOwnEvents) {
+                    grid.fireEvent(new SelectionEvent<Object>(grid, null, null,
+                            false));
+                }
+
+                return true;
+            }
+            return false;
+
         }
-        return false;
     }
 
     @Override
@@ -119,24 +284,34 @@ public class IndexBasedSelectionModelMulti extends
 
     @Override
     public void selectAll() {
-        grid.fireEvent(new SelectAllEvent<Object>(
-                new IndexBasedSelectionModelAll()));
+        indexes.setLength(0);
+        invertedSelection = true;
+        grid.fireEvent(new SelectionEvent<Object>(grid, null, null, true));
+    }
+
+    @Override
+    public boolean deselectAll() {
+        indexes.setLength(0);
+        invertedSelection = false;
+        grid.fireEvent(new SelectAllEvent<Object>(this));
+        return true;
     }
 
     @Override
     public IndexBasedSelectionMode getMode() {
-        return IndexBasedSelectionMode.MULTI;
+        return invertedSelection ? IndexBasedSelectionMode.ALL
+                : IndexBasedSelectionMode.MULTI;
     }
 
     @Override
     public void dataSizeUpdated(int newSize) {
         dataSizeUpdated = true;
-        // If selected rows contains values that are out of bounds, remove
+        // If row indexes contain values that are out of bounds, remove
         // them.
         boolean changed = false;
-        for (int i = 0; i < selectedIndexes.length(); i++) {
-            if (selectedIndexes.get(i) >= newSize) {
-                selectedIndexes.remove(selectedIndexes.get(i--));
+        for (int i = 0; i < indexes.length(); i++) {
+            if (indexes.get(i) >= newSize) {
+                indexes.remove(indexes.get(i--));
                 changed = true;
             }
         }

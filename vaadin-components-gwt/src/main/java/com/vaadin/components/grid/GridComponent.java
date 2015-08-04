@@ -54,7 +54,7 @@ import com.vaadin.components.grid.data.GridDomTableDataSource;
 import com.vaadin.components.grid.data.GridJsFuncDataSource;
 import com.vaadin.components.grid.selection.IndexBasedSelectionMode;
 import com.vaadin.components.grid.selection.IndexBasedSelectionModel;
-import com.vaadin.components.grid.selection.IndexBasedSelectionModelMultiAbstract;
+import com.vaadin.components.grid.selection.IndexBasedSelectionModelMulti;
 import com.vaadin.components.grid.selection.IndexBasedSelectionModelSingle;
 import com.vaadin.components.grid.table.GridColumn;
 import com.vaadin.components.grid.table.GridLightDomTable;
@@ -126,7 +126,7 @@ public class GridComponent implements SelectionHandler<Object>,
             order.add(new SortOrder(column, direction));
         }
         grid.setSortOrder(order);
-        this.jsSort = jsOrders;
+        jsSort = jsOrders;
     }
 
     public ViolatedGrid getGrid() {
@@ -347,14 +347,29 @@ public class GridComponent implements SelectionHandler<Object>,
     }
 
     public void setSelectionMode(String selectionMode) {
-        if (!getSelectionMode().equalsIgnoreCase(selectionMode)) {
+        setSelectionMode(selectionMode, false);
+    }
+
+    private void setSelectionMode(String selectionMode, boolean force) {
+        if (force || !getSelectionMode().equalsIgnoreCase(selectionMode)) {
             updating = true;
             IndexBasedSelectionMode mode = JSEnums.Selection.val(selectionMode);
-            grid.setSelectionModel(mode.createModel());
+
+            boolean newModeIsAll = mode == IndexBasedSelectionMode.ALL;
+            boolean newModeIsMulti = mode == IndexBasedSelectionMode.MULTI;
+            boolean currentModelIsMulti = getSelectionModel() instanceof IndexBasedSelectionModelMulti;
+
+            if (!(currentModelIsMulti && (newModeIsAll || newModeIsMulti))) {
+                grid.setSelectionModel(mode.createModel());
+                updateWidth();
+            }
+            if (newModeIsAll) {
+                getSelectionModel().selectAll();
+            } else {
+                getSelectionModel().reset();
+            }
             triggerEvent("selectionmodechange");
-            getSelectionModel().reset();
             updateSelectAllCheckBox();
-            updateWidth();
             updating = false;
         }
     }
@@ -366,7 +381,7 @@ public class GridComponent implements SelectionHandler<Object>,
     public void setRowClassGenerator(JavaScriptObject generator) {
         grid.setRowStyleGenerator(JS.isUndefinedOrNull(generator) ? null
                 : row -> JS.exec(generator, JSRow.create(row, container)));
-        this.rowClassGenerator = generator;
+        rowClassGenerator = generator;
     }
 
     public JavaScriptObject getRowClassGenerator() {
@@ -376,7 +391,7 @@ public class GridComponent implements SelectionHandler<Object>,
     public void setCellClassGenerator(JavaScriptObject generator) {
         grid.setCellStyleGenerator(JS.isUndefinedOrNull(generator) ? null
                 : cell -> JS.exec(generator, JSCell.create(cell, container)));
-        this.cellClassGenerator = generator;
+        cellClassGenerator = generator;
     }
 
     public JavaScriptObject getCellClassGenerator() {
@@ -519,13 +534,13 @@ public class GridComponent implements SelectionHandler<Object>,
             if (event.getSelectionModel() != getSelectionModel()) {
                 grid.setSelectionModel(event.getSelectionModel());
                 triggerEvent("selectionmodechange");
+                getSelectionModel().reset();
             } else {
                 boolean all = getSelectAllCheckBox().getValue();
                 setSelectionMode(all ? IndexBasedSelectionMode.ALL.name()
-                        : IndexBasedSelectionMode.MULTI.name());
+                        : IndexBasedSelectionMode.MULTI.name(), true);
             }
             updateSelectAllCheckBox();
-            getSelectionModel().reset();
             updating = false;
             onSelect(null);
         }
@@ -535,8 +550,9 @@ public class GridComponent implements SelectionHandler<Object>,
         CheckBox selectAllCheckBox = getSelectAllCheckBox();
         if (selectAllCheckBox != null) {
             $(selectAllCheckBox).children().addClass("v-grid", "style-scope");
-            IndexBasedSelectionModelMultiAbstract model = (IndexBasedSelectionModelMultiAbstract) getSelectionModel();
-            $(selectAllCheckBox).find("input").prop("indeterminate", model.isIndeterminate());
+            IndexBasedSelectionModelMulti model = (IndexBasedSelectionModelMulti) getSelectionModel();
+            $(selectAllCheckBox).find("input").prop("indeterminate",
+                    model.isIndeterminate());
             selectAllCheckBox.setValue(model.isChecked(), false);
         }
     }
@@ -555,9 +571,9 @@ public class GridComponent implements SelectionHandler<Object>,
         String loadingDataClassName = "v-grid-loading-data";
 
         if (loadingData) {
-            this.getGridElement().addClassName(loadingDataClassName);
+            getGridElement().addClassName(loadingDataClassName);
         } else {
-            this.getGridElement().removeClassName(loadingDataClassName);
+            getGridElement().removeClassName(loadingDataClassName);
         }
     }
 
