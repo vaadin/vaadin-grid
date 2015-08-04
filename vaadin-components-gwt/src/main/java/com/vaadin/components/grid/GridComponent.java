@@ -404,15 +404,17 @@ public class GridComponent implements SelectionHandler<Object>,
 
     @JsNoExport
     public void updateHeight() {
-        grid.setHeight("100%");
+        if (!updating) {
+            grid.setHeight("100%");
 
-        if (container.getClientHeight() == 0) {
-            if (rows > 0) {
-                grid.setHeightByRows(rows);
-            } else {
-                GridDataSource ds = getDataSource();
-                if (ds != null && ds.size() > 0) {
-                    grid.setHeightByRows(Math.min(ds.size(), MAX_AUTO_ROWS));
+            if (container.getClientHeight() == 0) {
+                if (rows > 0) {
+                    grid.setHeightByRows(rows);
+                } else {
+                    GridDataSource ds = getDataSource();
+                    if (ds != null && ds.size() > 0) {
+                        grid.setHeightByRows(Math.min(ds.size(), MAX_AUTO_ROWS));
+                    }
                 }
             }
         }
