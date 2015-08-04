@@ -35,6 +35,7 @@
   - Ignore navigation event bubbling from focused cell content (#31)
   - Select All checkbox checkmark is offset by 1px (#49)
   - Focus of input in cells are stolen (#31)
+  - Clearing the Grid's data source makes the grid disappear (#24)
 
 ***
 

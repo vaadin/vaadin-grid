@@ -268,11 +268,8 @@ public class GridComponent implements SelectionHandler<Object>,
 
     public void setDataSource(JavaScriptObject data) {
         if (JsUtils.isFunction(data)) {
-            // We cannot attach ds to the grid until we get the async
-            // response that brings the number of rows in the table
-            // otherwise we set a size of zero and grid will never
-            // request for more rows.
-            new GridJsFuncDataSource(data, this);
+            grid.setDataSource(new GridJsFuncDataSource(data, this));
+            updateHeight();
         } else {
             throw new RuntimeException("Unknown data source type: " + data
                     + ". Arrays and Functions are supported only.");
@@ -411,7 +408,7 @@ public class GridComponent implements SelectionHandler<Object>,
                 grid.setHeightByRows(rows);
             } else {
                 GridDataSource ds = getDataSource();
-                if (ds != null && ds.size() > 0) {
+                if (ds != null) {
                     grid.setHeightByRows(Math.min(ds.size(), MAX_AUTO_ROWS));
                 }
             }
@@ -536,7 +533,8 @@ public class GridComponent implements SelectionHandler<Object>,
         if (selectAllCheckBox != null) {
             $(selectAllCheckBox).children().addClass("v-grid", "style-scope");
             IndexBasedSelectionModelMultiAbstract model = (IndexBasedSelectionModelMultiAbstract) getSelectionModel();
-            $(selectAllCheckBox).find("input").prop("indeterminate", model.isIndeterminate());
+            $(selectAllCheckBox).find("input").prop("indeterminate",
+                    model.isIndeterminate());
             selectAllCheckBox.setValue(model.isChecked(), false);
         }
     }

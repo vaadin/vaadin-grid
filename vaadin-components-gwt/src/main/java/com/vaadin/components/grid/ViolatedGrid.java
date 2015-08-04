@@ -87,6 +87,11 @@ public class ViolatedGrid extends com.vaadin.client.widgets.Grid<Object> {
         int footerRows = isFooterVisible() ? getFooterRowCount() : 0;
         double footerHeight = footerRowHeight * footerRows;
 
+        if (headerRows > 0 && footerRows == 0 && bodyRows == 0) {
+            // Only the header is visible, make some space for the divider
+            bodyHeight = 3;
+        }
+
         setHeight(headerHeight + bodyHeight + footerHeight + "px");
     }
 
@@ -120,7 +125,8 @@ public class ViolatedGrid extends com.vaadin.client.widgets.Grid<Object> {
     public void onBrowserEvent(Event event) {
 
         // clicking on the select all checkbox moves focus away from the grid
-        // causing the :focus transition effect to be reapplied. Forcing focus on the grid
+        // causing the :focus transition effect to be reapplied. Forcing focus
+        // on the grid
         // will mitigate the issue.
         focusGridIfSelectAllClicked(event);
 
@@ -129,11 +135,12 @@ public class ViolatedGrid extends com.vaadin.client.widgets.Grid<Object> {
 
     private void focusGridIfSelectAllClicked(Event event) {
         EventTarget target = event.getEventTarget();
-        if(Element.is(target)) {
+        if (Element.is(target)) {
             Element targetElement = Element.as(target);
 
-            // Currently targeting all gwt-checkboxes, might need refinement in the future.
-            if(targetElement.getParentElement().hasClassName("gwt-CheckBox")) {
+            // Currently targeting all gwt-checkboxes, might need refinement in
+            // the future.
+            if (targetElement.getParentElement().hasClassName("gwt-CheckBox")) {
                 getElement().focus();
             }
         }
