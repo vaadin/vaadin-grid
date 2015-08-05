@@ -90,14 +90,6 @@
          <releases><enabled>true</enabled></releases>
        </repository>
     </repositories>
-    <pluginRepositories>
-       <pluginRepository>
-         <id>codehaus-snapshots</id>
-         <url>https://nexus.codehaus.org/content/repositories/snapshots/</url>
-         <snapshots><enabled>true</enabled></snapshots>
-         <releases><enabled>false</enabled></releases>
-       </pluginRepository>
-    </pluginRepositories>
 
     <dependencyManagement>
       <dependencies>

@@ -12,6 +12,7 @@
 - Improved scrolling on touch devices. (#18)
 - JSDocs revised.
 - Added data.getItem api for fetching data items by row index (#45)
+- Combined multi selection models into one model
 - Issues fixed:
   - Grid doesn't work when using selection-mode multi, frozen columns and sortable columns. (#7)
   - Grid height is recalculated incorrectly when sorting a grid with a fixed height. (#8)
@@ -35,6 +36,8 @@
   - Ignore navigation event bubbling from focused cell content (#31)
   - Select All checkbox checkmark is offset by 1px (#49)
   - Focus of input in cells are stolen (#31)
+  - Clearing the Grid's data source makes the grid disappear (#24)
+  - Grid height calculation fails if it has a datasource prior to being added to the dom (#23)
   - Fix frozen columns borders
 
 ***
