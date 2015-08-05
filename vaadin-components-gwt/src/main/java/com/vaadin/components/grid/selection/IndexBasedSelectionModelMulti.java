@@ -201,80 +201,57 @@ public class IndexBasedSelectionModelMulti extends SelectionModelMulti<Object>
     @Override
     public boolean select(int index, boolean skipOwnEvents) {
         if (invertedSelection) {
-            if (indexes.indexOf((double) index) != -1) {
-                indexes.remove((double) index);
-                skipOwnEvents = JSValidate.Boolean.val(skipOwnEvents, false,
-                        false);
-                if (!skipOwnEvents) {
-                    grid.fireEvent(new SelectionEvent<Object>(grid, null, null,
-                            false));
-                }
-                return true;
-            }
-            return false;
+            return removeIndex(index, skipOwnEvents);
         } else {
-            if (index >= 0
-                    && (!dataSizeUpdated || index < grid.getDataSource().size())
-                    && indexes.indexOf((double) index) == -1) {
-                indexes.add((double) index);
-
-                skipOwnEvents = JSValidate.Boolean.val(skipOwnEvents, false,
-                        false);
-                if (!skipOwnEvents) {
-                    grid.fireEvent(new SelectionEvent<Object>(grid, null, null,
-                            false));
-                }
-
-                if (isChecked()) {
-                    selectAll();
-                    return false;
-                }
-
-                return true;
-            }
-            return false;
+            return addIndex(index, skipOwnEvents);
         }
     }
 
     @Override
     public boolean deselect(int index, boolean skipOwnEvents) {
         if (invertedSelection) {
-            if (index >= 0
-                    && (!dataSizeUpdated || index < grid.getDataSource().size())
-                    && indexes.indexOf((double) index) == -1) {
-                indexes.add((double) index);
-
-                skipOwnEvents = JSValidate.Boolean.val(skipOwnEvents, false,
-                        false);
-                if (!skipOwnEvents) {
-                    grid.fireEvent(new SelectionEvent<Object>(grid, null, null,
-                            false));
-                }
-
-                if (size() == 0) {
-                    clear();
-                    return false;
-                }
-
-                return true;
-            }
-            return false;
+            return addIndex(index, skipOwnEvents);
         } else {
-            if (indexes.indexOf((double) index) != -1) {
-                indexes.remove((double) index);
-
-                skipOwnEvents = JSValidate.Boolean.val(skipOwnEvents, false,
-                        false);
-                if (!skipOwnEvents) {
-                    grid.fireEvent(new SelectionEvent<Object>(grid, null, null,
-                            false));
-                }
-
-                return true;
-            }
-            return false;
+            return removeIndex(index, skipOwnEvents);
 
         }
+    }
+
+    private boolean addIndex(int index, boolean skipOwnEvents) {
+        if (index >= 0
+                && (!dataSizeUpdated || index < grid.getDataSource().size())
+                && indexes.indexOf((double) index) == -1) {
+            indexes.add((double) index);
+
+            skipOwnEvents = JSValidate.Boolean.val(skipOwnEvents, false, false);
+            if (!skipOwnEvents) {
+                grid.fireEvent(new SelectionEvent<Object>(grid, null, null,
+                        false));
+            }
+            if (invertedSelection && size() == 0) {
+                clear();
+                return false;
+            } else if (!invertedSelection && isChecked()) {
+                selectAll();
+                return false;
+            }
+
+            return true;
+        }
+        return false;
+    }
+
+    private boolean removeIndex(int index, boolean skipOwnEvents) {
+        if (indexes.indexOf((double) index) != -1) {
+            indexes.remove((double) index);
+            skipOwnEvents = JSValidate.Boolean.val(skipOwnEvents, false, false);
+            if (!skipOwnEvents) {
+                grid.fireEvent(new SelectionEvent<Object>(grid, null, null,
+                        false));
+            }
+            return true;
+        }
+        return false;
     }
 
     @Override
