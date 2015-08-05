@@ -17,7 +17,7 @@ public enum IndexBasedSelectionMode {
 
         @Override
         public IndexBasedSelectionModel createModel() {
-            return new IndexBasedSelectionModelMulti();
+            return new IndexBasedSelectionModelMulti(false);
         }
     },
 
@@ -25,7 +25,7 @@ public enum IndexBasedSelectionMode {
 
         @Override
         public IndexBasedSelectionModel createModel() {
-            return new IndexBasedSelectionModelAll();
+            return new IndexBasedSelectionModelMulti(true);
         }
     },
 
