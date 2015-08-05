@@ -25,7 +25,7 @@ public class IndexBasedSelectionModelMulti extends SelectionModelMulti<Object>
         implements IndexBasedSelectionModel {
 
     private Renderer<Boolean> renderer;
-    protected Grid<Object> grid;
+    private Grid<Object> grid;
     private boolean allowSelection = true;
 
     private final JSArray<Double> indexes = JS.createArray();
@@ -117,7 +117,7 @@ public class IndexBasedSelectionModelMulti extends SelectionModelMulti<Object>
     @Override
     public JSArray<Object> selected(JavaScriptObject mapper, Integer from,
             Integer to) {
-        JSArray result = JS.createArray();
+        JSArray<Object> result = JS.createArray();
         mapper = SelectionUtil.verifyMapper(mapper);
         if (invertedSelection) {
 
@@ -170,7 +170,7 @@ public class IndexBasedSelectionModelMulti extends SelectionModelMulti<Object>
     public JSArray<Object> deselected(JavaScriptObject mapper, Integer from,
             Integer to) {
         if (invertedSelection) {
-            JSArray result = JS.createArray();
+            JSArray<Object> result = JS.createArray();
             mapper = SelectionUtil.verifyMapper(mapper);
 
             int fromIndex = JSValidate.Integer.val(from, 0, 0);
