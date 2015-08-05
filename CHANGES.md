@@ -12,6 +12,7 @@
 - Improved scrolling on touch devices. (#18)
 - JSDocs revised.
 - Added data.getItem api for fetching data items by row index (#45)
+- Combined multi selection models into one model
 - Issues fixed:
   - Grid doesn't work when using selection-mode multi, frozen columns and sortable columns. (#7)
   - Grid height is recalculated incorrectly when sorting a grid with a fixed height. (#8)
