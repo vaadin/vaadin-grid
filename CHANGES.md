@@ -37,6 +37,7 @@
   - Select All checkbox checkmark is offset by 1px (#49)
   - Focus of input in cells are stolen (#31)
   - Clearing the Grid's data source makes the grid disappear (#24)
+  - Grid height calculation fails if it has a datasource prior to being added to the dom (#23)
 
 ***
 

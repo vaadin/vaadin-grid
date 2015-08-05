@@ -202,13 +202,27 @@
     it('should render header/footer with empty ds', function() {
         grid.style.height = "";
         grid.data.source = [];
-        
+
         return grid.then(function(){
         	var headerHeight = qLocal(".v-grid-header").clientHeight;
         	var footerHeight = qLocal(".v-grid-footer").clientHeight;
         	expect(grid.clientHeight).to.be.above(0);
         	expect(grid.clientHeight).to.eql(headerHeight + footerHeight);
         });
+    });
+
+    it('datasource can be added before grid attached to the DOM', function() {
+      var g = new VGrid(); // or document.createElement("v-grid");
+      g.columns = [{headerContent: "foo"}];
+      g.data.source = ["bar"];
+      document.body.appendChild(g);
+
+      return g.then(function(){
+        var cells = Polymer.dom(g.root).querySelectorAll(".v-grid-body .v-grid-cell > span");
+        assert.equal(cells[0].innerHTML, "bar");
+
+        document.body.removeChild(g);
+      });
     });
 
   });
