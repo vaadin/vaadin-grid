@@ -4,8 +4,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style.Overflow;
+import com.google.gwt.dom.client.Style.TextOverflow;
 import com.google.gwt.query.client.js.JsUtils;
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.user.client.DOM;
 import com.vaadin.client.widgets.Grid.Column;
 import com.vaadin.components.common.js.JS;
 import com.vaadin.components.common.js.JS.Setter;
@@ -37,13 +40,22 @@ public final class GridColumn extends Column<Object, Object> {
 
         // Default renderer
         setRenderer((cell, data) -> {
-            String innerHTML = JS.isUndefinedOrNull(data) ? "" : data
-                    .toString();
-            innerHTML = gridComponent.getDataSource() instanceof GridDomTableDataSource ? innerHTML
-                    : SafeHtmlUtils.htmlEscape(innerHTML);
-            cell.getElement().setInnerHTML(
-                    "<span style='overflow: hidden; text-overflow: ellipsis;'>"
-                            + innerHTML + "</span>");
+            Element element = cell.getElement();
+
+            if (!element.hasChildNodes()) {
+                // Need to create a new wrapper
+                Element wrapper = DOM.createSpan();
+                wrapper.getStyle().setOverflow(Overflow.HIDDEN);
+                wrapper.getStyle().setTextOverflow(TextOverflow.ELLIPSIS);
+                element.appendChild(wrapper);
+            }
+
+            String content = JS.isUndefinedOrNull(data) ? "" : data.toString();
+            if (gridComponent.getDataSource() instanceof GridDomTableDataSource) {
+                element.getFirstChildElement().setInnerHTML(content);
+            } else {
+                element.getFirstChildElement().setInnerText(content);
+            }
         });
     }
 
