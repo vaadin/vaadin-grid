@@ -14,7 +14,7 @@
     "gulp-rename": "latest",
     "gulp-replace": "latest",
     "gulp-util": "latest",
-    "web-component-tester": "2.2.6",
+    "web-component-tester": "3.3.10",
     "yargs": "latest"
   },
   "devDependencies": {
