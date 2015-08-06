@@ -1496,6 +1496,14 @@ public class Escalator extends Widget implements RequiresResize,
         }
 
         public void setColumnFrozen(int column, boolean frozen) {
+            toggleFrozenColumnClass(column, frozen, "frozen");
+
+            if (frozen) {
+                updateFreezePosition(column, scroller.lastScrollLeft);
+            }
+        }
+
+        private void toggleFrozenColumnClass(int column, boolean frozen, String className) {
             final NodeList<TableRowElement> childRows = root.getRows();
 
             for (int row = 0; row < childRows.getLength(); row++) {
@@ -1506,34 +1514,16 @@ public class Escalator extends Widget implements RequiresResize,
 
                 TableCellElement cell = tr.getCells().getItem(column);
                 if (frozen) {
-                    cell.addClassName("frozen");
+                    cell.addClassName(className);
                 } else {
-                    cell.removeClassName("frozen");
+                    cell.removeClassName(className);
                     position.reset(cell);
                 }
-            }
-
-            if (frozen) {
-                updateFreezePosition(column, scroller.lastScrollLeft);
             }
         }
 
         public void setColumnLastFrozen(int column, boolean lastFrozen) {
-            final NodeList<TableRowElement> childRows = root.getRows();
-
-            for (int row = 0; row < childRows.getLength(); row++) {
-                final TableRowElement tr = childRows.getItem(row);
-                if (!rowCanBeFrozen(tr)) {
-                    continue;
-                }
-
-                TableCellElement cell = tr.getCells().getItem(column);
-                if (lastFrozen) {
-                    cell.addClassName("last-frozen");
-                } else {
-                    cell.removeClassName("last-frozen");
-                }
-            }
+            toggleFrozenColumnClass(column, lastFrozen, "last-frozen");
         }
 
         public void updateFreezePosition(int column, double scrollLeft) {
