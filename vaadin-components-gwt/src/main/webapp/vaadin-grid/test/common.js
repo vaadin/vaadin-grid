@@ -9,7 +9,10 @@ describe.feature = function(description, suite) {
     });
 
     after(function() {
-      return grid; //make sure everything is finished before moving on.
+      //make sure everything is finished before moving on.
+      grid.then(function() {
+        return grid;
+      });
     });
 
     suite();
@@ -21,10 +24,10 @@ function gridContainsText(_grid, text) {
 }
 
 function onRegister(e, cb) {
-  waitUntil(function(){
+  waitUntil(function() {
     return !!e && e.constructor !== window.HTMLElement && e.constructor != window.HTMLUnknownElement;
   }, function() {
-    e.then && e.then(cb) || cb();
+    e.then && e.then(cb) ||  cb();
   });
 }
 
@@ -44,7 +47,7 @@ function waitUntil(check, exec, onTimeout) {
   }, 5000);
 }
 
-function triggerMouseEvent (node, eventType, properties, shiftKey ) {
+function triggerMouseEvent(node, eventType, properties, shiftKey) {
   var clickEvent = document.createEvent('MouseEvents');
   clickEvent.initMouseEvent(eventType, true, true, undefined, undefined,
     undefined, undefined, undefined, undefined, undefined, undefined, shiftKey,
@@ -62,27 +65,27 @@ function triggerMouseEvent (node, eventType, properties, shiftKey ) {
 function initializeGrid(cb) {
   wrapper = document.getElementById("gridwrapper");
   wrapper.innerHTML = "<v-grid>" +
-  "                     <table>" +
-  "                       <col header-text='Name'>" +
-  "                       <col header-text='Value'>" +
-  "                       <tbody>" +
-  "                         <tr>" +
-  "                           <td>Grid</td>" +
-  "                           <td>10000</td>" +
-  "                         </tr>" +
-  "                         <tr>" +
-  "                           <td>VaadinX</td>" +
-  "                           <td>1000</td>" +
-  "                         </tr>" +
-  "                       </tbody>" +
-  "                     <tfoot>" +
-  "                       <tr>" +
-  "                         <td>Name</td>" +
-  "                         <td>Value</td>" +
-  "                       </tr>" +
-  "                     </tfoot>"+
-  "                     </table>" +
-  "                     </v-grid>";
+    "                     <table>" +
+    "                       <col header-text='Name'>" +
+    "                       <col header-text='Value'>" +
+    "                       <tbody>" +
+    "                         <tr>" +
+    "                           <td>Grid</td>" +
+    "                           <td>10000</td>" +
+    "                         </tr>" +
+    "                         <tr>" +
+    "                           <td>VaadinX</td>" +
+    "                           <td>1000</td>" +
+    "                         </tr>" +
+    "                       </tbody>" +
+    "                     <tfoot>" +
+    "                       <tr>" +
+    "                         <td>Name</td>" +
+    "                         <td>Value</td>" +
+    "                       </tr>" +
+    "                     </tfoot>" +
+    "                     </table>" +
+    "                     </v-grid>";
   grid = wrapper.querySelector("v-grid");
   onRegister(grid, cb);
 }
