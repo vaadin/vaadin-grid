@@ -260,13 +260,13 @@
     });
 
     it('frozen column', function(done) {
-      grid.frozenColumns = 1;
+      grid.frozenColumns = 2;
 
       grid.then(function() {
-        assert.isTrue(gridContainsText(grid, "v-grid-cell frozen"));
-
         var headers = qaLocal(".v-grid-header .v-grid-row th");
         assert.isTrue(headers[0].classList.contains("frozen"));
+        assert.isTrue(headers[1].classList.contains("frozen"));
+        assert.isTrue(headers[1].classList.contains("last-frozen"));
         done();
       });
 
