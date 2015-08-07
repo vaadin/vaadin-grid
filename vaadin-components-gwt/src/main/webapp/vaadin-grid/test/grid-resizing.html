@@ -224,28 +224,23 @@
       });
 
       describe('using scaled dimensions', function() {
-        beforeEach(function() {
-          grid.style.position = 'absolute';
-          grid.style.width = '100%';
-          grid.style.height = '100%';
 
-          return grid;
-        });
+          it('should redraw with scaled dimensions', function(done) {
+            grid.style.position = 'absolute';
+            grid.style.width = '100%';
+            grid.style.height = '100%';
 
-        it('should redraw with scaled dimensions', function() {
-          return grid.then(function() {
-            assertSameDimensions();
+            waitUntil(function() {return width(grid) === width(inner) && height(grid) === height(inner)}, function(){done()});
           });
+
+          it('should match dimensions with the surrounding div', function(done) {
+            grid.style.position = 'absolute';
+            grid.style.width = '100%';
+            grid.style.height = '100%';
+            waitUntil(function(){return height(grid) === document.body.clientHeight && Math.abs(document.body.clientWidth - width(grid)) <= 1}, function(){done()});
+          })
+
         });
-
-        it('should match dimensions with the surrounding div', function() {
-          expect(height(grid)).to.equal(document.body.clientHeight);
-
-          // For some reason in IE sometimes there is a slight difference of 1 pixels
-          expect(Math.abs(document.body.clientWidth - width(grid))).to.be.at.most(1);
-        })
-
-      });
     });
   });
 </script>

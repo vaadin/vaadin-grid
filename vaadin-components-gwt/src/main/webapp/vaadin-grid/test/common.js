@@ -9,7 +9,10 @@ describe.feature = function(description, suite) {
     });
 
     after(function() {
-      return grid; //make sure everything is finished before moving on.
+    	//make sure everything is finished before moving on.
+    	grid.then(function() {
+          return grid;
+        });
     });
 
     suite();
