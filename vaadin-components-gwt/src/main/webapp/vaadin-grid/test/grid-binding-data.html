@@ -224,6 +224,18 @@
         document.body.removeChild(g);
       });
     });
+    
+    
+    it('clearCache(X) should work even if datasource was empty', function(){
+    	grid.data.source = [];
+    	return grid.then(function() {
+    		grid.data.source.push(1)
+    		grid.data.clearCache(1);
+    		return grid;
+    	}).then(function() {
+    		expect(qLocal('.v-grid-body .v-grid-cell')).to.exist;
+    	});
+    });
 
   });
 </script>

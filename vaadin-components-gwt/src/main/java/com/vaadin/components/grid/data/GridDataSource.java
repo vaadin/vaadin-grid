@@ -62,7 +62,7 @@ public abstract class GridDataSource extends AbstractRemoteDataSource<Object> {
 
     public void clearCache(Double newSize) {
         Integer intSize = JSValidate.Integer.val(newSize, size, size);
-        if (intSize == size) {
+        if (intSize == size || size == 0) {
             Range range = getCachedRange();
             requestRows(range.getStart(), range.length(),
                     new RequestRowsCallback<Object>(this, range) {
@@ -90,8 +90,9 @@ public abstract class GridDataSource extends AbstractRemoteDataSource<Object> {
                 JsUtils.jsni(callback, "call", callback, JS.getUndefined(),
                         extractDataItem(row));
             } else if (onlyCached) {
-                JS.exec(callback, JS.getError("Unable to retrieve row #"
-                        + index + ", it has not been cached yet"));
+                JS.exec(callback,
+                        JS.getError("Unable to retrieve row #" + index
+                                + ", it has not been cached yet"));
             } else {
                 Range range = Range.withOnly(index);
                 requestRows(range.getStart(), range.length(),
@@ -105,8 +106,8 @@ public abstract class GridDataSource extends AbstractRemoteDataSource<Object> {
                         });
             }
         } else {
-            JS.exec(callback, JS.getError("Index value #" + index
-                   + " is out of range"));
+            JS.exec(callback,
+                    JS.getError("Index value #" + index + " is out of range"));
         }
     }
 
