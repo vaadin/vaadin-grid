@@ -125,9 +125,9 @@
       describe('using limited row visibility', function() {
         before(function() {
           // Increase the number of rows
-          tbody.innerHTML += tbody.innerHTML; //4
-          tbody.innerHTML += tbody.innerHTML; //8
-          tbody.innerHTML += tbody.innerHTML; //16
+//          tbody.innerHTML += tbody.innerHTML; //4
+//          tbody.innerHTML += tbody.innerHTML; //8
+//          tbody.innerHTML += tbody.innerHTML; //16
 
           return grid;
         });
@@ -137,7 +137,7 @@
             assertSameDimensions();
 
             // grid has a limit of 10 data rows by default
-            assertHeightByRows(10);
+            assertHeightByRows(4);
           });
         });
 
@@ -157,13 +157,13 @@
           return grid.then(function() {
             assertSameDimensions();
 
-            assertHeightByRows(10); // default
+            assertHeightByRows(4); // default
           });
         });
 
         it('should have the original height after rows removed', function() {
           var originalHeight = grid.offsetHeight;
-          grid.rows = 5;
+          grid.rows = 4;
 
           return grid.then(function() {
             grid.rows = 0;
