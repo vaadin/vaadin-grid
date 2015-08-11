@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head lang="en">
   <meta charset="UTF-8">
   <title></title>
@@ -10,19 +11,20 @@
   <script src="common.js"></script>
 
 </head>
+
 <body>
   <div id="gridwrapper"></div>
 
   <script>
     describe.feature('static sections', function() {
       function removeHeaders() {
-        for(var i = grid.header.rowCount;i>0;i--) {
+        for (var i = grid.header.rowCount; i > 0; i--) {
           grid.header.removeRow();
         }
       }
 
       function removeFooters() {
-        for(var i = grid.footer.rowCount;i>0;i--) {
+        for (var i = grid.footer.rowCount; i > 0; i--) {
           grid.footer.removeRow();
         }
       }
@@ -57,7 +59,10 @@
           // sorting indicator moves to the default row, so we'll
           // use that to assert that default row has changed.
           grid.columns[0].sortable = true;
-          grid.data.sortOrder = [{column: 0, direction: 'asc'}];
+          grid.data.sortOrder = [{
+            column: 0,
+            direction: 'asc'
+          }];
 
           grid.header.defaultRow = 1;
 
@@ -78,7 +83,7 @@
 
       });
 
-    ['header', 'footer'].forEach(function(section) {
+      ['header', 'footer'].forEach(function(section) {
         describe(section, function() {
 
           function appendThead() {
@@ -87,8 +92,8 @@
             if (colGroup) {
               colGroup.parentElement.removeChild(colGroup);
               qLight("table").innerHTML =
-              "<thead><tr><th>Name</th><th>Value</th></tr></thead>" +
-              qLight("table").innerHTML;
+                "<thead><tr><th>Name</th><th>Value</th></tr></thead>" +
+                qLight("table").innerHTML;
             }
           };
 
@@ -102,7 +107,7 @@
 
           describe('getCell', function() {
             it('should return correct cell using indeces', function() {
-              var cell = grid[section].getCell(0,0);
+              var cell = grid[section].getCell(0, 0);
 
               expect(cell.content).to.equal('Name');
             });
@@ -127,10 +132,10 @@
           describe('cell', function() {
             describe('content', function() {
               it('should set content', function() {
-                var cell = grid[section].getCell(0,0);
+                var cell = grid[section].getCell(0, 0);
                 cell.content = 'foo';
 
-                expect(grid[section].getCell(0,0).content).to.equal('foo');
+                expect(grid[section].getCell(0, 0).content).to.equal('foo');
               });
 
               it('should set html content', function() {
@@ -142,13 +147,47 @@
                 expect(qLocal('.v-grid-' + section + ' .v-grid-cell > input')).to.not.be.undefined;
               });
 
+              it('should retain header and footer components', function(done) {
+                var wrapper = document.getElementById("gridwrapper");
+                var tmp = document.createElement("div");
+                wrapper.appendChild(tmp);
+                tmp.innerHTML = "<v-grid>" +
+                  "                <table>" +
+                  "                  <colgroup><col header-text='Name'></colgroup>" +
+                  "                  <thead><tr class='red'><td><input/></td></tr></thead>" +
+                  "                  <tbody><tr><td>Grid</td></tr></tbody>" +
+                  "                  <tfoot><tr class='red'><td><input/></td></tr></tfoot>" +
+                  "                </table>" +
+                  "              </v-grid>";
+
+                var grid = tmp.querySelector("v-grid");
+                waitUntil(function() {
+                  return grid.then;
+                }, function() {
+                  return grid.then(function() {
+                    var inputElement = Polymer.dom(grid.root).querySelector('.v-grid-' + section + ' .v-grid-cell input');
+                    var firstCell = Polymer.dom(grid.root).querySelector('.v-grid-body .v-grid-cell');
+
+                    // Checks that the element is not recreated on focus
+                    triggerMouseEvent(inputElement, 'click');
+
+                    var inputElementAfterFocus = Polymer.dom(grid.root).querySelector('.v-grid-' + section + ' .v-grid-cell input');
+
+                    expect(inputElement).to.eql(inputElementAfterFocus);
+
+                    wrapper.removeChild(tmp);
+                    done();
+                  })
+                });
+              });
+
               it('should set content: declarative', function() {
                 appendThead();
 
                 var ldCell = section === 'header' ? 'thead th' : 'tfoot td';
                 qLight(ldCell).innerHTML = "<span class='foo'>bar</span>";
 
-                return grid.then(function(){
+                return grid.then(function() {
                   expect(qLocal('.v-grid-' + section + ' .v-grid-cell .foo').innerHTML).to.eql("bar");
                 });
               });
@@ -167,7 +206,7 @@
 
                 qLight(section === 'header' ? 'thead' : 'tfoot').setAttribute("hidden", true);
 
-                return grid.then(function(){
+                return grid.then(function() {
                   expect(qLocal(".v-grid-" + section).innerHTML).to.be.empty;
                 });
               });
@@ -206,8 +245,8 @@
             it('should append new row', function() {
               grid[section].addRow();
 
-              grid[section].getCell(1,0).content = 'foo';
-              grid[section].getCell(1,1).content = 'bar';
+              grid[section].getCell(1, 0).content = 'foo';
+              grid[section].getCell(1, 1).content = 'bar';
 
               var cells = qaLocal('.v-grid-' + section + ' .v-grid-cell > span');
               expect(cells[0].innerHTML).to.equal('Name');
@@ -219,8 +258,8 @@
             it('should insert new row to correct index', function() {
               grid[section].addRow(0);
 
-              grid[section].getCell(0,0).content = 'foo';
-              grid[section].getCell(0,1).content = 'bar';
+              grid[section].getCell(0, 0).content = 'foo';
+              grid[section].getCell(0, 1).content = 'bar';
 
               var cells = qaLocal('.v-grid-' + section + ' .v-grid-cell > span');
               expect(cells[0].innerHTML).to.equal('foo');
@@ -283,4 +322,5 @@
     });
   </script>
 </body>
+
 </html>
