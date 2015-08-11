@@ -40,6 +40,7 @@
   - Grid height calculation fails if it has a datasource prior to being added to the dom (#23)
   - Fix frozen columns borders
   - clearCache(X) should work even if datasource was empty
+  - Update footer styles (#48)
 
 ***
 
