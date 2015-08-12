@@ -42,27 +42,23 @@ public final class GridColumn extends Column<Object, Object> {
         // Default renderer
         setRenderer((cell, data) -> {
             Element element = cell.getElement();
-            Element leafElement;
             String content = JS.isUndefinedOrNull(data) ? "" : data.toString();
 
-            // No need for wrapper if it's an HTML element #52
-            if(new HTML(content).getElement().getFirstChildElement() != null) {
-                leafElement = element;
-            }else {
-                if (!element.hasChildNodes()) {
+            if (gridComponent.getDataSource() instanceof GridDomTableDataSource
+                    && new HTML(content).getElement().getFirstChildElement() != null) {
+                element.setInnerHTML(content);
+            } else {
+                Element wrapper = element.getFirstChildElement();
+                if (wrapper == null || !wrapper.getPropertyBoolean("iswrapper")) {
                     // Need to create a new wrapper
-                    Element wrapper = DOM.createSpan();
+                    wrapper = DOM.createSpan();
                     wrapper.getStyle().setOverflow(Overflow.HIDDEN);
                     wrapper.getStyle().setTextOverflow(TextOverflow.ELLIPSIS);
+                    wrapper.setPropertyBoolean("iswrapper", true);
+                    element.removeAllChildren();
                     element.appendChild(wrapper);
                 }
-                leafElement = element.getFirstChildElement();
-            }
-
-            if (gridComponent.getDataSource() instanceof GridDomTableDataSource) {
-                leafElement.setInnerHTML(content);
-            } else {
-                leafElement.setInnerText(content);
+                wrapper.setInnerText(content);
             }
         });
     }
