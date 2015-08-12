@@ -42,13 +42,12 @@ public final class GridColumn extends Column<Object, Object> {
         // Default renderer
         setRenderer((cell, data) -> {
             Element element = cell.getElement();
-            Element leafElement;
             String content = JS.isUndefinedOrNull(data) ? "" : data.toString();
 
-            // No need for wrapper if it's an HTML element #52
-            if(new HTML(content).getElement().getFirstChildElement() != null) {
-                leafElement = element;
-            }else {
+            if (gridComponent.getDataSource() instanceof GridDomTableDataSource
+                    && new HTML(content).getElement().getFirstChildElement() != null) {
+                element.setInnerHTML(content);
+            } else {
                 if (!element.hasChildNodes()) {
                     // Need to create a new wrapper
                     Element wrapper = DOM.createSpan();
@@ -56,13 +55,7 @@ public final class GridColumn extends Column<Object, Object> {
                     wrapper.getStyle().setTextOverflow(TextOverflow.ELLIPSIS);
                     element.appendChild(wrapper);
                 }
-                leafElement = element.getFirstChildElement();
-            }
-
-            if (gridComponent.getDataSource() instanceof GridDomTableDataSource) {
-                leafElement.setInnerHTML(content);
-            } else {
-                leafElement.setInnerText(content);
+                element.getFirstChildElement().setInnerText(content);
             }
         });
     }
