@@ -9,6 +9,7 @@ import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.TextOverflow;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.ui.HTML;
 import com.vaadin.client.widgets.Grid.Column;
 import com.vaadin.components.common.js.JS;
 import com.vaadin.components.common.js.JS.Setter;
@@ -41,20 +42,27 @@ public final class GridColumn extends Column<Object, Object> {
         // Default renderer
         setRenderer((cell, data) -> {
             Element element = cell.getElement();
+            Element leafElement;
+            String content = JS.isUndefinedOrNull(data) ? "" : data.toString();
 
-            if (!element.hasChildNodes()) {
-                // Need to create a new wrapper
-                Element wrapper = DOM.createSpan();
-                wrapper.getStyle().setOverflow(Overflow.HIDDEN);
-                wrapper.getStyle().setTextOverflow(TextOverflow.ELLIPSIS);
-                element.appendChild(wrapper);
+            // No need for wrapper if it's an HTML element #52
+            if(new HTML(content).getElement().getFirstChildElement() != null) {
+                leafElement = element;
+            }else {
+                if (!element.hasChildNodes()) {
+                    // Need to create a new wrapper
+                    Element wrapper = DOM.createSpan();
+                    wrapper.getStyle().setOverflow(Overflow.HIDDEN);
+                    wrapper.getStyle().setTextOverflow(TextOverflow.ELLIPSIS);
+                    element.appendChild(wrapper);
+                }
+                leafElement = element.getFirstChildElement();
             }
 
-            String content = JS.isUndefinedOrNull(data) ? "" : data.toString();
             if (gridComponent.getDataSource() instanceof GridDomTableDataSource) {
-                element.getFirstChildElement().setInnerHTML(content);
+                leafElement.setInnerHTML(content);
             } else {
-                element.getFirstChildElement().setInnerText(content);
+                leafElement.setInnerText(content);
             }
         });
     }
