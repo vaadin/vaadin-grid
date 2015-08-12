@@ -12,6 +12,7 @@ import com.google.gwt.query.client.plugins.observe.Observe;
 import com.google.gwt.query.client.plugins.observe.Observe.Changes.MutationRecord;
 import com.google.gwt.query.client.plugins.observe.Observe.MutationListener;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.HTML;
 import com.vaadin.client.widgets.Grid;
 import com.vaadin.client.widgets.Grid.StaticSection.StaticCell;
 import com.vaadin.client.widgets.Grid.StaticSection.StaticRow;
@@ -42,7 +43,7 @@ public class GridLightDomTable implements MutationListener {
 
     public GridLightDomTable(Element tableElement, GridComponent gridComponent) {
         this.gridComponent = gridComponent;
-        this.grid = gridComponent.getGrid();
+        grid = gridComponent.getGrid();
 
         $light = $(tableElement);
 
@@ -191,7 +192,8 @@ public class GridLightDomTable implements MutationListener {
                 StaticCell cell = row.getCell(dataColumns.get(colIndex));
                 JSStaticCell js = gridComponent.getStaticSection()
                         .obtainJSStaticCell(cell);
-                js.setContent($th.html());
+
+                cell.setWidget(new HTML($th.html()));
 
                 className = JSValidate.String.attr($th, "class");
                 if (!className.isEmpty()) {
