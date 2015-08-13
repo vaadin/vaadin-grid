@@ -38,458 +38,459 @@ Basic usage:
 More examples available at http://vaadin.github.io/components-examples/v-grid/
 -->
 <dom-module id="v-grid">
-<style>
-  /* Host styles */
-  :host {
-    -webkit-tap-highlight-color: transparent;
-    -webkit-touch-callout: none;
-    box-sizing: border-box;
-    display: block;
-    font: 400 13px/1.1 Roboto, sans-serif;
-    color: rgba(0, 0, 0, 0.87);
-    cursor: default;
-    transition: opacity 50ms;
-    white-space: nowrap;
-  }
+  <style>
+    /* Host styles */
 
-  :host(.v-grid-loading) {
-    height: 0;
-    opacity: 0;
-    transition: none;
-  }
-
-  :host > div {
-    height: 100%;
-    outline: none;
-    position: relative;
-  }
-
-  /* Anim */
-  @keyframes v-grid-spin-360 {
-    100% {
-      transform: rotate(360deg);
+    :host {
+      -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
+      box-sizing: border-box;
+      display: block;
+      font: 400 13px/1.1 Roboto, sans-serif;
+      color: rgba(0, 0, 0, 0.87);
+      cursor: default;
+      transition: opacity 50ms;
+      white-space: nowrap;
     }
-  }
 
-  @-webkit-keyframes v-grid-spin-360 {
-    100% {
-      -webkit-transform: rotate(360deg);
-      transform: rotate(360deg);
+    :host(.v-grid-loading) {
+      height: 0;
+      opacity: 0;
+      transition: none;
     }
-  }
 
-  /* Table wrapper */
-  .v-grid-tablewrapper {
-    box-sizing: border-box;
-    overflow: hidden;
-    outline: none;
-    position: absolute;
-    z-index: 5;
-  }
-
-  .v-grid-tablewrapper:before {
-    display: none;
-  }
-
-  .v-grid-tablewrapper > table {
-    box-sizing: border-box;
-    display: block;
-  }
-
-  .v-grid-loading-data .v-grid-tablewrapper:before {
-    -webkit-animation: v-grid-spin-360 400ms linear infinite;
-    animation: v-grid-spin-360 400ms linear infinite;
-    border: 2px solid #03A9F4;
-    border-radius: 50%;
-    border-right-color: transparent;
-    border-top-color: transparent;
-    content: "";
-    display: block;
-    height: 16px;
-    left: 50%;
-    margin-left: -8px;
-    margin-top: -8px;
-    position: absolute;
-    top: 50%;
-    width: 16px;
-  }
-
-  /* Scroller styles */
-  .v-grid-scroller {
-    box-sizing: border-box;
-    outline: none;
-    position: absolute;
-    z-index: 1;
-  }
-
-  .v-grid-scroller-horizontal {
-    bottom: 0;
-    left: 0;
-    right: 0;
-    overflow-y: hidden;
-    -ms-overflow-y: hidden;
-  }
-
-  .v-grid-scroller-vertical {
-    bottom: 0;
-    right: 0;
-    top: 0;
-    overflow-x: hidden;
-    -ms-overflow-x: hidden;
-  }
-
-  .v-grid-horizontal-scrollbar-deco {
-    bottom: 0;
-    box-sizing: border-box;
-    left: 0;
-    position: absolute;
-    right: 0;
-  }
-
-  /* Grid body */
-  .v-grid-body {
-    box-sizing: border-box;
-    display: block;
-    left: 0;
-    position: absolute;
-    top: 0;
-    z-index: 0;
-  }
-
-  :host(:not([selection-mode])) .v-grid-body,
-  :host([selection-mode="single"]) .v-grid-body {
-    cursor: pointer;
-  }
-
-  .v-grid-body tr {
-    height: 48px;
-    left: 0;
-    top: 0;
-    position: absolute;
-  }
-
-  .v-grid-body td {
-    opacity: 0;
-  }
-
-  .v-grid-row-has-data td {
-    border-bottom: 1px solid #e3e3e3;
-    opacity: 1;
-  }
-
-  /* Row styles */
-  .v-grid-row {
-    box-sizing: border-box;
-    display: block;
-  }
-
-  tbody .v-grid-row:hover td {
-    background-color: #eeeeee;
-  }
-
-  .v-grid-row-selected td {
-    background-color: #f5f5f5;
-  }
-
-  /* Focus styles */
-  .v-grid-row:after {
-    background-color: #03A9F4;
-    bottom: 0;
-    content: "";
-    height: 2px;
-    left: 0;
-    pointer-events: none;
-    position: absolute;
-    right: 0;
-    transition: all 0.16s ease-in-out;
-    -webkit-transform: scaleX(0.0);
-    transform: scaleX(0.0);
-    z-index: 1;
-  }
-
-  :focus .v-grid-row-focused:after {
-    -webkit-transform: scaleX(1.0);
-    transform: scaleX(1.0);
-  }
-
-  :focus .v-grid-row-focused {
-    -webkit-animation: v-grid-row-focused 820ms ease-in-out;
-    animation: v-grid-row-focused 820ms ease-in-out;
-  }
-
-  @-webkit-keyframes v-grid-row-focused {
-    50% {
-      color: #03A9F4;
-    } 100% {
-      color: inherit;
+    :host > div {
+      height: 100%;
+      outline: none;
+      position: relative;
     }
-  }
+    /* Anim */
 
-  @keyframes v-grid-row-focused {
-    50% {
-      color: #03A9F4;
-    } 100% {
-      color: inherit;
+    @keyframes v-grid-spin-360 {
+      100% {
+        transform: rotate(360deg);
+      }
     }
-  }
 
-  /* Grid cell */
-  .v-grid-cell {
-    -webkit-align-items: center;
-    align-items: center;
-    background-color: white;
-    box-sizing: border-box;
-    display: -webkit-inline-flex;
-    display: inline-flex;
-    height: inherit;
-    overflow: hidden;
-    transition: opacity 0.1s ease-in;
-  }
+    @-webkit-keyframes v-grid-spin-360 {
+      100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+      }
+    }
+    /* Table wrapper */
 
-  /* Grid header */
-  .v-grid-header {
-    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
-    box-sizing: border-box;
-    display: block;
-    left: 0;
-    position: absolute;
-    top: 0;
-    z-index: 10;
-  }
+    .v-grid-tablewrapper {
+      box-sizing: border-box;
+      overflow: hidden;
+      outline: none;
+      position: absolute;
+      z-index: 5;
+    }
 
-  .v-grid-header tr {
-    color: rgba(0, 0, 0, 0.54);
-    font-size: 12px;
-    height: 56px;
-  }
+    .v-grid-tablewrapper:before {
+      display: none;
+    }
 
-  .v-grid-header th {
-    font-weight: 500;
-    text-align: left;
-  }
+    .v-grid-tablewrapper > table {
+      box-sizing: border-box;
+      display: block;
+    }
 
-  .v-grid-header-deco {
-    background-color: white;
-    border-left: 1px solid rgba(255, 255, 255, 0.3);
-    box-sizing: border-box;
-    position: absolute;
-    right: 0;
-    top: 0;
-    z-index: 1;
-  }
+    .v-grid-loading-data .v-grid-tablewrapper:before {
+      -webkit-animation: v-grid-spin-360 400ms linear infinite;
+      animation: v-grid-spin-360 400ms linear infinite;
+      border: 2px solid #03A9F4;
+      border-radius: 50%;
+      border-right-color: transparent;
+      border-top-color: transparent;
+      content: "";
+      display: block;
+      height: 16px;
+      left: 50%;
+      margin-left: -8px;
+      margin-top: -8px;
+      position: absolute;
+      top: 50%;
+      width: 16px;
+    }
+    /* Scroller styles */
 
-  /* Sorting */
-  .v-grid-header [class*="sort-"] {
-    font-weight: 500;
-    font-size: 12px;
-    color: rgba(0, 0, 0, 0.87);
-    position: relative;
-  }
+    .v-grid-scroller {
+      box-sizing: border-box;
+      outline: none;
+      position: absolute;
+      z-index: 1;
+    }
 
-  .v-grid-header [class*="sort-"]:after {
-    font-size: 8px;
-    padding-left: 8px;
-    width: 1em;
-    min-width: 12px;
-    display: inline-block;
-  }
+    .v-grid-scroller-horizontal {
+      bottom: 0;
+      left: 0;
+      right: 0;
+      overflow-y: hidden;
+      -ms-overflow-y: hidden;
+    }
 
-  .v-grid-header .sort-asc:after {
-    content: url(arrow-up.svg) " " attr(sort-order);
-  }
+    .v-grid-scroller-vertical {
+      bottom: 0;
+      right: 0;
+      top: 0;
+      overflow-x: hidden;
+      -ms-overflow-x: hidden;
+    }
 
-  .v-grid-header .sort-desc:after {
-    content: url(arrow-down.svg) " " attr(sort-order);
-  }
+    .v-grid-horizontal-scrollbar-deco {
+      bottom: 0;
+      box-sizing: border-box;
+      left: 0;
+      position: absolute;
+      right: 0;
+    }
+    /* Grid body */
 
-  /* Grid footer */
-  .v-grid-footer {
-    bottom: 0;
-    box-sizing: border-box;
-    display: block;
-    left: 0;
-    position: absolute;
-    z-index: 10;
-    box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.2);
-  }
+    .v-grid-body {
+      box-sizing: border-box;
+      display: block;
+      left: 0;
+      position: absolute;
+      top: 0;
+      z-index: 0;
+    }
 
-  .v-grid-footer td {
-    font-size: 12px;
-    font-weight: 500;
-    color: rgba(0, 0, 0, 0.56);
-    height: 56px;
-  }
+    :host(:not([selection-mode])) .v-grid-body,
+    :host([selection-mode="single"]) .v-grid-body {
+      cursor: pointer;
+    }
 
-  .v-grid-footer-deco {
-    bottom: 0;
-    box-sizing: border-box;
-    position: absolute;
-    right: 0;
-    z-index: 1;
-  }
+    .v-grid-body tr {
+      height: 48px;
+      left: 0;
+      top: 0;
+      position: absolute;
+    }
 
-  /* Cell padding */
-  .v-grid-header th,
-  .v-grid-body td,
-  .v-grid-footer td {
-    /* Google Material Design specifies 56dp inbetween columns.
+    .v-grid-body td {
+      opacity: 0;
+    }
+
+    .v-grid-row-has-data td {
+      border-bottom: 1px solid #e3e3e3;
+      opacity: 1;
+    }
+    /* Row styles */
+
+    .v-grid-row {
+      box-sizing: border-box;
+      display: block;
+    }
+
+    tbody .v-grid-row:hover td {
+      background-color: #eeeeee;
+    }
+
+    .v-grid-row-selected td {
+      background-color: #f5f5f5;
+    }
+    /* Focus styles */
+
+    .v-grid-row:after {
+      background-color: #03A9F4;
+      bottom: 0;
+      content: "";
+      height: 2px;
+      left: 0;
+      pointer-events: none;
+      position: absolute;
+      right: 0;
+      transition: all 0.16s ease-in-out;
+      -webkit-transform: scaleX(0.0);
+      transform: scaleX(0.0);
+      z-index: 1;
+    }
+
+    :focus .v-grid-row-focused:after {
+      -webkit-transform: scaleX(1.0);
+      transform: scaleX(1.0);
+    }
+
+    :focus .v-grid-row-focused {
+      -webkit-animation: v-grid-row-focused 820ms ease-in-out;
+      animation: v-grid-row-focused 820ms ease-in-out;
+    }
+
+    @-webkit-keyframes v-grid-row-focused {
+      50% {
+        color: #03A9F4;
+      }
+      100% {
+        color: inherit;
+      }
+    }
+
+    @keyframes v-grid-row-focused {
+      50% {
+        color: #03A9F4;
+      }
+      100% {
+        color: inherit;
+      }
+    }
+    /* Grid cell */
+
+    .v-grid-cell {
+      -webkit-align-items: center;
+      align-items: center;
+      background-color: white;
+      box-sizing: border-box;
+      display: -webkit-inline-flex;
+      display: inline-flex;
+      height: inherit;
+      overflow: hidden;
+      transition: opacity 0.1s ease-in;
+    }
+    /* Grid header */
+
+    .v-grid-header {
+      box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+      box-sizing: border-box;
+      display: block;
+      left: 0;
+      position: absolute;
+      top: 0;
+      z-index: 10;
+    }
+
+    .v-grid-header tr {
+      color: rgba(0, 0, 0, 0.54);
+      font-size: 12px;
+      height: 56px;
+    }
+
+    .v-grid-header th {
+      font-weight: 500;
+      text-align: left;
+    }
+
+    .v-grid-header-deco {
+      background-color: white;
+      border-left: 1px solid rgba(255, 255, 255, 0.3);
+      box-sizing: border-box;
+      position: absolute;
+      right: 0;
+      top: 0;
+      z-index: 1;
+    }
+    /* Sorting */
+
+    .v-grid-header [class*="sort-"] {
+      font-weight: 500;
+      font-size: 12px;
+      color: rgba(0, 0, 0, 0.87);
+      position: relative;
+    }
+
+    .v-grid-header [class*="sort-"]:after {
+      font-size: 8px;
+      padding-left: 8px;
+      width: 1em;
+      min-width: 12px;
+      display: inline-block;
+    }
+
+    .v-grid-header .sort-asc:after {
+      content: url(arrow-up.svg) " " attr(sort-order);
+    }
+
+    .v-grid-header .sort-desc:after {
+      content: url(arrow-down.svg) " " attr(sort-order);
+    }
+    /* Grid footer */
+
+    .v-grid-footer {
+      bottom: 0;
+      box-sizing: border-box;
+      display: block;
+      left: 0;
+      position: absolute;
+      z-index: 10;
+      box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.2);
+    }
+
+    .v-grid-footer td {
+      font-size: 12px;
+      font-weight: 500;
+      color: rgba(0, 0, 0, 0.56);
+      height: 56px;
+    }
+
+    .v-grid-footer-deco {
+      bottom: 0;
+      box-sizing: border-box;
+      position: absolute;
+      right: 0;
+      z-index: 1;
+    }
+    /* Cell padding */
+
+    .v-grid-header th,
+    .v-grid-body td,
+    .v-grid-footer td {
+      /* Google Material Design specifies 56dp inbetween columns.
        Columns are as wide as their widest item. This approach
        might not be applicable for us, as we allow column expand
        ratio, etc. Options 1, 2 and 3 listed below. */
-    /* Divide padding equally among cells. */
-       padding: 0 24px 0 24px;
-    /* Put all padding on right side.
+      /* Divide padding equally among cells. */
+      padding: 0 24px 0 24px;
+      /* Put all padding on right side.
        padding: 0 56px 0 0; */
-    /* No padding, allow users to specify expand ratio.
+      /* No padding, allow users to specify expand ratio.
        padding: 0; */
-  }
+    }
 
-  .v-grid-header th.last-frozen,
-  .v-grid-body td.last-frozen,
-  .v-grid-footer td.last-frozen {
-    border-right: 1px solid #e3e3e3;
-  }
-
-  /* TODO We need some other way of defining the frozen column divider than
+    .v-grid-header th.last-frozen,
+    .v-grid-body td.last-frozen,
+    .v-grid-footer td.last-frozen {
+      border-right: 1px solid #e3e3e3;
+    }
+    /* TODO We need some other way of defining the frozen column divider than
    using the cell, since this will affect all frozen columns, when we only
     want to apply it to the last frozen column .*/
-  /* Double selector to increase specificity. Otherwise Polymer increases the
+    /* Double selector to increase specificity. Otherwise Polymer increases the
    specificity of the ".v-grid-header th" more than this, and we can't
    override the border */
-  .v-grid-cell.frozen.frozen {
-    position: relative;
-    z-index: 1;
-  }
 
-  /* Input styles */
-  input[type="checkbox"] {
-    position: absolute;
-    opacity: 0;
-  }
+    .v-grid-cell.frozen.frozen {
+      position: relative;
+      z-index: 1;
+    }
+    /* Input styles */
 
-  input[type="checkbox"] + label {
-    position: relative;
-    left: 0;
-    box-sizing: border-box;
-    display: block;
-    width: 18px;
-    height: 18px;
-    border: 2px solid #7a7a7a;
-    border-radius: 2px;
-    cursor: pointer;
-    transition: background-color 120ms, border-color 120ms;
-  }
+    input[type="checkbox"] {
+      position: absolute;
+      opacity: 0;
+    }
 
-  input[type="checkbox"]:focus {
-    outline: none;
-  }
+    input[type="checkbox"] + label {
+      position: relative;
+      left: 0;
+      box-sizing: border-box;
+      display: block;
+      width: 18px;
+      height: 18px;
+      border: 2px solid #7a7a7a;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: background-color 120ms, border-color 120ms;
+    }
 
-  input[type="checkbox"] + label:after {
-    content: url("tick.svg");
-    position: absolute;
-    top: -1px;
-    left: -1px;
-    display: block;
-    width: 18px;
-    height: 18px;
-    transition: all 200ms;
-    -webkit-transform: scale(0);
-    transform: scale(0);
-    -webkit-transform-origin: 40% 80%;
-    transform-origin: 40% 80%;
-  }
+    input[type="checkbox"]:focus {
+      outline: none;
+    }
 
-  input[type="checkbox"]:checked + label {
-    background-color: #03A9F4;
-    border-color: transparent;
-  }
+    input[type="checkbox"] + label:after {
+      content: url("tick.svg");
+      position: absolute;
+      top: -1px;
+      left: -1px;
+      display: block;
+      width: 18px;
+      height: 18px;
+      transition: all 200ms;
+      -webkit-transform: scale(0);
+      transform: scale(0);
+      -webkit-transform-origin: 40% 80%;
+      transform-origin: 40% 80%;
+    }
 
-  input[type="checkbox"]:checked + label:after {
-    -webkit-transform: scale(1);
-    transform: scale(1);
-  }
+    input[type="checkbox"]:checked + label {
+      background-color: #03A9F4;
+      border-color: transparent;
+    }
 
-  input[type="checkbox"]:indeterminate + label:after {
-    content: "–";
-    left: -2px;
-    font-size: 13px;
-    text-align: center;
-    -webkit-transform: none;
-    transform: none;
-  }
+    input[type="checkbox"]:checked + label:after {
+      -webkit-transform: scale(1);
+      transform: scale(1);
+    }
 
-  /* Activation "splash" */
-  input[type="checkbox"] + label:before {
-    content: "";
-    position: absolute;
-    top: -13px;
-    left: -13px;
-    width: 41px;
-    height: 41px;
-    border-radius: 50%;
-    background-color: #666;
-    opacity: 0;
-    -webkit-transform: scale(0.8);
-    transform: scale(0.8);
-    transition: all 180ms cubic-bezier(0.75,.0,0.25,1);
-  }
+    input[type="checkbox"]:indeterminate + label:after {
+      content: "–";
+      left: -2px;
+      font-size: 13px;
+      text-align: center;
+      -webkit-transform: none;
+      transform: none;
+    }
+    /* Activation "splash" */
 
-  input[type="checkbox"] + label:active:before {
-    transform: scale(1.1);
-    opacity: 0.15;
-    transition-duration: 80ms;
-    transition-property: all;
-  }
+    input[type="checkbox"] + label:before {
+      content: "";
+      position: absolute;
+      top: -13px;
+      left: -13px;
+      width: 41px;
+      height: 41px;
+      border-radius: 50%;
+      background-color: #666;
+      opacity: 0;
+      -webkit-transform: scale(0.8);
+      transform: scale(0.8);
+      transition: all 180ms cubic-bezier(0.75, .0, 0.25, 1);
+    }
 
-  input[type="checkbox"]:checked + label:before {
-    background-color: #03A9F4;
-  }
+    input[type="checkbox"] + label:active:before {
+      transform: scale(1.1);
+      opacity: 0.15;
+      transition-duration: 80ms;
+      transition-property: all;
+    }
 
-  /* Small adjustment for the checkbox in the header */
-  .v-grid-header input[type="checkbox"] + label:after {
-    transition: none;
-  }
+    input[type="checkbox"]:checked + label:before {
+      background-color: #03A9F4;
+    }
+    /* Small adjustment for the checkbox in the header */
 
-  #measure {
-    width: 100% !important;
-    height: 100% !important;
-    z-index: -1 !important;
-    pointer-events: none !important;
-    position: relative !important;
-    float: left !important;
-    margin-left: -100% !important;
-    opacity: 0 !important;
-  }
+    .v-grid-header input[type="checkbox"] + label:after {
+      transition: none;
+    }
 
-  #measureobject {
-    position: absolute !important;
-    width: 100% !important;
-    height: 100% !important;
-  }
+    #measure {
+      width: 100% !important;
+      height: 100% !important;
+      z-index: -1 !important;
+      pointer-events: none !important;
+      position: relative !important;
+      float: left !important;
+      margin-left: -100% !important;
+      opacity: 0 !important;
+    }
 
-  /* The following is a workaround to https://dev.vaadin.com/ticket/18376 */
-  .v-grid-scroller[invisible]::-webkit-scrollbar {
-    border: none;
-  }
+    #measureobject {
+      position: absolute !important;
+      width: 100% !important;
+      height: 100% !important;
+    }
+    /* The following is a workaround to https://dev.vaadin.com/ticket/18376 */
 
-  .v-grid-scroller[invisible]::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-    border: 4px solid transparent;
-    background: rgba(0,0,0,.3);
-    -webkit-background-clip: content-box;
-    background-clip: content-box;
-  }
+    .v-grid-scroller[invisible]::-webkit-scrollbar {
+      border: none;
+    }
 
+    .v-grid-scroller[invisible]::-webkit-scrollbar-thumb {
+      border-radius: 10px;
+      border: 4px solid transparent;
+      background: rgba(0, 0, 0, .3);
+      -webkit-background-clip: content-box;
+      background-clip: content-box;
+    }
 
-  .v-grid-scroller-vertical[invisible]::-webkit-scrollbar-thumb {
-    min-height: 30px;
-  }
+    .v-grid-scroller-vertical[invisible]::-webkit-scrollbar-thumb {
+      min-height: 30px;
+    }
 
-  .v-grid-scroller-horizontal[invisible]::-webkit-scrollbar-thumb {
-    min-width: 30px;
-  }
-
-</style>
+    .v-grid-scroller-horizontal[invisible]::-webkit-scrollbar-thumb {
+      min-width: 30px;
+    }
+  </style>
   <template>
     <div id="measure" class="v-grid">
       <iframe id="measureobject" class="v-grid"></iframe>
@@ -499,471 +500,472 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
 </dom-module>
 
 <script>
-    VGrid = Polymer({
+  VGrid = Polymer({
 
-      is: "v-grid",
+    is: "v-grid",
 
-      _grid: undefined,
+    _grid: undefined,
 
-      properties: {
-        /**
-         * Object for controlling and accessing the data source of the grid.
-         *
-         * @property {Data} data
-         * @type {Data}
-         */
-        data: {
-          type: Object,
-          readOnly: true,
-          value: function() {
-            var _this = this;
-            return {
+    properties: {
+      /**
+       * Object for controlling and accessing the data source of the grid.
+       *
+       * @property {Data} data
+       * @type {Data}
+       */
+      data: {
+        type: Object,
+        readOnly: true,
+        value: function() {
+          var _this = this;
+          return {
 
-              get source() {
-                return this._source;
-              },
-              set source(source) {
-                var sourceFunction = source;
-                if (Array.isArray(source)) {
-                  sourceFunction = function(req) {
-                    var array = source.slice(req.index, req.index + req.count);
-                    req.success(array, source.length);
-                  };
-                }
-                _this._grid.setDataSource(sourceFunction);
-
-                this._source = source;
-              },
-              get sortOrder() {
-                return _this._grid.getSortOrder();
-              },
-              set sortOrder(sortOrder) {
-                _this._grid.setSortOrder(sortOrder);
-              },
-              getItem: function(rowIndex, callback, onlyCached) {
-                _this._grid.getItem(rowIndex, callback, onlyCached);
-              },
-              clearCache: function(estimatedNewSize) {
-                _this._grid.getDataSource().clearCache(estimatedNewSize);
+            get source() {
+              return this._source;
+            },
+            set source(source) {
+              var sourceFunction = source;
+              if (Array.isArray(source)) {
+                sourceFunction = function(req) {
+                  var array = source.slice(req.index, req.index + req.count);
+                  req.success(array, source.length);
+                };
               }
-            };
-          }
-        },
+              _this._grid.setDataSource(sourceFunction);
 
-        /**
-         * Object for controlling and accessing the header rows in the grid.
-         *
-         * @property {Header} header
-         * @type {Header}
-         */
-        header: {
-          type: Object,
-          readOnly: true,
-          value: function() {
-            var _this = this;
-            return {
-              getCell: function(rowIndex, columnId) {
-                return _this._grid.getStaticSection().getHeaderCell(rowIndex, columnId);
-              },
-              addRow: function(rowIndex, cellContent) {
-                _this._grid.getStaticSection().addHeader(rowIndex, cellContent);
-              },
-              removeRow: function(rowIndex) {
-                _this._grid.getStaticSection().removeHeader(rowIndex);
-              },
-              setRowClassName: function(rowIndex, className) {
-                _this._grid.getStaticSection().setHeaderRowClassName(rowIndex, className);
-              },
-              get defaultRow() {
-                return _this._grid.getStaticSection().getDefaultHeader();
-              },
-              set defaultRow(rowIndex) {
-                _this._grid.getStaticSection().setDefaultHeader(rowIndex);
-              },
-              get hidden() {
-                return _this._grid.getStaticSection().isHeaderHidden();
-              },
-              set hidden(hidden) {
-                _this._grid.getStaticSection().setHeaderHidden(hidden);
-              },
-              get rowCount() {
-                return _this._grid.getStaticSection().getHeaderRowCount();
-              }
-            };
-          }
-        },
-
-        /**
-         * Object for controlling and accessing the footer rows in the grid.
-         *
-         * @property {Footer} footer
-         * @type {Footer}
-         */
-        footer: {
-          type: Object,
-          readOnly: true,
-          value: function() {
-            var _this = this;
-            return {
-              getCell: function(rowIndex, columnId) {
-                return _this._grid.getStaticSection().getFooterCell(rowIndex, columnId);
-              },
-              addRow: function(rowIndex, cellContent) {
-                _this._grid.getStaticSection().addFooter(rowIndex, cellContent);
-              },
-              removeRow: function(rowIndex) {
-                _this._grid.getStaticSection().removeFooter(rowIndex);
-              },
-              setRowClassName: function(rowIndex, className) {
-                _this._grid.getStaticSection().setFooterRowClassName(rowIndex, className);
-              },
-              get hidden() {
-                return _this._grid.getStaticSection().isFooterHidden();
-              },
-              set hidden(hidden) {
-                _this._grid.getStaticSection().setFooterHidden(hidden);
-              },
-              get rowCount() {
-                return _this._grid.getStaticSection().getFooterRowCount();
-              }
-            };
-          }
-        },
-
-        /**
-         * Object for controlling and accessing the selected rows in the grid.
-         *
-         * @property {Selection} selection
-         * @type {Selection}
-         */
-        selection: {
-          type: Object,
-          readOnly: true,
-          value: function() {
-            var _this = this;
-            return {
-              select: function(index) {
-                _this._grid.getSelectionModel().select(index);
-
-                return _this;
-              },
-              deselect: function(index) {
-                _this._grid.getSelectionModel().deselect(index);
-
-                return _this;
-              },
-              clear: function() {
-                _this._grid.getSelectionModel().clear();
-
-                return _this;
-              },
-              selectAll: function() {
-                _this._grid.getSelectionModel().selectAll();
-
-                return _this;
-              },
-              selected: function(mapper, from, to) {
-                return _this._grid.getSelectionModel().selected(mapper, from, to);
-              },
-              deselected: function(mapper, from, to) {
-                return _this._grid.getSelectionModel().deselected(mapper, from, to);
-              },
-              get size() {
-                return _this._grid.getSelectionModel().size();
-              },
-              get mode() {
-                return _this._grid.getSelectionMode();
-              },
-              set mode(mode) {
-                _this._grid.setSelectionMode(mode);
-                _this.serializeValueToAttribute(_this.selection.mode, "selection-mode");
-              }
-            };
-          }
+              this._source = source;
+            },
+            get sortOrder() {
+              return _this._grid.getSortOrder();
+            },
+            set sortOrder(sortOrder) {
+              _this._grid.setSortOrder(sortOrder);
+            },
+            getItem: function(rowIndex, callback, onlyCached) {
+              _this._grid.getItem(rowIndex, callback, onlyCached);
+            },
+            clearCache: function(estimatedNewSize) {
+              _this._grid.getDataSource().clearCache(estimatedNewSize);
+            }
+          };
         }
       },
 
-      attributeChanged: function(name, type, value) {
-        switch (name) {
-          case 'disabled':
-            this.disabled = typeof value == "string";
-            break;
-          case 'selection-mode':
-            this.selection.mode = value;
-            break;
-          default:
-            this[Polymer.CaseMap.dashToCamelCase(name)] = value;
+      /**
+       * Object for controlling and accessing the header rows in the grid.
+       *
+       * @property {Header} header
+       * @type {Header}
+       */
+      header: {
+        type: Object,
+        readOnly: true,
+        value: function() {
+          var _this = this;
+          return {
+            getCell: function(rowIndex, columnId) {
+              return _this._grid.getStaticSection().getHeaderCell(rowIndex, columnId);
+            },
+            addRow: function(rowIndex, cellContent) {
+              _this._grid.getStaticSection().addHeader(rowIndex, cellContent);
+            },
+            removeRow: function(rowIndex) {
+              _this._grid.getStaticSection().removeHeader(rowIndex);
+            },
+            setRowClassName: function(rowIndex, className) {
+              _this._grid.getStaticSection().setHeaderRowClassName(rowIndex, className);
+            },
+            get defaultRow() {
+              return _this._grid.getStaticSection().getDefaultHeader();
+            },
+            set defaultRow(rowIndex) {
+              _this._grid.getStaticSection().setDefaultHeader(rowIndex);
+            },
+            get hidden() {
+              return _this._grid.getStaticSection().isHeaderHidden();
+            },
+            set hidden(hidden) {
+              _this._grid.getStaticSection().setHeaderHidden(hidden);
+            },
+            get rowCount() {
+              return _this._grid.getStaticSection().getHeaderRowCount();
+            }
+          };
         }
       },
 
-      listeners: {
-        /**
-         * A change in the sorting order.
-         *
-         * @event sort
-         */
-        /**
-         * Row is selected or deselected.
-         *
-         * @event select
-         */
-        /**
-         * A change in the selection mode.
-         *
-         * @event selectionmodechange
-         */
-        'selectionmodechange': '_onSelectionModeChange'
+      /**
+       * Object for controlling and accessing the footer rows in the grid.
+       *
+       * @property {Footer} footer
+       * @type {Footer}
+       */
+      footer: {
+        type: Object,
+        readOnly: true,
+        value: function() {
+          var _this = this;
+          return {
+            getCell: function(rowIndex, columnId) {
+              return _this._grid.getStaticSection().getFooterCell(rowIndex, columnId);
+            },
+            addRow: function(rowIndex, cellContent) {
+              _this._grid.getStaticSection().addFooter(rowIndex, cellContent);
+            },
+            removeRow: function(rowIndex) {
+              _this._grid.getStaticSection().removeFooter(rowIndex);
+            },
+            setRowClassName: function(rowIndex, className) {
+              _this._grid.getStaticSection().setFooterRowClassName(rowIndex, className);
+            },
+            get hidden() {
+              return _this._grid.getStaticSection().isFooterHidden();
+            },
+            set hidden(hidden) {
+              _this._grid.getStaticSection().setFooterHidden(hidden);
+            },
+            get rowCount() {
+              return _this._grid.getStaticSection().getFooterRowCount();
+            }
+          };
+        }
       },
 
-      _onSelectionModeChange: function() {
-        this.serializeValueToAttribute(this.selection.mode, "selection-mode");
-      },
+      /**
+       * Object for controlling and accessing the selected rows in the grid.
+       *
+       * @property {Selection} selection
+       * @type {Selection}
+       */
+      selection: {
+        type: Object,
+        readOnly: true,
+        value: function() {
+          var _this = this;
+          return {
+            select: function(index) {
+              _this._grid.getSelectionModel().select(index);
 
-      created: function() {
-        this._grid = new vaadin.GridComponent();
-      },
+              return _this;
+            },
+            deselect: function(index) {
+              _this._grid.getSelectionModel().deselect(index);
 
-      ready: function() {
-        this.async(function() {
-          for (var i = 0; i < this.attributes.length; i++) {
-            this.attributeChanged(this.attributes[i].nodeName, null, this.attributes[i].nodeValue);
-          }
-        });
-      },
+              return _this;
+            },
+            clear: function() {
+              _this._grid.getSelectionModel().clear();
 
-      _bindResizeListener: function() {
-        var _this = this;
-        this.$.measureobject.addEventListener("load", function() {
-          this.contentDocument.defaultView.addEventListener('resize', function(e) {
-            _this._grid.updateSize();
-          });
+              return _this;
+            },
+            selectAll: function() {
+              _this._grid.getSelectionModel().selectAll();
+
+              return _this;
+            },
+            selected: function(mapper, from, to) {
+              return _this._grid.getSelectionModel().selected(mapper, from, to);
+            },
+            deselected: function(mapper, from, to) {
+              return _this._grid.getSelectionModel().deselected(mapper, from, to);
+            },
+            get size() {
+              return _this._grid.getSelectionModel().size();
+            },
+            get mode() {
+              return _this._grid.getSelectionMode();
+            },
+            set mode(mode) {
+              _this._grid.setSelectionMode(mode);
+              _this.serializeValueToAttribute(_this.selection.mode, "selection-mode");
+            }
+          };
+        }
+      }
+    },
+
+    attributeChanged: function(name, type, value) {
+      switch (name) {
+        case 'disabled':
+          this.disabled = typeof value == "string";
+          break;
+        case 'selection-mode':
+          this.selection.mode = value;
+          break;
+        default:
+          this[Polymer.CaseMap.dashToCamelCase(name)] = value;
+      }
+    },
+
+    listeners: {
+      /**
+       * A change in the sorting order.
+       *
+       * @event sort
+       */
+      /**
+       * Row is selected or deselected.
+       *
+       * @event select
+       */
+      /**
+       * A change in the selection mode.
+       *
+       * @event selectionmodechange
+       */
+      'selectionmodechange': '_onSelectionModeChange'
+    },
+
+    _onSelectionModeChange: function() {
+      this.serializeValueToAttribute(this.selection.mode, "selection-mode");
+    },
+
+    created: function() {
+      this._grid = new vaadin.GridComponent();
+    },
+
+    ready: function() {
+      // hide until fully loaded
+      this.toggleClass('v-grid-loading', true);
+
+      this.async(function() {
+        for (var i = 0; i < this.attributes.length; i++) {
+          this.attributeChanged(this.attributes[i].nodeName, null, this.attributes[i].nodeValue);
+        }
+      });
+      this._grid.attached(this, Polymer.dom(this).querySelector("table"), Polymer.dom(this.root));
+    },
+
+    _bindResizeListener: function() {
+      var _this = this;
+      this.$.measureobject.addEventListener("load", function() {
+        this.contentDocument.defaultView.addEventListener('resize', function(e) {
           _this._grid.updateSize();
         });
+        _this._grid.updateSize();
+      });
 
-        this.$.measureobject.src = "about:blank";
-      },
+      this.$.measureobject.src = "about:blank";
+    },
 
-      attached: function() {
-        var _this = this;
-        this._grid.attached(this, Polymer.dom(this).querySelector("table"), Polymer.dom(this.root));
-        this._bindResizeListener();
+    attached: function() {
+      var _this = this;
+      this._bindResizeListener();
 
-        // hide until fully loaded
-        this.toggleClass('v-grid-loading', true);
-        this.then(function() {
-          _this.toggleClass('v-grid-loading', false);
-        });
-      },
+      this.then(function() {
+        _this.toggleClass('v-grid-loading', false);
+      });
+    },
 
-      /**
-       * Scrolls to a certain row, using user-specified scroll destination.
-       *
-       * Scrolling happens asynchronously, so this method returns a 'thenable'
-       * which can be used to be notified when the scrolling is finished.
-       *
-       * Example: `grid.scrollToRow(10, 'end').then(doMoreStuff);`
-       *
-       * @method scrollToRow
-       * @param {number} index - Zero-based index of the row to scroll to.
-       * @param {string} scrollDestination - Desired destination placement of scrolled-to-row. Valid values are `any`, `start`, `middle` and `end`. Defaults to `any`.
-       * @return {v-grid}
-       */
-      scrollToRow: function(index, scrollDestination) {
-        this._grid.scrollToRow(index, scrollDestination);
-        return this;
-      },
+    /**
+     * Scrolls to a certain row, using user-specified scroll destination.
+     *
+     * Scrolling happens asynchronously, so this method returns a 'thenable'
+     * which can be used to be notified when the scrolling is finished.
+     *
+     * Example: `grid.scrollToRow(10, 'end').then(doMoreStuff);`
+     *
+     * @method scrollToRow
+     * @param {number} index - Zero-based index of the row to scroll to.
+     * @param {string} scrollDestination - Desired destination placement of scrolled-to-row. Valid values are `any`, `start`, `middle` and `end`. Defaults to `any`.
+     * @return {v-grid}
+     */
+    scrollToRow: function(index, scrollDestination) {
+      this._grid.scrollToRow(index, scrollDestination);
+      return this;
+    },
 
-      /**
-       * Scrolls to the beginning of the grid.
-       *
-       * Scrolling happens asynchronously, so this method returns a 'thenable'
-       * which can be used to be notified when the scrolling is finished.
-       *
-       * Example: `grid.scrollToStart().then(doMoreStuff);`
-       *
-       * @method scrollToStart
-       * @return {v-grid}
-       */
-      scrollToStart: function() {
-        this._grid.scrollToStart();
-        return this;
-      },
+    /**
+     * Scrolls to the beginning of the grid.
+     *
+     * Scrolling happens asynchronously, so this method returns a 'thenable'
+     * which can be used to be notified when the scrolling is finished.
+     *
+     * Example: `grid.scrollToStart().then(doMoreStuff);`
+     *
+     * @method scrollToStart
+     * @return {v-grid}
+     */
+    scrollToStart: function() {
+      this._grid.scrollToStart();
+      return this;
+    },
 
-      /**
-       * Scrolls to the end of the grid.
-       *
-       * Scrolling happens asynchronously, so this method returns a 'thenable'
-       * which can be used to be notified when the scrolling is finished.
-       *
-       * Example: `grid.scrollToEnd().then(doMoreStuff);`
-       *
-       * @method scrollToEnd
-       * @return {v-grid}
-       */
-      scrollToEnd: function() {
-        this._grid.scrollToEnd();
-        return this;
-      },
+    /**
+     * Scrolls to the end of the grid.
+     *
+     * Scrolling happens asynchronously, so this method returns a 'thenable'
+     * which can be used to be notified when the scrolling is finished.
+     *
+     * Example: `grid.scrollToEnd().then(doMoreStuff);`
+     *
+     * @method scrollToEnd
+     * @return {v-grid}
+     */
+    scrollToEnd: function() {
+      this._grid.scrollToEnd();
+      return this;
+    },
 
-      /**
-       * Adds a new column. Column is added at the end if `beforeColumn` is not defined.
-       *
-       * @method addColumn
-       * @param {Column} column - Column to be added.
-       * @param {string} beforeColumn - Index or id of the column before which the new column should be added.
-       */
-      addColumn: function(column, beforeColumn) {
-        this._grid.addColumn(column, beforeColumn);
-      },
+    /**
+     * Adds a new column. Column is added at the end if `beforeColumn` is not defined.
+     *
+     * @method addColumn
+     * @param {Column} column - Column to be added.
+     * @param {string} beforeColumn - Index or id of the column before which the new column should be added.
+     */
+    addColumn: function(column, beforeColumn) {
+      this._grid.addColumn(column, beforeColumn);
+    },
 
-      /**
-       * Removes a column with certain id
-       *
-       * @method removeColumn
-       * @param {string} id - Column to be removed.
-       */
-      removeColumn: function(id) {
-        this._grid.removeColumn(id);
-      },
+    /**
+     * Removes a column with certain id
+     *
+     * @method removeColumn
+     * @param {string} id - Column to be removed.
+     */
+    removeColumn: function(id) {
+      this._grid.removeColumn(id);
+    },
 
-      get rowClassGenerator() {
-        return this._grid.getRowClassGenerator();
-      },
+    get rowClassGenerator() {
+      return this._grid.getRowClassGenerator();
+    },
 
-      /**
-       * The style generator that is used for generating styles for rows.
-       *
-       * Example:
-       * ```
-       * grid.rowClassGenerator = function(row) {
-       *  var activity = row.data[2];
-       *  return 'activity-' + activity.toLowerCase();
-       * };
-       *```
-       *
-       * @property {function} rowClassGenerator
-       * @param {Row} row - Reference to the row being rendered.
-       * @type {function}
-       */
-      set rowClassGenerator(row) {
-        this._grid.setRowClassGenerator(row);
-      },
+    /**
+     * The style generator that is used for generating styles for rows.
+     *
+     * Example:
+     * ```
+     * grid.rowClassGenerator = function(row) {
+     *  var activity = row.data[2];
+     *  return 'activity-' + activity.toLowerCase();
+     * };
+     *```
+     *
+     * @property {function} rowClassGenerator
+     * @param {Row} row - Reference to the row being rendered.
+     * @type {function}
+     */
+    set rowClassGenerator(row) {
+      this._grid.setRowClassGenerator(row);
+    },
 
-      get cellClassGenerator() {
-        return this._grid.getCellClassGenerator();
-      },
+    get cellClassGenerator() {
+      return this._grid.getCellClassGenerator();
+    },
 
-      /**
-       * The style generator that is used for generating styles for cells.
-       *
-       * Example:
-       * ```
-       * grid.cellClassGenerator = function(cell) {
-       *   if (cell.index == 2) {
-       *      var activity = cell.row.data[2];
-       *      return 'activity-' + activity.toLowerCase();
-       *    }
-       *    return '';
-       *  };
-       * ```
-       * @property {function} cellClassGenerator
-       * @param {Cell} cell - Reference to the cell being rendered.
-       * @type {function}
-       *
-       */
-      set cellClassGenerator(cell) {
-        this._grid.setCellClassGenerator(cell);
-      },
+    /**
+     * The style generator that is used for generating styles for cells.
+     *
+     * Example:
+     * ```
+     * grid.cellClassGenerator = function(cell) {
+     *   if (cell.index == 2) {
+     *      var activity = cell.row.data[2];
+     *      return 'activity-' + activity.toLowerCase();
+     *    }
+     *    return '';
+     *  };
+     * ```
+     * @property {function} cellClassGenerator
+     * @param {Cell} cell - Reference to the cell being rendered.
+     * @type {function}
+     *
+     */
+    set cellClassGenerator(cell) {
+      this._grid.setCellClassGenerator(cell);
+    },
 
-      /**
-       * Disables the grid.
-       *
-       * Attribute: `disabled`
-       *
-       * @property {boolean} disabled
-       * @default false
-       * @type {boolean}
-       */
-      get disabled() {
-        return this._grid.isDisabled();
-      },
-      set disabled(disabled) {
-        this._grid.setDisabled(disabled);
-        this.reflectPropertyToAttribute("disabled");
-      },
+    /**
+     * Disables the grid.
+     *
+     * Attribute: `disabled`
+     *
+     * @property {boolean} disabled
+     * @default false
+     * @type {boolean}
+     */
+    get disabled() {
+      return this._grid.isDisabled();
+    },
+    set disabled(disabled) {
+      this._grid.setDisabled(disabled);
+      this.reflectPropertyToAttribute("disabled");
+    },
 
-      /**
-       * The number of frozen columns in this grid. Setting it to 0
-       * means that no data columns will be frozen, but the built-in selection
-       * checkbox column will still be frozen if it's in use. Setting the count to
-       * -1 will also disable the selection column.
-       *
-       * Attribute: `frozen-columns`
-       *
-       * @property {number} frozenColumns
-       * @default 0
-       * @type {number}
-       */
-      get frozenColumns() {
-        return this._grid.getFrozenColumns();
-      },
-      set frozenColumns(frozenColumns) {
-        this._grid.setFrozenColumns(frozenColumns);
-        this.reflectPropertyToAttribute("frozenColumns");
-      },
+    /**
+     * The number of frozen columns in this grid. Setting it to 0
+     * means that no data columns will be frozen, but the built-in selection
+     * checkbox column will still be frozen if it's in use. Setting the count to
+     * -1 will also disable the selection column.
+     *
+     * Attribute: `frozen-columns`
+     *
+     * @property {number} frozenColumns
+     * @default 0
+     * @type {number}
+     */
+    get frozenColumns() {
+      return this._grid.getFrozenColumns();
+    },
+    set frozenColumns(frozenColumns) {
+      this._grid.setFrozenColumns(frozenColumns);
+      this.reflectPropertyToAttribute("frozenColumns");
+    },
 
-      /**
-       * The number of visible rows in the grid. Implicitly sets the height
-       * in the inline style, overriding any previous height. Setting style.height
-       * in this case should be ignored if possible.
-       *
-       * Attribute: `rows`
-       *
-       * @property {number} rows
-       * @default 10
-       * @type {number}
-       */
-      get rows() {
-        var rows = this._grid.getRows();
-        return rows > 0 ? rows : undefined;
-      },
-      set rows(rows) {
-        this._grid.setRows(rows);
-        this.reflectPropertyToAttribute("rows");
-      },
+    /**
+     * The number of visible rows in the grid. Implicitly sets the height
+     * in the inline style, overriding any previous height. Setting style.height
+     * in this case should be ignored if possible.
+     *
+     * Attribute: `rows`
+     *
+     * @property {number} rows
+     * @default 10
+     * @type {number}
+     */
+    get rows() {
+      var rows = this._grid.getRows();
+      return rows > 0 ? rows : undefined;
+    },
+    set rows(rows) {
+      this._grid.setRows(rows);
+      this.reflectPropertyToAttribute("rows");
+    },
 
-      /**
-       * The array of Columns attached to the grid.
-       *
-       * @property {Array<Column>} columns
-       * @type {Array<Column>}
-       */
-      get columns() {
-        return this._grid.getColumns();
-      },
-      set columns(cols) {
-        this._grid.setColumns(cols);
-      },
+    /**
+     * The array of Columns attached to the grid.
+     *
+     * @property {Array<Column>} columns
+     * @type {Array<Column>}
+     */
+    get columns() {
+      return this._grid.getColumns();
+    },
+    set columns(cols) {
+      this._grid.setColumns(cols);
+    },
 
-      /**
-       * An array containing items determining rows in the grid.
-       *
-       * @property {Array<Object>} columns
-       * @type {Array<Object>}
-       */
-      set items(items) {
-        this.data.source = items;
-      },
+    /**
+     * An array containing items determining rows in the grid.
+     *
+     * @property {Array<Object>} columns
+     * @type {Array<Object>}
+     */
+    set items(items) {
+      this.data.source = items;
+    },
 
-      /**
-       * Executes a callback when the grid has finished any pending work.
-       *
-       * @method then
-       * @param {Function} callback
-       * @return {Promise}
-       */
-      then: function(callback) {
-        return this._grid.then(callback);
-      }
-    }); // End Polymer prototype
+    /**
+     * Executes a callback when the grid has finished any pending work.
+     *
+     * @method then
+     * @param {Function} callback
+     * @return {Promise}
+     */
+    then: function(callback) {
+      return this._grid.then(callback);
+    }
+  }); // End Polymer prototype
 </script>
