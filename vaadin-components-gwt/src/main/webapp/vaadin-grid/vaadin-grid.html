@@ -724,11 +724,14 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
       },
 
       ready: function() {
+        // hide until fully loaded
+        this.toggleClass('v-grid-loading', true);
         this.async(function() {
           for (var i = 0; i < this.attributes.length; i++) {
             this.attributeChanged(this.attributes[i].nodeName, null, this.attributes[i].nodeValue);
           }
         });
+        this._grid.attached(this, Polymer.dom(this).querySelector("table"), Polymer.dom(this.root));
       },
 
       _bindResizeListener: function() {
@@ -745,11 +748,7 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
 
       attached: function() {
         var _this = this;
-        this._grid.attached(this, Polymer.dom(this).querySelector("table"), Polymer.dom(this.root));
         this._bindResizeListener();
-
-        // hide until fully loaded
-        this.toggleClass('v-grid-loading', true);
         this.then(function() {
           _this.toggleClass('v-grid-loading', false);
         });

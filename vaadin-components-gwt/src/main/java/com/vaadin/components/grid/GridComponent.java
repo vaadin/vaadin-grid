@@ -143,7 +143,7 @@ public class GridComponent implements SelectionHandler<Object>,
         return container;
     }
 
-    public void attached(Element container, TableElement lightDomElement,
+    public void init(Element container, TableElement lightDomElement,
             Element gridContainer) {
         if (this.container == null) {
             this.container = container;
