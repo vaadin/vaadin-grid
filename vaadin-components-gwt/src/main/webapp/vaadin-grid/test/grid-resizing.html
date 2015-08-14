@@ -250,6 +250,33 @@
           });
 
         });
+
+        it('should render to the correct level in stack', function() {
+          function createDiv() {
+            var div = document.createElement("div");
+            div.style.position = "absolute";
+            div.style.top = "0";
+            div.style.width = "100px";
+            div.style.height = "100px";
+            return div;
+          }
+
+          return grid.then(function(){
+            var under = createDiv();
+            grid.parentElement.insertBefore(under, grid);
+            var element = document.elementFromPoint(10, 10);
+            grid.parentElement.removeChild(under);
+            expect(element).not.to.eql(under);
+
+            var over = createDiv();
+            grid.parentElement.appendChild(over);
+            element = document.elementFromPoint(10, 10);
+            grid.parentElement.removeChild(over);
+            expect(element).to.eql(over);
+          });
+
+        });
+
       });
     });
   </script>
