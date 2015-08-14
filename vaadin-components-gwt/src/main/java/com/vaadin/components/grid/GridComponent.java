@@ -268,7 +268,13 @@ public class GridComponent implements SelectionHandler<Object>,
 
     public void setDataSource(JavaScriptObject data) {
         if (JsUtils.isFunction(data)) {
-            grid.setDataSource(new GridJsFuncDataSource(data, this));
+            if (grid.getDataSource() instanceof GridJsFuncDataSource) {
+                ((GridJsFuncDataSource) grid.getDataSource())
+                        .setJSFunction(data);
+                getSelectionModel().reset();
+            } else {
+                grid.setDataSource(new GridJsFuncDataSource(data, this));
+            }
             updateHeight();
         } else {
             throw new RuntimeException("Unknown data source type: " + data
