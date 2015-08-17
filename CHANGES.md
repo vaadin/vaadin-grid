@@ -2,7 +2,7 @@
 - Polymer updated to v1.0.2.
 
 ### `<v-grid>`
-- Vaadin Widgets updated to 7.5.0.beta1.
+- Vaadin Widgets updated to 7.5.3
 - Theme revised to comply better with Material Design guidelines.
 - Improved Grid resizing logic.
 - Drag selection is now disabled.
@@ -13,6 +13,7 @@
 - JSDocs revised.
 - Added data.getItem api for fetching data items by row index (#45)
 - Combined multi selection models into one model
+- Resored the drag-select functionality
 - Issues fixed:
   - Grid doesn't work when using selection-mode multi, frozen columns and sortable columns. (#7)
   - Grid height is recalculated incorrectly when sorting a grid with a fixed height. (#8)
@@ -42,6 +43,7 @@
   - clearCache(X) should work even if datasource was empty
   - Update footer styles (#48)
   - <v-grid> is rendered on top of <paper-drawer-panel> (#79)
+  - <v-grid> Column width is not calculated correctly if there are different amounts of padding on left and right (#46)
 
 ***
 
