@@ -15,7 +15,7 @@ import com.vaadin.components.grid.config.JSDataRequest;
  */
 public class GridJsFuncDataSource extends GridDataSource {
 
-    private final JavaScriptObject jsFunction;
+    private JavaScriptObject jsFunction;
     private boolean initialRowSetReceived;
 
     public GridJsFuncDataSource(JavaScriptObject jso, GridComponent grid) {
@@ -26,6 +26,12 @@ public class GridJsFuncDataSource extends GridDataSource {
         // and then attach the data-source to the grid, otherwise the grid will
         // never call the requestRows method when size is zero.
         doRequest(0, 0, null);
+    }
+
+    public void setJSFunction(JavaScriptObject jso) {
+        jsFunction = jso;
+        clearCache(null);
+        gridComponent.getSelectionModel().reset();
     }
 
     @Override
