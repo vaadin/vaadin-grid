@@ -45,6 +45,7 @@
   - <v-grid> is rendered on top of <paper-drawer-panel> (#79)
   - Prevent infinite size update loop (#33)
   - Enforce maximum width for expanding columns by cutting content (#46)
+  - v-grid disappears when used as a flex item (#85)
 
 ***
 
