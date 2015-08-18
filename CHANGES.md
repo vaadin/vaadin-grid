@@ -43,7 +43,7 @@
   - clearCache(X) should work even if datasource was empty
   - Update footer styles (#48)
   - <v-grid> is rendered on top of <paper-drawer-panel> (#79)
-  - <v-grid> Column width is not calculated correctly if there are different amounts of padding on left and right (#46)
+  - Prevent infinite size update loop (#33)
 
 ***
 
