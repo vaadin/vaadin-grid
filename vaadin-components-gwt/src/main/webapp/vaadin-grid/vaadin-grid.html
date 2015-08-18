@@ -913,11 +913,11 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
       },
 
       /**
-       * Returns a list of the currently visible columns in the grid.
+       * Returns an array of the currently visible columns in the grid.
        * No hidden columns included.
        *
-       * @property {number} visibleColumns
-       * @type {number}
+       * @property {Array<Column>} visibleColumns
+       * @type {Array<Column>}
        */
       get visibleColumns() {
         return this._grid.getVisibleColumns();
