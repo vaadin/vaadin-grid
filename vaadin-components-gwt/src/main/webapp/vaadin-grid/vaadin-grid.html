@@ -490,6 +490,56 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
     min-width: 30px;
   }
 
+
+  .v-grid-sidebar {
+    z-index: 5;
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+
+  .v-grid-sidebar-button {
+    width: 56px;
+    height: 56px;
+    border: none;
+    background: none;
+    outline: none;
+  }
+
+  .opened .v-grid-sidebar-button {
+    background-color: #eeeeee;
+  }
+
+  .v-grid-sidebar-button:after {
+    content: url(ic_view_column_black_24px.svg);
+  }
+
+  .v-grid-sidebar-content {
+    background-color: #eeeeee;
+    width: 200px;
+    position: absolute;
+    right: 0;
+  }
+
+  .v-grid-sidebar-content::content > div {
+    padding: 6px 0;
+  }
+
+  .v-grid-sidebar-content::content span:before {
+    content: url(ic_check_black_24px.svg);
+    display: inline-block;
+    padding: 0 20px;
+  }
+
+  .v-grid-sidebar-content::content .v-off:before {
+    visibility: hidden;
+  }
+
+  .v-grid-sidebar-content::content span div {
+    display: inline-block;
+    vertical-align: super;
+  }
+
 </style>
   <template>
     <div id="measure" class="v-grid">
@@ -910,6 +960,17 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
       set frozenColumns(frozenColumns) {
         this._grid.setFrozenColumns(frozenColumns);
         this.reflectPropertyToAttribute("frozenColumns");
+      },
+
+      /**
+       * Returns an array of the currently visible columns in the grid.
+       * No hidden columns included.
+       *
+       * @property {Array<Column>} visibleColumns
+       * @type {Array<Column>}
+       */
+      get visibleColumns() {
+        return this._grid.getVisibleColumns();
       },
 
       /**

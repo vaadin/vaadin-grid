@@ -560,6 +560,29 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
   </li>
 
   <li>
+    <h3>Simplest possible with hidden columns</h3>
+    <v-grid>
+      <table>
+        <col header-text="Name" hiding-toggle-caption="Name (hidable)" hidable>
+        <col header-text="Value" hiding-toggle-caption="Value (hidable)" hidable hidden>
+        <col header-text="Progress">
+        <tbody>
+        <tr>
+          <td>Grid</td>
+          <td>10000</td>
+          <td>0.8</td>
+        </tr>
+        <tr>
+          <td>Vaadin X</td>
+          <td>999999</td>
+          <td>0.8</td>
+        </tr>
+        </tbody>
+      </table>
+    </v-grid>
+  </li>
+
+  <li>
     <h3>Header and Footer</h3>
     <v-grid id='staticsections'>
       <table>

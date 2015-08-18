@@ -101,6 +101,7 @@ public class GridComponent implements SelectionHandler<Object>,
         staticSection = new GridStaticSection(this);
 
         grid.setStylePrimaryName("v-grid style-scope v-grid");
+        grid.getSidebarMenu().addAttachHandler(e -> $(e.getSource()).find("*").addClass("v-grid", "style-scope"));
     }
 
     public GridEditor getEditor() {
@@ -343,6 +344,17 @@ public class GridComponent implements SelectionHandler<Object>,
         List result = grid.getColumns();
         if (getSelectionModel() instanceof SelectionModel.Multi) {
             result = result.subList(1, result.size());
+        }
+        return result;
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public JSArray<JSColumn> getVisibleColumns() {
+        JSArray<JSColumn> result = JSArray.createArray().cast();
+        for (int i = 0; i < cols.size(); i++) {
+            if (!cols.get(i).getHidden()) {
+                result.add(cols.get(i));
+            }
         }
         return result;
     }

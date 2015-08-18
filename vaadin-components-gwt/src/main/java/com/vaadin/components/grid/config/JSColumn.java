@@ -18,6 +18,18 @@ public interface JSColumn {
     void setName(String s);
 
     @JsProperty
+    String getHeaderText();
+
+    @JsProperty
+    void setHeaderText(String s);
+
+    @JsProperty
+    String getHidingToggleCaption();
+
+    @JsProperty
+    void setHidingToggleCaption(String s);
+
+    @JsProperty
     double getMinWidth();
 
     @JsProperty
@@ -58,4 +70,16 @@ public interface JSColumn {
 
     @JsProperty
     void setHeaderContent(Object o);
+
+    @JsProperty
+    boolean getHidable();
+
+    @JsProperty
+    void setHidable(boolean b);
+
+    @JsProperty
+    boolean getHidden();
+
+    @JsProperty
+    void setHidden(boolean b);
 }
