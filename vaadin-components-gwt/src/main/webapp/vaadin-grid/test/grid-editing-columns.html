@@ -416,9 +416,8 @@
         expect(grid.visibleColumns.length).to.eql(1);
 
         grid.columns[0].hidden = false;
-        grid.then(function () {
-          expect(grid.visibleColumns.length).to.eql(2);
-        });
+      }).then(function () {
+        expect(grid.visibleColumns.length).to.eql(2);
       });
     });
 
@@ -430,9 +429,8 @@
         expect(grid.visibleColumns.length).to.eql(1);
 
         grid.columns[1].hidden = false;
-        grid.then(function () {
-          expect(grid.visibleColumns.length).to.eql(2);
-        });
+      }).then(function () {
+        expect(grid.visibleColumns.length).to.eql(2);
       });
     });
 
