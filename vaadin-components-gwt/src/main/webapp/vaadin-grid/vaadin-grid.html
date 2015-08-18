@@ -738,9 +738,18 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
       _bindResizeListener: function() {
         var _this = this;
         this.$.measureobject.addEventListener("load", function() {
-          this.contentDocument.defaultView.addEventListener('resize', function(e) {
-            _this._grid.updateSize();
-          });
+          var defaultView = this.contentDocument.defaultView;
+          var prevW = -1;
+          var prevH = -1;
+          defaultView.addEventListener('resize', function(e) {
+            var newW = defaultView.innerWidth;
+            var newH = defaultView.innerHeight;
+            if(newW != prevW || newH != prevH) {
+              prevW = newW;
+              prevH = newH;
+              _this._grid.updateSize();
+            }
+          }.bind(this));
           _this._grid.updateSize();
         });
 

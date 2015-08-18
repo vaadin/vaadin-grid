@@ -42,6 +42,7 @@
   - clearCache(X) should work even if datasource was empty
   - Update footer styles (#48)
   - <v-grid> is rendered on top of <paper-drawer-panel> (#79)
+  - Prevent infinite size update loop (#33)
 
 ***
 
