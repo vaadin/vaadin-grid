@@ -58,4 +58,16 @@ public interface JSColumn {
 
     @JsProperty
     void setHeaderContent(Object o);
+
+    @JsProperty
+    boolean getHidable();
+
+    @JsProperty
+    void setHidable(boolean b);
+
+    @JsProperty
+    boolean getHidden();
+
+    @JsProperty
+    void setHidden(boolean b);
 }

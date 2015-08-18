@@ -77,6 +77,8 @@ public final class GridColumn extends Column<Object, Object> {
 
         bind("flex", v -> setExpandRatio(((Double) v).intValue()));
         bind("sortable", v -> setSortable((Boolean) v));
+        bind("hidable", v -> setHidable((Boolean) v));
+        bind("hidden", v -> setHidden((Boolean) v));
         bind("readOnly", v -> setEditable(!(boolean) v));
         bind("renderer", v -> setRenderer((cell, data) -> {
             JSCell jsCell = JSCell.create(cell, gridComponent.getContainer());

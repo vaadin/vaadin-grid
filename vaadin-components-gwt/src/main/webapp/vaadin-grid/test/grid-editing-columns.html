@@ -408,6 +408,34 @@
       });
     });
 
+    it('should hide columns with hidden attribute', function () {
+      qLight("col").setAttribute("hidable", "");
+      qLight("col").setAttribute("hidden", "");
+
+      return grid.then(function () {
+        expect(grid.visibleColumns.length).to.eql(1);
+
+        grid.columns[0].hidden = false;
+        grid.then(function () {
+          expect(grid.visibleColumns.length).to.eql(2);
+        });
+      });
+    });
+
+    it('should hide columns with hidden property', function () {
+      grid.columns[1].hidable = true;
+      grid.columns[1].hidden = true;
+
+      return grid.then(function () {
+        expect(grid.visibleColumns.length).to.eql(1);
+
+        grid.columns[1].hidden = false;
+        grid.then(function () {
+          expect(grid.visibleColumns.length).to.eql(2);
+        });
+      });
+    });
+
   });
 </script>
 

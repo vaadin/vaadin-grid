@@ -913,6 +913,17 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
       },
 
       /**
+       * Returns a list of the currently visible columns in the grid.
+       * No hidden columns included.
+       *
+       * @property {number} visibleColumns
+       * @type {number}
+       */
+      get visibleColumns() {
+        return this._grid.getVisibleColumns();
+      },
+
+      /**
        * The number of visible rows in the grid. Implicitly sets the height
        * in the inline style, overriding any previous height. Setting style.height
        * in this case should be ignored if possible.

@@ -5242,7 +5242,7 @@ public class Grid<T> extends ResizeComposite implements
      * @return given column
      */
     public <C extends Column<?, T>> C addColumn(C column) {
-        addColumn(column, getColumnCount());
+        addColumn(column, getVisibleColumns().size());
         return column;
     }
 
@@ -5284,10 +5284,14 @@ public class Grid<T> extends ResizeComposite implements
         ((Column<?, T>) column).setGrid(this);
 
         // Add to escalator
-        escalator.getColumnConfiguration().insertColumns(index, 1);
+//        if (!column.isHidden()) {
+            escalator.getColumnConfiguration().insertColumns(index, 1);
 
-        // Reapply column width
-        column.reapplyWidth();
+            // Reapply column width
+            column.reapplyWidth();
+//        } else {
+//
+//        }
 
         // Sink all renderer events
         Set<String> events = new HashSet<String>();
