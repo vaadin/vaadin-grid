@@ -30,7 +30,7 @@ public final class GridColumn extends Column<Object, Object> {
     public static GridColumn addColumn(JSColumn jsColumn,
             GridComponent gridComponent) {
         GridColumn result = new GridColumn(jsColumn, gridComponent);
-        gridComponent.getGrid().addColumn(result);
+        gridComponent.getGrid().addColumn(result, gridComponent.getGrid().getVisibleColumns().size());
         result.bindProperties();
         return result;
     }

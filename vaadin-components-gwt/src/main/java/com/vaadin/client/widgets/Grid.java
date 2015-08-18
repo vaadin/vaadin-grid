@@ -5242,7 +5242,7 @@ public class Grid<T> extends ResizeComposite implements
      * @return given column
      */
     public <C extends Column<?, T>> C addColumn(C column) {
-        addColumn(column, getVisibleColumns().size());
+        addColumn(column, getColumnCount());
         return column;
     }
 
