@@ -266,6 +266,15 @@
             });
           });
 
+          it('should fire only one selection event', function() {
+            var spy = sinon.spy();
+            grid.addEventListener("select", spy);
+
+            var inputs = qaLocal('.v-grid-body input');
+            triggerMouseEvent(inputs[0], "mousedown");
+            triggerMouseEvent(inputs[0], "mouseup");
+            expect(spy.callCount).to.eql(1);
+          });
 
           it('should select multiple rows', function() {
             var inputs = qaLocal('.v-grid-body input');

@@ -31,6 +31,7 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.google.gwt.core.client.Duration;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.core.shared.GWT;
@@ -74,12 +75,14 @@ import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.client.BrowserInfo;
 import com.vaadin.client.DeferredWorker;
+import com.vaadin.client.Focusable;
 import com.vaadin.client.WidgetUtil;
 import com.vaadin.client.data.DataChangeHandler;
 import com.vaadin.client.data.DataSource;
 import com.vaadin.client.renderers.ComplexRenderer;
 import com.vaadin.client.renderers.Renderer;
 import com.vaadin.client.renderers.WidgetRenderer;
+import com.vaadin.client.ui.FocusUtil;
 import com.vaadin.client.ui.SubPartAware;
 import com.vaadin.client.ui.dd.DragAndDropHandler;
 import com.vaadin.client.widget.escalator.Cell;
@@ -162,10 +165,13 @@ import com.vaadin.shared.ui.grid.Range;
 import com.vaadin.shared.ui.grid.ScrollDestination;
 import com.vaadin.shared.util.SharedUtil;
 
+// Fork from Vaadin 7.5.3
+// Applied changes:
+// https://dev.vaadin.com/review/#/c/11399/
 /**
  * A data grid view that supports columns and lazy loading of data rows from a
  * data source.
- *
+ * 
  * <h1>Columns</h1>
  * <p>
  * Each column in Grid is represented by a {@link Column}. Each
@@ -185,7 +191,7 @@ import com.vaadin.shared.util.SharedUtil;
  * <em>See:</em> {@link #addColumn(Column)}, {@link #addColumn(Column, int)} and
  * {@link #addColumns(Column...)}. <em>Also</em>
  * {@link Column#setRenderer(Renderer)}.
- *
+ * 
  * <h1>Data Sources</h1>
  * <p>
  * Grid gets its data from a {@link DataSource}, providing row objects to Grid
@@ -194,18 +200,13 @@ import com.vaadin.shared.util.SharedUtil;
  * ListDataSource}) or even a remote one, retrieving data from e.g. a REST API
  * (see {@link com.vaadin.client.data.AbstractRemoteDataSource
  * AbstractRemoteDataSource}).
- *
- *
+ * 
+ * 
  * @param <T>
  *            The row type of the grid. The row type is the POJO type from where
  *            the data is retrieved into the column cells.
  * @since 7.4
  * @author Vaadin Ltd
- */
-
-/*
- * Cloned from 7.5.0.beta1 to fix #31
- * The proposed fix requires modifications in the private class <code>CellFocusHandler</code>
  */
 public class Grid<T> extends ResizeComposite implements
         HasSelectionHandlers<T>, SubPartAware, DeferredWorker, HasWidgets,
@@ -220,9 +221,9 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Abstract base class for Grid header and footer sections.
-     *
+     * 
      * @since 7.5.0
-     *
+     * 
      * @param <ROWTYPE>
      *            the type of the rows in the section
      */
@@ -230,7 +231,7 @@ public class Grid<T> extends ResizeComposite implements
 
         /**
          * A header or footer cell. Has a simple textual caption.
-         *
+         * 
          */
         public static class StaticCell {
 
@@ -246,7 +247,7 @@ public class Grid<T> extends ResizeComposite implements
 
             /**
              * Sets the text displayed in this cell.
-             *
+             * 
              * @param text
              *            a plain text caption
              */
@@ -258,7 +259,7 @@ public class Grid<T> extends ResizeComposite implements
 
             /**
              * Returns the text displayed in this cell.
-             *
+             * 
              * @return the plain text caption
              */
             public String getText() {
@@ -280,7 +281,7 @@ public class Grid<T> extends ResizeComposite implements
 
             /**
              * Returns the amount of columns the cell spans. By default is 1.
-             *
+             * 
              * @return The amount of columns the cell spans.
              */
             public int getColspan() {
@@ -290,7 +291,7 @@ public class Grid<T> extends ResizeComposite implements
             /**
              * Sets the amount of columns the cell spans. Must be more or equal
              * to 1. By default is 1.
-             *
+             * 
              * @param colspan
              *            the colspan to set
              */
@@ -306,7 +307,7 @@ public class Grid<T> extends ResizeComposite implements
 
             /**
              * Returns the html inside the cell.
-             *
+             * 
              * @throws IllegalStateException
              *             if trying to retrive HTML from a cell with a type
              *             other than {@link GridStaticCellType#HTML}.
@@ -324,7 +325,7 @@ public class Grid<T> extends ResizeComposite implements
              * Sets the content of the cell to the provided html. All previous
              * content is discarded and the cell type is set to
              * {@link GridStaticCellType#HTML}.
-             *
+             * 
              * @param html
              *            The html content of the cell
              */
@@ -336,10 +337,10 @@ public class Grid<T> extends ResizeComposite implements
 
             /**
              * Returns the widget in the cell.
-             *
+             * 
              * @throws IllegalStateException
              *             if the cell is not {@link GridStaticCellType#WIDGET}
-             *
+             * 
              * @return the widget in the cell
              */
             public Widget getWidget() {
@@ -354,7 +355,7 @@ public class Grid<T> extends ResizeComposite implements
              * Set widget as the content of the cell. The type of the cell
              * becomes {@link GridStaticCellType#WIDGET}. All previous content
              * is discarded.
-             *
+             * 
              * @param widget
              *            The widget to add to the cell. Should not be
              *            previously attached anywhere (widget.getParent ==
@@ -368,7 +369,7 @@ public class Grid<T> extends ResizeComposite implements
 
             /**
              * Returns the type of the cell.
-             *
+             * 
              * @return the type of content the cell contains.
              */
             public GridStaticCellType getType() {
@@ -377,7 +378,7 @@ public class Grid<T> extends ResizeComposite implements
 
             /**
              * Returns the custom style name for this cell.
-             *
+             * 
              * @return the style name or null if no style name has been set
              */
             public String getStyleName() {
@@ -386,7 +387,7 @@ public class Grid<T> extends ResizeComposite implements
 
             /**
              * Sets a custom style name for this cell.
-             *
+             * 
              * @param styleName
              *            the style name to set or null to not use any style
              *            name
@@ -401,20 +402,20 @@ public class Grid<T> extends ResizeComposite implements
 
         /**
          * Abstract base class for Grid header and footer rows.
-         *
+         * 
          * @param <CELLTYPE>
          *            the type of the cells in the row
          */
         public abstract static class StaticRow<CELLTYPE extends StaticCell> {
 
-            private Map<Column<?, ?>, CELLTYPE> cells = new HashMap<Column<?, ?>, CELLTYPE>();
+            private final Map<Column<?, ?>, CELLTYPE> cells = new HashMap<Column<?, ?>, CELLTYPE>();
 
             private StaticSection<?> section;
 
             /**
              * Map from set of spanned columns to cell meta data.
              */
-            private Map<Set<Column<?, ?>>, CELLTYPE> cellGroups = new HashMap<Set<Column<?, ?>>, CELLTYPE>();
+            private final Map<Set<Column<?, ?>>, CELLTYPE> cellGroups = new HashMap<Set<Column<?, ?>>, CELLTYPE>();
 
             /**
              * A custom style name for the row or null if none is set.
@@ -424,7 +425,7 @@ public class Grid<T> extends ResizeComposite implements
             /**
              * Returns the cell on given GridColumn. If the column is merged
              * returned cell is the cell for the whole group.
-             *
+             * 
              * @param column
              *            the column in grid
              * @return the cell on given column, merged cell for merged columns,
@@ -440,7 +441,7 @@ public class Grid<T> extends ResizeComposite implements
 
             /**
              * Returns <code>true</code> if this row contains spanned cells.
-             *
+             * 
              * @since 7.5.0
              * @return does this row contain spanned cells
              */
@@ -450,7 +451,7 @@ public class Grid<T> extends ResizeComposite implements
 
             /**
              * Merges columns cells in a row
-             *
+             * 
              * @param columns
              *            the columns which header should be merged
              * @return the remaining visible cell after the merge, or the cell
@@ -487,7 +488,7 @@ public class Grid<T> extends ResizeComposite implements
 
             /**
              * Merges columns cells in a row
-             *
+             * 
              * @param cells
              *            The cells to merge. Must be from the same row.
              * @return The remaining visible cell after the merge, or the first
@@ -598,7 +599,7 @@ public class Grid<T> extends ResizeComposite implements
 
             /**
              * Returns the custom style name for this row.
-             *
+             * 
              * @return the style name or null if no style name has been set
              */
             public String getStyleName() {
@@ -607,7 +608,7 @@ public class Grid<T> extends ResizeComposite implements
 
             /**
              * Sets a custom style name for this row.
-             *
+             * 
              * @param styleName
              *            the style name to set or null to not use any style
              *            name
@@ -620,13 +621,13 @@ public class Grid<T> extends ResizeComposite implements
 
         private Grid<?> grid;
 
-        private List<ROWTYPE> rows = new ArrayList<ROWTYPE>();
+        private final List<ROWTYPE> rows = new ArrayList<ROWTYPE>();
 
         private boolean visible = true;
 
         /**
          * Creates and returns a new instance of the row type.
-         *
+         * 
          * @return the created row
          */
         protected abstract ROWTYPE createRow();
@@ -642,7 +643,7 @@ public class Grid<T> extends ResizeComposite implements
 
         /**
          * Sets the visibility of the whole section.
-         *
+         * 
          * @param visible
          *            true to show this section, false to hide
          */
@@ -653,7 +654,7 @@ public class Grid<T> extends ResizeComposite implements
 
         /**
          * Returns the visibility of this section.
-         *
+         * 
          * @return true if visible, false otherwise.
          */
         public boolean isVisible() {
@@ -664,11 +665,11 @@ public class Grid<T> extends ResizeComposite implements
          * Inserts a new row at the given position. Shifts the row currently at
          * that position and any subsequent rows down (adds one to their
          * indices).
-         *
+         * 
          * @param index
          *            the position at which to insert the row
          * @return the new row
-         *
+         * 
          * @throws IndexOutOfBoundsException
          *             if the index is out of bounds
          * @see #appendRow()
@@ -690,7 +691,7 @@ public class Grid<T> extends ResizeComposite implements
 
         /**
          * Adds a new row at the top of this section.
-         *
+         * 
          * @return the new row
          * @see #appendRow()
          * @see #addRowAt(int)
@@ -703,7 +704,7 @@ public class Grid<T> extends ResizeComposite implements
 
         /**
          * Adds a new row at the bottom of this section.
-         *
+         * 
          * @return the new row
          * @see #prependRow()
          * @see #addRowAt(int)
@@ -716,10 +717,10 @@ public class Grid<T> extends ResizeComposite implements
 
         /**
          * Removes the row at the given position.
-         *
+         * 
          * @param index
          *            the position of the row
-         *
+         * 
          * @throws IndexOutOfBoundsException
          *             if the index is out of bounds
          * @see #addRowAt(int)
@@ -734,10 +735,10 @@ public class Grid<T> extends ResizeComposite implements
 
         /**
          * Removes the given row from the section.
-         *
+         * 
          * @param row
          *            the row to be removed
-         *
+         * 
          * @throws IllegalArgumentException
          *             if the row does not exist in this section
          * @see #addRowAt(int)
@@ -756,11 +757,11 @@ public class Grid<T> extends ResizeComposite implements
 
         /**
          * Returns the row at the given position.
-         *
+         * 
          * @param index
          *            the position of the row
          * @return the row with the given index
-         *
+         * 
          * @throws IndexOutOfBoundsException
          *             if the index is out of bounds
          */
@@ -775,7 +776,7 @@ public class Grid<T> extends ResizeComposite implements
 
         /**
          * Returns the number of rows in this section.
-         *
+         * 
          * @return the number of rows
          */
         public int getRowCount() {
@@ -842,10 +843,10 @@ public class Grid<T> extends ResizeComposite implements
         /**
          * Sets the default row of this header. The default row is a special
          * header row providing a user interface for sorting columns.
-         *
+         * 
          * @param row
          *            the new default row, or null for no default row
-         *
+         * 
          * @throws IllegalArgumentException
          *             this header does not contain the row
          */
@@ -863,6 +864,7 @@ public class Grid<T> extends ResizeComposite implements
             if (row != null) {
                 row.setDefault(true);
             }
+
             defaultRow = row;
             requestSectionRefresh();
         }
@@ -870,7 +872,7 @@ public class Grid<T> extends ResizeComposite implements
         /**
          * Returns the current default row of this header. The default row is a
          * special header row providing a user interface for sorting columns.
-         *
+         * 
          * @return the default row or null if no default row set
          */
         public HeaderRow getDefaultRow() {
@@ -905,7 +907,7 @@ public class Grid<T> extends ResizeComposite implements
 
         /**
          * Returns the events consumed by the header
-         *
+         * 
          * @return a collection of BrowserEvents
          */
         public Collection<String> getConsumedEvents() {
@@ -913,11 +915,21 @@ public class Grid<T> extends ResizeComposite implements
                     BrowserEvents.TOUCHMOVE, BrowserEvents.TOUCHEND,
                     BrowserEvents.TOUCHCANCEL, BrowserEvents.CLICK);
         }
+
+        @Override
+        protected void addColumn(Column<?, ?> column) {
+            super.addColumn(column);
+
+            // Add default content for new columns.
+            if (defaultRow != null) {
+                column.setDefaultHeaderContent(defaultRow.getCell(column));
+            }
+        }
     }
 
     /**
      * A single row in a grid header section.
-     *
+     * 
      */
     public static class HeaderRow extends StaticSection.StaticRow<HeaderCell> {
 
@@ -925,6 +937,11 @@ public class Grid<T> extends ResizeComposite implements
 
         protected void setDefault(boolean isDefault) {
             this.isDefault = isDefault;
+            if (isDefault) {
+                for (Column<?, ?> column : getSection().grid.getColumns()) {
+                    column.setDefaultHeaderContent(getCell(column));
+                }
+            }
         }
 
         public boolean isDefault() {
@@ -939,7 +956,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * A single cell in a grid header row. Has a textual caption.
-     *
+     * 
      */
     public static class HeaderCell extends StaticSection.StaticCell {
     }
@@ -979,14 +996,14 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * A single cell in a grid Footer row. Has a textual caption.
-     *
+     * 
      */
     public static class FooterCell extends StaticSection.StaticCell {
     }
 
     /**
      * A single row in a grid Footer section.
-     *
+     * 
      */
     public static class FooterRow extends StaticSection.StaticRow<FooterCell> {
 
@@ -1001,7 +1018,7 @@ public class Grid<T> extends ResizeComposite implements
         /**
          * A callback interface used to notify the invoker of the editor handler
          * of completed editor requests.
-         *
+         * 
          * @param <T>
          *            the row data type
          */
@@ -1009,7 +1026,7 @@ public class Grid<T> extends ResizeComposite implements
             /**
              * The method that must be called when the request has been
              * processed correctly.
-             *
+             * 
              * @param request
              *            the original request object
              */
@@ -1018,20 +1035,20 @@ public class Grid<T> extends ResizeComposite implements
             /**
              * The method that must be called when processing the request has
              * produced an aborting error.
-             *
+             * 
              * @param request
              *            the original request object
              */
             public void onError(EditorRequest<T> request);
         }
 
-        private Grid<T> grid;
-        private int rowIndex;
-        private RequestCallback<T> callback;
+        private final Grid<T> grid;
+        private final int rowIndex;
+        private final RequestCallback<T> callback;
         private boolean completed = false;
 
         public EditorRequestImpl(Grid<T> grid, int rowIndex,
-                                 RequestCallback<T> callback) {
+                RequestCallback<T> callback) {
             this.grid = grid;
             this.rowIndex = rowIndex;
             this.callback = callback;
@@ -1060,7 +1077,7 @@ public class Grid<T> extends ResizeComposite implements
         }
 
         private void complete(String errorMessage,
-                              Collection<Column<?, T>> errorColumns) {
+                Collection<Column<?, T>> errorColumns) {
             if (completed) {
                 throw new IllegalStateException(
                         "An EditorRequest must be completed exactly once");
@@ -1087,7 +1104,7 @@ public class Grid<T> extends ResizeComposite implements
 
         @Override
         public void failure(String errorMessage,
-                            Collection<Grid.Column<?, T>> errorColumns) {
+                Collection<Grid.Column<?, T>> errorColumns) {
             complete(errorMessage, errorColumns);
             if (callback != null) {
                 callback.onError(this);
@@ -1110,6 +1127,7 @@ public class Grid<T> extends ResizeComposite implements
         public static final int KEYCODE_HIDE = KeyCodes.KEY_ESCAPE;
 
         private static final String ERROR_CLASS_NAME = "error";
+        private static final String NOT_EDITABLE_CLASS_NAME = "not-editable";
 
         protected enum State {
             INACTIVE, ACTIVATING, BINDING, ACTIVE, SAVING
@@ -1118,23 +1136,29 @@ public class Grid<T> extends ResizeComposite implements
         private Grid<T> grid;
         private EditorHandler<T> handler;
 
-        private DivElement editorOverlay = DivElement.as(DOM.createDiv());
-        private DivElement cellWrapper = DivElement.as(DOM.createDiv());
-        private DivElement messageAndButtonsWrapper = DivElement.as(DOM
+        private final DivElement editorOverlay = DivElement.as(DOM.createDiv());
+        private final DivElement cellWrapper = DivElement.as(DOM.createDiv());
+        private final DivElement frozenCellWrapper = DivElement.as(DOM
                 .createDiv());
 
-        private DivElement messageWrapper = DivElement.as(DOM.createDiv());
-        private DivElement buttonsWrapper = DivElement.as(DOM.createDiv());
+        private final DivElement messageAndButtonsWrapper = DivElement.as(DOM
+                .createDiv());
+
+        private final DivElement messageWrapper = DivElement
+                .as(DOM.createDiv());
+        private final DivElement buttonsWrapper = DivElement
+                .as(DOM.createDiv());
 
         // Element which contains the error message for the editor
         // Should only be added to the DOM when there's a message to show
-        private DivElement message = DivElement.as(DOM.createDiv());
+        private final DivElement message = DivElement.as(DOM.createDiv());
 
-        private Map<Column<?, T>, Widget> columnToWidget = new HashMap<Column<?, T>, Widget>();
+        private final Map<Column<?, T>, Widget> columnToWidget = new HashMap<Column<?, T>, Widget>();
 
         private boolean enabled = false;
         private State state = State.INACTIVE;
         private int rowIndex = -1;
+        private int columnIndex = -1;
         private String styleName = null;
 
         private HandlerRegistration scrollHandler;
@@ -1200,8 +1224,11 @@ public class Grid<T> extends ResizeComposite implements
                     state = State.ACTIVE;
                     bindTimeout.cancel();
 
-                    showOverlay(grid.getEscalator().getBody()
-                            .getRowElement(request.getRowIndex()));
+                    assert rowIndex == request.getRowIndex() : "Request row index "
+                            + request.getRowIndex()
+                            + " did not match the saved row index " + rowIndex;
+
+                    showOverlay();
                 }
             }
 
@@ -1261,17 +1288,33 @@ public class Grid<T> extends ResizeComposite implements
         }
 
         /**
-         * Opens the editor over the row with the given index.
-         *
+         * Equivalent to {@code editRow(rowIndex, -1)}.
+         * 
+         * @see #editRow(int, int)
+         */
+        public void editRow(int rowIndex) {
+            editRow(rowIndex, -1);
+        }
+
+        /**
+         * Opens the editor over the row with the given index and attempts to
+         * focus the editor widget in the given column index. Does not move
+         * focus if the widget is not focusable or if the column index is -1.
+         * 
          * @param rowIndex
          *            the index of the row to be edited
-         *
+         * @param columnIndex
+         *            the column index of the editor widget that should be
+         *            initially focused or -1 to not set focus
+         * 
          * @throws IllegalStateException
          *             if this editor is not enabled
          * @throws IllegalStateException
          *             if this editor is already in edit mode
+         * 
+         * @since 7.5
          */
-        public void editRow(int rowIndex) {
+        public void editRow(int rowIndex, int columnIndex) {
             if (!enabled) {
                 throw new IllegalStateException(
                         "Cannot edit row: editor is not enabled");
@@ -1282,6 +1325,7 @@ public class Grid<T> extends ResizeComposite implements
             }
 
             this.rowIndex = rowIndex;
+            this.columnIndex = columnIndex;
 
             state = State.ACTIVATING;
 
@@ -1295,7 +1339,7 @@ public class Grid<T> extends ResizeComposite implements
         /**
          * Cancels the currently active edit and hides the editor. Any changes
          * that are not {@link #save() saved} are lost.
-         *
+         * 
          * @throws IllegalStateException
          *             if this editor is not enabled
          * @throws IllegalStateException
@@ -1331,7 +1375,7 @@ public class Grid<T> extends ResizeComposite implements
 
         /**
          * Saves any unsaved changes to the data source and hides the editor.
-         *
+         * 
          * @throws IllegalStateException
          *             if this editor is not enabled
          * @throws IllegalStateException
@@ -1359,7 +1403,7 @@ public class Grid<T> extends ResizeComposite implements
         /**
          * Returns the handler responsible for binding data and editor widgets
          * to this editor.
-         *
+         * 
          * @return the editor handler or null if not set
          */
         public EditorHandler<T> getHandler() {
@@ -1369,10 +1413,10 @@ public class Grid<T> extends ResizeComposite implements
         /**
          * Sets the handler responsible for binding data and editor widgets to
          * this editor.
-         *
+         * 
          * @param rowHandler
          *            the new editor handler
-         *
+         * 
          * @throws IllegalStateException
          *             if this editor is currently in edit mode
          */
@@ -1390,10 +1434,10 @@ public class Grid<T> extends ResizeComposite implements
 
         /**
          * Sets the enabled state of this editor.
-         *
+         * 
          * @param enabled
          *            true if enabled, false otherwise
-         *
+         * 
          * @throws IllegalStateException
          *             if in edit mode and trying to disable
          * @throws IllegalStateException
@@ -1450,7 +1494,7 @@ public class Grid<T> extends ResizeComposite implements
          * Returns the editor widget associated with the given column. If the
          * editor is not active or the column is not
          * {@link Grid.Column#isEditable() editable}, returns null.
-         *
+         * 
          * @param column
          *            the column
          * @return the widget if the editor is open and the column is editable,
@@ -1461,14 +1505,30 @@ public class Grid<T> extends ResizeComposite implements
         }
 
         /**
-         * Opens the editor overlay over the given table row.
-         *
-         * @param tr
-         *            the row to be edited
+         * Equivalent to {@code showOverlay()}. The argument is ignored.
+         * 
+         * @param unused
+         *            ignored argument
+         * 
+         * @deprecated As of 7.5, use {@link #showOverlay()} instead.
          */
-        protected void showOverlay(TableRowElement tr) {
+        @Deprecated
+        protected void showOverlay(TableRowElement unused) {
+            showOverlay();
+        }
+
+        /**
+         * Opens the editor overlay over the table row indicated by
+         * {@link #getRow()}.
+         * 
+         * @since 7.5
+         */
+        protected void showOverlay() {
 
             DivElement gridElement = DivElement.as(grid.getElement());
+
+            TableRowElement tr = grid.getEscalator().getBody()
+                    .getRowElement(rowIndex);
 
             scrollHandler = grid.addScrollHandler(new ScrollHandler() {
                 @Override
@@ -1478,23 +1538,55 @@ public class Grid<T> extends ResizeComposite implements
             });
 
             gridElement.appendChild(editorOverlay);
+            editorOverlay.appendChild(frozenCellWrapper);
             editorOverlay.appendChild(cellWrapper);
             editorOverlay.appendChild(messageAndButtonsWrapper);
 
+            int frozenColumns = grid.getVisibleFrozenColumnCount();
+            double frozenColumnsWidth = 0;
+            double cellHeight = 0;
+
             for (int i = 0; i < tr.getCells().getLength(); i++) {
                 Element cell = createCell(tr.getCells().getItem(i));
-
-                cellWrapper.appendChild(cell);
+                cellHeight = Math.max(cellHeight, WidgetUtil
+                        .getRequiredHeightBoundingClientRectDouble(tr
+                                .getCells().getItem(i)));
 
                 Column<?, T> column = grid.getVisibleColumn(i);
+
+                if (i < frozenColumns) {
+                    frozenCellWrapper.appendChild(cell);
+                    frozenColumnsWidth += WidgetUtil
+                            .getRequiredWidthBoundingClientRectDouble(tr
+                                    .getCells().getItem(i));
+                } else {
+                    cellWrapper.appendChild(cell);
+                }
+
                 if (column.isEditable()) {
                     Widget editor = getHandler().getWidget(column);
+
                     if (editor != null) {
                         columnToWidget.put(column, editor);
                         attachWidget(editor, cell);
                     }
+
+                    if (i == columnIndex) {
+                        if (editor instanceof Focusable) {
+                            ((Focusable) editor).focus();
+                        } else if (editor instanceof com.google.gwt.user.client.ui.Focusable) {
+                            ((com.google.gwt.user.client.ui.Focusable) editor)
+                                    .setFocus(true);
+                        }
+                    }
+                } else {
+                    cell.addClassName(NOT_EDITABLE_CLASS_NAME);
                 }
             }
+
+            setBounds(frozenCellWrapper, 0, 0, frozenColumnsWidth, 0);
+            setBounds(cellWrapper, frozenColumnsWidth, 0, tr.getOffsetWidth()
+                    - frozenColumnsWidth, cellHeight);
 
             // Only add these elements once
             if (!messageAndButtonsWrapper.isOrHasChild(messageWrapper)) {
@@ -1523,7 +1615,7 @@ public class Grid<T> extends ResizeComposite implements
                 // Move message and buttons wrapper on top of cell wrapper if
                 // there is not enough space visible space under and fix the
                 // overlay from the bottom
-                editorOverlay.appendChild(cellWrapper);
+                editorOverlay.insertFirst(messageAndButtonsWrapper);
                 int gridHeight = grid.getElement().getOffsetHeight();
                 editorOverlay.getStyle()
                         .setBottom(
@@ -1560,6 +1652,7 @@ public class Grid<T> extends ResizeComposite implements
 
             editorOverlay.removeAllChildren();
             cellWrapper.removeAllChildren();
+            frozenCellWrapper.removeAllChildren();
             editorOverlay.removeFromParent();
 
             scrollHandler.removeHandler();
@@ -1572,6 +1665,7 @@ public class Grid<T> extends ResizeComposite implements
                 editorOverlay.removeClassName(styleName);
 
                 cellWrapper.removeClassName(styleName + "-cells");
+                frozenCellWrapper.removeClassName(styleName + "-cells");
                 messageAndButtonsWrapper.removeClassName(styleName + "-footer");
 
                 messageWrapper.removeClassName(styleName + "-message");
@@ -1584,6 +1678,7 @@ public class Grid<T> extends ResizeComposite implements
             editorOverlay.setClassName(styleName);
 
             cellWrapper.setClassName(styleName + "-cells");
+            frozenCellWrapper.setClassName(styleName + "-cells frozen");
             messageAndButtonsWrapper.setClassName(styleName + "-footer");
 
             messageWrapper.setClassName(styleName + "-message");
@@ -1597,7 +1692,7 @@ public class Grid<T> extends ResizeComposite implements
          * Creates an editor cell corresponding to the given table cell. The
          * returned element is empty and has the same dimensions and position as
          * the table cell.
-         *
+         * 
          * @param td
          *            the table cell used as a reference
          * @return an editor cell corresponding to the given cell
@@ -1624,7 +1719,7 @@ public class Grid<T> extends ResizeComposite implements
         }
 
         private static void setBounds(Element e, double left, double top,
-                                      double width, double height) {
+                double width, double height) {
             Style style = e.getStyle();
             style.setLeft(left, Unit.PX);
             style.setTop(top, Unit.PX);
@@ -1634,7 +1729,8 @@ public class Grid<T> extends ResizeComposite implements
 
         private void updateHorizontalScrollPosition() {
             double scrollLeft = grid.getScrollLeft();
-            cellWrapper.getStyle().setLeft(-scrollLeft, Unit.PX);
+            cellWrapper.getStyle().setLeft(
+                    frozenCellWrapper.getOffsetWidth() - scrollLeft, Unit.PX);
         }
 
         protected void setGridEnabled(boolean enabled) {
@@ -1718,7 +1814,7 @@ public class Grid<T> extends ResizeComposite implements
     public static abstract class AbstractGridKeyEvent<HANDLER extends AbstractGridKeyEventHandler>
             extends KeyEvent<HANDLER> {
 
-        private Grid<?> grid;
+        private final Grid<?> grid;
         private final Type<HANDLER> associatedType = new Type<HANDLER>(
                 getBrowserEventType(), this);
         private final CellReference<?> targetCell;
@@ -1732,7 +1828,7 @@ public class Grid<T> extends ResizeComposite implements
 
         /**
          * Gets the Grid instance for this event.
-         *
+         * 
          * @return grid
          */
         public Grid<?> getGrid() {
@@ -1741,7 +1837,7 @@ public class Grid<T> extends ResizeComposite implements
 
         /**
          * Gets the focused cell for this event.
-         *
+         * 
          * @return focused cell
          */
         public CellReference<?> getFocusedCell() {
@@ -1777,7 +1873,7 @@ public class Grid<T> extends ResizeComposite implements
     public static abstract class AbstractGridMouseEvent<HANDLER extends AbstractGridMouseEventHandler>
             extends MouseEvent<HANDLER> {
 
-        private Grid<?> grid;
+        private final Grid<?> grid;
         private final CellReference<?> targetCell;
         private final Type<HANDLER> associatedType = new Type<HANDLER>(
                 getBrowserEventType(), this);
@@ -1791,7 +1887,7 @@ public class Grid<T> extends ResizeComposite implements
 
         /**
          * Gets the Grid instance for this event.
-         *
+         * 
          * @return grid
          */
         public Grid<?> getGrid() {
@@ -1800,7 +1896,7 @@ public class Grid<T> extends ResizeComposite implements
 
         /**
          * Gets the reference of target cell for this event.
-         *
+         * 
          * @return target cell
          */
         public CellReference<?> getTargetCell() {
@@ -1851,17 +1947,21 @@ public class Grid<T> extends ResizeComposite implements
     /**
      * An initial height that is given to new details rows before rendering the
      * appropriate widget that we then can be measure
-     *
+     * 
      * @see GridSpacerUpdater
      */
     private static final double DETAILS_ROW_INITIAL_HEIGHT = 50;
 
-    private EventCellReference<T> eventCell = new EventCellReference<T>(this);
-    private GridKeyDownEvent keyDown = new GridKeyDownEvent(this, eventCell);
-    private GridKeyUpEvent keyUp = new GridKeyUpEvent(this, eventCell);
-    private GridKeyPressEvent keyPress = new GridKeyPressEvent(this, eventCell);
-    private GridClickEvent clickEvent = new GridClickEvent(this, eventCell);
-    private GridDoubleClickEvent doubleClickEvent = new GridDoubleClickEvent(
+    private final EventCellReference<T> eventCell = new EventCellReference<T>(
+            this);
+    private final GridKeyDownEvent keyDown = new GridKeyDownEvent(this,
+            eventCell);
+    private final GridKeyUpEvent keyUp = new GridKeyUpEvent(this, eventCell);
+    private final GridKeyPressEvent keyPress = new GridKeyPressEvent(this,
+            eventCell);
+    private final GridClickEvent clickEvent = new GridClickEvent(this,
+            eventCell);
+    private final GridDoubleClickEvent doubleClickEvent = new GridDoubleClickEvent(
             this, eventCell);
 
     private class CellFocusHandler {
@@ -1888,7 +1988,7 @@ public class Grid<T> extends ResizeComposite implements
          * Sets style names for given cell when needed.
          */
         public void updateFocusedCellStyle(FlyweightCell cell,
-                                           RowContainer cellContainer) {
+                RowContainer cellContainer) {
             int cellRow = cell.getRow();
             int cellColumn = cell.getColumn();
             int colSpan = cell.getColSpan();
@@ -1922,7 +2022,7 @@ public class Grid<T> extends ResizeComposite implements
 
         /**
          * Sets focus style for the given row if needed.
-         *
+         * 
          * @param row
          *            a row object
          */
@@ -1939,7 +2039,8 @@ public class Grid<T> extends ResizeComposite implements
                     setStyleName(rowWithFocusStyle, rowFocusStyleName, true);
                 }
             } else if (rowWithFocusStyle == row.getElement()
-                    || (containerWithFocus != escalator.getBody() && rowWithFocusStyle != null)) {
+                    || containerWithFocus != escalator.getBody()
+                    && rowWithFocusStyle != null) {
                 // Remove focus style.
                 setStyleName(rowWithFocusStyle, rowFocusStyleName, false);
                 rowWithFocusStyle = null;
@@ -1951,7 +2052,7 @@ public class Grid<T> extends ResizeComposite implements
          * <p>
          * <em>NOTE:</em> the column index is the index in DOM, not the logical
          * column index which includes hidden columns.
-         *
+         * 
          * @param rowIndex
          *            the index of the row having focus
          * @param columnIndexDOM
@@ -1960,7 +2061,7 @@ public class Grid<T> extends ResizeComposite implements
          *            the row container having focus
          */
         private void setCellFocus(int rowIndex, int columnIndexDOM,
-                                  RowContainer container) {
+                RowContainer container) {
             if (rowIndex == rowWithFocus
                     && cellFocusRange.contains(columnIndexDOM)
                     && container == this.containerWithFocus) {
@@ -2033,11 +2134,11 @@ public class Grid<T> extends ResizeComposite implements
 
         /**
          * Sets focus on a cell.
-         *
+         * 
          * <p>
          * <em>Note</em>: cell focus is not the same as JavaScript's
          * {@code document.activeElement}.
-         *
+         * 
          * @param cell
          *            a cell object
          */
@@ -2048,7 +2149,7 @@ public class Grid<T> extends ResizeComposite implements
 
         /**
          * Gets list of events that can be used for cell focusing.
-         *
+         * 
          * @return list of navigation related event types
          */
         public Collection<String> getNavigationEvents() {
@@ -2079,37 +2180,72 @@ public class Grid<T> extends ResizeComposite implements
                 int newColumn = cellFocusRange.getStart();
 
                 switch (event.getKeyCode()) {
-                    case KeyCodes.KEY_DOWN:
-                        ++newRow;
-                        break;
-                    case KeyCodes.KEY_UP:
-                        --newRow;
-                        break;
-                    case KeyCodes.KEY_RIGHT:
-                        if (cellFocusRange.getEnd() >= getVisibleColumns().size()) {
-                            return;
-                        }
-                        newColumn = cellFocusRange.getEnd();
-                        break;
-                    case KeyCodes.KEY_LEFT:
-                        if (newColumn == 0) {
-                            return;
-                        }
-                        --newColumn;
-                        break;
-                    case KeyCodes.KEY_TAB:
-                        if (event.getShiftKey()) {
-                            newContainer = getPreviousContainer(containerWithFocus);
-                        } else {
-                            newContainer = getNextContainer(containerWithFocus);
-                        }
-
-                        if (newContainer == containerWithFocus) {
-                            return;
-                        }
-                        break;
-                    default:
+                case KeyCodes.KEY_DOWN:
+                    ++newRow;
+                    break;
+                case KeyCodes.KEY_UP:
+                    --newRow;
+                    break;
+                case KeyCodes.KEY_RIGHT:
+                    if (cellFocusRange.getEnd() >= getVisibleColumns().size()) {
                         return;
+                    }
+                    newColumn = cellFocusRange.getEnd();
+                    break;
+                case KeyCodes.KEY_LEFT:
+                    if (newColumn == 0) {
+                        return;
+                    }
+                    --newColumn;
+                    break;
+                case KeyCodes.KEY_TAB:
+                    if (event.getShiftKey()) {
+                        newContainer = getPreviousContainer(containerWithFocus);
+                    } else {
+                        newContainer = getNextContainer(containerWithFocus);
+                    }
+
+                    if (newContainer == containerWithFocus) {
+                        return;
+                    }
+                    break;
+                case KeyCodes.KEY_HOME:
+                    if (newContainer.getRowCount() > 0) {
+                        newRow = 0;
+                    }
+                    break;
+                case KeyCodes.KEY_END:
+                    if (newContainer.getRowCount() > 0) {
+                        newRow = newContainer.getRowCount() - 1;
+                    }
+                    break;
+                case KeyCodes.KEY_PAGEDOWN:
+                case KeyCodes.KEY_PAGEUP:
+                    if (newContainer.getRowCount() > 0) {
+                        boolean down = event.getKeyCode() == KeyCodes.KEY_PAGEDOWN;
+                        // If there is a visible focused cell, scroll by one
+                        // page from its position. Otherwise, use the first or
+                        // the last visible row as the scroll start position.
+                        // This avoids jumping when using both keyboard and the
+                        // scroll bar for scrolling.
+                        int firstVisible = getFirstVisibleRowIndex();
+                        int lastVisible = getLastVisibleRowIndex();
+                        if (newRow < firstVisible || newRow > lastVisible) {
+                            newRow = down ? lastVisible : firstVisible;
+                        }
+                        // Scroll by a little less than the visible area to
+                        // account for the possibility that the top and the
+                        // bottom row are only partially visible.
+                        int moveFocusBy = Math.max(1, lastVisible
+                                - firstVisible - 1);
+                        moveFocusBy *= down ? 1 : -1;
+                        newRow += moveFocusBy;
+                        newRow = Math.max(0, Math.min(
+                                newContainer.getRowCount() - 1, newRow));
+                    }
+                    break;
+                default:
+                    return;
                 }
 
                 if (newContainer != containerWithFocus) {
@@ -2194,7 +2330,7 @@ public class Grid<T> extends ResizeComposite implements
 
         /**
          * Offsets the focused cell's range.
-         *
+         * 
          * @param offset
          *            offset for fixing focused cell's range
          */
@@ -2206,13 +2342,13 @@ public class Grid<T> extends ResizeComposite implements
          * Informs {@link CellFocusHandler} that certain range of rows has been
          * added to the Grid body. {@link CellFocusHandler} will fix indices
          * accordingly.
-         *
+         * 
          * @param added
          *            a range of added rows
          */
         public void rowsAddedToBody(Range added) {
-            boolean bodyHasFocus = (containerWithFocus == escalator.getBody());
-            boolean insertionIsAboveFocusedCell = (added.getStart() <= rowWithFocus);
+            boolean bodyHasFocus = containerWithFocus == escalator.getBody();
+            boolean insertionIsAboveFocusedCell = added.getStart() <= rowWithFocus;
             if (bodyHasFocus && insertionIsAboveFocusedCell) {
                 rowWithFocus += added.length();
                 rowWithFocus = Math.min(rowWithFocus, escalator.getBody()
@@ -2225,7 +2361,7 @@ public class Grid<T> extends ResizeComposite implements
          * Informs {@link CellFocusHandler} that certain range of rows has been
          * removed from the Grid body. {@link CellFocusHandler} will fix indices
          * accordingly.
-         *
+         * 
          * @param removed
          *            a range of removed rows
          */
@@ -2262,14 +2398,13 @@ public class Grid<T> extends ResizeComposite implements
 
         private boolean initDone = false;
         private boolean selected = false;
+        private CheckBox selectAllCheckBox;
 
         SelectionColumn(final Renderer<Boolean> selectColumnRenderer) {
             super(selectColumnRenderer);
         }
 
         void initDone() {
-            addSelectAllToDefaultHeader();
-
             setWidth(-1);
 
             setEditable(false);
@@ -2277,44 +2412,66 @@ public class Grid<T> extends ResizeComposite implements
             initDone = true;
         }
 
-        protected void addSelectAllToDefaultHeader() {
-            if (getSelectionModel() instanceof SelectionModel.Multi
-                    && header.getDefaultRow() != null) {
-                // If selection cell already contains a widget do not
-                // create a new CheckBox
-                HeaderCell selectionCell = header.getDefaultRow().getCell(this);
-                if (selectionCell.getType().equals(GridStaticCellType.WIDGET)
-                        && selectionCell.getWidget() instanceof CheckBox) {
-                    return;
-                }
-                /*
-                 * TODO: Currently the select all check box is shown when multi
-                 * selection is in use. This might result in malfunctions if no
-                 * SelectAllHandlers are present.
-                 * 
-                 * Later on this could be fixed so that it check such handlers
-                 * exist.
-                 */
-                final SelectionModel.Multi<T> model = (Multi<T>) getSelectionModel();
-                final CheckBox checkBox = new CheckBox();
-                checkBox.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+        @Override
+        protected void setDefaultHeaderContent(HeaderCell selectionCell) {
+            /*
+             * TODO: Currently the select all check box is shown when multi
+             * selection is in use. This might result in malfunctions if no
+             * SelectAllHandlers are present.
+             * 
+             * Later on this could be fixed so that it check such handlers
+             * exist.
+             */
+            final SelectionModel.Multi<T> model = (Multi<T>) getSelectionModel();
 
+            if (selectAllCheckBox == null) {
+                selectAllCheckBox = GWT.create(CheckBox.class);
+                selectAllCheckBox
+                        .addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+
+                            @Override
+                            public void onValueChange(
+                                    ValueChangeEvent<Boolean> event) {
+                                if (event.getValue()) {
+                                    fireEvent(new SelectAllEvent<T>(model));
+                                    selected = true;
+                                } else {
+                                    model.deselectAll();
+                                    selected = false;
+                                }
+                            }
+                        });
+                selectAllCheckBox.setValue(selected);
+
+                // Select all with space when "select all" cell is active
+                addHeaderKeyUpHandler(new HeaderKeyUpHandler() {
                     @Override
-                    public void onValueChange(ValueChangeEvent<Boolean> event) {
-                        if (event.getValue()) {
-                            fireEvent(new SelectAllEvent<T>(model));
-                            selected = true;
-                        } else {
-                            model.deselectAll();
-                            selected = false;
+                    public void onKeyUp(GridKeyUpEvent event) {
+                        if (event.getNativeKeyCode() != KeyCodes.KEY_SPACE) {
+                            return;
+                        }
+                        HeaderRow targetHeaderRow = getHeader().getRow(
+                                event.getFocusedCell().getRowIndex());
+                        if (!targetHeaderRow.isDefault()) {
+                            return;
+                        }
+                        if (event.getFocusedCell().getColumn() == SelectionColumn.this) {
+                            // Send events to ensure state is updated
+                            selectAllCheckBox.setValue(
+                                    !selectAllCheckBox.getValue(), true);
                         }
                     }
                 });
-                checkBox.setValue(selected);
-
-                selectionCell.setWidget(checkBox);
-
+            } else {
+                for (HeaderRow row : header.getRows()) {
+                    if (row.getCell(this).getType() == GridStaticCellType.WIDGET) {
+                        // Detach from old header.
+                        row.getCell(this).setText("");
+                    }
+                }
             }
+
+            selectionCell.setWidget(selectAllCheckBox);
         }
 
         @Override
@@ -2376,7 +2533,6 @@ public class Grid<T> extends ResizeComposite implements
             super.setEditable(editable);
             return this;
         }
-
     }
 
     /**
@@ -2407,7 +2563,7 @@ public class Grid<T> extends ResizeComposite implements
          * chain. If false, the sorting order is set to ASCENDING for that
          * cell's column. If that column was already the only sorted column in
          * the Grid, the sort direction is flipped.
-         *
+         * 
          * @param cell
          *            a valid cell reference
          * @param multisort
@@ -2463,7 +2619,7 @@ public class Grid<T> extends ResizeComposite implements
 
         /**
          * Perform a sort after a delay.
-         *
+         * 
          * @param delay
          *            delay, in milliseconds
          */
@@ -2476,7 +2632,7 @@ public class Grid<T> extends ResizeComposite implements
         /**
          * Check if a delayed sort command has been issued but not yet carried
          * out.
-         *
+         * 
          * @return a boolean value
          */
         public boolean isDelayedSortScheduled() {
@@ -2494,6 +2650,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /** @see Grid#autoColumnWidthsRecalculator */
     private class AutoColumnWidthsRecalculator {
+        private double lastCalculatedInnerWidth = -1;
 
         private final ScheduledCommand calculateCommand = new ScheduledCommand() {
 
@@ -2528,6 +2685,7 @@ public class Grid<T> extends ResizeComposite implements
                 } else {
                     calculate();
                 }
+                lastCalculatedInnerWidth = escalator.getInnerWidth();
             }
         };
 
@@ -2537,7 +2695,7 @@ public class Grid<T> extends ResizeComposite implements
         /**
          * Calculates and applies column widths, taking into account fixed
          * widths and column expand rules
-         *
+         * 
          * @param immediately
          *            <code>true</code> if the widths should be executed
          *            immediately (ignoring lazy loading completely), or
@@ -2656,8 +2814,8 @@ public class Grid<T> extends ResizeComposite implements
             setColumnSizes(columnSizes);
 
             for (Column<?, T> column : nonFixedColumns) {
-                final int expandRatio = (defaultExpandRatios ? 1 : column
-                        .getExpandRatio());
+                final int expandRatio = defaultExpandRatios ? 1 : column
+                        .getExpandRatio();
                 final double newWidth = column.getWidthActual();
                 final double maxWidth = getMaxWidth(column);
                 boolean shouldExpand = newWidth < maxWidth && expandRatio > 0
@@ -2784,7 +2942,8 @@ public class Grid<T> extends ResizeComposite implements
                     boolean hasAutoWidth = column.getWidth() < 0;
                     if (hasAutoWidth && currentWidth < minWidth) {
                         columnSizes.put(columnIndex, minWidth);
-                        pixelsToRemoveFromOtherColumns += (minWidth - currentWidth);
+                        pixelsToRemoveFromOtherColumns += minWidth
+                                - currentWidth;
                         minWidthsCausedReflows = true;
 
                         /*
@@ -2826,7 +2985,7 @@ public class Grid<T> extends ResizeComposite implements
         }
 
         private int getExpandRatio(Column<?, ?> column,
-                                   boolean defaultExpandRatios) {
+                boolean defaultExpandRatios) {
             int expandRatio = column.getExpandRatio();
             if (expandRatio > 0) {
                 return expandRatio;
@@ -2867,7 +3026,7 @@ public class Grid<T> extends ResizeComposite implements
 
         /**
          * Check whether the auto width calculation is currently scheduled.
-         *
+         * 
          * @return <code>true</code> if auto width calculation is currently
          *         scheduled
          */
@@ -2983,7 +3142,7 @@ public class Grid<T> extends ResizeComposite implements
      * grid, if it contains any column hiding options or custom widgets. The
      * column hiding toggles and custom widgets become visible once the sidebar
      * has been opened.
-     *
+     * 
      * @since 7.5.0
      */
     private static class Sidebar extends Composite {
@@ -3009,6 +3168,26 @@ public class Grid<T> extends ResizeComposite implements
         private final Button openCloseButton;
 
         private final Grid<?> grid;
+
+        private final NativePreviewHandler clickOutsideToCloseHandler = new NativePreviewHandler() {
+
+            @Override
+            public void onPreviewNativeEvent(NativePreviewEvent event) {
+                if (event.getTypeInt() != Event.ONMOUSEDOWN) {
+                    return;
+                }
+
+                // Click outside the panel
+                EventTarget clickTarget = event.getNativeEvent()
+                        .getEventTarget();
+                if (!rootContainer.getElement().isOrHasChild(
+                        Element.as(clickTarget))) {
+                    close();
+                }
+            }
+        };
+
+        private HandlerRegistration clickOutsideToCloseHandlerRegistration;
 
         private Sidebar(Grid<?> grid) {
             this.grid = grid;
@@ -3099,11 +3278,12 @@ public class Grid<T> extends ResizeComposite implements
          */
         public void open() {
             if (!isOpen() && isInDOM()) {
-                addStyleName("opened");
+                addStyleName("open");
                 removeStyleName("closed");
                 rootContainer.add(content);
+                clickOutsideToCloseHandlerRegistration = Event
+                        .addNativePreviewHandler(clickOutsideToCloseHandler);
             }
-            openCloseButton.setHeight("");
         }
 
         /**
@@ -3111,17 +3291,21 @@ public class Grid<T> extends ResizeComposite implements
          */
         public void close() {
             if (isOpen()) {
-                removeStyleName("opened");
+                removeStyleName("open");
                 addStyleName("closed");
                 content.removeFromParent();
                 // adjust open button to header height when closed
                 setHeightToHeaderCellHeight();
+                if (clickOutsideToCloseHandlerRegistration != null) {
+                    clickOutsideToCloseHandlerRegistration.removeHandler();
+                    clickOutsideToCloseHandlerRegistration = null;
+                }
             }
         }
 
         /**
          * Returns whether the sidebar is open or not.
-         *
+         * 
          * @return <code>true</code> if open, <code>false</code> if not
          */
         public boolean isOpen() {
@@ -3130,7 +3314,7 @@ public class Grid<T> extends ResizeComposite implements
 
         /**
          * Adds or moves the given widget to the end of the sidebar.
-         *
+         * 
          * @param widget
          *            the widget to add or move
          */
@@ -3141,7 +3325,7 @@ public class Grid<T> extends ResizeComposite implements
 
         /**
          * Removes the given widget from the sidebar.
-         *
+         * 
          * @param widget
          *            the widget to remove
          */
@@ -3157,7 +3341,7 @@ public class Grid<T> extends ResizeComposite implements
          * See
          * {@link FlowPanel#insert(com.google.gwt.user.client.ui.IsWidget, int)}
          * for further details.
-         *
+         * 
          * @param widget
          *            the widget to insert
          * @param beforeIndex
@@ -3183,27 +3367,22 @@ public class Grid<T> extends ResizeComposite implements
         }
 
         private void setHeightToHeaderCellHeight() {
-            try {
-                double height = WidgetUtil
-                        .getRequiredHeightBoundingClientRectDouble(grid.escalator
-                                .getHeader().getRowElement(0)
-                                .getFirstChildElement())
-                        - (WidgetUtil.measureVerticalBorder(getElement()) / 2);
-                openCloseButton.setHeight(height + "px");
-            } catch (NullPointerException npe) {
+            RowContainer header = grid.escalator.getHeader();
+            if (header.getRowCount() == 0
+                    || !header.getRowElement(0).hasChildNodes()) {
                 getLogger()
-                        .warning(
-                                "Got null header first row or first row cell when calculating sidebar button height");
-                openCloseButton.setHeight(grid.escalator.getHeader()
-                        .getDefaultRowHeight() + "px");
-            } catch (IndexOutOfBoundsException ioobe) {
-                // happens when escalator doesn't have any headers rendered yet.
-                getLogger()
-                        .warning(
-                                "No header cell available when calculating sidebar button height");
-                openCloseButton.setHeight(grid.escalator.getHeader()
-                        .getDefaultRowHeight() + "px");
+                        .info("No header cell available when calculating sidebar button height");
+                openCloseButton.setHeight(header.getDefaultRowHeight() + "px");
+
+                return;
             }
+
+            Element firstHeaderCell = header.getRowElement(0)
+                    .getFirstChildElement();
+            double height = WidgetUtil
+                    .getRequiredHeightBoundingClientRectDouble(firstHeaderCell)
+                    - WidgetUtil.measureVerticalBorder(getElement()) / 2;
+            openCloseButton.setHeight(height + "px");
         }
 
         private void updateVisibility() {
@@ -3247,7 +3426,7 @@ public class Grid<T> extends ResizeComposite implements
     private final class ColumnHider {
 
         /** Map from columns to their hiding toggles, component might change */
-        private HashMap<Column<?, T>, MenuItem> columnToHidingToggleMap = new HashMap<Grid.Column<?, T>, MenuItem>();
+        private final HashMap<Column<?, T>, MenuItem> columnToHidingToggleMap = new HashMap<Grid.Column<?, T>, MenuItem>();
 
         /**
          * When column is being hidden with a toggle, do not refresh toggles for
@@ -3263,8 +3442,8 @@ public class Grid<T> extends ResizeComposite implements
                 }
                 toggle.setStyleName("hidden", column.isHidden());
             } else if (columnToHidingToggleMap.containsKey(column)) {
-                sidebar.menuBar.removeItem((columnToHidingToggleMap
-                        .remove(column)));
+                sidebar.menuBar.removeItem(columnToHidingToggleMap
+                        .remove(column));
             }
             updateTogglesOrder();
         }
@@ -3335,7 +3514,7 @@ public class Grid<T> extends ResizeComposite implements
     /**
      * Escalator used internally by grid to render the rows
      */
-    private Escalator escalator = GWT.create(Escalator.class);
+    private final Escalator escalator = GWT.create(Escalator.class);
 
     private final Header header = GWT.create(Header.class);
 
@@ -3369,7 +3548,7 @@ public class Grid<T> extends ResizeComposite implements
      * Current sort order. The (private) sort() method reads this list to
      * determine the order in which to present rows.
      */
-    private List<SortOrder> sortOrder = new ArrayList<SortOrder>();
+    private final List<SortOrder> sortOrder = new ArrayList<SortOrder>();
 
     private Renderer<Boolean> selectColumnRenderer = null;
 
@@ -3405,7 +3584,7 @@ public class Grid<T> extends ResizeComposite implements
      * <li>a cell on another row, the click event is the table section ancestor
      * ({@code <thead>}, {@code <tbody>} or {@code <tfoot>}).
      * </ul>
-     *
+     * 
      * @see #onBrowserEvent(Event)
      */
     private Cell cellOnPrevMouseDown;
@@ -3418,21 +3597,25 @@ public class Grid<T> extends ResizeComposite implements
     private final AutoColumnWidthsRecalculator autoColumnWidthsRecalculator = new AutoColumnWidthsRecalculator();
 
     private boolean enabled = true;
+    private double lastTouchEventTime = 0;
+    private int lastTouchEventX = -1;
+    private int lastTouchEventY = -1;
+    private int lastTouchEventRow = -1;
 
     private DetailsGenerator detailsGenerator = DetailsGenerator.NULL;
-    private GridSpacerUpdater gridSpacerUpdater = new GridSpacerUpdater();
+    private final GridSpacerUpdater gridSpacerUpdater = new GridSpacerUpdater();
     /** A set keeping track of the indices of all currently open details */
-    private Set<Integer> visibleDetails = new HashSet<Integer>();
+    private final Set<Integer> visibleDetails = new HashSet<Integer>();
 
     private boolean columnReorderingAllowed;
 
-    private ColumnHider columnHider = new ColumnHider();
+    private final ColumnHider columnHider = new ColumnHider();
 
-    private DragAndDropHandler dndHandler = new DragAndDropHandler();
+    private final DragAndDropHandler dndHandler = new DragAndDropHandler();
 
-    private AutoScroller autoScroller = new AutoScroller(this);
+    private final AutoScroller autoScroller = new AutoScroller(this);
 
-    private DragAndDropHandler.DragAndDropCallback headerCellDndCallback = new DragAndDropHandler.DragAndDropCallback() {
+    private final DragAndDropHandler.DragAndDropCallback headerCellDndCallback = new DragAndDropHandler.DragAndDropCallback() {
 
         private final AutoScrollerCallback autoScrollerCallback = new AutoScrollerCallback() {
 
@@ -3486,6 +3669,9 @@ public class Grid<T> extends ResizeComposite implements
         /** Captures the value of the focused column before reordering */
         private int focusedColumnIndex;
 
+        /** Offset caused by the drag and drop marker width */
+        private double dropMarkerWidthOffset;
+
         private void initHeaderDragElementDOM() {
             if (table == null) {
                 tableHeader = DOM.createTHead();
@@ -3508,6 +3694,9 @@ public class Grid<T> extends ResizeComposite implements
             tableHeader.getStyle().setTop(topOffset, Unit.PX);
 
             getElement().appendChild(table);
+
+            dropMarkerWidthOffset = WidgetUtil
+                    .getRequiredWidthBoundingClientRectDouble(dropMarker) / 2;
         }
 
         @Override
@@ -3546,9 +3735,22 @@ public class Grid<T> extends ResizeComposite implements
             dropMarkerLeft += autoScrollX;
 
             final double frozenColumnsWidth = getFrozenColumnsWidth();
-            if (dropMarkerLeft < frozenColumnsWidth
-                    || dropMarkerLeft > escalator.getHeader().getElement()
-                    .getOffsetWidth() || dropMarkerLeft < 0) {
+            final double rightBoundaryForDrag = getSidebarBoundaryComparedTo(dropMarkerLeft);
+            final int visibleColumns = getVisibleColumns().size();
+
+            // First check if the drop marker should move left because of the
+            // sidebar opening button. this only the case if the grid is
+            // scrolled to the right
+            if (latestColumnDropIndex == visibleColumns
+                    && rightBoundaryForDrag < dropMarkerLeft
+                    && dropMarkerLeft <= escalator.getInnerWidth()) {
+                dropMarkerLeft = rightBoundaryForDrag - dropMarkerWidthOffset;
+            }
+
+            // Check if the drop marker shouldn't be shown at all
+            else if (dropMarkerLeft < frozenColumnsWidth
+                    || dropMarkerLeft > Math.min(rightBoundaryForDrag,
+                            escalator.getInnerWidth()) || dropMarkerLeft < 0) {
                 dropMarkerLeft = -10000000;
             }
             dropMarker.getStyle().setLeft(dropMarkerLeft, Unit.PX);
@@ -3569,16 +3771,41 @@ public class Grid<T> extends ResizeComposite implements
             }
 
             // Do not show the drag element beyond the grid
-            final int bodyOffsetWidth = getEscalator().getBody().getElement()
-                    .getOffsetWidth();
+            final double sidebarBoundary = getSidebarBoundaryComparedTo(left);
+            final double gridBoundary = escalator.getInnerWidth();
+            final double rightBoundary = Math
+                    .min(sidebarBoundary, gridBoundary);
+
             // Do not show on left of the frozen columns (even if scrolled)
             final int frozenColumnsWidth = (int) getFrozenColumnsWidth();
 
-            left = Math
-                    .max(frozenColumnsWidth, Math.min(left, bodyOffsetWidth));
+            left = Math.max(frozenColumnsWidth, Math.min(left, rightBoundary));
 
             left -= dragElement.getClientWidth() / 2;
             dragElement.getStyle().setLeft(left, Unit.PX);
+        }
+
+        private boolean isSidebarOnDraggedRow() {
+            return eventCell.getRowIndex() == 0 && getSidebar().isInDOM()
+                    && !getSidebar().isOpen();
+        }
+
+        /**
+         * Returns the sidebar left coordinate, in relation to the grid. Or
+         * Double.MAX_VALUE if it doesn't cause a boundary.
+         */
+        private double getSidebarBoundaryComparedTo(double left) {
+            if (isSidebarOnDraggedRow()) {
+                double absoluteLeft = left + getElement().getAbsoluteLeft();
+                double sidebarLeft = getSidebar().getElement()
+                        .getAbsoluteLeft();
+                double diff = absoluteLeft - sidebarLeft;
+
+                if (diff > 0) {
+                    return left - diff;
+                }
+            }
+            return Double.MAX_VALUE;
         }
 
         @Override
@@ -3621,7 +3848,7 @@ public class Grid<T> extends ResizeComposite implements
             final int colspan = header.getRow(eventCell.getRowIndex())
                     .getCell(eventCell.getColumn()).getColspan();
             if (latestColumnDropIndex != draggedColumnIndex
-                    && latestColumnDropIndex != (draggedColumnIndex + colspan)) {
+                    && latestColumnDropIndex != draggedColumnIndex + colspan) {
                 List<Column<?, T>> columns = getColumns();
                 List<Column<?, T>> reordered = new ArrayList<Column<?, T>>();
                 if (draggedColumnIndex < latestColumnDropIndex) {
@@ -3642,7 +3869,7 @@ public class Grid<T> extends ResizeComposite implements
                             + colspan, columns.size()));
                 }
                 reordered.remove(selectionColumn); // since setColumnOrder will
-                // add it anyway!
+                                                   // add it anyway!
 
                 // capture focused cell column before reorder
                 Cell focusedCell = cellFocusHandler.getFocusedCell();
@@ -3755,7 +3982,7 @@ public class Grid<T> extends ResizeComposite implements
                     .getRowIndex());
             final int draggedColumnRightIndex = draggedColumnIndex
                     + draggedCellRow.getCell(eventCell.getColumn())
-                    .getColspan();
+                            .getColspan();
             final int frozenColumns = getSelectionAndFrozenColumnCount();
             final Range draggedCellRange = Range.between(draggedColumnIndex,
                     draggedColumnRightIndex);
@@ -3818,7 +4045,7 @@ public class Grid<T> extends ResizeComposite implements
                     }
 
                     else { // can't drop inside a spanned cell, or this is the
-                        // dragged cell
+                           // dragged cell
                         while (colspan > 1) {
                             cellColumnIndex++;
                             colspan--;
@@ -3828,7 +4055,7 @@ public class Grid<T> extends ResizeComposite implements
                 }
             }
 
-            if (leftBound == (rightBound - 1)) {
+            if (leftBound == rightBound - 1) {
                 return;
             }
 
@@ -3869,7 +4096,7 @@ public class Grid<T> extends ResizeComposite implements
 
             @Override
             protected <T> SelectionModel<T> createModel() {
-                return new SelectionModelSingle<T>();
+                return GWT.create(SelectionModelSingle.class);
             }
         },
 
@@ -3880,7 +4107,7 @@ public class Grid<T> extends ResizeComposite implements
 
             @Override
             protected <T> SelectionModel<T> createModel() {
-                return new SelectionModelMulti<T>();
+                return GWT.create(SelectionModelMulti.class);
             }
         },
 
@@ -3891,7 +4118,7 @@ public class Grid<T> extends ResizeComposite implements
 
             @Override
             protected <T> SelectionModel<T> createModel() {
-                return new SelectionModelNone<T>();
+                return GWT.create(SelectionModelNone.class);
             }
         };
 
@@ -3901,10 +4128,10 @@ public class Grid<T> extends ResizeComposite implements
     /**
      * Base class for grid columns internally used by the Grid. The user should
      * use {@link Column} when creating new columns.
-     *
+     * 
      * @param <C>
      *            the column type
-     *
+     * 
      * @param <T>
      *            the row type
      */
@@ -3980,10 +4207,10 @@ public class Grid<T> extends ResizeComposite implements
 
         /**
          * Constructs a new column with a simple TextRenderer.
-         *
+         * 
          * @param caption
          *            The header caption for this column
-         *
+         * 
          * @throws IllegalArgumentException
          *             if given header caption is null
          */
@@ -3994,10 +4221,10 @@ public class Grid<T> extends ResizeComposite implements
 
         /**
          * Constructs a new column with a custom renderer.
-         *
+         * 
          * @param renderer
          *            The renderer to use for rendering the cells
-         *
+         * 
          * @throws IllegalArgumentException
          *             if given Renderer is null
          */
@@ -4008,12 +4235,12 @@ public class Grid<T> extends ResizeComposite implements
 
         /**
          * Constructs a new column with a custom renderer.
-         *
+         * 
          * @param renderer
          *            The renderer to use for rendering the cells
          * @param caption
          *            The header caption for this column
-         *
+         * 
          * @throws IllegalArgumentException
          *             if given Renderer or header caption is null
          */
@@ -4025,7 +4252,7 @@ public class Grid<T> extends ResizeComposite implements
 
         /**
          * Internally used by the grid to set itself
-         *
+         * 
          * @param grid
          */
         private void setGrid(Grid<T> grid) {
@@ -4042,17 +4269,16 @@ public class Grid<T> extends ResizeComposite implements
             this.grid = grid;
             if (this.grid != null) {
                 this.grid.recalculateColumnWidths();
-                updateHeader();
             }
         }
 
         /**
          * Sets a header caption for this column.
-         *
+         * 
          * @param caption
          *            The header caption for this column
          * @return the column itself
-         *
+         * 
          * @throws IllegalArgumentException
          *             if given caption text is null
          */
@@ -4088,10 +4314,10 @@ public class Grid<T> extends ResizeComposite implements
          * <p>
          * To support other types you will need to pass a custom renderer to the
          * column via the column constructor.
-         *
+         * 
          * @param row
          *            The row object that provides the cell content.
-         *
+         * 
          * @return The cell content
          */
         public abstract C getValue(T row);
@@ -4100,7 +4326,7 @@ public class Grid<T> extends ResizeComposite implements
          * The renderer to render the cell with. By default renders the data as
          * a String or adds the widget into the cell if the column type is of
          * widget type.
-         *
+         * 
          * @return The renderer to render the cell content with
          */
         public Renderer<? super C> getRenderer() {
@@ -4109,11 +4335,11 @@ public class Grid<T> extends ResizeComposite implements
 
         /**
          * Sets a custom {@link Renderer} for this column.
-         *
+         * 
          * @param renderer
          *            The renderer to use for rendering the cells
          * @return the column itself
-         *
+         * 
          * @throws IllegalArgumentException
          *             if given Renderer is null
          */
@@ -4143,7 +4369,7 @@ public class Grid<T> extends ResizeComposite implements
          * <p>
          * If the column is currently {@link #isHidden() hidden}, then this set
          * width has effect only once the column has been made visible again.
-         *
+         * 
          * @param pixels
          *            the width in pixels or negative for auto sizing
          */
@@ -4175,7 +4401,7 @@ public class Grid<T> extends ResizeComposite implements
          * <p>
          * <em>Note:</em> Returns the value, even if the column is currently
          * {@link #isHidden() hidden}.
-         *
+         * 
          * @return pixel width of the column, or a negative number if the column
          *         width has been automatically calculated.
          * @see #setWidth(double)
@@ -4191,7 +4417,7 @@ public class Grid<T> extends ResizeComposite implements
          * This differs from {@link #getWidth()} only when the column has been
          * automatically resized, or when the column is currently
          * {@link #isHidden() hidden}, when the value is 0.
-         *
+         * 
          * @return pixel width of the column.
          */
         public double getWidthActual() {
@@ -4212,7 +4438,7 @@ public class Grid<T> extends ResizeComposite implements
          * <p>
          * <b>Note:</b>The API can still sort the column even if this is set to
          * <code>false</code>.
-         *
+         * 
          * @param sortable
          *            <code>true</code> when column sort indicators are visible.
          * @return the column itself
@@ -4230,7 +4456,7 @@ public class Grid<T> extends ResizeComposite implements
 
         /**
          * Are sort indicators shown for the column.
-         *
+         * 
          * @return <code>true</code> if the column is sortable
          */
         public boolean isSortable() {
@@ -4240,7 +4466,7 @@ public class Grid<T> extends ResizeComposite implements
         /**
          * Hides or shows the column. By default columns are visible before
          * explicitly hiding them.
-         *
+         * 
          * @since 7.5.0
          * @param hidden
          *            <code>true</code> to hide the column, <code>false</code>
@@ -4287,7 +4513,7 @@ public class Grid<T> extends ResizeComposite implements
 
         /**
          * Is this column hidden. Default is {@code false}.
-         *
+         * 
          * @since 7.5.0
          * @return <code>true</code> if the column is currently hidden,
          *         <code>false</code> otherwise
@@ -4302,7 +4528,7 @@ public class Grid<T> extends ResizeComposite implements
          * <p>
          * <em>Note:</em> it is still possible to hide the column
          * programmatically using {@link #setHidden(boolean)}.
-         *
+         * 
          * @since 7.5.0
          * @param hidable
          *            <code>true</code> if the user can hide this column,
@@ -4321,7 +4547,7 @@ public class Grid<T> extends ResizeComposite implements
          * <p>
          * <em>Note:</em> the column can be programmatically hidden using
          * {@link #setHidden(boolean)} regardless of the returned value.
-         *
+         * 
          * @since 7.5.0
          * @return <code>true</code> if the user can hide the column,
          *         <code>false</code> if not
@@ -4335,9 +4561,9 @@ public class Grid<T> extends ResizeComposite implements
          * for this column in the grid's sidebar when the column is
          * {@link #isHidable() hidable}.
          * <p>
-         * Defaults to <code>null</code>, when will use whatever is set with
-         * {@link #setHeaderCaption(String)}.
-         *
+         * The default value is <code>null</code>. In this case the header
+         * caption is used, see {@link #setHeaderCaption(String)}.
+         * 
          * @since 7.5.0
          * @param hidingToggleCaption
          *            the caption for the hiding toggle for this column
@@ -4351,7 +4577,7 @@ public class Grid<T> extends ResizeComposite implements
 
         /**
          * Gets the hiding toggle caption for this column.
-         *
+         * 
          * @since 7.5.0
          * @see #setHidingToggleCaption(String)
          * @return the hiding toggle's caption for this column
@@ -4395,7 +4621,7 @@ public class Grid<T> extends ResizeComposite implements
          * This action is done "finally", once the current execution loop
          * returns. This is done to reduce overhead of unintentionally always
          * recalculate all columns, when modifying several columns at once.
-         *
+         * 
          * @param pixels
          *            the minimum width
          * @return this column
@@ -4424,7 +4650,7 @@ public class Grid<T> extends ResizeComposite implements
          * This action is done "finally", once the current execution loop
          * returns. This is done to reduce overhead of unintentionally always
          * recalculate all columns, when modifying several columns at once.
-         *
+         * 
          * @param pixels
          *            the maximum width
          * @param immediately
@@ -4472,7 +4698,7 @@ public class Grid<T> extends ResizeComposite implements
          * This action is done "finally", once the current execution loop
          * returns. This is done to reduce overhead of unintentionally always
          * recalculate all columns, when modifying several columns at once.
-         *
+         * 
          * @param expandRatio
          *            the expand ratio of this column. {@code 0} to not have it
          *            expand at all. A negative number to clear the expand
@@ -4491,7 +4717,7 @@ public class Grid<T> extends ResizeComposite implements
          * Clears the column's expand ratio.
          * <p>
          * Same as calling {@link #setExpandRatio(int) setExpandRatio(-1)}
-         *
+         * 
          * @return this column
          */
         public Column<C, T> clearExpandRatio() {
@@ -4500,7 +4726,7 @@ public class Grid<T> extends ResizeComposite implements
 
         /**
          * Gets the minimum width for this column.
-         *
+         * 
          * @return the minimum width for this column
          * @see #setMinimumWidth(double)
          */
@@ -4510,7 +4736,7 @@ public class Grid<T> extends ResizeComposite implements
 
         /**
          * Gets the maximum width for this column.
-         *
+         * 
          * @return the maximum width for this column
          * @see #setMaximumWidth(double)
          */
@@ -4520,7 +4746,7 @@ public class Grid<T> extends ResizeComposite implements
 
         /**
          * Gets the expand ratio for this column.
-         *
+         * 
          * @return the expand ratio for this column
          * @see #setExpandRatio(int)
          */
@@ -4531,15 +4757,15 @@ public class Grid<T> extends ResizeComposite implements
         /**
          * Sets whether the values in this column should be editable by the user
          * when the row editor is active. By default columns are editable.
-         *
+         * 
          * @param editable
          *            {@code true} to set this column editable, {@code false}
          *            otherwise
          * @return this column
-         *
+         * 
          * @throws IllegalStateException
          *             if the editor is currently active
-         *
+         * 
          * @see Grid#editRow(int)
          * @see Grid#isEditorActive()
          */
@@ -4555,10 +4781,10 @@ public class Grid<T> extends ResizeComposite implements
         /**
          * Returns whether the values in this column are editable by the user
          * when the row editor is active.
-         *
+         * 
          * @return {@code true} if this column is editable, {@code false}
          *         otherwise
-         *
+         * 
          * @see #setEditable(boolean)
          */
         public boolean isEditable() {
@@ -4579,6 +4805,17 @@ public class Grid<T> extends ResizeComposite implements
                  * attached to a grid.
                  */
             }
+        }
+
+        /**
+         * Resets the default header cell contents to column header captions.
+         * 
+         * @since 7.5.1
+         * @param cell
+         *            default header cell for this column
+         */
+        protected void setDefaultHeaderContent(HeaderCell cell) {
+            cell.setText(headerCaption);
         }
     }
 
@@ -4658,7 +4895,7 @@ public class Grid<T> extends ResizeComposite implements
                 setStyleName(rowElement, rowHasDataStyleName, hasData);
             }
 
-            boolean isEvenIndex = (row.getRow() % 2 == 0);
+            boolean isEvenIndex = row.getRow() % 2 == 0;
             setStyleName(rowElement, rowStripeStyleName, !isEvenIndex);
 
             rowReference.set(rowIndex, rowData, rowElement);
@@ -4812,11 +5049,11 @@ public class Grid<T> extends ResizeComposite implements
 
     protected class StaticSectionUpdater implements EscalatorUpdater {
 
-        private StaticSection<?> section;
-        private RowContainer container;
+        private final StaticSection<?> section;
+        private final RowContainer container;
 
         public StaticSectionUpdater(StaticSection<?> section,
-                                    RowContainer container) {
+                RowContainer container) {
             super();
             this.section = section;
             this.container = container;
@@ -4833,35 +5070,29 @@ public class Grid<T> extends ResizeComposite implements
                 final StaticSection.StaticCell metadata = staticRow
                         .getCell(columns.get(cell.getColumn()));
 
-                boolean updateCellData = true;
                 // Decorate default row with sorting indicators
                 if (staticRow instanceof HeaderRow) {
                     addSortingIndicatorsToHeaderRow((HeaderRow) staticRow, cell);
-
-                    if (isHeaderSelectionColumn(row, cell)) {
-                        updateCellData = false;
-                    }
                 }
 
                 // Assign colspan to cell before rendering
                 cell.setColSpan(metadata.getColspan());
 
                 TableCellElement element = cell.getElement();
-                if (updateCellData) {
-                    switch (metadata.getType()) {
-                        case TEXT:
-                            element.setInnerText(metadata.getText());
-                            break;
-                        case HTML:
-                            element.setInnerHTML(metadata.getHtml());
-                            break;
-                        case WIDGET:
-                            preDetach(row, Arrays.asList(cell));
-                            element.setInnerHTML("");
-                            postAttach(row, Arrays.asList(cell));
-                            break;
-                    }
+                switch (metadata.getType()) {
+                case TEXT:
+                    element.setInnerText(metadata.getText());
+                    break;
+                case HTML:
+                    element.setInnerHTML(metadata.getHtml());
+                    break;
+                case WIDGET:
+                    preDetach(row, Arrays.asList(cell));
+                    element.setInnerHTML("");
+                    postAttach(row, Arrays.asList(cell));
+                    break;
                 }
+
                 setCustomStyleName(element, metadata.getStyleName());
 
                 cellFocusHandler.updateFocusedCellStyle(cell, container);
@@ -4869,7 +5100,7 @@ public class Grid<T> extends ResizeComposite implements
         }
 
         private void addSortingIndicatorsToHeaderRow(HeaderRow headerRow,
-                                                     FlyweightCell cell) {
+                FlyweightCell cell) {
 
             cleanup(cell);
 
@@ -4920,27 +5151,6 @@ public class Grid<T> extends ResizeComposite implements
 
         @Override
         public void preAttach(Row row, Iterable<FlyweightCell> cellsToAttach) {
-            // Add select all checkbox if needed on rebuild.
-            for (FlyweightCell cell : cellsToAttach) {
-                if (isHeaderSelectionColumn(row, cell)) {
-                    selectionColumn.addSelectAllToDefaultHeader();
-                }
-            }
-        }
-
-        /**
-         * Check if selectionColumn in the default header row
-         */
-        private boolean isHeaderSelectionColumn(Row row, FlyweightCell cell) {
-            return selectionColumn != null && isDefaultHeaderRow(row)
-                    && getColumn(cell.getColumn()).equals(selectionColumn);
-        }
-
-        /**
-         * Row is the default header row.
-         */
-        private boolean isDefaultHeaderRow(Row row) {
-            return section.getRow(row.getRow()).equals(header.getDefaultRow());
         }
 
         @Override
@@ -5071,9 +5281,12 @@ public class Grid<T> extends ResizeComposite implements
                 if (event.getNativeKeyCode() != KeyCodes.KEY_ENTER) {
                     return;
                 }
-
-                sorter.sort(event.getFocusedCell().getColumn(),
-                        event.isShiftKeyDown());
+                if (getHeader().getRow(event.getFocusedCell().getRowIndex())
+                        .isDefault()) {
+                    // Only sort for enter on the default header
+                    sorter.sort(event.getFocusedCell().getColumn(),
+                            event.isShiftKeyDown());
+                }
             }
         });
 
@@ -5137,9 +5350,9 @@ public class Grid<T> extends ResizeComposite implements
      * Creates the escalator updater used to update the header rows in this
      * grid. The updater is invoked when header rows or columns are added or
      * removed, or the content of existing header cells is changed.
-     *
+     * 
      * @return the new header updater instance
-     *
+     * 
      * @see GridHeader
      * @see Grid#getHeader()
      */
@@ -5152,7 +5365,7 @@ public class Grid<T> extends ResizeComposite implements
      * The updater is invoked when body rows or columns are added or removed,
      * the content of body cells is changed, or the body is scrolled to expose
      * previously hidden content.
-     *
+     * 
      * @return the new body updater instance
      */
     protected EscalatorUpdater createBodyUpdater() {
@@ -5163,9 +5376,9 @@ public class Grid<T> extends ResizeComposite implements
      * Creates the escalator updater used to update the footer rows in this
      * grid. The updater is invoked when header rows or columns are added or
      * removed, or the content of existing header cells is changed.
-     *
+     * 
      * @return the new footer updater instance
-     *
+     * 
      * @see GridFooter
      * @see #getFooter()
      */
@@ -5175,7 +5388,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Refreshes header or footer rows on demand
-     *
+     * 
      * @param rows
      *            The row container
      * @param firstRowIsVisible
@@ -5223,7 +5436,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Adds columns as the last columns in the grid.
-     *
+     * 
      * @param columns
      *            the columns to add
      */
@@ -5236,7 +5449,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Adds a column as the last column in the grid.
-     *
+     * 
      * @param column
      *            the column to add
      * @return given column
@@ -5248,13 +5461,13 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Inserts a column into a specific position in the grid.
-     *
+     * 
      * @param index
      *            the index where the column should be inserted into
      * @param column
      *            the column to add
      * @return given column
-     *
+     * 
      * @throws IllegalStateException
      *             if Grid's current selection model renders a selection column,
      *             and {@code index} is 0.
@@ -5273,7 +5486,7 @@ public class Grid<T> extends ResizeComposite implements
     }
 
     private void addColumnSkipSelectionColumnCheck(Column<?, T> column,
-                                                   int index) {
+            int index) {
         // Register column with grid
         columns.add(index, column);
 
@@ -5283,8 +5496,17 @@ public class Grid<T> extends ResizeComposite implements
         // Register this grid instance with the column
         ((Column<?, T>) column).setGrid(this);
 
-        // Add to escalator
-        escalator.getColumnConfiguration().insertColumns(index, 1);
+        // Grid knows about hidden columns, Escalator only knows about what is
+        // visible so column indexes do not match
+        if (!column.isHidden()) {
+            int escalatorIndex = index;
+            for (int existingColumn = 0; existingColumn < index; existingColumn++) {
+                if (getColumn(existingColumn).isHidden()) {
+                    escalatorIndex--;
+                }
+            }
+            escalator.getColumnConfiguration().insertColumns(escalatorIndex, 1);
+        }
 
         // Reapply column width
         column.reapplyWidth();
@@ -5328,7 +5550,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Removes a column from the grid.
-     *
+     * 
      * @param column
      *            the column to remove
      */
@@ -5367,7 +5589,7 @@ public class Grid<T> extends ResizeComposite implements
      * Returns the amount of columns in the grid.
      * <p>
      * <em>NOTE:</em> this includes the hidden columns in the count.
-     *
+     * 
      * @return The number of columns in the grid
      */
     public int getColumnCount() {
@@ -5378,7 +5600,7 @@ public class Grid<T> extends ResizeComposite implements
      * Returns a list columns in the grid, including hidden columns.
      * <p>
      * For currently visible columns, use {@link #getVisibleColumns()}.
-     *
+     * 
      * @return A unmodifiable list of the columns in the grid
      */
     public List<Column<?, T>> getColumns() {
@@ -5390,7 +5612,7 @@ public class Grid<T> extends ResizeComposite implements
      * Returns a list of the currently visible columns in the grid.
      * <p>
      * No {@link Column#isHidden() hidden} columns included.
-     *
+     * 
      * @since 7.5.0
      * @return A unmodifiable list of the currently visible columns in the grid
      */
@@ -5408,7 +5630,7 @@ public class Grid<T> extends ResizeComposite implements
      * Returns a column by its index in the grid.
      * <p>
      * <em>NOTE:</em> The indexing includes hidden columns.
-     *
+     * 
      * @param index
      *            the index of the column
      * @return The column in the given index
@@ -5434,7 +5656,7 @@ public class Grid<T> extends ResizeComposite implements
     /**
      * Returns the header section of this grid. The default header contains a
      * single row displaying the column captions.
-     *
+     * 
      * @return the header
      */
     protected Header getHeader() {
@@ -5443,7 +5665,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Gets the header row at given index.
-     *
+     * 
      * @param rowIndex
      *            0 based index for row. Counted from top to bottom
      * @return header row at given index
@@ -5458,11 +5680,11 @@ public class Grid<T> extends ResizeComposite implements
      * Inserts a new row at the given position to the header section. Shifts the
      * row currently at that position and any subsequent rows down (adds one to
      * their indices).
-     *
+     * 
      * @param index
      *            the position at which to insert the row
      * @return the new row
-     *
+     * 
      * @throws IllegalArgumentException
      *             if the index is less than 0 or greater than row count
      * @see #appendHeaderRow()
@@ -5476,7 +5698,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Adds a new row at the bottom of the header section.
-     *
+     * 
      * @return the new row
      * @see #prependHeaderRow()
      * @see #addHeaderRowAt(int)
@@ -5491,7 +5713,7 @@ public class Grid<T> extends ResizeComposite implements
      * Returns the current default row of the header section. The default row is
      * a special header row providing a user interface for sorting columns.
      * Setting a header caption for column updates cells in the default header.
-     *
+     * 
      * @return the default row or null if no default row set
      */
     public HeaderRow getDefaultHeaderRow() {
@@ -5500,7 +5722,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Gets the row count for the header section.
-     *
+     * 
      * @return row count
      */
     public int getHeaderRowCount() {
@@ -5509,7 +5731,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Adds a new row at the top of the header section.
-     *
+     * 
      * @return the new row
      * @see #appendHeaderRow()
      * @see #addHeaderRowAt(int)
@@ -5522,10 +5744,10 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Removes the given row from the header section.
-     *
+     * 
      * @param row
      *            the row to be removed
-     *
+     * 
      * @throws IllegalArgumentException
      *             if the row does not exist in this section
      * @see #removeHeaderRow(int)
@@ -5539,10 +5761,10 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Removes the row at the given position from the header section.
-     *
+     * 
      * @param index
      *            the position of the row
-     *
+     * 
      * @throws IllegalArgumentException
      *             if no row exists at given index
      * @see #removeHeaderRow(HeaderRow)
@@ -5557,10 +5779,13 @@ public class Grid<T> extends ResizeComposite implements
     /**
      * Sets the default row of the header. The default row is a special header
      * row providing a user interface for sorting columns.
-     *
+     * <p>
+     * Note: Setting the default header row will reset all cell contents to
+     * Column defaults.
+     * 
      * @param row
      *            the new default row, or null for no default row
-     *
+     * 
      * @throws IllegalArgumentException
      *             header does not contain the row
      */
@@ -5570,7 +5795,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Sets the visibility of the header section.
-     *
+     * 
      * @param visible
      *            true to show header section, false to hide
      */
@@ -5580,7 +5805,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Returns the visibility of the header section.
-     *
+     * 
      * @return true if visible, false otherwise.
      */
     public boolean isHeaderVisible() {
@@ -5591,7 +5816,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Returns the footer section of this grid. The default footer is empty.
-     *
+     * 
      * @return the footer
      */
     protected Footer getFooter() {
@@ -5600,7 +5825,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Gets the footer row at given index.
-     *
+     * 
      * @param rowIndex
      *            0 based index for row. Counted from top to bottom
      * @return footer row at given index
@@ -5615,11 +5840,11 @@ public class Grid<T> extends ResizeComposite implements
      * Inserts a new row at the given position to the footer section. Shifts the
      * row currently at that position and any subsequent rows down (adds one to
      * their indices).
-     *
+     * 
      * @param index
      *            the position at which to insert the row
      * @return the new row
-     *
+     * 
      * @throws IllegalArgumentException
      *             if the index is less than 0 or greater than row count
      * @see #appendFooterRow()
@@ -5633,7 +5858,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Adds a new row at the bottom of the footer section.
-     *
+     * 
      * @return the new row
      * @see #prependFooterRow()
      * @see #addFooterRowAt(int)
@@ -5646,7 +5871,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Gets the row count for the footer.
-     *
+     * 
      * @return row count
      */
     public int getFooterRowCount() {
@@ -5655,7 +5880,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Adds a new row at the top of the footer section.
-     *
+     * 
      * @return the new row
      * @see #appendFooterRow()
      * @see #addFooterRowAt(int)
@@ -5668,10 +5893,10 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Removes the given row from the footer section.
-     *
+     * 
      * @param row
      *            the row to be removed
-     *
+     * 
      * @throws IllegalArgumentException
      *             if the row does not exist in this section
      * @see #removeFooterRow(int)
@@ -5685,10 +5910,10 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Removes the row at the given position from the footer section.
-     *
+     * 
      * @param index
      *            the position of the row
-     *
+     * 
      * @throws IllegalArgumentException
      *             if no row exists at given index
      * @see #removeFooterRow(FooterRow)
@@ -5702,7 +5927,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Sets the visibility of the footer section.
-     *
+     * 
      * @param visible
      *            true to show footer section, false to hide
      */
@@ -5712,7 +5937,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Returns the visibility of the footer section.
-     *
+     * 
      * @return true if visible, false otherwise.
      */
     public boolean isFooterVisible() {
@@ -5732,7 +5957,7 @@ public class Grid<T> extends ResizeComposite implements
      * <p>
      * <em>Note:</em> This method will change the widget's size in the browser
      * only if {@link #getHeightMode()} returns {@link HeightMode#CSS}.
-     *
+     * 
      * @see #setHeightMode(HeightMode)
      */
     @Override
@@ -5747,7 +5972,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Sets the data source used by this grid.
-     *
+     * 
      * @param dataSource
      *            the data source to use, not null
      * @throws IllegalArgumentException
@@ -5798,6 +6023,12 @@ public class Grid<T> extends ResizeComposite implements
                 RowContainer body = escalator.getBody();
                 int oldSize = body.getRowCount();
 
+                // Hide all details.
+                Set<Integer> oldDetails = new HashSet<Integer>(visibleDetails);
+                for (int i : oldDetails) {
+                    setDetailsVisible(i, false);
+                }
+
                 if (newSize > oldSize) {
                     body.insertRows(oldSize, newSize - oldSize);
                     cellFocusHandler.rowsAddedToBody(Range.withLength(oldSize,
@@ -5847,7 +6078,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Gets the {@Link DataSource} for this Grid.
-     *
+     * 
      * @return the data source used by this grid
      */
     public DataSource<T> getDataSource() {
@@ -5861,10 +6092,10 @@ public class Grid<T> extends ResizeComposite implements
      * -1 will also disable the selection column.
      * <p>
      * The default value is 0.
-     *
+     * 
      * @param numberOfColumns
      *            the number of columns that should be frozen
-     *
+     * 
      * @throws IllegalArgumentException
      *             if the column count is < -1 or > the number of visible
      *             columns
@@ -5881,7 +6112,12 @@ public class Grid<T> extends ResizeComposite implements
     }
 
     private void updateFrozenColumns() {
-        int numberOfColumns = frozenColumnCount;
+        escalator.getColumnConfiguration().setFrozenColumnCount(
+                getVisibleFrozenColumnCount());
+    }
+
+    private int getVisibleFrozenColumnCount() {
+        int numberOfColumns = getFrozenColumnCount();
 
         // for the escalator the hidden columns are not in the frozen column
         // count, but for grid they are. thus need to convert the index
@@ -5896,9 +6132,7 @@ public class Grid<T> extends ResizeComposite implements
         } else if (selectionColumn != null) {
             numberOfColumns++;
         }
-
-        escalator.getColumnConfiguration()
-                .setFrozenColumnCount(numberOfColumns);
+        return numberOfColumns;
     }
 
     /**
@@ -5909,7 +6143,7 @@ public class Grid<T> extends ResizeComposite implements
      * <p>
      * <em>NOTE:</em> This includes {@link Column#isHidden() hidden columns} in
      * the count.
-     *
+     * 
      * @return the number of frozen columns
      */
     public int getFrozenColumnCount() {
@@ -5931,7 +6165,7 @@ public class Grid<T> extends ResizeComposite implements
      * <p>
      * If the details for that row are visible, those will be taken into account
      * as well.
-     *
+     * 
      * @param rowIndex
      *            zero-based index of the row to scroll to.
      * @throws IllegalArgumentException
@@ -5948,7 +6182,7 @@ public class Grid<T> extends ResizeComposite implements
      * <p>
      * If the details for that row are visible, those will be taken into account
      * as well.
-     *
+     * 
      * @param rowIndex
      *            zero-based index of the row to scroll to.
      * @param destination
@@ -5970,7 +6204,7 @@ public class Grid<T> extends ResizeComposite implements
      * <p>
      * If the details for that row are visible, those will be taken into account
      * as well.
-     *
+     * 
      * @param rowIndex
      *            zero-based index of the row to scroll to.
      * @param destination
@@ -5986,7 +6220,7 @@ public class Grid<T> extends ResizeComposite implements
      *             zero or above the row count of the data source.
      */
     private void scrollToRow(int rowIndex, ScrollDestination destination,
-                             int paddingPx) throws IllegalArgumentException {
+            int paddingPx) throws IllegalArgumentException {
         int maxsize = escalator.getBody().getRowCount() - 1;
 
         if (rowIndex < 0) {
@@ -6019,7 +6253,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Sets the vertical scroll offset.
-     *
+     * 
      * @param px
      *            the number of pixels this grid should be scrolled down
      */
@@ -6029,7 +6263,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Gets the vertical scroll offset
-     *
+     * 
      * @return the number of pixels this grid is scrolled down
      */
     public double getScrollTop() {
@@ -6038,7 +6272,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Sets the horizontal scroll offset
-     *
+     * 
      * @since 7.5.0
      * @param px
      *            the number of pixels this grid should be scrolled right
@@ -6049,7 +6283,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Gets the horizontal scroll offset
-     *
+     * 
      * @return the number of pixels this grid is scrolled to the right
      */
     public double getScrollLeft() {
@@ -6058,7 +6292,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Returns the height of the scrollable area in pixels.
-     *
+     * 
      * @since 7.5.0
      * @return the height of the scrollable area in pixels
      */
@@ -6068,7 +6302,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Returns the width of the scrollable area in pixels.
-     *
+     * 
      * @since 7.5.0
      * @return the width of the scrollable area in pixels.
      */
@@ -6086,7 +6320,7 @@ public class Grid<T> extends ResizeComposite implements
      * <p>
      * If Grid is currently not in {@link HeightMode#ROW}, the given value is
      * remembered, and applied once the mode is applied.
-     *
+     * 
      * @param rows
      *            The height in terms of number of rows displayed in Grid's
      *            body. If Grid doesn't contain enough rows, white space is
@@ -6098,7 +6332,7 @@ public class Grid<T> extends ResizeComposite implements
      *             infinite}
      * @throws IllegalArgumentException
      *             if {@code rows} is {@link Double#isNaN(double) NaN}
-     *
+     * 
      * @see #setHeightMode(HeightMode)
      */
     public void setHeightByRows(double rows) throws IllegalArgumentException {
@@ -6110,7 +6344,7 @@ public class Grid<T> extends ResizeComposite implements
      * {@link #getHeightMode()} is {@link HeightMode#ROW}.
      * <p>
      * By default, it is {@value Escalator#DEFAULT_HEIGHT_BY_ROWS}.
-     *
+     * 
      * @return the amount of rows that should be shown in Grid's body, while in
      *         {@link HeightMode#ROW}.
      * @see #setHeightByRows(double)
@@ -6130,7 +6364,7 @@ public class Grid<T> extends ResizeComposite implements
      * <em>Note:</em> If headers/footers are inserted or removed, the widget
      * will resize itself to still display the required amount of rows in its
      * body. It also takes the horizontal scrollbar into account.
-     *
+     * 
      * @param heightMode
      *            the mode in to which Grid should be set
      */
@@ -6152,7 +6386,7 @@ public class Grid<T> extends ResizeComposite implements
      * Returns the current {@link HeightMode} the Grid is in.
      * <p>
      * Defaults to {@link HeightMode#CSS}.
-     *
+     * 
      * @return the current HeightMode
      */
     public HeightMode getHeightMode() {
@@ -6214,7 +6448,7 @@ public class Grid<T> extends ResizeComposite implements
 
         assert cell != null : "received " + eventType
                 + "-event with a null cell target";
-        eventCell.set(cell);
+        eventCell.set(cell, getSectionFromContainer(container));
 
         // Editor can steal focus from Grid and is still handled
         if (handleEditorEvent(event, container)) {
@@ -6239,14 +6473,24 @@ public class Grid<T> extends ResizeComposite implements
                 return;
             }
 
-            if (handleNavigationEvent(event, container)) {
-                return;
-            }
-
             if (handleCellFocusEvent(event, container)) {
                 return;
             }
         }
+    }
+
+    private Section getSectionFromContainer(RowContainer container) {
+        assert container != null : "RowContainer should not be null";
+
+        if (container == escalator.getBody()) {
+            return Section.BODY;
+        } else if (container == escalator.getFooter()) {
+            return Section.FOOTER;
+        } else if (container == escalator.getHeader()) {
+            return Section.HEADER;
+        }
+        assert false : "RowContainer was not header, footer or body.";
+        return null;
     }
 
     private boolean isOrContainsInSpacer(Node node) {
@@ -6286,24 +6530,49 @@ public class Grid<T> extends ResizeComposite implements
 
     private boolean handleEditorEvent(Event event, RowContainer container) {
 
+        final boolean closeEvent = event.getTypeInt() == Event.ONKEYDOWN
+                && event.getKeyCode() == Editor.KEYCODE_HIDE;
+
+        double now = Duration.currentTimeMillis();
+        int currentX = WidgetUtil.getTouchOrMouseClientX(event);
+        int currentY = WidgetUtil.getTouchOrMouseClientY(event);
+
+        final boolean validTouchOpenEvent = event.getTypeInt() == Event.ONTOUCHEND
+                && now - lastTouchEventTime < 500
+                && lastTouchEventRow == eventCell.getRowIndex()
+                && Math.abs(lastTouchEventX - currentX) < 20
+                && Math.abs(lastTouchEventY - currentY) < 20;
+
+        final boolean openEvent = event.getTypeInt() == Event.ONDBLCLICK
+                || event.getTypeInt() == Event.ONKEYDOWN
+                && event.getKeyCode() == Editor.KEYCODE_SHOW
+                || validTouchOpenEvent;
+
+        if (event.getTypeInt() == Event.ONTOUCHSTART) {
+            lastTouchEventX = currentX;
+            lastTouchEventY = currentY;
+        }
+
+        if (event.getTypeInt() == Event.ONTOUCHEND) {
+            lastTouchEventTime = now;
+            lastTouchEventRow = eventCell.getRowIndex();
+        }
+
         if (editor.getState() != Editor.State.INACTIVE) {
-            if (event.getTypeInt() == Event.ONKEYDOWN
-                    && event.getKeyCode() == Editor.KEYCODE_HIDE) {
+            if (closeEvent) {
                 editor.cancel();
+                FocusUtil.setFocus(this, true);
             }
             return true;
         }
 
-        if (container == escalator.getBody() && editor.isEnabled()) {
-            if (event.getTypeInt() == Event.ONDBLCLICK) {
-                editor.editRow(eventCell.getRowIndex());
-                return true;
-            } else if (event.getTypeInt() == Event.ONKEYDOWN
-                    && event.getKeyCode() == Editor.KEYCODE_SHOW) {
-                editor.editRow(cellFocusHandler.rowWithFocus);
-                return true;
-            }
+        if (container == escalator.getBody() && editor.isEnabled() && openEvent) {
+            editor.editRow(eventCell.getRowIndex(),
+                    eventCell.getColumnIndexDOM());
+            event.preventDefault();
+            return true;
         }
+
         return false;
     }
 
@@ -6343,58 +6612,8 @@ public class Grid<T> extends ResizeComposite implements
         return false;
     }
 
-    private boolean handleNavigationEvent(Event event, RowContainer unused) {
-        if (!event.getType().equals(BrowserEvents.KEYDOWN)) {
-            // Only handle key downs
-            return false;
-        }
-
-        int newRow = -1;
-        RowContainer container = escalator.getBody();
-        switch (event.getKeyCode()) {
-            case KeyCodes.KEY_HOME:
-                if (container.getRowCount() > 0) {
-                    newRow = 0;
-                }
-                break;
-            case KeyCodes.KEY_END:
-                if (container.getRowCount() > 0) {
-                    newRow = container.getRowCount() - 1;
-                }
-                break;
-            case KeyCodes.KEY_PAGEUP: {
-                Range range = escalator.getVisibleRowRange();
-                if (!range.isEmpty()) {
-                    int firstIndex = getFirstVisibleRowIndex();
-                    newRow = firstIndex - range.length();
-                    if (newRow < 0) {
-                        newRow = 0;
-                    }
-                }
-                break;
-            }
-            case KeyCodes.KEY_PAGEDOWN: {
-                Range range = escalator.getVisibleRowRange();
-                if (!range.isEmpty()) {
-                    int lastIndex = getLastVisibleRowIndex();
-                    newRow = lastIndex + range.length();
-                    if (newRow >= container.getRowCount()) {
-                        newRow = container.getRowCount() - 1;
-                    }
-                }
-                break;
-            }
-            default:
-                return false;
-        }
-
-        scrollToRow(newRow);
-
-        return true;
-    }
-
     private boolean handleHeaderCellDragStartEvent(Event event,
-                                                   RowContainer container) {
+            RowContainer container) {
         if (!isColumnReorderingAllowed()) {
             return false;
         }
@@ -6421,13 +6640,14 @@ public class Grid<T> extends ResizeComposite implements
     private Point rowEventTouchStartingPoint;
     private CellStyleGenerator<T> cellStyleGenerator;
     private RowStyleGenerator<T> rowStyleGenerator;
-    private RowReference<T> rowReference = new RowReference<T>(this);
-    private CellReference<T> cellReference = new CellReference<T>(rowReference);
-    private RendererCellReference rendererCellReference = new RendererCellReference(
+    private final RowReference<T> rowReference = new RowReference<T>(this);
+    private final CellReference<T> cellReference = new CellReference<T>(
+            rowReference);
+    private final RendererCellReference rendererCellReference = new RendererCellReference(
             (RowReference<Object>) rowReference);
 
     private boolean handleHeaderDefaultRowEvent(Event event,
-                                                RowContainer container) {
+            RowContainer container) {
         if (container != escalator.getHeader()) {
             return false;
         }
@@ -6634,7 +6854,7 @@ public class Grid<T> extends ResizeComposite implements
      * Sets the current selection model.
      * <p>
      * This function will call {@link SelectionModel#setGrid(Grid)}.
-     *
+     * 
      * @param selectionModel
      *            a selection model implementation.
      * @throws IllegalArgumentException
@@ -6655,11 +6875,14 @@ public class Grid<T> extends ResizeComposite implements
         selectionModel.setGrid(this);
         setSelectColumnRenderer(this.selectionModel
                 .getSelectionColumnRenderer());
+
+        // Refresh rendered rows to update selection, if it has changed
+        refreshBody();
     }
 
     /**
      * Gets a reference to the current selection model.
-     *
+     * 
      * @return the currently used SelectionModel instance.
      */
     public SelectionModel<T> getSelectionModel() {
@@ -6670,7 +6893,7 @@ public class Grid<T> extends ResizeComposite implements
      * Sets current selection mode.
      * <p>
      * This is a shorthand method for {@link Grid#setSelectionModel}.
-     *
+     * 
      * @param mode
      *            a selection mode value
      * @see {@link SelectionMode}.
@@ -6682,7 +6905,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Test if a row is selected.
-     *
+     * 
      * @param row
      *            a row object
      * @return true, if the current selection model considers the provided row
@@ -6698,7 +6921,7 @@ public class Grid<T> extends ResizeComposite implements
      * Only selection models implementing {@link SelectionModel.Single} and
      * {@link SelectionModel.Multi} are supported; for anything else, an
      * exception will be thrown.
-     *
+     * 
      * @param row
      *            a row object
      * @return <code>true</code> iff the current selection changed
@@ -6723,7 +6946,7 @@ public class Grid<T> extends ResizeComposite implements
      * Only selection models implementing {@link SelectionModel.Single} and
      * {@link SelectionModel.Multi} are supported; for anything else, an
      * exception will be thrown.
-     *
+     * 
      * @param row
      *            a row object
      * @return <code>true</code> iff the current selection changed
@@ -6748,7 +6971,7 @@ public class Grid<T> extends ResizeComposite implements
      * Only selection models implementing {@link SelectionModel.Single} are
      * valid for this method; for anything else, use the
      * {@link Grid#getSelectedRows()} method.
-     *
+     * 
      * @return a selected row reference, or null, if no row is selected
      * @throws IllegalStateException
      *             if the current selection model is not an instance of
@@ -6765,7 +6988,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Gets currently selected rows from the current selection model.
-     *
+     * 
      * @return a non-null collection containing all currently selected rows.
      */
     public Collection<T> getSelectedRows() {
@@ -6781,7 +7004,7 @@ public class Grid<T> extends ResizeComposite implements
     /**
      * Sets the current sort order using the fluid Sort API. Read the
      * documentation for {@link Sort} for more information.
-     *
+     * 
      * @param s
      *            a sort instance
      */
@@ -6791,7 +7014,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Sorts the Grid data in ascending order along one column.
-     *
+     * 
      * @param column
      *            a grid column reference
      */
@@ -6801,7 +7024,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Sorts the Grid data along one column.
-     *
+     * 
      * @param column
      *            a grid column reference
      * @param direction
@@ -6814,7 +7037,7 @@ public class Grid<T> extends ResizeComposite implements
     /**
      * Sets the sort order to use. Setting this causes the Grid to re-sort
      * itself.
-     *
+     * 
      * @param order
      *            a sort order list. If set to null, the sort order is cleared.
      */
@@ -6834,7 +7057,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Get a copy of the current sort order array.
-     *
+     * 
      * @return a copy of the current sort order array
      */
     public List<SortOrder> getSortOrder() {
@@ -6857,7 +7080,7 @@ public class Grid<T> extends ResizeComposite implements
      * Register a GWT event handler for a sorting event. This handler gets
      * called whenever this Grid needs its data source to provide data sorted in
      * a specific order.
-     *
+     * 
      * @param handler
      *            a sort event handler
      * @return the registration for the event
@@ -6869,7 +7092,7 @@ public class Grid<T> extends ResizeComposite implements
     /**
      * Register a GWT event handler for a select all event. This handler gets
      * called whenever Grid needs all rows selected.
-     *
+     * 
      * @param handler
      *            a select all event handler
      */
@@ -6884,7 +7107,7 @@ public class Grid<T> extends ResizeComposite implements
      * <p>
      * This handle will be fired with the current available data after
      * registration is done.
-     *
+     * 
      * @param handler
      *            a data available event handler
      * @return the registartion for the event
@@ -6908,7 +7131,7 @@ public class Grid<T> extends ResizeComposite implements
      * Register a BodyKeyDownHandler to this Grid. The event for this handler is
      * fired when a KeyDown event occurs while cell focus is in the Body of this
      * Grid.
-     *
+     * 
      * @param handler
      *            the key handler to register
      * @return the registration for the event
@@ -6921,7 +7144,7 @@ public class Grid<T> extends ResizeComposite implements
      * Register a BodyKeyUpHandler to this Grid. The event for this handler is
      * fired when a KeyUp event occurs while cell focus is in the Body of this
      * Grid.
-     *
+     * 
      * @param handler
      *            the key handler to register
      * @return the registration for the event
@@ -6934,7 +7157,7 @@ public class Grid<T> extends ResizeComposite implements
      * Register a BodyKeyPressHandler to this Grid. The event for this handler
      * is fired when a KeyPress event occurs while cell focus is in the Body of
      * this Grid.
-     *
+     * 
      * @param handler
      *            the key handler to register
      * @return the registration for the event
@@ -6948,7 +7171,7 @@ public class Grid<T> extends ResizeComposite implements
      * Register a HeaderKeyDownHandler to this Grid. The event for this handler
      * is fired when a KeyDown event occurs while cell focus is in the Header of
      * this Grid.
-     *
+     * 
      * @param handler
      *            the key handler to register
      * @return the registration for the event
@@ -6962,7 +7185,7 @@ public class Grid<T> extends ResizeComposite implements
      * Register a HeaderKeyUpHandler to this Grid. The event for this handler is
      * fired when a KeyUp event occurs while cell focus is in the Header of this
      * Grid.
-     *
+     * 
      * @param handler
      *            the key handler to register
      * @return the registration for the event
@@ -6975,7 +7198,7 @@ public class Grid<T> extends ResizeComposite implements
      * Register a HeaderKeyPressHandler to this Grid. The event for this handler
      * is fired when a KeyPress event occurs while cell focus is in the Header
      * of this Grid.
-     *
+     * 
      * @param handler
      *            the key handler to register
      * @return the registration for the event
@@ -6989,7 +7212,7 @@ public class Grid<T> extends ResizeComposite implements
      * Register a FooterKeyDownHandler to this Grid. The event for this handler
      * is fired when a KeyDown event occurs while cell focus is in the Footer of
      * this Grid.
-     *
+     * 
      * @param handler
      *            the key handler to register
      * @return the registration for the event
@@ -7003,7 +7226,7 @@ public class Grid<T> extends ResizeComposite implements
      * Register a FooterKeyUpHandler to this Grid. The event for this handler is
      * fired when a KeyUp event occurs while cell focus is in the Footer of this
      * Grid.
-     *
+     * 
      * @param handler
      *            the key handler to register
      * @return the registration for the event
@@ -7016,7 +7239,7 @@ public class Grid<T> extends ResizeComposite implements
      * Register a FooterKeyPressHandler to this Grid. The event for this handler
      * is fired when a KeyPress event occurs while cell focus is in the Footer
      * of this Grid.
-     *
+     * 
      * @param handler
      *            the key handler to register
      * @return the registration for the event
@@ -7029,7 +7252,7 @@ public class Grid<T> extends ResizeComposite implements
     /**
      * Register a BodyClickHandler to this Grid. The event for this handler is
      * fired when a Click event occurs in the Body of this Grid.
-     *
+     * 
      * @param handler
      *            the click handler to register
      * @return the registration for the event
@@ -7041,7 +7264,7 @@ public class Grid<T> extends ResizeComposite implements
     /**
      * Register a HeaderClickHandler to this Grid. The event for this handler is
      * fired when a Click event occurs in the Header of this Grid.
-     *
+     * 
      * @param handler
      *            the click handler to register
      * @return the registration for the event
@@ -7053,7 +7276,7 @@ public class Grid<T> extends ResizeComposite implements
     /**
      * Register a FooterClickHandler to this Grid. The event for this handler is
      * fired when a Click event occurs in the Footer of this Grid.
-     *
+     * 
      * @param handler
      *            the click handler to register
      * @return the registration for the event
@@ -7066,7 +7289,7 @@ public class Grid<T> extends ResizeComposite implements
      * Register a BodyDoubleClickHandler to this Grid. The event for this
      * handler is fired when a double click event occurs in the Body of this
      * Grid.
-     *
+     * 
      * @param handler
      *            the double click handler to register
      * @return the registration for the event
@@ -7080,7 +7303,7 @@ public class Grid<T> extends ResizeComposite implements
      * Register a HeaderDoubleClickHandler to this Grid. The event for this
      * handler is fired when a double click event occurs in the Header of this
      * Grid.
-     *
+     * 
      * @param handler
      *            the double click handler to register
      * @return the registration for the event
@@ -7094,7 +7317,7 @@ public class Grid<T> extends ResizeComposite implements
      * Register a FooterDoubleClickHandler to this Grid. The event for this
      * handler is fired when a double click event occurs in the Footer of this
      * Grid.
-     *
+     * 
      * @param handler
      *            the double click handler to register
      * @return the registration for the event
@@ -7107,7 +7330,7 @@ public class Grid<T> extends ResizeComposite implements
     /**
      * Register a column reorder handler to this Grid. The event for this
      * handler is fired when the Grid's columns are reordered.
-     *
+     * 
      * @since 7.5.0
      * @param handler
      *            the handler for the event
@@ -7121,7 +7344,7 @@ public class Grid<T> extends ResizeComposite implements
     /**
      * Register a column visibility change handler to this Grid. The event for
      * this handler is fired when the Grid's columns change visibility.
-     *
+     * 
      * @since 7.5.0
      * @param handler
      *            the handler for the event
@@ -7168,7 +7391,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Adds a scroll handler to this grid
-     *
+     * 
      * @param handler
      *            the scroll handler to add
      * @return a handler registration for the registered scroll handler
@@ -7185,7 +7408,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Returns whether columns can be reordered with drag and drop.
-     *
+     * 
      * @since 7.5.0
      * @return <code>true</code> if columns can be reordered, false otherwise
      */
@@ -7195,7 +7418,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Sets whether column reordering with drag and drop is allowed or not.
-     *
+     * 
      * @since 7.5.0
      * @param columnReorderingAllowed
      *            specifies whether column reordering is allowed
@@ -7208,7 +7431,7 @@ public class Grid<T> extends ResizeComposite implements
      * Sets a new column order for the grid. All columns which are not ordered
      * here will remain in the order they were before as the last columns of
      * grid.
-     *
+     * 
      * @param orderedColumns
      *            array of columns in wanted order
      */
@@ -7268,7 +7491,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Sets the style generator that is used for generating styles for cells
-     *
+     * 
      * @param cellStyleGenerator
      *            the cell style generator to set, or <code>null</code> to
      *            remove a previously set generator
@@ -7280,7 +7503,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Gets the style generator that is used for generating styles for cells
-     *
+     * 
      * @return the cell style generator, or <code>null</code> if no generator is
      *         set
      */
@@ -7290,7 +7513,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Sets the style generator that is used for generating styles for rows
-     *
+     * 
      * @param rowStyleGenerator
      *            the row style generator to set, or <code>null</code> to remove
      *            a previously set generator
@@ -7302,7 +7525,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Gets the style generator that is used for generating styles for rows
-     *
+     * 
      * @return the row style generator, or <code>null</code> if no generator is
      *         set
      */
@@ -7330,10 +7553,10 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Opens the editor over the row with the given index.
-     *
+     * 
      * @param rowIndex
      *            the index of the row to be edited
-     *
+     * 
      * @throws IllegalStateException
      *             if the editor is not enabled
      * @throws IllegalStateException
@@ -7345,7 +7568,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Returns whether the editor is currently open on some row.
-     *
+     * 
      * @return {@code true} if the editor is active, {@code false} otherwise.
      */
     public boolean isEditorActive() {
@@ -7354,7 +7577,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Saves any unsaved changes in the editor to the data source.
-     *
+     * 
      * @throws IllegalStateException
      *             if the editor is not enabled
      * @throws IllegalStateException
@@ -7367,7 +7590,7 @@ public class Grid<T> extends ResizeComposite implements
     /**
      * Cancels the currently active edit and hides the editor. Any changes that
      * are not {@link #saveEditor() saved} are lost.
-     *
+     * 
      * @throws IllegalStateException
      *             if the editor is not enabled
      * @throws IllegalStateException
@@ -7380,7 +7603,7 @@ public class Grid<T> extends ResizeComposite implements
     /**
      * Returns the handler responsible for binding data and editor widgets to
      * the editor.
-     *
+     * 
      * @return the editor handler or null if not set
      */
     public EditorHandler<T> getEditorHandler() {
@@ -7390,10 +7613,10 @@ public class Grid<T> extends ResizeComposite implements
     /**
      * Sets the handler responsible for binding data and editor widgets to the
      * editor.
-     *
+     * 
      * @param rowHandler
      *            the new editor handler
-     *
+     * 
      * @throws IllegalStateException
      *             if the editor is currently in edit mode
      */
@@ -7403,7 +7626,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Returns the enabled state of the editor.
-     *
+     * 
      * @return true if editing is enabled, false otherwise
      */
     public boolean isEditorEnabled() {
@@ -7412,10 +7635,10 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Sets the enabled state of the editor.
-     *
+     * 
      * @param enabled
      *            true to enable editing, false to disable
-     *
+     * 
      * @throws IllegalStateException
      *             if in edit mode and trying to disable
      * @throws IllegalStateException
@@ -7428,7 +7651,7 @@ public class Grid<T> extends ResizeComposite implements
     /**
      * Returns the editor widget associated with the given column. If the editor
      * is not active, returns null.
-     *
+     * 
      * @param column
      *            the column
      * @return the widget if the editor is open, null otherwise
@@ -7439,7 +7662,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Sets the caption on the save button in the Grid editor.
-     *
+     * 
      * @param saveCaption
      *            the caption to set
      * @throws IllegalArgumentException
@@ -7452,7 +7675,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Gets the current caption on the save button in the Grid editor.
-     *
+     * 
      * @return the current caption on the save button
      */
     public String getEditorSaveCaption() {
@@ -7461,7 +7684,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Sets the caption on the cancel button in the Grid editor.
-     *
+     * 
      * @param cancelCaption
      *            the caption to set
      * @throws IllegalArgumentException
@@ -7474,7 +7697,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Gets the caption on the cancel button in the Grid editor.
-     *
+     * 
      * @return the current caption on the cancel button
      */
     public String getEditorCancelCaption() {
@@ -7491,6 +7714,16 @@ public class Grid<T> extends ResizeComposite implements
     }
 
     @Override
+    protected void onDetach() {
+        Set<Integer> details = new HashSet<Integer>(visibleDetails);
+        for (int row : details) {
+            setDetailsVisible(row, false);
+        }
+
+        super.onDetach();
+    }
+
+    @Override
     public void onResize() {
         super.onResize();
         /*
@@ -7500,7 +7733,9 @@ public class Grid<T> extends ResizeComposite implements
 
             @Override
             public void execute() {
-                recalculateColumnWidths();
+                if (escalator.getInnerWidth() != autoColumnWidthsRecalculator.lastCalculatedInnerWidth) {
+                    recalculateColumnWidths();
+                }
             }
         });
     }
@@ -7510,7 +7745,7 @@ public class Grid<T> extends ResizeComposite implements
      * <p>
      * This method is implemented only because removing widgets from Grid (added
      * via e.g. {@link Renderer}s) requires the {@link HasWidgets} interface.
-     *
+     * 
      * @param w
      *            irrelevant
      * @throws UnsupportedOperationException
@@ -7528,7 +7763,7 @@ public class Grid<T> extends ResizeComposite implements
      * <p>
      * This method is implemented only because removing widgets from Grid (added
      * via e.g. {@link Renderer}s) requires the {@link HasWidgets} interface.
-     *
+     * 
      * @throws UnsupportedOperationException
      *             always
      */
@@ -7544,7 +7779,7 @@ public class Grid<T> extends ResizeComposite implements
      * <p>
      * This method is implemented only because removing widgets from Grid (added
      * via e.g. {@link Renderer}s) requires the {@link HasWidgets} interface.
-     *
+     * 
      * @return never
      * @throws UnsupportedOperationException
      *             always
@@ -7561,7 +7796,7 @@ public class Grid<T> extends ResizeComposite implements
      * <p>
      * This method is implemented only because removing widgets from Grid (added
      * via e.g. {@link Renderer}s) requires the {@link HasWidgets} interface.
-     *
+     * 
      * @return always <code>false</code>
      */
     @Override
@@ -7583,7 +7818,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Accesses the package private method Widget#setParent()
-     *
+     * 
      * @param widget
      *            The widget to access
      * @param parent
@@ -7591,17 +7826,17 @@ public class Grid<T> extends ResizeComposite implements
      */
     private static native final void setParent(Widget widget, Grid<?> parent)
     /*-{
-      widget.@com.google.gwt.user.client.ui.Widget::setParent(Lcom/google/gwt/user/client/ui/Widget;)(parent);
+        widget.@com.google.gwt.user.client.ui.Widget::setParent(Lcom/google/gwt/user/client/ui/Widget;)(parent);
     }-*/;
 
     private static native final void onAttach(Widget widget)
     /*-{
-      widget.@Widget::onAttach()();
+        widget.@Widget::onAttach()();
     }-*/;
 
     private static native final void onDetach(Widget widget)
     /*-{
-      widget.@Widget::onDetach()();
+        widget.@Widget::onDetach()();
     }-*/;
 
     @Override
@@ -7631,7 +7866,7 @@ public class Grid<T> extends ResizeComposite implements
      * Sets a new details generator for row details.
      * <p>
      * The currently opened row details will be re-rendered.
-     *
+     * 
      * @since 7.5.0
      * @param detailsGenerator
      *            the details generator to set
@@ -7654,7 +7889,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Gets the current details generator for row details.
-     *
+     * 
      * @since 7.5.0
      * @return the detailsGenerator the current details generator
      */
@@ -7667,7 +7902,7 @@ public class Grid<T> extends ResizeComposite implements
      * <p>
      * This method does nothing if trying to set show already-visible details,
      * or hide already-hidden details.
-     *
+     * 
      * @since 7.5.0
      * @param rowIndex
      *            the index of the affected row
@@ -7710,7 +7945,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Check whether the details for a row is visible or not.
-     *
+     * 
      * @since 7.5.0
      * @param rowIndex
      *            the index of the row for which to check details
@@ -7727,7 +7962,7 @@ public class Grid<T> extends ResizeComposite implements
      * The actual recalculation is not necessarily done immediately so you
      * cannot rely on the columns being the correct width after the call
      * returns.
-     *
+     * 
      * @since 7.4.1
      */
     public void recalculateColumnWidths() {
@@ -7739,7 +7974,7 @@ public class Grid<T> extends ResizeComposite implements
      * <p>
      * The grid's sidebar shows the column hiding options for those columns that
      * have been set as {@link Column#setHidable(boolean) hidable}.
-     *
+     * 
      * @since 7.5.0
      * @return the sidebar widget for this grid
      */
@@ -7754,7 +7989,7 @@ public class Grid<T> extends ResizeComposite implements
      * the items in the beginning of the menu that control the column hiding if
      * any columns are marked as hidable. A toggle for opening the menu will be
      * displayed whenever the menu contains at least one item.
-     *
+     * 
      * @since 7.5.0
      * @return the menu bar
      */
@@ -7764,7 +7999,7 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Tests whether the sidebar menu is currently open.
-     *
+     * 
      * @since 7.5.0
      * @see #getSidebarMenu()
      * @return <code>true</code> if the sidebar is open; <code>false</code> if
@@ -7776,8 +8011,8 @@ public class Grid<T> extends ResizeComposite implements
 
     /**
      * Sets whether the sidebar menu is open.
-     *
-     *
+     * 
+     * 
      * @since 7.5.0
      * @see #getSidebarMenu()
      * @see #isSidebarOpen()
@@ -7791,5 +8026,18 @@ public class Grid<T> extends ResizeComposite implements
         } else {
             sidebar.close();
         }
+    }
+
+    /**
+     * Returns the {@link EventCellReference} for the latest event fired from
+     * this Grid.
+     * <p>
+     * Note: This cell reference will be updated when firing the next event.
+     * 
+     * @since 7.5
+     * @return event cell reference
+     */
+    public EventCellReference<T> getEventCell() {
+        return eventCell;
     }
 }

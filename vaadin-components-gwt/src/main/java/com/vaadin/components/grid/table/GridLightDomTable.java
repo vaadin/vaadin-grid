@@ -193,8 +193,6 @@ public class GridLightDomTable implements MutationListener {
                 JSStaticCell js = gridComponent.getStaticSection()
                         .obtainJSStaticCell(cell);
 
-                cell.setWidget(new HTML($th.html()));
-
                 className = JSValidate.String.attr($th, "class");
                 if (!className.isEmpty()) {
                     js.setClassName(className);
@@ -205,6 +203,7 @@ public class GridLightDomTable implements MutationListener {
                 new Timer() {
                     @Override
                     public void run() {
+                        cell.setWidget(new HTML($th.html()));
                         js.setColspan(colspan);
                     }
                 }.schedule(0);
