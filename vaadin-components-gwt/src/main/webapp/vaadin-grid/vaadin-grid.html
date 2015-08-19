@@ -3,6 +3,7 @@
 -->
 
 <link rel='import' href='../bower_components/polymer/polymer.html'>
+<link rel='import' href='../bower_components/paper-styles/paper-styles.html'>
 <!-- <script src="VaadinGridImport.nocache.js"></script> -->
 
 <style>
@@ -35,6 +36,35 @@ Basic usage:
 </v-grid>
 ```
 
+### Styling
+
+The following custom properties and mixins are available for styling:
+
+Custom property | Description | Default
+----------------|-------------|----------
+`--v-grid-background-color`        | Grid background color                                            | `--primary-background-color`
+`--v-grid-color`                   | Grid foreground color                                            | `rgba(0, 0, 0, 0.87)`
+`--v-grid-header-color`            | Foreground color for a header                                    | `rgba(0, 0, 0, 0.54)`
+`--v-grid-header-background-color` | Background color for a header                                    | ``
+`--v-grid-footer-color`            | Foreground color for a footer                                    | `rgba(0, 0, 0, 0.56)`
+`--v-grid-footer-background-color` | Background color for a footer                                    | ``
+`--v-grid`                         | Mixin applied to the grid                                        | `{}`
+`--v-grid-row`                     | Mixin applied to the row                                         | `{}`
+`--v-grid-focused-row`             | Mixin applied to the focused row                                 | `{}`
+`--v-grid-hovered-row`             | Mixin applied to the row under the mouse pointer                 | `{}`
+`--v-grid-selected-row`            | Mixin applied to the selected row                                | `{}`
+`--v-grid-cell`                    | Mixin applied to the cell                                        | `{}`
+`--v-grid-focused-cell`            | Mixin applied to the focused cell                                | `{}`
+`--v-grid-hovered-cell`            | Mixin applied to the cell under the mouse pointer                | `{}`
+`--v-grid-selected-cell`           | Mixin applied to the cell in the selected row                    | `{}`
+`--v-grid-row-after`               | Mixin applied to the ::after pseudo-element for the row          | `{}`
+`--v-grid-selected-row-after`      | Mixin applied to the ::after pseudo-element for the focused row  | `{}`
+`--v-grid-header-row`              | Mixin applied to the row in the header                           | `{}`
+`--v-grid-header-cell`             | Mixin applied to the cell in the header                          | `{}`
+`--v-grid-footer-row`              | Mixin applied to the row in the footer                           | `{}`
+`--v-grid-footer-cell`             | Mixin applied to the cell in the footer                          | `{}`
+
+
 More examples available at http://vaadin.github.io/components-examples/v-grid/
 -->
 <dom-module id="v-grid">
@@ -46,10 +76,12 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
     box-sizing: border-box;
     display: block;
     font: 400 13px/1.1 Roboto, sans-serif;
-    color: rgba(0, 0, 0, 0.87);
+    color: var(--v-grid-color, rgba(0, 0, 0, 0.87));
     cursor: default;
     transition: opacity 50ms;
     white-space: nowrap;
+
+    @apply(--v-grid);
   }
 
   :host(.v-grid-loading) {
@@ -167,10 +199,14 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
     left: 0;
     top: 0;
     position: absolute;
+
+    @apply(--v-grid-row);
   }
 
   .v-grid-body td {
     opacity: 0;
+
+    @apply(--v-grid-cell);
   }
 
   .v-grid-row-has-data td {
@@ -184,12 +220,24 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
     display: block;
   }
 
+  tbody .v-grid-row:hover {
+    @apply(--v-grid-hovered-row);
+  }
+
   tbody .v-grid-row:hover td {
     background-color: #eeeeee;
+
+    @apply(--v-grid-hovered-cell);
+  }
+
+  tbody .v-grid-row-selected {
+    @apply(--v-grid-selected-row);
   }
 
   .v-grid-row-selected td {
     background-color: #f5f5f5;
+
+    @apply(--v-grid-selected-cell);
   }
 
   /* Focus styles */
@@ -206,16 +254,22 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
     -webkit-transform: scaleX(0.0);
     transform: scaleX(0.0);
     z-index: 1;
+
+    @apply(--v-grid-row-after);
   }
 
   :focus .v-grid-row-focused:after {
     -webkit-transform: scaleX(1.0);
     transform: scaleX(1.0);
+
+    @apply(--v-grid-focused-row-after);
   }
 
   :focus .v-grid-row-focused {
     -webkit-animation: v-grid-row-focused 820ms ease-in-out;
     animation: v-grid-row-focused 820ms ease-in-out;
+
+    @apply(--v-grid-focused-row);
   }
 
   @-webkit-keyframes v-grid-row-focused {
@@ -238,7 +292,7 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
   .v-grid-cell {
     -webkit-align-items: center;
     align-items: center;
-    background-color: white;
+    background-color: var(--v-grid-background-color, --primary-background-color);
     box-sizing: border-box;
     display: -webkit-inline-flex;
     display: inline-flex;
@@ -259,14 +313,19 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
   }
 
   .v-grid-header tr {
-    color: rgba(0, 0, 0, 0.54);
+    color: var(--v-grid-header-color, rgba(0, 0, 0, 0.54));
     font-size: 12px;
     height: 56px;
+
+    @apply(--v-grid-header-row);
   }
 
   .v-grid-header th {
     font-weight: 500;
     text-align: left;
+    background-color: var(--v-grid-header-background-color);
+
+    @apply(--v-grid-header-cell);
   }
 
   .v-grid-header-deco {
@@ -314,11 +373,18 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
     box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.2);
   }
 
+  .v-grid-footer tr {
+    @apply(--v-grid-footer-row);
+  }
+
   .v-grid-footer td {
     font-size: 12px;
     font-weight: 500;
-    color: rgba(0, 0, 0, 0.56);
+    color: var(--v-grid-footer-color, rgba(0, 0, 0, 0.5));
+    background-color: var(--v-grid-footer-background-color);
     height: 56px;
+
+    @apply(--v-grid-footer-cell);
   }
 
   .v-grid-footer-deco {
