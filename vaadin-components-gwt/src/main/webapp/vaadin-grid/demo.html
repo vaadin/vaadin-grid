@@ -612,6 +612,105 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
     </script>
   </li>
 
+  <li>
+    <h3>Simplest possible with custom styles</h3>
+    <dom-module id="my-grid-with-custom-styles">
+      <style>
+        :host {
+          --v-grid-color: #7e5e18;
+          --v-grid-background-color: azure;
+          --v-grid-header-color: blueviolet;
+          --v-grid-footer-color: darkgreen;
+          --v-grid-header-background-color: #e4f3f3;
+          --v-grid-footer-background-color: ivory;
+
+          --v-grid: {
+            border: 1px solid lime;
+          }
+
+        --v-grid-row: {
+          border-left: 1px dotted;
+        }
+          --v-grid-hovered-row: {
+            border-left: 4px dotted;
+          }
+        --v-grid-selected-row: {
+          border-left: 4px solid;
+        }
+          --v-grid-focused-row: {
+            border-left: 4px solid red;
+          }
+
+        --v-grid-cell: {
+
+        }
+          --v-grid-hovered-cell: {
+            background-color: #80deea;
+            font-weight: bold;
+          }
+        --v-grid-selected-cell: {
+          font-style: italic;
+          text-decoration: line-through;
+        }
+
+          --v-grid-row-after: {
+            background-color: red;
+          }
+        --v-grid-focused-row-after: {
+          -webkit-transform: scaleX(.5);
+          transform: scaleX(.5);
+        }
+
+          --v-grid-header-row: {
+            font-size: 15px;
+          }
+
+        --v-grid-header-cell: {
+          text-align: center;
+        }
+
+          --v-grid-footer-row: {
+            font-size: 15px;
+          }
+
+        --v-grid-footer-cell: {
+          text-align: right;
+        }
+        }
+      </style>
+
+      <template>
+        <v-grid selection-mode='multi'>
+          <table>
+            <col header-text="Name">
+            <col header-text="Value">
+            <col header-text="Progress">
+
+            <tfoot>
+            <tr>
+              <th colspan=3>This is a footer line in a cell</th>
+            </tr>
+            <tr>
+              <th colspan=3><span>Some widgets in a footer</span> <input type=text/> <button>Click</button></th>
+            </tr>
+            </tfoot>
+          </table>
+        </v-grid>
+      </template>
+    </dom-module>
+    <script>
+      HTMLImports.whenReady(function() {
+        Polymer({
+          is: 'my-grid-with-custom-styles',
+          ready: function() {
+            this.$$('v-grid').data.source = myBigData;
+          }
+        });
+      });
+    </script>
+    <my-grid-with-custom-styles></my-grid-with-custom-styles>
+  </li>
+
 </ol>
 </body>
 </html>
