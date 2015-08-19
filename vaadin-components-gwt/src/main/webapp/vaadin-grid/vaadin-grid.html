@@ -44,12 +44,16 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
     -webkit-tap-highlight-color: transparent;
     -webkit-touch-callout: none;
     box-sizing: border-box;
-    display: block;
     font: 400 13px/1.1 Roboto, sans-serif;
     color: rgba(0, 0, 0, 0.87);
     cursor: default;
     transition: opacity 50ms;
     white-space: nowrap;
+    position: relative;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: column;
+    flex-direction: column;
   }
 
   :host(.v-grid-loading) {
@@ -63,6 +67,8 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
     outline: none;
     position: relative;
     z-index: 0;
+    -webkit-flex: 1 1 auto;
+    flex: 1 1 auto;
   }
 
   /* Anim */
@@ -451,21 +457,14 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
     transition: none;
   }
 
-  #measure {
+  #measureobject {
     width: 100% !important;
     height: 100% !important;
     z-index: -1 !important;
     pointer-events: none !important;
-    position: relative !important;
-    float: left !important;
-    margin-left: -100% !important;
-    opacity: 0 !important;
-  }
-
-  #measureobject {
     position: absolute !important;
-    width: 100% !important;
-    height: 100% !important;
+    left: -100% !important;
+    opacity: 0 !important;
   }
 
   /* The following is a workaround to https://dev.vaadin.com/ticket/18376 */
@@ -492,9 +491,7 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
 
 </style>
   <template>
-    <div id="measure" class="v-grid">
-      <iframe id="measureobject" class="v-grid"></iframe>
-    </div>
+    <iframe id="measureobject" class="v-grid"></iframe>
     <content></content>
   </template>
 </dom-module>
