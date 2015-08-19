@@ -164,7 +164,7 @@
       grid.then(function() {
         assert.isTrue(gridContainsText(grid, "TestFoo"));
 
-        var cell = grid.querySelectorAll(".v-grid-body .v-grid-cell")[3].cell;
+        var cell = qaLocal(".v-grid-body .v-grid-cell")[3].cell;
         assert.equal(cell.row.index, 1);
         assert.equal(cell.index, 1);
 
@@ -189,12 +189,13 @@
 
     describe('modifying columns array directly', function() {
       it('should replace header content', function() {
-        expect(grid.querySelector('th').textContent).to.equal('Name');
+        var firstHeader = qLocal(".v-grid-header .v-grid-row th");
+        expect(firstHeader.textContent).to.equal('Name');
 
         grid.columns[0].headerContent = 'Foo';
 
         return grid.then(function() {
-          expect(grid.querySelector('th').textContent).to.equal('Foo');
+          expect(firstHeader.textContent).to.equal('Foo');
         });
       });
 
