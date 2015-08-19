@@ -3,6 +3,7 @@
 -->
 
 <link rel='import' href='../bower_components/polymer/polymer.html'>
+<link rel='import' href='../bower_components/paper-styles/paper-styles.html'>
 <!-- <script src="VaadinGridImport.nocache.js"></script> -->
 
 <style>
@@ -41,7 +42,7 @@ The following custom properties and mixins are available for styling:
 
 Custom property | Description | Default
 ----------------|-------------|----------
-`--v-grid-background-color`        | Grid background color                                            | `white`
+`--v-grid-background-color`        | Grid background color                                            | `--primary-background-color`
 `--v-grid-color`                   | Grid foreground color                                            | `rgba(0, 0, 0, 0.87)`
 `--v-grid-header-color`            | Foreground color for a header                                    | `rgba(0, 0, 0, 0.54)`
 `--v-grid-header-background-color` | Background color for a header                                    | ``
@@ -291,7 +292,7 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
   .v-grid-cell {
     -webkit-align-items: center;
     align-items: center;
-    background-color: var(--v-grid-background-color, white);
+    background-color: var(--v-grid-background-color, --primary-background-color);
     box-sizing: border-box;
     display: -webkit-inline-flex;
     display: inline-flex;
