@@ -17,7 +17,6 @@
 
 <script>
   describe.feature('using properties', function() {
-
     it('rowClassGenerator', function() {
       var gridEquals = true;
       var elementEquals = true;
@@ -32,9 +31,9 @@
 
       assert.isTrue(elementEquals && gridEquals);
       assert.equal(grid.rowClassGenerator, rowClassGenerator);
-      setTimeout(function(){
+      return grid.then(function(){
         assert.isTrue(qLocal(".v-grid-body .v-grid-row").classList.contains("0_Grid"));
-      }, 0)
+      });
     });
 
     it('cellClassGenerator', function() {
@@ -54,9 +53,9 @@
 
       assert.isTrue(elementEquals);
       assert.equal(grid.cellClassGenerator, cellClassGenerator);
-      setTimeout(function(){
+      return grid.then(function(){
         assert.isTrue(qLocal(".v-grid-body .v-grid-row .v-grid-cell").classList.contains("name"));
-      }, 0)
+      });
     });
 
     it('should be enabled by default', function() {
