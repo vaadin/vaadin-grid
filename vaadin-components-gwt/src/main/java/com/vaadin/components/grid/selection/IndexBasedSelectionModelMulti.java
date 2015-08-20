@@ -46,7 +46,9 @@ public class IndexBasedSelectionModelMulti extends SelectionModelMulti<Object>
 
             @Override
             protected void setSelected(int logicalRow, boolean select) {
-                if (lastSelected != logicalRow) {
+                // FIXME: Uncomment to enable drag-select
+                // if (lastSelected != logicalRow) {
+                if (lastSelected == -1) {
                     super.setSelected(logicalRow, select);
                     lastSelected = logicalRow;
                 }
