@@ -17,7 +17,6 @@
 
 <script>
   describe.feature('using properties', function() {
-
     it('rowClassGenerator', function() {
       var gridEquals = true;
       var elementEquals = true;
@@ -57,6 +56,35 @@
       setTimeout(function(){
         assert.isTrue(qLocal(".v-grid-body .v-grid-row .v-grid-cell").classList.contains("name"));
       }, 0)
+    });
+
+    it('RowDetailsGenerator should be correctly set', function() {
+      assert.notOk(grid.rowDetailsGenerator);
+
+      var rowDetailsGenerator = function(rowIndex) {
+        var detail = document.createElement('div');
+        detail.className = 'detail-content-' + rowIndex;
+        detail.textContent = 'Row detail content for row ' + rowIndex;
+        return detail;
+      };
+      grid.rowDetailsGenerator = rowDetailsGenerator;
+
+      assert.equal(grid.rowDetailsGenerator, rowDetailsGenerator);
+    });
+
+    it('RowDetailsGenerator should be correctly shown', function() {
+      return grid.then(function() {
+        grid.setRowDetailsVisible(0, true);
+        assert.equal(qLocal(".detail-content-0").textContent, "Row detail content for row 0");
+      });
+    });
+
+    it('RowDetailsGenerator should be correctly hidden', function() {
+      return grid.then(function() {
+        grid.setRowDetailsVisible(0, true);
+        grid.setRowDetailsVisible(0, false);
+        assert.notOk(qLocal(".detail-content-0"));
+      });
     });
 
     it('should be enabled by default', function() {
