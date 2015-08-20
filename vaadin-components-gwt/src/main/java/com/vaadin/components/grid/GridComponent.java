@@ -31,6 +31,7 @@ import com.google.gwt.query.client.plugins.widgets.WidgetsUtils;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.vaadin.client.widget.grid.events.SelectAllEvent;
 import com.vaadin.client.widget.grid.events.SelectAllHandler;
 import com.vaadin.client.widget.grid.selection.SelectionEvent;
@@ -85,6 +86,7 @@ public class GridComponent implements SelectionHandler<Object>,
 
     private JavaScriptObject rowClassGenerator;
     private JavaScriptObject cellClassGenerator;
+    private JavaScriptObject rowDetailsGenerator;
 
     public static final int MAX_AUTO_ROWS = 10;
 
@@ -580,4 +582,27 @@ public class GridComponent implements SelectionHandler<Object>,
         }
     }
 
+    public void setRowDetailsGenerator(JavaScriptObject generator) {
+        grid.setDetailsGenerator(JS.isUndefinedOrNull(generator) ? null
+                : rowIndex -> {
+                    Object details = JS.exec(generator, rowIndex);
+                    return JS.isUndefinedOrNull(details) ? null
+                            : new SimplePanel((Element) details) {
+                            };
+                });
+        rowDetailsGenerator = generator;
+    }
+
+    public JavaScriptObject getRowDetailsGenerator() {
+        return rowDetailsGenerator;
+    }
+
+    public void setRowDetailsVisible(int rowIndex, boolean visible) {
+        Integer validatedRowIndex = JSValidate.Integer
+                .val(rowIndex, null, null);
+        Boolean validatedVisible = JSValidate.Boolean.val(visible, true, true);
+        if (validatedRowIndex != null) {
+            grid.setDetailsVisible(validatedRowIndex, validatedVisible);
+        }
+    }
 }
