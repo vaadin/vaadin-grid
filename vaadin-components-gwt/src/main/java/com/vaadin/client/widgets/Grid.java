@@ -167,7 +167,6 @@ import com.vaadin.shared.util.SharedUtil;
 
 // Fork from Vaadin 7.5.3
 // Applied changes:
-// https://dev.vaadin.com/review/#/c/11399/
 // https://dev.vaadin.com/review/#/c/11846/
 /**
  * A data grid view that supports columns and lazy loading of data rows from a
@@ -2161,21 +2160,11 @@ public class Grid<T> extends ResizeComposite implements
          * Handle events that can move the cell focus.
          */
         public void handleNavigationEvent(Event event, CellReference<T> cell) {
-            Element focusedElement = WidgetUtil.getFocusedElement();
-
-            // Ignore most events bubbling from a focused element in the cell
-            boolean focusInsideCell = focusedElement != null
-                    && cell.getElement().isOrHasChild(focusedElement);
-
             if (event.getType().equals(BrowserEvents.CLICK)) {
                 setCellFocus(cell);
-                // Grid should have focus when cell is clicked, unless focus is
-                // in the cell contents
-                if (!focusInsideCell) {
-                    getElement().focus();
-                }
-            } else if (event.getType().equals(BrowserEvents.KEYDOWN)
-                    && !focusInsideCell) {
+                // Grid should have focus when clicked.
+                getElement().focus();
+            } else if (event.getType().equals(BrowserEvents.KEYDOWN)) {
                 int newRow = rowWithFocus;
                 RowContainer newContainer = containerWithFocus;
                 int newColumn = cellFocusRange.getStart();
