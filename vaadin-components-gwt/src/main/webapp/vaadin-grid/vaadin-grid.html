@@ -175,6 +175,10 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
     position: absolute;
   }
 
+  :host ::content .v-grid-spacer {
+    position: absolute;
+  }
+
   .v-grid-body td {
     opacity: 0;
   }
@@ -970,6 +974,39 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
        */
       then: function(callback) {
         return this._grid.then(callback);
+      },
+
+      /**
+       * The row detail generator that is used for generating detail content for rows.
+       *
+       * Example:
+       * ```
+       * grid.rowDetails.detailsGenerator = function(rowIndex) {
+       *  var detail = document.createElement('div');
+       *  detail.textContent = 'Row detail content for row ' + rowIndex;
+       *  return detail;
+       * };
+       *```
+       *
+       * @property {function} rowDetailsGenerator
+       * @type {function}
+       */
+      set rowDetailsGenerator(rowDetailsGenerator) {
+        this._grid.setRowDetailsGenerator(rowDetailsGenerator);
+      },
+      get rowDetailsGenerator() {
+        return this._grid.getRowDetailsGenerator();
+      },
+
+      /**
+       * Shows or hides row details for the row at the given index.
+       *
+       * @method setRowDetailsVisible
+       * @param {number} rowIndex
+       * @param {boolean} visible
+       */
+      setRowDetailsVisible: function(rowIndex, visible) {
+        this._grid.setRowDetailsVisible(rowIndex, visible);
       }
     }); // End Polymer prototype
 </script>
