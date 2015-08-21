@@ -24,10 +24,10 @@ public interface JSColumn {
     void setHeaderText(String s);
 
     @JsProperty
-    String getHidingToggleCaption();
+    String getHidingToggleText();
 
     @JsProperty
-    void setHidingToggleCaption(String s);
+    void setHidingToggleText(String s);
 
     @JsProperty
     double getMinWidth();

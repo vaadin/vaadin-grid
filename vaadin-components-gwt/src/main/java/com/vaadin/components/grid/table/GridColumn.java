@@ -76,7 +76,7 @@ public final class GridColumn extends Column<Object, Object> {
         }, () -> getDefaultHeaderCellReference().getContent());
 
         bind("headerText", v -> setHeaderCaption(v == null ? "" : v.toString()));
-        bind("hidingToggleCaption", v -> setHidingToggleCaption(v == null ? null : v.toString()));
+        bind("hidingToggleText", v -> setHidingToggleCaption(v == null ? null : v.toString()));
         bind("flex", v -> setExpandRatio(((Double) v).intValue()));
         bind("sortable", v -> setSortable((Boolean) v));
         bind("hidable", v -> setHidable((Boolean) v));

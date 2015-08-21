@@ -141,7 +141,7 @@ public class GridLightDomTable implements MutationListener {
             }
 
             column.setHeaderText(JSValidate.String.attr($th, "header-text"));
-            column.setHidingToggleCaption(JSValidate.String.attr($th, "hiding-toggle-caption"));
+            column.setHidingToggleText(JSValidate.String.attr($th, "hiding-toggle-text"));
 
             String headerHtml = JSValidate.String.attr($th, "header-text",
                     $th.html(), $th.html());
