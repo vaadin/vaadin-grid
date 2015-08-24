@@ -21,7 +21,7 @@ gulp.task('clean:bower', function() {
 });
 
 gulp.task('bower:clone', ['clean:bower'], function(done) {
-  var cloneArgs = '-b ' + (args.bowerCheckout ? args.bowerCheckout : snapshotVersion) + ' ' + checkoutPath;
+  var cloneArgs = '-b ' + (args.bowerCheckout ? args.bowerCheckout : 'master') + ' ' + checkoutPath;
 
   git.clone(gitRepository, {
     args : cloneArgs
