@@ -29,9 +29,10 @@ gulp.task('stage:zip', ['clean:zip', 'stage:cdn'], function() {
 
 gulp.task('zip:upload', ['stage:zip'], function(done) {
   common.checkArguments(['zipUsername', 'zipDestination']);
-
+  var hostName = args.zipHostname || 'vaadin.com';
   var path = args.zipDestination + majorMinorVersion + '/' + version + '/' + filename;
-  gutil.log('Uploading package to ' + path);
+
+  gutil.log('Uploading zip package (scp): ' + stagingPath + '/' + filename + ' -> ' + args.zipUsername + '@' + hostName + ':' + path);
 
   require('scp2').scp(stagingPath + '/' + filename, {
     host: 'vaadin.com',
