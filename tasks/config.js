@@ -4,7 +4,7 @@ var fs = require('fs');
 var userhome = process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
 
 module.exports = {
-  components: ['vaadin-grid'],
+  components: ['vaadin-grid', 'vaadin-combo-box'],
   snapshotVersion: '0.3.0-snapshot',
   version: args.version || '0.3.0-snapshot',
   paths: {
