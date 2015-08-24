@@ -10,7 +10,7 @@ View live examples and source code side-by-side for individual custom elements.
 
 | Component | Description | Features |
 | --- | --- | --- |
-| <**v-grid**> <br> [Examples](http://vaadin.github.io/components-examples/v-grid/), [API](http://vaadin.github.io/components-apidoc/#v-grid) | Data grid for showing large amounts of tabular data. | Lazy-loading, virtual scrolling, frozen/fixed columns, customizable headers and footers, custom cell renderers, touch support, keyboard navigation, sorting
+| <**v-grid**><li>[Examples](http://vaadin.github.io/components-examples/v-grid/)<li>[API](http://vaadin.github.io/components-apidoc/#v-grid) | Data grid for showing large amounts of tabular data. | Lazy-loading, virtual scrolling, frozen/fixed columns, customizable headers and footers, custom cell renderers, touch support, keyboard navigation, sorting
 
 
 ### Quickstart
@@ -37,17 +37,27 @@ We offer three ways to use Vaadin Components in your project: Bower, CDN and ZIP
 
 - ##### Bower
 
- We recommend using [Bower](http://bower.io) for managing your front-end dependencies. Follow the [Bower installation instructions](http://bower.io/#install-bower), then run the following command inside your project folder:
+ We recommend using [Bower](http://bower.io) for managing your front-end dependencies. Follow the [Bower installation instructions](http://bower.io/#install-bower), then run the following command inside your project folder to install the most recent stable release.
 
  ```shell
- $ bower install --save vaadin-components#0.3.0-beta6
+ $ bower install --save vaadin-components
  ```
 
- This will download Vaadin Components and its dependencies to the `bower_components` folder inside your project&lsquo;s folder.
+ This will download Vaadin Components and its dependencies to the `bower_components` folder inside your project's folder.
+
+ If you want to experiment with current development code, download the snapshot version running:
+
+ ```shell
+ $ bower install --save vaadin-components#0.3.0-snapshot
+ ```
 
 - ##### CDN
 
  You can use Vaadin Components from CDN (see example below). This is especially convenient for services like JSFiddle, Codepen.io, etc.
+
+   `https://cdn.vaadin.com/vaadin-components/0.3.0-beta6/vaadin-grid/vaadin-grid.html`
+
+ _*Note*: that we have a fragment in the url with the version to use, so you could for instance replace it with the snapshot version_
 
 
 - ##### Download ZIP
