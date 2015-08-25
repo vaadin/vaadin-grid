@@ -109,13 +109,6 @@ public final class GridColumn extends Column<Object, Object> {
         }, null);
     }
 
-    private void bind(String propertyName, final Setter setter, final Getter getter) {
-        JS.definePropertyAccessors(jsColumn, propertyName, v -> {
-            setter.setValue(v);
-            gridComponent.updateWidth();
-        }, getter::getValue);
-    }
-
     public JSColumn getJsColumn() {
         return jsColumn;
     }
