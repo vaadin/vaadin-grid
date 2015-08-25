@@ -432,6 +432,8 @@ public class GridComponent implements SelectionHandler<Object>,
                     GridDataSource ds = getDataSource();
                     if (ds != null) {
                         grid.setHeightByRows(Math.min(ds.size(), MAX_AUTO_ROWS));
+                    } else {
+                        grid.setHeightByRows(0);
                     }
                 }
             }
@@ -474,9 +476,10 @@ public class GridComponent implements SelectionHandler<Object>,
     }
 
     public boolean isWorkPending() {
-        return grid.getDataSource() == null
-                || ((GridDataSource) grid.getDataSource()).isWaitingForData()
-                || grid.isWorkPending() || sizeUpdater.isRunning();
+        return (grid.getDataSource() != null && ((GridDataSource) grid
+                .getDataSource()).isWaitingForData())
+                || grid.isWorkPending()
+                || sizeUpdater.isRunning();
     }
 
     public void onReady(JavaScriptObject f) {

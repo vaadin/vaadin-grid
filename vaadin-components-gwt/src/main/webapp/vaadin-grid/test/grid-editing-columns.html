@@ -409,6 +409,27 @@
       });
     });
 
+    it('should have valid height with no DS set but with column(s) added', function(done) {
+      var wrapper = document.getElementById("gridwrapper");
+      var tmp = document.createElement("div");
+      wrapper.appendChild(tmp);
+
+      var grid = document.createElement("v-grid");
+      tmp.appendChild(grid);
+
+      waitUntil(function() {
+        return grid.then;
+      }, function() {
+        return grid.then(function() {
+          grid.addColumn({headerContent : 'foo'});
+        }).then(function(){
+          expect(grid.clientHeight).to.be.above(0);
+          wrapper.removeChild(tmp);
+          done();
+        });
+      });
+    });
+
   });
 </script>
 
