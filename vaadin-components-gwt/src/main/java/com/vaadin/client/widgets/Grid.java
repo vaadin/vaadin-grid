@@ -168,6 +168,7 @@ import com.vaadin.shared.util.SharedUtil;
 // Fork from Vaadin 7.5.3
 // Applied changes:
 // https://dev.vaadin.com/review/#/c/11846/
+// https://dev.vaadin.com/review/#/c/11876/
 /**
  * A data grid view that supports columns and lazy loading of data rows from a
  * data source.
@@ -2408,7 +2409,7 @@ public class Grid<T> extends ResizeComposite implements
              * TODO: Currently the select all check box is shown when multi
              * selection is in use. This might result in malfunctions if no
              * SelectAllHandlers are present.
-             * 
+             *
              * Later on this could be fixed so that it check such handlers
              * exist.
              */
@@ -2780,14 +2781,16 @@ public class Grid<T> extends ResizeComposite implements
             /*
              * Set all fixed widths and also calculate the size-to-fit widths
              * for the autocalculated columns.
-             * 
+             *
              * This way we know with how many pixels we have left to expand the
              * rest.
              */
             for (Column<?, T> column : visibleColumns) {
                 final double widthAsIs = column.getWidth();
                 final boolean isFixedWidth = widthAsIs >= 0;
-                final double widthFixed = Math.max(widthAsIs,
+                // Check for max width just to be sure we don't break the limits
+                final double widthFixed = Math.max(
+                        Math.min(getMaxWidth(column), widthAsIs),
                         column.getMinimumWidth());
                 defaultExpandRatios = defaultExpandRatios
                         && (column.getExpandRatio() == -1 || column == selectionColumn);
@@ -2827,7 +2830,10 @@ public class Grid<T> extends ResizeComposite implements
             double pixelsToDistribute = escalator.getInnerWidth()
                     - reservedPixels;
             if (pixelsToDistribute <= 0 || totalRatios <= 0) {
-                setColumnSizes(columnSizes);
+                if (pixelsToDistribute <= 0) {
+                    // Set column sizes for expanding columns
+                    setColumnSizes(columnSizes);
+                }
                 return;
             }
 
@@ -3067,7 +3073,7 @@ public class Grid<T> extends ResizeComposite implements
                 /*
                  * Once we have the content properly inside the DOM, we should
                  * re-measure it to make sure that it's the correct height.
-                 * 
+                 *
                  * This is rather tricky, since the row (tr) will get the
                  * height, but the spacer cell (td) has the borders, which
                  * should go on top of the previous row and next row.
@@ -4789,7 +4795,7 @@ public class Grid<T> extends ResizeComposite implements
             } else {
                 /*
                  * NOOP
-                 * 
+                 *
                  * Since setGrid() will call reapplyWidths as the colum is
                  * attached to a grid, it will call setWidth, which, in turn,
                  * will call this method again. Therefore, it's guaranteed that
@@ -6366,7 +6372,7 @@ public class Grid<T> extends ResizeComposite implements
          * widget dimensions (height/width) on each state change event. The
          * original design was to have setHeight an setHeightByRow be equals,
          * and whichever was called the latest was considered in effect.
-         * 
+         *
          * But, because of Vaadin always calling setHeight on the widget, this
          * approach doesn't work.
          */
@@ -7800,7 +7806,7 @@ public class Grid<T> extends ResizeComposite implements
          * corresponding Widget will call removeFromParent() on itself. GWT will
          * check there that its parent (i.e. Grid) implements HasWidgets, and
          * will call this remove(Widget) method.
-         * 
+         *
          * tl;dr: all this song and dance to make sure GWT's sanity checks
          * aren't triggered, even though they effectively do nothing interesting
          * from Grid's perspective.
@@ -7909,17 +7915,17 @@ public class Grid<T> extends ResizeComposite implements
         /*
          * We want to prevent opening a details row twice, so any subsequent
          * openings (or closings) of details is a NOOP.
-         * 
+         *
          * When a details row is opened, it is given an arbitrary height
          * (because Escalator requires a height upon opening). Only when it's
          * opened, Escalator will ask the generator to generate a widget, which
          * we then can measure. When measured, we correct the initial height by
          * the original height.
-         * 
+         *
          * Without this check, we would override the measured height, and revert
          * back to the initial, arbitrary, height which would most probably be
          * wrong.
-         * 
+         *
          * see GridSpacerUpdater.init for implementation details.
          */
 
