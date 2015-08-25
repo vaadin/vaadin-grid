@@ -47,6 +47,7 @@
   - v-grid disappears when used as a flex item (#85)
   - v-grid is now shown even if no data source has been set
   - calling grid.then without a data source set no longer causes infinite loop
+  - Vertical line on the right of the header hidden
 
 ***
 
