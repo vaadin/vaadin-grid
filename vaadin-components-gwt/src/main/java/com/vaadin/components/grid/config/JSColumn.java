@@ -18,12 +18,6 @@ public interface JSColumn {
     void setName(String s);
 
     @JsProperty
-    String getHeaderText();
-
-    @JsProperty
-    void setHeaderText(String s);
-
-    @JsProperty
     String getHidingToggleText();
 
     @JsProperty

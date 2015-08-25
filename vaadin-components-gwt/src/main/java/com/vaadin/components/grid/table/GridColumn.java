@@ -81,7 +81,6 @@ public final class GridColumn extends Column<Object, Object> {
             gridComponent.updateWidth();
         }, this::isHidden);
 
-        bind("headerText", v -> setHeaderCaption(v == null ? "" : v.toString()));
         bind("hidingToggleText", v -> setHidingToggleCaption(v == null ? null : v.toString()));
         bind("flex", v -> setExpandRatio(((Double) v).intValue()));
         bind("sortable", v -> setSortable((Boolean) v));
