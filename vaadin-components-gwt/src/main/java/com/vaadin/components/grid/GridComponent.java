@@ -348,7 +348,6 @@ public class GridComponent implements SelectionHandler<Object>,
         return result;
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     public JSArray<JSColumn> getVisibleColumns() {
         JSArray<JSColumn> result = JSArray.createArray().cast();
         for (int i = 0; i < cols.size(); i++) {
