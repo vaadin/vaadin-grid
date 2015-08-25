@@ -45,6 +45,8 @@
   - Prevent infinite size update loop (#33)
   - Enforce maximum width for expanding columns by cutting content (#46)
   - v-grid disappears when used as a flex item (#85)
+  - v-grid is now shown even if no data source has been set
+  - calling grid.then without a data source set no longer causes infinite loop
 
 ***
 
