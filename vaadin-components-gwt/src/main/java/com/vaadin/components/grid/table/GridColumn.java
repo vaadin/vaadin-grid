@@ -12,6 +12,7 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.HTML;
 import com.vaadin.client.widgets.Grid.Column;
 import com.vaadin.components.common.js.JS;
+import com.vaadin.components.common.js.JS.Getter;
 import com.vaadin.components.common.js.JS.Setter;
 import com.vaadin.components.common.js.JSArray;
 import com.vaadin.components.grid.GridComponent;
@@ -75,12 +76,16 @@ public final class GridColumn extends Column<Object, Object> {
             gridComponent.updateWidth();
         }, () -> getDefaultHeaderCellReference().getContent());
 
+        JS.definePropertyAccessors(jsColumn, "hidden", v -> {
+            setHidden((Boolean) v);
+            gridComponent.updateWidth();
+        }, this::isHidden);
+
         bind("headerText", v -> setHeaderCaption(v == null ? "" : v.toString()));
         bind("hidingToggleText", v -> setHidingToggleCaption(v == null ? null : v.toString()));
         bind("flex", v -> setExpandRatio(((Double) v).intValue()));
         bind("sortable", v -> setSortable((Boolean) v));
         bind("hidable", v -> setHidable((Boolean) v));
-        bind("hidden", v -> setHidden((Boolean) v));
         bind("readOnly", v -> setEditable(!(boolean) v));
         bind("renderer", v -> setRenderer((cell, data) -> {
             JSCell jsCell = JSCell.create(cell, gridComponent.getContainer());
@@ -102,6 +107,13 @@ public final class GridColumn extends Column<Object, Object> {
             setter.setValue(v);
             gridComponent.updateWidth();
         }, null);
+    }
+
+    private void bind(String propertyName, final Setter setter, final Getter getter) {
+        JS.definePropertyAccessors(jsColumn, propertyName, v -> {
+            setter.setValue(v);
+            gridComponent.updateWidth();
+        }, getter::getValue);
     }
 
     public JSColumn getJsColumn() {
