@@ -101,7 +101,6 @@ public class GridComponent implements SelectionHandler<Object>,
         staticSection = new GridStaticSection(this);
 
         grid.setStylePrimaryName("v-grid style-scope v-grid");
-        grid.getSidebarMenu().addAttachHandler(e -> $(e.getSource()).find("*").addClass("v-grid", "style-scope"));
     }
 
     public GridEditor getEditor() {
