@@ -279,15 +279,13 @@
         
         it('should render in a flex box', function() {
           var wrapper = document.getElementById("gridwrapper");
-          wrapper.style.display = "flex";
-          wrapper.style.height = "200px";
-          grid.style.flex = "1";
+          wrapper.setAttribute("style", "height: 200px; display: -webkit-flex; display: flex;");
+          grid.setAttribute("style", "-webkit-flex: 1 1 auto; flex: 1 1 auto;");
 
           return grid.then(function() {
             expect(grid.clientHeight).to.eql(200);
-            grid.style.flex = "0 1 auto";
-            wrapper.style.display = "";
-            wrapper.style.height = "";
+            wrapper.removeAttribute("style");
+            grid.removeAttribute("style");
           });
         });
 
