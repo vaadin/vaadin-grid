@@ -74,12 +74,16 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
     -webkit-tap-highlight-color: transparent;
     -webkit-touch-callout: none;
     box-sizing: border-box;
-    display: block;
     font: 400 13px/1.1 Roboto, sans-serif;
     color: var(--v-grid-color, rgba(0, 0, 0, 0.87));
     cursor: default;
     transition: opacity 50ms;
     white-space: nowrap;
+    position: relative;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: column;
+    flex-direction: column;
 
     @apply(--v-grid);
   }
@@ -95,6 +99,8 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
     outline: none;
     position: relative;
     z-index: 0;
+    -webkit-flex: 1 1 auto;
+    flex: 1 1 auto;
   }
 
   /* Anim */
@@ -203,6 +209,14 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
     @apply(--v-grid-row);
   }
 
+  :host ::content .v-grid-spacer {
+    position: absolute;
+  }
+
+  :host ::content .v-grid-spacer + .v-grid-row-has-data td {
+    border-top: 1px solid #e3e3e3;
+  }
+
   .v-grid-body td {
     opacity: 0;
 
@@ -241,12 +255,14 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
   }
 
   /* Focus styles */
-  .v-grid-row:after {
+  :focus .v-grid-row-focused:before,
+  :host ::content :focus .v-grid-row-focused + .v-grid-spacer:before {
     background-color: #03A9F4;
+    top: 0;
     bottom: 0;
-    content: "";
-    height: 2px;
     left: 0;
+    content: "";
+    width: 2px;
     pointer-events: none;
     position: absolute;
     right: 0;
@@ -256,36 +272,6 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
     z-index: 1;
 
     @apply(--v-grid-row-after);
-  }
-
-  :focus .v-grid-row-focused:after {
-    -webkit-transform: scaleX(1.0);
-    transform: scaleX(1.0);
-
-    @apply(--v-grid-focused-row-after);
-  }
-
-  :focus .v-grid-row-focused {
-    -webkit-animation: v-grid-row-focused 820ms ease-in-out;
-    animation: v-grid-row-focused 820ms ease-in-out;
-
-    @apply(--v-grid-focused-row);
-  }
-
-  @-webkit-keyframes v-grid-row-focused {
-    50% {
-      color: #03A9F4;
-    } 100% {
-      color: inherit;
-    }
-  }
-
-  @keyframes v-grid-row-focused {
-    50% {
-      color: #03A9F4;
-    } 100% {
-      color: inherit;
-    }
   }
 
   /* Grid cell */
@@ -310,6 +296,7 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
     position: absolute;
     top: 0;
     z-index: 10;
+    padding-right: 2px;
   }
 
   .v-grid-header tr {
@@ -517,21 +504,14 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
     transition: none;
   }
 
-  #measure {
+  #measureobject {
     width: 100% !important;
     height: 100% !important;
     z-index: -1 !important;
     pointer-events: none !important;
-    position: relative !important;
-    float: left !important;
-    margin-left: -100% !important;
-    opacity: 0 !important;
-  }
-
-  #measureobject {
     position: absolute !important;
-    width: 100% !important;
-    height: 100% !important;
+    left: -100% !important;
+    opacity: 0 !important;
   }
 
   /* The following is a workaround to https://dev.vaadin.com/ticket/18376 */
@@ -558,9 +538,7 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
 
 </style>
   <template>
-    <div id="measure" class="v-grid">
-      <iframe id="measureobject" class="v-grid"></iframe>
-    </div>
+    <iframe id="measureobject" class="v-grid"></iframe>
     <content></content>
   </template>
 </dom-module>
@@ -1039,6 +1017,39 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
        */
       then: function(callback) {
         return this._grid.then(callback);
+      },
+
+      /**
+       * The row detail generator that is used for generating detail content for rows.
+       *
+       * Example:
+       * ```
+       * grid.rowDetails.detailsGenerator = function(rowIndex) {
+       *  var detail = document.createElement('div');
+       *  detail.textContent = 'Row detail content for row ' + rowIndex;
+       *  return detail;
+       * };
+       *```
+       *
+       * @property {function} rowDetailsGenerator
+       * @type {function}
+       */
+      set rowDetailsGenerator(rowDetailsGenerator) {
+        this._grid.setRowDetailsGenerator(rowDetailsGenerator);
+      },
+      get rowDetailsGenerator() {
+        return this._grid.getRowDetailsGenerator();
+      },
+
+      /**
+       * Shows or hides row details for the row at the given index.
+       *
+       * @method setRowDetailsVisible
+       * @param {number} rowIndex
+       * @param {boolean} visible
+       */
+      setRowDetailsVisible: function(rowIndex, visible) {
+        this._grid.setRowDetailsVisible(rowIndex, visible);
       }
     }); // End Polymer prototype
 </script>

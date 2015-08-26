@@ -52,7 +52,7 @@
           tdHeight
 
         beforeEach(function() {
-          inner = qaLocal("div.v-grid")[1];
+          inner = qLocal("div.v-grid");
           tbody = qLight('table tbody');
 
           headers = qaLocal('thead tr').length;
@@ -198,7 +198,7 @@
             firstNonFrozenHeaderCell().click();
 
             return grid.then(function() {
-              expect(qaLocal('.v-grid')[3].style.height).to.equal('100%');
+              expect(qLocal('div.v-grid').style.height).to.equal('100%');
             });
           });
 
@@ -275,6 +275,18 @@
             expect(element).to.eql(over);
           });
 
+        });
+        
+        it('should render in a flex box', function() {
+          var wrapper = document.getElementById("gridwrapper");
+          wrapper.setAttribute("style", "height: 200px; display: -webkit-flex; display: flex;");
+          grid.setAttribute("style", "-webkit-flex: 1 1 auto; flex: 1 1 auto;");
+
+          return grid.then(function() {
+            expect(grid.clientHeight).to.eql(200);
+            wrapper.removeAttribute("style");
+            grid.removeAttribute("style");
+          });
         });
 
       });

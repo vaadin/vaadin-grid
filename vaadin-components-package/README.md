@@ -40,7 +40,7 @@ We offer three ways to use Vaadin Components in your project: Bower, CDN and ZIP
  We recommend using [Bower](http://bower.io) for managing your front-end dependencies. Follow the [Bower installation instructions](http://bower.io/#install-bower), then run the following command inside your project folder:
 
  ```shell
- $ bower install --save vaadin-components#0.3.0-beta4
+ $ bower install --save vaadin-components#0.3.0-beta6
  ```
 
  This will download Vaadin Components and its dependencies to the `bower_components` folder inside your project&lsquo;s folder.
@@ -56,33 +56,33 @@ We offer three ways to use Vaadin Components in your project: Bower, CDN and ZIP
  2. Extract the archive under your project folder, for example `deps`
 
 #### 3. Create a HTML file
- 
+
  Create a new HTML file inside your project folder and copy the following code into it (choose one of the options how to import Vaadin Components in the `<head>` section):
- 
+
  > **Note on serving the files during development**, when using Bower or the ZIP archive:
- 
+
  > Due to browser security restrictions, serving HTML imports from a `file:///` URL does not work. You need a web server to view pages where you use custom elements. One simple option is to use the [`serve`](https://www.npmjs.com/package/serve) NPM package.
- 
+
   ```html
 <!doctype html>
 <html>
   <head>
     <!-- Import Web Component polyfills and the components that you want -->
-    
+
     <!-- CDN -->
-    <script src="https://cdn.vaadin.com/vaadin-components/0.3.0-beta4/webcomponentsjs/webcomponents-lite.js"></script>
-    <link href="https://cdn.vaadin.com/vaadin-components/0.3.0-beta4/vaadin-grid/vaadin-grid.html" rel="import">
-    
+    <script src="https://cdn.vaadin.com/vaadin-components/0.3.0-beta6/webcomponentsjs/webcomponents-lite.js"></script>
+    <link href="https://cdn.vaadin.com/vaadin-components/0.3.0-beta6/vaadin-grid/vaadin-grid.html" rel="import">
+
     <!-- Bower -->
     <!-- <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
     <link href="bower_components/vaadin-components/vaadin-grid/vaadin-grid.html" rel="import"> -->
-    
+
     <!-- ZIP archive -->
     <!-- <script src="deps/vaadin-components/webcomponentsjs/webcomponents-lite.js"></script>
     <link href="deps/vaadin-components/vaadin-grid/vaadin-grid.html" rel="import"> -->
   </head>
   <body>
-  
+
     <v-grid selection-mode="multi">
       <table>
         <!-- Define the columns -->
@@ -95,20 +95,20 @@ We offer three ways to use Vaadin Components in your project: Bower, CDN and ZIP
     </v-grid>
 
     <script>
-      // The Web Components polyfill introduces a custom event we can 
+      // The Web Components polyfill introduces a custom event we can
       // use to determine when the custom elements are ready to be used
       document.addEventListener("WebComponentsReady", function () {
-        
+
         // Reference to the grid element
         var grid = document.querySelector("v-grid");
-        
+
         // Fetch some JSON data from a URL
         var xhr = new XMLHttpRequest();
         xhr.onreadystatechange = function() {
           if (xhr.readyState == XMLHttpRequest.DONE) {
             if (xhr.status == 200) {
               var json = JSON.parse(xhr.responseText);
-              
+
               // Use the returned data array directly as the data source
               // (keeping all the data source items in the browser's memory)
               grid.data.source = json.results;
@@ -117,19 +117,19 @@ We offer three ways to use Vaadin Components in your project: Bower, CDN and ZIP
         }
         xhr.open("GET", "http://api.randomuser.me/?results=100", true);
         xhr.send();
-        
+
         // Add a renderer for the index column
         grid.columns[0].renderer = function(cell) {
             cell.element.innerHTML = cell.row.index;
         }
-        
+
         // Add a renderer for the picture column
         grid.columns[1].renderer = function(cell) {
             cell.element.innerHTML = '<img src="' + cell.data + '" style="width: 24px;">';
         }
       });
     </script>
-  
+
   </body>
 </html>
   ```

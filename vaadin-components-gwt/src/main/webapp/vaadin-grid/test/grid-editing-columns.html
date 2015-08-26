@@ -164,7 +164,7 @@
       grid.then(function() {
         assert.isTrue(gridContainsText(grid, "TestFoo"));
 
-        var cell = grid.querySelectorAll(".v-grid-body .v-grid-cell")[3].cell;
+        var cell = qaLocal(".v-grid-body .v-grid-cell")[3].cell;
         assert.equal(cell.row.index, 1);
         assert.equal(cell.index, 1);
 
@@ -189,12 +189,13 @@
 
     describe('modifying columns array directly', function() {
       it('should replace header content', function() {
-        expect(grid.querySelector('th').textContent).to.equal('Name');
+        var firstHeader = qLocal(".v-grid-header .v-grid-row th");
+        expect(firstHeader.textContent).to.equal('Name');
 
         grid.columns[0].headerContent = 'Foo';
 
         return grid.then(function() {
-          expect(grid.querySelector('th').textContent).to.equal('Foo');
+          expect(firstHeader.textContent).to.equal('Foo');
         });
       });
 
@@ -405,6 +406,31 @@
       grid.columns[0].maxWidth = 100;
       return grid.then(function(){
         expect(qLocal(".v-grid-cell").offsetWidth).to.eql(100);
+      });
+    });
+
+    it('should have valid height with no DS set but with column(s) added', function(done) {
+      var wrapper = document.getElementById("gridwrapper");
+      var tmp = document.createElement("div");
+      wrapper.appendChild(tmp);
+
+      var grid = document.createElement("v-grid");
+      tmp.appendChild(grid);
+
+      waitUntil(function() {
+         return grid.then;
+      }, function() {
+         return grid.then(function() {
+          grid.addColumn({headerContent : 'foo'});
+          return grid.then(function(){
+            waitUntil(function(){
+              return grid.clientHeight > 0;
+            },function(){
+              wrapper.removeChild(tmp);
+              done();
+            });
+          });
+        });
       });
     });
 

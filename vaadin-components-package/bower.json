@@ -18,7 +18,6 @@
     "**/tests"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#~1.0.2",
-    "paper-styles": "PolymerElements/paper-styles#~1.0.2"
+    "polymer": "Polymer/polymer#v1.0.9"
   }
 }

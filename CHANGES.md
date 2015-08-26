@@ -13,7 +13,7 @@
 - JSDocs revised.
 - Added data.getItem api for fetching data items by row index (#45)
 - Combined multi selection models into one model
-- Restored the drag-select functionality
+- Moved row focus indicator line from the bottom to the left side of a row
 - Issues fixed:
   - Grid doesn't work when using selection-mode multi, frozen columns and sortable columns. (#7)
   - Grid height is recalculated incorrectly when sorting a grid with a fixed height. (#8)
@@ -45,6 +45,10 @@
   - <v-grid> is rendered on top of <paper-drawer-panel> (#79)
   - Prevent infinite size update loop (#33)
   - Enforce maximum width for expanding columns by cutting content (#46)
+  - v-grid disappears when used as a flex item (#85)
+  - v-grid is now shown even if no data source has been set
+  - calling grid.then without a data source set no longer causes infinite loop
+  - Vertical line on the right of the header hidden
 
 ***
 
