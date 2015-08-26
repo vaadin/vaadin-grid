@@ -48,7 +48,7 @@ We offer three ways to use Vaadin Components in your project: Bower, CDN and ZIP
  If you want to experiment with current development code, download the snapshot version running:
 
  ```shell
- $ bower install --save vaadin-components#0.3.0-snapshot
+ $ bower install --save vaadin-components#master
  ```
 
 - ##### CDN
