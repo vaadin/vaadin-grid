@@ -179,6 +179,10 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
     position: absolute;
   }
 
+  :host ::content .v-grid-spacer + .v-grid-row-has-data td {
+    border-top: 1px solid #e3e3e3;
+  }
+
   .v-grid-body td {
     opacity: 0;
   }
@@ -203,45 +207,17 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
   }
 
   /* Focus styles */
-  .v-grid-row:after {
+  :focus .v-grid-row-focused:before,
+  :host ::content :focus .v-grid-row-focused + .v-grid-spacer:before {
     background-color: #03A9F4;
+    top: 0;
     bottom: 0;
-    content: "";
-    height: 2px;
     left: 0;
+    content: "";
+    width: 2px;
     pointer-events: none;
     position: absolute;
-    right: 0;
-    transition: all 0.16s ease-in-out;
-    -webkit-transform: scaleX(0.0);
-    transform: scaleX(0.0);
     z-index: 1;
-  }
-
-  :focus .v-grid-row-focused:after {
-    -webkit-transform: scaleX(1.0);
-    transform: scaleX(1.0);
-  }
-
-  :focus .v-grid-row-focused {
-    -webkit-animation: v-grid-row-focused 820ms ease-in-out;
-    animation: v-grid-row-focused 820ms ease-in-out;
-  }
-
-  @-webkit-keyframes v-grid-row-focused {
-    50% {
-      color: #03A9F4;
-    } 100% {
-      color: inherit;
-    }
-  }
-
-  @keyframes v-grid-row-focused {
-    50% {
-      color: #03A9F4;
-    } 100% {
-      color: inherit;
-    }
   }
 
   /* Grid cell */
