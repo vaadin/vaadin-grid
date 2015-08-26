@@ -16,101 +16,124 @@
 <div id="gridwrapper"></div>
 
 <script>
-  describe.feature('using properties', function() {
-    it('rowClassGenerator', function() {
-      var gridEquals = true;
-      var elementEquals = true;
-      assert.notOk(grid.rowClassGenerator);
-      var rowClassGenerator = function(row) {
-        gridEquals = gridEquals && row.grid == grid;
-        elementEquals = elementEquals && row.element == qaLocal(".v-grid-body .v-grid-row")[row.index];
-        return row.index + "_" + row.data[0];
-      };
+describe.feature('using properties', function() {
+  it('rowClassGenerator', function() {
+    var gridEquals = true;
+    var elementEquals = true;
+    assert.notOk(grid.rowClassGenerator);
+    var rowClassGenerator = function(row) {
+      gridEquals = gridEquals && row.grid == grid;
+      elementEquals = elementEquals && row.element == qaLocal(".v-grid-body .v-grid-row")[row.index];
+      return row.index + "_" + row.data[0];
+    };
 
-      grid.rowClassGenerator = rowClassGenerator;
+    grid.rowClassGenerator = rowClassGenerator;
 
-      assert.isTrue(elementEquals && gridEquals);
-      assert.equal(grid.rowClassGenerator, rowClassGenerator);
-      return grid.then(function(){
-        assert.isTrue(qLocal(".v-grid-body .v-grid-row").classList.contains("0_Grid"));
-      });
-    });
-
-    it('cellClassGenerator', function() {
-      var elementEquals = true;
-
-      grid.columns[0].name = "name";
-      grid.columns[1].name = "value";
-      assert.notOk(grid.cellClassGenerator);
-      var cellClassGenerator = function(cell) {
-        var columnIndex = cell.columnName == "name" ? 0 : 1;
-        var cellElement = qaLocal(".v-grid-body .v-grid-row")[cell.row.index].querySelectorAll(".v-grid-cell")[columnIndex];
-        elementEquals = elementEquals && cell.element == cellElement;
-        return cell.columnName;
-      };
-
-      grid.cellClassGenerator = cellClassGenerator;
-
-      assert.isTrue(elementEquals);
-      assert.equal(grid.cellClassGenerator, cellClassGenerator);
-      return grid.then(function(){
-        assert.isTrue(qLocal(".v-grid-body .v-grid-row .v-grid-cell").classList.contains("name"));
-      });
-    });
-
-    it('RowDetailsGenerator should be correctly set', function() {
-      assert.notOk(grid.rowDetailsGenerator);
-
-      var rowDetailsGenerator = function(rowIndex) {
-        var detail = document.createElement('div');
-        detail.className = 'detail-content-' + rowIndex;
-        detail.textContent = 'Row detail content for row ' + rowIndex;
-        return detail;
-      };
-      grid.rowDetailsGenerator = rowDetailsGenerator;
-
-      assert.equal(grid.rowDetailsGenerator, rowDetailsGenerator);
-    });
-
-    it('RowDetailsGenerator should be correctly shown', function() {
-      return grid.then(function() {
-        grid.setRowDetailsVisible(0, true);
-        assert.equal(qLocal(".detail-content-0").textContent, "Row detail content for row 0");
-      });
-    });
-
-    it('RowDetailsGenerator should be correctly hidden', function() {
-      return grid.then(function() {
-        grid.setRowDetailsVisible(0, true);
-        grid.setRowDetailsVisible(0, false);
-        assert.notOk(qLocal(".detail-content-0"));
-      });
-    });
-
-    it('should be enabled by default', function() {
-      expect(grid.disabled).to.be.false;
-    });
-
-    it('should disable', function() {
-      grid.disabled = true;
-      expect(grid.disabled).to.be.true;
-    });
-
-    it('should reflect disabled to attribute', function() {
-      grid.disabled = true;
-      expect(grid.hasAttribute("disabled")).to.be.true;
-      grid.disabled = false;
-      expect(grid.hasAttribute("disabled")).to.be.false;
-    });
-
-    it('should apply disabled attribute', function() {
-      grid.setAttribute("disabled", true);
-      expect(grid.disabled).to.be.true;
-      grid.removeAttribute("disabled");
-      expect(grid.disabled).to.be.false;
+    assert.isTrue(elementEquals && gridEquals);
+    assert.equal(grid.rowClassGenerator, rowClassGenerator);
+    return grid.then(function(){
+      assert.isTrue(qLocal(".v-grid-body .v-grid-row").classList.contains("0_Grid"));
     });
   });
 
+  it('cellClassGenerator', function() {
+    var elementEquals = true;
+
+    grid.columns[0].name = "name";
+    grid.columns[1].name = "value";
+    assert.notOk(grid.cellClassGenerator);
+    var cellClassGenerator = function(cell) {
+      var columnIndex = cell.columnName == "name" ? 0 : 1;
+      var cellElement = qaLocal(".v-grid-body .v-grid-row")[cell.row.index].querySelectorAll(".v-grid-cell")[columnIndex];
+      elementEquals = elementEquals && cell.element == cellElement;
+      return cell.columnName;
+    };
+
+    grid.cellClassGenerator = cellClassGenerator;
+
+    assert.isTrue(elementEquals);
+    assert.equal(grid.cellClassGenerator, cellClassGenerator);
+    return grid.then(function(){
+      assert.isTrue(qLocal(".v-grid-body .v-grid-row .v-grid-cell").classList.contains("name"));
+    });
+  });
+
+  it('Row details should not be shown if generator is not set', function() {
+    return grid.then(function() {
+      grid.setRowDetailsVisible(0, true);
+      assert.notOk(qLocal(".v-grid-spacer"));
+    });
+  });
+
+  it('RowDetailsGenerator should be correctly set', function() {
+    assert.notOk(grid.rowDetailsGenerator);
+
+    var rowDetailsGenerator = function(rowIndex) {
+      var detail = document.createElement('div');
+      detail.className = 'detail-content-' + rowIndex;
+      detail.textContent = 'Row detail content for row ' + rowIndex;
+      return detail;
+    };
+    grid.rowDetailsGenerator = rowDetailsGenerator;
+
+    assert.equal(grid.rowDetailsGenerator, rowDetailsGenerator);
+  });
+
+  it('Row details should be correctly shown', function() {
+    return grid.then(function() {
+      grid.setRowDetailsVisible(0, true);
+      assert.equal(qLocal(".detail-content-0").textContent, "Row detail content for row 0");
+      grid.setRowDetailsVisible(0, false);
+    });
+  });
+
+  it('Row details should be correctly shown with no boolean param', function() {
+    return grid.then(function() {
+      grid.setRowDetailsVisible(0);
+      assert.equal(qLocal(".detail-content-0").textContent, "Row detail content for row 0");
+      grid.setRowDetailsVisible(0, false);
+    });
+  });
+
+  it('Row details should be correctly hidden', function() {
+    return grid.then(function() {
+      grid.setRowDetailsVisible(0, true);
+      grid.setRowDetailsVisible(0, false);
+      assert.notOk(qLocal(".detail-content-0"));
+    });
+  });
+
+  it('Row details should be hidden if generator is reset', function() {
+    return grid.then(function() {
+      grid.setRowDetailsVisible(0, true);
+      grid.rowDetailsGenerator = undefined;
+      assert.notOk(qLocal(".v-grid-spacer"));
+    });
+  });
+
+  it('should be enabled by default', function() {
+    expect(grid.disabled).to.be.false;
+  });
+
+  it('should disable', function() {
+    grid.disabled = true;
+    expect(grid.disabled).to.be.true;
+  });
+
+  it('should reflect disabled to attribute', function() {
+    grid.disabled = true;
+    expect(grid.hasAttribute("disabled")).to.be.true;
+    grid.disabled = false;
+    expect(grid.hasAttribute("disabled")).to.be.false;
+  });
+
+  it('should apply disabled attribute', function() {
+    grid.setAttribute("disabled", true);
+    expect(grid.disabled).to.be.true;
+    grid.removeAttribute("disabled");
+    expect(grid.disabled).to.be.false;
+  });
+});
 </script>
 
 </body>
