@@ -496,6 +496,8 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
     position: absolute;
     top: 0;
     right: 0;
+    bottom: 0;
+    pointer-events: none;
   }
 
   .v-grid-sidebar-button {
@@ -504,8 +506,31 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
     border: none;
     background: none;
     outline: none;
+    position: relative;
+    cursor: pointer;
+    pointer-events: all;
   }
 
+  .v-grid-sidebar-button::before {
+    content: "";
+    position: absolute;
+    left: 12px;
+    top: 10px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    opacity: 0;
+    background: #000;
+    transition: opacity 0.1s ease-in;
+  }
+
+  .v-grid-sidebar-button:hover:before {
+    opacity: 0.1;
+  }
+
+  .v-grid-sidebar-button:active:before {
+    opacity: 0.2;
+  }
   .v-grid-sidebar-button:after {
     content: url(ic_view_column_black_24px.svg);
     display: inline-block;
@@ -516,12 +541,27 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
 
   .v-grid-sidebar-content {
     background-color: #ffffff;
-    min-width: 200px;
     position: absolute;
     right: 0;
     top: 44px;
     box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
     border-radius: 2px;
+    max-height: calc(100% - 56px);
+    pointer-events: all;
+    overflow-y: auto;
+    -webkit-animation: v-grid-sidebar-transition 0.2s ease-in;
+    animation: v-grid-sidebar-transition 0.2s ease-in;
+  }
+
+  @keyframes v-grid-sidebar-transition {
+    0% { 
+      opacity: 0;
+      top: 48px; 
+    }
+    100% { 
+      opacity: 1;
+      top: 44px;
+    }
   }
 
   .v-grid-sidebar-content::content > div {
@@ -541,9 +581,23 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
   .v-grid-sidebar-content::content span div {
     display: inline-block;
     vertical-align: super;
+    padding-right: 20px;
   }
 
-  .v-grid-sidebar.closed:hover:after {
+  .v-grid-sidebar-content::content table {
+    border-collapse: collapse;
+  }
+
+  .v-grid-sidebar-content::content .column-hiding-toggle {
+    cursor: pointer;
+  }
+
+  .v-grid-sidebar-content::content .column-hiding-toggle:hover,
+  .v-grid-sidebar-content::content .column-hiding-toggle:focus {
+    background: #eeeeee;
+  }
+
+  .v-grid-sidebar.closed:after {
     content: "Show/hide columns";
     z-index: 999;
     background: rgba(97,97,97,.9);
@@ -558,6 +612,12 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
     position: absolute;
     right: 0;
     top: 44px;
+    opacity: 0;
+    transition: opacity 0.1s ease-in;
+  }
+
+  .v-grid-sidebar.closed:hover:after {
+    opacity: 1;
   }
 
 </style>
