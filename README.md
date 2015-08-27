@@ -12,7 +12,6 @@ Vaadin Components is an evolving set of custom HTML elements, built using [Polym
 ##### - [Getting Started instructions](http://vaadin.github.io/components-examples/)
 ##### - [Discussion](https://vaadin.com/forum/#!/category/9848927/)
 
-
 ## Overview of this repository
 
 - **vaadin-components**:
@@ -33,9 +32,9 @@ Vaadin Components is an evolving set of custom HTML elements, built using [Polym
 ### Setting up the project for the first time
 
 First, make sure you've installed all the necessary tooling:
-- [Node.js](http://nodejs.org)
-- [JDK8](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
-- [Maven](http://maven.apache.org/download.cgi)
+- [Node.js](http://nodejs.org).
+- [JDK8](http://www.oracle.com/technetwork/java/javase/downloads/index.html).
+- [Maven](http://maven.apache.org/download.cgi).
 
 > If you encounter permission issues when running `npm` see [thread in StackOverFlow.com](http://stackoverflow.com/questions/16151018/npm-throws-error-without-sudo)
 

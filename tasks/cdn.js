@@ -56,11 +56,14 @@ gulp.task('stage:cdn',
 
 gulp.task('deploy:cdn', ['stage:cdn'], function() {
   common.checkArguments(['cdnUsername', 'cdnDestination']);
+  var hostName = args.cdnHostname || 'cdn.vaadin.com';
+
+  gutil.log('Uploading to cdn (rsync): ' + stagingPath + ' -> '+ args.cdnUsername + '@' + hostName + ':' + args.cdnDestination + version);
 
   return gulp.src(stagingPath)
     .pipe(rsync({
       username: args.cdnUsername,
-      hostname: 'cdn.vaadin.com',
+      hostname: hostName,
       root: stagingPath,
       emptyDirectories: false,
       recursive: true,

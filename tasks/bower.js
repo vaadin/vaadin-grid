@@ -21,7 +21,9 @@ gulp.task('clean:bower', function() {
 });
 
 gulp.task('bower:clone', ['clean:bower'], function(done) {
-  var cloneArgs = '-b ' + (args.bowerCheckout ? args.bowerCheckout : snapshotVersion) + ' ' + checkoutPath;
+  var branch = args.bowerCheckout || 'master';
+  var cloneArgs = '-b ' + branch + ' ' + checkoutPath;
+  gutil.log("Cloning bower repo: " + branch + ' -> ' + checkoutPath);
 
   git.clone(gitRepository, {
     args : cloneArgs
@@ -92,7 +94,10 @@ gulp.task('deploy:bower', ['bower:create-commit'], function() {
       return git.push('origin', version, {cwd: checkoutPath, args: '--tags'});
     });
   } else {
-    return git.push('origin', 'HEAD:'+snapshotVersion, {cwd: checkoutPath, args: '--force'});
+    var branch = args.bowerCheckout || 'master';
+    gutil.log("Pushing latest code to: " + checkoutPath + ' -> HEAD:' + branch);
+
+    return git.push('origin', 'HEAD:' + branch, {cwd: checkoutPath, args: '--force'});
   }
 });
 
