@@ -73,6 +73,7 @@ public final class GridColumn extends Column<Object, Object> {
     private void bindProperties() {
         JS.definePropertyAccessors(jsColumn, "headerContent", v -> {
             getDefaultHeaderCellReference().setContent(v);
+            setHeaderCaption(v.toString());
             gridComponent.updateWidth();
         }, () -> getDefaultHeaderCellReference().getContent());
 
