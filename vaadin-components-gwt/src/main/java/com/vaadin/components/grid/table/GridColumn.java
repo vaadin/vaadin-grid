@@ -77,7 +77,10 @@ public final class GridColumn extends Column<Object, Object> {
             gridComponent.updateWidth();
         }, () -> getDefaultHeaderCellReference().getContent());
 
-        JS.definePropertyAccessors(jsColumn, "hidden", v -> setHidden((Boolean) v), this::isHidden);
+        JS.definePropertyAccessors(jsColumn, "hidden", v -> {
+            setHidden((Boolean) v);
+            gridComponent.updateWidth();
+        }, this::isHidden);
 
         bind("hidingToggleText", v -> setHidingToggleCaption(v == null ? null : v.toString()));
         bind("flex", v -> setExpandRatio(((Double) v).intValue()));
