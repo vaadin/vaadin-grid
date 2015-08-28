@@ -72,7 +72,15 @@ public final class GridColumn extends Column<Object, Object> {
 
     private void bindProperties() {
         JS.definePropertyAccessors(jsColumn, "headerContent", v -> {
-            setHeaderCaption(v == null ? null : v.toString());
+            if (v instanceof JavaScriptObject && JsUtils.isElement(v)) {
+                if (jsColumn.getName() != null) {
+                    setHeaderCaption(jsColumn.getName());
+                } else {
+                    setHeaderCaption(((Element) v).getInnerText());
+                }
+            } else {
+                setHeaderCaption(v == null ? null : v.toString());
+            }
             getDefaultHeaderCellReference().setContent(v);
             gridComponent.updateWidth();
         }, () -> getDefaultHeaderCellReference().getContent());
@@ -82,6 +90,12 @@ public final class GridColumn extends Column<Object, Object> {
             gridComponent.updateWidth();
         }, this::isHidden);
 
+        bind("name", v -> {
+            Object c = jsColumn.getHeaderContent();
+            if (c instanceof JavaScriptObject && JsUtils.isElement(c)) {
+                setHeaderCaption(v == null ? null : v.toString());
+            }
+        });
         bind("hidingToggleText", v -> setHidingToggleCaption(v == null ? null : v.toString()));
         bind("flex", v -> setExpandRatio(((Double) v).intValue()));
         bind("sortable", v -> setSortable((Boolean) v));
