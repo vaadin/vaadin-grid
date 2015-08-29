@@ -94,6 +94,7 @@ public final class GridColumn extends Column<Object, Object> {
             Object c = jsColumn.getHeaderContent();
             if (c instanceof JavaScriptObject && JsUtils.isElement(c)) {
                 setHeaderCaption(v == null ? null : v.toString());
+                getDefaultHeaderCellReference().setContent(c);
             }
         });
         bind("hidingToggleText", v -> setHidingToggleCaption(v == null ? null : v.toString()));
