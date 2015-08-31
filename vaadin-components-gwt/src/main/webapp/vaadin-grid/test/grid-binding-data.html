@@ -31,7 +31,7 @@
       }, ];
 
       return grid.then(function() {
-        var cells = qaLocal(".v-grid-body .v-grid-cell > span");
+        var cells = qaLocal(".vaadin-grid-body .vaadin-grid-cell > span");
         assert.equal(cells[0].innerHTML, "John");
         assert.equal(cells[1].innerHTML, "1234.56");
         assert.equal(cells[2].innerHTML, "Jane");
@@ -46,7 +46,7 @@
       ];
 
       return grid.then(function(){
-        var cells = qaLocal(".v-grid-body .v-grid-cell > span");
+        var cells = qaLocal(".vaadin-grid-body .vaadin-grid-cell > span");
         assert.equal(cells[0].innerHTML, "John");
         assert.equal(cells[1].innerHTML, "1234.56");
         assert.equal(cells[2].innerHTML, "Jane");
@@ -62,7 +62,7 @@
       ];
 
       return grid.then(function(){
-        var cells = qaLocal(".v-grid-body .v-grid-cell > span");
+        var cells = qaLocal(".vaadin-grid-body .vaadin-grid-cell > span");
         assert.equal(cells[2].innerHTML, "true");
       });
 
@@ -75,7 +75,7 @@
         ];
 
         return grid.then(function(){
-          var cells = qaLocal(".v-grid-body .v-grid-cell > span");
+          var cells = qaLocal(".vaadin-grid-body .vaadin-grid-cell > span");
           assert.equal(cells[2].innerHTML, "Ipsum");
         });
 
@@ -93,7 +93,7 @@
       ];
 
       return grid.then(function(){
-        var cells = qaLocal(".v-grid-body .v-grid-cell > span");
+        var cells = qaLocal(".vaadin-grid-body .vaadin-grid-cell > span");
         assert.equal(cells[0].innerHTML, "1");
         assert.equal(cells[1].innerHTML, "2");
         assert.equal(cells[2].innerHTML, "");
@@ -204,21 +204,21 @@
         grid.data.source = [];
 
         return grid.then(function(){
-        	var headerHeight = qLocal(".v-grid-header").clientHeight;
-        	var footerHeight = qLocal(".v-grid-footer").clientHeight;
+        	var headerHeight = qLocal(".vaadin-grid-header").clientHeight;
+        	var footerHeight = qLocal(".vaadin-grid-footer").clientHeight;
         	expect(grid.clientHeight).to.be.above(0);
         	expect(grid.clientHeight).to.eql(headerHeight + footerHeight);
         });
     });
 
     it('datasource can be added before grid attached to the DOM', function() {
-      var g = new VGrid(); // or document.createElement("v-grid");
+      var g = document.createElement("vaadin-grid");
       g.columns = [{headerContent: "foo"}];
       g.data.source = ["bar"];
       document.body.appendChild(g);
 
       return g.then(function(){
-        var cells = Polymer.dom(g.root).querySelectorAll(".v-grid-body .v-grid-cell > span");
+        var cells = Polymer.dom(g.root).querySelectorAll(".vaadin-grid-body .vaadin-grid-cell > span");
         assert.equal(cells[0].innerHTML, "bar");
 
         document.body.removeChild(g);
@@ -233,7 +233,7 @@
     		grid.data.clearCache(1);
     		return grid;
     	}).then(function() {
-    		expect(qLocal('.v-grid-body .v-grid-cell')).to.exist;
+    		expect(qLocal('.vaadin-grid-body .vaadin-grid-cell')).to.exist;
     	});
     });
 

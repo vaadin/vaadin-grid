@@ -23,7 +23,7 @@ describe.feature('using properties', function() {
     assert.notOk(grid.rowClassGenerator);
     var rowClassGenerator = function(row) {
       gridEquals = gridEquals && row.grid == grid;
-      elementEquals = elementEquals && row.element == qaLocal(".v-grid-body .v-grid-row")[row.index];
+      elementEquals = elementEquals && row.element == qaLocal(".vaadin-grid-body .vaadin-grid-row")[row.index];
       return row.index + "_" + row.data[0];
     };
 
@@ -32,7 +32,7 @@ describe.feature('using properties', function() {
     assert.isTrue(elementEquals && gridEquals);
     assert.equal(grid.rowClassGenerator, rowClassGenerator);
     return grid.then(function(){
-      assert.isTrue(qLocal(".v-grid-body .v-grid-row").classList.contains("0_Grid"));
+      assert.isTrue(qLocal(".vaadin-grid-body .vaadin-grid-row").classList.contains("0_Grid"));
     });
   });
 
@@ -44,7 +44,7 @@ describe.feature('using properties', function() {
     assert.notOk(grid.cellClassGenerator);
     var cellClassGenerator = function(cell) {
       var columnIndex = cell.columnName == "name" ? 0 : 1;
-      var cellElement = qaLocal(".v-grid-body .v-grid-row")[cell.row.index].querySelectorAll(".v-grid-cell")[columnIndex];
+      var cellElement = qaLocal(".vaadin-grid-body .vaadin-grid-row")[cell.row.index].querySelectorAll(".vaadin-grid-cell")[columnIndex];
       elementEquals = elementEquals && cell.element == cellElement;
       return cell.columnName;
     };
@@ -54,14 +54,14 @@ describe.feature('using properties', function() {
     assert.isTrue(elementEquals);
     assert.equal(grid.cellClassGenerator, cellClassGenerator);
     return grid.then(function(){
-      assert.isTrue(qLocal(".v-grid-body .v-grid-row .v-grid-cell").classList.contains("name"));
+      assert.isTrue(qLocal(".vaadin-grid-body .vaadin-grid-row .vaadin-grid-cell").classList.contains("name"));
     });
   });
 
   it('Row details should not be shown if generator is not set', function() {
     return grid.then(function() {
       grid.setRowDetailsVisible(0, true);
-      assert.notOk(qLocal(".v-grid-spacer"));
+      assert.notOk(qLocal(".vaadin-grid-spacer"));
     });
   });
 
@@ -107,7 +107,7 @@ describe.feature('using properties', function() {
     return grid.then(function() {
       grid.setRowDetailsVisible(0, true);
       grid.rowDetailsGenerator = undefined;
-      assert.notOk(qLocal(".v-grid-spacer"));
+      assert.notOk(qLocal(".vaadin-grid-spacer"));
       grid.setRowDetailsVisible(0, false);
     });
   });

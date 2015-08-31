@@ -39,8 +39,9 @@ public class IndexBasedSelectionModelMulti extends SelectionModelMulti<Object>
             public CheckBox createWidget() {
                 CheckBox checkBox = super.createWidget();
                 checkBox.setTabIndex(-1);
-                checkBox.addStyleName("v-grid style-scope");
-                GQuery.$(checkBox).children().addClass("v-grid", "style-scope");
+                checkBox.addStyleName("vaadin-grid style-scope");
+                GQuery.$(checkBox).children()
+                        .addClass("vaadin-grid", "style-scope");
                 return checkBox;
             }
 

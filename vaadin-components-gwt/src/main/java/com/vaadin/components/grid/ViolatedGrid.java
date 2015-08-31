@@ -32,16 +32,16 @@ public class ViolatedGrid extends com.vaadin.client.widgets.Grid<Object> {
                 // the wrapper is needed for creating an additional stacking
                 // context.
                 GQuery scrollers = GQuery
-                        .$(".v-grid-scroller", this)
+                        .$(".vaadin-grid-scroller", this)
                         .css("position", "relative")
                         .wrap("<div style='position: absolute; z-index: 10' />");
-                scrollers.filter(".v-grid-scroller-vertical").parent()
+                scrollers.filter(".vaadin-grid-scroller-vertical").parent()
                         .css("right", "0");
-                scrollers.filter(".v-grid-scroller-horizontal").parent()
+                scrollers.filter(".vaadin-grid-scroller-horizontal").parent()
                         .css("bottom", "0");
             } else if (BrowserInfo.get().isChrome()) {
                 // Fix for [https://github.com/vaadin/components/issues/29]
-                GQuery.$(".v-grid-scroller", this).attr("invisible", "");
+                GQuery.$(".vaadin-grid-scroller", this).attr("invisible", "");
             }
         }
     }
@@ -120,7 +120,8 @@ public class ViolatedGrid extends com.vaadin.client.widgets.Grid<Object> {
     public void onBrowserEvent(Event event) {
 
         // clicking on the select all checkbox moves focus away from the grid
-        // causing the :focus transition effect to be reapplied. Forcing focus on the grid
+        // causing the :focus transition effect to be reapplied. Forcing focus
+        // on the grid
         // will mitigate the issue.
         focusGridIfSelectAllClicked(event);
 
@@ -129,11 +130,12 @@ public class ViolatedGrid extends com.vaadin.client.widgets.Grid<Object> {
 
     private void focusGridIfSelectAllClicked(Event event) {
         EventTarget target = event.getEventTarget();
-        if(Element.is(target)) {
+        if (Element.is(target)) {
             Element targetElement = Element.as(target);
 
-            // Currently targeting all gwt-checkboxes, might need refinement in the future.
-            if(targetElement.getParentElement().hasClassName("gwt-CheckBox")) {
+            // Currently targeting all gwt-checkboxes, might need refinement in
+            // the future.
+            if (targetElement.getParentElement().hasClassName("gwt-CheckBox")) {
                 getElement().focus();
             }
         }

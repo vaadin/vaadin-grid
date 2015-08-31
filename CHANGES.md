@@ -1,7 +1,7 @@
 ## Vaadin Components v0.3.0 (2015-xx-xx)
 - Polymer updated to v1.0.2.
 
-### `<v-grid>`
+### `<vaadin-grid>`
 - Vaadin Widgets updated to 7.5.3
 - Theme revised to comply better with Material Design guidelines.
 - Improved Grid resizing logic.

@@ -104,7 +104,7 @@
       grid.scrollToStart();
 
       grid.then(function(){
-        var tableWrapper = qLocal(".v-grid-tablewrapper");
+        var tableWrapper = qLocal(".vaadin-grid-tablewrapper");
 
         var isIE = (navigator.userAgent.indexOf("Trident") != -1);
         triggerMouseEvent(tableWrapper.firstChild, isIE ? "mousewheel" : "wheel", {
