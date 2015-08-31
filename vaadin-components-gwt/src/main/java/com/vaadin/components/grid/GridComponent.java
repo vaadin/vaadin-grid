@@ -103,7 +103,7 @@ public class GridComponent implements SelectionHandler<Object>,
         editor = new GridEditor(this);
         staticSection = new GridStaticSection(this);
 
-        grid.setStylePrimaryName("v-grid style-scope v-grid");
+        grid.setStylePrimaryName("vaadin-grid style-scope vaadin-grid");
     }
 
     public GridEditor getEditor() {
@@ -477,10 +477,9 @@ public class GridComponent implements SelectionHandler<Object>,
     }
 
     public boolean isWorkPending() {
-        return (grid.getDataSource() != null && ((GridDataSource) grid
-                .getDataSource()).isWaitingForData())
-                || grid.isWorkPending()
-                || sizeUpdater.isRunning();
+        return grid.getDataSource() != null
+                && ((GridDataSource) grid.getDataSource()).isWaitingForData()
+                || grid.isWorkPending() || sizeUpdater.isRunning();
     }
 
     public void onReady(JavaScriptObject f) {
@@ -558,7 +557,8 @@ public class GridComponent implements SelectionHandler<Object>,
     private void updateSelectAllCheckBox() {
         CheckBox selectAllCheckBox = getSelectAllCheckBox();
         if (selectAllCheckBox != null) {
-            $(selectAllCheckBox).children().addClass("v-grid", "style-scope");
+            $(selectAllCheckBox).children().addClass("vaadin-grid",
+                    "style-scope");
             IndexBasedSelectionModelMulti model = (IndexBasedSelectionModelMulti) getSelectionModel();
             $(selectAllCheckBox).find("input").prop("indeterminate",
                     model.isIndeterminate());
@@ -577,7 +577,7 @@ public class GridComponent implements SelectionHandler<Object>,
 
     @JsNoExport
     public void setLoadingDataClass(boolean loadingData) {
-        String loadingDataClassName = "v-grid-loading-data";
+        String loadingDataClassName = "vaadin-grid-loading-data";
 
         if (loadingData) {
             getGridElement().addClassName(loadingDataClassName);
