@@ -52,7 +52,7 @@
           tdHeight
 
         beforeEach(function() {
-          inner = qLocal("div.v-grid");
+          inner = qLocal("div.vaadin-grid");
           tbody = qLight('table tbody');
 
           headers = qaLocal('thead tr').length;
@@ -94,16 +94,16 @@
           var wrapper = document.getElementById("gridwrapper");
           var tmp = document.createElement("div");
           wrapper.appendChild(tmp);
-          tmp.innerHTML = "<v-grid style='display: none'>" +
+          tmp.innerHTML = "<vaadin-grid style='display: none'>" +
             "                     <table>" +
             "                       <col header-text='Name'>" +
             "                       <tr>" +
             "                         <td>Grid</td>" +
             "                       </tr>" +
             "                     </table>" +
-            "                   </v-grid>";
+            "                   </vaadin-grid>";
 
-          var grid = tmp.querySelector("v-grid");
+          var grid = tmp.querySelector("vaadin-grid");
 
           // Usin onRegister because in FF the new grid takes a while to be initialized
           onRegister(grid, function() {
@@ -194,11 +194,11 @@
             grid.columns[0].sortable = true;
             grid.style.height = "500px";
 
-            var firstNonFrozenHeaderCell = qLocal.bind(this, ".v-grid-header .v-grid-cell:not(.frozen)");
+            var firstNonFrozenHeaderCell = qLocal.bind(this, ".vaadin-grid-header .vaadin-grid-cell:not(.frozen)");
             firstNonFrozenHeaderCell().click();
 
             return grid.then(function() {
-              expect(qLocal('div.v-grid').style.height).to.equal('100%');
+              expect(qLocal('div.vaadin-grid').style.height).to.equal('100%');
             });
           });
 

@@ -19,7 +19,7 @@
   describe.feature('editing columns', function() {
 
     function getFirstCell() {
-      return qLocal('.v-grid-body .v-grid-cell');
+      return qLocal('.vaadin-grid-body .vaadin-grid-cell');
     }
 
     beforeEach(function() {
@@ -76,7 +76,7 @@
 
       grid.then(function() {
         assert.isTrue(gridContainsText(grid, "testHtml"));
-        var headers = qaLocal(".v-grid-header .v-grid-row th > span");
+        var headers = qaLocal(".vaadin-grid-header .vaadin-grid-row th > span");
         assert.equal(headers[0].innerHTML, "testHtml");
         assert.equal(headers[1].innerHTML, "foo");
 
@@ -97,7 +97,7 @@
       grid.then(function() {
         assert.isTrue(gridContainsText(grid, "testHtml"));
 
-        var headers = qaLocal(".v-grid-header .v-grid-row th > span");
+        var headers = qaLocal(".vaadin-grid-header .vaadin-grid-row th > span");
         assert.equal(headers[grid.columns.length - 1].innerHTML, "testHtml");
 
         c.headerContent = "testHtml2";
@@ -105,7 +105,7 @@
         grid.then(function() {
           assert.isTrue(gridContainsText(grid, "testHtml2"));
 
-          headers = qaLocal(".v-grid-header .v-grid-row th > span");
+          headers = qaLocal(".vaadin-grid-header .vaadin-grid-row th > span");
           assert.equal(headers[grid.columns.length - 1].innerHTML, "testHtml2");
           done();
         });
@@ -116,7 +116,7 @@
       grid.columns[0].headerContent = "testHtml";
       grid.then(function() {
         assert.isTrue(gridContainsText(grid, "testHtml"));
-        var headers = qaLocal(".v-grid-header .v-grid-row th > span");
+        var headers = qaLocal(".vaadin-grid-header .vaadin-grid-row th > span");
         assert.equal(headers[0].innerHTML, "testHtml");
         done();
       });
@@ -164,7 +164,7 @@
       grid.then(function() {
         assert.isTrue(gridContainsText(grid, "TestFoo"));
 
-        var cell = qaLocal(".v-grid-body .v-grid-cell")[3].cell;
+        var cell = qaLocal(".vaadin-grid-body .vaadin-grid-cell")[3].cell;
         assert.equal(cell.row.index, 1);
         assert.equal(cell.index, 1);
 
@@ -189,7 +189,7 @@
 
     describe('modifying columns array directly', function() {
       it('should replace header content', function() {
-        var firstHeader = qLocal(".v-grid-header .v-grid-row th");
+        var firstHeader = qLocal(".vaadin-grid-header .vaadin-grid-row th");
         expect(firstHeader.textContent).to.equal('Name');
 
         grid.columns[0].headerContent = 'Foo';
@@ -200,7 +200,7 @@
       });
 
       // fails because of replacing columns doesn't render row contents,
-      // see https://trello.com/c/8e27Tv3q/58-v-grid-bugs
+      // see https://trello.com/c/8e27Tv3q/58-vaadin-grid-bugs
       it.skip('should render row contents', function() {
         expect(grid.querySelectorAll('td').textContent).to.equal('Grid');
 
@@ -264,7 +264,7 @@
       grid.frozenColumns = 2;
 
       grid.then(function() {
-        var headers = qaLocal(".v-grid-header .v-grid-row th");
+        var headers = qaLocal(".vaadin-grid-header .vaadin-grid-row th");
         assert.isTrue(headers[0].classList.contains("frozen"));
         assert.isTrue(headers[1].classList.contains("frozen"));
         assert.isTrue(headers[1].classList.contains("last-frozen"));
@@ -295,7 +295,7 @@
         grid.addColumn({headerContent: "foo"}, 0);
         return grid;
       }).then(function() {
-        expect(qaLocal(".v-grid-header .v-grid-cell")).to.have.length(1);
+        expect(qaLocal(".vaadin-grid-header .vaadin-grid-cell")).to.have.length(1);
         return grid;
       });
     });
@@ -346,7 +346,7 @@
         }
       }];
       return grid.then(function() {
-        expect(qaLocal(".v-grid-body .v-grid-cell > span")[2].innerHTML).to.be.empty;
+        expect(qaLocal(".vaadin-grid-body .vaadin-grid-cell > span")[2].innerHTML).to.be.empty;
       });
     });
 
@@ -362,7 +362,7 @@
       qLight("col").setAttribute("width", "110");
       return grid.then(function(){
         expect(grid.columns[0].width).to.eql(110);
-        expect(qLocal(".v-grid-cell").offsetWidth).to.eql(110);
+        expect(qLocal(".vaadin-grid-cell").offsetWidth).to.eql(110);
       });
     });
 
@@ -371,7 +371,7 @@
       qLight("col").setAttribute("min-width", "130");
       return grid.then(function(){
         expect(grid.columns[0].width).to.eql(110);
-        expect(qLocal(".v-grid-cell").offsetWidth).to.eql(130);
+        expect(qLocal(".vaadin-grid-cell").offsetWidth).to.eql(130);
       });
     });
 
@@ -383,14 +383,14 @@
         expect(grid.columns[0].width).to.eql(210);
         expect(grid.columns[0].maxWidth).to.eql(140);
         // waiting for fix in the Grid.java
-        // expect(qLocal(".v-grid-cell").offsetWidth).to.eql(140);
+        // expect(qLocal(".vaadin-grid-cell").offsetWidth).to.eql(140);
       });
     });
 
     it('should size columns with width property', function() {
       grid.columns[0].width = 100;
       return grid.then(function(){
-        expect(qLocal(".v-grid-cell").offsetWidth).to.eql(100);
+        expect(qLocal(".vaadin-grid-cell").offsetWidth).to.eql(100);
       });
     });
 
@@ -398,14 +398,14 @@
       grid.columns[0].width = 100;
       grid.columns[0].minWidth = 150;
       return grid.then(function(){
-        expect(qLocal(".v-grid-cell").offsetWidth).to.eql(150);
+        expect(qLocal(".vaadin-grid-cell").offsetWidth).to.eql(150);
       });
     });
 
     it('should size columns with maxWidth property', function() {
       grid.columns[0].maxWidth = 100;
       return grid.then(function(){
-        expect(qLocal(".v-grid-cell").offsetWidth).to.eql(100);
+        expect(qLocal(".vaadin-grid-cell").offsetWidth).to.eql(100);
       });
     });
 
@@ -414,7 +414,7 @@
       var tmp = document.createElement("div");
       wrapper.appendChild(tmp);
 
-      var grid = document.createElement("v-grid");
+      var grid = document.createElement("vaadin-grid");
       tmp.appendChild(grid);
 
       waitUntil(function() {

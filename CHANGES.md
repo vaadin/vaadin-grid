@@ -1,7 +1,7 @@
 ## Vaadin Components v0.3.0 (2015-xx-xx)
 - Polymer updated to v1.0.2.
 
-### `<v-grid>`
+### `<vaadin-grid>`
 - Vaadin Widgets updated to 7.5.3
 - Theme revised to comply better with Material Design guidelines.
 - Improved Grid resizing logic.
@@ -15,6 +15,7 @@
 - Combined multi selection models into one model
 - Moved row focus indicator line from the bottom to the left side of a row
 - Added row details feature
+- Tag renamed to vaadin-grid
 - Issues fixed:
   - Grid doesn't work when using selection-mode multi, frozen columns and sortable columns. (#7)
   - Grid height is recalculated incorrectly when sorting a grid with a fixed height. (#8)
