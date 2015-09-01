@@ -12,7 +12,6 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.HTML;
 import com.vaadin.client.widgets.Grid.Column;
 import com.vaadin.components.common.js.JS;
-import com.vaadin.components.common.js.JS.Getter;
 import com.vaadin.components.common.js.JS.Setter;
 import com.vaadin.components.common.js.JSArray;
 import com.vaadin.components.grid.GridComponent;
@@ -72,7 +71,7 @@ public final class GridColumn extends Column<Object, Object> {
 
     private void bindProperties() {
         JS.definePropertyAccessors(jsColumn, "headerContent",
-                v -> updateHeaderCaption(jsColumn.getName(), v),
+                v -> contentOrNameChanged(jsColumn.getName(), v),
                 () -> getDefaultHeaderCellReference().getContent());
 
         JS.definePropertyAccessors(jsColumn, "hidden", v -> {
@@ -80,7 +79,7 @@ public final class GridColumn extends Column<Object, Object> {
             gridComponent.updateWidth();
         }, this::isHidden);
 
-        bind("name", v -> updateHeaderCaption(v, jsColumn.getHeaderContent()));
+        bind("name", v -> contentOrNameChanged((String) v, jsColumn.getHeaderContent()));
         bind("hidingToggleText", v -> setHidingToggleCaption(v == null ? null : v.toString()));
         bind("flex", v -> setExpandRatio(((Double) v).intValue()));
         bind("sortable", v -> setSortable((Boolean) v));
@@ -101,12 +100,12 @@ public final class GridColumn extends Column<Object, Object> {
                         : (double) v));
     }
 
-    private void updateHeaderCaption(Object name, Object content) {
+    private void contentOrNameChanged(String name, Object content) {
         if (content == null || (content instanceof String && ((String) content).isEmpty())) {
-            setHeaderCaption(name == null ? "" : name.toString());
+            setHeaderCaption(name == null ? "" : name);
         } else if (content instanceof JavaScriptObject && JsUtils.isElement(content)) {
             if (name != null) {
-                setHeaderCaption(name.toString());
+                setHeaderCaption(name);
             } else {
                 setHeaderCaption(((Element) content).getInnerText());
             }
