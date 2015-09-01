@@ -4,6 +4,7 @@ import static com.google.gwt.query.client.GQuery.$;
 
 import java.util.List;
 
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
@@ -114,7 +115,9 @@ public class GridLightDomTable implements MutationListener {
             JSColumn column = JS.createJsType(JSColumn.class);
             jsColumns.add(column);
             column.setSortable(JSValidate.Boolean.attr($th, "sortable"));
-            column.setHidable(JSValidate.Boolean.attr($th, "hidable"));
+            Scheduler.get().scheduleDeferred(
+                    () -> column.setHidable(JSValidate.Boolean.attr($th,
+                            "hidable")));
             column.setHidden(JSValidate.Boolean.attr($th, "hidden"));
             column.setFlex(JSValidate.Integer.attr($th, "flex", 1, -1));
 

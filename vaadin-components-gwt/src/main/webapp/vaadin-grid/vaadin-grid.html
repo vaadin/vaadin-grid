@@ -503,7 +503,7 @@ More examples available at http://vaadin.github.io/components-examples/vaadin-gr
   }
 
 
-  .v-grid-sidebar {
+  .vaadin-grid-sidebar {
     z-index: 5;
     position: absolute;
     top: 0;
@@ -512,7 +512,7 @@ More examples available at http://vaadin.github.io/components-examples/vaadin-gr
     pointer-events: none;
   }
 
-  .v-grid-sidebar-button {
+  .vaadin-grid-sidebar-button {
     width: 56px;
     height: 56px;
     border: none;
@@ -523,7 +523,7 @@ More examples available at http://vaadin.github.io/components-examples/vaadin-gr
     pointer-events: all;
   }
 
-  .v-grid-sidebar-button::before {
+  .vaadin-grid-sidebar-button::before {
     content: "";
     position: absolute;
     left: 12px;
@@ -536,14 +536,14 @@ More examples available at http://vaadin.github.io/components-examples/vaadin-gr
     transition: opacity 0.1s ease-in;
   }
 
-  .v-grid-sidebar-button:hover:before {
+  .vaadin-grid-sidebar-button:hover:before {
     opacity: 0.1;
   }
 
-  .v-grid-sidebar-button:active:before {
+  .vaadin-grid-sidebar-button:active:before {
     opacity: 0.2;
   }
-  .v-grid-sidebar-button:after {
+  .vaadin-grid-sidebar-button:after {
     content: url(ic_view_column_black_24px.svg);
     display: inline-block;
     position:relative;
@@ -551,7 +551,7 @@ More examples available at http://vaadin.github.io/components-examples/vaadin-gr
     left: 0;
   }
 
-  .v-grid-sidebar-content {
+  .vaadin-grid-sidebar-content {
     background-color: #ffffff;
     position: absolute;
     right: 0;
@@ -561,11 +561,11 @@ More examples available at http://vaadin.github.io/components-examples/vaadin-gr
     max-height: calc(100% - 56px);
     pointer-events: all;
     overflow-y: auto;
-    -webkit-animation: v-grid-sidebar-transition 0.2s ease-in;
-    animation: v-grid-sidebar-transition 0.2s ease-in;
+    -webkit-animation: vaadin-grid-sidebar-transition 0.2s ease-in;
+    animation: vaadin-grid-sidebar-transition 0.2s ease-in;
   }
 
-  @keyframes v-grid-sidebar-transition {
+  @keyframes vaadin-grid-sidebar-transition {
     0% { 
       opacity: 0;
       top: 48px; 
@@ -576,40 +576,40 @@ More examples available at http://vaadin.github.io/components-examples/vaadin-gr
     }
   }
 
-  .v-grid-sidebar-content::content > div {
+  .vaadin-grid-sidebar-content::content > div {
     padding: 6px 0;
   }
 
-  .v-grid-sidebar-content::content span:before {
+  .vaadin-grid-sidebar-content::content span:before {
     content: url(ic_check_black_24px.svg);
     display: inline-block;
     padding: 0 20px;
   }
 
-  .v-grid-sidebar-content::content .v-off:before {
+  .vaadin-grid-sidebar-content::content .v-off:before {
     visibility: hidden;
   }
 
-  .v-grid-sidebar-content::content span div {
+  .vaadin-grid-sidebar-content::content span div {
     display: inline-block;
     vertical-align: super;
     padding-right: 20px;
   }
 
-  .v-grid-sidebar-content::content table {
+  .vaadin-grid-sidebar-content::content table {
     border-collapse: collapse;
   }
 
-  .v-grid-sidebar-content::content .column-hiding-toggle {
+  .vaadin-grid-sidebar-content::content .column-hiding-toggle {
     cursor: pointer;
   }
 
-  .v-grid-sidebar-content::content .column-hiding-toggle:hover,
-  .v-grid-sidebar-content::content .column-hiding-toggle:focus {
+  .vaadin-grid-sidebar-content::content .column-hiding-toggle:hover,
+  .vaadin-grid-sidebar-content::content .column-hiding-toggle:focus {
     background: #eeeeee;
   }
 
-  .v-grid-sidebar.closed:after {
+  .vaadin-grid-sidebar.closed:after {
     content: "Show/hide columns";
     z-index: 999;
     background: rgba(97,97,97,.9);
@@ -628,7 +628,7 @@ More examples available at http://vaadin.github.io/components-examples/vaadin-gr
     transition: opacity 0.1s ease-in;
   }
 
-  .v-grid-sidebar.closed:hover:after {
+  .vaadin-grid-sidebar.closed:hover:after {
     opacity: 1;
   }
 
