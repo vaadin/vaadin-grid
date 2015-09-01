@@ -72,7 +72,7 @@ public final class GridColumn extends Column<Object, Object> {
     private void bindProperties() {
         JS.definePropertyAccessors(jsColumn, "headerContent", v -> {
             getDefaultHeaderCellReference().setContent(v);
-            gridComponent.updateWidth();
+            gridComponent.getGrid().onResize();
         }, () -> getDefaultHeaderCellReference().getContent());
 
         bind("flex", v -> setExpandRatio(((Double) v).intValue()));
@@ -96,7 +96,7 @@ public final class GridColumn extends Column<Object, Object> {
     private void bind(String propertyName, final Setter setter) {
         JS.definePropertyAccessors(jsColumn, propertyName, v -> {
             setter.setValue(v);
-            gridComponent.updateWidth();
+            gridComponent.getGrid().onResize();
         }, null);
     }
 
