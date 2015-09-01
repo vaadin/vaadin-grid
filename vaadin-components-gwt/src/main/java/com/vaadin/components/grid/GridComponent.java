@@ -421,6 +421,7 @@ public class GridComponent implements SelectionHandler<Object>,
             }
             updateWidth();
             updateHeight();
+            grid.onResize();
         }
     };
 
@@ -431,7 +432,6 @@ public class GridComponent implements SelectionHandler<Object>,
     @JsNoExport
     public void updateWidth() {
         grid.setWidth("100%");
-        Scheduler.get().scheduleDeferred(() -> grid.recalculateColumnWidths());
     }
 
     @JsNoExport
