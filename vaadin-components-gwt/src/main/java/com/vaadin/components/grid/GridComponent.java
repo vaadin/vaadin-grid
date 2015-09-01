@@ -32,6 +32,7 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.UIObject;
 import com.vaadin.client.widget.grid.DetailsGenerator;
 import com.vaadin.client.widget.grid.events.SelectAllEvent;
 import com.vaadin.client.widget.grid.events.SelectAllHandler;
@@ -402,10 +403,22 @@ public class GridComponent implements SelectionHandler<Object>,
         return cellClassGenerator;
     }
 
+    // The method should only be called on init/attach
+    private boolean resetSizesFromDomCalled = false;
+
     private final Timer sizeUpdater = new Timer() {
         @Override
         public void run() {
-            grid.resetSizesFromDom();
+            if (!resetSizesFromDomCalled && UIObject.isVisible(container)) {
+                grid.resetSizesFromDom();
+                then(JsUtils.wrapFunction(new Function() {
+                    @Override
+                    public void f() {
+                        grid.resetSizesFromDom();
+                    };
+                }));
+                resetSizesFromDomCalled = true;
+            }
             updateWidth();
             updateHeight();
         }

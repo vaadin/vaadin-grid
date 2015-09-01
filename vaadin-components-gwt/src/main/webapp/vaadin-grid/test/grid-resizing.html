@@ -261,7 +261,7 @@
             return div;
           }
 
-          return grid.then(function(){
+          return grid.then(function() {
             var under = createDiv();
             grid.parentElement.insertBefore(under, grid);
             var element = document.elementFromPoint(10, 10);
@@ -276,7 +276,7 @@
           });
 
         });
-        
+
         it('should render in a flex box', function() {
           var wrapper = document.getElementById("gridwrapper");
           wrapper.setAttribute("style", "height: 200px; display: -webkit-flex; display: flex;");
@@ -286,6 +286,27 @@
             expect(grid.clientHeight).to.eql(200);
             wrapper.removeAttribute("style");
             grid.removeAttribute("style");
+          });
+        });
+
+        it('should resize with a details row open', function() {
+          grid.rowDetailsGenerator = function() {
+            return document.createElement("input");
+          }
+          var originalHeight;
+
+          return grid.then(function() {
+            grid.setRowDetailsVisible(0, true);
+            return grid;
+          }).then(function() {
+            originalHeight = grid.clientHeight;
+            grid.style.height = "100px";
+            return grid;
+          }).then(function() {
+            grid.style.height = "";
+            return grid;
+          }).then(function() {
+            expect(originalHeight).to.eql(grid.clientHeight);
           });
         });
 
