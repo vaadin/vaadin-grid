@@ -20,7 +20,7 @@ describe.feature = function(description, suite) {
 };
 
 function gridContainsText(_grid, text) {
-  return Polymer.dom(_grid.root).querySelector(".v-grid-tablewrapper").parentElement.innerHTML.indexOf(text) > -1;
+  return Polymer.dom(_grid.root).querySelector(".vaadin-grid-tablewrapper").parentElement.innerHTML.indexOf(text) > -1;
 }
 
 function onRegister(e, cb) {
@@ -64,7 +64,7 @@ function triggerMouseEvent(node, eventType, properties, shiftKey) {
 
 function initializeGrid(cb) {
   wrapper = document.getElementById("gridwrapper");
-  wrapper.innerHTML = "<v-grid>" +
+  wrapper.innerHTML = "<vaadin-grid>" +
     "                     <table>" +
     "                       <col header-text='Name'>" +
     "                       <col header-text='Value'>" +
@@ -85,8 +85,8 @@ function initializeGrid(cb) {
     "                       </tr>" +
     "                     </tfoot>" +
     "                     </table>" +
-    "                     </v-grid>";
-  grid = wrapper.querySelector("v-grid");
+    "                     </vaadin-grid>";
+  grid = wrapper.querySelector("vaadin-grid");
   onRegister(grid, cb);
 }
 

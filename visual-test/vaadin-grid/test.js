@@ -5,7 +5,7 @@ gemini.suite('vaadin-grid', function(rootSuite) {
 
   rootSuite.before(function(actions, find) {
     actions.waitForJSCondition(function(window) {
-      var grid = window.document.querySelector('v-grid');
+      var grid = window.document.querySelector('vaadin-grid');
 
       if(grid._grid) {
         return grid._grid.isWorkPending() === false;
@@ -17,6 +17,6 @@ gemini.suite('vaadin-grid', function(rootSuite) {
   });
 
   gemini.suite('overview', function(suite) {
-    suite.setCaptureElements('v-grid').capture('default');
+    suite.setCaptureElements('vaadin-grid').capture('default');
   });
 });

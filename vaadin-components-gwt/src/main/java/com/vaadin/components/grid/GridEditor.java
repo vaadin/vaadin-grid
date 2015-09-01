@@ -1,7 +1,6 @@
 package com.vaadin.components.grid;
 
 import static com.google.gwt.query.client.GQuery.$;
-import static com.google.gwt.query.client.GQuery.console;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -188,7 +187,9 @@ public class GridEditor {
                             createJSEditorRequest(request, true));
                     gridComponent.getDataSource().clearCache(null);
                 } else {
-                    request.failure("'grid.editor.handler.save' is undefined. Please refer to the documentation for more information.", null);
+                    request.failure(
+                            "'grid.editor.handler.save' is undefined. Please refer to the documentation for more information.",
+                            null);
                 }
             }
 
@@ -216,14 +217,15 @@ public class GridEditor {
                 e = JS.exec(handler.getGetCellEditor(), jscol);
             } else {
                 e = Document.get().createTextInputElement();
-                e.addClassName("v-grid style-scope");
+                e.addClassName("vaadin-grid style-scope");
             }
             if (e != null) {
                 w = new SimplePanel(e) {
                     @Override
                     protected void onAttach() {
                         super.onAttach();
-                        getElement().getParentElement().addClassName("v-grid style-scope");
+                        getElement().getParentElement().addClassName(
+                                "vaadin-grid style-scope");
                     }
                 };
                 editors.put(jscol, w);

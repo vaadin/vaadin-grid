@@ -52,7 +52,7 @@
           tdHeight
 
         beforeEach(function() {
-          inner = qaLocal("div.v-grid")[1];
+          inner = qLocal("div.vaadin-grid");
           tbody = qLight('table tbody');
 
           headers = qaLocal('thead tr').length;
@@ -94,16 +94,16 @@
           var wrapper = document.getElementById("gridwrapper");
           var tmp = document.createElement("div");
           wrapper.appendChild(tmp);
-          tmp.innerHTML = "<v-grid style='display: none'>" +
+          tmp.innerHTML = "<vaadin-grid style='display: none'>" +
             "                     <table>" +
             "                       <col header-text='Name'>" +
             "                       <tr>" +
             "                         <td>Grid</td>" +
             "                       </tr>" +
             "                     </table>" +
-            "                   </v-grid>";
+            "                   </vaadin-grid>";
 
-          var grid = tmp.querySelector("v-grid");
+          var grid = tmp.querySelector("vaadin-grid");
 
           // Usin onRegister because in FF the new grid takes a while to be initialized
           onRegister(grid, function() {
@@ -194,11 +194,11 @@
             grid.columns[0].sortable = true;
             grid.style.height = "500px";
 
-            var firstNonFrozenHeaderCell = qLocal.bind(this, ".v-grid-header .v-grid-cell:not(.frozen)");
+            var firstNonFrozenHeaderCell = qLocal.bind(this, ".vaadin-grid-header .vaadin-grid-cell:not(.frozen)");
             firstNonFrozenHeaderCell().click();
 
             return grid.then(function() {
-              expect(qaLocal('.v-grid')[3].style.height).to.equal('100%');
+              expect(qLocal('div.vaadin-grid').style.height).to.equal('100%');
             });
           });
 
@@ -261,7 +261,7 @@
             return div;
           }
 
-          return grid.then(function(){
+          return grid.then(function() {
             var under = createDiv();
             grid.parentElement.insertBefore(under, grid);
             var element = document.elementFromPoint(10, 10);
@@ -275,6 +275,39 @@
             expect(element).to.eql(over);
           });
 
+        });
+
+        it('should render in a flex box', function() {
+          var wrapper = document.getElementById("gridwrapper");
+          wrapper.setAttribute("style", "height: 200px; display: -webkit-flex; display: flex;");
+          grid.setAttribute("style", "-webkit-flex: 1 1 auto; flex: 1 1 auto;");
+
+          return grid.then(function() {
+            expect(grid.clientHeight).to.eql(200);
+            wrapper.removeAttribute("style");
+            grid.removeAttribute("style");
+          });
+        });
+
+        it('should resize with a details row open', function() {
+          grid.rowDetailsGenerator = function() {
+            return document.createElement("input");
+          }
+          var originalHeight;
+
+          return grid.then(function() {
+            grid.setRowDetailsVisible(0, true);
+            return grid;
+          }).then(function() {
+            originalHeight = grid.clientHeight;
+            grid.style.height = "100px";
+            return grid;
+          }).then(function() {
+            grid.style.height = "";
+            return grid;
+          }).then(function() {
+            expect(originalHeight).to.eql(grid.clientHeight);
+          });
         });
 
       });

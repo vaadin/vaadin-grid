@@ -25,7 +25,7 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
 <ol>
   <li>
   <h3>Simplest possible with inline data</h3>
-  <v-grid rows=1>
+  <vaadin-grid rows=1>
   <table>
     <col header-text="Name">
     <col header-text="Value">
@@ -43,12 +43,12 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
       </tr>
     </tbody>
   </table>
-  </v-grid>
+  </vaadin-grid>
   </li>
 
   <li>
   <h3>Simplest possible with explicitly formatted inline data (i.e. children in cells)</h3>
-  <v-grid id="childrenInCells">
+  <vaadin-grid id="childrenInCells">
   <table>
     <col header-text="Name">
     <col header-text="Value">
@@ -66,19 +66,19 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
       </tr>
     </tbody>
   </table>
-  </v-grid>
+  </vaadin-grid>
 
   </li>
 
   <li>
   <h3>Simplest possible with data source (all data available, no formatting)</h3>
-  <v-grid id='myGrid'>
+  <vaadin-grid id='myGrid'>
   <table>
     <col header-text="Name">
     <col header-text="Value">
     <col header-text="Progress">
   </table>
-  </v-grid>
+  </vaadin-grid>
 
   <script>
       // We need to wait until the WC has been initialized
@@ -98,13 +98,13 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
 
   <li>
   <h3>Simplest possible with lazy data source (no formatting)</h3>
-  <v-grid id='myBigGrid'>
+  <vaadin-grid id='myBigGrid'>
   <table>
     <col header-text="Name">
     <col header-text="Value">
     <col header-text="Progress">
   </table>
-  </v-grid>
+  </vaadin-grid>
 
   <script>
       HTMLImports.whenReady(function() {
@@ -123,13 +123,13 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
   <li>
   <h3>Simplest possible with data source and formatting</h3>
 
-  <v-grid id="myFormatGrid">
+  <vaadin-grid id="myFormatGrid">
   <table>
     <col header-text="Name">
     <col header-text="Value">
     <col header-text="Progress">
   </table>
-  </v-grid>
+  </vaadin-grid>
   <script>
       HTMLImports.whenReady(function() {
         var grid = document.getElementById("myFormatGrid");
@@ -158,13 +158,13 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
   <li>
   <h3>Mapping data from a JS object into columns</h3>
 
-  <v-grid id="myMapGrid">
+  <vaadin-grid id="myMapGrid">
   <table>
     <col header-text="Name">
     <col header-text="Value">
     <col header-text="Progress">
   </table>
-  </v-grid>
+  </vaadin-grid>
     <button id="updateButton">update</button>
     <button id="addButton">add</button>
     <button id="removeButton">remove</button>
@@ -213,12 +213,12 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
 
   <li>
   <h3>Mapping data from a array into single column</h3>
-  <v-grid id="with-single-column">
+  <vaadin-grid id="with-single-column">
 
     <table>
       <col header-text="Name">
     </table>
-  </v-grid>
+  </vaadin-grid>
   <script>
     HTMLImports.whenReady(function() {
       var grid = document.getElementById("with-single-column");
@@ -237,7 +237,7 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
 
   <li>
   <h3>Complex headers</h3>
-  <v-grid>
+  <vaadin-grid>
   <table>
     <col>
     <col>
@@ -274,19 +274,19 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
       </tr>
     </tfoot>
   </table>
-  </v-grid>
+  </vaadin-grid>
   </li>
 
   <li>
     <h3>Selection</h3>
 
-    <v-grid id="myMultiSelGrid" selection-mode="multi">
+    <vaadin-grid id="myMultiSelGrid" selection-mode="multi">
       <table>
         <col header-text="Name">
         <col header-text="Value">
         <col header-text="Progress">
       </table>
-    </v-grid>
+    </vaadin-grid>
     <div id="smbuttons">
       <input type="radio" name="selectionmode" value="single">single</input>
       <input type="radio" name="selectionmode" value="multi" checked="checked">multi</input>
@@ -337,7 +337,7 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
   <h3>Simplest possible polymer dom-repeat from array of objects</h3>
     <dom-module id="my-grid-with-template">
       <template>
-        <v-grid selectionMode='multi'>
+        <vaadin-grid selectionMode='multi'>
           <table>
             <col header-text="Name">
             <col header-text="Value">
@@ -352,7 +352,7 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
             </template>
             </tbody>
           </table>
-        </v-grid>
+        </vaadin-grid>
       </template>
     </dom-module>
     <script>
@@ -375,7 +375,7 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
     <h3>Simplest possible polymer dom-repeat from simple array</h3>
     <dom-module id="my-grid-with-template2">
       <template>
-        <v-grid selectionMode='multi'>
+        <vaadin-grid selectionMode='multi'>
           <table>
             <col header-text="Name">
             <tbody>
@@ -386,7 +386,7 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
             </template>
             </tbody>
           </table>
-        </v-grid>
+        </vaadin-grid>
       </template>
     </dom-module>
     <script>
@@ -409,7 +409,7 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
   <h3>Simplest possible polymer dom-repeat from array of objects and selection multiple</h3>
     <dom-module id="my-grid-with-template-multi">
       <template>
-        <v-grid selectionMode='multi'>
+        <vaadin-grid selectionMode='multi'>
           <table>
             <col header-text="Name">
             <col header-text="Value">
@@ -424,7 +424,7 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
             </template>
             </tbody>
           </table>
-        </v-grid>
+        </vaadin-grid>
       </template>
     </dom-module>
     <script>
@@ -445,13 +445,13 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
 
   <li>
   <h3>Sort example</h3>
-    <v-grid id='mySortGrid'>
+    <vaadin-grid id='mySortGrid'>
       <table>
         <col header-text="Name" sortable>
         <col header-text="Value" sortable>
         <col header-text="Progress" sortable>
       </table>
-    </v-grid>
+    </vaadin-grid>
     <button id="mySortButton">Sort by column 1</button>
     Sort: <span id="mySortLabel"></span>
 
@@ -491,7 +491,7 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
 
   <li>
   <h3>DOM API</h3>
-  <v-grid
+  <vaadin-grid
     selection-mode='disabled'
     selected-rows='0,2,3'
     rows=3
@@ -556,7 +556,7 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
       </tr>
     </tbody>
   </table>
-  </v-grid>
+  </vaadin-grid>
   </li>
 
   <li>
@@ -584,7 +584,7 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
 
   <li>
     <h3>Header and Footer</h3>
-    <v-grid id='staticsections'>
+    <vaadin-grid id='staticsections'>
       <table>
         <col header-text="Name">
         <col header-text="Value">
@@ -599,7 +599,7 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
           </tr>
         </tbody>
       </table>
-    </v-grid>
+    </vaadin-grid>
     <br/>
     <button id="headervisibility">Toggle header visibility</button>
     <button id="footervisibility">Toggle footer visibility</button>

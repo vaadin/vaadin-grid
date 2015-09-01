@@ -1,14 +1,11 @@
 package com.vaadin.components.grid.selection;
 
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.InputElement;
-import com.google.gwt.dom.client.LabelElement;
+import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.js.JsUtils;
-import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.vaadin.client.data.DataSource.RowHandle;
 import com.vaadin.client.renderers.Renderer;
-import com.vaadin.client.widget.grid.RendererCellReference;
 import com.vaadin.client.widget.grid.events.SelectAllEvent;
 import com.vaadin.client.widget.grid.selection.MultiSelectionRenderer;
 import com.vaadin.client.widget.grid.selection.SelectionEvent;
@@ -26,39 +23,38 @@ public class IndexBasedSelectionModelMulti extends SelectionModelMulti<Object>
 
     private Renderer<Boolean> renderer;
     private Grid<Object> grid;
-    private boolean allowSelection = true;
 
     private final JSArray<Double> indexes = JS.createArray();
     private boolean invertedSelection = false;
     private boolean dataSizeUpdated = false;
+    private int lastSelected = -1;
 
     @Override
     public void setGrid(Grid<Object> grid) {
         super.setGrid(grid);
         this.grid = grid;
         renderer = new MultiSelectionRenderer<Object>(grid) {
+
             @Override
-            public void init(RendererCellReference cell) {
-                InputElement checkbox = Document.get()
-                        .createCheckInputElement();
-                LabelElement label = Document.get().createLabelElement();
-                checkbox.setId(DOM.createUniqueId());
-                checkbox.setTabIndex(-1);
-                label.setHtmlFor(checkbox.getId());
-                cell.getElement().removeAllChildren();
-                cell.getElement().appendChild(checkbox);
-                cell.getElement().appendChild(label);
-                checkbox.addClassName("v-grid style-scope");
-                label.addClassName("v-grid style-scope");
+            public CheckBox createWidget() {
+                CheckBox checkBox = super.createWidget();
+                checkBox.setTabIndex(-1);
+                checkBox.addStyleName("vaadin-grid style-scope");
+                GQuery.$(checkBox).children()
+                        .addClass("vaadin-grid", "style-scope");
+                return checkBox;
             }
 
             @Override
             protected void setSelected(int logicalRow, boolean select) {
-                if (allowSelection) {
+                // FIXME: Uncomment to enable drag-select
+                // if (lastSelected != logicalRow) {
+                if (lastSelected == -1) {
                     super.setSelected(logicalRow, select);
-                    allowSelection = false;
+                    lastSelected = logicalRow;
                 }
             }
+
         };
     }
 
@@ -69,20 +65,20 @@ public class IndexBasedSelectionModelMulti extends SelectionModelMulti<Object>
 
     @Override
     public void startBatchSelect() {
-        allowSelection = true;
+        lastSelected = -1;
     }
 
     @Override
     public void commitBatchSelect() {
-        allowSelection = true;
+        lastSelected = -1;
     }
 
     public boolean isIndeterminate() {
-        return (size() > 0) ? size() != grid.getDataSource().size() : false;
+        return size() > 0 ? size() != grid.getDataSource().size() : false;
     }
 
     public boolean isChecked() {
-        return (size() > 0) ? size() == grid.getDataSource().size() : false;
+        return size() > 0 ? size() == grid.getDataSource().size() : false;
     }
 
     public IndexBasedSelectionModelMulti(boolean invertedSelection) {

@@ -212,7 +212,7 @@
 
       describe('by clicking', function() {
         function getFirstCell() {
-          return qLocal('.v-grid-body .v-grid-cell');
+          return qLocal('.vaadin-grid-body .vaadin-grid-cell');
         }
 
         function clickFirstCell() {
@@ -266,36 +266,45 @@
             });
           });
 
+          it('should fire only one selection event', function() {
+            var spy = sinon.spy();
+            grid.addEventListener("select", spy);
+
+            var inputs = qaLocal('.vaadin-grid-body input');
+            triggerMouseEvent(inputs[0], "mousedown");
+            triggerMouseEvent(inputs[0], "mouseup");
+            expect(spy.callCount).to.eql(1);
+          });
 
           it('should select multiple rows', function() {
-            var inputs = qaLocal('.v-grid-body input');
+            var inputs = qaLocal('.vaadin-grid-body input');
             triggerMouseEvent(inputs[0], "mousedown");
             triggerMouseEvent(inputs[1], "mousedown");
             expect(grid.selection.selected()).to.eql([0, 1]);
           });
 
           it('should deselect multiple rows', function() {
-            var inputs = qaLocal('.v-grid-body input');
+            var inputs = qaLocal('.vaadin-grid-body input');
             triggerMouseEvent(inputs[0], "mousedown");
             triggerMouseEvent(inputs[1], "mousedown");
             // Selection mode changes after both rows have been selected which
             // alters the DOM structure so we need to fetch the inputs again.
-            inputs = qaLocal('.v-grid-body input');
+            inputs = qaLocal('.vaadin-grid-body input');
             triggerMouseEvent(inputs[0], "mousedown");
             triggerMouseEvent(inputs[1], "mousedown");
             expect(grid.selection.selected()).to.be.empty;
           });
 
           it('should select all rows', function() {
-            var inputs = qaLocal('.v-grid-header input');
+            var inputs = qaLocal('.vaadin-grid-header input');
             triggerMouseEvent(inputs[0], "click");
             expect(grid.selection.selected()).to.eql([0, 1]);
           });
 
           it('should deselect all rows', function() {
-            var inputs = qaLocal('.v-grid-header input');
+            var inputs = qaLocal('.vaadin-grid-header input');
             triggerMouseEvent(inputs[0], "click");
-            inputs = qaLocal('.v-grid-header input');
+            inputs = qaLocal('.vaadin-grid-header input');
             triggerMouseEvent(inputs[0], "click");
             expect(grid.selection.selected()).to.be.empty;
           });
@@ -329,7 +338,7 @@
 
         it('should add \'row-selected\' class to the selected row', function() {
           return grid.selection.select(1).then(function() {
-            expect(qaLocal('.v-grid-body .v-grid-row-selected')).to.have.length(1);
+            expect(qaLocal('.vaadin-grid-body .vaadin-grid-row-selected')).to.have.length(1);
           });
         });
 

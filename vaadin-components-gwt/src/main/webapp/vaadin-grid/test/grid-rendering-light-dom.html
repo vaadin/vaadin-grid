@@ -18,7 +18,7 @@
 <script>
   describe.feature('rendering light DOM', function() {
     it('light dom table header gets rendered in the grid', function() {
-      var row = qLocal(".v-grid-header .v-grid-row");
+      var row = qLocal(".vaadin-grid-header .vaadin-grid-row");
       var cells = row.childNodes;
 
       assert.isTrue(cells[0].innerHTML == 'Name');
@@ -26,7 +26,7 @@
     });
 
     it('light dom table body gets rendered in the grid', function() {
-      var row = qLocal(".v-grid-body .v-grid-row");
+      var row = qLocal(".vaadin-grid-body .vaadin-grid-row");
       var cells = row.childNodes;
 
       assert.isTrue(cells[0].innerHTML == 'Grid');
@@ -44,14 +44,14 @@
     // makes grid.then in afterEach to never finish...
     it.skip('DOM: headers & footers', function(done) {
 //      removeGrid();
-      wrapper.innerHTML = "<v-grid><table>" +
+      wrapper.innerHTML = "<vaadin-grid><table>" +
       "<thead hidden><tr class='red'><td colspan='2'></td></tr><tr class='pink'><th></th><th></th></tr></thead>" +
       "<tfoot><tr class='foot1'><td colspan='2'></td></tr><tr class='foot2'><td></td><td></td></tr></tfoot>" +
-      "</table></v-grid>";
-      grid = wrapper.querySelector("v-grid");
+      "</table></vaadin-grid>";
+      grid = wrapper.querySelector("vaadin-grid");
 
       waitUntil(function() {
-        return qLocal(".v-grid-body");
+        return qLocal(".vaadin-grid-body");
       }, function() {
         assert.equal(0, qaLocal("thead tr").length);
         assert.equal(1, qaLocal("tfoot tr.foot1").length);
@@ -73,7 +73,7 @@
 
     it('DOM: mutation', function(done) {
       waitUntil(function() {
-        return qLocal(".v-grid-body");
+        return qLocal(".vaadin-grid-body");
       }, function() {
         var nrows = qaLocal("tbody tr").length;
         var nheads = qaLocal("thead tr").length;
