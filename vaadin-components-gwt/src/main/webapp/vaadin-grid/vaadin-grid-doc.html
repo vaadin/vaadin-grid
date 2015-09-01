@@ -74,7 +74,35 @@
        * @param {Cell} cell - Reference to the cell being rendered.
        * @type {function}
        */
-      renderer: function(cell) {}
+      renderer: function(cell) {},
+      /**
+       * Set whether it is possible for the user to hide this column or not.
+       *
+       * Attribute: `hidable`
+       *
+       * @property {boolean} hidable
+       * @type {boolean}
+       * @default false
+       */
+      hidable: false,
+      /**
+       * Hides or shows the column. By default columns are visible before
+       * explicitly hiding them.
+       *
+       * Attribute: `hidden`
+       *
+       * @property {boolean} hidden
+       * @type {boolean}
+       * @default false
+       */
+      hidden: false,
+      /**
+       * Sets the hiding toggle's caption for this column. Shown in the toggle
+       * for this column in the grid's sidebar when the column is hidable.
+       *
+       * Attribute: `hiding-toggle-text`
+       */
+      hidingToggleText: String
     }
   });
 </script>
