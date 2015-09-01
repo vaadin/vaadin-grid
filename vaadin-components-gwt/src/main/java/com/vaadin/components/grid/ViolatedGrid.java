@@ -56,6 +56,20 @@ public class ViolatedGrid extends com.vaadin.client.widgets.Grid<Object> {
       this.@com.vaadin.client.widgets.Grid::refreshFooter()();
     }-*/;
 
+    @Override
+    public void onResize() {
+        super.onResize();
+        sortBodyRowsInDom();
+    }
+
+    public native boolean sortBodyRowsInDom()
+    /*-{
+      var escalator = this.@com.vaadin.client.widgets.Grid::getEscalator()();
+      var body = escalator.@com.vaadin.client.widgets.Escalator::body;
+      var domSorter = body.@com.vaadin.client.widgets.Escalator.BodyRowContainerImpl::domSorter;
+      domSorter.@com.vaadin.client.widgets.Escalator.BodyRowContainerImpl.DeferredDomSorter::reschedule()();
+    }-*/;
+
     public void refreshStaticSection(StaticSection.StaticCell cell) {
         if (cell instanceof HeaderCell) {
             refreshHeader();
