@@ -95,6 +95,7 @@ import com.vaadin.shared.util.SharedUtil;
 //Applied changes:
 //https://dev.vaadin.com/review/#/c/11149
 //https://dev.vaadin.com/review/#/c/11819
+//https://dev.vaadin.com/review/#/c/11957
 /*-
 
  Maintenance Notes! Reading these might save your day.
@@ -1301,7 +1302,8 @@ public class Escalator extends Widget implements RequiresResize,
                         cellElem.addClassName("frozen");
                         position.set(cellElem, scroller.lastScrollLeft, 0);
                     }
-                    if (columnConfiguration.frozenColumns > 0 && col == columnConfiguration.frozenColumns - 1) {
+                    if (columnConfiguration.frozenColumns > 0
+                            && col == columnConfiguration.frozenColumns - 1) {
                         cellElem.addClassName("last-frozen");
                     }
                 }
@@ -1568,7 +1570,8 @@ public class Escalator extends Widget implements RequiresResize,
             }
         }
 
-        private void toggleFrozenColumnClass(int column, boolean frozen, String className) {
+        private void toggleFrozenColumnClass(int column, boolean frozen,
+                String className) {
             final NodeList<TableRowElement> childRows = root.getRows();
 
             for (int row = 0; row < childRows.getLength(); row++) {
@@ -6360,6 +6363,7 @@ public class Escalator extends Widget implements RequiresResize,
         if (isAttached() && !layoutIsScheduled) {
             layoutIsScheduled = true;
             Scheduler.get().scheduleDeferred(layoutCommand);
+            body.domSorter.reschedule();
         }
     }
 
