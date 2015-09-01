@@ -13,7 +13,6 @@
 - JSDocs revised.
 - Added data.getItem api for fetching data items by row index (#45)
 - Combined multi selection models into one model
-- Moved row focus indicator line from the bottom to the left side of a row
 - Added row details feature
 - Tag renamed to vaadin-grid
 - Issues fixed:
