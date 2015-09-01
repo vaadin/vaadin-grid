@@ -1,5 +1,5 @@
 ## Vaadin Components v0.3.0 (2015-xx-xx)
-- Polymer updated to v1.0.2.
+- Polymer updated to v1.1.1
 
 ### `<vaadin-grid>`
 - Vaadin Widgets updated to 7.5.3
