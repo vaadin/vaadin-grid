@@ -134,7 +134,8 @@ public class ViolatedGrid extends com.vaadin.client.widgets.Grid<Object> {
 
             // Currently targeting all gwt-checkboxes, might need refinement in
             // the future.
-            if (targetElement.getParentElement().hasClassName("gwt-CheckBox")) {
+            if("label".equals(targetElement.getTagName())
+                    && targetElement.getParentElement().hasClassName("gwt-CheckBox")) {
                 getElement().focus();
             }
         }

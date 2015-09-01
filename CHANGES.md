@@ -15,6 +15,7 @@
 - Combined multi selection models into one model
 - Added row details feature
 - Tag renamed to vaadin-grid
+- Added column hiding feature
 - Issues fixed:
   - Grid doesn't work when using selection-mode multi, frozen columns and sortable columns. (#7)
   - Grid height is recalculated incorrectly when sorting a grid with a fixed height. (#8)
