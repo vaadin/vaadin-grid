@@ -30,7 +30,8 @@ public final class GridColumn extends Column<Object, Object> {
     public static GridColumn addColumn(JSColumn jsColumn,
             GridComponent gridComponent) {
         GridColumn result = new GridColumn(jsColumn, gridComponent);
-        gridComponent.getGrid().addColumn(result, gridComponent.getGrid().getVisibleColumns().size());
+        gridComponent.getGrid().addColumn(result,
+                gridComponent.getGrid().getVisibleColumns().size());
         result.bindProperties();
         return result;
     }
@@ -76,11 +77,14 @@ public final class GridColumn extends Column<Object, Object> {
 
         JS.definePropertyAccessors(jsColumn, "hidden", v -> {
             setHidden((Boolean) v);
-            gridComponent.updateWidth();
+            gridComponent.getGrid().onResize();
         }, this::isHidden);
 
-        bind("name", v -> contentOrNameChanged((String) v, jsColumn.getHeaderContent()));
-        bind("hidingToggleText", v -> setHidingToggleCaption(v == null ? null : v.toString()));
+        bind("name",
+                v -> contentOrNameChanged((String) v,
+                        jsColumn.getHeaderContent()));
+        bind("hidingToggleText", v -> setHidingToggleCaption(v == null ? null
+                : v.toString()));
         bind("flex", v -> setExpandRatio(((Double) v).intValue()));
         bind("sortable", v -> setSortable((Boolean) v));
         bind("hidable", v -> setHidable((Boolean) v));
@@ -101,9 +105,11 @@ public final class GridColumn extends Column<Object, Object> {
     }
 
     private void contentOrNameChanged(String name, Object content) {
-        if (content == null || (content instanceof String && ((String) content).isEmpty())) {
+        if (content == null
+                || (content instanceof String && ((String) content).isEmpty())) {
             setHeaderCaption(name == null ? "" : name);
-        } else if (content instanceof JavaScriptObject && JsUtils.isElement(content)) {
+        } else if (content instanceof JavaScriptObject
+                && JsUtils.isElement(content)) {
             if (name != null) {
                 setHeaderCaption(name);
             } else {
@@ -113,13 +119,13 @@ public final class GridColumn extends Column<Object, Object> {
             setHeaderCaption(content.toString());
         }
         getDefaultHeaderCellReference().setContent(content);
-        gridComponent.updateWidth();
+        gridComponent.getGrid().onResize();
     }
 
     private void bind(String propertyName, final Setter setter) {
         JS.definePropertyAccessors(jsColumn, propertyName, v -> {
             setter.setValue(v);
-            gridComponent.updateWidth();
+            gridComponent.getGrid().onResize();
         }, null);
     }
 
