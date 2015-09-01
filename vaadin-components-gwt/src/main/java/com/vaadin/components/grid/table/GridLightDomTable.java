@@ -197,7 +197,7 @@ public class GridLightDomTable implements MutationListener {
                 JSStaticCell js = gridComponent.getStaticSection()
                         .obtainJSStaticCell(cell);
 
-                cell.setWidget(new HTML($th.html()));
+                js.setContent(new HTML($th.html()).getElement());
 
                 className = JSValidate.String.attr($th, "class");
                 if (!className.isEmpty()) {
