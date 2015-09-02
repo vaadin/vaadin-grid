@@ -177,10 +177,15 @@ More examples available at http://vaadin.github.io/components-examples/vaadin-gr
 
   :host ::content .vaadin-grid-spacer {
     position: absolute;
+    border-bottom: 1px solid #e3e3e3;
+    z-index: 1;
   }
 
-  :host ::content .vaadin-grid-spacer + .vaadin-grid-row-has-data td {
-    border-top: 1px solid #e3e3e3;
+  :host ::content .vaadin-grid-spacer > td {
+      position: absolute;
+      padding: 0;
+      top: 0;
+      left: 0;
   }
 
   .vaadin-grid-body td {
@@ -343,7 +348,7 @@ More examples available at http://vaadin.github.io/components-examples/vaadin-gr
     right: 0;
     z-index: 1;
   }
-  
+
   .vaadin-grid-spacer-deco-container {
   	display: none;
   }
@@ -566,11 +571,11 @@ More examples available at http://vaadin.github.io/components-examples/vaadin-gr
   }
 
   @keyframes vaadin-grid-sidebar-transition {
-    0% { 
+    0% {
       opacity: 0;
-      top: 48px; 
+      top: 48px;
     }
-    100% { 
+    100% {
       opacity: 1;
       top: 44px;
     }
