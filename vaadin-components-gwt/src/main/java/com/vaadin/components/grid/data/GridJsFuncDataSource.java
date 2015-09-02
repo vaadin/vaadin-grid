@@ -70,7 +70,7 @@ public class GridJsFuncDataSource extends GridDataSource {
 
                 if (!initialRowSetReceived && !list.isEmpty()) {
                     initialRowSetReceived = true;
-                    gridComponent.getGrid().onResize();
+                    gridComponent.updateWidth();
                 }
             }
         }));

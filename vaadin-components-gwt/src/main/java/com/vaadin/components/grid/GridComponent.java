@@ -105,8 +105,6 @@ public class GridComponent implements SelectionHandler<Object>,
         staticSection = new GridStaticSection(this);
 
         grid.setStylePrimaryName("vaadin-grid style-scope vaadin-grid");
-
-        grid.setWidth("100%");
     }
 
     public GridEditor getEditor() {
@@ -378,7 +376,7 @@ public class GridComponent implements SelectionHandler<Object>,
 
             if (!(currentModelIsMulti && (newModeIsAll || newModeIsMulti))) {
                 grid.setSelectionModel(mode.createModel());
-                grid.onResize();
+                updateWidth();
             }
             if (newModeIsAll) {
                 getSelectionModel().selectAll();
@@ -431,13 +429,19 @@ public class GridComponent implements SelectionHandler<Object>,
                 }));
                 resetSizesFromDomCalled = true;
             }
+            updateWidth();
             updateHeight();
-            grid.onResize();
         }
     };
 
     public void updateSize() {
         sizeUpdater.schedule(50);
+    }
+
+    @JsNoExport
+    public void updateWidth() {
+        grid.setWidth("100%");
+        Scheduler.get().scheduleDeferred(() -> grid.recalculateColumnWidths());
     }
 
     @JsNoExport
