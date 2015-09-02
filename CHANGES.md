@@ -2,6 +2,7 @@
 - Polymer updated to v1.0.2.
 
 ### `<v-grid>`
+- Improved touch scrolling.
 - Vaadin Widgets updated to 7.5.3
 - Theme revised to comply better with Material Design guidelines.
 - Improved Grid resizing logic.

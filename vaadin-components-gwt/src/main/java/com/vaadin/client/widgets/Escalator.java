@@ -35,6 +35,7 @@ import com.google.gwt.animation.client.AnimationScheduler.AnimationCallback;
 import com.google.gwt.animation.client.AnimationScheduler.AnimationHandle;
 import com.google.gwt.core.client.Duration;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.DivElement;
@@ -49,6 +50,7 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.TableCellElement;
 import com.google.gwt.dom.client.TableRowElement;
 import com.google.gwt.dom.client.TableSectionElement;
+import com.google.gwt.dom.client.Touch;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.Command;
@@ -91,10 +93,6 @@ import com.vaadin.shared.ui.grid.Range;
 import com.vaadin.shared.ui.grid.ScrollDestination;
 import com.vaadin.shared.util.SharedUtil;
 
-//Fork from Vaadin 7.5.3
-//Applied changes:
-//https://dev.vaadin.com/review/#/c/11149
-//https://dev.vaadin.com/review/#/c/11819
 /*-
 
  Maintenance Notes! Reading these might save your day.
@@ -342,34 +340,7 @@ public class Escalator extends Widget implements RequiresResize,
                 }-*/;
             }
 
-            private final double touches = 0;
-            private final int lastX = 0;
-            private final int lastY = 0;
-            private final boolean snappedScrollEnabled = true;
-            private final double deltaX = 0;
-            private final double deltaY = 0;
-
             private final Escalator escalator;
-
-            private CustomTouchEvent latestTouchMoveEvent;
-
-            /** The timestamp of {@link #flickPageX1} and {@link #flickPageY1} */
-            private final double flickStartTime = 0;
-
-            /** The timestamp of {@link #flickPageX2} and {@link #flickPageY2} */
-            private final double flickTimestamp = 0;
-
-            /** The most recent flick touch reference Y */
-            private final double flickPageY1 = -1;
-            /** The most recent flick touch reference X */
-            private final double flickPageX1 = -1;
-
-            /** The previous flick touch reference Y, before {@link #flickPageY1} */
-            private final double flickPageY2 = -1;
-            /** The previous flick touch reference X, before {@link #flickPageX1} */
-            private final double flickPageX2 = -1;
-
-            private AnimationHandle animationHandle;
 
             public TouchHandlerBundle(final Escalator escalator) {
                 this.escalator = escalator;
@@ -402,111 +373,157 @@ public class Escalator extends Widget implements RequiresResize,
                 });
             }-*/;
 
-            // (ms) duration of the inertial scrolling simulation. Devices with
-            // larger screens take
-            // longer durations (phone vs tablet is around 500ms vs 1500ms).
-            // This is a fixed value
-            // and does not influence speed and amount of momentum.
-            private static int duration = (int) (Window.getClientHeight() * 1.5);
+            // Duration of the inertial scrolling simulation. Devices with
+            // larger screens take longer durations.
+            private static final int DURATION = (int)Window.getClientHeight();
+            // multiply scroll velocity with repeated touching
+            private int acceleration = 1;
+            private boolean touching = false;
+            // Two movement objects for storing status and processing touches
+            private Movement yMov, xMov;
+            final double MIN_VEL = 0.6, MAX_VEL = 4, F_VEL = 1500, F_ACC = 0.7, F_AXIS = 1;
 
-            private double previousT, velocity = 0;
-            private int previousX, previousY, velocityMultiplier = 1;
-            private boolean movingVertically = true, touchStarted = false;
+            // The object to deal with one direction scrolling
+            private class Movement {
+                final List<Double> speeds = new ArrayList<Double>();
+                final ScrollbarBundle scroll;
+                double position, offset, velocity, prevPos, prevTime, delta;
+                boolean run, vertical;
 
-            private final Animation animation = new Animation() {
-                private double position = 0;
-                private double offset = 0;
-
-                @Override
-                public void onUpdate(double progress) {
-                    getScroll().setScrollPos(position + offset * progress);
+                public Movement(boolean vertical) {
+                    this.vertical = vertical;
+                    scroll = vertical ? escalator.verticalScrollbar : escalator.horizontalScrollbar;
                 }
 
-                @Override
+                public void startTouch(CustomTouchEvent event) {
+                    speeds.clear();
+                    prevPos = pagePosition(event);
+                    prevTime = Duration.currentTimeMillis();
+                }
+                public void moveTouch(CustomTouchEvent event) {
+                    double pagePosition = pagePosition(event);
+                    if (pagePosition > -1) {
+                        delta = prevPos - pagePosition;
+                        double now = Duration.currentTimeMillis();
+                        double ellapsed = now - prevTime;
+                        velocity = delta / ellapsed;
+                        // if last speed was so low, reset speeds and start storing again
+                        if (speeds.size() > 0 && !validSpeed(speeds.get(0))) {
+                            speeds.clear();
+                            run = true;
+                        }
+                        speeds.add(0, velocity);
+                        prevTime = now;
+                        prevPos = pagePosition;
+                    }
+                }
+                public void endTouch(CustomTouchEvent event) {
+                    // Compute average speed
+                    velocity = 0;
+                    for (double s : speeds) {
+                        velocity += s / speeds.size();
+                    }
+                    position = scroll.getScrollPos();
+                    // Compute offset, and adjust it with an easing curve so as movement is smoother.
+                    offset = F_VEL * velocity * acceleration * easingInOutCos(velocity, MAX_VEL);
+                    // Check that offset does not over-scroll
+                    double minOff = -scroll.getScrollPos();
+                    double maxOff = scroll.getScrollSize() - scroll.getOffsetSize() + minOff;
+                    offset = Math.min(Math.max(offset, minOff), maxOff);
+                    // Enable or disable inertia movement in this axis
+                    run = validSpeed(velocity) && minOff < 0 && maxOff > 0;
+                    if (run) {
+                        event.getNativeEvent().preventDefault();
+                    }
+                }
+                void validate(Movement other) {
+                    if (!run || other.velocity > 0 && Math.abs(velocity / other.velocity) < F_AXIS) {
+                        delta = offset = 0;
+                        run = false;
+                    }
+                }
+                void stepAnimation(double progress) {
+                    scroll.setScrollPos(position + offset * progress);
+                }
+
+                int pagePosition(CustomTouchEvent event) {
+                    JsArray<Touch> a = event.getNativeEvent().getTouches();
+                    return vertical ? a.get(0).getPageY() : a.get(0).getPageX();
+                }
+                boolean validSpeed(double speed) {
+                    return Math.abs(speed) > MIN_VEL;
+                }
+            }
+
+            // Using GWT animations which take care of native animation frames.
+            private Animation animation = new Animation() {
+                public void onUpdate(double progress) {
+                    xMov.stepAnimation(progress);
+                    yMov.stepAnimation(progress);
+                }
                 public double interpolate(double progress) {
-                    return Math.sqrt(1 - (progress - 1) * (progress - 1));
+                    return easingOutCirc(progress);
                 };
-
-                @Override
                 public void onComplete() {
-                    scrollingFinish();
+                    touching = false;
+                    escalator.body.domSorter.reschedule();
                 };
-
-                @Override
                 public void run(int duration) {
-                    double minDelta = -getScroll().getScrollPos();
-                    double maxDelta = getScroll().getScrollSize()
-                            - getScroll().getOffsetSize() + minDelta;
-                    if (minDelta < 0 && maxDelta > 0) {
-                        offset = 0.8 * velocity * velocityMultiplier;
-                        offset = Math.min(Math.max(offset, minDelta), maxDelta);
-                        position = getScroll().getScrollPos();
+                    if (xMov.run || yMov.run) {
                         super.run(duration);
+                    } else {
+                        onComplete();
                     }
                 };
             };
 
-            private ScrollbarBundle getScroll() {
-                return movingVertically ? escalator.verticalScrollbar
-                        : escalator.horizontalScrollbar;
-            }
-
             public void touchStart(final CustomTouchEvent event) {
                 if (event.getNativeEvent().getTouches().length() == 1) {
-                    previousT = Duration.currentTimeMillis();
-                    previousX = event.getNativeEvent().getTouches().get(0)
-                            .getPageX();
-                    previousY = event.getNativeEvent().getTouches().get(0)
-                            .getPageY();
-                    velocityMultiplier = animation.isRunning() ? velocityMultiplier + 1
-                            : 1;
-                    velocity = 1;
-                    animation.cancel();
-                    touchStarted = true;
+                    if (yMov == null) {
+                        yMov = new Movement(true);
+                        xMov = new Movement(false);
+                    }
+                    if (animation.isRunning()) {
+                        acceleration += F_ACC;
+                        event.getNativeEvent().preventDefault();
+                        animation.cancel();
+                    } else {
+                        acceleration = 1;
+                    }
+                    xMov.startTouch(event);
+                    yMov.startTouch(event);
+                    touching = true;
                 }
             }
 
             public void touchMove(final CustomTouchEvent event) {
-                if (event.getNativeEvent().getTouches().length() != 1) {
-                    return;
-                }
-
-                double now = Duration.currentTimeMillis();
-                double elapsed = now - previousT;
-
-                int x = event.getNativeEvent().getTouches().get(0).getPageX();
-                int y = event.getNativeEvent().getTouches().get(0).getPageY();
-                int deltaY = previousY - y;
-                int deltaX = previousX - x;
-                movingVertically = Math.abs(deltaY) > Math.abs(deltaX);
-                int delta = movingVertically ? deltaY : deltaX;
-
-                double v = Math.sqrt(getScroll().getScrollSize()) * delta
-                        / (1 + elapsed);
-                velocity = 0.8 * v + 0.2 * velocity;
-
-                moveScrollFromEvent(escalator, deltaX, deltaY,
-                        event.getNativeEvent());
-                escalator.body.domSorter.reschedule();
-
-                previousT = now;
-                previousY = y;
-                previousX = x;
+                xMov.moveTouch(event);
+                yMov.moveTouch(event);
+                xMov.validate(yMov);
+                yMov.validate(xMov);
+                moveScrollFromEvent(escalator, xMov.delta, yMov.delta, event.getNativeEvent());
             }
 
             public void touchEnd(final CustomTouchEvent event) {
-                if (event.getNativeEvent().getTouches().length() == 0
-                        && Math.abs(velocity) > 10) {
-                    event.getNativeEvent().preventDefault();
-                    animation.run(duration);
-                } else {
-                    scrollingFinish();
-                }
+                xMov.endTouch(event);
+                yMov.endTouch(event);
+                xMov.validate(yMov);
+                yMov.validate(xMov);
+                // Adjust duration so as longer movements take more duration
+                boolean vert = !xMov.run || yMov.run &&  Math.abs(yMov.offset) > Math.abs(xMov.offset);
+                double delta = Math.abs((vert ? yMov : xMov).offset);
+                animation.run((int)(3 * DURATION * easingOutExp(delta)));
             }
 
-            private void scrollingFinish() {
-                touchStarted = false;
-                escalator.body.domSorter.reschedule();
+            private double easingInOutCos(double val, double max) {
+                return 0.5 - 0.5 * Math.cos(Math.PI * Math.signum(val)
+                        * Math.min(Math.abs(val), max) / max);
+            }
+            private double easingOutExp(double delta) {
+                return (1 - Math.pow(2, -delta / 1000));
+            }
+            private double easingOutCirc(double progress) {
+                return Math.sqrt(1 - (progress - 1) * (progress - 1));
             }
         }
 
@@ -535,6 +552,7 @@ public class Escalator extends Widget implements RequiresResize,
             }
         }
     }
+
 
     /**
      * ScrollDestination case-specific handling logic.
@@ -631,7 +649,7 @@ public class Escalator extends Widget implements RequiresResize,
 
             return $entry(function(e) {
                 var target = e.target || e.srcElement; // IE8 uses e.scrElement
-            
+
                 // in case the scroll event was native (i.e. scrollbars were dragged, or
                 // the scrollTop/Left was manually modified), the bundles have old cache
                 // values. We need to make sure that the caches are kept up to date.
@@ -994,8 +1012,7 @@ public class Escalator extends Widget implements RequiresResize,
         public void scrollToRow(final int rowIndex,
                 final ScrollDestination destination, final double padding) {
 
-            final double targetStartPx = body.getDefaultRowHeight()
-                    * rowIndex
+            final double targetStartPx = (body.getDefaultRowHeight() * rowIndex)
                     + body.spacerContainer
                             .getSpacerHeightsSumUntilIndex(rowIndex);
             final double targetEndPx = targetStartPx
@@ -2306,9 +2323,8 @@ public class Escalator extends Widget implements RequiresResize,
 
             private boolean sortIfConditionsMet() {
                 boolean enoughFramesHavePassed = framesPassed >= REQUIRED_FRAMES_PASSED;
-                boolean enoughTimeHasPassed = Duration.currentTimeMillis()
-                        - startTime >= SORT_DELAY_MILLIS;
-                boolean notTouchActivity = !scroller.touchHandlerBundle.touchStarted;
+                boolean enoughTimeHasPassed = (Duration.currentTimeMillis() - startTime) >= SORT_DELAY_MILLIS;
+                boolean notTouchActivity = !scroller.touchHandlerBundle.touching;
                 boolean conditionsMet = enoughFramesHavePassed
                         && enoughTimeHasPassed && notTouchActivity;
 
@@ -2330,7 +2346,7 @@ public class Escalator extends Widget implements RequiresResize,
             }
         }
 
-        private final DeferredDomSorter domSorter = new DeferredDomSorter();
+        private DeferredDomSorter domSorter = new DeferredDomSorter();
 
         private final SpacerContainer spacerContainer = new SpacerContainer();
 
@@ -2584,19 +2600,35 @@ public class Escalator extends Widget implements RequiresResize,
                             visualTargetIndex, unupdatedLogicalStart);
 
                     // move the surrounding rows to their correct places.
-                    double rowTop = (unupdatedLogicalStart + end - start)
+                    double rowTop = (unupdatedLogicalStart + (end - start))
                             * getDefaultRowHeight();
-                    final ListIterator<TableRowElement> i = visualRowOrder
-                            .listIterator(visualTargetIndex + end - start);
 
-                    int logicalRowIndexCursor = unupdatedLogicalStart;
-                    while (i.hasNext()) {
-                        rowTop += spacerContainer
-                                .getSpacerHeight(logicalRowIndexCursor++);
+                    // TODO: Get rid of this try/catch block by fixing the
+                    // underlying issue. The reason for this erroneous behavior
+                    // might be that Escalator actually works 'by mistake', and
+                    // the order of operations is, in fact, wrong.
+                    try {
+                        final ListIterator<TableRowElement> i = visualRowOrder
+                                .listIterator(visualTargetIndex + (end - start));
 
-                        final TableRowElement tr = i.next();
-                        setRowPosition(tr, 0, rowTop);
-                        rowTop += getDefaultRowHeight();
+                        int logicalRowIndexCursor = unupdatedLogicalStart;
+                        while (i.hasNext()) {
+                            rowTop += spacerContainer
+                                    .getSpacerHeight(logicalRowIndexCursor++);
+
+                            final TableRowElement tr = i.next();
+                            setRowPosition(tr, 0, rowTop);
+                            rowTop += getDefaultRowHeight();
+                        }
+                    } catch (Exception e) {
+                        Logger logger = getLogger();
+                        logger.warning("Ignored out-of-bounds row element access");
+                        logger.warning("Escalator state: start=" + start
+                                + ", end=" + end + ", visualTargetIndex="
+                                + visualTargetIndex
+                                + ", visualRowOrder.size()="
+                                + visualRowOrder.size());
+                        logger.warning(e.toString());
                     }
                 }
 
@@ -2749,7 +2781,7 @@ public class Escalator extends Widget implements RequiresResize,
             verticalScrollbar.setScrollPos(newTop);
 
             final double defaultRowHeight = getDefaultRowHeight();
-            double rowPxDelta = yDelta - yDelta % defaultRowHeight;
+            double rowPxDelta = yDelta - (yDelta % defaultRowHeight);
             int rowIndexDelta = (int) (yDelta / defaultRowHeight);
             if (!WidgetUtil.pixelValuesEqual(rowPxDelta, 0)) {
 
@@ -3034,8 +3066,9 @@ public class Escalator extends Widget implements RequiresResize,
                          */
                     }
 
-                    else if (contentBottom + numberOfRows
-                            * getDefaultRowHeight() - viewportBottom < getDefaultRowHeight()) {
+                    else if (contentBottom
+                            + (numberOfRows * getDefaultRowHeight())
+                            - viewportBottom < getDefaultRowHeight()) {
                         /*
                          * We're at the end of the row container, everything is
                          * added to the top.
@@ -3155,9 +3188,9 @@ public class Escalator extends Widget implements RequiresResize,
                          *  5
                          */
 
-                        final int rowsScrolled = (int) Math
+                        final int rowsScrolled = (int) (Math
                                 .ceil((viewportBottom - contentBottom)
-                                        / getDefaultRowHeight());
+                                        / getDefaultRowHeight()));
                         final int start = escalatorRowCount
                                 - (removedVisualInside.length() - rowsScrolled);
                         final Range visualRefreshRange = Range.between(start,
@@ -3651,7 +3684,7 @@ public class Escalator extends Widget implements RequiresResize,
              * everything underneath that row. Otherwise, all rows are placed as
              * first child.
              */
-            boolean insertFirst = focusedRow == null;
+            boolean insertFirst = (focusedRow == null);
 
             final ListIterator<TableRowElement> i = orderedBodyRows
                     .listIterator(orderedBodyRows.size());
@@ -3748,7 +3781,7 @@ public class Escalator extends Widget implements RequiresResize,
         private double getRowTop(int logicalIndex) {
             double top = spacerContainer
                     .getSpacerHeightsSumUntilIndex(logicalIndex);
-            return top + logicalIndex * getDefaultRowHeight();
+            return top + (logicalIndex * getDefaultRowHeight());
         }
 
         public void shiftRowPositions(int row, double diff) {
@@ -3770,8 +3803,7 @@ public class Escalator extends Widget implements RequiresResize,
             } else if (noRowsAreInView) {
                 return Collections.emptyList();
             } else {
-                int fromIndex = logicalRow - visibleRowLogicalRange.getStart()
-                        + 1;
+                int fromIndex = (logicalRow - visibleRowLogicalRange.getStart()) + 1;
                 int toIndex = visibleRowLogicalRange.length();
                 List<TableRowElement> sublist = visualRowOrder.subList(
                         fromIndex, toIndex);
@@ -4319,9 +4351,9 @@ public class Escalator extends Widget implements RequiresResize,
         private static final String SPACER_LOGICAL_ROW_PROPERTY = "vLogicalRow";
 
         private final class SpacerImpl implements Spacer {
-            private final TableCellElement spacerElement;
-            private final TableRowElement root;
-            private final DivElement deco;
+            private TableCellElement spacerElement;
+            private TableRowElement root;
+            private DivElement deco;
             private int rowIndex;
             private double height = -1;
             private boolean domHasBeenSetup = false;
@@ -5219,8 +5251,8 @@ public class Escalator extends Widget implements RequiresResize,
      * @since 7.5.0
      */
     public static class SubPartArguments {
-        private final String type;
-        private final int[] indices;
+        private String type;
+        private int[] indices;
 
         private SubPartArguments(String type, int[] indices) {
             /*
@@ -5287,7 +5319,7 @@ public class Escalator extends Widget implements RequiresResize,
     private static final String DEFAULT_WIDTH = "500.0px";
     private static final String DEFAULT_HEIGHT = "400.0px";
 
-    private final FlyweightRow flyweightRow = new FlyweightRow();
+    private FlyweightRow flyweightRow = new FlyweightRow();
 
     /** The {@code <thead/>} tag. */
     private final TableSectionElement headElem = TableSectionElement.as(DOM
@@ -5352,7 +5384,7 @@ public class Escalator extends Widget implements RequiresResize,
     private HeightMode heightMode = HeightMode.CSS;
 
     private boolean layoutIsScheduled = false;
-    private final ScheduledCommand layoutCommand = new ScheduledCommand() {
+    private ScheduledCommand layoutCommand = new ScheduledCommand() {
         @Override
         public void execute() {
             recalculateElementSizes();
@@ -5460,14 +5492,29 @@ public class Escalator extends Widget implements RequiresResize,
         horizontalScrollbar.setScrollbarThickness(scrollbarThickness);
         horizontalScrollbar
                 .addVisibilityHandler(new ScrollbarBundle.VisibilityHandler() {
+
+                    private boolean queued = false;
+
                     @Override
                     public void visibilityChanged(
                             ScrollbarBundle.VisibilityChangeEvent event) {
+                        if (queued) {
+                            return;
+                        }
+                        queued = true;
+
                         /*
                          * We either lost or gained a scrollbar. In any case, we
                          * need to change the height, if it's defined by rows.
                          */
-                        applyHeightByRows();
+                        Scheduler.get().scheduleFinally(new ScheduledCommand() {
+
+                            @Override
+                            public void execute() {
+                                applyHeightByRows();
+                                queued = false;
+                            }
+                        });
                     }
                 });
 
@@ -6054,8 +6101,8 @@ public class Escalator extends Widget implements RequiresResize,
             final double yRatio = aDeltaY / aDeltaX;
             final double xRatio = aDeltaX / aDeltaY;
 
-            array[0] = xRatio < thresholdRatio ? 0 : deltaX;
-            array[1] = yRatio < thresholdRatio ? 0 : deltaY;
+            array[0] = (xRatio < thresholdRatio) ? 0 : deltaX;
+            array[1] = (yRatio < thresholdRatio) ? 0 : deltaY;
         } else {
             array[0] = deltaX;
             array[1] = deltaY;
@@ -6548,9 +6595,9 @@ public class Escalator extends Widget implements RequiresResize,
 
         for (int i = 0; i < containers.size(); ++i) {
             RowContainer container = containers.get(i);
-            boolean containerRow = subElement.getTagName().equalsIgnoreCase(
-                    "tr")
-                    && subElement.getParentElement() == container.getElement();
+            boolean containerRow = (subElement.getTagName().equalsIgnoreCase(
+                    "tr") && subElement.getParentElement() == container
+                    .getElement());
             if (containerRow) {
                 /*
                  * Wanted SubPart is row that is a child of containers root to
