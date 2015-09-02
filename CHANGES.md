@@ -2,6 +2,7 @@
 - Polymer updated to v1.1.1
 
 ### `<vaadin-grid>`
+- Renamed component `<v-grid>` to `<vaadin-grid>`
 - Improved touch scrolling.
 - Vaadin Widgets updated to 7.5.3
 - Theme revised to comply better with Material Design guidelines.
