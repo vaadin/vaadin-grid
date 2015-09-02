@@ -625,12 +625,18 @@ public class GridComponent implements SelectionHandler<Object>,
     }
 
     public void setRowDetailsVisible(int rowIndex, Object visible) {
-        Integer validatedRowIndex = JSValidate.Integer
-                .val(rowIndex, null, null);
-        Boolean validatedVisible = JSValidate.Boolean.val(visible, true, true);
-        if (!DetailsGenerator.NULL.equals(grid.getDetailsGenerator())
-                && validatedRowIndex != null) {
-            grid.setDetailsVisible(validatedRowIndex, validatedVisible);
-        }
+        then(JsUtils.wrapFunction(new Function() {
+            @Override
+            public void f() {
+                Integer validatedRowIndex = JSValidate.Integer.val(rowIndex,
+                        null, null);
+                Boolean validatedVisible = JSValidate.Boolean.val(visible,
+                        true, true);
+                if (!DetailsGenerator.NULL.equals(grid.getDetailsGenerator())
+                        && validatedRowIndex != null) {
+                    grid.setDetailsVisible(validatedRowIndex, validatedVisible);
+                }
+            };
+        }));
     }
 }
