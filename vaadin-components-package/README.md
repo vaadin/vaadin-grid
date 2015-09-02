@@ -10,14 +10,14 @@ View live examples and source code side-by-side for individual custom elements.
 
 | Component | Description | Features |
 | --- | --- | --- |
-| <**v-grid**><li>[Examples](http://vaadin.github.io/components-examples/v-grid/)<li>[API](http://vaadin.github.io/components-apidoc/#v-grid) | Data grid for showing large amounts of tabular data. | Lazy-loading, virtual scrolling, frozen/fixed columns, customizable headers and footers, custom cell renderers, touch support, keyboard navigation, sorting
+| <**vaadin-grid**><li>[Examples](http://vaadin.github.io/components-examples/vaadin-grid/)<li>[API](http://vaadin.github.io/components-apidoc/#vaadin-grid) | Data grid for showing large amounts of tabular data. | Lazy-loading, virtual scrolling, frozen/fixed columns, customizable headers and footers, custom cell renderers, touch support, keyboard navigation, sorting
 
 
 ### Quickstart
 
  Get a quick test-drive of the custom elements by forking one of the following JSFiddles:
 
-- &lt;**v-grid**&gt;
+- &lt;**vaadin-grid**&gt;
  - [Data generated on-the-fly](http://jsfiddle.net/jounik/tvk1235r/)
  - [JSON data from a URL](http://jsfiddle.net/jounik/tLour4gv/)
 
@@ -93,7 +93,7 @@ We offer three ways to use Vaadin Components in your project: Bower, CDN and ZIP
   </head>
   <body>
 
-    <v-grid selection-mode="multi">
+    <vaadin-grid selection-mode="multi">
       <table>
         <!-- Define the columns -->
         <col name="index" header-text="#" width="48">
@@ -102,7 +102,7 @@ We offer three ways to use Vaadin Components in your project: Bower, CDN and ZIP
         <col name="user.name.last" header-text="Last Name">
         <col name="user.email" header-text="Email" flex>
       </table>
-    </v-grid>
+    </vaadin-grid>
 
     <script>
       // The Web Components polyfill introduces a custom event we can
@@ -110,7 +110,7 @@ We offer three ways to use Vaadin Components in your project: Bower, CDN and ZIP
       document.addEventListener("WebComponentsReady", function () {
 
         // Reference to the grid element
-        var grid = document.querySelector("v-grid");
+        var grid = document.querySelector("vaadin-grid");
 
         // Fetch some JSON data from a URL
         var xhr = new XMLHttpRequest();
