@@ -62,6 +62,7 @@ describe.feature('using properties', function() {
     return grid.then(function() {
       grid.setRowDetailsVisible(0, true);
       assert.notOk(qLocal(".vaadin-grid-spacer"));
+      grid.setRowDetailsVisible(0, false);
     });
   });
 
@@ -79,19 +80,33 @@ describe.feature('using properties', function() {
     assert.equal(grid.rowDetailsGenerator, rowDetailsGenerator);
   });
 
-  it('Row details should be correctly shown', function() {
+  it('Row details should be correctly shown', function(done) {
     return grid.then(function() {
       grid.setRowDetailsVisible(0, true);
-      assert.equal(qLocal(".detail-content-0").textContent, "Row detail content for row 0");
-      grid.setRowDetailsVisible(0, false);
+      return grid;
+    }).then(function() {
+      waitUntil(function(){
+        return qLocal(".detail-content-0") != undefined;
+      },function(){
+        assert.equal(qLocal(".detail-content-0").textContent, "Row detail content for row 0");
+        grid.setRowDetailsVisible(0, false);
+        done();
+      });
     });
   });
 
-  it('Row details should be correctly shown with no boolean param', function() {
+  it('Row details should be correctly shown with no boolean param', function(done) {
     return grid.then(function() {
       grid.setRowDetailsVisible(0);
-      assert.equal(qLocal(".detail-content-0").textContent, "Row detail content for row 0");
-      grid.setRowDetailsVisible(0, false);
+      return grid;
+    }).then(function() {
+      waitUntil(function(){
+        return qLocal(".detail-content-0") != undefined;
+      },function(){
+        assert.equal(qLocal(".detail-content-0").textContent, "Row detail content for row 0");
+        grid.setRowDetailsVisible(0, false);
+        done();
+      });
     });
   });
 
@@ -99,7 +114,17 @@ describe.feature('using properties', function() {
     return grid.then(function() {
       grid.setRowDetailsVisible(0, true);
       grid.setRowDetailsVisible(0, false);
+      return grid;
+    }).then(function() {
       assert.notOk(qLocal(".detail-content-0"));
+    });
+  });
+
+  it('Row details should be shown even if not called from grid.then', function() {
+    grid.setRowDetailsVisible(0, true);
+    return grid.then(function() {
+      assert.equal(qLocal(".detail-content-0").textContent, "Row detail content for row 0");
+      grid.setRowDetailsVisible(0, false);
     });
   });
 
