@@ -32,6 +32,8 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.UIObject;
+import com.vaadin.client.widget.grid.DetailsGenerator;
 import com.vaadin.client.widget.grid.events.SelectAllEvent;
 import com.vaadin.client.widget.grid.events.SelectAllHandler;
 import com.vaadin.client.widget.grid.selection.SelectionEvent;
@@ -102,7 +104,7 @@ public class GridComponent implements SelectionHandler<Object>,
         editor = new GridEditor(this);
         staticSection = new GridStaticSection(this);
 
-        grid.setStylePrimaryName("v-grid style-scope v-grid");
+        grid.setStylePrimaryName("vaadin-grid style-scope vaadin-grid");
     }
 
     public GridEditor getEditor() {
@@ -349,6 +351,16 @@ public class GridComponent implements SelectionHandler<Object>,
         return result;
     }
 
+    public JSArray<JSColumn> getVisibleColumns() {
+        JSArray<JSColumn> result = JSArray.createArray().cast();
+        for (int i = 0; i < cols.size(); i++) {
+            if (!cols.get(i).getHidden()) {
+                result.add(cols.get(i));
+            }
+        }
+        return result;
+    }
+
     public void setSelectionMode(String selectionMode) {
         setSelectionMode(selectionMode, false);
     }
@@ -401,10 +413,22 @@ public class GridComponent implements SelectionHandler<Object>,
         return cellClassGenerator;
     }
 
+    // The method should only be called on init/attach
+    private boolean resetSizesFromDomCalled = false;
+
     private final Timer sizeUpdater = new Timer() {
         @Override
         public void run() {
-            grid.resetSizesFromDom();
+            if (!resetSizesFromDomCalled && UIObject.isVisible(container)) {
+                grid.resetSizesFromDom();
+                then(JsUtils.wrapFunction(new Function() {
+                    @Override
+                    public void f() {
+                        grid.resetSizesFromDom();
+                    };
+                }));
+                resetSizesFromDomCalled = true;
+            }
             updateWidth();
             updateHeight();
         }
@@ -432,6 +456,8 @@ public class GridComponent implements SelectionHandler<Object>,
                     GridDataSource ds = getDataSource();
                     if (ds != null) {
                         grid.setHeightByRows(Math.min(ds.size(), MAX_AUTO_ROWS));
+                    } else {
+                        grid.setHeightByRows(0);
                     }
                 }
             }
@@ -474,8 +500,8 @@ public class GridComponent implements SelectionHandler<Object>,
     }
 
     public boolean isWorkPending() {
-        return grid.getDataSource() == null
-                || ((GridDataSource) grid.getDataSource()).isWaitingForData()
+        return grid.getDataSource() != null
+                && ((GridDataSource) grid.getDataSource()).isWaitingForData()
                 || grid.isWorkPending() || sizeUpdater.isRunning();
     }
 
@@ -554,7 +580,8 @@ public class GridComponent implements SelectionHandler<Object>,
     private void updateSelectAllCheckBox() {
         CheckBox selectAllCheckBox = getSelectAllCheckBox();
         if (selectAllCheckBox != null) {
-            $(selectAllCheckBox).children().addClass("v-grid", "style-scope");
+            $(selectAllCheckBox).children().addClass("vaadin-grid",
+                    "style-scope");
             IndexBasedSelectionModelMulti model = (IndexBasedSelectionModelMulti) getSelectionModel();
             $(selectAllCheckBox).find("input").prop("indeterminate",
                     model.isIndeterminate());
@@ -573,7 +600,7 @@ public class GridComponent implements SelectionHandler<Object>,
 
     @JsNoExport
     public void setLoadingDataClass(boolean loadingData) {
-        String loadingDataClassName = "v-grid-loading-data";
+        String loadingDataClassName = "vaadin-grid-loading-data";
 
         if (loadingData) {
             getGridElement().addClassName(loadingDataClassName);
@@ -583,7 +610,7 @@ public class GridComponent implements SelectionHandler<Object>,
     }
 
     public void setRowDetailsGenerator(JavaScriptObject generator) {
-        grid.setDetailsGenerator(JS.isUndefinedOrNull(generator) ? null
+        grid.setDetailsGenerator(JS.isUndefinedOrNull(generator) ? DetailsGenerator.NULL
                 : rowIndex -> {
                     Object details = JS.exec(generator, rowIndex);
                     return JS.isUndefinedOrNull(details) ? null
@@ -597,11 +624,12 @@ public class GridComponent implements SelectionHandler<Object>,
         return rowDetailsGenerator;
     }
 
-    public void setRowDetailsVisible(int rowIndex, boolean visible) {
+    public void setRowDetailsVisible(int rowIndex, Object visible) {
         Integer validatedRowIndex = JSValidate.Integer
                 .val(rowIndex, null, null);
         Boolean validatedVisible = JSValidate.Boolean.val(visible, true, true);
-        if (validatedRowIndex != null) {
+        if (!DetailsGenerator.NULL.equals(grid.getDetailsGenerator())
+                && validatedRowIndex != null) {
             grid.setDetailsVisible(validatedRowIndex, validatedVisible);
         }
     }

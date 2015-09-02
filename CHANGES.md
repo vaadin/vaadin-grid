@@ -1,7 +1,7 @@
 ## Vaadin Components v0.3.0 (2015-xx-xx)
-- Polymer updated to v1.0.2.
+- Polymer updated to v1.1.1
 
-### `<v-grid>`
+### `<vaadin-grid>`
 - Improved touch scrolling.
 - Vaadin Widgets updated to 7.5.3
 - Theme revised to comply better with Material Design guidelines.
@@ -14,6 +14,9 @@
 - JSDocs revised.
 - Added data.getItem api for fetching data items by row index (#45)
 - Combined multi selection models into one model
+- Added row details feature
+- Tag renamed to vaadin-grid
+- Added column hiding feature
 - Issues fixed:
   - Grid doesn't work when using selection-mode multi, frozen columns and sortable columns. (#7)
   - Grid height is recalculated incorrectly when sorting a grid with a fixed height. (#8)
@@ -46,6 +49,10 @@
   - Prevent infinite size update loop (#33)
   - Enforce maximum width for expanding columns by cutting content (#46)
   - v-grid disappears when used as a flex item (#85)
+  - v-grid is now shown even if no data source has been set
+  - calling grid.then without a data source set no longer causes infinite loop
+  - Vertical line on the right of the header hidden
+  - Resizing a v-grid with details-row open makes it disappear
 
 ***
 

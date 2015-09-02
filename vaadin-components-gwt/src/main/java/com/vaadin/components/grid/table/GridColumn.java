@@ -30,7 +30,7 @@ public final class GridColumn extends Column<Object, Object> {
     public static GridColumn addColumn(JSColumn jsColumn,
             GridComponent gridComponent) {
         GridColumn result = new GridColumn(jsColumn, gridComponent);
-        gridComponent.getGrid().addColumn(result);
+        gridComponent.getGrid().addColumn(result, gridComponent.getGrid().getVisibleColumns().size());
         result.bindProperties();
         return result;
     }
@@ -70,13 +70,20 @@ public final class GridColumn extends Column<Object, Object> {
     }
 
     private void bindProperties() {
-        JS.definePropertyAccessors(jsColumn, "headerContent", v -> {
-            getDefaultHeaderCellReference().setContent(v);
-            gridComponent.updateWidth();
-        }, () -> getDefaultHeaderCellReference().getContent());
+        JS.definePropertyAccessors(jsColumn, "headerContent",
+                v -> contentOrNameChanged(jsColumn.getName(), v),
+                () -> getDefaultHeaderCellReference().getContent());
 
+        JS.definePropertyAccessors(jsColumn, "hidden", v -> {
+            setHidden((Boolean) v);
+            gridComponent.updateWidth();
+        }, this::isHidden);
+
+        bind("name", v -> contentOrNameChanged((String) v, jsColumn.getHeaderContent()));
+        bind("hidingToggleText", v -> setHidingToggleCaption(v == null ? null : v.toString()));
         bind("flex", v -> setExpandRatio(((Double) v).intValue()));
         bind("sortable", v -> setSortable((Boolean) v));
+        bind("hidable", v -> setHidable((Boolean) v));
         bind("readOnly", v -> setEditable(!(boolean) v));
         bind("renderer", v -> setRenderer((cell, data) -> {
             JSCell jsCell = JSCell.create(cell, gridComponent.getContainer());
@@ -91,6 +98,22 @@ public final class GridColumn extends Column<Object, Object> {
         bind("width",
                 v -> setWidth(JS.isUndefinedOrNull(v) ? GridConstants.DEFAULT_COLUMN_WIDTH_PX
                         : (double) v));
+    }
+
+    private void contentOrNameChanged(String name, Object content) {
+        if (content == null || (content instanceof String && ((String) content).isEmpty())) {
+            setHeaderCaption(name == null ? "" : name);
+        } else if (content instanceof JavaScriptObject && JsUtils.isElement(content)) {
+            if (name != null) {
+                setHeaderCaption(name);
+            } else {
+                setHeaderCaption(((Element) content).getInnerText());
+            }
+        } else {
+            setHeaderCaption(content.toString());
+        }
+        getDefaultHeaderCellReference().setContent(content);
+        gridComponent.updateWidth();
     }
 
     private void bind(String propertyName, final Setter setter) {

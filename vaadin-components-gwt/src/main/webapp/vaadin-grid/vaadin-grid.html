@@ -1,12 +1,12 @@
 <!--
-@element v-grid
+@element vaadin-grid
 -->
 
 <link rel='import' href='../bower_components/polymer/polymer.html'>
 <!-- <script src="VaadinGridImport.nocache.js"></script> -->
 
 <style>
-  v-grid > table {
+  vaadin-grid > table {
     display: none;
   }
 </style>
@@ -16,7 +16,7 @@ Data grid for showing large amounts of tabular data.
 
 Basic usage:
 ```html
-<v-grid>
+<vaadin-grid>
   <table>
     <colgroup>
       <col header-text="Name">
@@ -32,12 +32,12 @@ Basic usage:
       </tr>
     </tbody>
   </table>
-</v-grid>
+</vaadin-grid>
 ```
 
-More examples available at http://vaadin.github.io/components-examples/v-grid/
+More examples available at http://vaadin.github.io/components-examples/vaadin-grid/
 -->
-<dom-module id="v-grid">
+<dom-module id="vaadin-grid">
 <style>
   /* Host styles */
   :host {
@@ -56,7 +56,7 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
     flex-direction: column;
   }
 
-  :host(.v-grid-loading) {
+  :host(.vaadin-grid-loading) {
     height: 0;
     opacity: 0;
     transition: none;
@@ -72,13 +72,13 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
   }
 
   /* Anim */
-  @keyframes v-grid-spin-360 {
+  @keyframes vaadin-grid-spin-360 {
     100% {
       transform: rotate(360deg);
     }
   }
 
-  @-webkit-keyframes v-grid-spin-360 {
+  @-webkit-keyframes vaadin-grid-spin-360 {
     100% {
       -webkit-transform: rotate(360deg);
       transform: rotate(360deg);
@@ -86,7 +86,7 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
   }
 
   /* Table wrapper */
-  .v-grid-tablewrapper {
+  .vaadin-grid-tablewrapper {
     box-sizing: border-box;
     overflow: hidden;
     outline: none;
@@ -94,18 +94,18 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
     z-index: 5;
   }
 
-  .v-grid-tablewrapper:before {
+  .vaadin-grid-tablewrapper:before {
     display: none;
   }
 
-  .v-grid-tablewrapper > table {
+  .vaadin-grid-tablewrapper > table {
     box-sizing: border-box;
     display: block;
   }
 
-  .v-grid-loading-data .v-grid-tablewrapper:before {
-    -webkit-animation: v-grid-spin-360 400ms linear infinite;
-    animation: v-grid-spin-360 400ms linear infinite;
+  .vaadin-grid-loading-data .vaadin-grid-tablewrapper:before {
+    -webkit-animation: vaadin-grid-spin-360 400ms linear infinite;
+    animation: vaadin-grid-spin-360 400ms linear infinite;
     border: 2px solid #03A9F4;
     border-radius: 50%;
     border-right-color: transparent;
@@ -122,14 +122,14 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
   }
 
   /* Scroller styles */
-  .v-grid-scroller {
+  .vaadin-grid-scroller {
     box-sizing: border-box;
     outline: none;
     position: absolute;
     z-index: 1;
   }
 
-  .v-grid-scroller-horizontal {
+  .vaadin-grid-scroller-horizontal {
     bottom: 0;
     left: 0;
     right: 0;
@@ -137,7 +137,7 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
     -ms-overflow-y: hidden;
   }
 
-  .v-grid-scroller-vertical {
+  .vaadin-grid-scroller-vertical {
     bottom: 0;
     right: 0;
     top: 0;
@@ -145,7 +145,7 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
     -ms-overflow-x: hidden;
   }
 
-  .v-grid-horizontal-scrollbar-deco {
+  .vaadin-grid-horizontal-scrollbar-deco {
     bottom: 0;
     box-sizing: border-box;
     left: 0;
@@ -154,7 +154,7 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
   }
 
   /* Grid body */
-  .v-grid-body {
+  .vaadin-grid-body {
     box-sizing: border-box;
     display: block;
     left: 0;
@@ -163,47 +163,56 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
     z-index: 0;
   }
 
-  :host(:not([selection-mode])) .v-grid-body,
-  :host([selection-mode="single"]) .v-grid-body {
+  :host(:not([selection-mode])) .vaadin-grid-body,
+  :host([selection-mode="single"]) .vaadin-grid-body {
     cursor: pointer;
   }
 
-  .v-grid-body tr {
+  .vaadin-grid-body tr {
     height: 48px;
     left: 0;
     top: 0;
     position: absolute;
   }
 
-  :host ::content .v-grid-spacer {
+  :host ::content .vaadin-grid-spacer {
     position: absolute;
+    border-bottom: 1px solid #e3e3e3;
+    z-index: 1;
   }
 
-  .v-grid-body td {
+  :host ::content .vaadin-grid-spacer > td {
+      position: absolute;
+      padding: 0;
+      top: 0;
+      left: 0;
+  }
+
+  .vaadin-grid-body td {
     opacity: 0;
   }
 
-  .v-grid-row-has-data td {
+  .vaadin-grid-row-has-data td {
     border-bottom: 1px solid #e3e3e3;
     opacity: 1;
   }
 
   /* Row styles */
-  .v-grid-row {
+  .vaadin-grid-row {
     box-sizing: border-box;
     display: block;
   }
 
-  tbody .v-grid-row:hover td {
+  tbody .vaadin-grid-row:hover td {
     background-color: #eeeeee;
   }
 
-  .v-grid-row-selected td {
+  .vaadin-grid-row-selected td {
     background-color: #f5f5f5;
   }
 
-  /* Focus styles */
-  .v-grid-row:after {
+   /* Focus styles */
+  .vaadin-grid-row:after {
     background-color: #03A9F4;
     bottom: 0;
     content: "";
@@ -218,17 +227,17 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
     z-index: 1;
   }
 
-  :focus .v-grid-row-focused:after {
+  :focus .vaadin-grid-row-focused:after {
     -webkit-transform: scaleX(1.0);
     transform: scaleX(1.0);
   }
 
-  :focus .v-grid-row-focused {
+  :focus .vaadin-grid-row-focused {
     -webkit-animation: v-grid-row-focused 820ms ease-in-out;
     animation: v-grid-row-focused 820ms ease-in-out;
   }
 
-  @-webkit-keyframes v-grid-row-focused {
+  @-webkit-keyframes vaadin-grid-row-focused {
     50% {
       color: #03A9F4;
     } 100% {
@@ -236,7 +245,7 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
     }
   }
 
-  @keyframes v-grid-row-focused {
+  @keyframes vaadin-grid-row-focused {
     50% {
       color: #03A9F4;
     } 100% {
@@ -245,7 +254,7 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
   }
 
   /* Grid cell */
-  .v-grid-cell {
+  .vaadin-grid-cell {
     -webkit-align-items: center;
     align-items: center;
     background-color: white;
@@ -258,7 +267,7 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
   }
 
   /* Grid header */
-  .v-grid-header {
+  .vaadin-grid-header {
     box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
     box-sizing: border-box;
     display: block;
@@ -266,20 +275,21 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
     position: absolute;
     top: 0;
     z-index: 10;
+    padding-right: 2px;
   }
 
-  .v-grid-header tr {
+  .vaadin-grid-header tr {
     color: rgba(0, 0, 0, 0.54);
     font-size: 12px;
     height: 56px;
   }
 
-  .v-grid-header th {
+  .vaadin-grid-header th {
     font-weight: 500;
     text-align: left;
   }
 
-  .v-grid-header-deco {
+  .vaadin-grid-header-deco {
     background-color: white;
     border-left: 1px solid rgba(255, 255, 255, 0.3);
     box-sizing: border-box;
@@ -290,14 +300,14 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
   }
 
   /* Sorting */
-  .v-grid-header [class*="sort-"] {
+  .vaadin-grid-header [class*="sort-"] {
     font-weight: 500;
     font-size: 12px;
     color: rgba(0, 0, 0, 0.87);
     position: relative;
   }
 
-  .v-grid-header [class*="sort-"]:after {
+  .vaadin-grid-header [class*="sort-"]:after {
     font-size: 8px;
     padding-left: 8px;
     width: 1em;
@@ -305,16 +315,16 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
     display: inline-block;
   }
 
-  .v-grid-header .sort-asc:after {
+  .vaadin-grid-header .sort-asc:after {
     content: url(arrow-up.svg) " " attr(sort-order);
   }
 
-  .v-grid-header .sort-desc:after {
+  .vaadin-grid-header .sort-desc:after {
     content: url(arrow-down.svg) " " attr(sort-order);
   }
 
   /* Grid footer */
-  .v-grid-footer {
+  .vaadin-grid-footer {
     bottom: 0;
     box-sizing: border-box;
     display: block;
@@ -324,14 +334,14 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
     box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.2);
   }
 
-  .v-grid-footer td {
+  .vaadin-grid-footer td {
     font-size: 12px;
     font-weight: 500;
     color: rgba(0, 0, 0, 0.56);
     height: 56px;
   }
 
-  .v-grid-footer-deco {
+  .vaadin-grid-footer-deco {
     bottom: 0;
     box-sizing: border-box;
     position: absolute;
@@ -339,10 +349,14 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
     z-index: 1;
   }
 
+  .vaadin-grid-spacer-deco-container {
+  	display: none;
+  }
+
   /* Cell padding */
-  .v-grid-header th,
-  .v-grid-body td,
-  .v-grid-footer td {
+  .vaadin-grid-header th,
+  .vaadin-grid-body td,
+  .vaadin-grid-footer td {
     /* Google Material Design specifies 56dp inbetween columns.
        Columns are as wide as their widest item. This approach
        might not be applicable for us, as we allow column expand
@@ -355,9 +369,9 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
        padding: 0; */
   }
 
-  .v-grid-header th.last-frozen,
-  .v-grid-body td.last-frozen,
-  .v-grid-footer td.last-frozen {
+  .vaadin-grid-header th.last-frozen,
+  .vaadin-grid-body td.last-frozen,
+  .vaadin-grid-footer td.last-frozen {
     border-right: 1px solid #e3e3e3;
   }
 
@@ -365,9 +379,9 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
    using the cell, since this will affect all frozen columns, when we only
     want to apply it to the last frozen column .*/
   /* Double selector to increase specificity. Otherwise Polymer increases the
-   specificity of the ".v-grid-header th" more than this, and we can't
+   specificity of the ".vaadin-grid-header th" more than this, and we can't
    override the border */
-  .v-grid-cell.frozen.frozen {
+  .vaadin-grid-cell.frozen.frozen {
     position: relative;
     z-index: 1;
   }
@@ -457,7 +471,7 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
   }
 
   /* Small adjustment for the checkbox in the header */
-  .v-grid-header input[type="checkbox"] + label:after {
+  .vaadin-grid-header input[type="checkbox"] + label:after {
     transition: none;
   }
 
@@ -472,11 +486,11 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
   }
 
   /* The following is a workaround to https://dev.vaadin.com/ticket/18376 */
-  .v-grid-scroller[invisible]::-webkit-scrollbar {
+  .vaadin-grid-scroller[invisible]::-webkit-scrollbar {
     border: none;
   }
 
-  .v-grid-scroller[invisible]::-webkit-scrollbar-thumb {
+  .vaadin-grid-scroller[invisible]::-webkit-scrollbar-thumb {
     border-radius: 10px;
     border: 4px solid transparent;
     background: rgba(0,0,0,.3);
@@ -485,25 +499,155 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
   }
 
 
-  .v-grid-scroller-vertical[invisible]::-webkit-scrollbar-thumb {
+  .vaadin-grid-scroller-vertical[invisible]::-webkit-scrollbar-thumb {
     min-height: 30px;
   }
 
-  .v-grid-scroller-horizontal[invisible]::-webkit-scrollbar-thumb {
+  .vaadin-grid-scroller-horizontal[invisible]::-webkit-scrollbar-thumb {
     min-width: 30px;
+  }
+
+
+  .vaadin-grid-sidebar {
+    z-index: 5;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+  }
+
+  .vaadin-grid-sidebar-button {
+    width: 56px;
+    height: 56px;
+    border: none;
+    background: none;
+    outline: none;
+    position: relative;
+    cursor: pointer;
+    pointer-events: all;
+  }
+
+  .vaadin-grid-sidebar-button::before {
+    content: "";
+    position: absolute;
+    left: 12px;
+    top: 10px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    opacity: 0;
+    background: #000;
+    transition: opacity 0.1s ease-in;
+  }
+
+  .vaadin-grid-sidebar-button:hover:before {
+    opacity: 0.1;
+  }
+
+  .vaadin-grid-sidebar-button:active:before {
+    opacity: 0.2;
+  }
+  .vaadin-grid-sidebar-button:after {
+    content: url(ic_view_column_black_24px.svg);
+    display: inline-block;
+    position:relative;
+    top: 0;
+    left: 0;
+  }
+
+  .vaadin-grid-sidebar-content {
+    background-color: #ffffff;
+    position: absolute;
+    right: 0;
+    top: 44px;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
+    border-radius: 2px;
+    max-height: calc(100% - 56px);
+    pointer-events: all;
+    overflow-y: auto;
+    -webkit-animation: vaadin-grid-sidebar-transition 0.2s ease-in;
+    animation: vaadin-grid-sidebar-transition 0.2s ease-in;
+  }
+
+  @keyframes vaadin-grid-sidebar-transition {
+    0% {
+      opacity: 0;
+      top: 48px;
+    }
+    100% {
+      opacity: 1;
+      top: 44px;
+    }
+  }
+
+  .vaadin-grid-sidebar-content::content > div {
+    padding: 6px 0;
+  }
+
+  .vaadin-grid-sidebar-content::content span:before {
+    content: url(ic_check_black_24px.svg);
+    display: inline-block;
+    padding: 0 20px;
+  }
+
+  .vaadin-grid-sidebar-content::content .v-off:before {
+    visibility: hidden;
+  }
+
+  .vaadin-grid-sidebar-content::content span div {
+    display: inline-block;
+    vertical-align: super;
+    padding-right: 20px;
+  }
+
+  .vaadin-grid-sidebar-content::content table {
+    border-collapse: collapse;
+  }
+
+  .vaadin-grid-sidebar-content::content .column-hiding-toggle {
+    cursor: pointer;
+  }
+
+  .vaadin-grid-sidebar-content::content .column-hiding-toggle:hover,
+  .vaadin-grid-sidebar-content::content .column-hiding-toggle:focus {
+    background: #eeeeee;
+  }
+
+  .vaadin-grid-sidebar.closed:after {
+    content: "Show/hide columns";
+    z-index: 999;
+    background: rgba(97,97,97,.9);
+    border-radius: 2px;
+    color: #fff;
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 500;
+    line-height: 14px;
+    padding: 8px;
+    text-align: center;
+    position: absolute;
+    right: 0;
+    top: 44px;
+    opacity: 0;
+    transition: opacity 0.1s ease-in;
+  }
+
+  .vaadin-grid-sidebar.closed:hover:after {
+    opacity: 1;
   }
 
 </style>
   <template>
-    <iframe id="measureobject" class="v-grid"></iframe>
+    <iframe id="measureobject" class="vaadin-grid"></iframe>
     <content></content>
   </template>
 </dom-module>
 
 <script>
-    VGrid = Polymer({
+    Polymer({
 
-      is: "v-grid",
+      is: "vaadin-grid",
 
       _grid: undefined,
 
@@ -727,7 +871,7 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
 
       ready: function() {
         // hide until fully loaded
-        this.toggleClass('v-grid-loading', true);
+        this.toggleClass('vaadin-grid-loading', true);
         this.async(function() {
           for (var i = 0; i < this.attributes.length; i++) {
             this.attributeChanged(this.attributes[i].nodeName, null, this.attributes[i].nodeValue);
@@ -761,7 +905,7 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
         var _this = this;
         this._bindResizeListener();
         this.then(function() {
-          _this.toggleClass('v-grid-loading', false);
+          _this.toggleClass('vaadin-grid-loading', false);
         });
       },
 
@@ -776,7 +920,7 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
        * @method scrollToRow
        * @param {number} index - Zero-based index of the row to scroll to.
        * @param {string} scrollDestination - Desired destination placement of scrolled-to-row. Valid values are `any`, `start`, `middle` and `end`. Defaults to `any`.
-       * @return {v-grid}
+       * @return {vaadin-grid}
        */
       scrollToRow: function(index, scrollDestination) {
         this._grid.scrollToRow(index, scrollDestination);
@@ -792,7 +936,7 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
        * Example: `grid.scrollToStart().then(doMoreStuff);`
        *
        * @method scrollToStart
-       * @return {v-grid}
+       * @return {vaadin-grid}
        */
       scrollToStart: function() {
         this._grid.scrollToStart();
@@ -808,7 +952,7 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
        * Example: `grid.scrollToEnd().then(doMoreStuff);`
        *
        * @method scrollToEnd
-       * @return {v-grid}
+       * @return {vaadin-grid}
        */
       scrollToEnd: function() {
         this._grid.scrollToEnd();
@@ -920,6 +1064,17 @@ More examples available at http://vaadin.github.io/components-examples/v-grid/
       set frozenColumns(frozenColumns) {
         this._grid.setFrozenColumns(frozenColumns);
         this.reflectPropertyToAttribute("frozenColumns");
+      },
+
+      /**
+       * Returns an array of the currently visible columns in the grid.
+       * No hidden columns included.
+       *
+       * @property {Array<Column>} visibleColumns
+       * @type {Array<Column>}
+       */
+      get visibleColumns() {
+        return this._grid.getVisibleColumns();
       },
 
       /**

@@ -68,7 +68,7 @@
       grid.editor.enabled = true;
       grid.editor.editRow(0);
 
-      assert.isTrue(gridContainsText(grid, "v-grid-editor"));
+      assert.isTrue(gridContainsText(grid, "vaadin-grid-editor"));
     });
 
     it('editor: saveButtonText and cancelButtonText', function() {
@@ -91,13 +91,13 @@
       grid.editor.enabled = true;
 
       grid.editor.editRow(0);
-      assert.equal(qLocal(".v-grid-editor input").value, "Grid");
+      assert.equal(qLocal(".vaadin-grid-editor input").value, "Grid");
       grid.editor.cancel();
-      assert.isFalse(gridContainsText(grid, "v-grid-editor"));
+      assert.isFalse(gridContainsText(grid, "vaadin-grid-editor"));
       grid.editor.editRow(1);
-      assert.equal(qLocal(".v-grid-editor input").value, "VaadinX");
+      assert.equal(qLocal(".vaadin-grid-editor input").value, "VaadinX");
       grid.editor.save();
-      assert.isFalse(gridContainsText(grid, "v-grid-editor"));
+      assert.isFalse(gridContainsText(grid, "vaadin-grid-editor"));
 
       expect(grid.editor.editRow.bind(grid.editor, 10)).to.throw("Row index");
     });
@@ -109,12 +109,12 @@
       grid.editor.enabled = true;
 
       grid.editor.editRow(0);
-      var fields = qaLocal(".v-grid-editor input");
+      var fields = qaLocal(".vaadin-grid-editor input");
       fields[0].value = "fail";
       grid.editor.save();
 
       assert.isTrue(gridContainsText(grid, "Save failed"));
-      var cells = qaLocal(".v-grid-editor-cells > div");
+      var cells = qaLocal(".vaadin-grid-editor-cells > div");
       assert.isTrue(cells[0].classList.contains("error"));
       assert.isFalse(cells[1].classList.contains("error"));
 
@@ -134,10 +134,10 @@
       grid.editor.enabled = true;
 
       grid.editor.editRow(0);
-      var cells = qaLocal(".v-grid-editor .v-grid-editor-cells > div");
+      var cells = qaLocal(".vaadin-grid-editor .vaadin-grid-editor-cells > div");
       assert.lengthOf(cells, 2);
 
-      var editors = qaLocal(".v-grid-editor .v-grid-editor-cells > div *");
+      var editors = qaLocal(".vaadin-grid-editor .vaadin-grid-editor-cells > div *");
       assert.lengthOf(editors, 0);
     });
 
@@ -166,7 +166,7 @@
     });
 
     // fails because of replacing columns doesn't render row contents,
-    // see https://trello.com/c/8e27Tv3q/58-v-grid-bugs
+    // see https://trello.com/c/8e27Tv3q/58-vaadin-grid-bugs
     it.skip('editor: default editor', function() {
       grid.editor.enabled = true;
       grid.editor.editRow(0);
