@@ -32,7 +32,7 @@ public class GridStaticSection {
 
     public GridStaticSection(GridComponent gridComponent) {
         this.gridComponent = gridComponent;
-        this.grid = gridComponent.getGrid();
+        grid = gridComponent.getGrid();
     }
 
     @JsNoExport
@@ -77,7 +77,7 @@ public class GridStaticSection {
             String propertyName, Setter setter) {
         JS.definePropertyAccessors(cell, propertyName, v -> {
             setter.setValue(v);
-            gridComponent.updateWidth();
+            grid.onResize();
             grid.refreshStaticSection(staticCell);
         }, null);
     }
