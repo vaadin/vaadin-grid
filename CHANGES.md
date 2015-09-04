@@ -54,6 +54,7 @@
   - calling grid.then without a data source set no longer causes infinite loop
   - Vertical line on the right of the header hidden
   - Resizing a v-grid with details-row open makes it disappear
+  - ResetSizesFromDom should not be invoked if vaadin-grid has a hidden parent
 
 ***
 

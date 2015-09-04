@@ -121,6 +121,39 @@
             }, 100);
           });
         });
+        
+        it('should work if parent originally invisible', function(done) {
+            var wrapper = document.getElementById("gridwrapper");
+            var tmp = document.createElement("div");
+            tmp.style.display = "none";
+            wrapper.appendChild(tmp);
+            tmp.innerHTML = "<vaadin-grid>" +
+              "                     <table>" +
+              "                       <col header-text='Name'>" +
+              "                       <tr>" +
+              "                         <td>Grid</td>" +
+              "                       </tr>" +
+              "                     </table>" +
+              "                   </vaadin-grid>";
+
+            var grid = tmp.querySelector("vaadin-grid");
+
+            // Usin onRegister because in FF the new grid takes a while to be initialized
+            onRegister(grid, function() {
+              expect(grid.offsetHeight).to.equal(0);
+
+              //TODO: timeout here because of https://github.com/vaadin/components/issues/19
+              setTimeout(function() {
+                tmp.removeAttribute("style");
+
+                grid.then(function() {
+                  expect(grid.offsetHeight).to.be.at.least(30);
+                  wrapper.removeChild(tmp);
+                  done();
+                });
+              }, 100);
+            });
+          });
 
         describe('using limited row visibility', function() {
           before(function() {

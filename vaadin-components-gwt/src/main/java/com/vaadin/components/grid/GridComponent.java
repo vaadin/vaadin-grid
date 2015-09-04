@@ -32,7 +32,6 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.UIObject;
 import com.vaadin.client.widget.grid.DetailsGenerator;
 import com.vaadin.client.widget.grid.events.SelectAllEvent;
 import com.vaadin.client.widget.grid.events.SelectAllHandler;
@@ -419,7 +418,7 @@ public class GridComponent implements SelectionHandler<Object>,
     private final Timer sizeUpdater = new Timer() {
         @Override
         public void run() {
-            if (!resetSizesFromDomCalled && UIObject.isVisible(container)) {
+            if (!resetSizesFromDomCalled && isGridVisible()) {
                 grid.resetSizesFromDom();
                 then(JsUtils.wrapFunction(new Function() {
                     @Override
@@ -432,7 +431,26 @@ public class GridComponent implements SelectionHandler<Object>,
             updateWidth();
             updateHeight();
         }
+
     };
+
+    /*
+     * This method checks whether the vaadin-grid element is actually visible in
+     * the DOM (ie. its parent elements or itself aren't set display: none).
+     */
+    private boolean isGridVisible() {
+        // We currently implement the feature by checking the client height of
+        // measure object because it has 1px bottom padding and
+        // thus has client height of 1 if it's visible in the DOM.
+        Element element = grid.getElement().getPreviousSiblingElement();
+        while (element != null) {
+            if ("measureobject".equals(element.getId())) {
+                return element.getClientHeight() > 0;
+            }
+            element = element.getPreviousSiblingElement();
+        }
+        return false;
+    }
 
     public void updateSize() {
         sizeUpdater.schedule(50);
