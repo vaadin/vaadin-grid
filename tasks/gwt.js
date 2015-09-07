@@ -7,7 +7,7 @@ var rename = require('gulp-rename');
 var replace = require('gulp-replace');
 
 var pwd = process.cwd();
-var gwtproject = 'vaadin-components-gwt';
+var gwtproject = 'java';
 var version = '0.3.0';
 var major = version.replace(/(\d+\.\d+\.).*$/, '$1');
 var patch = ~~((new Date().getTime() / 1000 - 1420070400) / 60)
@@ -15,7 +15,7 @@ var tag =  args.version || major + patch; // will rename the tag variable in a s
 
 var component = 'vaadin-grid';
 var moduleName = 'VaadinGrid';
-var webDir = 'vaadin-components-gwt/src/main/webapp/';
+var webDir = 'java/src/main/webapp/';
 var webComponentDir = webDir + component + '/';
 var componentDir = 'vaadin-components/' + component;
 
@@ -38,12 +38,11 @@ gulp.task('gwt:compile', ['gwt:clean-maven'], function(done) {
   }
 
   gutil.log('Updating Maven dependencies ...');
-  system('mvn compile -q -am -pl ' + gwtproject, function() {
+  system('mvn -f ' + gwtproject + '/pom.xml compile -q ', function() {
     gutil.log('Compiling GWT components ...');
-    var command = 'mvn package -q -am -pl ' + gwtproject + (args.gwtPretty ? ' -Ppretty' : '') + " -P compile";
+    var command = 'mvn -f ' + gwtproject + '/pom.xml package -q ' + (args.gwtPretty ? ' -Ppretty' : '') + " -P compile";
     system(command, function() {
       gutil.log('GWT components compilation succeeded.')
-
       done();
     });
   });
@@ -57,7 +56,7 @@ gulp.task('gwt:clean-maven', function(done) {
     return;
   }
 
-  system('mvn clean', done);
+  system('mvn -f ' + gwtproject + '/pom.xml clean', done);
 });
 
 gulp.task('test:gwt', function(done) {
@@ -68,7 +67,7 @@ gulp.task('test:gwt', function(done) {
 });
 
 gulp.task('watch:gwt', function() {
-  var paths = ['vaadin-components-gwt/src/main/webapp/vaadin-grid/**/*'];
+  var paths = ['java/src/main/webapp/vaadin-grid/**/*'];
 
   gulp.watch(paths, ['gwt']);
 });
@@ -93,7 +92,7 @@ gulp.task('gwt:copy-files', ['gwt:compile', 'clean:gwt'], function() {
 });
 
 gulp.task('gwt:copy-imports', ['gwt:compile', 'clean:gwt'], function() {
-  var warDir = 'vaadin-components-gwt/target/vaadin-components-gwt-' + version + '/';
+  var warDir = 'java/target/vaadin-grid-' + version + '/';
   var modulePath = warDir + moduleName + 'Import/';
   return gulp.src(modulePath + moduleName +'Import.nocache.js')
           .pipe(rename(component + '.min.js'))

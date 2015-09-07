@@ -17,7 +17,7 @@ Vaadin Components is an evolving set of custom HTML elements, built using [Polym
 - **vaadin-components**:
   Polymer-based Web Components.
 
-- **vaadin-components-gwt**:
+- **java**:
   The internal GWT implementations for some of the components,
   exported to JavaScript which is used by the Polymer-based implementations.
 
@@ -113,7 +113,7 @@ $ gulp watch:gwt
 ```
 - Running and debugging in GWT SuperDevMode:
 ```shell
-$ mvn -f vaadin-components-gwt/pom.xml gwt:run
+$ mvn -f java/pom.xml gwt:run
 ```
 - Update your dependencies once in a while:
 ```shell

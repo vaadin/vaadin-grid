@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <name>Vaadin Components Gwt Exported</name>
   <groupId>com.vaadin.components</groupId>
-  <artifactId>vaadin-components-gwt</artifactId>
+  <artifactId>vaadin-grid</artifactId>
   <packaging>war</packaging>
   <version>0.3.0</version>
   <properties>
