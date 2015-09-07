@@ -13,7 +13,7 @@
     <gwt.loglevel>WARN</gwt.loglevel>
     <gwtversion>2.8.0-SNAPSHOT</gwtversion>
     <gwtmaven>2.7.0</gwtmaven>
-    <modulePathPrefix>VAADIN/widgetsets</modulePathPrefix>
+    <modulePathPrefix></modulePathPrefix>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -247,7 +247,17 @@
               <resources>
                 <resource>
                   <directory>src/main/webapp</directory>
-                  <filtering>true</filtering>
+                </resource>
+                <resource>
+                  <directory>./</directory>
+                  <includes>
+                    <include>sdm.js</include>
+                    <include>vaadin-grid.html</include>
+                    <include>vaadin-grid-doc.html</include>
+                    <include>demo/*</include>
+                    <include>img/*</include>
+                    <include>test/*</include>
+                  </includes>                  
                 </resource>
               </resources>
             </configuration>

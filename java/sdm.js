@@ -7,7 +7,7 @@
   if (!window.vaadin || !window.vaadin.GridComponent) {
     _whenReady = HTMLImports.whenReady;
     _imported = false;
-    var gridHref = (window.location.pathname.match(/\/test\//) ? "../" : "") + "vaadin-grid.html";
+    var gridHref = "../vaadin-grid.html";
     HTMLImports.whenReady = function(done) {
       var id = setInterval(function() {
         if (window.vaadin && window.vaadin.GridComponent) {
