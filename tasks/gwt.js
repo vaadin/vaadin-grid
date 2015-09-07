@@ -88,14 +88,16 @@ gulp.task('gwt:copy-files', ['gwt:compile', 'clean:gwt'], function() {
           .pipe(replace(new RegExp('^.*script.*\.\..*' + moduleName + '.*'+ moduleName +'.*$','mg'), '  <link rel="import" href="'+component+'.html">'))
           .pipe(replace(/(src|href)=("|')([\.\.\/]*)\/bower_components\//mg, '$1=$2$3/../bower_components/'))
           .pipe(replace(/^.*src="[\.\/]*sdm.js".*$/mg, ''))
-          .pipe(replace(/^.*<!-- .*(<.*VaadinGridImport.nocache.js.*) -->/mg, '$1'))
+          .pipe(replace(/^.*<!-- .*(<.*vaadin-grid.min.js.*) -->/mg, '$1'))
           .pipe(gulp.dest(componentDir));
 });
 
 gulp.task('gwt:copy-imports', ['gwt:compile', 'clean:gwt'], function() {
   var warDir = 'vaadin-components-gwt/target/vaadin-components-gwt-' + version + '/';
   var modulePath = warDir + moduleName + 'Import/';
-  return gulp.src(modulePath + moduleName +'Import.nocache.js').pipe(gulp.dest(componentDir));
+  return gulp.src(modulePath + moduleName +'Import.nocache.js')
+          .pipe(rename(component + '.min.js'))
+          .pipe(gulp.dest(componentDir));
 });
 
 gulp.task('gwt:copy-deferred', ['gwt:compile', 'clean:gwt'], function() {
