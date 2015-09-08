@@ -21,45 +21,28 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
 <body>
 <script>
 (function() {
-  var nocacheUrl = '../vaadin-grid.min.js';
-  var gridHref = "../vaadin-grid.html";
-  var _imported = false;
-
-  function loadSdmNocache() {
-    var nocache = document.createElement("script");
-    nocache.setAttribute("src", nocacheUrl);
-    document.head.appendChild(nocache);
-  }
-  function loadVaadinGrid() {
-    if (!_imported) {
-      _imported = true;
-      var link = document.createElement("link");
-      link.setAttribute("rel", "import");
-      link.setAttribute("href", gridHref);
-      document.head.appendChild(link);
+  // Load gwt .nocache
+  var nocache = document.createElement('script');
+  nocache.setAttribute('src', '../vaadin-grid.min.js');
+  document.head.appendChild(nocache);
+  // Wait until .nocache was fully loaded
+  if (!window.vaadin || !window.vaadin.GridComponent) {
+    _whenReady = HTMLImports.whenReady;
+    _imported = false;
+    // Overwrite whenReady so as grid is not loaded before it is available
+    HTMLImports.whenReady = function(done) {
+      var id = setInterval(function() {
+        if (window.vaadin && window.vaadin.GridComponent) {
+          clearInterval(id);
+          // Load vaadin-grid web component
+          var link = document.createElement('link');
+          link.setAttribute('rel', 'import');
+          link.setAttribute('href', '../vaadin-grid.html');
+          document.head.appendChild(link);
+          (HTMLImports.whenReady = _whenReady)(done);
+        }
+      }, 1);
     }
-  }
-
-  var isSDM = window.location.host.endsWith('8888');
-
-  if (isSDM) {
-    loadSdmNocache();
-    
-    if (!window.vaadin || !window.vaadin.GridComponent) {
-      _whenReady = HTMLImports.whenReady;
-      _imported = false;
-      HTMLImports.whenReady = function(done) {
-        var id = setInterval(function() {
-          if (window.vaadin && window.vaadin.GridComponent) {
-            clearInterval(id);
-            loadVaadinGrid();
-            (HTMLImports.whenReady = _whenReady)(done);
-          }
-        }, 1);
-      }
-    }
-  } else {
-    loadVaadinGrid();
   }
 })();
 </script>
