@@ -1,5 +1,33 @@
 var grid, wrapper;
 
+// This is needed for SDM, so as we guarantee that gwt grid
+// was loaded and exported before Polymer is called in vaadin-grid.html
+(function() {
+  // Load gwt .nocache
+  var nocache = document.createElement('script');
+  nocache.setAttribute('src', '../vaadin-grid.min.js');
+  document.head.appendChild(nocache);
+  // Wait until .nocache was fully loaded
+  if (!window.vaadin || !window.vaadin.GridComponent) {
+    _whenReady = HTMLImports.whenReady;
+    _imported = false;
+    // Overwrite whenReady so as grid is not loaded before it is available
+    HTMLImports.whenReady = function(done) {
+      var id = setInterval(function() {
+        if (window.vaadin && window.vaadin.GridComponent) {
+          clearInterval(id);
+          // Load vaadin-grid web component
+          var link = document.createElement('link');
+          link.setAttribute('rel', 'import');
+          link.setAttribute('href', '../vaadin-grid.html');
+          document.head.appendChild(link);
+          (HTMLImports.whenReady = _whenReady)(done);
+        }
+      }, 1);
+    }
+  }
+})();
+
 describe.feature = function(description, suite) {
   describe(description, function() {
     before(function(done) {

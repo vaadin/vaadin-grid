@@ -4,9 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1" />
 <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
-<script src="../VaadinGrid/VaadinGrid.nocache.js"></script>
-
-<script src="../sdm.js"></script>
 <script src="demodata.js"></script>
 <style>
 td.red, th.red, .red th, .red td, td.foot1, .foot1 td {
@@ -22,6 +19,50 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
 </style>
 </head>
 <body>
+<script>
+(function() {
+  var nocacheUrl = '../vaadin-grid.min.js';
+  var gridHref = "../vaadin-grid.html";
+  var _imported = false;
+
+  function loadSdmNocache() {
+    var nocache = document.createElement("script");
+    nocache.setAttribute("src", nocacheUrl);
+    document.head.appendChild(nocache);
+  }
+  function loadVaadinGrid() {
+    if (!_imported) {
+      _imported = true;
+      var link = document.createElement("link");
+      link.setAttribute("rel", "import");
+      link.setAttribute("href", gridHref);
+      document.head.appendChild(link);
+    }
+  }
+
+  var isSDM = window.location.host.endsWith('8888');
+
+  if (isSDM) {
+    loadSdmNocache();
+    
+    if (!window.vaadin || !window.vaadin.GridComponent) {
+      _whenReady = HTMLImports.whenReady;
+      _imported = false;
+      HTMLImports.whenReady = function(done) {
+        var id = setInterval(function() {
+          if (window.vaadin && window.vaadin.GridComponent) {
+            clearInterval(id);
+            loadVaadinGrid();
+            (HTMLImports.whenReady = _whenReady)(done);
+          }
+        }, 1);
+      }
+    }
+  } else {
+    loadVaadinGrid();
+  }
+})();
+</script>
 <ol>
   <li>
   <h3>Simplest possible with inline data</h3>

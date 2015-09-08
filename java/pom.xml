@@ -249,12 +249,11 @@
                   <directory>src/main/webapp</directory>
                 </resource>
                 <resource>
-                  <directory>./</directory>
+                  <directory>../</directory>
                   <includes>
                     <include>sdm.js</include>
                     <include>vaadin-grid.html</include>
                     <include>vaadin-grid-doc.html</include>
-                    <include>demo/*</include>
                     <include>img/*</include>
                     <include>test/*</include>
                   </includes>                  
