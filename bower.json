@@ -1,21 +1,28 @@
 {
-  "name": "vaadin-components",
+  "name": "vaadin-grid",
   "version": "0.3.0",
   "authors": [
     "Vaadin Ltd"
   ],
-  "description": "Vaadin Components is an evolving set of custom HTML elements, built using Polymer, for building mobile and desktop web applications in modern browsers.",
   "license": "Apache License 2.0",
   "keywords": [
-    "web-components"
+    "web-components",
+    "vaadin",
+    "vaadin components",
+    "grid"
   ],
-  "main": "vaadin-components.html",
+  "main": "vaadin-grid.html",
   "ignore": [
     "**/.*",
     "**/node_modules",
     "**/bower_components",
     "**/test",
-    "**/tests"
+    "**/java",
+    "**/tasks",
+    "**/demo",
+    "gulpfile.js",
+    "package.json",
+    "wct.conf.js"
   ],
   "dependencies": {
     "polymer": "Polymer/polymer#v1.1.1"
