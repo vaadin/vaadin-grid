@@ -35,7 +35,7 @@
     "wct-teamcity-reporter": "1.0.1"
   },
   "scripts": {
-    "install": "node_modules/.bin/bower install --allow-root https://github.com/Polymer/web-component-tester.git ./vaadin-components-package/bower.json"
+    "install": "node_modules/.bin/bower install --allow-root https://github.com/Polymer/web-component-tester.git code-example bower.json"
   },
   "keywords": [
     "vaadin",
