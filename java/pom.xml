@@ -256,6 +256,7 @@
                     <include>vaadin-grid-doc.html</include>
                     <include>img/*</include>
                     <include>test/*</include>
+                    <include>bower_components/**/*</include>
                   </includes>                  
                 </resource>
               </resources>
