@@ -19,5 +19,8 @@
   ],
   "dependencies": {
     "polymer": "Polymer/polymer#v1.1.1"
+  },
+  "devDependencies": {
+    "components-demo-resources": "vaadin/components-demo-resources#master"
   }
 }
