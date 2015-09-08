@@ -1,31 +1,27 @@
 [![Build Status](https://travis-ci.org/vaadin/components.svg?branch=master)](https://travis-ci.org/vaadin/components)
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/vaadin/components?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
-# Vaadin Components
+# Vaadin Grid
 
-##### *Notice*: This is the development repository for Vaadin Components. If you just want to use the components, see the [Getting Started instructions](http://vaadin.github.io/components-examples/).
+Vaadin Grid is a component for showing large amounts of tabular data.
 
-Vaadin Components is an evolving set of custom HTML elements, built using [Polymer](https://www.polymer-project.org), for building mobile and desktop web applications in modern browsers. [Learn more &raquo;](https://vaadin.com/components/)
-
-## Using the components
+## Using the component
 
 ##### - [Getting Started instructions](http://vaadin.github.io/components-examples/)
 ##### - [Discussion](https://vaadin.com/forum/#!/category/9848927/)
 
 ## Overview of this repository
 
-- **vaadin-components**:
-  Polymer-based Web Components.
+- **demo**:
+  A set of examples using the component
+
+- **test**:
+  Unit and visual tests
 
 - **java**:
-  The internal GWT implementations for some of the components,
+  The internal GWT implementation of the component
   exported to JavaScript which is used by the Polymer-based implementations.
 
-- **tasks**:
-  Gulp tasks for building and packaging.
-
-- **visual-test**:
-  Visual regression testing related files, like test scripts and reference screenshots.
 
 ## Developing
 
@@ -44,10 +40,12 @@ Then do the following:
  ```shell
  $ npm install -g bower gulp web-component-tester serve
  ```
+ 
+ _*Note: you might prepend `sudo` if you are in a unix like system (linux, mac)_
 
 2. Clone the project:
  ```shell
- $ git clone https://github.com/vaadin/components.git
+ $ git clone https://github.com/vaadin/vaadin-grid.git
  $ cd components
  ```
 
@@ -69,7 +67,7 @@ $ gulp gwt
 ```shell
 $ serve
 ```
-- Access the components through `http://localhost:3000/vaadin-components/`
+- Access the components through `http://localhost:3000/`
 > If you wish to import components into your application using the development URL, remember to manually install [Polymer](https://github.com/Polymer/polymer) as a dependency.
 ```shell
 $ cd your-application
@@ -118,25 +116,6 @@ $ mvn -f java/pom.xml gwt:run
 - Update your dependencies once in a while:
 ```shell
 $ npm install
-```
-
-## Packaging
-
-- Creating a zip package under `target/zip/`:
-```shell
-$ gulp stage:zip
-```
-or
-```shell
-$ gulp stage:zip --version=0.3.0-custom --release
-```
-- Copying bower.json and components under `target/bower/`:
-```shell
-$ gulp stage:bower
-```
-or
-```shell
-$ gulp stage:bower --version=0.3.0-custom --release
 ```
 
 ## Demos / examples
