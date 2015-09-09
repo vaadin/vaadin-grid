@@ -120,8 +120,8 @@ Object for accessing and controlling data source used in the grid.
     properties: {
       /**
        * Data source for the grid.
-       * 
-       * If an array is used, it is wrapped with a function internally. 
+       *
+       * If an array is used, it is wrapped with a function internally.
        * Reading the property value will still return the array.       *
        *
        *  Example:
@@ -139,7 +139,7 @@ Object for accessing and controlling data source used in the grid.
        *      var to = req.index + req.count;
        *      var array = myArray.slice(from, to);
        *
-       *      req.success(array, data.length);
+       *      req.success(array, myArray.length);
        *  };
        *  ```
        *
@@ -152,7 +152,7 @@ Object for accessing and controlling data source used in the grid.
       source: Object,
       /**
        * Order of sorting.
-       * 
+       *
        * @property {Array<SortOrder>} source
        * @type {Array<SortOrder>}
        */
@@ -164,7 +164,7 @@ Object for accessing and controlling data source used in the grid.
        * @type {Function}
        */
       clearCache: Function,
-      
+
       /**
        * Invokes the callback with row data of the provided row index as the
        * parameter. If the row is not cached, it's fetched from the data source
@@ -217,7 +217,7 @@ Object used to request data from the data source.
      *  var to = req.index + req.count;
      *  var array = myArray.slice(from, to);
      *
-     *  req.success(array, data.length);
+     *  req.success(array, myArray.length);
      *  ```
      *
      * @method success
@@ -482,7 +482,7 @@ Object for defining the sorting order of the columns.
        * Sort direction.
        *
        * Attribute: `sort-direction`
-       * 
+       *
        * @property {string} direction
        * @default "asc"
        * @type {string}
