@@ -657,6 +657,37 @@ More examples available at http://vaadin.github.io/components-examples/vaadin-gr
 </dom-module>
 
 <script>
+    if (!window.vaadin || !window.vaadin.GridComponent) {
+      // This is needed when vaadin-grid.min.js is loaded asynchronously like
+      // in SDM. We must guarantee that gwt grid is loaded and exported before
+      // Polymer is called.
+      var _Polymer = Polymer;
+      // Override Polymer
+      Polymer = function(obj) {
+        // Restore Polymer
+        Polymer = _Polymer;
+        var _done = false;
+        // Overwrite whenReady
+        var _whenReady = HTMLImports.whenReady;
+        HTMLImports.whenReady = function(done) {
+          var id = setInterval(function() {
+            if (window.vaadin && window.vaadin.GridComponent) {
+              clearInterval(id);
+              if (!_done) {
+                // Run original Polymer
+                _Polymer(obj);
+                _done = true;
+              }
+              // Restore whenReady
+              HTMLImports.whenReady = _whenReady
+              // Run original whenReady
+              _whenReady(done);
+            }
+          }, 3);
+        }
+      }
+    }
+
     Polymer({
 
       is: "vaadin-grid",

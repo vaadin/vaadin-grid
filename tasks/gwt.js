@@ -31,6 +31,11 @@ function system(command, cb) {
   });
 };
 
+function maven(msg, tasks, cb) {
+  gutil.log("GWT components, running: " + tasks);
+  system('mvn -f ' + gwtproject + '/pom.xml -q ' + tasks, cb );
+}
+
 gulp.task('gwt:compile', ['gwt:clean-maven'], function(done) {
   if(args.gwtSkipCompile) {
     done();
@@ -38,7 +43,7 @@ gulp.task('gwt:compile', ['gwt:clean-maven'], function(done) {
   }
 
   gutil.log('Updating Maven dependencies ...');
-  system('mvn -f ' + gwtproject + '/pom.xml compile -q ', function() {
+  maven('Compiling GWT components', 'compile', function() {
     gutil.log('Compiling GWT components ...');
     var command = 'mvn -f ' + gwtproject + '/pom.xml package -q ' + (args.gwtPretty ? ' -Ppretty' : '') + " -P compile";
     system(command, function() {
@@ -54,7 +59,7 @@ gulp.task('gwt:clean-maven', function(done) {
     return;
   }
 
-  system('mvn -f ' + gwtproject + '/pom.xml clean', done);
+  maven('C' 'mvn -f ' + gwtproject + '/pom.xml clean', done);
 });
 
 gulp.task('test:gwt', function(done) {

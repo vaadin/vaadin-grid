@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1" />
 <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+<link rel="import" href="../vaadin-grid.html">
 <script src="testdata.js"></script>
 <style>
 td.red, th.red, .red th, .red td, td.foot1, .foot1 td {
@@ -19,33 +20,6 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
 </style>
 </head>
 <body>
-<script>
-(function() {
-  // Load gwt .nocache
-  var nocache = document.createElement('script');
-  nocache.setAttribute('src', '../vaadin-grid.min.js');
-  document.head.appendChild(nocache);
-  // Wait until .nocache was fully loaded
-  if (!window.vaadin || !window.vaadin.GridComponent) {
-    _whenReady = HTMLImports.whenReady;
-    _imported = false;
-    // Overwrite whenReady so as grid is not loaded before it is available
-    HTMLImports.whenReady = function(done) {
-      var id = setInterval(function() {
-        if (window.vaadin && window.vaadin.GridComponent) {
-          clearInterval(id);
-          // Load vaadin-grid web component
-          var link = document.createElement('link');
-          link.setAttribute('rel', 'import');
-          link.setAttribute('href', '../vaadin-grid.html');
-          document.head.appendChild(link);
-          (HTMLImports.whenReady = _whenReady)(done);
-        }
-      }, 1);
-    }
-  }
-})();
-</script>
 <ol>
   <li>
   <h3>Simplest possible with inline data</h3>
