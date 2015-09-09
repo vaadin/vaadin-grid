@@ -10,8 +10,6 @@ var pwd = process.cwd();
 var gwtproject = 'java';
 var version = '0.3.0';
 var major = version.replace(/(\d+\.\d+\.).*$/, '$1');
-var patch = ~~((new Date().getTime() / 1000 - 1420070400) / 60)
-var tag =  args.version || major + patch; // will rename the tag variable in a separate patch
 
 var component = 'vaadin-grid';
 var moduleName = 'VaadinGrid';
@@ -26,14 +24,17 @@ function system(command, cb) {
       throw err;
     }
     if (cb) {
-      cb(err);
+      cb(err, stdout, stderr);
     }
   });
 };
 
-function maven(msg, tasks, cb) {
-  gutil.log("GWT components, running: " + tasks);
-  system('mvn -f ' + gwtproject + '/pom.xml -q ' + tasks, cb );
+function maven(tasks, cb) {
+  gutil.log(" $ mvn " + tasks);
+  system('mvn -f ' + gwtproject + '/pom.xml -q ' + tasks, function() {
+    gutil.log(" $ mvn " + tasks + ' [done]');
+    cb();
+  });
 }
 
 gulp.task('gwt:compile', ['gwt:clean-maven'], function(done) {
@@ -43,13 +44,9 @@ gulp.task('gwt:compile', ['gwt:clean-maven'], function(done) {
   }
 
   gutil.log('Updating Maven dependencies ...');
-  maven('Compiling GWT components', 'compile', function() {
-    gutil.log('Compiling GWT components ...');
-    var command = 'mvn -f ' + gwtproject + '/pom.xml package -q ' + (args.gwtPretty ? ' -Ppretty' : '') + " -P compile";
-    system(command, function() {
-      gutil.log('GWT components compilation succeeded.')
-      done();
-    });
+  maven('compile', function() {
+    var task = 'package ' + (args.gwtPretty ? ' -Ppretty' : '');
+    maven(task, done);
   });
 });
 
@@ -59,14 +56,7 @@ gulp.task('gwt:clean-maven', function(done) {
     return;
   }
 
-  maven('C' 'mvn -f ' + gwtproject + '/pom.xml clean', done);
-});
-
-gulp.task('test:gwt', function(done) {
-  cmd.exec('mvn test', function(err, stdout) {
-    gutil.log(stdout);
-    done();
-  });
+  maven('clean', done);
 });
 
 gulp.task('clean:gwt', ['gwt:clean-maven'], function() {
