@@ -1,25 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
   <modelVersion>4.0.0</modelVersion>
-  <name>Vaadin Components Gwt Exported</name>
+  <name>Vaadin Components Gwt Exported: The Grid</name>
   <groupId>com.vaadin.components</groupId>
   <artifactId>vaadin-grid</artifactId>
   <packaging>war</packaging>
   <version>0.3.0</version>
   <properties>
-    <git.bower.repo>git@github.com:vaadin-bower</git.bower.repo>
     <module.name>com.vaadin.components.grid.VaadinGrid</module.name>
     <modulePathPrefix></modulePathPrefix>
     <gwt.loglevel>WARN</gwt.loglevel>
     <gwtversion>2.8.0-SNAPSHOT</gwtversion>
-    <gwtmaven>2.7.0</gwtmaven>
-    <modulePathPrefix></modulePathPrefix>
+    <gwtmaven>2.8.0-SNAPSHOT</gwtmaven>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <gQueryVersion>1.4.4-SNAPSHOT</gQueryVersion>
-    <gwt.outputstyle>PRETTY</gwt.outputstyle>
-    <jetty.version>8.1.12.v20130726</jetty.version>
     <vaadin.version>7.5.3</vaadin.version>
     <gwt.outputstyle>OBF</gwt.outputstyle>
     <gwt.disableCastChecking>true</gwt.disableCastChecking>
@@ -27,8 +23,6 @@
     <gwt.enableAssertions>false</gwt.enableAssertions>
     <gwt.closure>true</gwt.closure>
     <gwt.report>false</gwt.report>
-    <git.bower.repo>git@vaadin-components.intra.itmill.com:/opt/git/</git.bower.repo>
-    <bower.components>vaadin-grid</bower.components>
   </properties>
   <profiles>
     <profile>
@@ -42,12 +36,6 @@
       <properties>
         <gwt.closure>false</gwt.closure>
         <gwt.report>true</gwt.report>
-      </properties>
-    </profile>
-    <profile>
-      <id>prod</id>
-      <properties>
-        <git.bower.repo>git@github.com:vaadin-bower</git.bower.repo>
       </properties>
     </profile>
     <profile>
