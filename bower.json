@@ -19,7 +19,6 @@
     "**/test",
     "**/java",
     "**/tasks",
-    "**/demo",
     "gulpfile.js",
     "package.json",
     "wct.conf.js"
