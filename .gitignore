@@ -9,7 +9,7 @@ www-test/
 war
 .DS_Store
 .sass-cache/
-./bower_components
+/bower_components
 node_modules
 vaadin-theme/**/*.css
 vaadin-theme/**/*.css.map
