@@ -21,5 +21,10 @@ module.exports = {
         return fs.readFileSync(userhome + '/.ssh/id_dsa');
       }
     }
-  }
+  },
+  componentHtmlFiles: [
+     'vaadin-grid.html',
+     'demo/*.html',
+     'test/*.html'
+  ]
 };
