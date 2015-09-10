@@ -35,7 +35,7 @@
     "wct-teamcity-reporter": "1.0.1"
   },
   "scripts": {
-    "install": "node_modules/.bin/bower install --allow-root bower.json"
+    "install": "node_modules/.bin/bower install --allow-root"
   },
   "keywords": [
     "vaadin",

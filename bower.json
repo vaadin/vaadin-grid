@@ -29,5 +29,8 @@
   "devDependencies": {
     "components-demo-resources": "vaadin/components-demo-resources#master",
     "web-component-tester": "~3.3.21"
+  },
+  "resolutions": {
+    "polymer": "v1.1.1"
   }
 }
