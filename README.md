@@ -5,10 +5,20 @@
 
 `vaadin-grid` is a Web Component for showing large amounts of tabular data.
 
-## Using the component
+**Features:**
+ - Lazy-loading
+ - Virtual scrolling
+ - Frozen/fixed columns
+ - Customizable headers and footers
+ - Custom cell renderers
+ - Touch support
+ - Keyboard navigation
+ - Sorting
+ - Accessibility
 
-##### - [Getting Started instructions](http://vaadin.github.io/components-examples/)
-##### - [Discussion](https://vaadin.com/forum/#!/category/9848927/)
+## Getting started
+
+[Getting started instructions](http://vaadin.github.io/components-examples/)
 
 ## Overview of this repository
 

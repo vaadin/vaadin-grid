@@ -17,8 +17,6 @@ var webDir = 'java/src/main/webapp/';
 var webComponentDir = webDir + component + '/';
 var componentDir = './';
 
-var staticResources = ['*.html', 'dem*/**', 'tes*/**'];
-
 function system(command, cb) {
   cmd.exec(command, function(err, stdout, stderr) {
     if (err) {
@@ -40,13 +38,6 @@ function maven(tasks, cb) {
 }
 gulp.task('gwt:sdm', function(){
   system('mvn -f java clean gwt:run');
-  gulp.watch(staticResources, ['copystatic']);
-});
-
-gulp.task('copystatic', function() {
-  gutil.log('Copying static resources for sdm');
-    gulp.src(staticResources)
-    .pipe(gulp.dest(gwtproject + '/target/vaadin-grid-' + version));
 });
 
 gulp.task('gwt:compile', ['gwt:clean-maven'], function(done) {

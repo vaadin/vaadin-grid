@@ -11,7 +11,7 @@
     <modulePathPrefix></modulePathPrefix>
     <gwt.loglevel>WARN</gwt.loglevel>
     <gwtversion>2.8.0-SNAPSHOT</gwtversion>
-    <gwtmaven>2.8.0-SNAPSHOT</gwtmaven>
+    <gwtmaven>2.7.0</gwtmaven>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -262,7 +262,7 @@
                     <include>img/*</include>
                     <include>test/*</include>
                     <include>demo/*</include>
-                  </includes>                  
+                  </includes>
                 </resource>
               </resources>
             </configuration>
