@@ -225,27 +225,43 @@
         <artifactId>maven-resources-plugin</artifactId>
         <executions>
           <execution>
+            <id>copy-resources1</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+             <outputDirectory>${project.build.directory}/${project.build.finalName}</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>../</directory>
+                  <includes>
+                    <include>bower_components/**/*</include>
+                  </includes>
+                </resource>
+                <resource>
+                  <directory>src/main/webapp</directory>
+                </resource>
+             </resources>
+            </configuration>
+          </execution>
+          <execution>
             <id>copy-resources</id>
             <phase>generate-sources</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory>${project.build.directory}/${project.build.finalName}</outputDirectory>
+              <outputDirectory>${project.build.directory}/${project.build.finalName}/bower_components/vaadin-grid/</outputDirectory>
               <resources>
-                <resource>
-                  <directory>src/main/webapp</directory>
-                </resource>
                 <resource>
                   <directory>../</directory>
                   <includes>
-                    <include>sdm.js</include>
                     <include>vaadin-grid.html</include>
                     <include>vaadin-grid-doc.html</include>
                     <include>img/*</include>
                     <include>test/*</include>
                     <include>demo/*</include>
-                    <include>bower_components/**/*</include>
                   </includes>                  
                 </resource>
               </resources>
