@@ -1,13 +1,13 @@
 [![Build Status](https://travis-ci.org/vaadin/components.svg?branch=master)](https://travis-ci.org/vaadin/components)
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/vaadin/components?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
-# Vaadin Grid
+# vaadin-grid
 
-Vaadin Grid is a component for showing large amounts of tabular data.
+`vaadin-grid` is a Web Component for showing large amounts of tabular data.
 
 ## Using the component
 
-##### - [Getting Started instructions](http://vaadin.github.io/components-examples/)
+##### - [Getting Started instructions](http://vaadin.github.io/vaadin-components-examples/)
 ##### - [Discussion](https://vaadin.com/forum/#!/category/9848927/)
 
 ## Overview of this repository
@@ -88,7 +88,7 @@ $ wct --local=chrome/firefox/safari
 ```shell
 $ serve
 ```
-  - Open http://localhost:3000/vaadin-components/vaadin-grid/test/
+  - Open http://localhost:3000/test/
 - Gather references for visual tests:
 ```shell
 $ gemini gather visual-test --screenshots-dir=visual-test
@@ -125,7 +125,7 @@ and access one of the demo.html files inside the component folders, e.g:
 ```shell
 $ serve
 ```
-- Open http://localhost:3000/vaadin-components/vaadin-grid/demo.html
+- Open http://localhost:3000/demo/
 
 
 ## License
