@@ -7,7 +7,7 @@
 
 ## Using the component
 
-##### - [Getting Started instructions](http://vaadin.github.io/vaadin-components-examples/)
+##### - [Getting Started instructions](http://vaadin.github.io/components-examples/)
 ##### - [Discussion](https://vaadin.com/forum/#!/category/9848927/)
 
 ## Overview of this repository
