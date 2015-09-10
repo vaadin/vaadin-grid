@@ -48,7 +48,7 @@ gulp.task('gwt:compile', ['gwt:clean-maven'], function(done) {
 
   gutil.log('Updating Maven dependencies ...');
   maven('compile', function() {
-    var task = 'package ' + (args.gwtPretty ? ' -Ppretty' : '');
+    var task = 'package ' + (args.gwtPretty ? ' -Ppretty' : '')  + " -P compile";
     maven(task, done);
   });
 });

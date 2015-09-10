@@ -16,7 +16,7 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <gQueryVersion>1.4.4-SNAPSHOT</gQueryVersion>
-    <vaadin.version>7.5.3</vaadin.version>
+    <vaadin.version>7.6.0.alpha5</vaadin.version>
     <gwt.outputstyle>OBF</gwt.outputstyle>
     <gwt.disableCastChecking>true</gwt.disableCastChecking>
     <gwt.disableClassMetadata>true</gwt.disableClassMetadata>
@@ -89,6 +89,11 @@
       <releases>
         <enabled>false</enabled>
       </releases>
+    </repository>
+    <repository>
+      <id>vaadin-prereleases</id>
+      <name>Vaadin Pre-releases</name>
+      <url>https://maven.vaadin.com/vaadin-prereleases</url>
     </repository>
     <repository>
       <id>manolo-repo</id>
