@@ -11,7 +11,7 @@ gulp.task('default', function() {
   console.log('\n  Use:\n    gulp <clean|gwt[ --gwt-pretty]|test[:validation:sauce]|stage|deploy[:bower:cdn:zip]>\n');
 });
 
-gulp.task('clean', ['clean:gwt', 'clean:bower', 'clean:cdn', 'clean:zip']);
+gulp.task('clean', ['clean:gwt', 'clean:cdn', 'clean:zip']);
 
 gulp.task('gwt', ['gwt:compile', 'gwt:copy']);
 

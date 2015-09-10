@@ -3,6 +3,9 @@ var chalk = require('chalk');
 var wct = require('web-component-tester').test;
 var _ = require('lodash');
 var gutil = require('gulp-util');
+var config = require('./config');
+var gulp = require('gulp');
+var markdown = require('gulp-markdown');
 
 function cleanDone(done) {
   return function(error) {
@@ -36,6 +39,11 @@ function localAddress() {
   return tun || ip;
 }
 
+function licenseFiles() {
+  return gulp.src(config.componentLicenseFiles)
+    .pipe(markdown());
+}
+
 function test(options, done) {
   wct(options, cleanDone(done));
 }
@@ -44,7 +52,7 @@ module.exports = {
   localAddress: localAddress,
   test: test,
   checkArguments: checkArguments,
-
+  licenseFiles: licenseFiles,
   testSauce: function(suites, browsers, build, done) {
     test(
       {
@@ -85,3 +93,4 @@ module.exports = {
     }
   }
 };
+

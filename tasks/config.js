@@ -22,9 +22,27 @@ module.exports = {
       }
     }
   },
+  componentFiles: [
+    'vaadin-grid.html',
+    'vaadin-grid.min.js',
+    'vaadin-grid-doc.html',
+    'gulp.js',
+    'demo/*',
+    'test/*',
+    'img/*',
+  ],
+  componentBowerFiles: [
+     'bower_components/webcomponentsjs/**/*',
+     'bower_components/polymer/**/*',
+     'bower_components/code-example/**/*',
+     'bower_components/zeroclipboard/**/*'
+  ],
   componentHtmlFiles: [
      'vaadin-grid.html',
      'demo/*.html',
      'test/*.html'
+  ],
+  componentLicenseFiles: [
+     'README.md', 'LICENSE.md', 'CHANGES.md'
   ]
 };
