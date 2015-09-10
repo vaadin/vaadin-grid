@@ -8,18 +8,12 @@ var args = require('yargs').argv;
 var version = '0.3.0';
 
 gulp.task('default', function() {
-  console.log('\n  Use:\n    gulp <clean|gwt[ --gwt-pretty]|test[:validation:sauce]|stage|deploy[:bower:cdn:zip]>\n');
+  console.log('\n  Use:\n    gulp <clean|gwt[ --gwt-pretty]|test[:validation:sauce]>\n');
 });
 
-gulp.task('clean', ['clean:gwt', 'clean:bower', 'clean:cdn', 'clean:zip']);
+gulp.task('clean', ['clean:gwt']);
 
 gulp.task('gwt', ['gwt:compile', 'gwt:copy']);
-
-gulp.task('deploy', ['deploy:bower', 'deploy:cdn', 'deploy:zip']);
-
-// can't run all the verification concurrently until sauce-connect-launcher supports
-// multiple tunnels
-//gulp.task('verify', ['verify:bower', 'verify:cdn', 'verify:zip]);
 
 gulp.task('test', ['test:local']);
 
