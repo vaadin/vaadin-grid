@@ -46,9 +46,9 @@ First, make sure you've installed all the necessary tooling:
 
 Then do the following:
 
-1. Install [bower](https://www.npmjs.com/package/bower), [gulp](https://www.npmjs.com/package/gulp), [web-component-tester](https://www.npmjs.com/package/web-component-tester) and [serve](https://www.npmjs.com/package/serve) globally:
+1. Install [bower](https://www.npmjs.com/package/bower), [gulp](https://www.npmjs.com/package/gulp), [web-component-tester](https://www.npmjs.com/package/web-component-tester) and [polyserve](https://www.npmjs.com/package/polyserve) globally:
  ```shell
- $ npm install -g bower gulp web-component-tester serve
+ $ npm install -g bower gulp web-component-tester polyserve
  ```
  
  _*Note: you might prepend `sudo` if you are in a unix like system (linux, mac)_
@@ -56,7 +56,7 @@ Then do the following:
 2. Clone the project:
  ```shell
  $ git clone https://github.com/vaadin/vaadin-grid.git
- $ cd components
+ $ cd vaadin-grid
  ```
 
 3. Install the project dependencies:
@@ -64,20 +64,13 @@ Then do the following:
  $ npm install
  ```
 
-### Building the project
-
-- Compile the GWT modules to JS.
-```shell
-$ gulp gwt
-```
-
 ### Serving the components
 
 - Spin up a web server:
 ```shell
-$ serve
+$ polyserve
 ```
-- Access the components through `http://localhost:3000/`
+- Access the components through `http://localhost:8080/components/vaadin-grid/demo/`
 > If you wish to import components into your application using the development URL, remember to manually install [Polymer](https://github.com/Polymer/polymer) as a dependency.
 ```shell
 $ cd your-application
@@ -96,21 +89,16 @@ $ wct --local=chrome/firefox/safari
 ```
 - Run and debug tests manually:
 ```shell
-$ serve
+$ polyserve
 ```
-  - Open http://localhost:3000/test/
-- Gather references for visual tests:
-```shell
-$ gemini gather visual-test --screenshots-dir=visual-test
-```
-- Run visual tests:
-```shell
-$ gemini test visual-test --screenshots-dir=visual-test
-```
-> You need to install `gemini`globally using `npm install -g gemini`. We use [SauceLabs](http://www.saucelabs.com) for visual testing, so you also need to have `SAUCE_USERNAME` and `SAUCE_ACCESS_KEY` set as environmental parameters.
+- Open http://localhost:8080/components/vaadin-grid/test/
 
 ### Development Protips
 
+- Compiling GWT module:
+```shell
+$ gulp gwt
+``` 
 - Compiling GWT using "pretty" output:
 ```shell
 $ gulp gwt --gwt-pretty
@@ -131,11 +119,11 @@ $ npm install
 ## Demos / examples
 
 Start a server in the root folder,
-and access one of the demo.html files inside the component folders, e.g:
+and access one of the demo files inside the component folders, e.g:
 ```shell
-$ serve
+$ polyserve
 ```
-- Open http://localhost:3000/demo/
+- Open http://localhost:8080/components/vaadin-grid/demo/
 
 
 ## License
