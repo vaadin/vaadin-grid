@@ -1,7 +1,7 @@
 {
-  "name": "vaadin-components",
-  "version": "0.3.0",
-  "description": "A set of high-quality Web Components with a customizable Sass based theme",
+  "name": "vaadin-grid",
+  "version": "0.9.0",
+  "description": "A full customizable Grid",
   "author": "Vaadin Ltd",
   "license": "Apache License 2.0",
   "dependencies": {
@@ -43,6 +43,7 @@
     "web",
     "components",
     "webcomponents",
-    "gwt"
+    "gwt",
+    "grid"
   ]
 }
