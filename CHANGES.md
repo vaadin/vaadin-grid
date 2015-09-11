@@ -1,7 +1,12 @@
-## Vaadin Components v0.3.0 (2015-xx-xx)
-- Polymer updated to v1.1.1
+## Vaadin Grid v0.9.0 (2015-xx-xx)
+- The project is extrated from vaadin-components, so as each component
+has its own repository.
+- Improved the way to contribute. Now is easier to debug java code in SuperDevMode, and any demo or test work in SDM without modifications.
+- Now demos are bundled with the component instead of on a separated project.
+- Removed old demos used for developing.
 
-### `<vaadin-grid>`
+## Vaadin Grid v0.3.0.beta7 (2015-Sept)
+- Polymer updated to v1.1.1
 - Renamed component `<v-grid>` to `<vaadin-grid>`
 - Improved touch scrolling.
 - Vaadin Widgets updated to 7.5.3
@@ -56,18 +61,11 @@
   - Resizing a v-grid with details-row open makes it disappear
   - ResetSizesFromDom should not be invoked if vaadin-grid has a hidden parent
 
-***
-
-## Vaadin Components v0.2.1 (2015-05-15)
-
-### `<v-grid>`
+## Vaadin Grid v0.2.1 (2015-05-15)
 - New 'Material' Theme
 
-***
+## Vaadin Grid v0.2.0 (2015-05-08)
 
-## Vaadin Components v0.2.0 (2015-05-08)
-
-### `<v-grid>`
 - Polymer updated to v0.8.0-rc.7.
 - Supported Grid features:
   - Selection modes: single, multi, all, disabled
@@ -77,6 +75,3 @@
   - Inline row editing
   - For more, see the [Examples](http://vaadin.github.io/components-examples/)
 
-
-### `<v-button>`, `<v-slider>` and `<v-progress-bar>`
-- Removed from the project for now.
