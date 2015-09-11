@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/vaadin/components.svg?branch=master)](https://travis-ci.org/vaadin/components)
+
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/vaadin/components?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 # vaadin-grid
@@ -70,8 +70,9 @@ Then do the following:
 ```shell
 $ polyserve
 ```
-- Access the components through `http://localhost:8080/components/vaadin-grid/demo/`
-> If you wish to import components into your application using the development URL, remember to manually install [Polymer](https://github.com/Polymer/polymer) as a dependency.
+- Check that the components demo works visiting `http://localhost:8080/components/vaadin-grid/demo/`
+- Access the components in your app through `http://localhost:8080/components/vaadin-grid/vaadin-grid.html`
+- To use vaadin components, remember to manually install [Polymer](https://github.com/Polymer/polymer) as a dependency.
 ```shell
 $ cd your-application
 $ bower install polymer --save
