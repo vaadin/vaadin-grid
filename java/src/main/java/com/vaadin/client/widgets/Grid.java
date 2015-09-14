@@ -5899,6 +5899,8 @@ public class Grid<T> extends ResizeComposite implements
     private void removeColumnSkipSelectionColumnCheck(Column<?, T> column) {
         int columnIndex = columns.indexOf(column);
 
+        decrementFrozenColumnCountIfNeeded();
+
         // Remove from column configuration
         escalator.getColumnConfiguration().removeColumns(
                 getVisibleColumns().indexOf(column), 1);
@@ -5915,6 +5917,17 @@ public class Grid<T> extends ResizeComposite implements
 
         if (column.isHidable()) {
             columnHider.removeColumnHidingToggle(column);
+        }
+    }
+
+    private void decrementFrozenColumnCountIfNeeded() {
+        int maxFrozenColumnCount = getColumnCount() - 1;
+        if (selectionColumn != null) {
+            maxFrozenColumnCount--;
+        }
+
+        if (getFrozenColumnCount() > maxFrozenColumnCount) {
+            setFrozenColumnCount(maxFrozenColumnCount);
         }
     }
 
