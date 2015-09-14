@@ -14,7 +14,7 @@
     window.xCodeExampleSourceHead =
     "  <script src='https://cdn.vaadin.com/vaadin-components/"+componentsVersion+"/webcomponentsjs/webcomponents-lite.js'><\/script>\n"+
     "  <link href='https://cdn.vaadin.com/vaadin-components/"+componentsVersion+"/vaadin-grid/vaadin-grid.html' rel='import'>\n"+
-    "  <script>var randomUserUrl = document.location.protocol === 'https:' ? 'https://randomuser.me/api/' : 'http://api.randomuser.me/';<\/script>\n";
+    "  <script>var randomUserUrl = 'https://randomuser.me/api/';<\/script>\n";
 
     function createButton(text, fnc) {
       var button = document.createElement("button");
@@ -23,5 +23,5 @@
       return button;
     }
 
-    var randomUserUrl = document.location.protocol === 'https:' ? 'https://randomuser.me/api/' : 'http://api.randomuser.me/';
+    var randomUserUrl = 'https://randomuser.me/api/';
   </script>
