@@ -1,7 +1,7 @@
 language: java
-install: npm install
+install: travis_retry npm install
 jdk: oraclejdk8
 script:
-  - gulp clean
-  - gulp gwt
-  - gulp test:validation
+  - travis_retry gulp clean
+  - travis_retry gulp gwt
+  - travis_retry gulp test:validation
