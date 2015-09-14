@@ -1114,10 +1114,7 @@ More examples available at http://vaadin.github.io/components-examples/vaadin-gr
 
       _frozenColumnsChanged: function(newValue, oldValue) {
         if (newValue != oldValue) {
-          var grid = this._grid;
-          setTimeout(function () {
-            grid.setFrozenColumns(newValue);
-          });
+          this._grid.setFrozenColumns(newValue);
         }
       },
 
