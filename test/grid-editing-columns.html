@@ -288,6 +288,38 @@
       assert.notOk(qLocal(".frozen"));
     });
 
+    it('remove frozen column (take the selection column into account)', function(done) {
+      grid.selection.mode = 'multi';
+      grid.columns = [];
+      grid.addColumn({"headerContent": 123});
+      grid.addColumn({"headerContent": 456});
+      grid.frozenColumns = 2;
+      grid.columns.pop();
+
+      grid.then(function () {
+        expect(grid.columns.length).to.eql(1);
+        expect(grid.frozenColumns).to.eql(1);
+        done();
+      });
+
+    });
+
+    it('remove frozen column', function(done) {
+      grid.selection.mode = 'single';
+      grid.columns = [];
+      grid.addColumn({"headerContent": 123});
+      grid.addColumn({"headerContent": 456});
+      grid.frozenColumns = 2;
+      grid.columns.pop();
+
+      grid.then(function () {
+        expect(grid.columns.length).to.eql(1);
+        expect(grid.frozenColumns).to.eql(1);
+        done();
+      });
+
+    });
+
     it('should add a column to an empty grid with an index', function() {
       grid.columns = [];
       return grid.then(function() {
