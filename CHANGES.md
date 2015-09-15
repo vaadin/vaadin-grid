@@ -4,6 +4,8 @@ has its own repository.
 - Improved the way to contribute. Now is easier to debug java code in SuperDevMode, and any demo or test work in SDM without modifications.
 - Now demos are bundled with the component instead of on a separated project.
 - Removed old demos used for developing.
+- Issues fixed:
+  - Exception when removing frozen column (#147)
 
 ## Vaadin Grid v0.3.0.beta7 (2015-Sept)
 - Polymer updated to v1.1.1
