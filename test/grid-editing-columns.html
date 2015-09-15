@@ -288,7 +288,7 @@
       assert.notOk(qLocal(".frozen"));
     });
 
-    it('remove frozen column (take the selection column into account)', function(done) {
+    it('remove frozen column (take the selection column into account)', function() {
       grid.selection.mode = 'multi';
       grid.columns = [];
       grid.addColumn({"headerContent": 123});
@@ -299,12 +299,11 @@
       grid.then(function () {
         expect(grid.columns.length).to.eql(1);
         expect(grid.frozenColumns).to.eql(1);
-        done();
       });
 
     });
 
-    it('remove frozen column', function(done) {
+    it('remove frozen column', function() {
       grid.selection.mode = 'single';
       grid.columns = [];
       grid.addColumn({"headerContent": 123});
@@ -315,7 +314,6 @@
       grid.then(function () {
         expect(grid.columns.length).to.eql(1);
         expect(grid.frozenColumns).to.eql(1);
-        done();
       });
 
     });
