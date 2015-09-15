@@ -296,7 +296,7 @@
       grid.frozenColumns = 2;
       grid.columns.pop();
 
-      grid.then(function () {
+      return grid.then(function () {
         expect(grid.columns.length).to.eql(1);
         expect(grid.frozenColumns).to.eql(1);
       });
@@ -311,7 +311,7 @@
       grid.frozenColumns = 2;
       grid.columns.pop();
 
-      grid.then(function () {
+      return grid.then(function () {
         expect(grid.columns.length).to.eql(1);
         expect(grid.frozenColumns).to.eql(1);
       });
