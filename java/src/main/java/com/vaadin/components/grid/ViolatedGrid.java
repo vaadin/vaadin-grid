@@ -10,6 +10,7 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.vaadin.client.BrowserInfo;
 import com.vaadin.client.WidgetUtil;
+import com.vaadin.client.widget.grid.selection.SelectionModelMulti;
 
 public class ViolatedGrid extends com.vaadin.client.widgets.Grid<Object> {
 
@@ -138,6 +139,30 @@ public class ViolatedGrid extends com.vaadin.client.widgets.Grid<Object> {
                     && targetElement.getParentElement().hasClassName("gwt-CheckBox")) {
                 getElement().focus();
             }
+        }
+    }
+
+    @Override
+    public void removeColumn(
+            com.vaadin.client.widgets.Grid.Column<?, Object> column) {
+        int initialFrozenColumnCount = getFrozenColumnCount();
+        int maxFrozenColumnCount = getColumnCount() - 1;
+        if (getSelectionModel() instanceof SelectionModelMulti) {
+            maxFrozenColumnCount--;
+        }
+
+        // Make sure that frozen column count does not exceed the total column
+        // count. This is currently not checked by Grid.
+        if (maxFrozenColumnCount < initialFrozenColumnCount) {
+            setFrozenColumnCount(maxFrozenColumnCount);
+        }
+
+        try {
+            super.removeColumn(column);
+        } catch (Exception e) {
+            // If column removal fails for any reason, we need to set the frozen
+            // column count to the initial value.
+            setFrozenColumnCount(initialFrozenColumnCount);
         }
     }
 }
