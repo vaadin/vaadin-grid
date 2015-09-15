@@ -697,28 +697,6 @@ More examples available at http://vaadin.github.io/components-examples/vaadin-gr
 
       properties: {
         /**
-         * The number of frozen columns in this grid. Setting it to 0
-         * means that no data columns will be frozen, but the built-in selection
-         * checkbox column will still be frozen if it's in use. Setting the count to
-         * -1 will also disable the selection column.
-         *
-         * Attribute: `frozen-columns`
-         *
-         * @property {number} frozenColumns
-         * @default 0
-         * @type {number}
-         */
-        frozenColumns: {
-          type: Number,
-          notify: true,
-          reflectToAttribute: true,
-          value: function() {
-            return this._grid.getFrozenColumns();
-          },
-          observer: '_frozenColumnsChanged'
-        },
-
-        /**
          * Object for controlling and accessing the data source of the grid.
          *
          * @property {Data} data
@@ -1112,9 +1090,25 @@ More examples available at http://vaadin.github.io/components-examples/vaadin-gr
         this.reflectPropertyToAttribute("disabled");
       },
 
-      _frozenColumnsChanged: function(newValue, oldValue) {
-        if (newValue != oldValue) {
-          this._grid.setFrozenColumns(newValue);
+      /**
+       * The number of frozen columns in this grid. Setting it to 0
+       * means that no data columns will be frozen, but the built-in selection
+       * checkbox column will still be frozen if it's in use. Setting the count to
+       * -1 will also disable the selection column.
+       *
+       * Attribute: `frozen-columns`
+       *
+       * @property {number} frozenColumns
+       * @default 0
+       * @type {number}
+       */
+      get frozenColumns() {
+        return this._grid.getFrozenColumns();
+      },
+      set frozenColumns(frozenColumns) {
+        if (frozenColumns != this.frozenColumns) {
+          this._grid.setFrozenColumns(frozenColumns);
+          this.reflectPropertyToAttribute("frozenColumns");
         }
       },
 
