@@ -489,6 +489,15 @@
       });
     });
 
+    it('should call _frozenColumnsChanged observer only once', function () {
+      var spy = sinon.spy(grid._grid, "setFrozenColumns");
+      grid.frozenColumns = 2;
+
+      return grid.then(function () {
+        expect(spy.calledOnce).to.be.true;
+      });
+    });
+
   });
 </script>
 
