@@ -91,8 +91,6 @@ public class GridComponent implements SelectionHandler<Object>,
 
     public static final int MAX_AUTO_ROWS = 10;
 
-    private int frozenColumns;
-
     public GridComponent() {
         grid = new ViolatedGrid();
         grid.setSelectionModel(new IndexBasedSelectionModelSingle());
@@ -220,10 +218,7 @@ public class GridComponent implements SelectionHandler<Object>,
     }
 
     public void setFrozenColumns(int frozenColumn) {
-        if (getColumns().size() > 0) {
-            grid.setFrozenColumnCount(JSValidate.Integer.val(frozenColumn, 0, 0));
-        }
-        this.frozenColumns = frozenColumn;
+        grid.setFrozenColumnCount(JSValidate.Integer.val(frozenColumn, 0, 0));
     }
 
     public void scrollToRow(int index, String scrollDestination) {
@@ -338,8 +333,6 @@ public class GridComponent implements SelectionHandler<Object>,
         if (getDataSource() != null) {
             getDataSource().refresh();
         }
-
-        setFrozenColumns(Math.min(frozenColumns, columns.size()));
     }
 
     /**
