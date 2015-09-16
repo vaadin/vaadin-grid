@@ -6,7 +6,7 @@ has its own repository.
 - Removed old demos used for developing.
 - Issues fixed:
   - Exception when removing frozen column (#147)
-  - Fix excessive calls when setting the "frozenColumns" property
+  - Fix double setter calls when setting property value
 
 ## Vaadin Grid v0.3.0.beta7 (2015-Sept)
 - Polymer updated to v1.1.1
