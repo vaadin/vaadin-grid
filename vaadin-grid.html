@@ -882,7 +882,10 @@ More examples available at http://vaadin.github.io/components-examples/vaadin-gr
             this.selection.mode = value;
             break;
           default:
-            this[Polymer.CaseMap.dashToCamelCase(name)] = value;
+            var property = Polymer.CaseMap.dashToCamelCase(name);
+            if (this[property] != value) {
+              this[property] = value;
+            }
         }
       },
 
@@ -1106,10 +1109,8 @@ More examples available at http://vaadin.github.io/components-examples/vaadin-gr
         return this._grid.getFrozenColumns();
       },
       set frozenColumns(frozenColumns) {
-        if (frozenColumns != this.frozenColumns) {
-          this._grid.setFrozenColumns(frozenColumns);
-          this.reflectPropertyToAttribute("frozenColumns");
-        }
+        this._grid.setFrozenColumns(frozenColumns);
+        this.reflectPropertyToAttribute("frozenColumns");
       },
 
       /**
