@@ -517,6 +517,9 @@ public class Escalator extends Widget implements RequiresResize,
                     if (yMov == null) {
                         yMov = new Movement(true);
                         xMov = new Movement(false);
+                        // Mark this as a touch device. Useful for
+                        // fix hover styles in iOS.
+                        escalator.bodyElem.addClassName("touch");
                     }
                     if (animation.isRunning()) {
                         acceleration += F_ACC;
@@ -596,6 +599,7 @@ public class Escalator extends Widget implements RequiresResize,
             if (!eventOnBody(escalator, event)) {
                  return;
             }
+            escalator.bodyElem.addClassName("scrolling");
 
             if (!Double.isNaN(deltaX)) {
                 escalator.horizontalScrollbar.setScrollPosByDelta(deltaX);
@@ -615,6 +619,7 @@ public class Escalator extends Widget implements RequiresResize,
                     && escalator.horizontalScrollbar.showsScrollHandle();
             if (warrantedYScroll || warrantedXScroll) {
                 event.preventDefault();
+                escalator.body.domSorter.reschedule();
             }
         }
     }
@@ -2370,6 +2375,7 @@ public class Escalator extends Widget implements RequiresResize,
                                 .requestAnimationFrame(this);
                     } else {
                         waiting = false;
+                        bodyElem.removeClassName("scrolling");
                     }
                 }
             };
