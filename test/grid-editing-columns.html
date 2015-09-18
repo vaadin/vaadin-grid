@@ -259,6 +259,33 @@
       });
     });
 
+    it('column without headerContent should show column name', function(done) {
+      grid.columns = [];
+
+      grid.columns.push({
+        name: "foobar",
+      });
+
+      grid.then(function() {
+        expect(gridContainsText(grid, 'foobar')).to.be.true;
+        done();
+      });
+    });
+
+    it('column with empty string as headerContent should not show column name', function(done) {
+      grid.columns = [];
+
+      grid.columns.push({
+        name: "foobar",
+        headerContent: ""
+      });
+
+      grid.then(function() {
+        expect(gridContainsText(grid, 'foobar')).to.be.false;
+        done();
+      });
+    });
+
     it('frozen column', function(done) {
       grid.frozenColumns = 2;
 
@@ -348,6 +375,50 @@
       }];
       return grid.then(function() {
         expect(gridContainsText(grid, "testing")).to.be.true;
+      });
+    });
+
+    it('column without header-text should show name instead', function(done) {
+      var wrapper = document.getElementById("gridwrapper");
+      var tmp = document.createElement("div");
+      wrapper.appendChild(tmp);
+      tmp.innerHTML = "<vaadin-grid>" +
+        "                <table>" +
+        "                  <colgroup><col name='test'></colgroup>" +
+        "                </table>" +
+        "              </vaadin-grid>";
+
+      var grid = tmp.querySelector("vaadin-grid");
+      waitUntil(function() {
+        return grid.then;
+      }, function() {
+        return grid.then(function() {
+          expect(gridContainsText(grid, "test")).to.be.true;
+          wrapper.removeChild(tmp);
+          done();
+        })
+      });
+    });
+
+    it('column with empty header-text should not show name', function(done) {
+      var wrapper = document.getElementById("gridwrapper");
+      var tmp = document.createElement("div");
+      wrapper.appendChild(tmp);
+      tmp.innerHTML = "<vaadin-grid>" +
+        "                <table>" +
+        "                  <colgroup><col header-text='' name='test'></colgroup>" +
+        "                </table>" +
+        "              </vaadin-grid>";
+
+      var grid = tmp.querySelector("vaadin-grid");
+      waitUntil(function() {
+        return grid.then;
+      }, function() {
+        return grid.then(function() {
+          expect(gridContainsText(grid, "test")).to.be.false;
+          wrapper.removeChild(tmp);
+          done();
+        })
       });
     });
 
