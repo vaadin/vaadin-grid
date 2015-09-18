@@ -48,6 +48,7 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.TableCellElement;
+import com.google.gwt.dom.client.TableElement;
 import com.google.gwt.dom.client.TableRowElement;
 import com.google.gwt.dom.client.TableSectionElement;
 import com.google.gwt.dom.client.Touch;
@@ -588,7 +589,11 @@ public class Escalator extends Widget implements RequiresResize,
         }
 
         public static boolean eventOnBody(Escalator escalator, NativeEvent event) {
-            return escalator.bodyElem.isOrHasChild(event.getEventTarget().<Node>cast());
+            Element e = event.getEventTarget().<Element>cast();
+            // Consider the event if it comes from an element in the body,
+            // of from the main table (when setting position by code)
+            return TableElement.is(e)
+                    || escalator.bodyElem.isOrHasChild(e);
         }
 
         public static void moveScrollFromEvent(final Escalator escalator,
