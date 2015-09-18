@@ -82,6 +82,22 @@ public class GridLightDomTable implements MutationListener {
                 }
             }
         }
+
+        // TODO: remove timer when #17326 is fixed
+        new Timer() {
+            @Override
+            public void run() {
+                if (!$thead.isEmpty()) {
+                    grid.setHeaderVisible(!(boolean) JSValidate.Boolean.attr(
+                            $thead, "hidden"));
+                }
+                if (!$tfoot.isEmpty()) {
+                    grid.setFooterVisible(!(boolean) JSValidate.Boolean
+                            .attr($tfoot, "hidden"));
+                }
+            }
+        }.schedule(0);
+
         gridComponent.updateSize();
     }
 
@@ -221,21 +237,6 @@ public class GridLightDomTable implements MutationListener {
         if (isHeader) {
             gridComponent.getStaticSection().setDefaultHeader(defaultHeaderRow);
         }
-        // TODO: remove timer when #17326 is fixed
-        new Timer() {
-            @Override
-            public void run() {
-                if (isHeader) {
-                    grid.setHeaderVisible(!(boolean) JSValidate.Boolean.attr(
-                            $thead, "hidden"));
-                } else {
-                    if (!$foot_tr.isEmpty()) {
-                        grid.setFooterVisible(!(boolean) JSValidate.Boolean
-                                .attr($tfoot, "hidden"));
-                    }
-                }
-            }
-        }.schedule(0);
     }
 
     @Override

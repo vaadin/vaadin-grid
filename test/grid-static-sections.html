@@ -95,6 +95,17 @@
             }
           };
 
+          function appendEmptyThead() {
+            // Need to include thead element in the light dom for declarative tests
+            var colGroup = qLight("colgroup");
+            if (colGroup) {
+              colGroup.parentElement.removeChild(colGroup);
+              qLight("table").innerHTML =
+                "<thead></thead>" +
+                qLight("table").innerHTML;
+            }
+          };
+
           it('should be readonly', function() {
             var originalValue = grid[section];
 
@@ -201,6 +212,16 @@
 
               it('should clear innerHTML: declarative', function() {
                 appendThead();
+
+                qLight(section === 'header' ? 'thead' : 'tfoot').setAttribute("hidden", true);
+
+                return grid.then(function() {
+                  expect(qLocal(".vaadin-grid-" + section).innerHTML).to.be.empty;
+                });
+              });
+
+              it('should clear innerHTML: empty section', function() {
+                appendEmptyThead();
 
                 qLight(section === 'header' ? 'thead' : 'tfoot').setAttribute("hidden", true);
 
