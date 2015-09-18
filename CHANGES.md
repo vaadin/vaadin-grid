@@ -7,6 +7,9 @@ has its own repository.
 - Issues fixed:
   - Exception when removing frozen column (#147)
   - Fix double setter calls when setting property value
+  - Row hover styles should be disabled during scrolling and always on touch devices (#126)
+  - Touch scrolling at the edges fires default behavior
+  - Fixed double finger zooming
   - Hiding the header/footer declarative requires the element to have at least one cell (#135)
 
 ## Vaadin Grid v0.3.0.beta7 (2015-Sept)
