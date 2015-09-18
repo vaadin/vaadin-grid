@@ -8,6 +8,8 @@ has its own repository.
   - Exception when removing frozen column (#147)
   - Fix double setter calls when setting property value
   - Row hover styles should be disabled during scrolling and always on touch devices (#126)
+  - Touch scrolling at the edges fires default behavior
+  - Fixed double finger zooming
 
 ## Vaadin Grid v0.3.0.beta7 (2015-Sept)
 - Polymer updated to v1.1.1
