@@ -62,10 +62,6 @@ public final class GridColumn extends Column<Object, Object> {
                 wrapper.setInnerText(content);
             }
         });
-
-        if (jsColumn.getHeaderContent() == null) {
-            jsColumn.setHeaderContent(jsColumn.getName());
-        }
     }
 
     private JSStaticCell getDefaultHeaderCellReference() {
@@ -86,7 +82,7 @@ public final class GridColumn extends Column<Object, Object> {
 
         bind("name",
                 v -> contentOrNameChanged((String) v,
-                        jsColumn.getHeaderContent()));
+                        getDefaultHeaderCellReference().getContent()));
         bind("hidingToggleText", v -> setHidingToggleCaption(v == null ? null
                 : v.toString()));
         bind("flex", v -> setExpandRatio(((Double) v).intValue()));
@@ -109,9 +105,11 @@ public final class GridColumn extends Column<Object, Object> {
     }
 
     private void contentOrNameChanged(String name, Object content) {
-        if (content == null
-                || (content instanceof String && ((String) content).isEmpty())) {
+        if (content == null || content instanceof String
+                && ((String) content).isEmpty()) {
+            getDefaultHeaderCellReference().setContent(content);
             setHeaderCaption(name == null ? "" : name);
+
         } else if (content instanceof JavaScriptObject
                 && JsUtils.isElement(content)) {
             if (name != null) {
@@ -119,10 +117,12 @@ public final class GridColumn extends Column<Object, Object> {
             } else {
                 setHeaderCaption(((Element) content).getInnerText());
             }
+            getDefaultHeaderCellReference().setContent(content);
         } else {
             setHeaderCaption(content.toString());
+            getDefaultHeaderCellReference().setContent(content);
         }
-        getDefaultHeaderCellReference().setContent(content);
+
         gridComponent.updateWidth();
     }
 

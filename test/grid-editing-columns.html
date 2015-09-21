@@ -286,6 +286,16 @@
       });
     });
 
+    it('Should add non-empty name in an empty header', function() {
+      var col = {};
+      grid.addColumn(col);
+      col.name = "foobaz";
+
+      return grid.then(function() {
+        expect(gridContainsText(grid, 'foobaz')).to.be.true;
+      });
+    });
+
     it('frozen column', function(done) {
       grid.frozenColumns = 2;
 
