@@ -8,13 +8,14 @@
   <script src="demodata.js"></script>
   <script src="../ga.js"></script>
 
-<!-- Common JS code for all examples -->
+  <!-- Common JS code for all examples -->
   <script>
-    var componentsVersion = "0.3.0-beta8";
+    var randomUserUrl = 'https://randomuser.me/api';
+
     window.xCodeExampleSourceHead =
-    "  <script src='https://cdn.vaadin.com/vaadin-components/"+componentsVersion+"/webcomponentsjs/webcomponents-lite.js'><\/script>\n"+
-    "  <link href='https://cdn.vaadin.com/vaadin-components/"+componentsVersion+"/vaadin-grid/vaadin-grid.html' rel='import'>\n"+
-    "  <script>var randomUserUrl = 'https://randomuser.me/api/';<\/script>\n";
+    "  <script src='https://cdn.vaadin.com/vaadin-components/latest/webcomponentsjs/webcomponents-lite.js'><\/script>\n"+
+    "  <link href='https://cdn.vaadin.com/vaadin-components/latest/vaadin-grid/vaadin-grid.html' rel='import'>\n"+
+    "  <script>var randomUserUrl = '" + randomUserUrl + "';<\/script>\n";
 
     function createButton(text, fnc) {
       var button = document.createElement("button");
@@ -23,5 +24,25 @@
       return button;
     }
 
-    var randomUserUrl = 'users.json';
+    // Faking randomuser.me REST call since the site is sometimes unavailable.
+    // We have a set of 200 users cached in a static .json file instead, we
+    // take it via ajax and split it conveniently based on parameters.
+    XMLHttpRequest.prototype._open = XMLHttpRequest.prototype.open;
+    XMLHttpRequest.prototype._rurl = new RegExp('(.*' + randomUserUrl + '.*)results=(\\d+).*');
+    XMLHttpRequest.prototype.open = function(method, url, type) {
+      this.r = this._rurl.exec(url);
+      if (this.r) {
+        url = "users.json?results=" + this.r[2];
+        this._onreadystatechange = this.onreadystatechange;
+        this.onreadystatechange = function() {
+          if (this.readyState == XMLHttpRequest.DONE  && this.status == 200) {
+            var json = JSON.parse(this.responseText);
+            json.results = json.results.splice(0, this.r[2])
+            this.responseText = JSON.stringify(json);
+          }
+          setTimeout(this._onreadystatechange, 300);
+        }
+      }
+      this._open(method, url, type)
+    }
   </script>
