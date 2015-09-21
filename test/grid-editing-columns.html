@@ -296,19 +296,21 @@
       });
     });
 
-    it('Should update on header column cell change', function() {
-      grid.columns = [];
-
+    it('Should update on header column cell change', function(done) {
       grid.addColumn({
         name: "foobar",
         headerContent: "baz"
-      });
+      }, 0);
 
-      return grid.then(function() {
-        grid.header.getCell(0,0).content = undefined;
+      grid.then(function() {
+        grid.header.getCell(0, 0).content = undefined;
         return grid;
-      }).then(function(){
-        expect(gridContainsText(grid, 'foobar')).to.be.true;
+      }).then(function() {
+        waitUntil(function() {
+          return gridContainsText(grid, 'foobar')
+        }, function() {
+          done();
+        });
       });
     });
 
