@@ -431,7 +431,8 @@ public class Escalator extends Widget implements RequiresResize,
                     // We don't move the scroll if no delta, scroll position
                     // has reached the edge, or movement in one direction is
                     // insignificant.
-                    run = delta != 0 && inScrollRange(position + delta) && Math.abs(other.delta / delta) < F_AXIS;
+                    run = delta != 0 && inScrollRange(position + delta)
+                            && Math.abs(other.delta / delta) < F_AXIS;
                     if (!run) delta = 0;
                 }
 
@@ -604,27 +605,31 @@ public class Escalator extends Widget implements RequiresResize,
             if (!eventOnBody(escalator, event)) {
                  return;
             }
-            escalator.bodyElem.addClassName("scrolling");
 
-            if (!Double.isNaN(deltaX)) {
-                escalator.horizontalScrollbar.setScrollPosByDelta(deltaX);
-            }
-
-            if (!Double.isNaN(deltaY)) {
-                escalator.verticalScrollbar.setScrollPosByDelta(deltaY);
-            }
-
-            /*
-             * TODO: only prevent if not scrolled to end/bottom. Or no? UX team
-             * needs to decide.
-             */
-            final boolean warrantedYScroll = deltaY != 0
-                    && escalator.verticalScrollbar.showsScrollHandle();
-            final boolean warrantedXScroll = deltaX != 0
-                    && escalator.horizontalScrollbar.showsScrollHandle();
-            if (warrantedYScroll || warrantedXScroll) {
-                event.preventDefault();
+            boolean movex = !Double.isNaN(deltaX);
+            boolean movey = !Double.isNaN(deltaY);
+            if (movex || movey) {
+                escalator.bodyElem.addClassName("scrolling");
+                if (movex) {
+                    escalator.horizontalScrollbar.setScrollPosByDelta(deltaX);
+                }
+                if (movey) {
+                    escalator.verticalScrollbar.setScrollPosByDelta(deltaY);
+                }
                 escalator.body.domSorter.reschedule();
+
+                /*
+                 * TODO: only prevent if not scrolled to end/bottom. Or no? UX
+                 * team needs to decide. In touch devices movement is not
+                 * prevented when the edge is reached.
+                 */
+                final boolean warrantedYScroll = deltaY != 0
+                        && escalator.verticalScrollbar.showsScrollHandle();
+                final boolean warrantedXScroll = deltaX != 0
+                        && escalator.horizontalScrollbar.showsScrollHandle();
+                if (warrantedYScroll || warrantedXScroll) {
+                    event.preventDefault();
+                }
             }
         }
     }
