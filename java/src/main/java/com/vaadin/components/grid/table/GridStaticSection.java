@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.js.JsExport;
 import com.google.gwt.core.client.js.JsNamespace;
 import com.google.gwt.core.client.js.JsNoExport;
@@ -44,7 +45,8 @@ public class GridStaticSection {
             if (cell.getType() == GridStaticCellType.WIDGET) {
                 jsCell.setContent(cell.getWidget().getElement());
             } else if (cell.getType() == GridStaticCellType.TEXT) {
-                jsCell.setContent(cell.getText());
+                jsCell.setContent("".equals(cell.getText()) ? null : cell
+                        .getText());
             } else if (cell.getType() == GridStaticCellType.HTML) {
                 jsCell.setContent(cell.getHtml());
             }
@@ -58,6 +60,7 @@ public class GridStaticSection {
                     v -> {
                         if (v == null) {
                             cell.setHtml(null);
+                            cellContentEmptied(jsCell);
                         } else if (JS.isPrimitiveType(v) || v instanceof Number) {
                             cell.setHtml("<span style='overflow: hidden;text-overflow: ellipsis;'>"
                                     + String.valueOf(v) + "</span>");
@@ -71,6 +74,28 @@ public class GridStaticSection {
         }
 
         return cells.get(cell);
+    }
+
+    private void cellContentEmptied(JSStaticCell jsCell) {
+        Scheduler.get().scheduleDeferred(() -> {
+            GridColumn column = getColumnByDefaultHeaderCell(jsCell);
+            if (column != null) {
+                String name = column.getJsColumn().getName();
+                column.setHeaderCaption("");
+                column.setHeaderCaption(name == null ? "" : name);
+            }
+        });
+    }
+
+    private GridColumn getColumnByDefaultHeaderCell(JSStaticCell cell) {
+        GridColumn result = null;
+        for (GridColumn col : gridComponent.getDataColumns()) {
+            if (col.getDefaultHeaderCellReference() == cell) {
+                result = col;
+                break;
+            }
+        }
+        return result;
     }
 
     private void bind(JSStaticCell cell, StaticCell staticCell,

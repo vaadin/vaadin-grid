@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayMixed;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.js.JsUtils;
 
@@ -56,9 +58,21 @@ public abstract class JS {
                 .wrapFunction(new Function() {
                     @Override
                     public void f() {
-                        setter.setValue(arguments(0));
+                        // Empty Strings are interpreted as null for some reason
+                        // so they need some special attention.
+                        JSONValue jsonValue = new JSONObject(arguments(1))
+                                .get("value");
+                        if (!JS.isUndefinedOrNull(jsonValue)
+                                && jsonValue.isString() != null
+                                && "".equals(jsonValue.isString().stringValue())) {
+                            setter.setValue("");
+                        } else {
+                            // Otherwise handle normally
+                            setter.setValue(arguments(0));
+                        }
                     }
-                }) : null;
+                })
+                : null;
 
         JavaScriptObject getterJSO = getter != null ? JsUtils
                 .wrapFunction(new Function() {
@@ -88,7 +102,7 @@ public abstract class JS {
         },
         set: function(value) {
             if (setter){
-                setter(value);
+                setter(value, {value: value});
             }
             _value = value;
         }

@@ -296,6 +296,38 @@
       });
     });
 
+    it('Should update on header column cell change', function() {
+      grid.columns = [];
+
+      grid.addColumn({
+        name: "foobar",
+        headerContent: "baz"
+      });
+
+      return grid.then(function() {
+        grid.header.getCell(0,0).content = undefined;
+        return grid;
+      }).then(function(){
+        expect(gridContainsText(grid, 'foobar')).to.be.true;
+      });
+    });
+
+    it('Should update after headerContent set empty', function() {
+      grid.columns = [];
+
+      grid.addColumn({
+        name: "foobar",
+        headerContent: "baz"
+      });
+
+      return grid.then(function() {
+        grid.columns[0].headerContent = "";
+        return grid;
+      }).then(function(){
+        expect(gridContainsText(grid, 'foobar')).to.be.false;
+      });
+    });
+
     it('frozen column', function(done) {
       grid.frozenColumns = 2;
 

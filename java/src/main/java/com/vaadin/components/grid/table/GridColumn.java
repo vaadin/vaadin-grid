@@ -64,7 +64,7 @@ public final class GridColumn extends Column<Object, Object> {
         });
     }
 
-    private JSStaticCell getDefaultHeaderCellReference() {
+    JSStaticCell getDefaultHeaderCellReference() {
         GridStaticSection staticSection = gridComponent.getStaticSection();
         return staticSection.getHeaderCellByColumn(
                 staticSection.getDefaultHeader(), this);
@@ -105,11 +105,10 @@ public final class GridColumn extends Column<Object, Object> {
     }
 
     private void contentOrNameChanged(String name, Object content) {
+        setHeaderCaption(name == null ? "" : name);
         if (content == null || content instanceof String
                 && ((String) content).isEmpty()) {
             getDefaultHeaderCellReference().setContent(content);
-            setHeaderCaption(name == null ? "" : name);
-
         } else if (content instanceof JavaScriptObject
                 && JsUtils.isElement(content)) {
             if (name != null) {

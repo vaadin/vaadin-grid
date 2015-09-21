@@ -92,8 +92,8 @@ public class GridLightDomTable implements MutationListener {
                             $thead, "hidden"));
                 }
                 if (!$tfoot.isEmpty()) {
-                    grid.setFooterVisible(!(boolean) JSValidate.Boolean
-                            .attr($tfoot, "hidden"));
+                    grid.setFooterVisible(!(boolean) JSValidate.Boolean.attr(
+                            $tfoot, "hidden"));
                 }
             }
         }.schedule(0);
@@ -160,7 +160,7 @@ public class GridLightDomTable implements MutationListener {
             }
 
             column.setHidingToggleText(JSValidate.String.attr($th,
-                    "hiding-toggle-text"));
+                    "hiding-toggle-text", null, null));
 
             String headerHtml = JSValidate.String.attr($th, "header-text",
                     $th.html(), column.getName());
