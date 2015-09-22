@@ -5,76 +5,122 @@ var gulp = require('gulp');
 var gutil = require('gulp-util');
 var rename = require('gulp-rename');
 var replace = require('gulp-replace');
+var git = require('gulp-git');
+var insert = require('gulp-insert');
+var rl = require('readline');
+var watch = require('gulp-watch');
 
-var pwd = process.cwd();
 var gwtproject = 'java';
 var version = '0.3.0';
 var major = version.replace(/(\d+\.\d+\.).*$/, '$1');
 
-var component = 'vaadin-grid';
-var moduleName = 'VaadinGrid';
-var webDir = 'java/src/main/webapp/';
-var webComponentDir = webDir + component + '/';
-var componentDir = './';
+var gwtNocacheJs = 'java/target/vaadin-grid-' + version + '/VaadinGridImport/VaadinGridImport.nocache.js';
+var gwtMinJs = 'vaadin-grid.min.js';
 
-function system(command, cb) {
+var gitHash;
+var jsHash;
+
+function system(command, cb, eb) {
   cmd.exec(command, function(err, stdout, stderr) {
     if (err) {
-      gutil.log(stderr);
-      throw err;
-    }
-    if (cb) {
+      if (eb) {
+        eb(err);
+      } else {
+        gutil.log(stderr);
+        throw err;
+      }
+    } else if (cb) {
       cb(err, stdout, stderr);
     }
   });
 };
 
-function maven(tasks, cb) {
-  gutil.log(" $ mvn " + tasks);
-  system('mvn -f ' + gwtproject + '/pom.xml -q ' + tasks, function() {
-    gutil.log(" $ mvn " + tasks + ' [done]');
-    cb();
+function maven(tasks, done, log) {
+  log = log || function(line) {
+    console.log(line);
+  }
+  var args = tasks.split(/\s+/);
+  args.unshift('-f', gwtproject, '-B');
+  gutil.log(" $ mvn " + args);
+  var spawn = require('child_process').spawn;
+  var mvn = spawn('mvn', args);
+  mvn.stdout.on('data', function (data) {
+    log(('' + data).replace(/\s+$/,''));
   });
+  mvn.stderr.on('data', function (data) {
+    console.log(('' + data).replace(/\s+$/,''));
+  });
+  mvn.on('close', done || function(){});
 }
-gulp.task('gwt:sdm', function(){
-  system('mvn -f java clean gwt:run');
+
+gulp.task('gwt:clean', function(done) {
+  maven('clean -q', done);
 });
 
-gulp.task('gwt:compile', ['gwt:clean-maven'], function(done) {
-  if(args.gwtSkipCompile) {
+gulp.task('gwt:hash:src', function(done) {
+  system(' git diff --quiet java/src/main/java', function(err, stdout){
+    system('git log -1 --format=%H java/src/main/java', function(err, stdout) {
+      gitHash = stdout.replace(/\s/g, '');
+      done();
+    });
+  }, function(err) {
+    gutil.log(">>> There are modifications not committed yet, forcing gwt grid compilation.");
     done();
-    return;
-  }
-
-  gutil.log('Updating Maven dependencies ...');
-  maven('compile', function() {
-    var task = 'package ' + (args.gwtPretty ? ' -Ppretty' : '')  + " -P compile";
-    maven(task, done);
   });
 });
 
-gulp.task('gwt:clean-maven', function(done) {
-  if(args.gwtSkipClean) {
+gulp.task('gwt:hash:js', function(done) {
+  if (!fs.existsSync(gwtMinJs)) {
+    jsHash = 'unknown';
     done();
     return;
   }
-
-  maven('clean', done);
+  var lines = rl.createInterface({
+    terminal: false,
+    input: require('fs').createReadStream(gwtMinJs)
+  });
+  lines.on('line', function (line) {
+    var res = /vaadin.GridCommit = '(.*)'/.exec(line) 
+    if (res) {
+      jsHash = res[1];
+      done();
+    }
+  });
 });
 
-gulp.task('clean:gwt', ['gwt:clean-maven'], function() {
-  if(args.gwtSkipClean) {
-    return;
+gulp.task('gwt:compile', ['gwt:clean', 'gwt:hash:src', 'gwt:hash:js'], function(done) {
+  if(gitHash == jsHash) {
+    gutil.log(">>> There are no modifications since last commit, reusing compiled gwt grid.");
+    done();
+  } else {
+    maven('compile -q', function() {
+      var task = 'package -q' + (args.gwtPretty ? ' -Ppretty' : '')  + " -P compile";
+      maven(task, done);
+    });
   }
-
-  fs.removeSync(componentDir);
-  fs.mkdirsSync(componentDir);
 });
 
-gulp.task('gwt:copy', ['gwt:compile', 'clean:gwt'], function() {
-  var warDir = 'java/target/vaadin-grid-' + version + '/';
-  var modulePath = warDir + moduleName + 'Import/';
-  return gulp.src(modulePath + moduleName +'Import.nocache.js')
-          .pipe(rename(component + '.min.js'))
-          .pipe(gulp.dest(componentDir));
+gulp.task('gwt:copy', ['gwt:compile'], function() {
+  return gulp.src(gwtNocacheJs)
+          .pipe(rename(gwtMinJs))
+          .pipe(insert.append("\nvaadin.GridCommit = '" + (gitHash ? gitHash : '-') + "';\n"))
+          .pipe(gulp.dest('./'));
 });
+
+gulp.task('gwt:validate', ['gwt:hash:src', 'gwt:hash:js'], function(done) {
+  if (gitHash != jsHash) {
+    throw new Error('ERROR: last java commit ' + gitHash + ' does not match js version ' + jsHash);
+  }
+});
+
+gulp.task('gwt:watch', function(done) {
+  gulp.watch(['demo/*', 'test/*', '*.html'] , function(){
+    maven('generate-sources -q');
+  });
+})
+
+gulp.task('gwt:run', function(done) {
+  maven('clean gwt:run -q', done);
+});
+
+gulp.task('gwt:sdm', ['gwt:run', 'gwt:watch']);
