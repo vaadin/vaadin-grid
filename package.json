@@ -14,6 +14,7 @@
     "gulp-rename": "latest",
     "gulp-replace": "latest",
     "gulp-util": "latest",
+    "gulp-watch": "latest",
     "web-component-tester": "3.3.10",
     "yargs": "latest"
   },
