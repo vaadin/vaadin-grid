@@ -32,14 +32,6 @@ function system(command, cb) {
   });
 };
 
-function mavenold(tasks, cb) {
-  gutil.log(" $ mvn " + tasks);
-  system('mvn -f ' + gwtproject + '/pom.xml -q ' + tasks, function() {
-    gutil.log(" $ mvn " + tasks + ' [done]');
-    cb();
-  });
-}
-
 function maven(tasks, done, log) {
   log = log || function(line) {
     console.log(line);
@@ -100,7 +92,6 @@ gulp.task('gwt:compile', ['gwt:clean', 'gwt:hash:src', 'gwt:hash:js'], function(
 });
 
 gulp.task('gwt:copy', ['gwt:compile'], function() {
-  var gwtJs = 'java/target/vaadin-grid-' + version + '/VaadinGridImport/VaadinGridImport.nocache.js';
   return gulp.src(gwtNocacheJs)
           .pipe(rename(gwtMinJs))
           .pipe(insert.append("\nvaadin.GridCommit = '" + gitHash + "';\n"))
