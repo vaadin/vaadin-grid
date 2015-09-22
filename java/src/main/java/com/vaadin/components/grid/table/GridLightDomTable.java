@@ -82,7 +82,6 @@ public class GridLightDomTable implements MutationListener {
                 }
             }
         }
-
         // TODO: remove timer when #17326 is fixed
         new Timer() {
             @Override
@@ -97,7 +96,6 @@ public class GridLightDomTable implements MutationListener {
                 }
             }
         }.schedule(0);
-
         gridComponent.updateSize();
     }
 
