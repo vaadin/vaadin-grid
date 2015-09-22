@@ -20,13 +20,16 @@ var gwtMinJs = 'vaadin-grid.min.js';
 var gitHash;
 var jsHash;
 
-function system(command, cb) {
+function system(command, cb, eb) {
   cmd.exec(command, function(err, stdout, stderr) {
     if (err) {
-      gutil.log(stderr);
-      throw err;
-    }
-    if (cb) {
+      if (eb) {
+        eb(err);
+      } else {
+        gutil.log(stderr);
+        throw err;
+      }
+    } else if (cb) {
       cb(err, stdout, stderr);
     }
   });
@@ -55,8 +58,13 @@ gulp.task('gwt:clean', function(done) {
 });
 
 gulp.task('gwt:hash:src', function(done) {
-  system('git log -1 --format=%H java/src/main/java', function(err, stdout) {
-    gitHash = stdout.replace(/\s/g, '');
+  system(' git diff --quiet java/src/main/java', function(err, stdout){
+    system('git log -1 --format=%H java/src/main/java', function(err, stdout) {
+      gitHash = stdout.replace(/\s/g, '');
+      done();
+    });
+  }, function(err) {
+    gutil.log(">>> There are modifications not committed yet, forcing gwt grid compilation.");
     done();
   });
 });
@@ -82,6 +90,7 @@ gulp.task('gwt:hash:js', function(done) {
 
 gulp.task('gwt:compile', ['gwt:clean', 'gwt:hash:src', 'gwt:hash:js'], function(done) {
   if(gitHash == jsHash) {
+    gutil.log(">>> There are no modifications since last commit, reusing compiled gwt grid.");
     done();
   } else {
     maven('compile -q', function() {
@@ -94,7 +103,7 @@ gulp.task('gwt:compile', ['gwt:clean', 'gwt:hash:src', 'gwt:hash:js'], function(
 gulp.task('gwt:copy', ['gwt:compile'], function() {
   return gulp.src(gwtNocacheJs)
           .pipe(rename(gwtMinJs))
-          .pipe(insert.append("\nvaadin.GridCommit = '" + gitHash + "';\n"))
+          .pipe(insert.append("\nvaadin.GridCommit = '" + (gitHash ? gitHash : '-') + "';\n"))
           .pipe(gulp.dest('./'));
 });
 
