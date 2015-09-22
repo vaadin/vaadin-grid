@@ -89,11 +89,10 @@ public class GridLightDomTable implements MutationListener {
                 if (!$thead.isEmpty()) {
                     grid.setHeaderVisible(!(boolean) JSValidate.Boolean.attr(
                             $thead, "hidden"));
-                } else {
-                    if (!$foot_tr.isEmpty()) {
-                        grid.setFooterVisible(!(boolean) JSValidate.Boolean
-                                .attr($tfoot, "hidden"));
-                    }
+                }
+                if (!$tfoot.isEmpty()) {
+                    grid.setFooterVisible(!(boolean) JSValidate.Boolean
+                            .attr($tfoot, "hidden"));
                 }
             }
         }.schedule(0);
