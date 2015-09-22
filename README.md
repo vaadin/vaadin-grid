@@ -104,13 +104,9 @@ $ gulp gwt
 ```shell
 $ gulp gwt --gwt-pretty
 ```
-- Adding file watcher for GWT compilation:
-```shell
-$ gulp watch:gwt
-```
 - Running and debugging in GWT SuperDevMode:
 ```shell
-$ mvn -f java/pom.xml gwt:run
+$ gulp gwt:sdm
 ```
 - Update your dependencies once in a while:
 ```shell
