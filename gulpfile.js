@@ -11,11 +11,11 @@ gulp.task('default', function() {
   console.log('\n  Use:\n    gulp <clean|gwt[ --gwt-pretty]|test[:validation:sauce]>\n');
 });
 
-gulp.task('clean', ['clean:gwt']);
+gulp.task('clean', ['gwt:clean']);
 
-gulp.task('gwt', ['gwt:compile', 'gwt:copy']);
+gulp.task('gwt', ['gwt:copy']);
 
-gulp.task('test', ['test:local']);
+gulp.task('test', ['gwt:validate', 'test:local']);
 
 gulp.task('test:validation', function(done) {
   common.test(
