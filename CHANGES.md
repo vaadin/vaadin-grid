@@ -11,6 +11,7 @@ has its own repository.
   - Touch scrolling at the edges fires default behavior
   - Fixed double finger zooming
   - Hiding the header/footer declarative requires the element to have at least one cell (#135)
+  - JSRow reference data with single column ds fixed
 
 ## Vaadin Grid v0.3.0.beta7 (2015-Sept)
 - Polymer updated to v1.1.1
