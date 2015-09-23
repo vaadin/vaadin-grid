@@ -11,6 +11,7 @@ has its own repository.
   - Touch scrolling at the edges fires default behavior
   - Fixed double finger zooming
   - Hiding the header/footer declarative requires the element to have at least one cell (#135)
+  - Column header text should default to name if none is given (#136)
 
 ## Vaadin Grid v0.3.0.beta7 (2015-Sept)
 - Polymer updated to v1.1.1
@@ -81,4 +82,3 @@ has its own repository.
   - Editing headers, footers and columns dynamically
   - Inline row editing
   - For more, see the [Examples](http://vaadin.github.io/components-examples/)
-
