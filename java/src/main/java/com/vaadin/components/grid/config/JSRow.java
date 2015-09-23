@@ -5,6 +5,7 @@ import com.google.gwt.core.client.js.JsType;
 import com.google.gwt.dom.client.Element;
 import com.vaadin.client.widget.grid.RowReference;
 import com.vaadin.components.common.js.JS;
+import com.vaadin.components.grid.data.GridDataSource;
 
 /**
  * This class is a JsInterop wrapper for the JS object representing a row object
@@ -17,7 +18,8 @@ public interface JSRow {
         JSRow jsRow = JS.createJsType(JSRow.class);
         JS.definePropertyAccessors(jsRow, "index", null,
                 () -> row.getRowIndex());
-        JS.definePropertyAccessors(jsRow, "data", null, () -> row.getRow());
+        JS.definePropertyAccessors(jsRow, "data", null,
+                () -> GridDataSource.extractDataItem(row.getRow()));
         JS.definePropertyAccessors(jsRow, "element", null,
                 () -> row.getElement());
         jsRow.setGrid(container);
