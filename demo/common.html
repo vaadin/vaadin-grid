@@ -10,7 +10,7 @@
 
   <!-- Common JS code for all examples -->
   <script>
-    var randomUserUrl = 'https://randomuser.me/api';
+    var randomUserUrl = 'https://randomuser.me/api/';
 
     window.xCodeExampleSourceHead =
     "  <script src='https://cdn.vaadin.com/vaadin-components/latest/webcomponentsjs/webcomponents-lite.js'><\/script>\n"+
@@ -28,21 +28,48 @@
     // We have a set of 200 users cached in a static .json file instead, we
     // take it via ajax and split it conveniently based on parameters.
     XMLHttpRequest.prototype._open = XMLHttpRequest.prototype.open;
-    XMLHttpRequest.prototype._rurl = new RegExp('(.*' + randomUserUrl + '.*)results=(\\d+).*');
     XMLHttpRequest.prototype.open = function(method, url, type) {
-      this.r = this._rurl.exec(url);
-      if (this.r) {
-        url = "users.json?results=" + this.r[2];
+      // TODO: make angular2 http.get call work. It uses sync open and
+      // seems not using onreadystatechange.
+      if (type && url.startsWith(randomUserUrl)) {
+        var tokens, re = /[?&]([^=]+)=([^&]*)/g;
+        this.params = {};
+        while (tokens = re.exec(url)) {
+            this.params[tokens[1]] = tokens[2];
+        }
+        this.url = "users.json";
+      }
+      this._open(method, url, type)
+    }
+    XMLHttpRequest.prototype._send = XMLHttpRequest.prototype.send;
+    XMLHttpRequest.prototype.send = function() {
+      if (this.params) {
         this._onreadystatechange = this.onreadystatechange;
         this.onreadystatechange = function() {
           if (this.readyState == XMLHttpRequest.DONE  && this.status == 200) {
-            var json = JSON.parse(this.responseText);
-            json.results = json.results.splice(0, this.r[2])
-            this.responseText = JSON.stringify(json);
+            this.text = this.responseText;
+            var json = JSON.parse(this.text);
+            // Since responseText is read only we need to redefine getters.
+            var getter = {get: function(){return this.text;}};
+            Object.defineProperty(this, "responseText" , getter);
+            Object.defineProperty(this, "response" , getter);
+            // Filter by gender
+            if (this.params.gender) {
+              json.results = json.results.filter(function (o) {
+                return o.user.gender == this.params.gender;
+              });
+            }
+            // limit results.
+            if (this.params.results) {
+              json.results = json.results.splice(0, this.params.results)
+            }
+            this.text = JSON.stringify(json)
           }
-          setTimeout(this._onreadystatechange, 300);
+          // run original call.
+          this._onreadystatechange();
+          this.onreadystatechange = this._onreadystatechange;
         }
       }
-      this._open(method, url, type)
+      this._send();
     }
   </script>

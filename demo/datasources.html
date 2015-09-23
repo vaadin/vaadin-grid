@@ -239,7 +239,7 @@
         <table>
           <colgroup>
             <col name="index" header-text="#" width="60">
-            <col name="user.picture.thumbnail" width="100">
+            <col name="user.picture.thumbnail" header-text="" width="100">
             <col name="user.name.first" header-text="First Name">
             <col name="user.name.last" header-text="Last Name">
             <col name="user.email" header-text="Email" flex>
@@ -264,7 +264,7 @@
               }
             }
             var rowsNeeded = req.count > 0 ? req.count : 10;
-            xhr.open("GET", randomUserUrl + "?results=" + rowsNeeded, true);
+            xhr.open("GET", randomUserUrl + "?results=" + rowsNeeded + "&gender=female", true);
             xhr.send();
           };
 
