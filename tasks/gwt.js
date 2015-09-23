@@ -58,14 +58,16 @@ gulp.task('gwt:clean', function(done) {
 });
 
 gulp.task('gwt:hash:src', function(done) {
-  system(' git diff --quiet java/src/main/java', function(err, stdout){
-    system('git log -1 --format=%H java/src/main/java', function(err, stdout) {
-      gitHash = stdout.replace(/\s/g, '');
+  system(' git status --porcelain java/src/main/java', function(err, stdout) {
+    if (stdout) {
+      gutil.log(">>> There are modifications not committed yet, forcing gwt grid compilation.");
       done();
-    });
-  }, function(err) {
-    gutil.log(">>> There are modifications not committed yet, forcing gwt grid compilation.");
-    done();
+    } else {
+      system('git log -1 --format=%H java/src/main/java', function(err, stdout) {
+        gitHash = stdout.replace(/\s/g, '');
+        done();
+      });
+    }
   });
 });
 
