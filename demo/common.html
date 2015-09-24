@@ -27,11 +27,11 @@
     // Faking randomuser.me REST call since the site is sometimes unavailable.
     // We have a set of 200 users cached in a static .json file instead, we
     // take it via ajax and split it conveniently based on parameters.
-    XMLHttpRequest.prototype._open = XMLHttpRequest.prototype.open;
+    // We use triple underscore for patched methods since angular already
+    // patches XMLHttpRequest and uses single underscore.
+    XMLHttpRequest.prototype.___open = XMLHttpRequest.prototype.open;
     XMLHttpRequest.prototype.open = function(method, url, type) {
-      // TODO: make angular2 http.get call work. It uses sync open and
-      // seems not using onreadystatechange.
-      if (type && url.startsWith(randomUserUrl)) {
+      if (url.startsWith(randomUserUrl)) {
         var tokens, re = /[?&]([^=]+)=([^&]*)/g;
         this.params = {};
         while (tokens = re.exec(url)) {
@@ -39,37 +39,38 @@
         }
         url = "users.json";
       }
-      this._open(method, url, type)
+      // Angular uses sync open, but we want it async.
+      this.___open(method, url, true)
     }
-    XMLHttpRequest.prototype._send = XMLHttpRequest.prototype.send;
+    XMLHttpRequest.prototype.___send = XMLHttpRequest.prototype.send;
     XMLHttpRequest.prototype.send = function() {
-      if (this.params) {
-        this._onreadystatechange = this.onreadystatechange;
+      var params = this.params;
+      if (params) {
+        var ___onreadystatechange = this.onreadystatechange;
         this.onreadystatechange = function() {
           if (this.readyState == XMLHttpRequest.DONE  && this.status == 200) {
             this.text = this.responseText;
             var json = JSON.parse(this.text);
-            // Since responseText is read only we need to redefine getters.
+            // Since response & responseText are read only we redefine getters.
             var getter = {get: function(){return this.text;}};
             Object.defineProperty(this, "responseText" , getter);
             Object.defineProperty(this, "response" , getter);
             // Filter by gender
             if (this.params.gender) {
               json.results = json.results.filter(function (o) {
-                return o.user.gender == this.params.gender;
+                return o.user && o.user.gender == params.gender;
               });
             }
             // limit results.
-            if (this.params.results) {
-              json.results = json.results.splice(0, this.params.results)
+            if (params.results) {
+              json.results = json.results.splice(0, params.results)
             }
             this.text = JSON.stringify(json)
           }
-          // run original call after a while so as whe emulate slow connection.
-          setTimeout(300, this._onreadystatechange());
-          this.onreadystatechange = this._onreadystatechange;
+          // Angular patching sets original onreadystatechange to undefined.
+          (___onreadystatechange && ___onreadystatechange());
         }
       }
-      this._send();
+      this.___send();
     }
   </script>

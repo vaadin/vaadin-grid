@@ -251,7 +251,7 @@
 
         HTMLImports.whenReady(function() {
           // code
-          var dataSourceSize = 1000;
+          var dataSourceSize = 200;
           grid.data.source = function(req) {
             // Fetch the JSON data from a URL
             var xhr = new XMLHttpRequest();
@@ -263,7 +263,7 @@
                 }
               }
             }
-            var rowsNeeded = req.count > 0 ? req.count : 10;
+            var rowsNeeded = Math.max(req.count,1);
             xhr.open("GET", randomUserUrl + "?results=" + rowsNeeded + "&gender=female", true);
             xhr.send();
           };
