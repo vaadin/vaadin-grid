@@ -35,6 +35,15 @@ describe.feature('using properties', function() {
     });
   });
 
+  it('rowClassGenerator with single column data', function() {
+    grid.data.source = [0];
+    var spy = sinon.spy();
+    grid.rowClassGenerator = spy;
+    return grid.then(function(){
+        expect(spy.args[0][0].data).to.be.equal(0);
+    });
+  });
+
   it('cellClassGenerator', function() {
     var elementEquals = true;
 
