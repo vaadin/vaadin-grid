@@ -37,7 +37,7 @@
         while (tokens = re.exec(url)) {
             this.params[tokens[1]] = tokens[2];
         }
-        this.url = "users.json";
+        url = "users.json";
       }
       this._open(method, url, type)
     }
@@ -65,8 +65,8 @@
             }
             this.text = JSON.stringify(json)
           }
-          // run original call.
-          this._onreadystatechange();
+          // run original call after a while so as whe emulate slow connection.
+          setTimeout(300, this._onreadystatechange());
           this.onreadystatechange = this._onreadystatechange;
         }
       }
