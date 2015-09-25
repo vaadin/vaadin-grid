@@ -16,15 +16,18 @@ var AngularGrid = (function () {
         var _this = this;
         this.grid = document.querySelector("angular-grid vaadin-grid");
         this.gender = document.querySelector("angular-grid select");
+        // Set a datasource for the vaadin-grid
         this.grid.data.source = function (req) {
             return http.get(_this.getUrl(_this.gender.value, Math.max(req.count, 1)))
                 .map(function (res) { return res.json().results; })
                 .subscribe(function (results) { return req.success(results, _this.gender.value ? 50 : 100); });
         };
         this.grid.then(function () {
+            // Set a renderer for the picture column
             _this.grid.columns[0].renderer = function (cell) {
                 return cell.element.innerHTML = "<img style='width: 30px' src='" + cell.data + "' />";
             };
+            // Add a new header row with the gender select in it
             _this.grid.header.addRow(1, ["", _this.gender]);
         });
     }
