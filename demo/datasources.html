@@ -251,7 +251,7 @@
 
         HTMLImports.whenReady(function() {
           // code
-          var dataSourceSize = 1000
+          var dataSourceSize = 1000;
           grid.data.source = function(req) {
             // Fetch the JSON data from a URL
             var xhr = new XMLHttpRequest();
@@ -263,7 +263,7 @@
                 }
               }
             }
-            var rowsNeeded = Math.max(req.count,1);
+            var rowsNeeded = Math.max(req.count, 1);
             xhr.open("GET", randomUserUrl + "?results=" + rowsNeeded, true);
             xhr.send();
           };

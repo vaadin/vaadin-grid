@@ -37,7 +37,7 @@
         while (tokens = re.exec(url)) {
             this.params[tokens[1]] = tokens[2];
         }
-        url = "users.json";
+        url = "users.json?results=" + this.params.results + "&gender=" + (this.params.gender || '');
       }
       // Angular uses sync open, but we want it async.
       this.___open(method, url, true)
@@ -56,7 +56,7 @@
             Object.defineProperty(this, "responseText" , getter);
             Object.defineProperty(this, "response" , getter);
             // Filter by gender
-            if (this.params.gender) {
+            if (params.gender) {
               json.results = json.results.filter(function (o) {
                 return o.user && o.user.gender == params.gender;
               });
@@ -67,8 +67,9 @@
             }
             this.text = JSON.stringify(json)
           }
+          // Introducing some delay to make spiner visible for a while.
           // Angular patching sets original onreadystatechange to undefined.
-          (___onreadystatechange && ___onreadystatechange());
+          (___onreadystatechange && setTimeout(___onreadystatechange, 300));
         }
       }
       this.___send();
