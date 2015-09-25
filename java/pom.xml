@@ -243,6 +243,9 @@
                   <includes>
                     <include>bower_components/**/*</include>
                   </includes>
+                  <excludes>
+                    <exclude>**/vaadin-grid.min.js</exclude>
+                  </excludes>
                 </resource>
                 <resource>
                   <directory>src/main/webapp</directory>
