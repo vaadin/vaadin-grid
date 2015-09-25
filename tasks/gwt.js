@@ -60,7 +60,6 @@ gulp.task('gwt:clean', function(done) {
 gulp.task('gwt:hash:src', function(done) {
   system(' git status --porcelain java/src/main/java', function(err, stdout) {
     if (stdout) {
-      gutil.log(">>> There are modifications not committed yet, forcing gwt grid compilation.");
       done();
     } else {
       system('git log -1 --format=%H java/src/main/java', function(err, stdout) {
@@ -91,15 +90,10 @@ gulp.task('gwt:hash:js', function(done) {
 });
 
 gulp.task('gwt:compile', ['gwt:clean', 'gwt:hash:src', 'gwt:hash:js'], function(done) {
-  if(gitHash == jsHash) {
-    gutil.log(">>> There are no modifications since last commit, reusing compiled gwt grid.");
-    done();
-  } else {
-    maven('compile -q', function() {
-      var task = 'package -q' + (args.gwtPretty ? ' -Ppretty' : '')  + " -P compile";
-      maven(task, done);
-    });
-  }
+  maven('compile -q', function() {
+    var task = 'package -q' + (args.gwtPretty ? ' -Ppretty' : '')  + " -P compile";
+    maven(task, done);
+  });
 });
 
 gulp.task('gwt:copy', ['gwt:compile'], function() {

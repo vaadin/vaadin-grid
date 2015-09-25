@@ -97,13 +97,19 @@ $ polyserve
 ### Development Protips
 
 - Compiling GWT module:
+
+Compiled module is in the repository, so you don't need to compile it unless
+you modify GWT .java files.
+
 ```shell
 $ gulp gwt
-``` 
+```
 - Compiling GWT using "pretty" output:
 ```shell
 $ gulp gwt --gwt-pretty
 ```
+
+
 - Running and debugging in GWT SuperDevMode:
 ```shell
 $ gulp gwt:sdm
