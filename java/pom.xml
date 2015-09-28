@@ -212,7 +212,7 @@
           <persistentunitcachedir>${project.build.directory}</persistentunitcachedir>
           <modulePathPrefix>${modulePathPrefix}</modulePathPrefix>
           <extraJvmArgs>-Xmx2048m</extraJvmArgs>
-          <runTarget>/</runTarget>
+          <runTarget>/bower_components/vaadin-grid/</runTarget>
           <gen>${project.build.directory}/gen</gen>
           <workDir>target</workDir>
           <module>${module.name}</module>
