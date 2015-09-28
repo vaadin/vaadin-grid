@@ -9,9 +9,6 @@
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
   <link rel="import" href="common.html">
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.0/react.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.0/JSXTransformer.js"></script>
-
 </head>
 
 <body unresolved>
@@ -47,29 +44,33 @@
 
             componentDidMount: function() {
               var _this = this;
+              var vGrid = _this.getDOMNode();
 
               // Let the mounted <vaadin-grid> upgrade
-              Polymer.Async.run(function() {
-                var vGrid = _this.getDOMNode();
+              (function wait() {
+                if (vGrid.data) {
+                  // Assign the data source
+                  vGrid.data.source = _this.dataSource;
 
-                // Assign the data source
-                vGrid.data.source = _this.dataSource;
+                  // Bind selection listener
+                  vGrid.addEventListener("select", _this.onRowSelect);
 
-                // Bind selection listener
-                vGrid.addEventListener("select", _this.onRowSelect);
+                  var pictureRenderer = function(cell) {
+                    cell.element.innerHTML = "<img style='width: 30px' src='" + cell.data + "' />";
+                  };
 
-                var pictureRenderer = function(cell) {
-                  cell.element.innerHTML = "<img style='width: 30px' src='" + cell.data + "' />";
-                };
+                  // Define columns
+                  vGrid.columns = [
+                    {name: "user.picture.thumbnail", headerContent: "", width: 100, renderer: pictureRenderer },
+                    {name: "user.name.first", headerContent: "First Name" },
+                    {name: "user.name.last", headerContent: "Last Name" },
+                    {name: "user.email", headerContent: "Email" },
+                  ];
 
-                // Define columns
-                vGrid.columns = [
-                  {name: "user.picture.thumbnail", headerContent: "", width: 100, renderer: pictureRenderer },
-                  {name: "user.name.first", headerContent: "First Name" },
-                  {name: "user.name.last", headerContent: "Last Name" },
-                  {name: "user.email", headerContent: "Email" },
-                ];
-              });
+                } else {
+                    setTimeout( wait, 50 );
+                }
+              })();
             },
 
             dataSource: function(req) {
@@ -125,6 +126,14 @@
 
         </script>
       </div>
+
+      <script>
+      HTMLImports.whenReady(function(){
+        document.querySelector("div[demo]").innerHTML = "<iframe src='react-demo-embed.html' style='width: 100%; height: 900px; border: none'> ";
+      });
+      </script>
+
+
     </code-example>
   </section>
 
