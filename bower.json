@@ -31,6 +31,6 @@
     "web-component-tester": "~3.3.21"
   },
   "resolutions": {
-    "polymer": "v1.1.1"
+    "polymer": "^1.1.1"
   }
 }
