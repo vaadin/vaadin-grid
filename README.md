@@ -3,7 +3,7 @@
 
 # vaadin-grid
 
-`vaadin-grid` is a Web Component for showing large amounts of tabular data.
+`vaadin-grid` is a Web Component for showing large amounts of tabular data, part of the [vaadin-components](https://github.com/vaadin/vaadin-components) component bundle.
 
 **Features:**
  - Lazy-loading
@@ -15,10 +15,12 @@
  - Keyboard navigation
  - Sorting
  - Accessibility
+ - Declarative and imperative APIs
 
 ## Getting started
 
-[Getting started instructions](http://vaadin.github.io/components-examples/)
+ - [Demos](https://cdn.vaadin.com/vaadin-components/latest/vaadin-grid/demo/)
+ - [Getting started instructions](https://cdn.vaadin.com/vaadin-components/latest/vaadin-components/demo/)
 
 ## Overview of this repository
 
@@ -30,7 +32,7 @@
 
 - **java**:
   The internal GWT implementation of the component
-  exported to JavaScript which is used by the Polymer-based implementations.
+  exported to JavaScript which is used by the Polymer-based implementation.
 
 
 ## Developing
@@ -51,7 +53,7 @@ Then do the following:
  $ npm install -g bower gulp web-component-tester polyserve
  ```
  
- _*Note: you might prepend `sudo` if you are in a unix like system (linux, mac)_
+ > Note: you might need to prepend `sudo` if you are in a unix like system (linux, mac)
 
 2. Clone the project:
  ```shell
@@ -64,19 +66,15 @@ Then do the following:
  $ npm install
  ```
 
-### Serving the components
+## Demos / examples
 
-- Spin up a web server:
+Start a server in the root folder, and access one of the demo files inside 
+the component folders, e.g:
 ```shell
 $ polyserve
 ```
-- Check that the components demo works visiting `http://localhost:8080/components/vaadin-grid/demo/`
-- Access the components in your app through `http://localhost:8080/components/vaadin-grid/vaadin-grid.html`
-- To use vaadin components, remember to manually install [Polymer](https://github.com/Polymer/polymer) as a dependency.
-```shell
-$ cd your-application
-$ bower install polymer --save
-```
+- Open http://localhost:8080/components/vaadin-grid/demo/
+
 
 ### Running automated tests
 
@@ -93,6 +91,7 @@ $ wct --local=chrome/firefox/safari
 $ polyserve
 ```
 - Open http://localhost:8080/components/vaadin-grid/test/
+
 
 ### Development Protips
 
@@ -119,16 +118,7 @@ $ gulp gwt:sdm
 $ npm install
 ```
 
-## Demos / examples
-
-Start a server in the root folder,
-and access one of the demo files inside the component folders, e.g:
-```shell
-$ polyserve
-```
-- Open http://localhost:8080/components/vaadin-grid/demo/
-
 
 ## License
 
-Vaadin Components is licensed under the Apache License 2.0.
+`vaadin-grid` is licensed under the Apache License 2.0.
