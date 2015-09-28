@@ -1,6 +1,8 @@
 
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/vaadin/components?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
+[![Build Status](https://travis-ci.org/vaadin/vaadin-grid.svg?branch=master)](https://travis-ci.org/vaadin/vaadin-grid)
+
 # vaadin-grid
 
 `vaadin-grid` is a Web Component for showing large amounts of tabular data, part of the [vaadin-components](https://github.com/vaadin/vaadin-components) component bundle.
