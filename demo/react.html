@@ -9,9 +9,6 @@
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
   <link rel="import" href="common.html">
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.0/react.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.0/JSXTransformer.js"></script>
-
 </head>
 
 <body unresolved>
@@ -125,6 +122,12 @@
 
         </script>
       </div>
+
+      <script>
+        document.querySelector("div[demo]").innerHTML = "<iframe src='react-demo-embed.html' style='width: 100%; height: 900px; border: none'> ";
+      </script>
+
+
     </code-example>
   </section>
 
