@@ -81,6 +81,12 @@ layout: page
       <a href="datasources.html#toc_1_function_data_source">function datasource</a> is a better option.
     Click a row to see an enlarged user image.</p>
     <code-example>
+      <iframe src="angular-demo-embed.html#angular-grid" style="width: 100%; height: 900px; border: none; display: inline;"></iframe>
+      <style>
+        iframe ~ [demo] {
+          display: none !important;
+        }
+      </style>
       <div demo>
         <vaadin-grid #grid (select)="onSelect()">
           <table>
@@ -156,11 +162,6 @@ layout: page
         // end-code
         */
       </code>
-      <script>
-      HTMLImports.whenReady(function(){
-        document.querySelector("div[demo]").innerHTML = "<iframe src='angular-demo-embed.html#angular-grid' style='width: 100%; height: 900px; border: none'> ";
-      });
-      </script>
     </code-example>
   </section>
 
