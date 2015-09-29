@@ -15,15 +15,6 @@ layout: page
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
   <link rel="import" href="common.html">
 
-  <script src="https://github.jspm.io/jmcriffey/bower-traceur-runtime@0.0.90/traceur-runtime.js"></script>
-  <script src="https://jspm.io/system@0.16.js"></script>
-  <script src="https://code.angularjs.org/2.0.0-alpha.28/angular2.dev.js"></script>
-
-  <style type="text/css">
-    div[demo] {
-      display: none;
-    }
-  </style>
 </head>
 
 <body unresolved>
@@ -38,12 +29,7 @@ layout: page
     <h3>Angular2 Integration (Light DOM data source)</h3>
     <p>Static data can be easily bound to vaadin-grid <a href="datasources.html#toc_0_inline_data">light DOM cells</a> with Angular data binding.</p>
     <code-example>
-      <vaadin-grid demo hidden></vaadin-grid>
-      <code demo hidden>
-        var ag = document.createElement("angular-grid-dom");
-        demo.parentElement.appendChild(ag);
-        System.import('angular-grid-dom');
-      </code>
+      <iframe demo hidden src="angular-demo-embed.html#angular-grid-dom" style="width: 100%; height: 250px; border: none; display: inline;"></iframe>
       <code>
         /*
         // code
@@ -118,12 +104,7 @@ layout: page
           </select>
         </div>
       </div>
-
       <code>
-        var ag = document.createElement("angular-grid");
-        demo.parentElement.appendChild(ag);
-        System.import('angular-grid');
-
         /*
         // code
         // Component file: angular-grid.ts
@@ -175,7 +156,11 @@ layout: page
         // end-code
         */
       </code>
-
+      <script>
+      HTMLImports.whenReady(function(){
+        document.querySelector("div[demo]").innerHTML = "<iframe src='angular-demo-embed.html#angular-grid' style='width: 100%; height: 900px; border: none'> ";
+      });
+      </script>
     </code-example>
   </section>
 
