@@ -31,7 +31,7 @@
     // patches XMLHttpRequest and uses single underscore.
     XMLHttpRequest.prototype.___open = XMLHttpRequest.prototype.open;
     XMLHttpRequest.prototype.open = function(method, url, type) {
-      if (url.startsWith(randomUserUrl)) {
+      if (url.indexOf(randomUserUrl) === 0) {
         var tokens, re = /[?&]([^=]+)=([^&]*)/g;
         this.params = {};
         while (tokens = re.exec(url)) {
