@@ -699,37 +699,6 @@ More examples available at https://cdn.vaadin.com/vaadin-components/latest/vaadi
       _grid: undefined,
 
       properties: {
-        /**
-         * Object for controlling and accessing the data source of the grid.
-         *
-         * @property {Data} data
-         * @type {Data}
-         */
-        data: {
-          type: Object,
-          readOnly: true,
-          value: function() {
-            var _this = this;
-            return {
-
-              get source() {
-                return this._source;
-              },
-              set source(source) {
-                var sourceFunction = source;
-                if (Array.isArray(source)) {
-                  sourceFunction = function(req) {
-                    var array = source.slice(req.index, req.index + req.count);
-                    req.success(array, source.length);
-                  };
-                }
-                _this._grid.setDataSource(sourceFunction);
-
-                this._source = source;
-              }
-            };
-          }
-        },
 
         /**
          * Object for controlling and accessing the header rows in the grid.
