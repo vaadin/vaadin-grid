@@ -35,7 +35,7 @@ var AngularGrid = (function () {
         var _this = this;
         this.selected = undefined;
         var selectedIndex = this.grid.selection.selected()[0];
-        this.grid.data.getItem(selectedIndex, function (err, data) { return _this.selected = data; });
+        this.grid.getItem(selectedIndex, function (err, data) { return _this.selected = data; });
     };
     AngularGrid = __decorate([
         angular2_1.Component({

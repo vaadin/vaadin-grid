@@ -95,7 +95,7 @@ layout: page
             onRowSelect: function(e) {
               var onUserSelect = this.props.onUserSelect;
               var index = e.target.selection.selected()[0];
-              e.target.data.getItem(index, function(err, data) {
+              e.target.getItem(index, function(err, data) {
                 onUserSelect(err ? undefined : data.user);
               });
             }
