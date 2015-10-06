@@ -73,7 +73,7 @@ layout: page
         var grid = grid || document.querySelector("vaadin-grid");
 
         HTMLImports.whenReady(function() {
-          grid.data.source = [["One", "Two"]];
+          grid.items = [["One", "Two"]];
           // code
           grid.addColumn({ headerContent: "Column one" });
           // Specify the index or name of the column before which to add the new column
@@ -118,7 +118,7 @@ layout: page
         var grid = grid || document.querySelector("vaadin-grid");
 
         HTMLImports.whenReady(function() {
-          grid.data.source = employees;
+          grid.items = employees;
           // code
           // Setting the width properties with JS api
           grid.columns[0].width = 100;
@@ -170,7 +170,7 @@ layout: page
         var grid = grid || document.querySelector("vaadin-grid");
 
         HTMLImports.whenReady(function() {
-          grid.data.source = employees;
+          grid.items = employees;
 
           grid.columns[4].renderer = function(cell) {
             cell.element.textContent = Math.random(1).toFixed(2);
@@ -219,7 +219,7 @@ layout: page
         var grid = grid || document.querySelector("vaadin-grid");
 
         HTMLImports.whenReady(function() {
-          grid.data.source = employees;
+          grid.items = employees;
           // code
           // Setting the properties with JS api
           grid.columns[1].hidable = true;

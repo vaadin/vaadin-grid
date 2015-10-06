@@ -485,7 +485,7 @@
 
         describe('in mode: multi', function() {
           beforeEach(function() {
-            grid.data.source =  function(req) {
+            grid.datasource =  function(req) {
               var data = [];
               for (var i = req.index; i < req.index + req.count; i++) {
                 data.push(["foo " + i, "bar " + i]);
@@ -557,7 +557,7 @@
 
         describe('in mode: all', function() {
           beforeEach(function() {
-            grid.data.source =  function(req) {
+            grid.datasource =  function(req) {
               var data = [];
               for (var i = req.index; i < req.index + req.count; i++) {
                 data.push(["foo " + i, "bar " + i]);
@@ -684,7 +684,7 @@
           }
 
           before(function() {
-            grid.data.source = [0,1];
+            grid.items = [0,1];
 
             return grid;
           });

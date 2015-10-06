@@ -815,6 +815,35 @@ More examples available at https://cdn.vaadin.com/vaadin-components/latest/vaadi
         },
 
         /**
+         * A function returning the items determining rows in the grid.
+         *
+         * Example:
+         * ```
+         * grid.datasource = function(req) {
+         *  req.success(['foo', 'bar'], 2);
+         * };
+         * ```
+         *
+         * @property {function} datasource
+         * @type {function}
+         */
+        datasource: {
+          type: Object,
+          observer: '_datasourceChanged'
+        },
+
+        /**
+         * An array containing items determining rows in the grid.
+         *
+         * @property {Array<Object>} items
+         * @type {Array<Object>}
+         */
+        items: {
+          type: Array,
+          observer: '_itemsChanged'
+        },
+
+        /**
          * Object for controlling and accessing the selected rows in the grid.
          *
          * @property {Selection} selection
@@ -905,6 +934,21 @@ More examples available at https://cdn.vaadin.com/vaadin-components/latest/vaadi
          * @event selectionmodechange
          */
         'selectionmodechange': '_onSelectionModeChange'
+      },
+
+      _datasourceChanged: function(datasource) {
+        this._grid.setDataSource(datasource);
+      },
+
+      _itemsChanged: function(items) {
+        if(Array.isArray(items)) {
+          this._grid.setDataSource(function(req) {
+            var array = items.slice(req.index, req.index + req.count);
+            req.success(array, items.length);
+          });
+        } else {
+          throw new Error('Unknown items type: ' + items + '. Arrays are supported only.');
+        }
       },
 
       _onSelectionModeChange: function() {
@@ -1154,16 +1198,6 @@ More examples available at https://cdn.vaadin.com/vaadin-components/latest/vaadi
       },
       set columns(cols) {
         this._grid.setColumns(cols);
-      },
-
-      /**
-       * An array containing items determining rows in the grid.
-       *
-       * @property {Array<Object>} columns
-       * @type {Array<Object>}
-       */
-      set items(items) {
-        this.data.source = items;
       },
 
       /**
