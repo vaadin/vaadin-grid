@@ -726,9 +726,6 @@ More examples available at https://cdn.vaadin.com/vaadin-components/latest/vaadi
                 _this._grid.setDataSource(sourceFunction);
 
                 this._source = source;
-              },
-              getItem: function(rowIndex, callback, onlyCached) {
-                _this._grid.getItem(rowIndex, callback, onlyCached);
               }
             };
           }
@@ -1270,6 +1267,20 @@ More examples available at https://cdn.vaadin.com/vaadin-components/latest/vaadi
        */
       clearCache: function(estimatedNewSize) {
         this._grid.getDataSource().clearCache(estimatedNewSize);
+      },
+
+      /**
+       * Invokes the callback with row data of the provided row index as the
+       * parameter. If the row is not cached, it's fetched from the data source
+       * first.
+       *
+       * @method getItem
+       * @param {number} rowIndex - Index of the row.
+       * @param {Function} callback - Gets arguments (err, item) where item is the desired data item.
+       * @param {boolean} onlyCached - Only fetch cached rows (don't fall back to data source request).
+       */
+      getItem: function(rowIndex, callback, onlyCached) {
+        this._grid.getItem(rowIndex, callback, onlyCached);
       }
     }); // End Polymer prototype
 </script>

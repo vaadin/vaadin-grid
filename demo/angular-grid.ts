@@ -40,7 +40,7 @@ export class AngularGrid {
   onSelect() {
     this.selected = undefined;
     const selectedIndex = this.grid.selection.selected()[0];
-    this.grid.data.getItem(selectedIndex, (err, data) => this.selected = data);
+    this.grid.getItem(selectedIndex, (err, data) => this.selected = data);
   }
 }
 

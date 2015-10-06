@@ -166,7 +166,7 @@
       it('should fetch cached row data', function() {
         return grid.then(function(){
           var callCount = spy.callCount;
-          grid.data.getItem(0, function(err, item) {
+          grid.getItem(0, function(err, item) {
             if (!err) {
               expect(item[0]).to.eql("foo 0");
               expect(spy.callCount).to.eql(callCount);
@@ -178,7 +178,7 @@
       it('should fetch non-cached row data', function() {
         return grid.then(function(){
           var callCount = spy.callCount;
-          grid.data.getItem(900, function(err, item) {
+          grid.getItem(900, function(err, item) {
             if (!err) {
               expect(spy.callCount).to.eql(callCount + 1);
               expect(item[0]).to.eql("foo 900");
@@ -190,7 +190,7 @@
       it('should not fetch data outside the data range', function() {
         return grid.then(function(){
           var callCount = spy.callCount;
-          grid.data.getItem(1000, function(err, item) {
+          grid.getItem(1000, function(err, item) {
             expect(err).to.exist;
             expect(spy.callCount).to.eql(callCount);
           });
@@ -201,7 +201,7 @@
         grid.items = [1, 2, 3];
 
         return grid.then(function(){
-          grid.data.getItem(0, function(err, item) {
+          grid.getItem(0, function(err, item) {
             if (!err) {
               expect(item).to.eql(1);
             }
@@ -212,7 +212,7 @@
       it('should not fetch non-cached row data', function() {
         return grid.then(function(){
           var callCount = spy.callCount;
-          grid.data.getItem(900, function(err, item) {
+          grid.getItem(900, function(err, item) {
             expect(err).to.exist;
             expect(spy.callCount).to.eql(callCount);
           }, true);

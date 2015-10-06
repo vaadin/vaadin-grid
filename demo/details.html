@@ -139,7 +139,7 @@ layout: page
             var elem = document.createElement('div');
             elem.setAttribute('class', 'userdetailswrapper');
 
-            grid.data.getItem(rowIndex, function(error, item) {
+            grid.getItem(rowIndex, function(error, item) {
               if (!error) {
                 elem.innerHTML = getUserDetails(item.user);
               }
