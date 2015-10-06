@@ -133,14 +133,17 @@ layout: page
         </script>
       </div>
 
-      <script>
-      HTMLImports.whenReady(function(){
-        document.querySelector("div[demo]").innerHTML = "<iframe src='react-demo-embed.html' style='width: 100%; height: 900px; border: none'> ";
-      });
-      </script>
-
-
     </code-example>
+    <iframe id='react-embed' src='react-demo-embed.html' style='width: 100%; height: 900px; border: none; display: none;'></iframe>
+    <script>
+    HTMLImports.whenReady(function() {
+      var demo = document.querySelector("div[demo]");
+      var embed = document.getElementById("react-embed");
+      demo.innerHTML = "";
+      demo.appendChild(embed);
+      embed.style.display = "block";
+    });
+    </script>
   </section>
 
 </body>
