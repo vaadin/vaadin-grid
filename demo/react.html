@@ -54,7 +54,7 @@ layout: page
 
               // Let the mounted <vaadin-grid> upgrade
               (function wait() {
-                if (vGrid.data) {
+                if (vGrid.selection) {
                   // Assign the data source
                   vGrid.datasource = _this.dataSource;
 
