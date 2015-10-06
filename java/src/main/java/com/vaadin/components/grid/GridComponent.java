@@ -279,7 +279,7 @@ public class GridComponent implements SelectionHandler<Object>,
             updateHeight();
         } else {
             throw new RuntimeException("Unknown data source type: " + data
-                    + ". Arrays and Functions are supported only.");
+                    + ". Functions are supported only.");
         }
     }
 

@@ -86,7 +86,7 @@ layout: page
         var grid = grid || document.querySelector("vaadin-grid");
 
         HTMLImports.whenReady(function() {
-          grid.data.source = employees;
+          grid.items = employees;
           // code
           // Setting the explicit row count in JavaScript
           grid.rows = 5;
@@ -127,7 +127,7 @@ layout: page
         var grid = grid || document.querySelector("vaadin-grid");
 
         HTMLImports.whenReady(function() {
-          grid.data.source = employees;
+          grid.items = employees;
           // code
           grid.rowClassGenerator = function(row) {
             var activity = row.data[2];
@@ -170,7 +170,7 @@ layout: page
         var grid = grid || document.querySelector("vaadin-grid");
 
         HTMLImports.whenReady(function() {
-          grid.data.source = employees;
+          grid.items = employees;
           // code
 
           grid.cellClassGenerator = function(cell) {

@@ -16,7 +16,7 @@ var AngularGrid = (function () {
         var _this = this;
         this.grid = document.querySelector("angular-grid vaadin-grid");
         this.gender = document.querySelector("angular-grid select");
-        this.grid.data.source = function (req) {
+        this.grid.datasource = function (req) {
             return http.get(_this.getUrl(_this.gender.value, Math.max(req.count, 1)))
                 .map(function (res) { return res.json().results; })
                 .subscribe(function (results) { return req.success(results, _this.gender.value ? 50 : 100); });
