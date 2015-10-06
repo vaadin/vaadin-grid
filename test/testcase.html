@@ -466,15 +466,15 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
           var dir = 'desc';
           button.addEventListener("click", function(event) {
             dir = dir == 'desc' ? "asc" : "desc";
-            grid.data.sortOrder = [{
+            grid.sortOrder = [{
               column: 1,
               direction: dir
             }];
           });
 
           grid.addEventListener("sort", function() {
-            var idx = grid.data.sortOrder[0].column;
-            var asc = grid.data.sortOrder[0].direction == 'asc';
+            var idx = grid.sortOrder[0].column;
+            var asc = grid.sortOrder[0].direction == 'asc';
             data.sort(function(a, b){
               return a[idx] < b[idx] && asc ? -1 : 1;
             });
