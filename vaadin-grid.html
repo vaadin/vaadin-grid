@@ -727,12 +727,6 @@ More examples available at https://cdn.vaadin.com/vaadin-components/latest/vaadi
 
                 this._source = source;
               },
-              get sortOrder() {
-                return _this._grid.getSortOrder();
-              },
-              set sortOrder(sortOrder) {
-                _this._grid.setSortOrder(sortOrder);
-              },
               getItem: function(rowIndex, callback, onlyCached) {
                 _this._grid.getItem(rowIndex, callback, onlyCached);
               },
@@ -1217,6 +1211,20 @@ More examples available at https://cdn.vaadin.com/vaadin-components/latest/vaadi
        */
       setRowDetailsVisible: function(rowIndex, visible) {
         this._grid.setRowDetailsVisible(rowIndex, visible);
+      },
+
+      /**
+       * Order of sorting.
+       *
+       * @property {Array<SortOrder>} source
+       * @type {Array<SortOrder>}
+       */
+      get sortOrder() {
+        return this._grid.getSortOrder();
+      },
+      set sortOrder(sortOrder) {
+        this._grid.setSortOrder(sortOrder);
+        this.reflectPropertyToAttribute("sort-order");
       }
     }); // End Polymer prototype
 </script>
