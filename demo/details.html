@@ -117,7 +117,7 @@ layout: page
 
         HTMLImports.whenReady(function() {
           var dataSourceSize = 1000;
-          grid.data.source = function(req) {
+          grid.datasource = function(req) {
             // Fetch the JSON data from a URL
             var xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function() {
