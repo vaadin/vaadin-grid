@@ -54,9 +54,9 @@ layout: page
 
               // Let the mounted <vaadin-grid> upgrade
               (function wait() {
-                if (vGrid.data) {
+                if (vGrid.datasource) {
                   // Assign the data source
-                  vGrid.data.source = _this.dataSource;
+                  vGrid.datasource = _this.dataSource;
 
                   // Bind selection listener
                   vGrid.addEventListener("select", _this.onRowSelect);
