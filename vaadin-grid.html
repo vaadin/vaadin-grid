@@ -729,9 +729,6 @@ More examples available at https://cdn.vaadin.com/vaadin-components/latest/vaadi
               },
               getItem: function(rowIndex, callback, onlyCached) {
                 _this._grid.getItem(rowIndex, callback, onlyCached);
-              },
-              clearCache: function(estimatedNewSize) {
-                _this._grid.getDataSource().clearCache(estimatedNewSize);
               }
             };
           }
@@ -1225,6 +1222,15 @@ More examples available at https://cdn.vaadin.com/vaadin-components/latest/vaadi
       set sortOrder(sortOrder) {
         this._grid.setSortOrder(sortOrder);
         this.reflectPropertyToAttribute("sort-order");
+      },
+
+      /**
+       * Clears the cache.
+       *
+       * @type {Function}
+       */
+      clearCache: function(estimatedNewSize) {
+        this._grid.getDataSource().clearCache(estimatedNewSize);
       }
     }); // End Polymer prototype
 </script>

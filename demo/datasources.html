@@ -187,7 +187,7 @@ layout: page
   <section>
     <h3>Changing the data</h3>
     <p>In case the source data changes dynamically, <code>vaadin-grid</code> must be notified with
-      <code>data.clearCache()</code> so it knows to fetch the correct data.
+      <code>clearCache()</code> so it knows to fetch the correct data.
     <p>Whenever new rows are added or existing ones are removed, new data size (row count) can
     be passed as the first method parameter to optimize rendering. <code>vaadin-grid</code> assumes the data size
     unchanged if no arguments are provided.</p>
@@ -227,7 +227,7 @@ layout: page
           addButton('Remove the first row', function() {
             data.splice(0, 1);
             // Inform <code>vaadin-grid</code> of the changed data
-            grid.data.clearCache(data.length);
+            grid.clearCache(data.length);
           });
           // end-code
         });

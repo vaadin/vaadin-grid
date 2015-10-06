@@ -229,7 +229,7 @@
     	grid.data.source = [];
     	return grid.then(function() {
     		grid.data.source.push(1)
-    		grid.data.clearCache(1);
+    		grid.clearCache(1);
     		return grid;
     	}).then(function() {
     		expect(qLocal('.vaadin-grid-body .vaadin-grid-cell')).to.exist;
