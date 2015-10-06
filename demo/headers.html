@@ -193,7 +193,7 @@ layout: page
         var timer = 0;
         function filter(){
           clearTimeout(timer);
-          timer = setTimeout(grid.data.clearCache, 500);
+          timer = setTimeout(grid.clearCache, 500);
         }
 
         filterElement.addEventListener("keyup", filter);
