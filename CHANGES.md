@@ -14,10 +14,10 @@
   - Column header text should default to name if none is given (#136)
 
   #### API changes:
-  - `grid.data.source` is now `grid.items` for Arrays and `grid.datasource` for Functions.
-  - `grid.data.sortOrder` is now `grid.sortOrder`.
-  - `grid.data.clearCache()` is now `grid.clearCache()`.
-  - `grid.data.getItem(rowIndex, callback, onlyCache)` is now `grid.getItem(rowIndex, callback, onlyCached)`.
+  - `grid.data.source` is now `grid.items` for Arrays and `grid.datasource` for Functions. (#160)
+  - `grid.data.sortOrder` is now `grid.sortOrder`. (#160)
+  - `grid.data.clearCache()` is now `grid.clearCache()`. (#160)
+  - `grid.data.getItem(rowIndex, callback, onlyCache)` is now `grid.getItem(rowIndex, callback, onlyCached)`. (#160)
 
 ## Vaadin Grid v0.3.0.beta7 (2015-Sept)
 - Polymer updated to v1.1.1
