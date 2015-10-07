@@ -88,8 +88,8 @@ layout: page
                        [ "Project B", 19672, 1 ] ];
           grid.items = data;
 
-          // Re-order the data array on sort event
-          grid.addEventListener('sort', function() {
+          // Re-order the data array on sort-order-changed event
+          grid.addEventListener('sort-order-changed', function() {
             var idx = grid.sortOrder[0].column;
             var asc = grid.sortOrder[0].direction == 'asc';
             data.sort(function(a, b) {

@@ -74,7 +74,6 @@ public class GridComponent implements SelectionHandler<Object>,
         SortHandler<Object>, SelectAllHandler<Object> {
 
     private final ViolatedGrid grid;
-    private JSArray<JSSortOrder> jsSort;
     private int rows = -1;
 
     public boolean updating = true;
@@ -114,12 +113,15 @@ public class GridComponent implements SelectionHandler<Object>,
         return grid.getElement();
     }
 
-    public JSArray<JSSortOrder> getSortOrder() {
-        return jsSort;
+    public void setSortOrder(JSArray<JSSortOrder> jsOrders) {
+        List<SortOrder> newOrder = mapToSortOrders(jsOrders);
+
+        grid.setSortOrder(newOrder);
     }
 
-    public void setSortOrder(JSArray<JSSortOrder> jsOrders) {
+    private List<SortOrder> mapToSortOrders(JSArray<JSSortOrder> jsOrders) {
         List<SortOrder> order = new ArrayList<SortOrder>();
+
         List<GridColumn> dataColumns = getDataColumns();
         for (JSSortOrder jsOrder : jsOrders.asList()) {
             Column<?, ?> column = dataColumns.get(jsOrder.getColumn());
@@ -128,8 +130,8 @@ public class GridComponent implements SelectionHandler<Object>,
             jsOrder.setDirection(JSEnums.Direction.val(direction));
             order.add(new SortOrder(column, direction));
         }
-        grid.setSortOrder(order);
-        jsSort = jsOrders;
+
+        return order;
     }
 
     public ViolatedGrid getGrid() {
@@ -491,23 +493,31 @@ public class GridComponent implements SelectionHandler<Object>,
         updateHeight();
     }
 
-    @Override
-    public void sort(SortEvent<Object> event) {
-        getSelectionModel().reset();
-        if (jsSort == null) {
-            jsSort = JSArray.createArray().cast();
-        }
-        jsSort.setLength(0);
+    private JSArray<JSSortOrder> mapToJSSortOrders(List<SortOrder> sortOrders) {
+        JSArray<JSSortOrder> jsSortOrders = JSArray.createArray().cast();
+        jsSortOrders.setLength(0);
+
         List<GridColumn> dataColumns = getDataColumns();
-        for (SortOrder order : event.getOrder()) {
+
+        for (SortOrder order : sortOrders) {
             JSSortOrder sortOrder = JS.createJsType(JSSortOrder.class);
             sortOrder.setColumn(dataColumns.indexOf(order.getColumn()));
             sortOrder.setDirection(JSEnums.Direction.val(order.getDirection()));
-            jsSort.push(sortOrder);
+            jsSortOrders.push(sortOrder);
         }
-        triggerEvent("sort");
 
-        clearDataSourceCache();
+        return jsSortOrders;
+    }
+
+    @Override
+    public void sort(SortEvent<Object> event) {
+        if(event.isUserOriginated()) {
+            getSelectionModel().reset();
+
+            JsUtils.prop(container, "sortOrder", mapToJSSortOrders(event.getOrder()));
+
+            clearDataSourceCache();
+        }
     }
 
     private void clearDataSourceCache() {
