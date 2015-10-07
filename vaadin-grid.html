@@ -867,6 +867,18 @@ More examples available at https://cdn.vaadin.com/vaadin-components/latest/vaadi
               }
             };
           }
+        },
+
+        /**
+         * Order of sorting.
+         *
+         * @property {Array<SortOrder>} source
+         * @type {Array<SortOrder>}
+         */
+        sortOrder: {
+          type: Array,
+          notify: true,
+          observer: '_sortOrderChanged'
         }
       },
 
@@ -927,6 +939,10 @@ More examples available at https://cdn.vaadin.com/vaadin-components/latest/vaadi
 
       _onSelectionModeChange: function() {
         this.serializeValueToAttribute(this.selection.mode, "selection-mode");
+      },
+
+      _sortOrderChanged: function(sortOrder) {
+        this._grid.setSortOrder(sortOrder);
       },
 
       created: function() {
@@ -1216,19 +1232,6 @@ More examples available at https://cdn.vaadin.com/vaadin-components/latest/vaadi
        */
       setRowDetailsVisible: function(rowIndex, visible) {
         this._grid.setRowDetailsVisible(rowIndex, visible);
-      },
-
-      /**
-       * Order of sorting.
-       *
-       * @property {Array<SortOrder>} source
-       * @type {Array<SortOrder>}
-       */
-      get sortOrder() {
-        return this._grid.getSortOrder();
-      },
-      set sortOrder(sortOrder) {
-        this._grid.setSortOrder(sortOrder);
       },
 
       /**

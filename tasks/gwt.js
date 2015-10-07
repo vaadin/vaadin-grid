@@ -80,7 +80,7 @@ gulp.task('gwt:hash:js', function(done) {
     input: require('fs').createReadStream(gwtMinJs)
   });
   lines.on('line', function (line) {
-    var res = /vaadin.GridCommit = '(.*)'/.exec(line) 
+    var res = /vaadin.GridCommit = '(.*)'/.exec(line)
     if (res) {
       jsHash = res[1];
       done();
