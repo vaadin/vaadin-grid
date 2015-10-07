@@ -1,5 +1,5 @@
 // Don't load twice
-if (!XMLHttpRequest.prototype.___open) {
+if (!XMLHttpRequest.prototype.___open && window.randomUserUrl) {
   //Faking randomuser.me REST call since the site is sometimes unavailable.
   //We have a set of 200 users cached in a static .json file instead, we
   //take it via ajax and split it conveniently based on parameters.
@@ -13,7 +13,7 @@ if (!XMLHttpRequest.prototype.___open) {
      while (tokens = re.exec(url)) {
          this.params[tokens[1]] = tokens[2];
      }
-     url = "users.json?results=" + this.params.results + "&gender=" + (this.params.gender || '');
+     url = window.randomUserUrl + "?results=" + this.params.results + "&gender=" + (this.params.gender || '');
    }
    // Angular uses sync open, but we want it async.
    this.___open(method, url, true)

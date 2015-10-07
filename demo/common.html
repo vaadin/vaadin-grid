@@ -18,8 +18,8 @@
 
   if (!window.Polymer) {
     var link = document.querySelector('link[href$="common.html"]')
-    var base = link.href.replace(/common.html/, bowerComponents);
-    console.log( base)
+    var baseCommon = link.href.replace(/common.html/, '');
+    var base = baseCommon + bowerComponents;
     // Delay all HTMLImports.whenReady calls until polymer and
     // grid are ready.
     var _whenReady = HTMLImports.whenReady;
@@ -39,9 +39,11 @@
     pol.rel = 'import';
     pol.href = base + 'polymer/polymer.html';
     pol.onload = function() {
-          Polymer.Base.importHref(base + 'code-example/code-example.html');
-          Polymer.Base.importHref(base + 'table-of-contents/table-of-contents.html');
-          Polymer.Base.importHref(base + 'vaadin-grid/vaadin-grid.html');
+      // Set base url for xhrpatch
+      window.randomUserUrl = baseCommon + 'users.json';
+      Polymer.Base.importHref(base + 'code-example/code-example.html');
+      Polymer.Base.importHref(base + 'table-of-contents/table-of-contents.html');
+      Polymer.Base.importHref(base + 'vaadin-grid/vaadin-grid.html');
     };
     document.head.appendChild(pol);
   }
