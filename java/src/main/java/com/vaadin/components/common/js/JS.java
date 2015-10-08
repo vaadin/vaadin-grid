@@ -20,7 +20,7 @@ public abstract class JS {
 
     // This has to match with the @JsNamespace of the package-info of exported
     // components
-    public static final String VAADIN_JS_NAMESPACE = "vaadin";
+    public static final String VAADIN_JS_NAMESPACE = "vaadin.components";
 
     @SuppressWarnings("unchecked")
     public static <T> T createJsType(Class<T> clz) {
