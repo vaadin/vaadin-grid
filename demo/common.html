@@ -31,6 +31,10 @@
           HTMLImports.whenReady = _whenReady
           // Run original whenReady
           _whenReady(done);
+          _whenReady(function(){
+            // For some reason this is not removed in polyfilled browsers
+            document.body.removeAttribute('unresolved');
+          })
         }
       }, 3);
     }
