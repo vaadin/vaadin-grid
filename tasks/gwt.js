@@ -3,6 +3,7 @@ var cmd = require('child_process');
 var fs = require('fs-extra');
 var gulp = require('gulp');
 var gutil = require('gulp-util');
+var hashFiles = require('hash-files');
 var rename = require('gulp-rename');
 var replace = require('gulp-replace');
 var git = require('gulp-git');
@@ -58,14 +59,12 @@ gulp.task('gwt:clean', function(done) {
 });
 
 gulp.task('gwt:hash:src', function(done) {
-  system(' git status --porcelain java/src/main/java', function(err, stdout) {
-    if (stdout) {
-      done();
+  hashFiles({ files: ['java/src/main/java/**'] }, function(err, hash) {
+    if(err) {
+      done(err);
     } else {
-      system('git log -1 --format=%H java/src/main/java', function(err, stdout) {
-        gitHash = stdout.replace(/\s/g, '');
-        done();
-      });
+      gitHash = hash;
+      done();
     }
   });
 });
