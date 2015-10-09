@@ -109,7 +109,7 @@ gulp.task('gwt:validate', ['gwt:hash:src', 'gwt:hash:js'], function(done) {
 });
 
 gulp.task('gwt:watch', function(done) {
-  gulp.watch(['demo/*', 'test/*', '*.html'] , function(){
+  gulp.watch(['demo/*', 'test/*', '*.html', 'bower_components/**/*'] , function(){
     maven('generate-sources -q');
   });
 })
