@@ -16,6 +16,7 @@
   #### API changes:
   - `grid.data.source` is now `grid.items` for Arrays and `grid.datasource` for Functions. (#160)
   - `grid.data.sortOrder` is now `grid.sortOrder`. (#160)
+  - `sort` event is now `sort-order-changed`. (#160)
   - `grid.data.clearCache()` is now `grid.clearCache()`. (#160)
   - `grid.data.getItem(rowIndex, callback, onlyCached)` is now `grid.getItem(rowIndex, callback, onlyCached)`. (#160)
 
