@@ -21,6 +21,20 @@
 </head>
 
 <body unresolved style="padding: 0; margin: 0;">
+  <style>
+  .user-image img,
+  img.user-image {
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    max-width: 33%;
+    max-height: 33%;
+  }
+
+  .demo-wrapper > * {
+    position: relative;
+  }
+  </style>
   <script>
     var tagName = window.location.hash.substr(1);
     document.body.appendChild(document.createElement(tagName));
