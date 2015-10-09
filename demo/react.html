@@ -134,15 +134,22 @@ layout: page
       </div>
 
     </code-example>
-    <iframe id='react-embed' src='react-demo-embed.html' style='width: 100%; height: 900px; border: none; display: none;'></iframe>
+    <iframe id='react-embed' src='react-demo-embed.html' style='width: 100%; height: 540px; border: none; display: none;'></iframe>
     <script>
-    HTMLImports.whenReady(function() {
-      var demo = document.querySelector("div[demo]");
-      var embed = document.getElementById("react-embed");
-      demo.innerHTML = "";
-      demo.appendChild(embed);
-      embed.style.display = "block";
-    });
+      var codeExample = document.querySelector("code-example");
+      (function wait() {
+        if (codeExample.async) {
+          codeExample.async(function() {
+            var demo = document.querySelector("div[demo]");
+            var embed = document.getElementById("react-embed");
+            demo.innerHTML = "";
+            demo.appendChild(embed);
+            embed.style.display = "block";
+          });
+        } else {
+            setTimeout( wait, 50 );
+        }
+      })();
     </script>
   </section>
 
