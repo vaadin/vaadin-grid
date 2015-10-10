@@ -662,9 +662,10 @@ More examples available at https://cdn.vaadin.com/vaadin-components/latest/vaadi
 
 <script>
     function gridLoaded() {
-      return window.vaadin && window.vaadin.components && window.vaadin.components.GridComponent;
+      return window.vaadin && vaadin.components && vaadin.components.grid && vaadin.components.grid.GridComponent;
     }
     if (!gridLoaded()) {
+      console.log("gridLoaded");
       // This is needed when vaadin-grid.min.js is loaded asynchronously like
       // in SDM. We must guarantee that gwt grid is loaded and exported before
       // Polymer is called.
@@ -949,7 +950,7 @@ More examples available at https://cdn.vaadin.com/vaadin-components/latest/vaadi
       },
 
       created: function() {
-        this._grid = new window.vaadin.components.GridComponent();
+        this._grid = new vaadin.components.grid.GridComponent();
       },
 
       ready: function() {

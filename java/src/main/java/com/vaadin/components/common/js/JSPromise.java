@@ -16,7 +16,7 @@ import com.google.gwt.query.client.js.JsUtils.JsFunction;
  * Works with any browser, and exported methods allows that it can be chained
  * with native HTML5 promises.
  */
-@JsNamespace(JS.VAADIN_JS_NAMESPACE)
+@JsNamespace(JS.VAADIN_JS_NAMESPACE + ".common")
 @JsExport
 @JsType
 public class JSPromise {

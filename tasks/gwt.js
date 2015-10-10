@@ -80,7 +80,7 @@ gulp.task('gwt:hash:js', function(done) {
     input: require('fs').createReadStream(gwtMinJs)
   });
   lines.on('line', function (line) {
-    var res = /vaadin.GridCommit = '(.*)'/.exec(line)
+    var res = /vaadin.components.grid.hash = '(.*)'/.exec(line)
     if (res) {
       jsHash = res[1];
       done();
@@ -98,7 +98,7 @@ gulp.task('gwt:compile', ['gwt:clean', 'gwt:hash:src', 'gwt:hash:js'], function(
 gulp.task('gwt:copy', ['gwt:compile'], function() {
   return gulp.src(gwtNocacheJs)
           .pipe(rename(gwtMinJs))
-          .pipe(insert.append("\nvaadin.GridCommit = '" + (gitHash ? gitHash : '-') + "';\n"))
+          .pipe(insert.append("\nvaadin.components.grid.hash = '" + (gitHash ? gitHash : '-') + "';\n"))
           .pipe(gulp.dest('./'));
 });
 
