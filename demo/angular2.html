@@ -29,7 +29,7 @@ layout: page
     <h3>Angular2 Integration (Light DOM data source)</h3>
     <p>Static data can be easily bound to vaadin-grid <a href="datasources.html#toc_0_inline_data">light DOM cells</a> with Angular data binding.</p>
     <code-example>
-      <iframe demo hidden src="angular-demo-embed.html#angular-grid-dom" style="width: 100%; height: 250px; border: none; display: inline;"></iframe>
+      <iframe demo hidden src="angular-demo-embed.html#angular-grid-dom" style="width: 100%; height: 200px; border: none; display: inline;"></iframe>
       <code>
         /*
         // code
@@ -81,7 +81,7 @@ layout: page
       <a href="datasources.html#toc_1_function_data_source">function datasource</a> is a better option.
     Click a row to see an enlarged user image.</p>
     <code-example>
-      <iframe src="angular-demo-embed.html#angular-grid" style="width: 100%; height: 900px; border: none; display: inline;"></iframe>
+      <iframe src="angular-demo-embed.html#angular-grid" style="width: 100%; height: 600px; border: none; display: inline;"></iframe>
       <style>
         iframe ~ [demo] {
           display: none !important;
@@ -103,7 +103,7 @@ layout: page
         <img *ng-if="selected" class="user-image" src="{{selected.user.picture.large}}">
 
         <div style="display: none">
-          <select maxlength=5 type="select" (change)="grid.data.clearCache(); grid.scrollToStart();">
+          <select maxlength=5 type="select" (change)="grid.clearCache(); grid.scrollToStart();">
             <option value=''></option>
             <option value='male'>Men only</option>
             <option value='female'>Women only</option>
@@ -132,7 +132,7 @@ layout: page
 
           constructor(@Inject(Http) http: Http) {
             // Set a datasource for the vaadin-grid
-            this.grid.data.source = req =>
+            this.grid.datasource = req =>
               http.get(this.getUrl(this.gender.value, Math.max(req.count, 1)))
                 .map(res => res.json().results)
                 .subscribe(results => req.success(results, this.gender.value ? 50 : 100));
@@ -154,7 +154,7 @@ layout: page
           onSelect() {
             this.selected = undefined;
             const selectedIndex = this.grid.selection.selected()[0];
-            this.grid.data.getItem(selectedIndex, (err, data) => this.selected = data);
+            this.grid.getItem(selectedIndex, (err, data) => this.selected = data);
           }
         }
 

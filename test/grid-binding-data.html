@@ -17,58 +17,63 @@
 <script>
   describe.feature('binding data', function() {
 
-    it('data: object type', function() {
-      grid.columns[0].name = "firstname";
-      grid.columns[1].name = 'salary';
-
-      grid.data.source = [{
-        firstname: "John",
-        salary: 1234.56
-      }, {
-        firstname: "Jane",
-        salary: 2345.67
-      }, ];
-
-      return grid.then(function() {
-        var cells = qaLocal(".vaadin-grid-body .vaadin-grid-cell > span");
-        assert.equal(cells[0].innerHTML, "John");
-        assert.equal(cells[1].innerHTML, "1234.56");
-        assert.equal(cells[2].innerHTML, "Jane");
+    describe('items', function() {
+      before(function() {
+        grid.columns = [{name: "FirstName"}, {name: 'Salary'}];
       });
 
-    });
+      it('should accept array values', function() {
+        grid.items = [
+          ["John", 1234.56],
+          ["Jane", 2345.67],
+        ];
 
-    it('data: array type', function() {
-      grid.data.source = [
-        ["John", 1234.56],
-        ["Jane", 2345.67],
-      ];
-
-      return grid.then(function(){
-        var cells = qaLocal(".vaadin-grid-body .vaadin-grid-cell > span");
-        assert.equal(cells[0].innerHTML, "John");
-        assert.equal(cells[1].innerHTML, "1234.56");
-        assert.equal(cells[2].innerHTML, "Jane");
+        return grid.then(function(){
+          var cells = qaLocal(".vaadin-grid-body .vaadin-grid-cell > span");
+          assert.equal(cells[0].innerHTML, "John");
+          assert.equal(cells[1].innerHTML, "1234.56");
+          assert.equal(cells[2].innerHTML, "Jane");
+        });
       });
 
-    });
-
-    it('data: boolean type', function() {
-
-      grid.data.source = [
-        false,
-        true,
-      ];
-
-      return grid.then(function(){
-        var cells = qaLocal(".vaadin-grid-body .vaadin-grid-cell > span");
-        assert.equal(cells[2].innerHTML, "true");
+      it('should throw an error when a non-array is assigned', function() {
+        expect(function() {
+          grid.items = function() {};
+        }).to.throw(/Unknown items type/);
       });
 
-    });
+      it('should accept object values', function() {
+        grid.items = [{
+          FirstName: "John",
+          Salary: 1234.56
+        }, {
+          FirstName: "Jane",
+          Salary: 2345.67
+        }, ];
 
-    it('data: string type', function() {
-        grid.data.source = [
+        return grid.then(function() {
+          var cells = qaLocal(".vaadin-grid-body .vaadin-grid-cell > span");
+          assert.equal(cells[0].innerHTML, "John");
+          assert.equal(cells[1].innerHTML, "1234.56");
+          assert.equal(cells[2].innerHTML, "Jane");
+        });
+      });
+
+
+      it('should accept boolean values', function() {
+        grid.items = [
+          false,
+          true,
+        ];
+
+        return grid.then(function(){
+          var cells = qaLocal(".vaadin-grid-body .vaadin-grid-cell > span");
+          assert.equal(cells[2].innerHTML, "true");
+        });
+      });
+
+      it('should accept string values', function() {
+        grid.items = [
           "Lorem",
           "Ipsum",
         ];
@@ -77,165 +82,157 @@
           var cells = qaLocal(".vaadin-grid-body .vaadin-grid-cell > span");
           assert.equal(cells[2].innerHTML, "Ipsum");
         });
-
-    });
-
-    it('data: non-object types', function() {
-      var first = grid.columns[0];
-      grid.columns.splice(0, 1);
-      grid.columns.push(first);
-      grid.columns.splice(1, 1);
-      grid.style.height = "400px";
-
-      grid.data.source = [
-        1, 2, null, undefined, 1
-      ];
-
-      return grid.then(function(){
-        var cells = qaLocal(".vaadin-grid-body .vaadin-grid-cell > span");
-        assert.equal(cells[0].innerHTML, "1");
-        assert.equal(cells[1].innerHTML, "2");
-        assert.equal(cells[2].innerHTML, "");
-        assert.equal(cells[3].innerHTML, "");
-        assert.equal(cells[4].innerHTML, "1");
       });
 
-    });
-
-    it('should fetch cached row data', function() {
-      infiniteDataSource.size = 1000;
-      var spy = sinon.spy(infiniteDataSource);
-      grid.data.source = spy;
-
-      var dataItem;
-      var callCount = 0;
-      return grid.then(function(){
-        callCount = spy.callCount;
-        grid.data.getItem(0, function(err, item) {
-          if (!err) {
-            dataItem = item;
-          }
-        });
-        return grid;
-      }).then(function() {
-        expect(spy.callCount).to.eql(callCount);
-        expect(dataItem[0]).to.eql("foo 0");
-      });
-    });
-
-    it('should fetch non-cached row data', function() {
-      infiniteDataSource.size = 1000;
-      var spy = sinon.spy(infiniteDataSource);
-      grid.data.source = spy;
-
-      var dataItem;
-      var callCount = 0;
-      return grid.then(function(){
-        callCount = spy.callCount;
-        grid.data.getItem(900, function(err, item) {
-          if (!err) {
-            dataItem = item;
-          }
-        });
-        return grid;
-      }).then(function() {
-        expect(spy.callCount).to.eql(callCount + 1);
-        expect(dataItem[0]).to.eql("foo 900");
-      });
-    });
-
-    it('should not fetch data outside the data range', function() {
-      infiniteDataSource.size = 1000;
-      var spy = sinon.spy(infiniteDataSource);
-      grid.data.source = spy;
-
-      var callCount = 0;
-      var error;
-      return grid.then(function(){
-        callCount = spy.callCount;
-        grid.data.getItem(1000, function(err, item) {
-          error = err;
-        });
-        return grid;
-      }).then(function() {
-        expect(error).to.exist;
-        expect(spy.callCount).to.eql(callCount);
-      });
-    });
-
-    it('should fetch primitive row data', function() {
-      grid.data.source = [1, 2, 3];
-
-      var dataItem;
-      return grid.then(function(){
-        grid.data.getItem(0, function(err, item) {
-          if (!err) {
-            dataItem = item;
-          }
-        });
-        return grid;
-      }).then(function() {
-        expect(dataItem).to.eql(1);
-      });
-    });
-
-    it('should not fetch non-cached row data', function() {
-      infiniteDataSource.size = 1000;
-      var spy = sinon.spy(infiniteDataSource);
-      grid.data.source = spy;
-
-      var callCount = 0;
-      var error;
-      return grid.then(function(){
-        callCount = spy.callCount;
-        grid.data.getItem(900, function(err, item) {
-          error = err;
-        }, true);
-        return grid;
-      }).then(function() {
-        expect(error).to.exist;
-        expect(spy.callCount).to.eql(callCount);
-      });
-    });
-
-    it('should render header/footer with empty ds', function() {
-        grid.style.height = "";
-        grid.data.source = [];
+      it('should accept non-object values', function() {
+        grid.items = [
+          [1, 2], [null, undefined], 3
+        ];
 
         return grid.then(function(){
-        	var headerHeight = qLocal(".vaadin-grid-header").clientHeight;
-        	var footerHeight = qLocal(".vaadin-grid-footer").clientHeight;
-        	expect(grid.clientHeight).to.be.above(0);
-        	expect(grid.clientHeight).to.eql(headerHeight + footerHeight);
+          var cells = qaLocal(".vaadin-grid-body .vaadin-grid-cell > span");
+          assert.equal(cells[0].innerHTML, "1");
+          assert.equal(cells[1].innerHTML, "2");
+          assert.equal(cells[2].innerHTML, "");
+          assert.equal(cells[3].innerHTML, "");
+          assert.equal(cells[4].innerHTML, "3");
         });
-    });
 
-    it('datasource can be added before grid attached to the DOM', function() {
-      var g = document.createElement("vaadin-grid");
-      g.columns = [{headerContent: "foo"}];
-      g.data.source = ["bar"];
-      document.body.appendChild(g);
-
-      return g.then(function(){
-        var cells = Polymer.dom(g.root).querySelectorAll(".vaadin-grid-body .vaadin-grid-cell > span");
-        assert.equal(cells[0].innerHTML, "bar");
-
-        document.body.removeChild(g);
       });
     });
 
+    describe('datasource', function() {
+      it('should set a function as datasource', function() {
+        infiniteDataSource.size = 2;
 
-    it('clearCache(X) should work even if datasource was empty', function(){
-    	grid.data.source = [];
-    	return grid.then(function() {
-    		grid.data.source.push(1)
-    		grid.data.clearCache(1);
-    		return grid;
-    	}).then(function() {
-    		expect(qLocal('.vaadin-grid-body .vaadin-grid-cell')).to.exist;
-    	});
+        grid.datasource = infiniteDataSource;
+
+        return grid.then(function() {
+          var cells = qaLocal(".vaadin-grid-body .vaadin-grid-cell > span");
+          assert.equal(cells[0].innerHTML, "foo 0");
+          assert.equal(cells[1].innerHTML, "bar 0");
+          assert.equal(cells[2].innerHTML, "foo 1");
+        });
+
+      });
+
+      it('should throw an error if a non-function is assigned', function() {
+        expect(function() {
+          grid.datasource = [1,2,3];
+        }).to.throw(/Unknown data source type/);
+      });
+
+      it('should render header/footer with empty items', function() {
+        grid.style.height = "";
+        grid.items = [];
+
+        return grid.then(function(){
+          var headerHeight = qLocal(".vaadin-grid-header").clientHeight;
+          var footerHeight = qLocal(".vaadin-grid-footer").clientHeight;
+          expect(grid.clientHeight).to.be.above(0);
+          expect(grid.clientHeight).to.eql(headerHeight + footerHeight);
+        });
+      });
+
+      it('should accept items before grid attached to the DOM', function() {
+        var g = document.createElement("vaadin-grid");
+        g.columns = [{headerContent: "foo"}];
+        g.items = ["bar"];
+        document.body.appendChild(g);
+
+        return g.then(function(){
+          var cells = Polymer.dom(g.root).querySelectorAll(".vaadin-grid-body .vaadin-grid-cell > span");
+          assert.equal(cells[0].innerHTML, "bar");
+
+          document.body.removeChild(g);
+        });
+      });
     });
 
+    describe('getItem', function() {
+      var spy;
+
+      before(function() {
+        infiniteDataSource.size = 1000;
+        spy = sinon.spy(infiniteDataSource);
+
+        grid.datasource = spy;
+      });
+
+      beforeEach(function() {
+        spy.reset();
+      });
+
+      it('should fetch cached row data', function() {
+        return grid.then(function(){
+          var callCount = spy.callCount;
+          grid.getItem(0, function(err, item) {
+            if (!err) {
+              expect(item[0]).to.eql("foo 0");
+              expect(spy.callCount).to.eql(callCount);
+            }
+          });
+        });
+      });
+
+      it('should fetch non-cached row data', function() {
+        return grid.then(function(){
+          var callCount = spy.callCount;
+          grid.getItem(900, function(err, item) {
+            if (!err) {
+              expect(spy.callCount).to.eql(callCount + 1);
+              expect(item[0]).to.eql("foo 900");
+            }
+          });
+        });
+      });
+
+      it('should not fetch data outside the data range', function() {
+        return grid.then(function(){
+          var callCount = spy.callCount;
+          grid.getItem(1000, function(err, item) {
+            expect(err).to.exist;
+            expect(spy.callCount).to.eql(callCount);
+          });
+        });
+      });
+
+      it('should fetch primitive row data', function() {
+        grid.items = [1, 2, 3];
+
+        return grid.then(function(){
+          grid.getItem(0, function(err, item) {
+            if (!err) {
+              expect(item).to.eql(1);
+            }
+          });
+        });
+      });
+
+      it('should not fetch non-cached row data', function() {
+        return grid.then(function(){
+          var callCount = spy.callCount;
+          grid.getItem(900, function(err, item) {
+            expect(err).to.exist;
+            expect(spy.callCount).to.eql(callCount);
+          }, true);
+        });
+      });
+    });
+
+    describe('clearCache', function() {
+      it('should work even if datasource was empty', function(){
+        grid.items = [];
+
+        return grid.then(function() {
+          grid.items.push(1)
+          grid.clearCache(1);
+          return grid;
+        }).then(function() {
+          expect(qLocal('.vaadin-grid-body .vaadin-grid-cell')).to.exist;
+        });
+      });
+    });
   });
 </script>
 

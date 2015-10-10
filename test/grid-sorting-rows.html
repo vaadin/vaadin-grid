@@ -20,7 +20,7 @@
       describe('using api', function() {
 
         function assignInvalidSortOrder() {
-          grid.data.sortOrder = [{
+          grid.sortOrder = [{
             column: 0,
             direction: "ascending" // Should be asc or desc
           }];
@@ -32,7 +32,16 @@
         });
 
         it('should set sortOrder property', function() {
-          grid.data.sortOrder = [{
+          grid.sortOrder = [{
+            column: 0,
+            direction: "desc"
+          }];
+
+          expect(qLocal(".vaadin-grid-header th").classList.contains("sort-desc")).to.be.true;
+        });
+
+        it('should set sort-order attribute', function() {
+          grid.sortOrder = [{
             column: 0,
             direction: "desc"
           }];
@@ -41,16 +50,16 @@
         });
 
         it('should clear sort order', function() {
-          grid.data.sortOrder = [{
+          grid.sortOrder = [{
             column: 0,
             direction: "desc"
           }];
-          grid.data.sortOrder = [];
-          expect(grid.data.sortOrder).to.be.empty;
+          grid.sortOrder = [];
+          expect(grid.sortOrder).to.be.empty;
         });
 
         it('should preserve existing sort order on invalid value', function() {
-          grid.data.sortOrder = [{
+          grid.sortOrder = [{
             column: 0,
             direction: "desc"
           }];
@@ -59,13 +68,13 @@
         });
 
         it('should be able to sort with multiple columns', function() {
-          grid.data.sortOrder = [{
+          grid.sortOrder = [{
             column: 0,
             direction: "desc"
           }, {
             column: 1
           }];
-          assert.lengthOf(grid.data.sortOrder, 2);
+          assert.lengthOf(grid.sortOrder, 2);
           expect(qaLocal(".vaadin-grid-header th")[0].classList.contains("sort-desc")).to.be.true;
           expect(qaLocal(".vaadin-grid-header th")[1].classList.contains("sort-asc")).to.be.true;
         });
@@ -73,7 +82,7 @@
         it('should reset selection', function() {
           grid.selectedRows = [0];
 
-          grid.data.sortOrder = [{
+          grid.sortOrder = [{
             column: 0,
             direction: "desc"
           }];
@@ -85,11 +94,11 @@
           var firstNonFrozenHeaderCell = qLocal.bind(this, ".vaadin-grid-header .vaadin-grid-cell:not(.frozen)");
 
           firstNonFrozenHeaderCell().click();
-          expect(grid.data.sortOrder[0].column).to.eql(0);
+          expect(grid.sortOrder[0].column).to.eql(0);
 
           grid.selection.mode = "multi";
           firstNonFrozenHeaderCell().click();
-          expect(grid.data.sortOrder[0].column).to.eql(0);
+          expect(grid.sortOrder[0].column).to.eql(0);
         });
 
 
@@ -121,7 +130,7 @@
           waitUntil(function() {
             return qLocal(".vaadin-grid-header .sort-asc");
           }, function() {
-            expect(grid.data.sortOrder).to.eql([{column: 0, direction: "asc"}]);
+            expect(grid.sortOrder).to.eql([{column: 0, direction: "asc"}]);
             done();
           });
         });
@@ -134,7 +143,7 @@
           waitUntil(function() {
             return qLocal(".vaadin-grid-header .sort-asc");
           }, function() {
-            expect(grid.data.sortOrder).to.eql([{column: 0, direction: "asc"},{column: 1, direction: "desc"}]);
+            expect(grid.sortOrder).to.eql([{column: 0, direction: "asc"},{column: 1, direction: "desc"}]);
             done();
           });
         });
@@ -143,22 +152,22 @@
       describe('by clicking', function() {
 
         it('should sort by the first columns', function() {
-          grid.data.sortOrder = [];
+          grid.sortOrder = [];
           var cells = qaLocal(".vaadin-grid-header .vaadin-grid-cell");
           triggerMouseEvent(cells[1], "click");
-          expect(grid.data.sortOrder).to.eql([{
+          expect(grid.sortOrder).to.eql([{
             column: 0,
             direction: "asc"
           }]);
         });
 
         it('should sort by two columns', function() {
-          grid.data.sortOrder = [];
+          grid.sortOrder = [];
           var cells = qaLocal(".vaadin-grid-header .vaadin-grid-cell");
           triggerMouseEvent(cells[1], "click");
           triggerMouseEvent(cells[2], "click", undefined, true);
           triggerMouseEvent(cells[2], "click", undefined, true)
-          expect(grid.data.sortOrder).to
+          expect(grid.sortOrder).to
             .eql([{
               column: 0,
               direction: "asc"

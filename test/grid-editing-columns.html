@@ -27,7 +27,7 @@
         grid.selection.mode = 'single';
         grid.frozenColumns = 0;
         grid.columns = [{name: 'Name', headerContent: 'Name'}, {name: 'Value', headerContent: 'Value'}];
-        grid.data.source = [['Grid', '10000'], ['Vaadin Components', '1000']];
+        grid.items = [['Grid', '10000'], ['Vaadin Components', '1000']];
 
         return grid;
       });
@@ -140,7 +140,7 @@
       grid.columns[1].renderer = function(cell) {
         bValue = cell.data;
       };
-      grid.data.source = [[0, true]];
+      grid.items = [[0, true]];
       return grid.then(function() {
         expect(nValue).to.eql(0);
         expect(bValue).to.eql(true);
@@ -153,7 +153,7 @@
         ["Jane", "TestBar"],
       ];
 
-      grid.data.source = mydata;
+      grid.items = mydata;
 
       grid.columns[1].renderer = function(cell) {
         cell.element.innerHTML = cell.data;
@@ -169,7 +169,7 @@
 
         mydata.splice(0, 1);
         mydata[0].splice(0, 1);
-        grid.data.clearCache();
+        grid.clearCache();
 
         grid.columns.splice(0, 1);
         grid.then(function() {
@@ -410,7 +410,7 @@
       grid.addColumn({
         name: "foo.bar.baz",
       });
-      grid.data.source = [{
+      grid.items = [{
         foo: {
           bar: {
             baz: "testing"
@@ -470,7 +470,7 @@
       grid.addColumn({
         name: "foo.bar.baz",
       });
-      grid.data.source = [{
+      grid.items = [{
         foo: {
           bar: "testing"
         }
@@ -484,7 +484,7 @@
       grid.addColumn({
         name: "foo.bar.baz",
       });
-      grid.data.source = [{
+      grid.items = [{
         foo: {
           bar: undefined
         }
