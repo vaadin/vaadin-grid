@@ -520,10 +520,15 @@ public class GridComponent implements SelectionHandler<Object>,
         clearDataSourceCache();
     }
 
+    @JsNoExport
     private void clearDataSourceCache() {
+        clearDataSourceCache(null);
+    }
+
+    public void clearDataSourceCache(Double newSize) {
         GridDataSource dataSource = getDataSource();
         if (dataSource != null) {
-            dataSource.clearCache(null);
+            dataSource.clearCache(newSize);
         }
     }
 

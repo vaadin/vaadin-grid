@@ -1241,9 +1241,10 @@ More examples available at https://cdn.vaadin.com/vaadin-components/latest/vaadi
        * Clears the cache.
        *
        * @type {Function}
+       * @param {number} estimatedNewSize - new data size or empty to leave it unmodified
        */
       clearCache: function(estimatedNewSize) {
-        this._grid.getDataSource().clearCache(estimatedNewSize);
+        this._grid.clearDataSourceCache(estimatedNewSize);
       },
 
       /**
