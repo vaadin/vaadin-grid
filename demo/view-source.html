@@ -1,0 +1,268 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../marked-element/marked-element.html">
+<link rel="import" href="../../prism-element/prism-highlighter.html">
+
+<dom-module id="view-source">
+  <template>
+    <style>
+      :host {
+        display: block;
+        position: relative;
+      }
+
+      .tabs {
+        box-shadow: inset 0 -1px 0 0 rgba(0, 0, 0, 0.2);
+        margin-bottom: 12px;
+      }
+
+      .tabs button {
+        border: 0;
+        border-bottom: 3px solid transparent;
+        background: transparent;
+        font: 500 14px/1 "Helvetica Neue", sans-serif;
+        height: 40px;
+        padding: 0 0.4em;
+        margin: 0 0.6em;
+        opacity: 0.7;
+        color: #333;
+        cursor: pointer;
+      }
+
+      .tabs button:focus,
+      .tabs button:hover {
+        outline: none;
+        opacity: 1;
+      }
+
+      .tabs button.selected {
+        border-bottom-color: #666;
+      }
+
+      .tabs button.edit {
+        border: 0;
+        font-size: 12px;
+        text-transform: uppercase;
+        height: 24px;
+        padding: 0 8px;
+        border-radius: 3px;
+        background: rgba(0,0,0,0.6);
+        color: #fff;
+        margin: 8px 1em;
+        vertical-align: middle;
+      }
+
+      ::content .view-source-source {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background: #fff;
+        overflow: auto;
+      }
+    </style>
+    <content></content>
+  </template>
+</dom-module>
+<script>
+  Polymer({
+    is: "view-source",
+
+    properties: {
+      show: {
+        type: String,
+        observer: "_showChanged",
+        value: "result"
+      }
+    },
+
+    _htmlText: "",
+    _scriptText: "",
+    _styleText: "",
+    _headText: "",
+
+    created: function() {
+      // Add only one Prism highlighter on the page
+      if (!window._viewSource) {
+        window._viewSource = {};
+        window._viewSource.prism = document.createElement("prism-highlighter");
+        this.ownerDocument.body.appendChild(window._viewSource.prism);
+      }
+
+      // We need to read the HTML source before any elements are upgraded and
+      // rendered, in order to not get the full rendered DOM, just the authored
+      // source.
+      for (var i = 0; i < this.childNodes.length; i++) {
+        var el = this.childNodes[i];
+        if (el.nodeName == "STYLE") {
+          this._styleText += el.textContent;
+        } else if (el.nodeName != "SCRIPT" && (!el.classList || !el.classList.contains("view-source-head"))) {
+          this._htmlText += (el.nodeType == 1 ? el.outerHTML : el.textContent);
+        }
+      }
+
+      var headTemplate = Polymer.dom(this).querySelector("template.view-source-head");
+      this._headText = headTemplate.innerHTML;
+    },
+
+    attached: function() {
+      // Script tags need to be collected deferred, as they block the rendering of
+      // any subsequence elements on the page, so we would not be able to get to
+      // those. At this phase they have been evaluated already.
+      for (var i = 0; i < this.childNodes.length; i++) {
+        var el = this.childNodes[i];
+        if (el.nodeName == "SCRIPT") {
+          this._scriptText += el.textContent;
+        }
+      }
+      this._parseSource();
+      this._createTabs();
+      this._showSource(this.show);
+    },
+
+    _parseSource: function() {
+      if (this._htmlText.trim().length > 0) {
+        this._htmlEl = document.createElement("marked-element");
+        this._htmlText = this._htmlEl._unindent(this._htmlText).trim();
+        this._htmlEl.markdown = "\`\`\`html\n" + this._htmlText + "\n\`\`\`";
+      }
+
+      if (this._scriptText.trim().length > 0) {
+        this._scriptEl = document.createElement("marked-element");
+        this._scriptText = this._scriptEl._unindent(this._scriptText).trim();
+        this._scriptEl.markdown = "\`\`\`js\n" + this._scriptText + "\n\`\`\`";
+      }
+
+      if (this._styleText.trim().length > 0) {
+        this._styleEl = document.createElement("marked-element");
+        this._styleText = this._styleEl._unindent(this._styleText).trim();
+        this._styleEl.markdown = "\`\`\`css\n" + this._styleText + "\n\`\`\`";
+      }
+    },
+
+    _createTabs: function() {
+      if (!this._htmlEl && !this._scriptEl &&  !this._styleEl)
+        return;
+
+      this._tabs = document.createElement("div");
+      this._tabs.className = "tabs";
+      Polymer.dom(this.root).insertBefore(this._tabs, this.root.firstChild);
+
+      this._sourceView = document.createElement("div");
+      this._sourceView.className = "view-source-source";
+
+      this._resultTab = document.createElement("button");
+      this._resultTab.textContent = "Result";
+      this._resultTab.className = "result selected";
+      Polymer.dom(this._tabs).appendChild(this._resultTab);
+      this._resultTab.addEventListener("click", function() {
+        this._showSource("");
+      }.bind(this));
+
+      if (this._htmlEl) {
+        this._htmlTab = document.createElement("button");
+        this._htmlTab.textContent = "HTML";
+        this._htmlTab.className = "html";
+        Polymer.dom(this._tabs).appendChild(this._htmlTab);
+        this._htmlTab.addEventListener("click", function() {
+          this._showSource("html");
+        }.bind(this));
+      }
+
+      if (this._scriptEl) {
+        this._scriptTab = document.createElement("button");
+        this._scriptTab.textContent = "JS";
+        this._scriptTab.className = "js";
+        Polymer.dom(this._tabs).appendChild(this._scriptTab);
+        this._scriptTab.addEventListener("click", function() {
+          this._showSource("js");
+        }.bind(this));
+      }
+
+      if (this._styleEl) {
+        this._styleTab = document.createElement("button");
+        this._styleTab.textContent = "CSS";
+        this._styleTab.className = "css";
+        Polymer.dom(this._tabs).appendChild(this._styleTab);
+        this._styleTab.addEventListener("click", function() {
+          this._showSource("css");
+        }.bind(this));
+      }
+
+      this._editButton = document.createElement("button");
+      this._editButton.className = "edit";
+      this._editButton.title = "Edit in Codepen.io";
+      this._editButton.innerHTML = "Edit &rsaquo;";
+      Polymer.dom(this._tabs).appendChild(this._editButton);
+      this._editButton.addEventListener("click", function() {
+        this._postToCodepen();
+      }.bind(this));
+    },
+
+    _showSource: function(which) {
+      if (which !== "" && which !== "result") {
+        Polymer.dom(this).appendChild(this._sourceView);
+        this._sourceView.style.top = this._tabs.offsetHeight + "px";
+        this._resultTab.classList.remove("selected");
+      } else {
+        if (this._sourceView.parentNode) {
+          Polymer.dom(this).removeChild(this._sourceView);
+          this._resultTab.classList.add("selected");
+        }
+      }
+
+      if (this._htmlEl && this._htmlEl.parentNode) {
+        Polymer.dom(this._sourceView).removeChild(this._htmlEl);
+        this._htmlTab.classList.remove("selected");
+      }
+
+      if (this._scriptEl && this._scriptEl.parentNode) {
+        Polymer.dom(this._sourceView).removeChild(this._scriptEl);
+        this._scriptTab.classList.remove("selected");
+      }
+
+      if (this._styleEl && this._styleEl.parentNode) {
+        Polymer.dom(this._sourceView).removeChild(this._styleEl);
+        this._styleTab.classList.remove("selected");
+      }
+
+      if (which === "html") {
+        Polymer.dom(this._sourceView).appendChild(this._htmlEl);
+        this._htmlTab.classList.add("selected");
+      } else if (which === "js") {
+        Polymer.dom(this._sourceView).appendChild(this._scriptEl);
+        this._scriptTab.classList.add("selected");
+      } else if (which === "css") {
+        Polymer.dom(this._sourceView).appendChild(this._styleEl);
+        this._styleTab.classList.add("selected");
+      }
+    },
+
+    _showChanged: function(show) {
+      if(this._sourceView)
+        this._showSource(show);
+    },
+
+    _postToCodepen: function() {
+      var data = {
+        html: this._htmlText,
+        css: this._styleText,
+        js: this._scriptText,
+        head: this._headText
+      };
+
+      // Quotes will screw up the JSON
+      var JSONstring = JSON.stringify(data).replace(/"/g, "&​quot;").replace(/'/g, "&apos;");
+
+      var form =
+        '<form action="http://codepen.io/pen/define" method="POST" target="_blank">' +
+        '<input type="hidden" name="data" value=\'' + JSONstring + '\'>' +
+        '</form>';
+
+      var formEl = document.createElement("div");
+      formEl.innerHTML = form;
+      // Polymer.dom(this).appendChild(formEl);
+      formEl.firstChild.submit();
+    }
+  });
+</script>
