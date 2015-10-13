@@ -14,30 +14,37 @@ This program is available under Apache License Version 2.0, available at https:/
 </style>
 
 <!--
-Data grid for showing large amountsos of tabular data.
+High quality data grid for showing large amounts of tabular data.
 
-Basic usage:
+Simple usage (static HTML data source):
 ```html
 <vaadin-grid>
   <table>
     <colgroup>
-      <col header-text="Name">
-      <col header-text="Value">
-      <col header-text="Progress">
+      <col header-text="First Name">
+      <col header-text="Last Name">
+      <col header-text="Email">
     </colgroup>
     <tbody>
       <tr>
-        <td>Project A</td><td>10000</td><td>0.8</td>
+        <td>Jonathan</td>
+        <td>Doe</td>
+        <td>jonathan.doe@example.com</td>
       </tr>
       <tr>
-        <td>Project B</td><td>999999</td><td>0.8</td>
+        <td>Jane</td>
+        <td>Smith</td>
+        <td>jane.smith@example.com</td>
       </tr>
     </tbody>
   </table>
 </vaadin-grid>
 ```
 
-More examples available at https://cdn.vaadin.com/vaadin-components/latest/vaadin-grid/demo/
+See the [demo](demo/index.html) for use case examples.
+
+@element vaadin-grid
+@demo demo/index.html
 -->
 <dom-module id="vaadin-grid">
 <style>
@@ -381,13 +388,7 @@ More examples available at https://cdn.vaadin.com/vaadin-components/latest/vaadi
     border-right: 1px solid #e3e3e3;
   }
 
-  /* TODO We need some other way of defining the frozen column divider than
-   using the cell, since this will affect all frozen columns, when we only
-    want to apply it to the last frozen column .*/
-  /* Double selector to increase specificity. Otherwise Polymer increases the
-   specificity of the ".vaadin-grid-header th" more than this, and we can't
-   override the border */
-  .vaadin-grid-cell.frozen.frozen {
+  .vaadin-grid-cell.frozen {
     position: relative;
     z-index: 1;
   }
@@ -686,13 +687,13 @@ More examples available at https://cdn.vaadin.com/vaadin-components/latest/vaadi
                 _done = true;
               }
               // Restore whenReady
-              HTMLImports.whenReady = _whenReady
+              HTMLImports.whenReady = _whenReady;
               // Run original whenReady
               _whenReady(done);
             }
           }, 3);
-        }
-      }
+        };
+      };
     }
 
     Polymer({
@@ -706,8 +707,7 @@ More examples available at https://cdn.vaadin.com/vaadin-components/latest/vaadi
         /**
          * Object for controlling and accessing the header rows in the grid.
          *
-         * @property {Header} header
-         * @type {Header}
+         * See the API documentation for “header” for more details.
          */
         header: {
           type: Object,
@@ -749,8 +749,7 @@ More examples available at https://cdn.vaadin.com/vaadin-components/latest/vaadi
         /**
          * Object for controlling and accessing the footer rows in the grid.
          *
-         * @property {Footer} footer
-         * @type {Footer}
+         * See the API documentation for “footer” for more details.
          */
         footer: {
           type: Object,
@@ -784,16 +783,30 @@ More examples available at https://cdn.vaadin.com/vaadin-components/latest/vaadi
         },
 
         /**
-         * A function returning the items determining rows in the grid.
+         * A function the grid uses to query the data source for items it needs
+         * to show in the grid viewport.
          *
-         * Example:
+         * Implement this function if you wish to provide data lazily to the
+         * grid (e.g. make a network request to a REST service to get only the
+         * items that are necessary in the grid viewport).
+         *
+         * For an in-memory list of items, use the `items` array property instead.
+         *
+         * #### Example:
          * ```
-         * grid.datasource = function(req) {
-         *  req.success(['foo', 'bar'], 2);
+         * grid.datasource = function(dataRequest) {
+         *   ...
+         *   fetch(url).then(function(response) {
+         *     var response = response.json();
+         *     var items = response.items; // e.g. ['foo', 'bar', ...]
+         *     var totalItems = response.total; // e.g. 1234
+         *     dataRequest.success(items, totalItems);
+         *   };
          * };
          * ```
          *
-         * @property {function} datasource
+         * See the API documentaiton for “data-request” for more details.
+         *
          * @type {function}
          */
         datasource: {
@@ -804,7 +817,7 @@ More examples available at https://cdn.vaadin.com/vaadin-components/latest/vaadi
         /**
          * An array containing items determining rows in the grid.
          *
-         *  Example:
+         *  #### Example:
          *  ```
          *  grid.items = [
          *      ["horse", 150, "domestic"],
@@ -812,7 +825,6 @@ More examples available at https://cdn.vaadin.com/vaadin-components/latest/vaadi
          *  ];
          *  ```
          *
-         * @property {Array<Object>} items
          * @type {Array<Object>}
          */
         items: {
@@ -823,8 +835,10 @@ More examples available at https://cdn.vaadin.com/vaadin-components/latest/vaadi
         /**
          * Object for controlling and accessing the selected rows in the grid.
          *
-         * @property {Selection} selection
-         * @type {Selection}
+         * See the API documentation for the “selection” object for more details.
+         *
+         * @type {selection}
+         * @default {}
          */
         selection: {
           type: Object,
@@ -873,10 +887,13 @@ More examples available at https://cdn.vaadin.com/vaadin-components/latest/vaadi
         },
 
         /**
-         * Order of sorting.
+         * An array defining the sorting of columns. The order of the objects in
+         * the array defines the order of sort (if the grid is sorted by
+         * multiple columns).
          *
-         * @property {Array<SortOrder>} source
-         * @type {Array<SortOrder>}
+         * See the API documentation for the “sort-order” object for more details.
+         *
+         * @type {Array<sort-order>}
          */
         sortOrder: {
           type: Array,
@@ -913,7 +930,7 @@ More examples available at https://cdn.vaadin.com/vaadin-components/latest/vaadi
          * @event sort-order-changed
          */
         /**
-         * Row is selected or deselected.
+         * A row is selected or deselected.
          *
          * @event select
          */
@@ -998,9 +1015,11 @@ More examples available at https://cdn.vaadin.com/vaadin-components/latest/vaadi
        * Scrolling happens asynchronously, so this method returns a 'thenable'
        * which can be used to be notified when the scrolling is finished.
        *
-       * Example: `grid.scrollToRow(10, 'end').then(doMoreStuff);`
+       * #### Example:
+       * ```js
+       * grid.scrollToRow(10, 'end').then(function() {...});
+       * ```
        *
-       * @method scrollToRow
        * @param {number} index - Zero-based index of the row to scroll to.
        * @param {string} scrollDestination - Desired destination placement of scrolled-to-row. Valid values are `any`, `start`, `middle` and `end`. Defaults to `any`.
        * @return {vaadin-grid}
@@ -1016,9 +1035,11 @@ More examples available at https://cdn.vaadin.com/vaadin-components/latest/vaadi
        * Scrolling happens asynchronously, so this method returns a 'thenable'
        * which can be used to be notified when the scrolling is finished.
        *
-       * Example: `grid.scrollToStart().then(doMoreStuff);`
+       * #### Example:
+       * ```js
+       * grid.scrollToStart().then(function() {...});
+       * ```
        *
-       * @method scrollToStart
        * @return {vaadin-grid}
        */
       scrollToStart: function() {
@@ -1032,9 +1053,11 @@ More examples available at https://cdn.vaadin.com/vaadin-components/latest/vaadi
        * Scrolling happens asynchronously, so this method returns a 'thenable'
        * which can be used to be notified when the scrolling is finished.
        *
-       * Example: `grid.scrollToEnd().then(doMoreStuff);`
+       * #### Example:
+       * ```js
+       * grid.scrollToEnd().then(function() {...});
+       * ```
        *
-       * @method scrollToEnd
        * @return {vaadin-grid}
        */
       scrollToEnd: function() {
@@ -1045,8 +1068,7 @@ More examples available at https://cdn.vaadin.com/vaadin-components/latest/vaadi
       /**
        * Adds a new column. Column is added at the end if `beforeColumn` is not defined.
        *
-       * @method addColumn
-       * @param {Column} column - Column to be added.
+       * @param {column} column - Column object to be added.
        * @param {string} beforeColumn - Index or id of the column before which the new column should be added.
        */
       addColumn: function(column, beforeColumn) {
@@ -1063,50 +1085,57 @@ More examples available at https://cdn.vaadin.com/vaadin-components/latest/vaadi
         this._grid.removeColumn(id);
       },
 
+      /**
+       * @private
+       */
       get rowClassGenerator() {
         return this._grid.getRowClassGenerator();
       },
 
       /**
-       * The style generator that is used for generating styles for rows.
+       * A function which is used for generating CSS class names for data rows.
        *
-       * Example:
-       * ```
+       * See the API documentation for the “row” object for more details about
+       * the parameter of this function.
+       *
+       * #### Example:
+       * ```js
        * grid.rowClassGenerator = function(row) {
-       *  var activity = row.data[2];
-       *  return 'activity-' + activity.toLowerCase();
+       *   var activity = row.data[2];
+       *   return 'activity-' + activity.toLowerCase();
        * };
        *```
        *
        * @property {function} rowClassGenerator
-       * @param {Row} row - Reference to the row being rendered.
        * @type {function}
        */
       set rowClassGenerator(row) {
         this._grid.setRowClassGenerator(row);
       },
 
+      /**
+       * @private
+       */
       get cellClassGenerator() {
         return this._grid.getCellClassGenerator();
       },
 
       /**
-       * The style generator that is used for generating styles for cells.
+       * A function which is used for generating CSS class names for data cells.
        *
-       * Example:
-       * ```
+       * See the API documentation for the “cell” object for more details about
+       * the parameter of this function.
+       *
+       * #### Example:
+       * ```js
        * grid.cellClassGenerator = function(cell) {
        *   if (cell.index == 2) {
-       *      var activity = cell.row.data[2];
-       *      return 'activity-' + activity.toLowerCase();
+       *      return 'activity-' + cell.data.toLowerCase();
        *    }
-       *    return '';
        *  };
        * ```
        * @property {function} cellClassGenerator
-       * @param {Cell} cell - Reference to the cell being rendered.
        * @type {function}
-       *
        */
       set cellClassGenerator(cell) {
         this._grid.setCellClassGenerator(cell);
@@ -1115,35 +1144,49 @@ More examples available at https://cdn.vaadin.com/vaadin-components/latest/vaadi
       /**
        * Disables the grid.
        *
-       * Attribute: `disabled`
+       * #### Declarative example:
+       * ```html
+       * <vaadin-grid disabled>...</vaadin-grid>
+       * ```
        *
-       * @property {boolean} disabled
        * @default false
        * @type {boolean}
        */
       get disabled() {
         return this._grid.isDisabled();
       },
+      /**
+       * @private
+       */
       set disabled(disabled) {
         this._grid.setDisabled(disabled);
         this.reflectPropertyToAttribute("disabled");
       },
 
       /**
-       * The number of frozen columns in this grid. Setting it to 0
-       * means that no data columns will be frozen, but the built-in selection
-       * checkbox column will still be frozen if it's in use. Setting the count to
-       * -1 will also disable the selection column.
+       * The index of the last frozen columns in this grid. A frozen column will
+       * always stay visible in the grid viewport when the user scrolls the grid
+       * viewport horizontally.
        *
-       * Attribute: `frozen-columns`
+       * Setting the property to 0 means that no columns will be frozen,
+       * but the built-in selection checkbox column will still be frozen if
+       * it’s in use. Setting the count to -1 will unfreeze the selection
+       * column also.
        *
-       * @property {number} frozenColumns
+       * #### Declarative example:
+       * ```html
+       * <vaadin-grid frozen-columns="2">...</vaadin-grid>
+       * ```
+       *
        * @default 0
        * @type {number}
        */
       get frozenColumns() {
         return this._grid.getFrozenColumns();
       },
+      /**
+       * @private
+       */
       set frozenColumns(frozenColumns) {
         this._grid.setFrozenColumns(frozenColumns);
         this.reflectPropertyToAttribute("frozenColumns");
@@ -1151,21 +1194,22 @@ More examples available at https://cdn.vaadin.com/vaadin-components/latest/vaadi
 
       /**
        * Returns an array of the currently visible columns in the grid.
-       * No hidden columns included.
        *
-       * @property {Array<Column>} visibleColumns
-       * @type {Array<Column>}
+       * @property {Array<column>} visibleColumns
+       * @type {Array<column>}
        */
       get visibleColumns() {
         return this._grid.getVisibleColumns();
       },
 
       /**
-       * The number of visible rows in the grid. Implicitly sets the height
-       * in the inline style, overriding any previous height. Setting style.height
-       * in this case should be ignored if possible.
+       * Sets the height of the grid so that the specified amount of data rows
+       * is visible. Overrides any height specified in CSS.
        *
-       * Attribute: `rows`
+       * #### Declarative example:
+       * ```html
+       * <vaadin-grid rows="5">...</vaadin-grid>
+       * ```
        *
        * @property {number} rows
        * @default 10
@@ -1175,20 +1219,29 @@ More examples available at https://cdn.vaadin.com/vaadin-components/latest/vaadi
         var rows = this._grid.getRows();
         return rows > 0 ? rows : undefined;
       },
+      /**
+       * @private
+       */
       set rows(rows) {
         this._grid.setRows(rows);
         this.reflectPropertyToAttribute("rows");
       },
 
       /**
-       * The array of Columns attached to the grid.
+       * The array of columns attached to the grid.
        *
-       * @property {Array<Column>} columns
-       * @type {Array<Column>}
+       * See the API documentation for “column” for more details about the
+       * column objects.
+       *
+       * @property {Array<object>} columns
+       * @type {Array<object>}
        */
       get columns() {
         return this._grid.getColumns();
       },
+      /**
+       * @private
+       */
       set columns(cols) {
         this._grid.setColumns(cols);
       },
@@ -1205,14 +1258,15 @@ More examples available at https://cdn.vaadin.com/vaadin-components/latest/vaadi
       },
 
       /**
-       * The row detail generator that is used for generating detail content for rows.
+       * The row details generator is used for generating detail content for
+       * data rows. The details element is added directly under the row.
        *
-       * Example:
-       * ```
+       * ###Example:
+       * ```js
        * grid.rowDetails.detailsGenerator = function(rowIndex) {
-       *  var detail = document.createElement('div');
-       *  detail.textContent = 'Row detail content for row ' + rowIndex;
-       *  return detail;
+       *   var detail = document.createElement('div');
+       *   detail.textContent = 'Row detail content for row ' + rowIndex;
+       *   return detail;
        * };
        *```
        *
@@ -1222,6 +1276,9 @@ More examples available at https://cdn.vaadin.com/vaadin-components/latest/vaadi
       set rowDetailsGenerator(rowDetailsGenerator) {
         this._grid.setRowDetailsGenerator(rowDetailsGenerator);
       },
+      /**
+       * @private
+       */
       get rowDetailsGenerator() {
         return this._grid.getRowDetailsGenerator();
       },
@@ -1238,12 +1295,18 @@ More examples available at https://cdn.vaadin.com/vaadin-components/latest/vaadi
       },
 
       /**
-       * Clears the cache.
+       * Clears the grid’s internal data cache, causing it to request the
+       * visible items in the grid viewport from the `items` property or the
+       * `datasource` function.
+       *
+       * Used to notify the grid when the data items are modified in some way
+       * (added, removed, updated, etc.).
        *
        * @type {Function}
+       * @param {number} size (optional) - The updated total number of items in the data source. If not defined, the old size will be used.
        */
-      clearCache: function(estimatedNewSize) {
-        this._grid.getDataSource().clearCache(estimatedNewSize);
+      clearCache: function(size) {
+        this._grid.getDataSource().clearCache(size);
       },
 
       /**
