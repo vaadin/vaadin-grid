@@ -14,7 +14,7 @@ This program is available under Apache License Version 2.0, available at https:/
 </style>
 
 <!--
-Data grid for showing large amounts of tabular data.
+Data grid for showing large amountsos of tabular data.
 
 Basic usage:
 ```html
@@ -271,7 +271,10 @@ More examples available at https://cdn.vaadin.com/vaadin-components/latest/vaadi
 
   /* Grid header */
   .vaadin-grid-header {
-    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06),
+                0 2px 0 rgba(0, 0, 0, 0.075),
+                0 3px 0 rgba(0, 0, 0, 0.05),
+                0 4px 0 rgba(0, 0, 0, 0.015);
     box-sizing: border-box;
     display: block;
     left: 0;
@@ -911,7 +914,7 @@ More examples available at https://cdn.vaadin.com/vaadin-components/latest/vaadi
         /**
          * A change in the sorting order.
          *
-         * @event sort
+         * @event sort-order-changed
          */
         /**
          * Row is selected or deselected.
