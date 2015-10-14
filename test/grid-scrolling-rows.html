@@ -59,43 +59,41 @@
       expect(grid.scrollToRow.bind(grid, 100)).to.throw("Row index");
     });
 
-    it('should scroll using scrollToRow', function() {
-      return grid.scrollToRow(50)
-          .then(function() {
-            expect(firstColumnContents()).to.contain('foo 50');
-          });
+    it('should scroll using scrollToRow', function(done) {
+      grid.scrollToRow(50);
+      waitUntil(function(){
+        return /foo 50/.test(firstColumnContents())
+      }, done, done);
     });
 
-    describe('scrolling with destination', function() {
-      it('should scroll to start', function() {
-        return grid.scrollToRow(50, 'start')
-            .then(function() {
-              expect(firstColumnContents()).to.contain('foo 50');
-              expect(firstColumnContents()).to.contain('foo 54');
-            });
+    describe('scrolling with destination', function(done) {
+      it('should scroll to row from start', function(done) {
+        grid.scrollToRow(50, 'start');
+        waitUntil(function(){
+          return /foo 5[04]/.test(firstColumnContents())
+        }, done, done);
       });
 
-      it('should scroll to end', function() {
-        return grid.scrollToRow(50, 'end')
-            .then(function() {
-              expect(firstColumnContents()).to.contain('foo 46');
-              expect(firstColumnContents()).to.contain('foo 50');
-            });
+      it('should scroll to row from end', function(done) {
+        grid.scrollToRow(50, 'end');
+        waitUntil(function(){
+          return /foo 5[04]/.test(firstColumnContents())
+        }, done, done);
       });
     });
 
-    it('should scroll to end', function() {
-      return grid.scrollToEnd()
-          .then(function() {
-            expect(firstColumnContents()).to.contain('foo 99');
-          });
+    it('should scroll to end', function(done) {
+      grid.scrollToEnd();
+      waitUntil(function(){
+        return /foo 99/.test(firstColumnContents())
+      }, done, done);
     });
 
-    it('should scroll to start', function() {
-      return grid.scrollToStart()
-          .then(function() {
-          expect(firstColumnContents()).to.contain('foo 0');
-        });
+    it('should scroll to start', function(done) {
+      grid.scrollToStart();
+      waitUntil(function(){
+        return /foo 0/.test(firstColumnContents())
+      }, done, done);
     });
 
     it('should scroll one page down', function(done) {
@@ -109,10 +107,9 @@
           deltaY: tableWrapper.offsetHeight
         });
 
-        grid.then(function(){
-          assert.isTrue(firstColumnContents().indexOf("foo 7") > -1);
-          done();
-        });
+        waitUntil(function(){
+          return /foo 7/.test(firstColumnContents())
+        }, done, done);
       });
     });
 

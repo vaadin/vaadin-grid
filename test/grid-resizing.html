@@ -312,27 +312,32 @@
           });
         });
 
-        it('should resize with a details row open', function() {
+        it('should resize with a details row open', function(done) {
           grid.rowDetailsGenerator = function() {
             return document.createElement("input");
           }
           var originalHeight;
 
-          return grid.then(function() {
+          grid.then(function() {
             grid.setRowDetailsVisible(0, true);
             return grid;
           }).then(function() {
             originalHeight = grid.clientHeight;
             grid.style.height = "100px";
-            return grid;
-          }).then(function() {
-            grid.style.height = "";
-            return grid;
-          }).then(function() {
-            expect(originalHeight).to.eql(grid.clientHeight);
+
+            // Using waitUntil instead of chaining grid.then because 'onresize' event from
+            // iframe is not asynchronous (very noticeable in android 5.x emulator)
+            // Related with : https://github.com/vaadin/vaadin-grid/issues/19
+            waitUntil(function(){
+              return originalHeight != grid.clientHeight;
+            }, function(){
+              grid.style.height = "";
+              waitUntil(function(){
+                return originalHeight == grid.clientHeight;
+              }, done, done);
+            }, done);
           });
         });
-
       });
     });
   </script>
