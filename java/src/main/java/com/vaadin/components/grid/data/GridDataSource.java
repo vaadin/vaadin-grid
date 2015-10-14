@@ -13,7 +13,7 @@ import com.vaadin.components.common.js.JSValidate;
 import com.vaadin.components.grid.GridComponent;
 import com.vaadin.shared.ui.grid.Range;
 
-@JsNamespace(JS.VAADIN_JS_NAMESPACE + ".grid.api")
+@JsNamespace(JS.VAADIN_JS_NAMESPACE + ".grid._api")
 @JsExport
 public abstract class GridDataSource extends AbstractRemoteDataSource<Object> {
     private int size = 0;
