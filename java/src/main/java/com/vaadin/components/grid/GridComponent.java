@@ -512,14 +512,16 @@ public class GridComponent implements SelectionHandler<Object>,
 
     @Override
     public void sort(SortEvent<Object> event) {
-        getSelectionModel().reset();
-
         if (event.isUserOriginated()) {
             JsUtils.prop(container, "sortOrder",
                     mapToJSSortOrders(event.getOrder()));
         }
 
-        clearDataSourceCache();
+        Scheduler.get().scheduleDeferred(() -> {
+            getSelectionModel().reset();
+            clearDataSourceCache();
+        });
+
     }
 
     private void clearDataSourceCache() {

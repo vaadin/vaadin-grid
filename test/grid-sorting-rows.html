@@ -17,6 +17,18 @@
   <script>
     describe.feature('sorting rows', function() {
 
+      var sortListener;
+
+      before(function() {
+        grid.addEventListener('sort-order-changed', function() {
+          sortListener();
+        });
+      });
+
+      beforeEach(function() {
+        sortListener = sinon.spy();
+      });
+
       describe('using api', function() {
 
         function assignInvalidSortOrder() {
@@ -90,6 +102,19 @@
           expect(grid.selection.selected()).to.be.empty;
         });
 
+        it('should fire sort event before clearing the selection on api sort', function(done) {
+          sortListener = function() {
+              expect(grid.selection.selected()).to.eql([0]);
+              done();
+          };
+
+          grid.selection.select(0);
+          grid.sortOrder = [{
+            column: 0,
+            direction: "desc"
+          }];
+        });
+
         it('should ignore selection column from index', function() {
           var firstNonFrozenHeaderCell = qLocal.bind(this, ".vaadin-grid-header .vaadin-grid-cell:not(.frozen)");
 
@@ -161,6 +186,17 @@
           }]);
         });
 
+        it('should fire sort event before clearing the selection on user sort', function(done) {
+          sortListener = function() {
+            expect(grid.selection.selected()).to.eql([0]);
+            done();
+          };
+
+          grid.selection.select(0);
+          var cells = qaLocal(".vaadin-grid-header .vaadin-grid-cell");
+          triggerMouseEvent(cells[1], "click");
+        });
+
         it('should sort by two columns', function() {
           grid.sortOrder = [];
           var cells = qaLocal(".vaadin-grid-header .vaadin-grid-cell");
@@ -175,6 +211,17 @@
               column: 1,
               direction: "desc"
             }]);
+        });
+      });
+
+      it('should clear selection after sort', function() {
+        grid.selection.select(0);
+        grid.sortOrder = [{
+          column: 0,
+          direction: "desc"
+        }];
+        return grid.then(function(){
+          expect(grid.selection.selected()).to.be.empty;
         });
       });
 
