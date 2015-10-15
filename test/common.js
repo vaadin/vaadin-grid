@@ -42,8 +42,7 @@ function waitUntil(check, exec, onTimeout) {
 
   var timeoutId = setTimeout(function() {
     clearInterval(id);
-    assert.fail();
-    onTimeout();
+    onTimeout(new Error('Test timed out waiting for:' + check));
   }, 5000);
 }
 

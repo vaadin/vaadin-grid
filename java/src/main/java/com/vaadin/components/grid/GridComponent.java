@@ -514,8 +514,9 @@ public class GridComponent implements SelectionHandler<Object>,
     public void sort(SortEvent<Object> event) {
         getSelectionModel().reset();
 
-        if(event.isUserOriginated()) {
-            JsUtils.prop(container, "sortOrder", mapToJSSortOrders(event.getOrder()));
+        if (event.isUserOriginated()) {
+            JsUtils.prop(container, "sortOrder",
+                    mapToJSSortOrders(event.getOrder()));
         }
 
         clearDataSourceCache();
@@ -531,7 +532,21 @@ public class GridComponent implements SelectionHandler<Object>,
     public boolean isWorkPending() {
         return grid.getDataSource() != null
                 && ((GridDataSource) grid.getDataSource()).isWaitingForData()
-                || grid.isWorkPending() || sizeUpdater.isRunning();
+                || grid.isWorkPending() || sizeUpdater.isRunning()
+                || columnsPending();
+    }
+
+    // This is needed because the col Observer is not synchronous in iOS
+    private boolean columnsPending() {
+        boolean result = getDataColumns().size() != cols.size();
+        if (!result) {
+            for (GridColumn col : getDataColumns()) {
+                if (cols.indexOf(col.getJsColumn()) == -1) {
+                    result = true;
+                }
+            }
+        }
+        return result;
     }
 
     public void onReady(JavaScriptObject f) {
