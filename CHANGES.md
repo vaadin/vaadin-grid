@@ -12,6 +12,7 @@
   - Hiding the header/footer declarative requires the element to have at least one cell (#135)
   - JSRow reference data with single column ds fixed
   - Column header text should default to name if none is given (#136)
+  - Fire sort event before clearing the selection (#206)
 
   #### API changes:
   - `grid.data.source` is now `grid.items` for Arrays and `grid.datasource` for Functions. (#160)
