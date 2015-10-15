@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.js.JsExport;
+import com.google.gwt.core.client.js.JsType;
 import com.google.gwt.core.client.js.JsNamespace;
 import com.google.gwt.core.client.js.JsNoExport;
 import com.google.gwt.query.client.js.JsUtils;
@@ -15,6 +16,7 @@ import com.vaadin.shared.ui.grid.Range;
 
 @JsNamespace(JS.VAADIN_JS_NAMESPACE + ".grid._api")
 @JsExport
+@JsType
 public abstract class GridDataSource extends AbstractRemoteDataSource<Object> {
     private int size = 0;
 
