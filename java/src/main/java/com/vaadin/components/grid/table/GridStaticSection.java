@@ -22,7 +22,7 @@ import com.vaadin.components.grid.ViolatedGrid;
 import com.vaadin.components.grid.config.JSStaticCell;
 import com.vaadin.shared.ui.grid.GridStaticCellType;
 
-@JsNamespace(JS.VAADIN_JS_NAMESPACE)
+@JsNamespace(JS.VAADIN_JS_NAMESPACE + ".grid._api")
 @JsExport
 @JsType
 public class GridStaticSection {

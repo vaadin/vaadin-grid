@@ -67,7 +67,7 @@ import com.vaadin.shared.ui.grid.ScrollDestination;
 /**
  * Class to export Vaadin Grid to JS.
  */
-@JsNamespace(JS.VAADIN_JS_NAMESPACE)
+@JsNamespace(JS.VAADIN_JS_NAMESPACE + ".grid")
 @JsExport
 @JsType
 public class GridComponent implements SelectionHandler<Object>,
@@ -88,6 +88,7 @@ public class GridComponent implements SelectionHandler<Object>,
     private JavaScriptObject cellClassGenerator;
     private JavaScriptObject rowDetailsGenerator;
 
+    @JsNoExport
     public static final int MAX_AUTO_ROWS = 10;
 
     public GridComponent() {

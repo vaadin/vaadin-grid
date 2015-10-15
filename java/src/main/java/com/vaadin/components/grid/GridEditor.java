@@ -30,7 +30,7 @@ import com.vaadin.components.grid.config.JSEditorRequest;
 import com.vaadin.components.grid.data.GridDataSource;
 import com.vaadin.components.grid.table.GridColumn;
 
-@JsNamespace(JS.VAADIN_JS_NAMESPACE)
+@JsNamespace(JS.VAADIN_JS_NAMESPACE + ".grid._api")
 @JsExport
 @JsType
 public class GridEditor {

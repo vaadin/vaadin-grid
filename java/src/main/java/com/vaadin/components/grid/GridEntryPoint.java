@@ -18,5 +18,11 @@ public class GridEntryPoint implements EntryPoint {
                 RootPanel.get().removeStyleName(BrowserInfo.get().getCSSClass());
             }
         });
+        removePrivateApi();
     }
+    
+    // We don't need to expose constructors exported under _api namespace.
+    private static native void removePrivateApi() /*-{
+        delete $wnd.vaadin.components.grid._api;
+    }-*/;
 }

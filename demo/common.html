@@ -25,7 +25,8 @@
     var _whenReady = HTMLImports.whenReady;
     HTMLImports.whenReady = function(done) {
       var id = setInterval(function() {
-        if (window.Polymer && window.vaadin && window.vaadin.GridComponent) {
+        if (window.Polymer && window.vaadin && vaadin.components
+            && vaadin.components.grid && vaadin.components.grid.GridComponent) {
           clearInterval(id);
           // Restore whenReady
           HTMLImports.whenReady = _whenReady

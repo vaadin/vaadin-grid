@@ -11,7 +11,7 @@ import com.vaadin.components.common.js.JSArray;
 /**
  * Selection model based on row indexes.
  */
-@JsNamespace(JS.VAADIN_JS_NAMESPACE)
+@JsNamespace(JS.VAADIN_JS_NAMESPACE + ".grid._api")
 @JsExport
 @JsType
 public interface IndexBasedSelectionModel extends SelectionModel<Object> {
