@@ -2,12 +2,12 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
   <name>Vaadin Components Gwt Exported: The Grid</name>
-  <groupId>com.vaadin.components</groupId>
+  <groupId>com.vaadin.elements</groupId>
   <artifactId>vaadin-grid</artifactId>
   <packaging>war</packaging>
   <version>0.3.0</version>
   <properties>
-    <module.name>com.vaadin.components.grid.VaadinGrid</module.name>
+    <module.name>com.vaadin.elements.grid.VaadinGrid</module.name>
     <modulePathPrefix></modulePathPrefix>
     <gwt.loglevel>WARN</gwt.loglevel>
     <gwtversion>2.8.0-SNAPSHOT</gwtversion>
@@ -28,7 +28,7 @@
     <profile>
       <id>compile</id>
       <properties>
-        <module.name>com.vaadin.components.grid.VaadinGridImport</module.name>
+        <module.name>com.vaadin.elements.grid.VaadinGridImport</module.name>
       </properties>
     </profile>
     <profile>
