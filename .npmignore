@@ -12,7 +12,3 @@ pp
 tmp
 node_modules
 bower_components
-vaadin-components
-vaadin-theme
-vaadin-components-gwt
-vaadin-components-package
