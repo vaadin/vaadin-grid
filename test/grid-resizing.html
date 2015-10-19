@@ -81,7 +81,7 @@
 
           return grid.then(function() {
             assertSameDimensions();
-            //TODO: timeout here because of https://github.com/vaadin/components/issues/19
+            //TODO: timeout here because of https://github.com/vaadin/vaadin-grid/issues/19
             setTimeout(function() {
               assertHeightByRows(4);
             }, 100)
@@ -109,7 +109,7 @@
 
             grid.removeAttribute("style");
 
-            //TODO: wait until here because of https://github.com/vaadin/components/issues/19
+            //TODO: wait until here because of https://github.com/vaadin/vaadin-grid/issues/19
             // We use waitUntil because resize event in iframe is not synchronous.
             waitUntil(function() {
               return grid.offsetHeight <= 30
@@ -139,7 +139,7 @@
 
             tmp.removeAttribute("style");
 
-            //TODO: wait until here because of https://github.com/vaadin/components/issues/19
+            //TODO: wait until here because of https://github.com/vaadin/vaadin-grid/issues/19
             // We use waitUntil because resize event in iframe is not synchronous.
             waitUntil(function() {
               return grid.offsetHeight <= 30
