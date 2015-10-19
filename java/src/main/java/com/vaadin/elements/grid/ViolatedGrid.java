@@ -17,7 +17,7 @@ public class ViolatedGrid extends com.vaadin.client.widgets.Grid<Object> {
     public ViolatedGrid() {
         super();
         // This is needed for detecting the correct native scrollbar size in
-        // (OS X) Chrome [https://github.com/vaadin/components/issues/30]
+        // (OS X) Chrome [https://github.com/vaadin/vaadin-grid/issues/30]
         if (BrowserInfo.get().isChrome()) {
             setWidgetUtilNativeScrollbarSize(getWidgetUtilNativeScrollbarSize());
         }
@@ -26,7 +26,7 @@ public class ViolatedGrid extends com.vaadin.client.widgets.Grid<Object> {
             // "invisible" scrollbars
             if (BrowserInfo.get().isSafari()) {
                 // This hack is needed to fix scrollbars for OS X Safari
-                // [https://github.com/vaadin/components/issues/28]
+                // [https://github.com/vaadin/vaadin-grid/issues/28]
                 //
                 // Dynamic scrollbars refuse to work on the stacking root
                 // directly so
@@ -41,7 +41,7 @@ public class ViolatedGrid extends com.vaadin.client.widgets.Grid<Object> {
                 scrollers.filter(".vaadin-grid-scroller-horizontal").parent()
                         .css("bottom", "0");
             } else if (BrowserInfo.get().isChrome()) {
-                // Fix for [https://github.com/vaadin/components/issues/29]
+                // Fix for [https://github.com/vaadin/vaadin-grid/issues/29]
                 GQuery.$(".vaadin-grid-scroller", this).attr("invisible", "");
             }
         }
