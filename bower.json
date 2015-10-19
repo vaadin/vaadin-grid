@@ -8,7 +8,7 @@
   "keywords": [
     "web-components",
     "vaadin",
-    "vaadin components",
+    "vaadin elements",
     "grid"
   ],
   "main": "vaadin-grid.html",
@@ -25,7 +25,7 @@
   ],
   "dependencies": {
     "polymer": "Polymer/polymer#^1.1.1",
-    "components-demo-resources": "vaadin/components-demo-resources#master"
+    "components-demo-resources": "vaadin/elements-demo-resources#master"
   },
   "devDependencies": {
     "web-component-tester": "~3.3.21"
