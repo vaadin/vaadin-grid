@@ -11,9 +11,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import com.vaadin.elements.grid.GridEditor;
-import com.vaadin.elements.grid.GridElement;
-import com.vaadin.elements.grid.ViolatedGrid;
 import com.vaadin.elements.grid.config.JSEditorHandler;
 
 @RunWith(GwtMockitoTestRunner.class)
@@ -28,11 +25,11 @@ public class GridEditorTest {
 
     @Before
     public void setup() {
-        GridElement gridComponent = mock(GridElement.class);
+        GridElement gridElement = mock(GridElement.class);
 
-        when(gridComponent.getGrid()).thenReturn(grid);
+        when(gridElement.getGrid()).thenReturn(grid);
 
-        editor = new GridEditor(gridComponent, handler);
+        editor = new GridEditor(gridElement, handler);
     }
 
     @Test

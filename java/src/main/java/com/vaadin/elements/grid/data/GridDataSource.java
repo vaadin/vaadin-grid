@@ -20,10 +20,10 @@ import com.vaadin.shared.ui.grid.Range;
 public abstract class GridDataSource extends AbstractRemoteDataSource<Object> {
     private int size = 0;
 
-    protected final GridElement gridComponent;
+    protected final GridElement gridElement;
 
-    public GridDataSource(GridElement gridComponent) {
-        this.gridComponent = gridComponent;
+    public GridDataSource(GridElement gridElement) {
+        this.gridElement = gridElement;
     }
 
     @Override
@@ -45,19 +45,19 @@ public abstract class GridDataSource extends AbstractRemoteDataSource<Object> {
                 // Grid stops calling requestRows when size is 0, if
                 // size changes we have to re-attach the data-source so
                 // as grid starts calling requestRows again
-                boolean wasUpdating = gridComponent.updating;
-                gridComponent.updating = true;
-                gridComponent.getGrid().setDataSource(this);
-                gridComponent.updating = wasUpdating;
+                boolean wasUpdating = gridElement.updating;
+                gridElement.updating = true;
+                gridElement.getGrid().setDataSource(this);
+                gridElement.updating = wasUpdating;
             }
 
-            gridComponent.updateHeight();
+            gridElement.updateHeight();
         }
     }
 
     public void refresh() {
         resetDataAndSize(size());
-        gridComponent.getSelectionModel().reset();
+        gridElement.getSelectionModel().reset();
     }
 
     public void clearCache(Double newSize) {
@@ -70,14 +70,14 @@ public abstract class GridDataSource extends AbstractRemoteDataSource<Object> {
         } else {
             resetDataAndSize(intSize);
         }
-        gridComponent.getSelectionModel().reset();
+        gridElement.getSelectionModel().reset();
     }
 
     @Override
     protected void resetDataAndSize(int newSize) {
         super.resetDataAndSize(newSize);
 
-        gridComponent.getSelectionModel().dataSizeUpdated(newSize);
+        gridElement.getSelectionModel().dataSizeUpdated(newSize);
 
     }
 

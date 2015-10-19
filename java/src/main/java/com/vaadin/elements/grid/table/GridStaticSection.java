@@ -27,13 +27,13 @@ import com.vaadin.shared.ui.grid.GridStaticCellType;
 @JsType
 public class GridStaticSection {
 
-    private final GridElement gridComponent;
+    private final GridElement gridElement;
     private final ViolatedGrid grid;
     private final Map<StaticCell, JSStaticCell> cells = new HashMap<>();
 
-    public GridStaticSection(GridElement gridComponent) {
-        this.gridComponent = gridComponent;
-        this.grid = gridComponent.getGrid();
+    public GridStaticSection(GridElement gridElement) {
+        this.gridElement = gridElement;
+        this.grid = gridElement.getGrid();
     }
 
     @JsNoExport
@@ -89,7 +89,7 @@ public class GridStaticSection {
 
     private GridColumn getColumnByDefaultHeaderCell(JSStaticCell cell) {
         GridColumn result = null;
-        for (GridColumn col : gridComponent.getDataColumns()) {
+        for (GridColumn col : gridElement.getDataColumns()) {
             if (col.getDefaultHeaderCellReference() == cell) {
                 result = col;
                 break;
@@ -102,7 +102,7 @@ public class GridStaticSection {
             String propertyName, Setter setter) {
         JS.definePropertyAccessors(cell, propertyName, v -> {
             setter.setValue(v);
-            gridComponent.updateWidth();
+            gridElement.updateWidth();
             grid.refreshStaticSection(staticCell);
         }, null);
     }
@@ -119,8 +119,8 @@ public class GridStaticSection {
     }
 
     private GridColumn getColumnById(Object columnId) {
-        return gridComponent.getDataColumns().get(
-                gridComponent.getColumnIndexByIndexOrName(columnId));
+        return gridElement.getDataColumns().get(
+                gridElement.getColumnIndexByIndexOrName(columnId));
     }
 
     public JSStaticCell getFooterCell(int rowIndex, Object columnId) {
@@ -137,7 +137,7 @@ public class GridStaticSection {
         }
 
         grid.refreshHeader();
-        gridComponent.updateHeight();
+        gridElement.updateHeight();
     }
 
     public void addFooter(Object rowIndex, JSArray<?> cellContent) {
@@ -148,7 +148,7 @@ public class GridStaticSection {
         }
 
         grid.refreshFooter();
-        gridComponent.updateHeight();
+        gridElement.updateHeight();
     }
 
     public int getFooterRowCount() {
@@ -166,7 +166,7 @@ public class GridStaticSection {
 
     private void setStaticRowCellContent(StaticRow<?> row,
             JSArray<?> cellContent) {
-        List<GridColumn> dataColumns = gridComponent.getDataColumns();
+        List<GridColumn> dataColumns = gridElement.getDataColumns();
         for (int i = 0; i < dataColumns.size(); i++) {
             GridColumn column = dataColumns.get(i);
             if (i < cellContent.size()) {
@@ -179,13 +179,13 @@ public class GridStaticSection {
     public void removeHeader(int rowIndex) {
         grid.removeHeaderRow(rowIndex);
         grid.refreshHeader();
-        gridComponent.updateHeight();
+        gridElement.updateHeight();
     }
 
     public void removeFooter(int rowIndex) {
         grid.removeFooterRow(rowIndex);
         grid.refreshFooter();
-        gridComponent.updateHeight();
+        gridElement.updateHeight();
     }
 
     public void setHeaderRowClassName(int rowIndex, String styleName) {
@@ -221,7 +221,7 @@ public class GridStaticSection {
     public void setHeaderHidden(boolean hidden) {
         grid.setHeaderVisible(!hidden);
         grid.refreshHeader();
-        gridComponent.updateHeight();
+        gridElement.updateHeight();
     }
 
     public boolean isFooterHidden() {
@@ -231,6 +231,6 @@ public class GridStaticSection {
     public void setFooterHidden(boolean hidden) {
         grid.setFooterVisible(!hidden);
         grid.refreshFooter();
-        gridComponent.updateHeight();
+        gridElement.updateHeight();
     }
 }

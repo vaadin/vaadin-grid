@@ -25,27 +25,27 @@ import com.vaadin.shared.ui.grid.GridConstants;
 public final class GridColumn extends Column<Object, Object> {
 
     private final JSColumn jsColumn;
-    private final GridElement gridComponent;
+    private final GridElement gridElement;
 
     public static GridColumn addColumn(JSColumn jsColumn,
-            GridElement gridComponent) {
-        GridColumn result = new GridColumn(jsColumn, gridComponent);
-        gridComponent.getGrid().addColumn(result,
-                gridComponent.getGrid().getVisibleColumns().size());
+            GridElement gridElement) {
+        GridColumn result = new GridColumn(jsColumn, gridElement);
+        gridElement.getGrid().addColumn(result,
+                gridElement.getGrid().getVisibleColumns().size());
         result.bindProperties();
         return result;
     }
 
-    private GridColumn(JSColumn jsColumn, GridElement gridComponent) {
+    private GridColumn(JSColumn jsColumn, GridElement gridElement) {
         this.jsColumn = jsColumn;
-        this.gridComponent = gridComponent;
+        this.gridElement = gridElement;
 
         // Default renderer
         setRenderer((cell, data) -> {
             Element element = cell.getElement();
             String content = JS.isUndefinedOrNull(data) ? "" : data.toString();
 
-            if (gridComponent.getDataSource() instanceof GridDomTableDataSource
+            if (gridElement.getDataSource() instanceof GridDomTableDataSource
                     && new HTML(content).getElement().getFirstChildElement() != null) {
                 element.setInnerHTML(content);
             } else {
@@ -65,7 +65,7 @@ public final class GridColumn extends Column<Object, Object> {
     }
 
     JSStaticCell getDefaultHeaderCellReference() {
-        GridStaticSection staticSection = gridComponent.getStaticSection();
+        GridStaticSection staticSection = gridElement.getStaticSection();
         return staticSection.getHeaderCellByColumn(
                 staticSection.getDefaultHeader(), this);
     }
@@ -77,7 +77,7 @@ public final class GridColumn extends Column<Object, Object> {
 
         JS.definePropertyAccessors(jsColumn, "hidden", v -> {
             setHidden((Boolean) v);
-            gridComponent.updateWidth();
+            gridElement.updateWidth();
         }, this::isHidden);
 
         bind("name",
@@ -90,7 +90,7 @@ public final class GridColumn extends Column<Object, Object> {
         bind("hidable", v -> setHidable((Boolean) v));
         bind("readOnly", v -> setEditable(!(boolean) v));
         bind("renderer", v -> setRenderer((cell, data) -> {
-            JSCell jsCell = JSCell.create(cell, gridComponent.getContainer());
+            JSCell jsCell = JSCell.create(cell, gridElement.getContainer());
             JS.exec(v, jsCell);
         }));
         bind("minWidth",
@@ -122,13 +122,13 @@ public final class GridColumn extends Column<Object, Object> {
             getDefaultHeaderCellReference().setContent(content);
         }
 
-        gridComponent.updateWidth();
+        gridElement.updateWidth();
     }
 
     private void bind(String propertyName, final Setter setter) {
         JS.definePropertyAccessors(jsColumn, propertyName, v -> {
             setter.setValue(v);
-            gridComponent.updateWidth();
+            gridElement.updateWidth();
         }, null);
     }
 
@@ -169,6 +169,6 @@ public final class GridColumn extends Column<Object, Object> {
     }
 
     private int getColumnIndex() {
-        return gridComponent.getColumns().indexOf(jsColumn);
+        return gridElement.getColumns().indexOf(jsColumn);
     }
 }

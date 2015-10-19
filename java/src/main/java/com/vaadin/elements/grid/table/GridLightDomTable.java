@@ -38,13 +38,13 @@ public class GridLightDomTable implements MutationListener {
     private GQuery $foot_tr;
     private GQuery $cols;
     private final Grid<Object> grid;
-    private final GridElement gridComponent;
+    private final GridElement gridElement;
     private int defaultHeaderRow, numberHeaderRows, numberColumns,
             numberFooterRows;
 
-    public GridLightDomTable(Element tableElement, GridElement gridComponent) {
-        this.gridComponent = gridComponent;
-        grid = gridComponent.getGrid();
+    public GridLightDomTable(Element tableElement, GridElement gridElement) {
+        this.gridElement = gridElement;
+        grid = gridElement.getGrid();
 
         $light = $(tableElement);
 
@@ -96,7 +96,7 @@ public class GridLightDomTable implements MutationListener {
                 }
             }
         }.schedule(0);
-        gridComponent.updateSize();
+        gridElement.updateSize();
     }
 
     private void configureColumns() {
@@ -118,7 +118,7 @@ public class GridLightDomTable implements MutationListener {
     }
 
     private void configureColumnsFromDom(GQuery columns) {
-        JSArray<JSColumn> jsColumns = gridComponent.getColumns();
+        JSArray<JSColumn> jsColumns = gridElement.getColumns();
         jsColumns.setLength(0);
         numberColumns = columns.size();
 
@@ -166,14 +166,16 @@ public class GridLightDomTable implements MutationListener {
                 column.setHeaderContent(headerHtml);
             }
         }
-        gridComponent.setColumns(jsColumns);
+        gridElement.setColumns(jsColumns);
 
         if (!sortOrders.isEmpty()) {
-            gridComponent.then(JsUtils.wrapFunction(new Function() {
+            gridElement.then(JsUtils.wrapFunction(new Function() {
                 @Override
                 public void f() {
-                    JsUtils.prop(gridComponent.getContainer(), "sortOrder", sortOrders);
-                };
+                    JsUtils.prop(gridElement.getContainer(), "sortOrder", sortOrders);
+                }
+
+                ;
             }));
         }
     }
@@ -201,7 +203,7 @@ public class GridLightDomTable implements MutationListener {
         for (int i = 0; i < nrows; i++) {
             StaticRow<?> row = isHeader ? grid.getHeaderRow(i) : grid
                     .getFooterRow(i);
-            List<GridColumn> dataColumns = gridComponent.getDataColumns();
+            List<GridColumn> dataColumns = gridElement.getDataColumns();
             GQuery $tr = $rows.eq(i);
             GQuery $ths = $tr.children("th, td");
             String className = JSValidate.String.attr($tr, "class");
@@ -212,7 +214,7 @@ public class GridLightDomTable implements MutationListener {
             for (int j = 0, colIndex = 0; j < $ths.size() && j < numberColumns; j++) {
                 final GQuery $th = $ths.eq(j);
                 StaticCell cell = row.getCell(dataColumns.get(colIndex));
-                JSStaticCell js = gridComponent.getStaticSection()
+                JSStaticCell js = gridElement.getStaticSection()
                         .obtainJSStaticCell(cell);
 
                 className = JSValidate.String.attr($th, "class");
@@ -234,13 +236,13 @@ public class GridLightDomTable implements MutationListener {
         }
 
         if (isHeader) {
-            gridComponent.getStaticSection().setDefaultHeader(defaultHeaderRow);
+            gridElement.getStaticSection().setDefaultHeader(defaultHeaderRow);
         }
     }
 
     @Override
     public void onMutation(List<MutationRecord> mutations) {
         parseDom();
-        gridComponent.getDataSource().refresh();
+        gridElement.getDataSource().refresh();
     }
 }

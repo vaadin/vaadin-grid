@@ -31,7 +31,7 @@ public class GridJsFuncDataSource extends GridDataSource {
     public void setJSFunction(JavaScriptObject jso) {
         jsFunction = jso;
         clearCache(null);
-        gridComponent.getSelectionModel().reset();
+        gridElement.getSelectionModel().reset();
     }
 
     @Override
@@ -45,7 +45,7 @@ public class GridJsFuncDataSource extends GridDataSource {
         JSDataRequest jsDataRequest = JS.createJsType(JSDataRequest.class);
         jsDataRequest.setIndex(idx);
         jsDataRequest.setCount(count);
-        jsDataRequest.setSortOrder(JsUtils.prop(gridComponent.getContainer(), "sortOrder"));
+        jsDataRequest.setSortOrder(JsUtils.prop(gridElement.getContainer(), "sortOrder"));
         jsDataRequest.setSuccess(JsUtils.wrapFunction(new Function() {
             @Override
             public void f() {
@@ -66,11 +66,11 @@ public class GridJsFuncDataSource extends GridDataSource {
                     ((RequestRowsCallback) cb).onResponse(list, size());
                 }
 
-                gridComponent.setLoadingDataClass(false);
+                gridElement.setLoadingDataClass(false);
 
                 if (!initialRowSetReceived && !list.isEmpty()) {
                     initialRowSetReceived = true;
-                    gridComponent.updateWidth();
+                    gridElement.updateWidth();
                 }
             }
         }));
@@ -80,11 +80,11 @@ public class GridJsFuncDataSource extends GridDataSource {
                 public void f() {
                     ((RequestRowsCallback) cb).onResponse(
                             Collections.emptyList(), size());
-                    gridComponent.setLoadingDataClass(false);
+                    gridElement.setLoadingDataClass(false);
                 }
             }));
         }
-        gridComponent.setLoadingDataClass(true);
+        gridElement.setLoadingDataClass(true);
         JS.exec(jsFunction, jsDataRequest);
     }
 }

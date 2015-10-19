@@ -36,21 +36,21 @@ import com.vaadin.elements.grid.table.GridColumn;
 public class GridEditor {
 
     private final Grid<Object> grid;
-    private final GridElement gridComponent;
+    private final GridElement gridElement;
     private Element container;
     private JSEditorHandler handler;
 
     private final Map<JSColumn, Widget> editors = new HashMap<>();
 
     @JsNoExport
-    public GridEditor(GridElement gridComponent) {
-        this(gridComponent, (JSEditorHandler) JavaScriptObject.createObject());
+    public GridEditor(GridElement gridElement) {
+        this(gridElement, (JSEditorHandler) JavaScriptObject.createObject());
     }
 
     @JsNoExport
-    protected GridEditor(GridElement gridComponent, JSEditorHandler handler) {
-        this.gridComponent = gridComponent;
-        this.grid = gridComponent.getGrid();
+    protected GridEditor(GridElement gridElement, JSEditorHandler handler) {
+        this.gridElement = gridElement;
+        this.grid = gridElement.getGrid();
         this.handler = handler;
         configureGridEditor();
     }
@@ -131,7 +131,7 @@ public class GridEditor {
             public void f() {
                 JSArray<JSColumn> jsErrorColumns = arguments(1);
                 Collection<Column<?, Object>> errorColumns = new ArrayList<>();
-                for (GridColumn column : gridComponent.getDataColumns()) {
+                for (GridColumn column : gridElement.getDataColumns()) {
                     if (jsErrorColumns != null
                             && jsErrorColumns.indexOf(column.getJsColumn()) != -1) {
                         errorColumns.add(column);
@@ -185,7 +185,7 @@ public class GridEditor {
                 if (handler.getSave() != null) {
                     JS.exec(handler.getSave(),
                             createJSEditorRequest(request, true));
-                    gridComponent.getDataSource().clearCache(null);
+                    gridElement.getDataSource().clearCache(null);
                 } else {
                     request.failure(
                             "'grid.editor.handler.save' is undefined. Please refer to the documentation for more information.",
