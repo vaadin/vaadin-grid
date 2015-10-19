@@ -45,7 +45,7 @@
         height: 24px;
         padding: 0 8px;
         border-radius: 3px;
-        background: rgba(0,0,0,0.6);
+        background: rgba(0, 0, 0, 0.6);
         color: #fff;
         margin: 8px 1em;
         vertical-align: middle;
@@ -59,6 +59,10 @@
         left: 0;
         background: #fff;
         overflow: auto;
+      }
+
+      :host([source]) {
+        min-height: 180px;
       }
     </style>
     <content></content>
@@ -101,8 +105,13 @@
         }
       }
 
-      var headTemplate = Polymer.dom(this).querySelector("template.view-source-head");
-      this._headText = headTemplate.innerHTML;
+      // Strip empty attribute values (="" or ='')
+      this._htmlText = this._htmlText.replace(/=["']{2}/g, "");
+
+      var headTemplate = Polymer.dom(this).querySelector("template.view-source-head") || document.querySelector(this.getAttribute("head"));
+      if (headTemplate) {
+        this._headText = headTemplate.innerHTML;
+      }
     },
 
     attached: function() {
@@ -204,10 +213,12 @@
         Polymer.dom(this).appendChild(this._sourceView);
         this._sourceView.style.top = this._tabs.offsetHeight + "px";
         this._resultTab.classList.remove("selected");
+        this.setAttribute("source", "");
       } else {
         if (this._sourceView.parentNode) {
           Polymer.dom(this).removeChild(this._sourceView);
           this._resultTab.classList.add("selected");
+          this.removeAttribute("source");
         }
       }
 
@@ -239,7 +250,7 @@
     },
 
     _showChanged: function(show) {
-      if(this._sourceView)
+      if (this._sourceView)
         this._showSource(show);
     },
 

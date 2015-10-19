@@ -29,6 +29,7 @@
   "devDependencies": {
     "web-component-tester": "~3.3.21",
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
-    "vaadin-icons": "vaadin/vaadin-icons"
+    "vaadin-icons": "vaadin/vaadin-icons",
+    "components-demo-resources": "vaadin/components-demo-resources#master"
   }
 }

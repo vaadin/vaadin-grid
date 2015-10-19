@@ -16,28 +16,28 @@
 </head>
 
 <body>
-  <div class="vertical center-justified layout">
+  <template id="stuff-for-head">
+    <script src="https://cdn.vaadin.com/vaadin-components/latest/webcomponentsjs/webcomponents-lite.min.js"></script>
+    <link rel="import" href="https://cdn.vaadin.com/vaadin-components/latest/vaadin-grid/vaadin-grid.html">
+  </template>
 
-    <h4>Grid with most features enabled</h4>
+  <section class="vertical center-justified layout">
+    <h3>vaadin-grid features</h3>
     <div class="vertical-section">
-      <view-source>
-        <template class="view-source-head">
-          <script src="https://cdn.vaadin.com/vaadin-components/latest/webcomponentsjs/webcomponents-lite.min.js"></script>
-          <link href="https://cdn.vaadin.com/vaadin-components/latest/vaadin-grid/vaadin-grid.html" rel="import">
-        </template>
+      <view-source head="#stuff-for-head">
         <vaadin-grid selection-mode="multi" frozen-columns="1" style="height: 447px;">
           <table>
             <colgroup>
               <col name="index" header-text="#" width="80">
-              <col name="user.picture.thumbnail" header-text="" hiding-toggle-text="Photo" width="100" hidable>
-              <col name="user.username" header-text="Username" hidable hidden>
+              <col name="user.picture.thumbnail" header-text hiding-toggle-text="Photo" width="100" hidable>
+              <col name="user.username" header-text="Username" hidable hidden sortable>
               <col name="user.name.first" header-text="First Name" min-width="120" flex hidable sortable>
-              <col name="user.name.last" header-text="Last Name" min-width="120" flex="2" hidable sortable>
+              <col name="user.name.last" header-text="Last Name" min-width="120" flex hidable sortable sort-direction="asc">
               <col name="user.email" header-text="Email" flex="2" hidable sortable>
               <col name="user.phone" header-text="Phone" hidable hidden>
               <col name="user.dob" header-text="Date of Birth" hidable hidden sortable>
               <col name="user.gender" header-text="Gender" width="100" hidable hidden sortable>
-              <col name="actions" header-text="">
+              <col name="actions" header-text>
             </colgroup>
           </table>
         </vaadin-grid>
@@ -50,28 +50,36 @@
 
         <script>
           var grid = document.querySelector("vaadin-grid");
+          var dataitems = [];
 
           HTMLImports.whenReady(function() {
-            var dataSourceSize = 1000;
-            grid.datasource = function(req) {
-              // Fetch the JSON data from a URL
-              var xhr = new XMLHttpRequest();
-              xhr.onreadystatechange = function() {
-                if (xhr.readyState == XMLHttpRequest.DONE ) {
-                  if(xhr.status == 200){
-                    var json = JSON.parse(xhr.responseText);
-                    req.success(json.results, dataSourceSize);
-                  }
+            // Fetch the JSON data from a URL
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+              if (xhr.readyState == XMLHttpRequest.DONE) {
+                if (xhr.status == 200) {
+                  // Store the result for later use
+                  dataitems = JSON.parse(xhr.responseText).results;
+
+                  // Option 1: Set the resulting data items to the grid
+                  // (static in-memory data source)
+                  grid.items = dataitems;
                 }
-              };
-              var rowsNeeded = Math.max(req.count, 1);
-              xhr.open("GET", "https://randomuser.me/api/?results=" + rowsNeeded, true);
-              xhr.send();
+              }
             };
+            xhr.open("GET", "users2.json", true);
+            xhr.send();
+
+            // Option 2: Lazy loading data source (emulate server latency)
+            // grid.datasource = function(req) {
+            //   setTimeout(function() {
+            //     req.success(dataitems.slice(req.index, req.index + req.count), dataitems.length);
+            //   }, Math.random() * 600);
+            // };
 
             // Add a renderer for the index column
             grid.columns[0].renderer = function(cell) {
-                cell.element.innerHTML = cell.row.index + 1;
+              cell.element.innerHTML = cell.row.index + 1;
             };
 
             // Add a renderer for the picture column
@@ -94,19 +102,19 @@
 
             // Add a renderer for the gender column
             grid.columns[8].renderer = function(cell) {
-              cell.element.innerHTML = '<iron-icon icon="vaadin-icons:'+cell.data+'"></iron-icon>';
+              cell.element.innerHTML = '<iron-icon icon="vaadin-icons:' + cell.data + '"></iron-icon>';
             };
 
             // Add an action for showing a details for the row
             var detailsOpen = [];
-            grid.columns[grid.columns.length - 1].renderer = function(cell) {
+            grid.columns[9].renderer = function(cell) {
               cell.element.innerHTML = "";
               var button = document.createElement("button");
               button.innerHTML = "Details";
               var rowIndex = cell.row.index;
               button.addEventListener("click", function(e) {
                 var open = detailsOpen.indexOf(rowIndex);
-                if(open > -1) {
+                if (open > -1) {
                   detailsOpen.splice(open, 1);
                   grid.setRowDetailsVisible(rowIndex, false);
                 } else {
@@ -121,10 +129,10 @@
             grid.rowDetailsGenerator = function(index) {
               var el = document.createElement("div");
               var item = grid.getItem(index, function(err, item) {
-                el.innerHTML = '<div style="padding: 25px 0 1px;">' +
-                               '<div class="vertical-section">Viewing details '+
-                               'for <b>row '+index+'</b> (was ' +
-                               item.user.name.first+' when last opened)</div></div>';
+                el.innerHTML = '<div style="padding: 25px 0 1px; white-space: normal;">' +
+                  '<div class="vertical-section">Viewing details ' +
+                  'for <b>row ' + index + '</b> (was ' +
+                  item.user.name.first + ' when last opened)</div></div>';
               });
               return el;
             };
@@ -132,7 +140,7 @@
             // Add a custom CSS class name for the name columns so that we can
             // capitalize them using CSS
             grid.cellClassGenerator = function(cell) {
-              if(cell.columnName.indexOf("name") > 0) {
+              if (cell.columnName.indexOf("name") > 0) {
                 return "capitalize";
               }
             };
@@ -144,15 +152,54 @@
 
             // Listen for selection events and update the footer
             grid.addEventListener("select", function() {
-              selectionCount.content = grid.selection.size  + " / " + dataSourceSize + " rows selected";
+              selectionCount.content = grid.selection.size + " / " + dataitems.length + " rows selected";
+            });
+
+            // Handle sort events and sort the dataitems
+            grid.addEventListener('sort-order-changed', function() {
+              var sortOrder = grid.sortOrder[0];
+              var sortProperty = grid.columns[sortOrder.column].name;
+              var sortDirection = sortOrder.direction;
+              dataitems.sort(function(a, b) {
+                var res;
+                var path = sortProperty.split(".");
+                for (var i = 0; i < path.length; i++) {
+                  a = a[path[i]];
+                  b = b[path[i]];
+                }
+                if (!isNaN(a)) {
+                  res = parseInt(a, 10) - parseInt(b, 10);
+                } else {
+                  // Let's pretend everything that's not a number is a string.
+                  res = a.localeCompare(b);
+                }
+
+                if ('desc' === sortDirection) {
+                  res *= -1;
+                }
+                return res;
+              });
             });
 
           });
         </script>
       </view-source>
     </div>
+    <p>An example vaadin-grid, with many of its features in use, such as:</p>
+    <ul>
+      <li><a href="columns.html">Frozen columns</a></li>
+      <li><a href="datasources.html">Lazy loading data source</a></li>
+      <li><a href="columns.html">Column hiding</a></li>
+      <li><a href="selection.html">Row selection</a></li>
+      <li><a href="details.html">Row details</a></li>
+      <li><a href="columns.html">Custom cell renderers,</a></li>
+      <li><a href="sizing.html">Row and cell CSS class generators</a></li>
+      <li><a href="headers.html">Customized headers and footers</a></li>
+      <li><a href="sort.html">Sorting</a></li>
+    </ul>
+    <p>Click the links above for more detailed code examples of each feature.</p>
+  </section>
 
-  </div>
 </body>
 
 </html>
