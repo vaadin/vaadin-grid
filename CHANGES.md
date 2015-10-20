@@ -1,5 +1,5 @@
 ## Vaadin Grid v0.9.0 (2015-xx-xx)
-- The project is extracted from vaadin-components (vaadin-elements), so as each element has its own repository.
+- The project is extracted from vaadin-elements (formerly vaadin-components), so as each element has its own repository.
 - Improved the way to contribute. Now is easier to debug java code in SuperDevMode, and any demo or test work in SDM without modifications.
 - Now demos are bundled with the component instead of on a separated project.
 - Removed old demos used for developing.
