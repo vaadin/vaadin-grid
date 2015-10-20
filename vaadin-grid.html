@@ -37,7 +37,7 @@ Basic usage:
 </vaadin-grid>
 ```
 
-More examples available at https://cdn.vaadin.com/vaadin-components/latest/vaadin-grid/demo/
+More examples available at https://cdn.vaadin.com/vaadin-elements/latest/vaadin-grid/demo/
 -->
 <dom-module id="vaadin-grid">
 <style>
@@ -665,7 +665,7 @@ More examples available at https://cdn.vaadin.com/vaadin-components/latest/vaadi
 
 <script>
     function gridLoaded() {
-      return window.vaadin && vaadin.components && vaadin.components.grid && vaadin.components.grid.GridComponent;
+      return window.vaadin && vaadin.elements && vaadin.elements.grid && vaadin.elements.grid.GridElement;
     }
     if (!gridLoaded()) {
       // This is needed when vaadin-grid.min.js is loaded asynchronously like
@@ -952,7 +952,7 @@ More examples available at https://cdn.vaadin.com/vaadin-components/latest/vaadi
       },
 
       created: function() {
-        this._grid = new vaadin.components.grid.GridComponent();
+        this._grid = new vaadin.elements.grid.GridElement();
       },
 
       ready: function() {
