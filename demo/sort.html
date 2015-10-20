@@ -91,9 +91,9 @@ layout: page
           // Re-order the data array on sort-order-changed event
           grid.addEventListener('sort-order-changed', function() {
             var idx = grid.sortOrder[0].column;
-            var asc = grid.sortOrder[0].direction == 'asc';
+            var lesser = grid.sortOrder[0].direction == 'asc' ? -1 : 1;
             data.sort(function(a, b) {
-              return a[idx] < b[idx] && asc ? -1 : 1;
+              return (a[idx] < b[idx]) ? lesser : -lesser;
             });
           });
           // end-code
