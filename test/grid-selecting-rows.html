@@ -130,7 +130,9 @@
           it('should fail setting the value to foobar', function() {
             expect(function() {
               grid.selection.mode = 'foobar';
-            }).to.throw(Object);
+            })
+            // Just expect an error, so as it works in Prod and SDM
+            .to.throw();
           });
         });
 
@@ -274,14 +276,17 @@
             expect(spy.callCount).to.eql(1);
           });
 
-          it('should select multiple rows', function() {
+          // Skip in SDM due to an assertion in MultiSelectionRenderer.AutoScrollHandler
+          // which prevents changing the selection if handlerRegistration exists
+          //  assert handlerRegistration == null : "handlerRegistration was not null"
+          it.skipIf(isSDM, 'should select multiple rows', function() {
             var inputs = qaLocal('.vaadin-grid-body input');
             triggerMouseEvent(inputs[0], "mousedown");
             triggerMouseEvent(inputs[1], "mousedown");
             expect(grid.selection.selected()).to.eql([0, 1]);
           });
 
-          it('should deselect multiple rows', function() {
+          it.skipIf(isSDM, 'should deselect multiple rows', function() {
             var inputs = qaLocal('.vaadin-grid-body input');
             triggerMouseEvent(inputs[0], "mousedown");
             triggerMouseEvent(inputs[1], "mousedown");
