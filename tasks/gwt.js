@@ -115,6 +115,10 @@ gulp.task('gwt:watch', function(done) {
 })
 
 gulp.task('gwt:run', function(done) {
+  // SDM reuses certain stuff pre-cached in user's tmp folder
+  // causing errors noticeables when changing certain stuff like
+  // JsInterop annotations, exported functions etc.
+  require('del').sync(process.env.TMPDIR + '/gwt*', {force: true});
   maven('clean gwt:run -q', done);
 });
 

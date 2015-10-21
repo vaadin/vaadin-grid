@@ -267,9 +267,9 @@
                   <includes>
                     <include>vaadin-grid.html</include>
                     <include>vaadin-grid-doc.html</include>
-                    <include>img/*</include>
-                    <include>test/*</include>
-                    <include>demo/*</include>
+                    <include>img/**/*</include>
+                    <include>test/**/*</include>
+                    <include>demo/**/*</include>
                   </includes>
                 </resource>
               </resources>
