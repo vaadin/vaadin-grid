@@ -1,6 +1,6 @@
 {
   "name": "vaadin-grid",
-  "version": "0.9.0-beta3",
+  "version": "0.9.0-beta4",
   "authors": [
     "Vaadin Ltd"
   ],
@@ -8,7 +8,7 @@
   "keywords": [
     "web-components",
     "vaadin",
-    "vaadin components",
+    "vaadin elements",
     "grid"
   ],
   "main": "vaadin-grid.html",

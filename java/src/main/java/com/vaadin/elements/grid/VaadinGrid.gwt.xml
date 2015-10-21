@@ -1,0 +1,6 @@
+<module rename-to='VaadinGrid'>
+    <inherits name='com.vaadin.elements.common.Common'/>
+    <entry-point class='com.vaadin.elements.grid.GridEntryPoint'/>
+    <source path="" />
+</module>
+

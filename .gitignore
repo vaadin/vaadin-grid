@@ -11,14 +11,6 @@ war
 .sass-cache/
 /bower_components
 node_modules
-vaadin-theme/**/*.css
-vaadin-theme/**/*.css.map
-vaadin-theme/docs/
-vaadin-components/**/*.css
-vaadin-components/**/*.css.map
 npm-debug.log
-vaadin-components-gwt/src/main/webapp/vaadin-grid.css
-vaadin-components-gwt/src/main/webapp/bower_components
-vaadin-components/vaadin-grid
 .idea
 *.iml

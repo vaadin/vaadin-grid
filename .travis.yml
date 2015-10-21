@@ -4,4 +4,5 @@ jdk: oraclejdk8
 script:
   - gulp clean
   - gulp gwt:validate
-  - travis_retry gulp test:validation
+  - travis_retry gulp test:desktop
+  - travis_retry gulp test:mobile

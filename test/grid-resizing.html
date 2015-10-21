@@ -43,12 +43,12 @@
         }
 
         var inner,
-          tbody,
-          headers,
-          footers,
-          tfHeight,
-          thHeight,
-          tdHeight
+            tbody,
+            headers,
+            footers,
+            tfHeight,
+            thHeight,
+            tdHeight
 
         beforeEach(function() {
           inner = qLocal("div.vaadin-grid");
@@ -69,8 +69,7 @@
           return grid;
         });
 
-        // currently disabled because the grid.then call jams the test on IE.
-        it.skip('should draw correct dimensions and row heights by default', function() {
+        it('should draw correct dimensions and row heights by default', function() {
           return grid.then(function() {
             assertSameDimensions();
             assertHeightByRows(2);
@@ -82,7 +81,7 @@
 
           return grid.then(function() {
             assertSameDimensions();
-            //TODO: timeout here because of https://github.com/vaadin/components/issues/19
+            //TODO: timeout here because of https://github.com/vaadin/vaadin-grid/issues/19
             setTimeout(function() {
               assertHeightByRows(4);
             }, 100)
@@ -94,65 +93,59 @@
           var tmp = document.createElement("div");
           wrapper.appendChild(tmp);
           tmp.innerHTML = "<vaadin-grid style='display: none'>" +
-            "                     <table>" +
-            "                       <col header-text='Name'>" +
-            "                       <tr>" +
-            "                         <td>Grid</td>" +
-            "                       </tr>" +
-            "                     </table>" +
-            "                   </vaadin-grid>";
+          "                     <table>" +
+          "                       <col header-text='Name'>" +
+          "                       <tr>" +
+          "                         <td>Grid</td>" +
+          "                       </tr>" +
+          "                     </table>" +
+          "                   </vaadin-grid>";
 
           var grid = tmp.querySelector("vaadin-grid");
 
-          // Usin onRegister because in FF the new grid takes a while to be initialized
+          // Using onRegister because in FF the new grid takes a while to be initialized
           onRegister(grid, function() {
             expect(grid.offsetHeight).to.equal(0);
 
-            //TODO: timeout here because of https://github.com/vaadin/components/issues/19
-            setTimeout(function() {
-              grid.removeAttribute("style");
+            grid.removeAttribute("style");
 
-              grid.then(function() {
-                expect(grid.offsetHeight).to.be.at.least(30);
-                wrapper.removeChild(tmp);
-                done();
-              });
-            }, 100);
+            //TODO: wait until here because of https://github.com/vaadin/vaadin-grid/issues/19
+            // We use waitUntil because resize event in iframe is not synchronous.
+            waitUntil(function() {
+              return grid.offsetHeight <= 30
+            }, done, done);
           });
         });
 
         it('should work if parent originally invisible', function(done) {
-            var wrapper = document.getElementById("gridwrapper");
-            var tmp = document.createElement("div");
-            tmp.style.display = "none";
-            wrapper.appendChild(tmp);
-            tmp.innerHTML = "<vaadin-grid>" +
-              "                     <table>" +
-              "                       <col header-text='Name'>" +
-              "                       <tr>" +
-              "                         <td>Grid</td>" +
-              "                       </tr>" +
-              "                     </table>" +
-              "                   </vaadin-grid>";
+          var wrapper = document.getElementById("gridwrapper");
+          var tmp = document.createElement("div");
+          tmp.style.display = "none";
+          wrapper.appendChild(tmp);
+          tmp.innerHTML = "<vaadin-grid>" +
+          "                     <table>" +
+          "                       <col header-text='Name'>" +
+          "                       <tr>" +
+          "                         <td>Grid</td>" +
+          "                       </tr>" +
+          "                     </table>" +
+          "                   </vaadin-grid>";
 
-            var grid = tmp.querySelector("vaadin-grid");
+          var grid = tmp.querySelector("vaadin-grid");
 
-            // Usin onRegister because in FF the new grid takes a while to be initialized
-            onRegister(grid, function() {
-              expect(grid.offsetHeight).to.equal(0);
+          // Using onRegister because in FF the new grid takes a while to be initialized
+          onRegister(grid, function() {
+            expect(grid.offsetHeight).to.equal(0);
 
-              //TODO: timeout here because of https://github.com/vaadin/components/issues/19
-              setTimeout(function() {
-                tmp.removeAttribute("style");
+            tmp.removeAttribute("style");
 
-                grid.then(function() {
-                  expect(grid.offsetHeight).to.be.at.least(30);
-                  wrapper.removeChild(tmp);
-                  done();
-                });
-              }, 100);
-            });
+            //TODO: wait until here because of https://github.com/vaadin/vaadin-grid/issues/19
+            // We use waitUntil because resize event in iframe is not synchronous.
+            waitUntil(function() {
+              return grid.offsetHeight <= 30
+            }, done, done);
           });
+        });
 
         describe('using limited row visibility', function() {
           before(function() {
@@ -272,13 +265,11 @@
             });
           });
 
-          it('should match dimensions with the surrounding div', function() {
+          it('should match dimensions with the surrounding div', function(done) {
             waitUntil(function() {
               return height(grid) === document.body.clientHeight &&
                 Math.abs(document.body.clientWidth - width(grid)) <= 1
-            }, function() {
-              done()
-            });
+            }, done);
           });
 
         });
@@ -321,27 +312,32 @@
           });
         });
 
-        it('should resize with a details row open', function() {
+        it('should resize with a details row open', function(done) {
           grid.rowDetailsGenerator = function() {
             return document.createElement("input");
           }
           var originalHeight;
 
-          return grid.then(function() {
+          grid.then(function() {
             grid.setRowDetailsVisible(0, true);
             return grid;
           }).then(function() {
             originalHeight = grid.clientHeight;
             grid.style.height = "100px";
-            return grid;
-          }).then(function() {
-            grid.style.height = "";
-            return grid;
-          }).then(function() {
-            expect(originalHeight).to.eql(grid.clientHeight);
+
+            // Using waitUntil instead of chaining grid.then because 'onresize' event from
+            // iframe is not asynchronous (very noticeable in android 5.x emulator)
+            // Related with : https://github.com/vaadin/vaadin-grid/issues/19
+            waitUntil(function(){
+              return originalHeight != grid.clientHeight;
+            }, function(){
+              grid.style.height = "";
+              waitUntil(function(){
+                return originalHeight == grid.clientHeight;
+              }, done, done);
+            }, done);
           });
         });
-
       });
     });
   </script>

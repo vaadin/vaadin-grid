@@ -1,5 +1,5 @@
 ## Vaadin Grid v0.9.0 (2015-xx-xx)
-- The project is extracted from vaadin-components, so as each component has its own repository.
+- The project is extracted from vaadin-elements (formerly vaadin-components), so as each element has its own repository.
 - Improved the way to contribute. Now is easier to debug java code in SuperDevMode, and any demo or test work in SDM without modifications.
 - Now demos are bundled with the component instead of on a separated project.
 - Removed old demos used for developing.
@@ -12,6 +12,7 @@
   - Hiding the header/footer declarative requires the element to have at least one cell (#135)
   - JSRow reference data with single column ds fixed
   - Column header text should default to name if none is given (#136)
+  - Fire sort event before clearing the selection (#206)
 
   #### API changes:
   - `grid.data.source` is now `grid.items` for Arrays and `grid.datasource` for Functions. (#160)

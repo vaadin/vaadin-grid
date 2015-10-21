@@ -80,7 +80,7 @@ gulp.task('gwt:hash:js', function(done) {
     input: require('fs').createReadStream(gwtMinJs)
   });
   lines.on('line', function (line) {
-    var res = /vaadin.GridCommit = '(.*)'/.exec(line)
+    var res = /\/\/ vaadin.elements.grid.hash = '(.*)'/.exec(line)
     if (res) {
       jsHash = res[1];
       done();
@@ -98,7 +98,7 @@ gulp.task('gwt:compile', ['gwt:clean', 'gwt:hash:src', 'gwt:hash:js'], function(
 gulp.task('gwt:copy', ['gwt:compile'], function() {
   return gulp.src(gwtNocacheJs)
           .pipe(rename(gwtMinJs))
-          .pipe(insert.append("\nvaadin.GridCommit = '" + (gitHash ? gitHash : '-') + "';\n"))
+          .pipe(insert.append("\n// vaadin.elements.grid.hash = '" + (gitHash ? gitHash : '-') + "';\n"))
           .pipe(gulp.dest('./'));
 });
 
@@ -115,6 +115,10 @@ gulp.task('gwt:watch', function(done) {
 })
 
 gulp.task('gwt:run', function(done) {
+  // SDM reuses certain stuff pre-cached in user's tmp folder
+  // causing errors noticeables when changing certain stuff like
+  // JsInterop annotations, exported functions etc.
+  require('del').sync(process.env.TMPDIR + '/gwt*', {force: true});
   maven('clean gwt:run -q', done);
 });
 

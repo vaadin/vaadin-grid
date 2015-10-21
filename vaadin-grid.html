@@ -665,7 +665,10 @@ See the [demo](demo/index.html) for use case examples.
 </dom-module>
 
 <script>
-    if (!window.vaadin || !window.vaadin.GridComponent) {
+    function gridLoaded() {
+      return window.vaadin && vaadin.elements && vaadin.elements.grid && vaadin.elements.grid.GridElement;
+    }
+    if (!gridLoaded()) {
       // This is needed when vaadin-grid.min.js is loaded asynchronously like
       // in SDM. We must guarantee that gwt grid is loaded and exported before
       // Polymer is called.
@@ -679,7 +682,7 @@ See the [demo](demo/index.html) for use case examples.
         var _whenReady = HTMLImports.whenReady;
         HTMLImports.whenReady = function(done) {
           var id = setInterval(function() {
-            if (window.vaadin && window.vaadin.GridComponent) {
+            if (gridLoaded()) {
               clearInterval(id);
               if (!_done) {
                 // Run original Polymer
@@ -966,7 +969,7 @@ See the [demo](demo/index.html) for use case examples.
       },
 
       created: function() {
-        this._grid = new vaadin.GridComponent();
+        this._grid = new vaadin.elements.grid.GridElement();
       },
 
       ready: function() {

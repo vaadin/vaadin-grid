@@ -1,5 +1,7 @@
 var grid, wrapper;
 
+var isSDM = /:8888$/.test(window.location.host);
+
 describe.feature = function(description, suite) {
   describe(description, function() {
     before(function(done) {
@@ -14,6 +16,12 @@ describe.feature = function(description, suite) {
         return grid;
       });
     });
+
+    // Add skipIf function to it
+    it.skipIf = function(bool, title, test) {
+      bool = typeof bool == 'function' ? bool() : bool;
+      (bool ? it.skip : it)(title, test);
+    }
 
     suite();
   });
@@ -42,8 +50,7 @@ function waitUntil(check, exec, onTimeout) {
 
   var timeoutId = setTimeout(function() {
     clearInterval(id);
-    assert.fail();
-    onTimeout();
+    onTimeout(new Error('Test timed out waiting for:' + check));
   }, 5000);
 }
 
@@ -92,7 +99,10 @@ function initializeGrid(cb) {
 
 function infiniteDataSource(req) {
   var data = [];
-  for (var i = req.index; i < req.index + req.count; i++) {
+  // data.length should never be greater than size, otherwise in SDM or
+  // compiled code with assertions we get an exception in
+  // AbstractRemoteDataSource::setRowData
+  for (var i = req.index; i < this.size && i < req.index + req.count; i++) {
     data.push(["foo " + i, "bar " + i]);
   }
   req.success(data, this.size);

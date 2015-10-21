@@ -1,0 +1,8 @@
+<module rename-to='VaadinGridImport'>
+    <inherits name='com.vaadin.elements.grid.VaadinGrid'/>
+    <source path="" />
+    <define-linker name="importlinker" class="com.vaadin.elements.ImportLinker" />
+    <add-linker name="importlinker" />
+
+</module>
+
