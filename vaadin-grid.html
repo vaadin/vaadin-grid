@@ -63,6 +63,9 @@ See the [demo](demo/index.html) for use case examples.
     display: flex;
     -webkit-flex-direction: column;
     flex-direction: column;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
   }
 
   :host(.vaadin-grid-loading) {
@@ -443,11 +446,13 @@ See the [demo](demo/index.html) for use case examples.
 
   input[type="checkbox"]:indeterminate + label:after {
     content: "–";
-    left: -2px;
-    font-size: 13px;
+    font-family: arial;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 1;
     text-align: center;
-    -webkit-transform: none;
-    transform: none;
+    -webkit-transform: scale(1);
+    transform: scale(1);
   }
 
   /* Activation "splash" */
@@ -475,11 +480,6 @@ See the [demo](demo/index.html) for use case examples.
 
   input[type="checkbox"]:checked + label:before {
     background-color: #03A9F4;
-  }
-
-  /* Small adjustment for the checkbox in the header */
-  .vaadin-grid-header input[type="checkbox"] + label:after {
-    transition: none;
   }
 
   #measureobject {
@@ -545,18 +545,10 @@ See the [demo](demo/index.html) for use case examples.
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    opacity: 0;
-    background: #000;
-    transition: opacity 0.1s ease-in;
+    background: #fff;
+    box-shadow: 0 0 10px 4px #fff;
   }
 
-  .vaadin-grid-sidebar-button:hover:before {
-    opacity: 0.1;
-  }
-
-  .vaadin-grid-sidebar-button:active:before {
-    opacity: 0.2;
-  }
   .vaadin-grid-sidebar-button:after {
     content: url(img/ic_view_column_black_24px.svg);
     display: inline-block;
