@@ -10,6 +10,7 @@
 
   <script src="../../webcomponentsjs/webcomponents-lite.min.js"></script>
   <link rel="import" href="../../paper-styles/demo-pages.html">
+  <link rel="import" href="../../paper-button/paper-button.html">
   <link rel="import" href="../vaadin-grid.html">
   <link rel="import" href="../../vaadin-icons/vaadin-icons.html">
   <link rel="import" href="view-source.html">
@@ -45,8 +46,18 @@
         <!-- <!-- We use Polymer data binding to render the row details --> -->
 
         <template id="details">
+          <paper-button raised>Send Email</paper-button>
           <img src="[[item.user.picture.medium]]">
-          <h3><span>[[item.user.name.title]]</span>. <span>[[item.user.name.first]]</span> <span>[[item.user.name.last]]</span></h3>
+          <h3 class="capitalize">
+            <span>[[item.user.name.title]]</span>.
+            <span>[[item.user.name.first]]</span>
+            <span>[[item.user.name.last]]</span>
+          </h3>
+          <b>Address</b><br>
+            <span>[[item.user.location.street]]</span><br>
+            <span>[[item.user.location.zip]]</span>
+            <span>[[item.user.location.city]]</span>
+            <span>[[item.user.location.state]]</span><br>
         </template>
 
         <style>
@@ -76,7 +87,24 @@
 
           .row-details {
             background: #fff;
-            padding: 25px;
+            padding: 24px;
+            overflow: hidden;
+          }
+
+          .row-details img {
+            width: 100px;
+            height: 100px;
+            float: left;
+            margin-right: 24px;
+            border-radius: 3px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+          }
+
+          .row-details paper-button {
+            background: #4285f4;
+            color: #fff;
+            float: right;
+            min-width: 150px;
           }
         </style>
 
