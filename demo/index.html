@@ -29,22 +29,54 @@
           <table>
             <colgroup>
               <col name="index" header-text="#" width="80">
-              <col name="user.picture.thumbnail" header-text hiding-toggle-text="Photo" width="100" hidable>
+              <col name="user.picture.thumbnail" header-text hiding-toggle-text="Photo" hidable>
               <col name="user.username" header-text="Username" hidable hidden sortable>
               <col name="user.name.first" header-text="First Name" min-width="120" flex hidable sortable>
               <col name="user.name.last" header-text="Last Name" min-width="120" flex hidable sortable sort-direction="asc">
               <col name="user.email" header-text="Email" flex="2" hidable sortable>
               <col name="user.phone" header-text="Phone" hidable>
               <col name="user.dob" header-text="Date of Birth" hidable sortable>
-              <col name="user.gender" header-text="Gender" width="100" hidable sortable>
+              <col name="user.gender" header-text="Gender" hidable sortable>
               <col name="actions" header-text>
             </colgroup>
           </table>
         </vaadin-grid>
 
+        <!-- <!-- We use Polymer data binding to render the row details --> -->
+
+        <template id="details">
+          <img src="[[item.user.picture.medium]]">
+          <h3><span>[[item.user.name.title]]</span>. <span>[[item.user.name.first]]</span> <span>[[item.user.name.last]]</span></h3>
+        </template>
+
         <style>
           .capitalize {
             text-transform: capitalize;
+          }
+
+          .photo {
+            width: 36px;
+            border-radius: 3px;
+          }
+
+          .details-button {
+            cursor: pointer;
+            opacity: 0.3;
+            width: 20px !important;
+          }
+
+          .details-button:hover,
+          .details-button:focus {
+            opacity: 0.6;
+          }
+
+          .details-button:active {
+            opacity: 1;
+          }
+
+          .row-details {
+            background: #fff;
+            padding: 25px;
           }
         </style>
 
@@ -86,8 +118,8 @@
             grid.columns[1].renderer = function(cell) {
               cell.element.innerHTML = "";
               var img = document.createElement("img");
-              img.style.width = "24px";
               img.setAttribute("src", cell.data);
+              img.className = "photo";
               cell.element.appendChild(img);
             };
 
@@ -100,7 +132,8 @@
               cell.element.innerHTML = year + "-" + month + "-" + date;
             };
 
-            // Add a renderer for the gender column
+            // Add a renderer for the gender column, using Vaadin Icons "female"
+            // and "male" icons
             grid.columns[8].renderer = function(cell) {
               cell.element.innerHTML = '<iron-icon icon="vaadin-icons:' + cell.data + '"></iron-icon>';
             };
@@ -108,9 +141,8 @@
             // Add an action for showing a details for the row
             var detailsOpen = [];
             grid.columns[9].renderer = function(cell) {
-              cell.element.innerHTML = "";
-              var button = document.createElement("button");
-              button.innerHTML = "Details";
+              cell.element.innerHTML = '<iron-icon class="details-button" title="Show/hide details" icon="vaadin-icons:ellipsis-circle-o"></iron-icon>';
+              var button = cell.element.firstChild;
               var rowIndex = cell.row.index;
               button.addEventListener("click", function(e) {
                 var open = detailsOpen.indexOf(rowIndex);
@@ -125,16 +157,15 @@
               cell.element.appendChild(button);
             };
 
-            // Define how row details are rendered
+            // Function which is called to render the details for a particular row
             grid.rowDetailsGenerator = function(index) {
-              var el = document.createElement("div");
+              var wrapper = document.createElement("div");
+              wrapper.className = "row-details";
               var item = grid.getItem(index, function(err, item) {
-                el.innerHTML = '<div style="padding: 25px 0 1px; white-space: normal;">' +
-                  '<div class="vertical-section">Viewing details ' +
-                  'for <b>row ' + index + '</b> (was ' +
-                  item.user.name.first + ' when last opened)</div></div>';
+                item.index = index;
+                wrapper.appendChild(rowDetails.getElementForItem(item));
               });
-              return el;
+              return wrapper;
             };
 
             // Add a custom CSS class name for the name columns so that we can
@@ -181,16 +212,37 @@
               });
             });
 
+            // Use Polymer data binding for the row details template
+            var RowDetails = Polymer({
+              is: "row-details",
+
+              behaviors: [
+                Polymer.Templatizer
+              ],
+
+              template: document.querySelector("#details"),
+
+              ready: function() {
+                this.templatize(this.template);
+              },
+
+              getElementForItem: function(item) {
+                var instance = this.stamp({item: item});
+                return instance.root;
+              }
+            });
+
+            var rowDetails = new RowDetails();
           });
         </script>
       </view-source>
     </div>
     <p>An example vaadin-grid, with many of its features in use, such as:</p>
     <style>
-    a {
-      color: #00b4f0;
-      text-decoration: none;
-    }
+      a {
+        color: #00b4f0;
+        text-decoration: none;
+      }
     </style>
     <ul>
       <li><a href="columns.html">Frozen columns</a></li>
@@ -212,6 +264,15 @@
       <li><a href="react.html">React</a></li>
     </ul>
   </section>
+
+  <style>
+  view-source {
+    color: #fff;
+  }
+  view-source > * {
+    color: #000;
+  }
+  </style>
 
 </body>
 
