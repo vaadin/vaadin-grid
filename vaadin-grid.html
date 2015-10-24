@@ -217,6 +217,14 @@ See the [demo](demo/index.html) for use case examples.
     background-color: #eeeeee;
   }
 
+  /* Workaround for #22 */
+  .scrolling > tr * {
+    pointer-events: none !important;
+  }
+  :host ::content .vaadin-grid-spacer[style*="display: none"] {
+    display: block !important;
+  }
+
   .vaadin-grid-row-selected td {
     background-color: #f5f5f5;
   }
