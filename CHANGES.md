@@ -13,6 +13,7 @@
   - JSRow reference data with single column ds fixed
   - Column header text should default to name if none is given (#136)
   - Fire sort event before clearing the selection (#206)
+  - JSRow reference from JSCell data with single column ds fixed
 
   #### API changes:
   - `grid.data.source` is now `grid.items` for Arrays and `grid.datasource` for Functions. (#160)
