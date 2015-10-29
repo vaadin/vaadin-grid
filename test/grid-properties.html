@@ -16,6 +16,11 @@
 
 <script>
 describe.feature('using properties', function() {
+
+  afterEach(function() {
+    grid.cellClassGenerator = undefined;
+  });
+
   it('rowClassGenerator', function() {
     var gridEquals = true;
     var elementEquals = true;
@@ -43,6 +48,17 @@ describe.feature('using properties', function() {
         expect(spy.args[0][0].data).to.be.equal(0);
     });
   });
+
+  it('cellClassGenerator with single column data', function() {
+    grid.items = [0];
+    var spy = sinon.spy();
+    grid.cellClassGenerator = spy;
+    return grid.then(function() {
+      expect(spy.args[0][0].row.data).to.be.equal(0);
+    });
+  });
+
+
 
   it('cellClassGenerator', function() {
     var elementEquals = true;
