@@ -21,6 +21,20 @@
       return qLocal('.vaadin-grid-body .vaadin-grid-cell');
     }
 
+    /*
+     * Helper for counting visible columns after visibleColumns
+     * was removed from <vaadin-grid>.
+     */
+    function countVisibleColumns(grid) {
+      return grid.columns.reduce(function(acc, col) {
+        if (!col.hidden) {
+          return acc + 1;
+        } else {
+          return acc;
+        }
+      }, 0);
+    }
+
     beforeEach(function() {
       return grid.then(function() {
 
@@ -583,11 +597,11 @@
       qLight("col").setAttribute("hidden", "");
 
       return grid.then(function () {
-        expect(grid.visibleColumns.length).to.eql(1);
+        expect(countVisibleColumns(grid)).to.eql(1);
 
         grid.columns[0].hidden = false;
       }).then(function () {
-        expect(grid.visibleColumns.length).to.eql(2);
+        expect(countVisibleColumns(grid)).to.eql(2);
       });
     });
 
@@ -596,11 +610,11 @@
       grid.columns[1].hidden = true;
 
       return grid.then(function () {
-        expect(grid.visibleColumns.length).to.eql(1);
+        expect(countVisibleColumns(grid)).to.eql(1);
 
         grid.columns[1].hidden = false;
       }).then(function () {
-        expect(grid.visibleColumns.length).to.eql(2);
+        expect(countVisibleColumns(grid)).to.eql(2);
       });
     });
 

@@ -355,16 +355,6 @@ public class GridElement implements SelectionHandler<Object>,
         return result;
     }
 
-    public JSArray<JSColumn> getVisibleColumns() {
-        JSArray<JSColumn> result = JSArray.createArray().cast();
-        for (int i = 0; i < cols.size(); i++) {
-            if (!cols.get(i).getHidden()) {
-                result.add(cols.get(i));
-            }
-        }
-        return result;
-    }
-
     public void setSelectionMode(String selectionMode) {
         setSelectionMode(selectionMode, false);
     }
