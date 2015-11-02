@@ -1161,19 +1161,19 @@ More examples available at https://cdn.vaadin.com/vaadin-elements/latest/vaadin-
        * in the inline style, overriding any previous height. Setting style.height
        * in this case should be ignored if possible.
        *
-       * Attribute: `rows`
+       * Attribute: `visible-rows`
        *
-       * @property {number} rows
+       * @property {number} visibleRows
        * @default 10
        * @type {number}
        */
-      get rows() {
-        var rows = this._grid.getRows();
+      get visibleRows() {
+        var rows = this._grid.getVisibleRows();
         return rows > 0 ? rows : undefined;
       },
-      set rows(rows) {
-        this._grid.setRows(rows);
-        this.reflectPropertyToAttribute("rows");
+      set visibleRows(visibleRows) {
+        this._grid.setVisibleRows(visibleRows);
+        this.reflectPropertyToAttribute("visibleRows");
       },
 
       /**
