@@ -167,7 +167,7 @@
           });
 
           it('should redraw visible rows after limit is decreased', function() {
-            grid.rows = 3;
+            grid.visibleRows = 3;
 
             return grid.then(function() {
               assertSameDimensions();
@@ -177,7 +177,7 @@
           });
 
           it('should redraw visible rows limit is removed', function() {
-            grid.rows = 0;
+            grid.visibleRows = 0;
 
             return grid.then(function() {
               assertSameDimensions();
@@ -188,18 +188,18 @@
 
           it('should have the original height after rows removed', function() {
             var originalHeight = grid.offsetHeight;
-            grid.rows = 5;
+            grid.visibleRows = 5;
 
             return grid.then(function() {
-              grid.rows = 0;
+              grid.visibleRows = 0;
             }).then(function() {
               expect(grid.offsetHeight).to.eql(originalHeight);
             });
           });
 
           it('should be adjustable declaratively', function() {
-            grid.setAttribute("rows", 4);
-            expect(grid.rows).to.eql(4);
+            grid.setAttribute("visible-rows", 4);
+            expect(grid.visibleRows).to.eql(4);
           });
         });
 
