@@ -14,7 +14,7 @@
   - Column header text should default to name if none is given (#136)
   - Fire sort event before clearing the selection (#206)
   - JSRow reference from JSCell data with single column ds fixed
-  - Fixed a bug with grid remaining invisible after ds change
+  - Fixed a bug with grid remaining invisible after datasource change (#172)
 
   #### API changes:
   - `grid.data.source` is now `grid.items` for Arrays and `grid.datasource` for Functions. (#160)
