@@ -312,6 +312,39 @@
           });
         });
 
+        it('should resize when becoming visible again', function(done) {
+          grid.style.height = "400px";
+          var wrapper = document.getElementById("gridwrapper");
+          var tablewrapper = Polymer.dom(grid.root).querySelector('.vaadin-grid-tablewrapper');
+          grid.items = ["foo"];
+          grid.then(function() {
+            wrapper.style.display = 'none';
+          }).then(function() {
+            grid.items = ["bar"];
+          }).then(function() {
+
+            waitUntil(function() {
+              return tablewrapper.querySelector('tbody span').innerHTML === 'bar'
+            }, function() {
+              wrapper.style.display = 'block';
+
+              waitUntil(function() {
+                return tablewrapper.clientHeight > 100;
+              }, function() {
+                // Changed the datasource of the grid in this test so need to re-init
+                wrapper.removeChild(grid);
+                initializeGrid();
+                done();
+              }, function() {
+                done(new Error('failed'));
+              });
+
+            }, function() {
+              done(new Error('failed'));
+            });
+          });
+        });
+
         it('should resize with a details row open', function(done) {
           grid.rowDetailsGenerator = function() {
             return document.createElement("input");

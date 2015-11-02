@@ -82,6 +82,7 @@ public class GridElement implements SelectionHandler<Object>,
     private final GridStaticSection staticSection;
 
     private Element container;
+    private Element measureObject;
     private JSArray<JSColumn> cols;
 
     private JavaScriptObject rowClassGenerator;
@@ -150,9 +151,10 @@ public class GridElement implements SelectionHandler<Object>,
     }
 
     public void init(Element container, TableElement lightDomElement,
-            Element gridContainer) {
+            Element gridContainer, Element measureObject) {
         if (this.container == null) {
             this.container = container;
+            this.measureObject = measureObject;
 
             if (lightDomElement != null) {
                 lightDom = new GridLightDomTable(lightDomElement, this);
@@ -445,14 +447,7 @@ public class GridElement implements SelectionHandler<Object>,
         // We currently implement the feature by checking the client height of
         // measure object because it has 1px bottom padding and
         // thus has client height of 1 if it's visible in the DOM.
-        Element element = grid.getElement().getPreviousSiblingElement();
-        while (element != null) {
-            if ("measureobject".equals(element.getId())) {
-                return element.getClientHeight() > 0;
-            }
-            element = element.getPreviousSiblingElement();
-        }
-        return false;
+        return measureObject.getClientHeight() > 0;
     }
 
     public void updateSize() {
@@ -481,6 +476,14 @@ public class GridElement implements SelectionHandler<Object>,
                         grid.setHeightByRows(0);
                     }
                 }
+            }
+
+            if (isGridVisible()) {
+                measureObject.getStyle().setProperty("height", "");
+            } else {
+                // Changing the measureObject's size while invisible makes it
+                // fire a resize event when it becomes visible again
+                measureObject.getStyle().setHeight(1, Unit.PX);
             }
         }
     }
