@@ -791,8 +791,8 @@ More examples available at https://cdn.vaadin.com/vaadin-elements/latest/vaadin-
          *  ];
          *  ```
          *  ```
-         *  grid.items = function(req) {
-         *    req.success(['foo', 'bar'], 2);
+         *  grid.items = function(params, callback) {
+         *    callback(['foo', 'bar'], 2);
          *  };
          *  ```
          *
@@ -911,9 +911,9 @@ More examples available at https://cdn.vaadin.com/vaadin-elements/latest/vaadin-
 
       _itemsChanged: function(items) {
         if (Array.isArray(items)) {
-          this._grid.setDataSource(function(req) {
-            var array = items.slice(req.index, req.index + req.count);
-            req.success(array, items.length);
+          this._grid.setDataSource(function(params, callback) {
+            var array = items.slice(params.index, params.index + params.count);
+            callback(array, items.length);
           });
         } else if (typeof items === 'function') {
           this._grid.setDataSource(items);

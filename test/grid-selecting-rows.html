@@ -489,12 +489,12 @@
 
         describe('in mode: multi', function() {
           beforeEach(function() {
-            grid.items =  function(req) {
+            grid.items =  function(params, callback) {
               var data = [];
-              for (var i = req.index; i < req.index + req.count; i++) {
+              for (var i = params.index; i < params.index + params.count; i++) {
                 data.push(["foo " + i, "bar " + i]);
               }
-              req.success(data, 100);
+              callback(data, 100);
             };
             grid.selection.mode = 'multi';
             grid.selection.select(0);
@@ -561,12 +561,14 @@
 
         describe('in mode: all', function() {
           beforeEach(function() {
+            grid.datasource =  function(req) {
             grid.items =  function(req) {
+            grid.datasource =  function(params, callback) {
               var data = [];
-              for (var i = req.index; i < req.index + req.count; i++) {
+              for (var i = params.index; i < params.index + params.count; i++) {
                 data.push(["foo " + i, "bar " + i]);
               }
-              req.success(data, 100);
+              callback(data, 100);
             };
             grid.selection.mode = 'all';
             grid.selection.deselect(0);
