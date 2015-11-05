@@ -22,6 +22,9 @@
   - `sort` event is now `sort-order-changed`. (#160)
   - `grid.data.clearCache()` is now `grid.clearCache()`. (#160)
   - `grid.data.getItem(rowIndex, callback, onlyCached)` is now `grid.getItem(rowIndex, callback, onlyCached)`. (#160)
+  - `grid.rows` is now `grid.visibleRows` (#222)
+  - `rows` attribute is now `visible-rows` (#222)
+  - `grid.visibleColumns` is removed (#222)
 
 ## Vaadin Grid v0.3.0.beta7 (2015-Sept)
 - Polymer updated to v1.1.1

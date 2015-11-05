@@ -74,7 +74,7 @@ public class GridElement implements SelectionHandler<Object>,
         SortHandler<Object>, SelectAllHandler<Object> {
 
     private final ViolatedGrid grid;
-    private int rows = -1;
+    private int visibleRows = -1;
 
     public boolean updating = true;
     private GridLightDomTable lightDom;
@@ -355,16 +355,6 @@ public class GridElement implements SelectionHandler<Object>,
         return result;
     }
 
-    public JSArray<JSColumn> getVisibleColumns() {
-        JSArray<JSColumn> result = JSArray.createArray().cast();
-        for (int i = 0; i < cols.size(); i++) {
-            if (!cols.get(i).getHidden()) {
-                result.add(cols.get(i));
-            }
-        }
-        return result;
-    }
-
     public void setSelectionMode(String selectionMode) {
         setSelectionMode(selectionMode, false);
     }
@@ -466,8 +456,8 @@ public class GridElement implements SelectionHandler<Object>,
             grid.setHeight("100%");
 
             if (container.getClientHeight() == 0) {
-                if (rows > 0) {
-                    grid.setHeightByRows(rows);
+                if (visibleRows > 0) {
+                    grid.setHeightByRows(visibleRows);
                 } else {
                     GridDataSource ds = getDataSource();
                     if (ds != null) {
@@ -488,12 +478,12 @@ public class GridElement implements SelectionHandler<Object>,
         }
     }
 
-    public int getRows() {
-        return rows;
+    public int getVisibleRows() {
+        return visibleRows;
     }
 
-    public void setRows(int rows) {
-        this.rows = JSValidate.Integer.val(rows, -1, -1);
+    public void setVisibleRows(int visibleRows) {
+        this.visibleRows = JSValidate.Integer.val(visibleRows, -1, -1);
         updateHeight();
     }
 

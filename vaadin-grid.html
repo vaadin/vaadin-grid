@@ -1146,34 +1146,23 @@ More examples available at https://cdn.vaadin.com/vaadin-elements/latest/vaadin-
       },
 
       /**
-       * Returns an array of the currently visible columns in the grid.
-       * No hidden columns included.
-       *
-       * @property {Array<Column>} visibleColumns
-       * @type {Array<Column>}
-       */
-      get visibleColumns() {
-        return this._grid.getVisibleColumns();
-      },
-
-      /**
        * The number of visible rows in the grid. Implicitly sets the height
        * in the inline style, overriding any previous height. Setting style.height
        * in this case should be ignored if possible.
        *
-       * Attribute: `rows`
+       * Attribute: `visible-rows`
        *
-       * @property {number} rows
+       * @property {number} visibleRows
        * @default 10
        * @type {number}
        */
-      get rows() {
-        var rows = this._grid.getRows();
+      get visibleRows() {
+        var rows = this._grid.getVisibleRows();
         return rows > 0 ? rows : undefined;
       },
-      set rows(rows) {
-        this._grid.setRows(rows);
-        this.reflectPropertyToAttribute("rows");
+      set visibleRows(visibleRows) {
+        this._grid.setVisibleRows(visibleRows);
+        this.reflectPropertyToAttribute("visibleRows");
       },
 
       /**
