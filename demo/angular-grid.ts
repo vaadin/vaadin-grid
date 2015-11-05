@@ -16,10 +16,10 @@ export class AngularGrid {
 
   constructor(@Inject(Http) http: Http) {
     // Set the items for the vaadin-grid
-    this.grid.items = req =>
-      http.get(this.getUrl(this.gender.value, Math.max(req.count, 1)))
+    this.grid.items = (params, callback) =>
+      http.get(this.getUrl(this.gender.value, Math.max(params.count, 1)))
         .map(res => res.json().results)
-        .subscribe(results => req.success(results, this.gender.value ? 50 : 100));
+        .subscribe(results => callback(results, this.gender.value ? 50 : 100));
 
     this.grid.then(() => {
       // Set a renderer for the picture column
