@@ -6,6 +6,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
         case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
     }
 };
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
@@ -16,7 +19,7 @@ var AngularGrid = (function () {
         var _this = this;
         this.grid = document.querySelector("angular-grid vaadin-grid");
         this.gender = document.querySelector("angular-grid select");
-        this.grid.datasource = function (req) {
+        this.grid.items = function (req) {
             return http.get(_this.getUrl(_this.gender.value, Math.max(req.count, 1)))
                 .map(function (res) { return res.json().results; })
                 .subscribe(function (results) { return req.success(results, _this.gender.value ? 50 : 100); });
@@ -46,7 +49,8 @@ var AngularGrid = (function () {
             templateUrl: 'angular-grid.html',
             directives: [angular2_1.NgIf]
         }),
-        __param(0, angular2_1.Inject(http_1.Http))
+        __param(0, angular2_1.Inject(http_1.Http)), 
+        __metadata('design:paramtypes', [(typeof Http !== 'undefined' && Http) || Object])
     ], AngularGrid);
     return AngularGrid;
 })();

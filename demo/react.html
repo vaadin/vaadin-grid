@@ -56,7 +56,7 @@ layout: page
               (function wait() {
                 if (vGrid.selection) {
                   // Assign the data source
-                  vGrid.datasource = _this.dataSource;
+                  vGrid.items = _this.dataSource;
 
                   // Bind selection listener
                   vGrid.addEventListener("select", _this.onRowSelect);

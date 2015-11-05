@@ -15,8 +15,8 @@ export class AngularGrid {
   gender = document.querySelector("angular-grid select");
 
   constructor(@Inject(Http) http: Http) {
-    // Set a datasource for the vaadin-grid
-    this.grid.datasource = req =>
+    // Set the items for the vaadin-grid
+    this.grid.items = req =>
       http.get(this.getUrl(this.gender.value, Math.max(req.count, 1)))
         .map(res => res.json().results)
         .subscribe(results => req.success(results, this.gender.value ? 50 : 100));
