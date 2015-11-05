@@ -1,6 +1,5 @@
 package com.vaadin.elements.grid.config;
 
-import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.js.JsProperty;
 import com.google.gwt.core.client.js.JsType;
 import com.vaadin.elements.common.js.JSArray;
@@ -27,16 +26,4 @@ public interface JSDataRequest {
 
     @JsProperty
     void setSortOrder(JSArray<JSSortOrder> sortOrder);
-
-    @JsProperty
-    JavaScriptObject getSuccess();
-
-    @JsProperty
-    void setSuccess(JavaScriptObject success);
-
-    @JsProperty
-    JavaScriptObject getFailure();
-
-    @JsProperty
-    void setFailure(JavaScriptObject failure);
 }

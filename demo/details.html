@@ -117,18 +117,18 @@ layout: page
 
         HTMLImports.whenReady(function() {
           var dataSourceSize = 1000;
-          grid.items = function(req) {
+          grid.items = function(params, callback) {
             // Fetch the JSON data from a URL
             var xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function() {
               if (xhr.readyState == XMLHttpRequest.DONE) {
                 if (xhr.status == 200) {
                   var json = JSON.parse(xhr.responseText);
-                  req.success(json.results, dataSourceSize);
+                  callback(json.results, dataSourceSize);
                 }
               }
             }
-            var rowsNeeded = req.count > 0 ? req.count : 10;
+            var rowsNeeded = params.count > 0 ? params.count : 10;
             xhr.open("GET", randomUserUrl + "?results=" + rowsNeeded, true);
             xhr.send();
           };

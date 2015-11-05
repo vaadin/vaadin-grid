@@ -1,6 +1,5 @@
 package com.vaadin.elements.grid.data;
 
-import java.util.Collections;
 import java.util.List;
 
 import com.google.gwt.core.client.JavaScriptObject;
@@ -25,7 +24,7 @@ public class GridJsFuncDataSource extends GridDataSource {
         // We need to do a first query to DB in order to get the initial size
         // and then attach the data-source to the grid, otherwise the grid will
         // never call the requestRows method when size is zero.
-        doRequest(0, 0, null);
+        requestRows(0, 0, null);
     }
 
     public void setJSFunction(JavaScriptObject jso) {
@@ -38,15 +37,17 @@ public class GridJsFuncDataSource extends GridDataSource {
     protected void requestRows(final int firstRowIndex, final int numberOfRows,
             final RequestRowsCallback<Object> callback) {
 
-        doRequest(firstRowIndex, numberOfRows, callback);
+        JSDataRequest jsDataRequest = JS.createJsType(JSDataRequest.class);
+        jsDataRequest.setIndex(firstRowIndex);
+        jsDataRequest.setCount(numberOfRows);
+        jsDataRequest.setSortOrder(JsUtils.prop(gridElement.getContainer(), "sortOrder"));
+
+        gridElement.setLoadingDataClass(true);
+        JsUtils.jsni(jsFunction, "call", jsFunction, jsDataRequest, wrapCallback(callback));
     }
 
-    private void doRequest(int idx, int count, Object cb) {
-        JSDataRequest jsDataRequest = JS.createJsType(JSDataRequest.class);
-        jsDataRequest.setIndex(idx);
-        jsDataRequest.setCount(count);
-        jsDataRequest.setSortOrder(JsUtils.prop(gridElement.getContainer(), "sortOrder"));
-        jsDataRequest.setSuccess(JsUtils.wrapFunction(new Function() {
+    private JavaScriptObject wrapCallback(final RequestRowsCallback<Object> callback) {
+        return JsUtils.wrapFunction(new Function() {
             @Override
             public void f() {
                 List<Object> list = JS.asList(arguments(0));
@@ -62,8 +63,8 @@ public class GridJsFuncDataSource extends GridDataSource {
                     setSize(totalSize.intValue());
                 }
 
-                if (cb != null) {
-                    ((RequestRowsCallback) cb).onResponse(list, size());
+                if (callback != null) {
+                    callback.onResponse(list, size());
                 }
 
                 gridElement.setLoadingDataClass(false);
@@ -73,18 +74,7 @@ public class GridJsFuncDataSource extends GridDataSource {
                     gridElement.updateWidth();
                 }
             }
-        }));
-        if (cb != null) {
-            jsDataRequest.setFailure(JsUtils.wrapFunction(new Function() {
-                @Override
-                public void f() {
-                    ((RequestRowsCallback) cb).onResponse(
-                            Collections.emptyList(), size());
-                    gridElement.setLoadingDataClass(false);
-                }
-            }));
-        }
-        gridElement.setLoadingDataClass(true);
-        JS.exec(jsFunction, jsDataRequest);
+        });
     }
+
 }

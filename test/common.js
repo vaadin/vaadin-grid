@@ -97,15 +97,15 @@ function initializeGrid(cb) {
   onRegister(grid, cb);
 }
 
-function infiniteDataSource(req) {
+function infiniteDataSource(params, callback) {
   var data = [];
   // data.length should never be greater than size, otherwise in SDM or
   // compiled code with assertions we get an exception in
   // AbstractRemoteDataSource::setRowData
-  for (var i = req.index; i < this.size && i < req.index + req.count; i++) {
+  for (var i = params.index; i < this.size && i < params.index + params.count; i++) {
     data.push(["foo " + i, "bar " + i]);
   }
-  req.success(data, this.size);
+  callback(data, this.size);
 }
 
 var local = function() {

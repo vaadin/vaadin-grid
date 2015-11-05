@@ -6,9 +6,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
         case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
     }
 };
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
@@ -19,15 +16,18 @@ var AngularGrid = (function () {
         var _this = this;
         this.grid = document.querySelector("angular-grid vaadin-grid");
         this.gender = document.querySelector("angular-grid select");
-        this.grid.items = function (req) {
-            return http.get(_this.getUrl(_this.gender.value, Math.max(req.count, 1)))
+        // Set the items for the vaadin-grid
+        this.grid.items = function (params, callback) {
+            return http.get(_this.getUrl(_this.gender.value, Math.max(params.count, 1)))
                 .map(function (res) { return res.json().results; })
-                .subscribe(function (results) { return req.success(results, _this.gender.value ? 50 : 100); });
+                .subscribe(function (results) { return callback(results, _this.gender.value ? 50 : 100); });
         };
         this.grid.then(function () {
+            // Set a renderer for the picture column
             _this.grid.columns[0].renderer = function (cell) {
                 return cell.element.innerHTML = "<img style='width: 30px' src='" + cell.data + "' />";
             };
+            // Add a new header row with the gender select in it
             _this.grid.header.addRow(1, ["", _this.gender]);
         });
     }
@@ -49,8 +49,7 @@ var AngularGrid = (function () {
             templateUrl: 'angular-grid.html',
             directives: [angular2_1.NgIf]
         }),
-        __param(0, angular2_1.Inject(http_1.Http)), 
-        __metadata('design:paramtypes', [(typeof Http !== 'undefined' && Http) || Object])
+        __param(0, angular2_1.Inject(http_1.Http))
     ], AngularGrid);
     return AngularGrid;
 })();
