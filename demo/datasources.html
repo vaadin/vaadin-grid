@@ -71,6 +71,7 @@ layout: page
                        [ "Project B", 87654, 0.2 ],
                        [ "Project C", 12999, 0.6 ] ];
           grid.items = function(req) {
+          grid.items = function(req, cb) {
             var slice = data.slice(req.index, req.index + req.count);
             req.success(slice, data.length);
           };
