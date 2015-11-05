@@ -6,9 +6,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
         case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
     }
 };
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
 var angular2_1 = require('angular2/angular2');
 var AngularGridDom = (function () {
     function AngularGridDom() {
@@ -25,8 +22,7 @@ var AngularGridDom = (function () {
         angular2_1.View({
             template: "\n  <vaadin-grid selection-mode='disabled'>\n    <table>\n      <colgroup>\n        <col width=\"80\">\n        <col header-text=\"First name\">\n        <col header-text=\"Last name\">\n      </colgroup>\n      <tbody>\n        <tr *ng-for=\"var user of users\">\n          <td><img src=\"{{user.thumbnail}}\" style=\"width: 30px\"></td>\n          <td>{{user.firstname}}</td>\n          <td>{{user.lastname}}</td>\n        </tr>\n      </tbody>\n    </table>\n  </vaadin-grid>\n  ",
             directives: [angular2_1.NgFor, angular2_1.NgIf]
-        }), 
-        __metadata('design:paramtypes', [])
+        })
     ], AngularGridDom);
     return AngularGridDom;
 })();
