@@ -70,7 +70,7 @@ layout: page
           var data = [ [ "Project A", 10000, 0.8 ],
                        [ "Project B", 87654, 0.2 ],
                        [ "Project C", 12999, 0.6 ] ];
-          grid.datasource = function(req) {
+          grid.items = function(req) {
             var slice = data.slice(req.index, req.index + req.count);
             req.success(slice, data.length);
           };
@@ -170,7 +170,7 @@ layout: page
 
         HTMLImports.whenReady(function() {
           // code
-          grid.datasource = function(req) {
+          grid.items = function(req) {
             setTimeout(function() {
               req.success(employees.slice(req.index, req.index + req.count), employees.length);
             }, 400);
@@ -215,7 +215,7 @@ layout: page
 
         HTMLImports.whenReady(function() {
           // code
-          // Define the datasource
+          // Define the items
           var data = [ [ "Project A", 10000, 0.8 ],
                        [ "Project B", 87654, 0.2 ],
                        [ "Project C", 12999, 0.6 ] ];
@@ -253,15 +253,15 @@ layout: page
 
         HTMLImports.whenReady(function() {
           // code
-          var dataSourceSize = 1000;
-          grid.datasource = function(req) {
+          var itemCount = 1000;
+          grid.items = function(req) {
             // Fetch the JSON data from a URL
             var xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function() {
-              if (xhr.readyState == XMLHttpRequest.DONE ) {
-                if(xhr.status == 200){
+              if (xhr.readyState == XMLHttpRequest.DONE) {
+                if (xhr.status == 200) {
                   var json = JSON.parse(xhr.responseText);
-                  req.success(json.results, dataSourceSize);
+                  req.success(json.results, itemCount);
                 }
               }
             }

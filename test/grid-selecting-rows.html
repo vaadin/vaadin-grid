@@ -25,13 +25,12 @@
 
       function getSelectionModeAttr() {
         return grid.getAttribute('selection-mode');
-      };
+      }
 
       function setSelectionModeAttr(mode) {
         grid.setAttribute('selection-mode', mode);
-
         return grid;
-      };
+      }
 
       afterEach(function() {
         selectListener.reset();
@@ -367,7 +366,7 @@
         describe('with selectionMode: multi', function() {
           beforeEach(function() {
             grid.selection.mode = 'multi';
-          })
+          });
 
           it('should select multiple rows', function() {
             grid.selection.select(0);
@@ -490,7 +489,7 @@
 
         describe('in mode: multi', function() {
           beforeEach(function() {
-            grid.datasource =  function(req) {
+            grid.items =  function(req) {
               var data = [];
               for (var i = req.index; i < req.index + req.count; i++) {
                 data.push(["foo " + i, "bar " + i]);
@@ -562,7 +561,7 @@
 
         describe('in mode: all', function() {
           beforeEach(function() {
-            grid.datasource =  function(req) {
+            grid.items =  function(req) {
               var data = [];
               for (var i = req.index; i < req.index + req.count; i++) {
                 data.push(["foo " + i, "bar " + i]);

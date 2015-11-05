@@ -17,7 +17,7 @@
   - Fixed a bug with grid remaining invisible after datasource change (#172)
 
   #### API changes:
-  - `grid.data.source` is now `grid.items` for Arrays and `grid.datasource` for Functions. (#160)
+  - `grid.data.source` is now `grid.items`. (#160, #228)
   - `grid.data.sortOrder` is now `grid.sortOrder`. (#160)
   - `sort` event is now `sort-order-changed`. (#160)
   - `grid.data.clearCache()` is now `grid.clearCache()`. (#160)

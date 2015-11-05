@@ -780,39 +780,27 @@ More examples available at https://cdn.vaadin.com/vaadin-elements/latest/vaadin-
         },
 
         /**
-         * A function returning the items determining rows in the grid.
+         * An array or a function containing or returning items determining
+         * rows in the grid.
          *
-         * Example:
-         * ```
-         * grid.datasource = function(req) {
-         *  req.success(['foo', 'bar'], 2);
-         * };
-         * ```
-         *
-         * @property {function} datasource
-         * @type {function}
-         */
-        datasource: {
-          type: Object,
-          observer: '_datasourceChanged'
-        },
-
-        /**
-         * An array containing items determining rows in the grid.
-         *
-         *  Example:
+         *  Examples:
          *  ```
          *  grid.items = [
          *      ["horse", 150, "domestic"],
          *      ["wolf", 100, "wild"]
          *  ];
          *  ```
+         *  ```
+         *  grid.items = function(req) {
+         *    req.success(['foo', 'bar'], 2);
+         *  };
+         *  ```
          *
-         * @property {Array<Object>} items
-         * @type {Array<Object>}
+         * @property {(Array<Object>|function)} items
+         * @type {(Array<Object>|function)}
          */
         items: {
-          type: Array,
+          type: Object,
           observer: '_itemsChanged'
         },
 
@@ -921,18 +909,16 @@ More examples available at https://cdn.vaadin.com/vaadin-elements/latest/vaadin-
         'selectionmodechange': '_onSelectionModeChange'
       },
 
-      _datasourceChanged: function(datasource) {
-        this._grid.setDataSource(datasource);
-      },
-
       _itemsChanged: function(items) {
-        if(Array.isArray(items)) {
+        if (Array.isArray(items)) {
           this._grid.setDataSource(function(req) {
             var array = items.slice(req.index, req.index + req.count);
             req.success(array, items.length);
           });
+        } else if (typeof items === 'function') {
+          this._grid.setDataSource(items);
         } else {
-          throw new Error('Unknown items type: ' + items + '. Arrays are supported only.');
+          throw new Error('Unknown items type: ' + items + '. Only arrays and functions are supported.');
         }
       },
 

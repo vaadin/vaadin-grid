@@ -200,7 +200,7 @@ layout: page
         filterElement.addEventListener("click", filter);
 
         HTMLImports.whenReady(function() {
-          grid.datasource = function(req) {
+          grid.items = function(req) {
             var filterValue = filterElement.value.toLowerCase();
             var data = employees.filter(function(val){ return (val.toString().toLowerCase()).indexOf(filterValue) != -1 } );
             var slice = data.slice(req.index, req.index + req.count);

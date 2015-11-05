@@ -17,7 +17,7 @@
 <script>
   describe.feature('binding data', function() {
 
-    describe('items', function() {
+    describe('items array', function() {
       before(function() {
         grid.columns = [{name: "FirstName"}, {name: 'Salary'}];
       });
@@ -36,9 +36,9 @@
         });
       });
 
-      it('should throw an error when a non-array is assigned', function() {
+      it('should throw an error when non-supported type is assigned', function() {
         expect(function() {
-          grid.items = function() {};
+          grid.items = 'foobar';
         }).to.throw(/Unknown items type/);
       });
 
@@ -101,11 +101,11 @@
       });
     });
 
-    describe('datasource', function() {
-      it('should set a function as datasource', function() {
+    describe('items function', function() {
+      it('should set a function as items', function() {
         infiniteDataSource.size = 2;
 
-        grid.datasource = infiniteDataSource;
+        grid.items = infiniteDataSource;
 
         return grid.then(function() {
           var cells = qaLocal(".vaadin-grid-body .vaadin-grid-cell > span");
@@ -114,12 +114,6 @@
           assert.equal(cells[2].innerHTML, "foo 1");
         });
 
-      });
-
-      it('should throw an error if a non-function is assigned', function() {
-        expect(function() {
-          grid.datasource = [1,2,3];
-        }).to.throw(/Unknown data source type/);
       });
 
       it('should render header/footer with empty items', function() {
@@ -156,7 +150,7 @@
         infiniteDataSource.size = 1000;
         spy = sinon.spy(infiniteDataSource);
 
-        grid.datasource = spy;
+        grid.items = spy;
       });
 
       beforeEach(function() {
