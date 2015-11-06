@@ -49,9 +49,9 @@ var AngularGrid = (function () {
             templateUrl: 'angular-grid.html',
             directives: [angular2_1.NgIf]
         }),
+        angular2_1.Injectable(),
         __param(0, angular2_1.Inject(http_1.Http))
     ], AngularGrid);
     return AngularGrid;
 })();
-exports.AngularGrid = AngularGrid;
 angular2_1.bootstrap(AngularGrid);

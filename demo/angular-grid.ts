@@ -9,7 +9,9 @@ import {Http, httpInjectables} from 'angular2/http';
   templateUrl: 'angular-grid.html',
   directives: [NgIf]
 })
-export class AngularGrid {
+
+@Injectable()
+class AngularGrid {
   selected: Object;
   grid = document.querySelector("angular-grid vaadin-grid");
   gender = document.querySelector("angular-grid select");

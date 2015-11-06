@@ -1,4 +1,4 @@
-import {bootstrap, Component, View, NgIf, NgFor} from 'angular2/angular2';
+import {bootstrap, Component, View, NgFor} from 'angular2/angular2';
 
 @Component({
   selector: 'angular-grid-dom'
@@ -22,9 +22,10 @@ import {bootstrap, Component, View, NgIf, NgFor} from 'angular2/angular2';
     </table>
   </vaadin-grid>
   `,
-  directives: [NgFor, NgIf]
+  directives: [NgFor]
 })
-export class AngularGridDom {
+
+class AngularGridDom {
   users = [
       {"firstname":"raul","lastname":"diez","thumbnail":randomUserUrl + "portraits/thumb/men/39.jpg"},
       {"firstname":"sonia","lastname":"benitez","thumbnail":randomUserUrl + "portraits/thumb/women/91.jpg"},
