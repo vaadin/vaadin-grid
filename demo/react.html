@@ -59,7 +59,7 @@ layout: page
                   vGrid.items = _this.items;
 
                   // Bind selection listener
-                  vGrid.addEventListener("select", _this.onRowSelect);
+                  vGrid.addEventListener("selected-items-changed", _this.onRowSelect);
 
                   var pictureRenderer = function(cell) {
                     cell.element.innerHTML = "<img style='width: 30px' src='" + cell.data + "' />";

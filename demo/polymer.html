@@ -28,7 +28,7 @@ layout: page
     <code-example source>
       <div>
         <template is="dom-bind" class="my-grid-with-template" demo>
-          <vaadin-grid id="my-grid-with-template" on-select="onSelect">
+          <vaadin-grid id="my-grid-with-template" on-selected-items-changed="onSelect">
             <table>
               <col header-text="#" width="64">
               <col width="100">
@@ -97,7 +97,7 @@ layout: page
     <code-example source>
       <div>
         <template is="dom-bind" class="my-grid-with-ds" demo>
-          <vaadin-grid id="my-grid-with-ds" items="[[items]]" on-select="onSelect">
+          <vaadin-grid id="my-grid-with-ds" items="[[items]]" on-selected-items-changed="onSelect">
             <table>
               <colgroup>
                 <col header-text="" name="user.picture.thumbnail" width="100">
