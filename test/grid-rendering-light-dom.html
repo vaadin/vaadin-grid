@@ -6,123 +6,162 @@
   <title></title>
   <script src="../../webcomponentsjs/webcomponents-lite.min.js"></script>
   <script src="../../web-component-tester/browser.js"></script>
+  <link rel="import" href="../../test-fixture/test-fixture.html">
+  <script src='../../test-fixture/test-fixture-mocha.js'></script>
+
   <script src="common.js"></script>
   <link rel="import" href="../vaadin-grid.html">
 </head>
 
 <body>
 
-<div id="gridwrapper"></div>
+  <test-fixture id='cols'>
+    <template>
+      <vaadin-grid>
+        <table>
+          <col header-text='Name' sortable sort-direction="asc"></col>
+          <col header-text='Value'></col>
+          <tbody>
+            <tr>
+              <td>Grid</td>
+              <td>10000</td>
+            </tr>
+          </tbody>
+        </table>
+      </vaadin-grid>
+    </template>
+  </test-fixture>
 
-<script>
-  describe.feature('rendering light DOM', function() {
-    it('light dom table header gets rendered in the grid', function() {
-      var row = qLocal(".vaadin-grid-header .vaadin-grid-row");
-      var cells = row.childNodes;
+  <test-fixture id='thead'>
+    <template>
+      <vaadin-grid>
+        <table>
+          <col></col>
+          <col></col>
+          <tbody>
+            <tr>
+              <td>Foo</td>
+              <td>Bar</td>
+            </tr>
+          </tbody>
+          <thead>
+            <tr class='red'>
+              <td colspan='2'>Qux</td>
+            </tr>
+            <tr class='pink'>
+              <th>Name</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tfoot>
+            <tr class='foot1'>
+              <td colspan='2'></td>
+            </tr>
+            <tr class='foot2'>
+              <td></td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </vaadin-grid>
+    </template>
+  </test-fixture>
 
-      assert.isTrue(cells[0].innerHTML == 'Name');
-      assert.isTrue(cells[1].innerHTML == 'Value');
+  <script>
+    describe('rendering light DOM', function() {
+      describe('with colgroup', function() {
+        var grid;
+
+        beforeEach(function(done) {
+          grid = fixture('cols');
+
+          return grid.then(done);
+        });
+
+        function bodyRowCount() {
+          return grid.querySelectorAll('.vaadin-grid tbody tr').length;
+        }
+
+        it('should render header names from `header-text`', function() {
+          var row = grid.$$(".vaadin-grid-header .vaadin-grid-row");
+          var contents = row.querySelectorAll('span');
+
+          assert.isTrue(contents[0].innerHTML == 'Name');
+          assert.isTrue(contents[1].innerHTML == 'Value');
+        });
+
+        it('should render values from `<td>` elements', function() {
+          var row = grid.$$(".vaadin-grid-body .vaadin-grid-row");
+          var contents = row.querySelectorAll('span');
+
+          assert.isTrue(contents[0].innerHTML == 'Grid');
+          assert.isTrue(contents[1].innerHTML == '10000');
+        });
+
+        it('should mutate on tbody inner changes', function(done) {
+          var rowCount = bodyRowCount();
+
+          grid.querySelector('table tbody').innerHTML += grid.querySelector('table tbody').innerHTML;
+
+          waitUntil(function() {
+            return bodyRowCount() == rowCount * 2;
+          }, done);
+        });
+
+        it('should set sortOrder', function(done) {
+          var firstColumnElement = grid.querySelector('table col');
+
+          firstColumnElement.setAttribute('sort-direction', 'desc');
+
+          waitUntil(function() {
+            return grid.sortOrder && grid.sortOrder[0].direction === 'desc';
+          }, done);
+        });
+      });
+
+      describe('with thead', function() {
+        var grid;
+
+        beforeEach(function(done) {
+          grid = fixture('thead');
+
+          return grid.then(done);
+        });
+
+        function headerRowCount() {
+          return grid.querySelectorAll('.vaadin-grid thead tr').length;
+        }
+
+        it('should have classes on header elements', function() {
+          expect(grid.querySelectorAll('.vaadin-grid thead tr.red').length).to.equal(1);
+          expect(grid.querySelectorAll('.vaadin-grid thead tr.pink').length).to.equal(1);
+        });
+
+        it('should have colspan on th elements', function() {
+          expect(grid.querySelectorAll('.vaadin-grid thead th[colspan=\'2\']').length).to.equal(1);
+        });
+
+        it('should mutate on thead inner changes', function(done) {
+          var rowCount = headerRowCount();
+
+          grid.querySelector('table thead').innerHTML += grid.querySelector('table thead').innerHTML;
+
+          waitUntil(function() {
+            return headerRowCount() == rowCount * 2;
+          }, done);
+        });
+
+        it('should hide header', function(done) {
+          grid.querySelector('table thead').setAttribute('hidden', 'true');
+
+          waitUntil(function() {
+            return headerRowCount() === 0;
+          }, done);
+        });
+      });
     });
-
-    it('light dom table body gets rendered in the grid', function() {
-      var row = qLocal(".vaadin-grid-body .vaadin-grid-row");
-      var cells = row.childNodes;
-
-      assert.isTrue(cells[0].innerHTML == 'Grid');
-      assert.isTrue(cells[1].innerHTML == '10000');
-    });
-
-    function removeGrid() {
-      if (grid) {
-        grid.style.visibility = "hidden";
-        document.body.appendChild(grid);
-        grid = null;
-      }
-    }
-
-    // makes grid.then in afterEach to never finish...
-    it.skip('DOM: headers & footers', function(done) {
-//      removeGrid();
-      wrapper.innerHTML = "<vaadin-grid><table>" +
-      "<thead hidden><tr class='red'><td colspan='2'></td></tr><tr class='pink'><th></th><th></th></tr></thead>" +
-      "<tfoot><tr class='foot1'><td colspan='2'></td></tr><tr class='foot2'><td></td><td></td></tr></tfoot>" +
-      "</table></vaadin-grid>";
-      grid = wrapper.querySelector("vaadin-grid");
-
-      waitUntil(function() {
-        return qLocal(".vaadin-grid-body");
-      }, function() {
-        assert.equal(0, qaLocal("thead tr").length);
-        assert.equal(1, qaLocal("tfoot tr.foot1").length);
-        assert.equal(1, qaLocal("tfoot tr.foot2").length);
-        assert.equal(1, qaLocal("tfoot td[colspan='2']").length);
-
-        qLight("thead").setAttribute('hidden', false)
-        waitUntil(function() {
-          return qaLocal("thead tr").length > 0;
-        }, function() {
-          assert.equal(1, qaLocal("thead tr.red").length);
-          assert.equal(1, qaLocal("thead tr.pink").length);
-          assert.equal(1, qaLocal("thead th[colspan='2']").length);
-          done();
-        }, done);
-
-      }, done);
-    });
-
-    it('DOM: mutation', function(done) {
-      waitUntil(function() {
-        return qLocal(".vaadin-grid-body");
-      }, function() {
-        var nrows = qaLocal("tbody tr").length;
-        var nheads = qaLocal("thead tr").length;
-        qLight("thead").innerHTML += qLight("table thead").innerHTML;
-        qLight("tbody").innerHTML += qLight("table tbody").innerHTML;
-        assert.equal("Name", qLocal("th").textContent);
-        qLight("th").textContent = "foo";
-        waitUntil(function() {
-          return qLocal("tbody tr") && qaLocal("tbody tr").length == nrows * 2;
-        }, function() {
-          assert.equal(qaLocal("tbody tr").length, nrows * 2);
-          assert.equal(qaLocal("thead tr").length, nheads * 2);
-          assert.equal("foo", qLocal("th").textContent);
-          done();
-        }, done);
-      }, done);
-    });
-
-    it('should have a sort-order', function(done) {
-      var ths = light().querySelectorAll("th");
-      ths[0].setAttribute("sort-direction", "asc");
-      ths[1].setAttribute("sort-direction", "desc");
-
-      grid.then(function(){
-        var sortOrder = grid.sortOrder;
-        expect(grid.sortOrder[0]).to.eql({column: 0, direction: "asc"});
-        expect(grid.sortOrder[1]).to.eql({column: 1, direction: "desc"});
-      }).then(done);
-    });
-
-    it('should apply header-text from a th element', function(done) {
-      light().querySelector("th").setAttribute("header-text", "foo");
-
-      grid.then(function(){
-        expect(grid.columns[0].headerHtml).to.eql("foo");
-      }).then(done);
-    });
-
-    it('should apply header-text from a col element', function(done) {
-      var col = document.createElement("col");
-      col.setAttribute("header-text", "foo");
-      light().querySelector("table").prependChild(col);
-
-      grid.then(function(){
-        expect(grid.columns[0].headerHtml).to.eql("foo");
-      }).then(done);
-    });
-
-  });
-</script>
+  </script>
 
 </body>
+
 </html>
