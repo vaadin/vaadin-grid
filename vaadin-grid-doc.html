@@ -2,14 +2,12 @@
 
 <script>
   Polymer.Vaadin = Polymer.Vaadin || {};
-</script>
 
-<!-- Object for controlling and accessing the columns in the grid. -->
-<script>
-/**
- * @polymerBehavior Column
- */
-Polymer.Vaadin.Column = {
+  /**
+   * Object for controlling and accessing the columns in the grid.
+   * @polymerBehavior Column
+   */
+  Polymer.Vaadin.Column = {
     properties: {
       /**
        * Name of the column.
@@ -113,16 +111,12 @@ Polymer.Vaadin.Column = {
       hidingToggleText: String
     }
   };
-</script>
 
-<!--
-Object used to request data from the data source.
--->
-<script>
-/**
- * @polymerBehavior DataRequest
- */
-Polymer.Vaadin.DataRequest = {
+  /**
+   * Object used to request data from the data source.
+   * @polymerBehavior DataRequest
+   */
+  Polymer.Vaadin.DataRequest = {
     properties: {
       /**
        * Index of the first data item to fetch.
@@ -173,16 +167,12 @@ Polymer.Vaadin.DataRequest = {
      */
     failure: function() {}
   };
-</script>
 
-<!--
-Object for accessing and controlling footer rows.
--->
-<script>
-/**
- * @polymerBehavior Footer
- */
-Polymer.Vaadin.Footer = {
+  /**
+   * Object for accessing and controlling footer rows.
+   * @polymerBehavior Footer
+   */
+  Polymer.Vaadin.Footer = {
     properties: {
       /**
        * Hides all footers in the grid.
@@ -236,16 +226,12 @@ Polymer.Vaadin.Footer = {
      */
     setRowClassName: function(rowIndex, className) {}
   };
-</script>
 
-<!--
-Object for accessing and controlling header rows.
--->
-<script>
-/**
- * @polymerBehavior Header
- */
-Polymer.Vaadin.Header = {
+  /**
+   * Object for accessing and controlling header rows.
+   * @polymerBehavior Header
+   */
+  Polymer.Vaadin.Header = {
     properties: {
       /**
        * Hides all headers in the grid.
@@ -304,16 +290,11 @@ Polymer.Vaadin.Header = {
      */
     setRowClassName: function(rowIndex, className) {}
   };
-</script>
 
-<!--
-Object referencing to a row and it's data.
--->
-<script>
-/**
- * @polymerBehavior Row
- */
-
+  /**
+   * Object referencing to a row and it's data.
+   * @polymerBehavior Row
+   */
   Polymer.Vaadin.Row = {
     properties: {
       /**
@@ -343,13 +324,9 @@ Object referencing to a row and it's data.
       element:  Object
     }
   };
-</script>
 
-<!--
-Object for accessing and controlling selected rows of the grid.
--->
-<script>
 /**
+ * Object for accessing and controlling selected rows of the grid.
  * @polymerBehavior Selection
  */
 Polymer.Vaadin.Selection = {
@@ -409,13 +386,9 @@ Polymer.Vaadin.Selection = {
      */
     deselected: function() {}
   };
-</script>
 
-<!--
-Object for defining the sorting order of the columns.
--->
-<script>
 /**
+ * Object for defining the sorting order of the columns.
  * @polymerBehavior SortOrder
  */
 Polymer.Vaadin.SortOrder = {
@@ -436,13 +409,9 @@ Polymer.Vaadin.SortOrder = {
       column:  Number
     }
 };
-</script>
 
-<!--
-Represents a grid header/footer cell configuration.
--->
-<script>
 /**
+ * Represents a grid header/footer cell configuration.
  * @polymerBehavior StaticCell
  */
 Polymer.Vaadin.StaticCell = {
@@ -465,13 +434,9 @@ Polymer.Vaadin.StaticCell = {
       colspan:  Number
     }
   };
-</script>
 
-<!--
-Object referencing to a cell and it's data.
--->
-<script>
 /**
+ * Object referencing to a cell and it's data.
  * @polymerBehavior Cell
  */
 Polymer.Vaadin.Cell = {
