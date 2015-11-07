@@ -1,10 +1,15 @@
 <link rel='import' href='vaadin-grid.html'>
 
-<!-- Object for controlling and accessing the columns in the grid. -->
-<dom-module id="Column"></dom-module>
 <script>
-  Polymer({
-    is: 'Column',
+  Polymer.Vaadin = Polymer.Vaadin || {};
+</script>
+
+<!-- Object for controlling and accessing the columns in the grid. -->
+<script>
+/**
+ * @polymerBehavior Column
+ */
+Polymer.Vaadin.Column = {
     properties: {
       /**
        * Name of the column.
@@ -107,16 +112,17 @@
        */
       hidingToggleText: String
     }
-  });
+  };
 </script>
 
 <!--
 Object used to request data from the data source.
 -->
-<dom-module id="DataRequest"></dom-module>
 <script>
-  Polymer({
-    is: 'DataRequest',
+/**
+ * @polymerBehavior DataRequest
+ */
+Polymer.Vaadin.DataRequest = {
     properties: {
       /**
        * Index of the first data item to fetch.
@@ -166,16 +172,17 @@ Object used to request data from the data source.
      * @method failure
      */
     failure: function() {}
-  });
+  };
 </script>
 
 <!--
 Object for accessing and controlling footer rows.
 -->
-<dom-module id="Footer"></dom-module>
 <script>
-  Polymer({
-    is: 'Footer',
+/**
+ * @polymerBehavior Footer
+ */
+Polymer.Vaadin.Footer = {
     properties: {
       /**
        * Hides all footers in the grid.
@@ -228,16 +235,17 @@ Object for accessing and controlling footer rows.
      * @param {string} className - New class name
      */
     setRowClassName: function(rowIndex, className) {}
-  });
+  };
 </script>
 
 <!--
 Object for accessing and controlling header rows.
 -->
-<dom-module id="Header"></dom-module>
 <script>
-  Polymer({
-    is: 'Header',
+/**
+ * @polymerBehavior Header
+ */
+Polymer.Vaadin.Header = {
     properties: {
       /**
        * Hides all headers in the grid.
@@ -295,16 +303,18 @@ Object for accessing and controlling header rows.
      * @param {string} className - New class name
      */
     setRowClassName: function(rowIndex, className) {}
-  });
+  };
 </script>
 
 <!--
 Object referencing to a row and it's data.
 -->
-<dom-module id="Row"></dom-module>
 <script>
-  Polymer({
-    is: 'Row',
+/**
+ * @polymerBehavior Row
+ */
+
+  Polymer.Vaadin.Row = {
     properties: {
       /**
        * Index of the row.
@@ -332,16 +342,17 @@ Object referencing to a row and it's data.
        */
       element:  Object
     }
-  });
+  };
 </script>
 
 <!--
 Object for accessing and controlling selected rows of the grid.
 -->
-<dom-module id="Selection"></dom-module>
 <script>
-  Polymer({
-    is: 'Selection',
+/**
+ * @polymerBehavior Selection
+ */
+Polymer.Vaadin.Selection = {
     properties: {
       /**
        * Mode of the selection.
@@ -397,16 +408,17 @@ Object for accessing and controlling selected rows of the grid.
      * @return {Array<number>} Indexes of the deselected rows.
      */
     deselected: function() {}
-  });
+  };
 </script>
 
 <!--
 Object for defining the sorting order of the columns.
 -->
-<dom-module id="SortOrder"></dom-module>
 <script>
-  Polymer({
-    is: 'SortOrder',
+/**
+ * @polymerBehavior SortOrder
+ */
+Polymer.Vaadin.SortOrder = {
     properties: {
       /**
        * Sort direction.
@@ -423,16 +435,17 @@ Object for defining the sorting order of the columns.
        */
       column:  Number
     }
-  });
+};
 </script>
 
 <!--
 Represents a grid header/footer cell configuration.
 -->
-<dom-module id="StaticCell"></dom-module>
 <script>
-  Polymer({
-    is: 'StaticCell',
+/**
+ * @polymerBehavior StaticCell
+ */
+Polymer.Vaadin.StaticCell = {
     properties: {
       /**
        * Class name of the cell.
@@ -451,16 +464,17 @@ Represents a grid header/footer cell configuration.
        */
       colspan:  Number
     }
-  });
+  };
 </script>
 
 <!--
 Object referencing to a cell and it's data.
 -->
-<dom-module id="Cell"></dom-module>
 <script>
-  Polymer({
-    is: 'Cell',
+/**
+ * @polymerBehavior Cell
+ */
+Polymer.Vaadin.Cell = {
     properties: {
 
       /**
@@ -494,5 +508,5 @@ Object referencing to a cell and it's data.
        */
       index: Number
     }
-  });
+  };
 </script>
