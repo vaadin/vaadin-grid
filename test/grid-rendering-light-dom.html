@@ -15,6 +15,31 @@
 
 <body>
 
+  <dom-module id='grid-wrapper'>
+    <template>
+      <vaadin-grid id='grid'>
+        <content></content>
+      </vaadin-grid>
+    </template>
+  </dom-module>
+
+  <test-fixture id='wrapped'>
+    <template>
+      <grid-wrapper>
+        <table>
+          <col header-text='Name'></col>
+          <col header-text='Value'></col>
+          <tbody>
+            <tr>
+              <td>Grid</td>
+              <td>10000</td>
+            </tr>
+          </tbody>
+        </table>
+      </grid-wrapper>
+    </template>
+  </test-fixture>
+
   <test-fixture id='cols'>
     <template>
       <vaadin-grid>
@@ -68,6 +93,12 @@
   </test-fixture>
 
   <script>
+    HTMLImports.whenReady(function() {
+      Polymer({
+        is: 'grid-wrapper'
+      });
+    });
+
     describe('rendering light DOM', function() {
       describe('with colgroup', function() {
         var grid;
@@ -79,7 +110,7 @@
         });
 
         function bodyRowCount() {
-          return grid.querySelectorAll('.vaadin-grid tbody tr').length;
+          return Polymer.dom(grid.root).querySelectorAll('.vaadin-grid tbody tr').length;
         }
 
         it('should render header names from `header-text`', function() {
@@ -129,16 +160,16 @@
         });
 
         function headerRowCount() {
-          return grid.querySelectorAll('.vaadin-grid thead tr').length;
+          return Polymer.dom(grid.root).querySelectorAll('.vaadin-grid thead tr').length;
         }
 
         it('should have classes on header elements', function() {
-          expect(grid.querySelectorAll('.vaadin-grid thead tr.red').length).to.equal(1);
-          expect(grid.querySelectorAll('.vaadin-grid thead tr.pink').length).to.equal(1);
+          expect(Polymer.dom(grid.root).querySelectorAll('.vaadin-grid thead tr.red').length).to.equal(1);
+          expect(Polymer.dom(grid.root).querySelectorAll('.vaadin-grid thead tr.pink').length).to.equal(1);
         });
 
         it('should have colspan on th elements', function() {
-          expect(grid.querySelectorAll('.vaadin-grid thead th[colspan=\'2\']').length).to.equal(1);
+          expect(Polymer.dom(grid.root).querySelectorAll('.vaadin-grid thead th[colspan=\'2\']').length).to.equal(1);
         });
 
         it('should mutate on thead inner changes', function(done) {
@@ -147,7 +178,7 @@
           grid.querySelector('table thead').innerHTML += grid.querySelector('table thead').innerHTML;
 
           waitUntil(function() {
-            return headerRowCount() == rowCount * 2;
+            return headerRowCount() && headerRowCount() == rowCount * 2;
           }, done);
         });
 
@@ -157,6 +188,35 @@
           waitUntil(function() {
             return headerRowCount() === 0;
           }, done);
+        });
+      });
+
+      describe('passing `<content>` from another component`', function() {
+        var wrapper;
+        var grid;
+        beforeEach(function(done) {
+          wrapper = fixture('wrapped');
+          grid = wrapper.$.grid;
+
+          return grid.then(done);
+        });
+
+        it('should have columns', function() {
+          expect(grid.columns[0].headerContent).to.eql('Name');
+          expect(grid.columns[1].headerContent).to.eql('Value');
+        });
+
+        it('should have rows', function() {
+          var rows = Polymer.dom(grid.root).querySelectorAll('.vaadin-grid tbody tr');
+
+          expect(rows.length).to.eql(1);
+        });
+
+        it('should hide `<content>` table', function() {
+          var tableElement = wrapper.querySelector('table');
+          var styles = window.getComputedStyle(tableElement);
+
+          expect(styles.display).to.eql('none');
         });
       });
     });
