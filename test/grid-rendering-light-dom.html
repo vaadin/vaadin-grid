@@ -23,9 +23,17 @@
     </template>
   </dom-module>
 
-  <test-fixture id='wrapped'>
+  <dom-module id='grid-wrapper-wrapper'>
     <template>
       <grid-wrapper>
+        <content></content>
+      </grid-wrapper>
+    </template>
+  </dom-module>
+
+  <test-fixture id='wrapped'>
+    <template>
+      <grid-wrapper-wrapper>
         <table>
           <col header-text='Name'></col>
           <col header-text='Value'></col>
@@ -36,7 +44,7 @@
             </tr>
           </tbody>
         </table>
-      </grid-wrapper>
+      </grid-wrapper-wrapper>
     </template>
   </test-fixture>
 
@@ -97,6 +105,9 @@
       Polymer({
         is: 'grid-wrapper'
       });
+      Polymer({
+        is: 'grid-wrapper-wrapper'
+      });
     });
 
     describe('rendering light DOM', function() {
@@ -132,7 +143,7 @@
         it('should mutate on tbody inner changes', function(done) {
           var rowCount = bodyRowCount();
 
-          grid.querySelector('table tbody').innerHTML += grid.querySelector('table tbody').innerHTML;
+          Polymer.dom(grid).querySelector('table tbody').innerHTML += Polymer.dom(grid).querySelector('table tbody').innerHTML;
 
           waitUntil(function() {
             return bodyRowCount() == rowCount * 2;
@@ -140,7 +151,7 @@
         });
 
         it('should set sortOrder', function(done) {
-          var firstColumnElement = grid.querySelector('table col');
+          var firstColumnElement = Polymer.dom(grid).querySelector('table col');
 
           firstColumnElement.setAttribute('sort-direction', 'desc');
 
@@ -175,7 +186,7 @@
         it('should mutate on thead inner changes', function(done) {
           var rowCount = headerRowCount();
 
-          grid.querySelector('table thead').innerHTML += grid.querySelector('table thead').innerHTML;
+          Polymer.dom(grid).querySelector('table thead').innerHTML += Polymer.dom(grid).querySelector('table thead').innerHTML;
 
           waitUntil(function() {
             return headerRowCount() && headerRowCount() == rowCount * 2;
@@ -183,7 +194,7 @@
         });
 
         it('should hide header', function(done) {
-          grid.querySelector('table thead').setAttribute('hidden', 'true');
+          Polymer.dom(grid).querySelector('table thead').setAttribute('hidden', 'true');
 
           waitUntil(function() {
             return headerRowCount() === 0;
@@ -196,7 +207,7 @@
         var grid;
         beforeEach(function(done) {
           wrapper = fixture('wrapped');
-          grid = wrapper.$.grid;
+          grid = Polymer.dom(wrapper.root).querySelector('grid-wrapper').$.grid;
 
           return grid.then(done);
         });
@@ -212,12 +223,6 @@
           expect(rows.length).to.eql(1);
         });
 
-        it('should hide `<content>` table', function() {
-          var tableElement = wrapper.querySelector('table');
-          var styles = window.getComputedStyle(tableElement);
-
-          expect(styles.display).to.eql('none');
-        });
       });
     });
   </script>
