@@ -132,10 +132,10 @@ layout: page
           constructor(@Inject(Http) http: Http) {
             HTMLImports.whenReady(function() {
               // Set a datasource for the vaadin-grid
-              this.grid.items = (req, success) =>
-                http.get(this.getUrl(this.gender.value, Math.max(req.count, 1)))
+              this.grid.items = (params, callback) =>
+                http.get(this.getUrl(this.gender.value, Math.max(params.count, 1)))
                   .map(res => res.json().results)
-                  .subscribe(results => {success(results, this.gender.value ? 50 : 100)});
+                  .subscribe(results => {callback(results, this.gender.value ? 50 : 100)});
 
               // Set a renderer for the picture column
               this.grid.columns[0].renderer = cell =>
