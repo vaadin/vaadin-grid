@@ -185,5 +185,50 @@ layout: page
       </code>
     </code-example>
   </section>
+
+  <section>
+    <h3>Theming the Grid</h3>
+    <p>The grid uses <code>--default-primary-color</code> from <a href="https://github.com/PolymerElements/paper-styles">paper-styles</a> as a highlight color.</p>
+    <code-example source>
+      <style is="custom-style">
+
+        .themed {
+          --default-primary-color: red;
+        }
+
+      </style>
+      <vaadin-grid visible-rows=5 demo class="themed">
+        <table>
+          <colgroup>
+            <col header-text="Name">
+            <col header-text="Surname">
+            <col header-text="Activity">
+          </colgroup>
+        </table>
+      </vaadin-grid>
+      <code hidden>
+        var employees = [];
+        var names = ["Artur", "Patrik", "Henrik", "Teemu"];
+        var surnames = ["Signell","Lehtinen","Ahlroos","Paul"];
+        var activities = ["Design","Implement","Polish","Deliver"];
+        var targets = ["soup","Vaadin","dog","world peace"];
+        for (var i = 0; i < 400; i++){
+            var row = [];
+            [names, surnames, activities, targets].forEach(function(array){
+              row.push(array[Math.floor(Math.random()*array.length)]);
+            });
+            employees.push(row);
+        }
+      </code>
+      <code demo-var="grid" hidden>
+        var grid = grid || document.querySelector("vaadin-grid");
+
+        HTMLImports.whenReady(function() {
+          grid.items = employees;
+        });
+      </code>
+    </code-example>
+  </section>
+
 </body>
 </html>

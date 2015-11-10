@@ -14,7 +14,7 @@ This program is available under Apache License Version 2.0, available at https:/
 </style>
 
 <!--
-Data grid for showing large amountsos of tabular data.
+Data grid for showing large amounts of tabular data.
 
 Basic usage:
 ```html
@@ -37,6 +37,17 @@ Basic usage:
 </vaadin-grid>
 ```
 
+### Styling
+
+The grid uses `--default-primary-color` from [paper-styles](https://github.com/PolymerElements/paper-styles) as a highlight color. You can customize the color by defining your own primary default color.
+
+```html
+<style is="custom-style">
+  vaadin-grid {
+    --default-primary-color: red;
+  }
+</style>
+```
 More examples available at https://cdn.vaadin.com/vaadin-elements/latest/vaadin-grid/demo/
 -->
 <dom-module id="vaadin-grid">
@@ -219,7 +230,7 @@ More examples available at https://cdn.vaadin.com/vaadin-elements/latest/vaadin-
 
    /* Focus styles */
   .vaadin-grid-row:after {
-    background-color: #03A9F4;
+    background-color: var(--default-primary-color, #03A9F4);
     bottom: 0;
     content: "";
     height: 2px;
