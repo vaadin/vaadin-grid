@@ -21,10 +21,9 @@ var AngularGridDom = (function () {
         }),
         angular2_1.View({
             template: "\n  <vaadin-grid selection-mode='disabled'>\n    <table>\n      <colgroup>\n        <col width=\"80\">\n        <col header-text=\"First name\">\n        <col header-text=\"Last name\">\n      </colgroup>\n      <tbody>\n        <tr *ng-for=\"var user of users\">\n          <td><img src=\"{{user.thumbnail}}\" style=\"width: 30px\"></td>\n          <td>{{user.firstname}}</td>\n          <td>{{user.lastname}}</td>\n        </tr>\n      </tbody>\n    </table>\n  </vaadin-grid>\n  ",
-            directives: [angular2_1.NgFor, angular2_1.NgIf]
+            directives: [angular2_1.NgFor]
         })
     ], AngularGridDom);
     return AngularGridDom;
 })();
-exports.AngularGridDom = AngularGridDom;
 angular2_1.bootstrap(AngularGridDom);

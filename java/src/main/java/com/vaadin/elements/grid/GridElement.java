@@ -92,6 +92,8 @@ public class GridElement implements SelectionHandler<Object>,
     @JsNoExport
     public static final int MAX_AUTO_ROWS = 10;
 
+    private static final String SELECTION_MODE_CHANGED_EVENT = "selection-mode-changed";
+
     public GridElement() {
         grid = new ViolatedGrid();
         grid.setSelectionModel(new IndexBasedSelectionModelSingle());
@@ -260,7 +262,7 @@ public class GridElement implements SelectionHandler<Object>,
     public void onSelect(SelectionEvent<Object> ev) {
         updateSelectAllCheckBox();
         if (!updating) {
-            triggerEvent("select");
+            triggerEvent("selected-items-changed");
         }
     }
 
@@ -377,7 +379,7 @@ public class GridElement implements SelectionHandler<Object>,
             } else {
                 getSelectionModel().reset();
             }
-            triggerEvent("selectionmodechange");
+            triggerEvent(SELECTION_MODE_CHANGED_EVENT);
             updateSelectAllCheckBox();
             updating = false;
         }
@@ -600,7 +602,7 @@ public class GridElement implements SelectionHandler<Object>,
             updating = true;
             if (event.getSelectionModel() != getSelectionModel()) {
                 grid.setSelectionModel(event.getSelectionModel());
-                triggerEvent("selectionmodechange");
+                triggerEvent(SELECTION_MODE_CHANGED_EVENT);
                 getSelectionModel().reset();
             } else {
                 boolean all = getSelectAllCheckBox().getValue();

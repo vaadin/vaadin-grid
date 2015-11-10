@@ -361,7 +361,7 @@ layout: page
           grid.items = employees;
 
           // code
-          grid.addEventListener("select", function(e) {
+          grid.addEventListener("selected-items-changed", function(e) {
             grid.$$("#selected-counter").textContent = grid.selection.size;
           });
 
