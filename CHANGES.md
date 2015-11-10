@@ -15,6 +15,7 @@
   - Fire sort event before clearing the selection (#206)
   - JSRow reference from JSCell data with single column ds fixed
   - Fixed a bug with grid remaining invisible after datasource change (#172)
+  - Table element is located correctly when passed from a parent component (#237)
 
   #### API changes:
   - `grid.data.source` is now `grid.items`. (#160, #228)
