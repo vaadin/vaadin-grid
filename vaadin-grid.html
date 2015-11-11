@@ -652,7 +652,6 @@ More examples available at https://cdn.vaadin.com/vaadin-elements/latest/vaadin-
 </style>
   <template>
     <iframe id="measureobject" class="vaadin-grid"></iframe>
-    <content></content>
   </template>
 </dom-module>
 
@@ -682,13 +681,13 @@ More examples available at https://cdn.vaadin.com/vaadin-elements/latest/vaadin-
                 _done = true;
               }
               // Restore whenReady
-              HTMLImports.whenReady = _whenReady
+              HTMLImports.whenReady = _whenReady;
               // Run original whenReady
               _whenReady(done);
             }
           }, 3);
-        }
-      }
+        };
+      };
     }
 
     Polymer({
@@ -942,7 +941,18 @@ More examples available at https://cdn.vaadin.com/vaadin-elements/latest/vaadin-
             this.attributeChanged(this.attributes[i].nodeName, null, this.attributes[i].nodeValue);
           }
         });
-        this._grid.init(this, Polymer.dom(this).querySelector("table"), Polymer.dom(this.root), this.$.measureobject);
+        this._grid.init(this, this._findTableElement(Polymer.dom(this).children), Polymer.dom(this.root), this.$.measureobject);
+      },
+
+      _findTableElement: function(nodes) {
+        for (var i = 0; i < nodes.length; i++) {
+          if (nodes[i].nodeName === 'TABLE') {
+            return nodes[i];
+          } else if (nodes[i].nodeName === 'CONTENT') {
+            var contentNodes = Polymer.dom(nodes[i]).getDistributedNodes();
+            return this._findTableElement(contentNodes);
+          }
+        }
       },
 
       _bindResizeListener: function() {
