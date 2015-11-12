@@ -4,7 +4,9 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.dom.client.IFrameElement;
+import com.google.gwt.dom.client.TableSectionElement;
 import com.google.gwt.query.client.GQuery;
+import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -125,7 +127,20 @@ public class ViolatedGrid extends com.vaadin.client.widgets.Grid<Object> {
         // on the grid will mitigate the issue.
         focusGridIfSelectAllClicked(event);
 
+        if (isEventTargetFocusedAndInsideStaticSection(event)) {
+            return;
+        }
+
         super.onBrowserEvent(event);
+    }
+
+    private boolean isEventTargetFocusedAndInsideStaticSection(Event event) {
+        Element target = event.getTarget();
+        Element focusedElement = WidgetUtil.getFocusedElement();
+        TableSectionElement headerElement = getEscalator().getHeader().getElement();
+        TableSectionElement footerElement = getEscalator().getFooter().getElement();
+
+        return target == focusedElement && (headerElement.isOrHasChild(target) || footerElement.isOrHasChild(target));
     }
 
     private void focusGridIfSelectAllClicked(Event event) {

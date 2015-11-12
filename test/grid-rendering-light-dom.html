@@ -8,6 +8,7 @@
   <script src="../../web-component-tester/browser.js"></script>
   <link rel="import" href="../../test-fixture/test-fixture.html">
   <script src='../../test-fixture/test-fixture-mocha.js'></script>
+  <script src='../../iron-test-helpers/mock-interactions.js'></script>
 
   <script src="common.js"></script>
   <link rel="import" href="../vaadin-grid.html">
@@ -94,6 +95,30 @@
               <td></td>
               <td></td>
             </tr>
+          </tfoot>
+        </table>
+      </vaadin-grid>
+    </template>
+  </test-fixture>
+
+  <test-fixture id='focusable'>
+    <template>
+      <vaadin-grid>
+        <table>
+          <col header-text='Name' sortable sort-direction="asc"></col>
+          <col header-text='Value' sortable></col>
+          <thead>
+            <th>Text</th>
+            <th><input type='text' value="Header"></input><label>Label</label></th>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Grid</td>
+              <td>10000</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <th colspan='2'><input type='text' value="Footer"></input></th>
           </tfoot>
         </table>
       </vaadin-grid>
@@ -224,7 +249,70 @@
 
           expect(rows.length).to.eql(1);
         });
+      });
 
+      describe('using elements inside header and footer', function() {
+        var grid;
+
+        function tap(element) {
+          element.focus();
+          MockInteractions.tap(element);
+        }
+
+        beforeEach(function(done) {
+          grid = fixture('focusable');
+
+          waitUntil(function() {
+            return grid.sortOrder && grid.sortOrder[0].direction === 'asc';
+          }, done, done);
+        });
+
+        it('should focus on focusable element inside header', function(done) {
+          var input = grid.$$('.vaadin-grid thead input');
+
+          tap(input);
+
+          waitUntil(function() {
+            return document.activeElement.isSameNode(input);
+          }, done, done);
+        });
+
+        it('should focus on focusable element inside footer', function(done) {
+          var input = grid.$$('.vaadin-grid tfoot input');
+
+          tap(input);
+
+          waitUntil(function() {
+            return document.activeElement.isSameNode(input);
+          }, done, done);
+        });
+
+        it('should not sort when focusing on focusable element', function(done) {
+          expect(grid.sortOrder[0].direction).to.eql('asc');
+
+          tap(grid.$$('.vaadin-grid thead input'));
+
+          waitUntil(function() {
+            return grid.sortOrder[0].direction === 'asc';
+          }, done, done);
+        });
+
+        it('should sort when clicking on an normal element in the same cell with focusable element', function(done) {
+          tap(grid.$$('.vaadin-grid thead label')); // sort-direction => asc
+          tap(grid.$$('.vaadin-grid thead label')); // sort-direction => desc
+
+          waitUntil(function() {
+            return grid.sortOrder && grid.sortOrder[0].direction === 'desc';
+          }, done, done);
+        });
+
+        it('should sort when clicking on a text element', function(done) {
+          tap(grid.$$('.vaadin-grid thead th'));
+
+          waitUntil(function() {
+            return grid.sortOrder && grid.sortOrder[0].direction === 'desc';
+          }, done, done);
+        });
       });
     });
   </script>
