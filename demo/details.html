@@ -151,7 +151,7 @@ layout: page
           var detailsOpenIndex = -1;
 
           // Show details for the selected row
-          grid.addEventListener('select', function() {
+          grid.addEventListener('selected-items-changed', function() {
             grid.setRowDetailsVisible(detailsOpenIndex, false);
             var selected = grid.selection.selected();
             if (selected.length == 1) {
