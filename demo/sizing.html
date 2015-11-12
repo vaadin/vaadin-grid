@@ -187,26 +187,48 @@ layout: page
   </section>
 
   <section>
-    <h3>Theming the Grid</h3>
+    <h3>Styling with Custom Properties</h3>
     <p>The grid uses <code>--default-primary-color</code> from <a href="https://github.com/PolymerElements/paper-styles">paper-styles</a> as a highlight color.</p>
-    <code-example source>
-      <style is="custom-style">
+    <p>Modifying the row height is enabled with <code>--vaadin-grid-row-height</code> custom property. For header and footer heights use <code>--vaadin-grid-header-row-height</code> and/or <code>--vaadin-grid-footer-row-height</code> properties.</p>
 
-        .themed {
-          --default-primary-color: red;
-        }
-
-      </style>
-      <vaadin-grid visible-rows=5 demo class="themed">
+    <style is="custom-style">
+      vaadin-grid.themed {
+        --default-primary-color: red;
+        --vaadin-grid-row-height: 36px;
+        --vaadin-grid-header-row-height: 44px;
+        --vaadin-grid-footer-row-height: 44px;
+      }
+    </style>
+    <code-example>
+      <vaadin-grid visible-rows=5 class="themed" demo hidden>
         <table>
           <colgroup>
             <col header-text="Name">
             <col header-text="Surname">
             <col header-text="Activity">
           </colgroup>
+          <tfoot>
+          <tr>
+            <th colspan="3">Footer row</th>
+          </tr>
+          </tfoot>
         </table>
       </vaadin-grid>
-      <code hidden>
+      <code>
+        /*
+        // code
+        &lt;style is=&quot;custom-style&quot;&gt;
+          vaadin-grid {
+            --default-primary-color: red;
+            --vaadin-grid-row-height: 36px;
+            --vaadin-grid-header-row-height: 44px;
+            --vaadin-grid-footer-row-height: 44px;
+          }
+        &lt;/style&gt;
+        // end-code
+        */
+      </code>
+      <code demo-var="grid" hidden>
         var employees = [];
         var names = ["Artur", "Patrik", "Henrik", "Teemu"];
         var surnames = ["Signell","Lehtinen","Ahlroos","Paul"];
@@ -219,9 +241,7 @@ layout: page
             });
             employees.push(row);
         }
-      </code>
-      <code demo-var="grid" hidden>
-        var grid = grid || document.querySelector("vaadin-grid");
+        var grid = document.querySelector("vaadin-grid.themed");
 
         HTMLImports.whenReady(function() {
           grid.items = employees;
