@@ -187,47 +187,103 @@ layout: page
   </section>
 
   <section>
-    <h3>Theming the Grid</h3>
+    <h3>Styling with Custom Properties</h3>
     <p>The grid uses <code>--default-primary-color</code> from <a href="https://github.com/PolymerElements/paper-styles">paper-styles</a> as a highlight color.</p>
-    <code-example source>
-      <style is="custom-style">
+    <p>Modifying the row height is enabled with <code>--vaadin-grid-row-height</code> custom property. For header and footer heights use <code>--vaadin-grid-header-row-height</code> and/or <code>--vaadin-grid-footer-row-height</code> properties.</p>
 
+    <!-- Remove custom example when <code-example> supports <style>. -->
+    <div class="styling-example">
+
+      <style is="custom-style">
         .themed {
+          width: 40%;
+          min-height: 268px;
           --default-primary-color: red;
+          --vaadin-grid-row-height: 36px;
+          --vaadin-grid-header-row-height: 44px;
+          --vaadin-grid-footer-row-height: 44px;
         }
 
+        .styling-example {
+          display: flex;
+          align-items: flex-start;
+        }
+
+        .styling-example vaadin-grid {
+           min-width: 40%;
+        }
+
+        .styling-example pre {
+          font-family: Consolas, Monaco, 'Andale Mono', monospace;
+          font-size: 12px;
+          line-height: 1.5;
+          margin-left: 2em;
+          padding: .4em .8em;
+          width: 100%;
+          overflow: hidden;
+          position: relative;
+          border: 1px solid rgba(0, 0, 0, 0.1);
+          border-radius: 0.3em;
+          background: #fdfdfd;
+        }
+        @media (max-width: 750px) {
+          .styling-example {
+            flex-direction: column;
+          }
+          .styling-example vaadin-grid {
+            width: 100%;
+          }
+          .styling-example pre {
+            box-sizing: border-box;
+            margin-left: 0;
+          }
+        }
       </style>
-      <vaadin-grid visible-rows=5 demo class="themed">
+
+      <vaadin-grid visible-rows=5 class="themed">
         <table>
           <colgroup>
             <col header-text="Name">
             <col header-text="Surname">
             <col header-text="Activity">
           </colgroup>
+          <tfoot>
+          <tr>
+            <th colspan="3">Footer row</th>
+          </tr>
+          </tfoot>
         </table>
       </vaadin-grid>
-      <code hidden>
-        var employees = [];
-        var names = ["Artur", "Patrik", "Henrik", "Teemu"];
-        var surnames = ["Signell","Lehtinen","Ahlroos","Paul"];
-        var activities = ["Design","Implement","Polish","Deliver"];
-        var targets = ["soup","Vaadin","dog","world peace"];
-        for (var i = 0; i < 400; i++){
-            var row = [];
-            [names, surnames, activities, targets].forEach(function(array){
-              row.push(array[Math.floor(Math.random()*array.length)]);
-            });
-            employees.push(row);
-        }
-      </code>
-      <code demo-var="grid" hidden>
-        var grid = grid || document.querySelector("vaadin-grid");
 
-        HTMLImports.whenReady(function() {
-          grid.items = employees;
-        });
-      </code>
-    </code-example>
+      <pre>&lt;style is="custom-style"&gt;
+  vaadin-grid {
+    --default-primary-color: red;
+    --vaadin-grid-row-height: 36px;
+    --vaadin-grid-header-row-height: 44px;
+    --vaadin-grid-footer-row-height: 44px;
+  }
+&lt;/style&gt;</pre>
+
+    </div>
+    <script>
+      var employees = [];
+      var names = ["Artur", "Patrik", "Henrik", "Teemu"];
+      var surnames = ["Signell","Lehtinen","Ahlroos","Paul"];
+      var activities = ["Design","Implement","Polish","Deliver"];
+      var targets = ["soup","Vaadin","dog","world peace"];
+      for (var i = 0; i < 400; i++){
+          var row = [];
+          [names, surnames, activities, targets].forEach(function(array){
+            row.push(array[Math.floor(Math.random()*array.length)]);
+          });
+          employees.push(row);
+      }
+      var grid = document.querySelector("vaadin-grid.themed");
+
+      HTMLImports.whenReady(function() {
+        grid.items = employees;
+      });
+    </script>
   </section>
 
 </body>

@@ -48,6 +48,14 @@ The grid uses `--default-primary-color` from [paper-styles](https://github.com/P
   }
 </style>
 ```
+The following custom properties are available for styling:
+
+Custom property | Description | Default
+:----------------|:-------------|----------:
+`--vaadin-grid-row-height` | Data row height | `48px`
+`--vaadin-grid-header-row-height` | Header row height | `56px`
+`--vaadin-grid-footer-row-height` | Footer row height | `56px`
+
 More examples available at https://cdn.vaadin.com/vaadin-elements/latest/vaadin-grid/demo/
 -->
 <dom-module id="vaadin-grid">
@@ -185,7 +193,7 @@ More examples available at https://cdn.vaadin.com/vaadin-elements/latest/vaadin-
   }
 
   .vaadin-grid-body tr {
-    height: 48px;
+    height: var(--vaadin-grid-row-height, 48px);
     left: 0;
     top: 0;
     position: absolute;
@@ -301,7 +309,7 @@ More examples available at https://cdn.vaadin.com/vaadin-elements/latest/vaadin-
   .vaadin-grid-header tr {
     color: rgba(0, 0, 0, 0.54);
     font-size: 12px;
-    height: 56px;
+    height: var(--vaadin-grid-header-row-height, 56px);
   }
 
   .vaadin-grid-header th {
@@ -358,7 +366,7 @@ More examples available at https://cdn.vaadin.com/vaadin-elements/latest/vaadin-
     font-size: 12px;
     font-weight: 500;
     color: rgba(0, 0, 0, 0.56);
-    height: 56px;
+    height: var(--vaadin-grid-footer-row-height, 56px);
   }
 
   .vaadin-grid-footer-deco {
