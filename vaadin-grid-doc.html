@@ -2,12 +2,12 @@
   Polymer.Vaadin = Polymer.Vaadin || {};
 
   /**
-   * Object referencing a cell in the grid and it’s data.
+   * Object referencing a cell in the grid body and it’s data.
    *
-   * A `Cell` object is passed as a parameter for both column renderers and for
+   * A `cell` object is passed as a parameter for both column renderers and for
    * the cell class generator.
    *
-   * @polymerBehavior Cell
+   * @polymerBehavior cell
    */
   Polymer.Vaadin.Cell = {
     properties: {
@@ -31,8 +31,7 @@
       row: Object,
 
       /**
-       * Contents of the cell, as it is retrieved from the `items` array or the
-       * `datasource` function.
+       * Contents of the cell, as it is retrieved from the `items` array/function.
        */
       data: Object,
 
@@ -47,15 +46,18 @@
    * Object for controlling and accessing a column in a `vaadin-grid`.
    *
    * #### Example:
-   * ```js var grid = document.querySelector("vaadin-grid");
+   * ```js
+   * var grid = document.querySelector("vaadin-grid");
    *
    * // First get a reference to one column object, which has
-   * // all the properties described in this documentation:
+   * // all the properties described in this documentation
    * var column = grid.columns[0];
    *
    * // Then get or set any properties of the column, such as 'width'
    * column.width = "200px";
    * ```
+   *
+   * @polymerBehavior column
    */
   Polymer.Vaadin.Column = {
     properties: {
@@ -190,7 +192,7 @@
 
       /**
        * Name of the column, used in mapping the column to a property in the row
-       * item/object provided by the `items` or `datasource` properties.
+       * item/object provided by the `items` property.
        *
        * Must be a valid JavaScript object reference
        * (e.g. "user.name.first", "url")
@@ -222,8 +224,8 @@
        *  };
        *  ```
        * @property {function} renderer
-       * @param {cells} cell - Reference to the cell being rendered. See the
-       * documentation for `cells` for more details.
+       * @param {cell} cell - Reference to the cell being rendered. See the
+       * documentation for `cell` for more details.
        * @type {function}
        */
       renderer: function(cell) {},
@@ -269,54 +271,6 @@
   };
 
   /**
-   * The grid passes a `params` object as the first parameter to the `items`
-   * function. It contains information about the exact items/rows the grid wants
-   * to display in it’s viewport as well as the sort order of the grid (see the
-   * documentation for `SortOrder`).
-   *
-   * The second parameter for the `items` function is a callback function for
-   * providing the grid with the requested items. The callback function takes an
-   * array containing the items and the total number of items in the datasource
-   * as its parameters.
-   *
-   * #### Example:
-   *```js
-   * grid.items = function(params, callback) {
-   *   var start = params.index;
-   *   var end = params.index + params.count;
-   *   callback([start...end], totalItems);
-   * }
-   * ```
-   *
-   * @polymerBehavior ItemsFunction
-   */
-  Polymer.Vaadin.ItemsFunction = {
-    properties: {
-
-      /**
-       * Index of the first data item to fetch.
-       */
-      index: Number,
-
-      /**
-       * Number of data items to fetch.
-       */
-      count: Number,
-
-      /**
-       * Sorting order for the fetched data items.
-       *
-       * See the API documentation for the `sortOrder` property and the
-       * “SortOrder” object for more details.
-       *
-       * @property {Array<SortOrder>} sortOrder
-       * @type {Array<SortOrder>}
-       * */
-      sortOrder: Object
-    }
-  };
-
-  /**
    * Object for accessing and controlling footer rows.
    *
    * #### Example:
@@ -325,7 +279,7 @@
    * var footerCell = grid.footer.getCell(0,0);
    * ```
    *
-   * @polymerBehavior Footer
+   * @polymerBehavior footer
    */
   Polymer.Vaadin.Footer = {
     properties: {
@@ -400,7 +354,7 @@
    * var headerCell = grid.header.getCell(1,0);
    * ```
    *
-   * @polymerBehavior Header
+   * @polymerBehavior header
    */
   Polymer.Vaadin.Header = {
     properties: {
@@ -474,16 +428,99 @@
   };
 
   /**
+   * Represents a grid header/footer cell configuration.
+   *
+   * #### Example:
+   * ```js
+   * var headerCell = grid.header.getCell(1,0);
+   * headerCell.content = document.createElement("input");
+   * headerCell.className = "filter";
+   * ```
+   *
+   * @polymerBehavior header and footer cell
+   */
+  Polymer.Vaadin.HeaderAndFooterCell = {
+    properties: {
+
+      /**
+       * Class name of the cell.
+       */
+      className: String,
+
+      /**
+       * Contents of the cell. Can be either a string of HTML or a reference to
+       * a HTML element
+       */
+      content: Object,
+
+      /**
+       * Number of columns which the cell should span/group.
+       *
+       * @default 0
+       */
+      colspan: Number
+    }
+  };
+
+  /**
+   * The grid passes a `params` object as the first parameter to the `items`
+   * function. It contains information about the exact items/rows the grid wants
+   * to display in it’s viewport as well as the sort order of the grid (see the
+   * documentation for `SortOrder`).
+   *
+   * The second parameter for the `items` function is a callback function for
+   * providing the grid with the requested items. The callback function takes an
+   * array containing the items and the total number of items in the data source
+   * as its parameters.
+   *
+   * #### Example:
+   *```js
+   * grid.items = function(params, callback) {
+   *   var start = params.index;
+   *   var end = params.index + params.count;
+   *   callback([start...end], totalItems);
+   * }
+   * ```
+   *
+   * @polymerBehavior items function
+   */
+  Polymer.Vaadin.ItemsFunction = {
+    properties: {
+
+      /**
+       * Index of the first data item to fetch.
+       */
+      index: Number,
+
+      /**
+       * Number of data items to fetch.
+       */
+      count: Number,
+
+      /**
+       * Sorting order for the fetched data items.
+       *
+       * See the API documentation for the `sortOrder` property and the
+       * “SortOrder” object for more details.
+       *
+       * @property {Array<SortOrder>} sortOrder
+       * @type {Array<SortOrder>}
+       * */
+      sortOrder: Object
+    }
+  };
+
+  /**
    * Object referencing to a row and it's data.
    *
-   * A `Row` object is passed as a parameter for the row class generator
+   * A `row` object is passed as a parameter for the row class generator
    * function.
    *
-   * A `Row` object is also referenced from a `cell` object, passed as a
+   * A `row` object is also referenced from a `cell` object, passed as a
    * parameter for column renderer functions and the cell class generator
    * function.
    *
-   * @polymerBehavior Row
+   * @polymerBehavior row
    */
   Polymer.Vaadin.Row = {
     properties: {
@@ -494,7 +531,7 @@
       index: Number,
       /**
        * Data object of the row, as it is retrieved from the `items` array or
-       * the `datasource` function.
+       * function.
        */
       data: Object,
 
@@ -529,7 +566,7 @@
    * });
    * ```
    *
-   * @polymerBehavior Selection
+   * @polymerBehavior selection
    */
   Polymer.Vaadin.Selection = {
     properties: {
@@ -618,41 +655,6 @@
     deselected: function() {}
   };
 
-
-
-  /**
-   * Represents a grid header/footer cell configuration.
-   *
-   * #### Example:
-   * ```js
-   * var headerCell = grid.header.getCell(1,0);
-   * headerCell.content = document.createElement("input");
-   * headerCell.className = "filter";
-   *
-   * @polymerBehavior HeaderAndFooterCell
-   */
-  Polymer.Vaadin.HeaderAndFooterCell = {
-    properties: {
-
-      /**
-       * Class name of the cell.
-       */
-      className: String,
-
-      /**
-       * Contents of the cell.
-       */
-      content: Object,
-
-      /**
-       * Number of columns which the cell should span/group.
-       *
-       * @default 0
-       */
-      colspan: Number
-    }
-  };
-
   /**
    * Object for defining the sorting order of the columns. Used inside the
    * `sortOrder` array property.
@@ -669,8 +671,9 @@
    *     direction: "desc"
    *   }
    * ];
+   * ```
    *
-   * @polymerBehavior SortOrder
+   * @polymerBehavior sort-order
    */
   Polymer.Vaadin.SortOrder = {
     properties: {
