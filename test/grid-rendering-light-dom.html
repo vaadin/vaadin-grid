@@ -202,6 +202,13 @@
             return headerRowCount() === 0;
           }, done);
         });
+
+        // Added for: https://github.com/vaadin/vaadin-grid/issues/252
+        it('should not wrap header content in "gwt-HTML"', function() {
+          var headerColumn = grid.$$(".vaadin-grid-header th");
+
+          expect(headerColumn.childNodes[0].getAttribute('class')).not.to.eql('gwt-HTML');
+        });
       });
 
       describe('passing `<content>` from another component`', function() {
@@ -224,7 +231,6 @@
 
           expect(rows.length).to.eql(1);
         });
-
       });
     });
   </script>
