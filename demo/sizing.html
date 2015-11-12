@@ -59,7 +59,7 @@ layout: page
     assigned a pre-defined height (in rows) either declaratively in the DOM API or programmatically
     with the JS API</p>
     <code-example source>
-      <vaadin-grid rows=5 demo>
+      <vaadin-grid visible-rows=5 demo>
         <table>
           <colgroup>
             <col header-text="Name">
@@ -89,7 +89,7 @@ layout: page
           grid.items = employees;
           // code
           // Setting the explicit row count in JavaScript
-          grid.rows = 5;
+          grid.visibleRows = 5;
           // end-code
         });
       </code>

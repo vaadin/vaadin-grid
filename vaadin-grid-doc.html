@@ -1,15 +1,15 @@
-<!--
-Object referencing a cell in the grid and it’s data.
-
-A `cell` object is passed as a parameter for both column renderers and for the
-cell class generator.
-
-<i>Note: This documentation is not for a custom element, but for a JavaScript
-object used along the JavaScript API of vaadin-grid.</i>
--->
 <script>
-  Polymer({
-    is: 'cell',
+  Polymer.Vaadin = Polymer.Vaadin || {};
+
+  /**
+   * Object referencing a cell in the grid and it’s data.
+   *
+   * A `Cell` object is passed as a parameter for both column renderers and for
+   * the cell class generator.
+   *
+   * @polymerBehavior Cell
+   */
+  Polymer.Vaadin.Cell = {
     properties: {
 
       /**
@@ -41,31 +41,25 @@ object used along the JavaScript API of vaadin-grid.</i>
        */
       index: Number
     }
-  });
-</script>
+  };
 
-<!--
-Object for controlling and accessing a column in a `vaadin-grid`.
-
-<i>Note: This documentation is not for a custom element, but for a JavaScript
-object used along the JavaScript API of vaadin-grid.</i>
-
-#### Example:
-```js
-var grid = document.querySelector("vaadin-grid");
-
-// First get a reference to one column object, which has
-// all the properties described in this documentation:
-var column = grid.columns[0];
-
-// Then get or set any properties of the column, such as 'width'
-column.width = "200px";
-```
--->
-<script>
-  Polymer({
-    is: 'column',
+  /**
+   * Object for controlling and accessing a column in a `vaadin-grid`.
+   *
+   * #### Example:
+   * ```js var grid = document.querySelector("vaadin-grid");
+   *
+   * // First get a reference to one column object, which has
+   * // all the properties described in this documentation:
+   * var column = grid.columns[0];
+   *
+   * // Then get or set any properties of the column, such as 'width'
+   * column.width = "200px";
+   * ```
+   */
+  Polymer.Vaadin.Column = {
     properties: {
+
       /**
        * Flex ratio of the column, used to distribute any available horizontal
        * space among all flexed columns.
@@ -84,6 +78,7 @@ column.width = "200px";
        * @default -1
        */
       flex: Number,
+
       /**
        * Content of the column in the default header row (a column can have
        * multiple headers). Can be a String or a reference to an HTML element.
@@ -105,6 +100,7 @@ column.width = "200px";
        * ```
        */
       headerContent: Object,
+
       /**
        * Set whether it is possible for the user to hide this column or not.
        *
@@ -120,6 +116,7 @@ column.width = "200px";
        * @default false
        */
       hidable: false,
+
       /**
        * Hides or shows the column. By default columns are visible before
        * explicitly hiding them. A column can be programmatically hidden even if
@@ -137,6 +134,7 @@ column.width = "200px";
        * @default false
        */
       hidden: false,
+
       /**
        * Sets the hiding toggle's caption for this column. Shown in the grid’s
        * column hiding dropdown menu if the column is hidable. Useful if the
@@ -157,6 +155,7 @@ column.width = "200px";
        * @default undefined
        */
       hidingToggleText: String,
+
       /**
        * Maximum width of the column in pixels.
        *
@@ -172,6 +171,7 @@ column.width = "200px";
        * @default undefined
        */
       maxWidth: Number,
+
       /**
        * Minimum width of the column in pixels.
        *
@@ -187,6 +187,7 @@ column.width = "200px";
        * @default 10
        */
       minWidth: Number,
+
       /**
        * Name of the column, used in mapping the column to a property in the row
        * item/object provided by the `items` or `datasource` properties.
@@ -206,6 +207,7 @@ column.width = "200px";
        * @default undefined
        */
       name: String,
+
       /**
        * Custom render function for the column’s data items. Default is
        * undefined.
@@ -225,6 +227,7 @@ column.width = "200px";
        * @type {function}
        */
       renderer: function(cell) {},
+
       /**
        * Enables sorting the column data by the end user.
        *
@@ -246,6 +249,7 @@ column.width = "200px";
        * @default false
        */
       sortable: false,
+
       /**
        * Width of the column in pixels.
        *
@@ -262,31 +266,33 @@ column.width = "200px";
        */
       width: Number
     }
-  });
-</script>
+  };
 
-<!--
-The grid passes a `data-request` object as a parameter to the `datasource`
-function, if specified by the developer. It contains information about the
-exact items/rows the grid wants to display in it’s viewport, and a callback
-function for providing the grid with those items.
-
-#### Example:
-```js
-grid.datasource = function(req) {
-  var start = req.index;
-  var end = req.index + req.count;
-  req.success([array containing indexes from start to end], totalItems);
-}
-```
-
-<i>Note: This documentation is not for a custom element, but for a JavaScript
-object used along the JavaScript API of vaadin-grid.</i>
--->
-<script>
-  Polymer({
-    is: 'data-request',
+  /**
+   * The grid passes a `params` object as the first parameter to the `items`
+   * function. It contains information about the exact items/rows the grid wants
+   * to display in it’s viewport as well as the sort order of the grid (see the
+   * documentation for `SortOrder`).
+   *
+   * The second parameter for the `items` function is a callback function for
+   * providing the grid with the requested items. The callback function takes an
+   * array containing the items and the total number of items in the datasource
+   * as its parameters.
+   *
+   * #### Example:
+   *```js
+   * grid.items = function(params, callback) {
+   *   var start = params.index;
+   *   var end = params.index + params.count;
+   *   callback([start...end], totalItems);
+   * }
+   * ```
+   *
+   * @polymerBehavior ItemsFunction
+   */
+  Polymer.Vaadin.ItemsFunction = {
     properties: {
+
       /**
        * Index of the first data item to fetch.
        */
@@ -301,49 +307,29 @@ object used along the JavaScript API of vaadin-grid.</i>
        * Sorting order for the fetched data items.
        *
        * See the API documentation for the `sortOrder` property and the
-       * “sort-order” object for more details.
+       * “SortOrder” object for more details.
        *
-       * @property {Array<sort-order>} sortOrder
-       * @type {Array<sort-order>}
+       * @property {Array<SortOrder>} sortOrder
+       * @type {Array<SortOrder>}
        * */
       sortOrder: Object
-    },
-    /**
-     * Callback function to pass along the requested data items to the grid and
-     * the total size of the data source.
-     *
-     * @method success
-     * @param {Array<*>} items - Fetched data items.
-     * @param {number} totalSize – Total quantity of the data items in the data
-     * source.
-     */
-    success: function(items, totalSize) {},
-    /**
-     * Callback function to inform the grid that something failed while getting
-     * the data.
-     *
-     * @method failure
-     */
-    failure: function() {}
-  });
-</script>
+    }
+  };
 
-<!--
-Object for accessing and controlling footer rows.
-
-#### Example:
-```js
-grid.footer.addRow();
-var footerCell = grid.footer.getCell(0,0);
-```
-
-<i>Note: This documentation is not for a custom element, but for a JavaScript
-object used along the JavaScript API of vaadin-grid.</i>
--->
-<script>
-  Polymer({
-    is: 'footer',
+  /**
+   * Object for accessing and controlling footer rows.
+   *
+   * #### Example:
+   * ```js
+   * grid.footer.addRow();
+   * var footerCell = grid.footer.getCell(0,0);
+   * ```
+   *
+   * @polymerBehavior Footer
+   */
+  Polymer.Vaadin.Footer = {
     properties: {
+
       /**
        * Hides all footer rows in the grid if set to `true`.
        *
@@ -370,6 +356,7 @@ object used along the JavaScript API of vaadin-grid.</i>
         readOnly: true
       }
     },
+
     /**
      * Adds a new footer row.
      *
@@ -402,25 +389,22 @@ object used along the JavaScript API of vaadin-grid.</i>
      * @param {string} className - New class name.
      */
     setRowClassName: function(rowIndex, className) {}
-  });
-</script>
+  };
 
-<!--
-Object for accessing and controlling header rows.
-
-#### Example:
-```js
-grid.header.addRow();
-var headerCell = grid.header.getCell(1,0);
-```
-
-<i>Note: This documentation is not for a custom element, but for a JavaScript
-object used along the JavaScript API of vaadin-grid.</i>
--->
-<script>
-  Polymer({
-    is: 'header',
+  /**
+   * Object for accessing and controlling header rows.
+   *
+   * #### Example:
+   * ```js
+   * grid.header.addRow();
+   * var headerCell = grid.header.getCell(1,0);
+   * ```
+   *
+   * @polymerBehavior Header
+   */
+  Polymer.Vaadin.Header = {
     properties: {
+
       /**
        * Hides all header rows in the grid if set to `true`.
        *
@@ -436,6 +420,7 @@ object used along the JavaScript API of vaadin-grid.</i>
        * @default false
        */
       hidden: Boolean,
+
       /**
        * Index of the default header row if multiple header rows exist.
        *
@@ -453,6 +438,7 @@ object used along the JavaScript API of vaadin-grid.</i>
         readOnly: true
       }
     },
+
     /**
      * Adds a new header row.
      *
@@ -485,62 +471,23 @@ object used along the JavaScript API of vaadin-grid.</i>
      * @param {string} className - New class name.
      */
     setRowClassName: function(rowIndex, className) {}
-  });
-</script>
+  };
 
-<!--
-Represents a grid header/footer cell configuration.
-
-#### Example:
-```js
-var headerCell = grid.header.getCell(1,0);
-headerCell.content = document.createElement("input");
-headerCell.className = "filter";
-```
-
-<i>Note: This documentation is not for a custom element, but for a JavaScript
-object used along the JavaScript API of vaadin-grid.</i>
--->
-<script>
-  Polymer({
-    is: 'header-and-footer-cell',
+  /**
+   * Object referencing to a row and it's data.
+   *
+   * A `Row` object is passed as a parameter for the row class generator
+   * function.
+   *
+   * A `Row` object is also referenced from a `cell` object, passed as a
+   * parameter for column renderer functions and the cell class generator
+   * function.
+   *
+   * @polymerBehavior Row
+   */
+  Polymer.Vaadin.Row = {
     properties: {
-      /**
-       * Class name of the cell.
-       * @default undefined
-       */
-      className: String,
 
-      /**
-       * Contents of the cell.
-       */
-      content: Object,
-
-      /**
-       * Number of columns which the cell should span/group.
-       *
-       * @default 0
-       */
-      colspan: Number
-    }
-  });
-</script>
-
-<!--
-Object referencing a row and it's data.
-
-A `row`object is passed as a parameter for the row class generator function.
-
-A `row` object is also referenced from a `cell` object, passed as a parameter
-for column renderer functions and the cell class generator function.
-
-<i>Note: This documentation is not for a custom element, but for a JavaScript
-object used along the JavaScript API of vaadin-grid.</i>
--->
-<script>
-  Polymer({
-    is: 'row',
-    properties: {
       /**
        * Index of the row.
        */
@@ -550,6 +497,7 @@ object used along the JavaScript API of vaadin-grid.</i>
        * the `datasource` function.
        */
       data: Object,
+
       /**
        * Reference to the grid element/object.
        *
@@ -557,6 +505,7 @@ object used along the JavaScript API of vaadin-grid.</i>
        * @type {HTMLElement}
        */
       grid: Object,
+
       /**
        * Reference to the `tr` element of the row.
        *
@@ -565,29 +514,26 @@ object used along the JavaScript API of vaadin-grid.</i>
        */
       element: Object
     }
-  });
-</script>
+  };
 
-<!--
-Object for accessing and controlling the selected rows of the grid.
-
-#### Example:
-```js
-grid.selection.mode = "multi";
-grid.selection.selectAll();
-grid.selection.selected(); // [0, 1, 2, 3, ...]
-grid.selection.selected(function(index) {
-  // Iterate over the selected indexes without populating an array
-});
-```
-
-<i>Note: This documentation is not for a custom element, but for a JavaScript
-object used along the JavaScript API of vaadin-grid.</i>
--->
-<script>
-  Polymer({
-    is: 'selection',
+  /**
+   * Object for accessing and controlling selected rows of the grid.
+   *
+   * #### Example:
+   * ```js
+   * grid.selection.mode = "multi";
+   * grid.selection.selectAll();
+   * grid.selection.selected(); // [0, 1, 2, 3, ...]
+   * grid.selection.selected(function(index) {
+   *   // Iterate over the selected indexes without populating an array
+   * });
+   * ```
+   *
+   * @polymerBehavior Selection
+   */
+  Polymer.Vaadin.Selection = {
     properties: {
+
       /**
        * The selection mode dictates how many rows can be selected.
        *
@@ -614,21 +560,25 @@ object used along the JavaScript API of vaadin-grid.</i>
        * @default "single"
        */
       mode: String,
+
       /**
        * Size of the selection (i.e. how many rows are selected).
        */
       size: Number
     },
+
     /**
      * Select a row.
      * @param {number} index – Index of the row to select.
      */
     select: function(index) {},
+
     /**
      * Deselect a row.
      * @param {number} index – Index of the row to deselect.
      */
     deselect: function(index) {},
+
     /**
      * Clear the selection.
      *
@@ -636,6 +586,7 @@ object used along the JavaScript API of vaadin-grid.</i>
      * to "multi" as a side-effect.
      */
     clear: function() {},
+
     /**
      * Select all rows. Does nothing if the selection mode is not "multi" or
      * "all".
@@ -644,6 +595,7 @@ object used along the JavaScript API of vaadin-grid.</i>
      * selection mode to "all" as a side-effect.
      */
     selectAll: function() {},
+
     /**
      * Selected row indexes.
      *
@@ -653,6 +605,7 @@ object used along the JavaScript API of vaadin-grid.</i>
      * @return {Array<number>} Indexes of the selected rows.
      */
     selected: function(iterator, startIndex, endIndex) {},
+
     /**
      * Deselected row indexes. Only returns indexes when selection mode is
      * "all", otherwise returns an empty array.
@@ -662,39 +615,71 @@ object used along the JavaScript API of vaadin-grid.</i>
      * @param {number} endIndex (optional) - Used together with startIndex to process the deselection in batches.
      * @return {Array<number>} Indexes of the deselected rows.
      */
-    deselected: function(mapper, from, to) {}
-  });
-</script>
+    deselected: function() {}
+  };
 
-<!--
-Object for defining the sorting order of the columns. Used inside the
-`sortOrder` array property.
 
-#### Example:
-```js
-grid.sortOrder = [
-  {
-    column: 1,
-    direction: "asc"
-  },
-  {
-    column: 0,
-    direction: "desc"
-  }
-];
-```
 
-<i>Note: This documentation is not for a custom element, but for a JavaScript
-object used along the JavaScript API of vaadin-grid.</i>
--->
-<script>
-  Polymer({
-    is: 'sort-order',
+  /**
+   * Represents a grid header/footer cell configuration.
+   *
+   * #### Example:
+   * ```js
+   * var headerCell = grid.header.getCell(1,0);
+   * headerCell.content = document.createElement("input");
+   * headerCell.className = "filter";
+   *
+   * @polymerBehavior HeaderAndFooterCell
+   */
+  Polymer.Vaadin.HeaderAndFooterCell = {
     properties: {
+
+      /**
+       * Class name of the cell.
+       */
+      className: String,
+
+      /**
+       * Contents of the cell.
+       */
+      content: Object,
+
+      /**
+       * Number of columns which the cell should span/group.
+       *
+       * @default 0
+       */
+      colspan: Number
+    }
+  };
+
+  /**
+   * Object for defining the sorting order of the columns. Used inside the
+   * `sortOrder` array property.
+   *
+   * #### Example:
+   * ```js
+   * grid.sortOrder = [
+   *  {
+   *     column: 1,
+   *     direction: "asc"
+   *   },
+   *   {
+   *     column: 0,
+   *     direction: "desc"
+   *   }
+   * ];
+   *
+   * @polymerBehavior SortOrder
+   */
+  Polymer.Vaadin.SortOrder = {
+    properties: {
+
       /**
        * Index of the column.
        */
       column: Number,
+
       /**
        * Sort direction for the given column.
        *
@@ -710,7 +695,7 @@ object used along the JavaScript API of vaadin-grid.</i>
        *
        * @default "asc"
        */
-      direction: String,
+      direction: String
     }
-  });
+  };
 </script>

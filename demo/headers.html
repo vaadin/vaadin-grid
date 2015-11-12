@@ -200,11 +200,11 @@ layout: page
         filterElement.addEventListener("click", filter);
 
         HTMLImports.whenReady(function() {
-          grid.datasource = function(req) {
+          grid.items = function(params, callback) {
             var filterValue = filterElement.value.toLowerCase();
             var data = employees.filter(function(val){ return (val.toString().toLowerCase()).indexOf(filterValue) != -1 } );
-            var slice = data.slice(req.index, req.index + req.count);
-            req.success(slice, data.length == 0 ? 1 : data.length);
+            var slice = data.slice(params.index, params.index + params.count);
+            callback(slice, data.length == 0 ? 1 : data.length);
           };
 
           grid.then(function(){
@@ -361,7 +361,7 @@ layout: page
           grid.items = employees;
 
           // code
-          grid.addEventListener("select", function(e) {
+          grid.addEventListener("selected-items-changed", function(e) {
             grid.$$("#selected-counter").textContent = grid.selection.size;
           });
 

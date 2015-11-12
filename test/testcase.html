@@ -23,7 +23,7 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
 <ol>
   <li>
   <h3>Simplest possible with inline data</h3>
-  <vaadin-grid rows=1>
+  <vaadin-grid visible-rows=1>
   <table>
     <col header-text="Name">
     <col header-text="Value">
@@ -86,7 +86,7 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
         var data = [ [ "Grid", 10000, 0.8 ], [ "Vaadin X", 999999, 0.01 ],
                  [ "designer", 999999, 0.01 ] ];
 
-        grid.datasource = function(req) {
+        grid.items = function(req) {
           var array = data.slice(req.index, req.index + req.count);
           req.success(array, data.length);
         };
@@ -108,7 +108,7 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
       HTMLImports.whenReady(function() {
         var grid = document.getElementById("myBigGrid");
 
-        grid.datasource = function(req) {
+        grid.items = function(req) {
           setTimeout(function() {
             req.success(myBigData.slice(req.index, req.index + req.count), myBigData.length);
           }, req.index ? 1200 : 0);
@@ -134,7 +134,7 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
 
         var data = [ [ "Grid", 10000, 0.8 ], [ "Vaadin X", 999999, 0.01 ], ];
 
-        grid.datasource = function(req) {
+        grid.items = function(req) {
           req.success(data.slice(req.index, req.index + req.count), data.length);
         };
 
@@ -173,7 +173,7 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
       HTMLImports.whenReady(function() {
         var grid = document.getElementById("myMapGrid");
 
-        grid.datasource = function(req) {
+        grid.items = function(req) {
           req.success(data.slice(req.index, req.index + req.count), data.length);
         };
 
@@ -226,7 +226,7 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
         "Vaadin X"
       ];
 
-      grid.datasource = function(req) {
+      grid.items = function(req) {
         req.success(data.slice(req.index, req.index + req.count), data.length);
       };
     });
@@ -480,7 +480,7 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
             });
             label.textContent = JSON.stringify(grid.sortOrder);
           })
-          grid.datasource = function(req) {
+          grid.items = function(req) {
             req.success(data.slice(req.index, req.index + req.count), data.length);
           };
         });
@@ -492,7 +492,7 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
   <vaadin-grid
     selection-mode='disabled'
     selected-rows='0,2,3'
-    rows=3
+    visible-rows=3
     frozen-columns= '-1'
     style='width: 100%'
     >

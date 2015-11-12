@@ -24,7 +24,7 @@ gulp.task('test:desktop', function(done) {
       //'Windows 10/microsoftedge@20',
       'OS X 10.10/safari@8.0'],
     'vaadin-grid',
-     done)
+     done);
 });
 
 gulp.task('test:mobile', function(done) {
@@ -33,5 +33,5 @@ gulp.task('test:mobile', function(done) {
     ['OS X 10.10/iphone@9',
       'Linux/android@5.1'],
     'vaadin-grid',
-    done)
+    done);
 });

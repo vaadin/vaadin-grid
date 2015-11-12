@@ -5,6 +5,7 @@ import com.google.gwt.core.client.js.JsType;
 import com.google.gwt.dom.client.Element;
 import com.vaadin.client.widget.grid.CellReference;
 import com.vaadin.elements.common.js.JS;
+import com.vaadin.elements.grid.data.GridDataSource;
 import com.vaadin.elements.grid.table.GridColumn;
 
 /**
@@ -28,7 +29,8 @@ public interface JSCell {
 
         JSRow row = JS.createJsType(JSRow.class);
         JS.definePropertyAccessors(row, "index", null, () -> cell.getRowIndex());
-        JS.definePropertyAccessors(row, "data", null, () -> cell.getRow());
+        JS.definePropertyAccessors(row, "data", null,
+                () -> GridDataSource.extractDataItem(cell.getRow()));
         JS.definePropertyAccessors(row, "element", null, () -> cell
                 .getElement().getParentElement());
         row.setGrid(container);

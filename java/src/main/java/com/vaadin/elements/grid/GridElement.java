@@ -74,7 +74,7 @@ public class GridElement implements SelectionHandler<Object>,
         SortHandler<Object>, SelectAllHandler<Object> {
 
     private final ViolatedGrid grid;
-    private int rows = -1;
+    private int visibleRows = -1;
 
     public boolean updating = true;
     private GridLightDomTable lightDom;
@@ -82,6 +82,7 @@ public class GridElement implements SelectionHandler<Object>,
     private final GridStaticSection staticSection;
 
     private Element container;
+    private Element measureObject;
     private JSArray<JSColumn> cols;
 
     private JavaScriptObject rowClassGenerator;
@@ -90,6 +91,8 @@ public class GridElement implements SelectionHandler<Object>,
 
     @JsNoExport
     public static final int MAX_AUTO_ROWS = 10;
+
+    private static final String SELECTION_MODE_CHANGED_EVENT = "selection-mode-changed";
 
     public GridElement() {
         grid = new ViolatedGrid();
@@ -150,9 +153,10 @@ public class GridElement implements SelectionHandler<Object>,
     }
 
     public void init(Element container, TableElement lightDomElement,
-            Element gridContainer) {
+            Element gridContainer, Element measureObject) {
         if (this.container == null) {
             this.container = container;
+            this.measureObject = measureObject;
 
             if (lightDomElement != null) {
                 lightDom = new GridLightDomTable(lightDomElement, this);
@@ -258,7 +262,7 @@ public class GridElement implements SelectionHandler<Object>,
     public void onSelect(SelectionEvent<Object> ev) {
         updateSelectAllCheckBox();
         if (!updating) {
-            triggerEvent("select");
+            triggerEvent("selected-items-changed");
         }
     }
 
@@ -353,16 +357,6 @@ public class GridElement implements SelectionHandler<Object>,
         return result;
     }
 
-    public JSArray<JSColumn> getVisibleColumns() {
-        JSArray<JSColumn> result = JSArray.createArray().cast();
-        for (int i = 0; i < cols.size(); i++) {
-            if (!cols.get(i).getHidden()) {
-                result.add(cols.get(i));
-            }
-        }
-        return result;
-    }
-
     public void setSelectionMode(String selectionMode) {
         setSelectionMode(selectionMode, false);
     }
@@ -385,7 +379,7 @@ public class GridElement implements SelectionHandler<Object>,
             } else {
                 getSelectionModel().reset();
             }
-            triggerEvent("selectionmodechange");
+            triggerEvent(SELECTION_MODE_CHANGED_EVENT);
             updateSelectAllCheckBox();
             updating = false;
         }
@@ -445,14 +439,7 @@ public class GridElement implements SelectionHandler<Object>,
         // We currently implement the feature by checking the client height of
         // measure object because it has 1px bottom padding and
         // thus has client height of 1 if it's visible in the DOM.
-        Element element = grid.getElement().getPreviousSiblingElement();
-        while (element != null) {
-            if ("measureobject".equals(element.getId())) {
-                return element.getClientHeight() > 0;
-            }
-            element = element.getPreviousSiblingElement();
-        }
-        return false;
+        return measureObject.getClientHeight() > 0;
     }
 
     public void updateSize() {
@@ -471,8 +458,8 @@ public class GridElement implements SelectionHandler<Object>,
             grid.setHeight("100%");
 
             if (container.getClientHeight() == 0) {
-                if (rows > 0) {
-                    grid.setHeightByRows(rows);
+                if (visibleRows > 0) {
+                    grid.setHeightByRows(visibleRows);
                 } else {
                     GridDataSource ds = getDataSource();
                     if (ds != null) {
@@ -482,15 +469,23 @@ public class GridElement implements SelectionHandler<Object>,
                     }
                 }
             }
+
+            if (isGridVisible()) {
+                measureObject.getStyle().setProperty("height", "");
+            } else {
+                // Changing the measureObject's size while invisible makes it
+                // fire a resize event when it becomes visible again
+                measureObject.getStyle().setHeight(1, Unit.PX);
+            }
         }
     }
 
-    public int getRows() {
-        return rows;
+    public int getVisibleRows() {
+        return visibleRows;
     }
 
-    public void setRows(int rows) {
-        this.rows = JSValidate.Integer.val(rows, -1, -1);
+    public void setVisibleRows(int visibleRows) {
+        this.visibleRows = JSValidate.Integer.val(visibleRows, -1, -1);
         updateHeight();
     }
 
@@ -607,7 +602,7 @@ public class GridElement implements SelectionHandler<Object>,
             updating = true;
             if (event.getSelectionModel() != getSelectionModel()) {
                 grid.setSelectionModel(event.getSelectionModel());
-                triggerEvent("selectionmodechange");
+                triggerEvent(SELECTION_MODE_CHANGED_EVENT);
                 getSelectionModel().reset();
             } else {
                 boolean all = getSelectAllCheckBox().getValue();

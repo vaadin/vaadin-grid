@@ -17,21 +17,24 @@
   <script>
     describe.feature('selecting rows', function() {
       var selectListener;
+      var selectionModeListener;
 
       before(function() {
         selectListener = sinon.spy();
-        grid.addEventListener('select', selectListener);
+        grid.addEventListener('selected-items-changed', selectListener);
+
+        selectionModeListener = sinon.spy();
+        grid.addEventListener('selection-mode-changed', selectionModeListener);
       });
 
       function getSelectionModeAttr() {
         return grid.getAttribute('selection-mode');
-      };
+      }
 
       function setSelectionModeAttr(mode) {
         grid.setAttribute('selection-mode', mode);
-
         return grid;
-      };
+      }
 
       afterEach(function() {
         selectListener.reset();
@@ -40,6 +43,8 @@
           // force selection clear
           grid.selection.mode = 'disabled';
           grid.selection.mode = 'single';
+
+          selectionModeListener.reset();
 
           return grid;
         });
@@ -80,6 +85,13 @@
             expect(function() {
               setSelectionModeAttr('foobar');
             }).to.throw(Object);
+          });
+
+          it('should fire \'selection-mode-changed\' event', function() {
+            setSelectionModeAttr('disabled');
+
+            expect(selectionModeListener.calledOnce).to.be.true;
+            expect(selectionModeListener.args[0][0]).to.have.property('type', 'selection-mode-changed');
           });
         });
       });
@@ -226,10 +238,10 @@
           return grid;
         });
 
-        it('should fire a \'select\' event', function()  {
+        it('should fire a \'selected-items-changed\' event', function()  {
           return clickFirstCell().then(function() {
             expect(selectListener.calledOnce).to.be.true;
-            expect(selectListener.args[0][0]).to.have.property('type', 'select');
+            expect(selectListener.args[0][0]).to.have.property('type', 'selected-items-changed');
           });
         });
 
@@ -268,7 +280,7 @@
 
           it('should fire only one selection event', function() {
             var spy = sinon.spy();
-            grid.addEventListener("select", spy);
+            grid.addEventListener("selected-items-changed", spy);
 
             var inputs = qaLocal('.vaadin-grid-body input');
             triggerMouseEvent(inputs[0], "mousedown");
@@ -367,7 +379,7 @@
         describe('with selectionMode: multi', function() {
           beforeEach(function() {
             grid.selection.mode = 'multi';
-          })
+          });
 
           it('should select multiple rows', function() {
             grid.selection.select(0);
@@ -490,12 +502,12 @@
 
         describe('in mode: multi', function() {
           beforeEach(function() {
-            grid.datasource =  function(req) {
+            grid.items =  function(params, callback) {
               var data = [];
-              for (var i = req.index; i < req.index + req.count; i++) {
+              for (var i = params.index; i < params.index + params.count; i++) {
                 data.push(["foo " + i, "bar " + i]);
               }
-              req.success(data, 100);
+              callback(data, 100);
             };
             grid.selection.mode = 'multi';
             grid.selection.select(0);
@@ -562,12 +574,12 @@
 
         describe('in mode: all', function() {
           beforeEach(function() {
-            grid.datasource =  function(req) {
+            grid.items = function(params, callback) {
               var data = [];
-              for (var i = req.index; i < req.index + req.count; i++) {
+              for (var i = params.index; i < params.index + params.count; i++) {
                 data.push(["foo " + i, "bar " + i]);
               }
-              req.success(data, 100);
+              callback(data, 100);
             };
             grid.selection.mode = 'all';
             grid.selection.deselect(0);

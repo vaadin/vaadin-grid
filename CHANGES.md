@@ -13,13 +13,22 @@
   - JSRow reference data with single column ds fixed
   - Column header text should default to name if none is given (#136)
   - Fire sort event before clearing the selection (#206)
+  - JSRow reference from JSCell data with single column ds fixed
+  - Fixed a bug with grid remaining invisible after datasource change (#172)
+  - Table element is located correctly when passed from a parent component (#237)
 
   #### API changes:
-  - `grid.data.source` is now `grid.items` for Arrays and `grid.datasource` for Functions. (#160)
+  - `grid.data.source` is now `grid.items`. (#160, #228)
+  - Function data source signature changed from `(req)` to `(params, callback)` where `req.success` is now `callback` argument. (#229)
   - `grid.data.sortOrder` is now `grid.sortOrder`. (#160)
   - `sort` event is now `sort-order-changed`. (#160)
   - `grid.data.clearCache()` is now `grid.clearCache()`. (#160)
   - `grid.data.getItem(rowIndex, callback, onlyCached)` is now `grid.getItem(rowIndex, callback, onlyCached)`. (#160)
+  - `grid.rows` is now `grid.visibleRows` (#222)
+  - `rows` attribute is now `visible-rows` (#222)
+  - `grid.visibleColumns` is removed (#222)
+  - `select` event renamed to `selected-items-changed` (#210)
+  - `selectionmodechange` event renamed to `selection-mode-changed` (#210)
 
 ## Vaadin Grid v0.3.0.beta7 (2015-Sept)
 - Polymer updated to v1.1.1

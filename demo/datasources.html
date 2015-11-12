@@ -70,9 +70,9 @@ layout: page
           var data = [ [ "Project A", 10000, 0.8 ],
                        [ "Project B", 87654, 0.2 ],
                        [ "Project C", 12999, 0.6 ] ];
-          grid.datasource = function(req) {
-            var slice = data.slice(req.index, req.index + req.count);
-            req.success(slice, data.length);
+          grid.items = function(params, callback) {
+            var slice = data.slice(params.index, params.index + params.count);
+            callback(slice, data.length);
           };
           // end-code
         });
@@ -137,7 +137,7 @@ layout: page
 
   <section>
     <h3>Asynchronous Data Sources</h3>
-    <p><code>vaadin-grid</code> is informed of available data by calling the <code>request.success</code> callback function.
+    <p><code>vaadin-grid</code> is informed of available data by calling the <code>callback</code> function.
     Required arguments are the data as an array and the full size of the source data as row count.</p>
     <p>This example uses a timeout to simulate lazily loading data.
     Scroll <code>vaadin-grid</code> down fast to see the data loading with a delay.</p>
@@ -170,9 +170,9 @@ layout: page
 
         HTMLImports.whenReady(function() {
           // code
-          grid.datasource = function(req) {
+          grid.items = function(params, callback) {
             setTimeout(function() {
-              req.success(employees.slice(req.index, req.index + req.count), employees.length);
+              callback(employees.slice(params.index, params.index + params.count), employees.length);
             }, 400);
           };
           // end-code
@@ -215,7 +215,7 @@ layout: page
 
         HTMLImports.whenReady(function() {
           // code
-          // Define the datasource
+          // Define the items
           var data = [ [ "Project A", 10000, 0.8 ],
                        [ "Project B", 87654, 0.2 ],
                        [ "Project C", 12999, 0.6 ] ];
@@ -253,19 +253,19 @@ layout: page
 
         HTMLImports.whenReady(function() {
           // code
-          var dataSourceSize = 1000;
-          grid.datasource = function(req) {
+          var itemCount = 1000;
+          grid.items = function(params, callback) {
             // Fetch the JSON data from a URL
             var xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function() {
-              if (xhr.readyState == XMLHttpRequest.DONE ) {
-                if(xhr.status == 200){
+              if (xhr.readyState == XMLHttpRequest.DONE) {
+                if (xhr.status == 200) {
                   var json = JSON.parse(xhr.responseText);
-                  req.success(json.results, dataSourceSize);
+                  callback(json.results, itemCount);
                 }
               }
             }
-            var rowsNeeded = Math.max(req.count, 1);
+            var rowsNeeded = Math.max(params.count, 1);
             xhr.open("GET", randomUserUrl + "?results=" + rowsNeeded, true);
             xhr.send();
           };

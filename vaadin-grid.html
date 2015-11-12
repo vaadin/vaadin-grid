@@ -489,7 +489,7 @@ See the [demo](demo/index.html) for use case examples.
 
   #measureobject {
     width: 100% !important;
-    height: 100% !important;
+    height: 100%;
     z-index: -1 !important;
     pointer-events: none !important;
     position: absolute !important;
@@ -657,7 +657,6 @@ See the [demo](demo/index.html) for use case examples.
 </style>
   <template>
     <iframe id="measureobject" class="vaadin-grid"></iframe>
-    <content></content>
   </template>
 </dom-module>
 
@@ -783,52 +782,36 @@ See the [demo](demo/index.html) for use case examples.
         },
 
         /**
-         * A function the grid uses to query the data source for items it needs
-         * to show in the grid viewport.
+         * An array or a function containing or returning items determining
+         * the row data in the grid.
          *
-         * Implement this function if you wish to provide data lazily to the
+         * Implement the function if you wish to provide data lazily to the
          * grid (e.g. make a network request to a REST service to get only the
          * items that are necessary in the grid viewport).
          *
          * For an in-memory list of items, use the `items` array property instead.
          *
-         * #### Example:
-         * ```
-         * grid.datasource = function(dataRequest) {
-         *   ...
-         *   fetch(url).then(function(response) {
-         *     var response = response.json();
-         *     var items = response.items; // e.g. ['foo', 'bar', ...]
-         *     var totalItems = response.total; // e.g. 1234
-         *     dataRequest.success(items, totalItems);
-         *   };
-         * };
-         * ```
-         *
-         * See the API documentaiton for “data-request” for more details.
-         *
-         * @type {function}
-         */
-        datasource: {
-          type: Object,
-          observer: '_datasourceChanged'
-        },
-
-        /**
-         * An array containing items determining rows in the grid.
-         *
-         *  #### Example:
+         * #### Examples:
          *  ```
          *  grid.items = [
          *      ["horse", 150, "domestic"],
          *      ["wolf", 100, "wild"]
          *  ];
          *  ```
+         *  ```
+         *  grid.items = function(params, callback) {
+         *    callback(['foo', 'bar'], 2);
+         *  };
+         *  ```
          *
-         * @type {Array<Object>}
+         * See the API documentation for "Vaadin.Grid.ItemsFunction" for more
+         * details.
+         *
+         * @property {(Array<Object>|function)} items
+         * @type {(Array<Object>|function)}
          */
         items: {
-          type: Array,
+          type: Object,
           observer: '_itemsChanged'
         },
 
@@ -937,23 +920,21 @@ See the [demo](demo/index.html) for use case examples.
         /**
          * A change in the selection mode.
          *
-         * @event selectionmodechange
+         * @event selection-mode-changed
          */
         'selectionmodechange': '_onSelectionModeChange'
       },
 
-      _datasourceChanged: function(datasource) {
-        this._grid.setDataSource(datasource);
-      },
-
       _itemsChanged: function(items) {
-        if(Array.isArray(items)) {
-          this._grid.setDataSource(function(req) {
-            var array = items.slice(req.index, req.index + req.count);
-            req.success(array, items.length);
+        if (Array.isArray(items)) {
+          this._grid.setDataSource(function(params, callback) {
+            var array = items.slice(params.index, params.index + params.count);
+            callback(array, items.length);
           });
+        } else if (typeof items === 'function') {
+          this._grid.setDataSource(items);
         } else {
-          throw new Error('Unknown items type: ' + items + '. Arrays are supported only.');
+          throw new Error('Unknown items type: ' + items + '. Only arrays and functions are supported.');
         }
       },
 
@@ -977,7 +958,18 @@ See the [demo](demo/index.html) for use case examples.
             this.attributeChanged(this.attributes[i].nodeName, null, this.attributes[i].nodeValue);
           }
         });
-        this._grid.init(this, Polymer.dom(this).querySelector("table"), Polymer.dom(this.root));
+        this._grid.init(this, this._findTableElement(Polymer.dom(this).children), Polymer.dom(this.root), this.$.measureobject);
+      },
+
+      _findTableElement: function(nodes) {
+        for (var i = 0; i < nodes.length; i++) {
+          if (nodes[i].nodeName === 'TABLE') {
+            return nodes[i];
+          } else if (nodes[i].nodeName === 'CONTENT') {
+            var contentNodes = Polymer.dom(nodes[i]).getDistributedNodes();
+            return this._findTableElement(contentNodes);
+          }
+        }
       },
 
       _bindResizeListener: function() {
@@ -1193,16 +1185,6 @@ See the [demo](demo/index.html) for use case examples.
       },
 
       /**
-       * Returns an array of the currently visible columns in the grid.
-       *
-       * @property {Array<column>} visibleColumns
-       * @type {Array<column>}
-       */
-      get visibleColumns() {
-        return this._grid.getVisibleColumns();
-      },
-
-      /**
        * Sets the height of the grid so that the specified amount of data rows
        * is visible. Overrides any height specified in CSS.
        *
@@ -1211,20 +1193,21 @@ See the [demo](demo/index.html) for use case examples.
        * <vaadin-grid rows="5">...</vaadin-grid>
        * ```
        *
-       * @property {number} rows
+       * @property {number} visibleRows
        * @default 10
        * @type {number}
        */
-      get rows() {
-        var rows = this._grid.getRows();
+      get visibleRows() {
+        var rows = this._grid.getVisibleRows();
         return rows > 0 ? rows : undefined;
       },
+
       /**
        * @private
        */
-      set rows(rows) {
-        this._grid.setRows(rows);
-        this.reflectPropertyToAttribute("rows");
+      set visibleRows(visibleRows) {
+        this._grid.setVisibleRows(visibleRows);
+        this.reflectPropertyToAttribute("visibleRows");
       },
 
       /**

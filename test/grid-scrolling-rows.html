@@ -22,7 +22,7 @@
 
       return _.chain(cells)
           .filter(function(n) {
-            return _.indexOf(cells, n) % 2 == 0;
+            return _.indexOf(cells, n) % 2 === 0;
           })
           .map(function(n) {
             return n.textContent;
@@ -34,8 +34,8 @@
 
     before(function() {
       infiniteDataSource.size = 100;
-      grid.datasource = infiniteDataSource;
-      grid.rows = 5;
+      grid.items = infiniteDataSource;
+      grid.visibleRows = 5;
 
       return grid;
     });
