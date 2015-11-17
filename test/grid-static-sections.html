@@ -156,40 +156,6 @@
                 expect(qLocal('.vaadin-grid-' + section + ' .vaadin-grid-cell > input')).to.not.be.undefined;
               });
 
-              it('should retain header and footer components', function(done) {
-                var wrapper = document.getElementById("gridwrapper");
-                var tmp = document.createElement("div");
-                wrapper.appendChild(tmp);
-                tmp.innerHTML = "<vaadin-grid>" +
-                  "                <table>" +
-                  "                  <colgroup><col header-text='Name'></colgroup>" +
-                  "                  <thead><tr class='red'><td><input/></td></tr></thead>" +
-                  "                  <tbody><tr><td>Grid</td></tr></tbody>" +
-                  "                  <tfoot><tr class='red'><td><input/></td></tr></tfoot>" +
-                  "                </table>" +
-                  "              </vaadin-grid>";
-
-                var grid = tmp.querySelector("vaadin-grid");
-                waitUntil(function() {
-                  return grid.then;
-                }, function() {
-                  return grid.then(function() {
-                    var inputElement = Polymer.dom(grid.root).querySelector('.vaadin-grid-' + section + ' .vaadin-grid-cell input');
-                    var firstCell = Polymer.dom(grid.root).querySelector('.vaadin-grid-body .vaadin-grid-cell');
-
-                    // Checks that the element is not recreated on focus
-                    triggerMouseEvent(inputElement, 'click');
-
-                    var inputElementAfterFocus = Polymer.dom(grid.root).querySelector('.vaadin-grid-' + section + ' .vaadin-grid-cell input');
-
-                    expect(inputElement).to.eql(inputElementAfterFocus);
-
-                    wrapper.removeChild(tmp);
-                    done();
-                  })
-                });
-              });
-
               it('should set content: declarative', function() {
                 appendThead();
 
