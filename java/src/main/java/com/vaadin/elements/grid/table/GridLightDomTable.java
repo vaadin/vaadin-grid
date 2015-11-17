@@ -23,6 +23,7 @@ import com.vaadin.elements.grid.GridElement;
 import com.vaadin.elements.grid.config.JSColumn;
 import com.vaadin.elements.grid.config.JSSortOrder;
 import com.vaadin.elements.grid.config.JSStaticCell;
+import com.vaadin.shared.util.SharedUtil;
 
 /**
  * This class represents a grid header configuration based on a DOM structure.
@@ -160,10 +161,15 @@ public class GridLightDomTable implements MutationListener {
                     "hiding-toggle-text", null, null));
 
             String headerHtml = JSValidate.String.attr($th, "header-text",
-                    $th.html(), column.getName());
-            if (headerHtml != null) {
-                column.setHeaderContent(headerHtml);
+                    $th.html(), null);
+
+            if (headerHtml == null) {
+                headerHtml = column.getName();
+                headerHtml = headerHtml.replaceFirst(".*\\.", "");
+                headerHtml = headerHtml.replaceAll("[_+,;:-]", " ");
+                headerHtml = SharedUtil.camelCaseToHumanFriendly(headerHtml);
             }
+            column.setHeaderContent(headerHtml);
         }
         gridElement.setColumns(jsColumns);
 
@@ -173,8 +179,6 @@ public class GridLightDomTable implements MutationListener {
                 public void f() {
                     JsUtils.prop(gridElement.getContainer(), "sortOrder", sortOrders);
                 }
-
-                ;
             }));
         }
     }
