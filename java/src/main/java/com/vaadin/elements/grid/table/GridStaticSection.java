@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.js.JsExport;
 import com.google.gwt.core.client.js.JsNamespace;
 import com.google.gwt.core.client.js.JsNoExport;
@@ -15,8 +14,8 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.vaadin.client.widgets.Grid.StaticSection.StaticCell;
 import com.vaadin.client.widgets.Grid.StaticSection.StaticRow;
 import com.vaadin.elements.common.js.JS;
-import com.vaadin.elements.common.js.JSArray;
 import com.vaadin.elements.common.js.JS.Setter;
+import com.vaadin.elements.common.js.JSArray;
 import com.vaadin.elements.grid.GridElement;
 import com.vaadin.elements.grid.ViolatedGrid;
 import com.vaadin.elements.grid.config.JSStaticCell;
@@ -30,6 +29,7 @@ public class GridStaticSection {
     private final GridElement gridElement;
     private final ViolatedGrid grid;
     private final Map<StaticCell, JSStaticCell> cells = new HashMap<>();
+    private final static String CONTENT_WRAPPER = "<span style='overflow: hidden;text-overflow: ellipsis;'>%s</span>";
 
     public GridStaticSection(GridElement gridElement) {
         this.gridElement = gridElement;
@@ -51,39 +51,62 @@ public class GridStaticSection {
                 jsCell.setContent(cell.getHtml());
             }
 
+            cells.put(cell, jsCell);
             bind(jsCell, cell, "colspan",
                     v -> cell.setColspan(((Double) v).intValue()));
             bind(jsCell, cell, "className", v -> cell.setStyleName((String) v));
-            bind(jsCell,
-                    cell,
-                    "content",
-                    v -> {
-                        if (v == null) {
-                            cell.setHtml(null);
-                            cellContentEmptied(jsCell);
-                        } else if (JS.isPrimitiveType(v) || v instanceof Number) {
-                            cell.setHtml("<span style='overflow: hidden;text-overflow: ellipsis;'>"
-                                    + String.valueOf(v) + "</span>");
-                        } else if (JsUtils.isElement(v)) {
-                            cell.setWidget(new SimplePanel((Element) v) {
-                            });
-                        }
-                    });
 
-            cells.put(cell, jsCell);
+            bind(jsCell, cell, "content", v -> contentChanged(v, cell));
         }
 
         return cells.get(cell);
     }
 
-    private void cellContentEmptied(JSStaticCell jsCell) {
-        Scheduler.get().scheduleDeferred(() -> {
-            GridColumn column = getColumnByDefaultHeaderCell(jsCell);
-            if (column != null) {
-                String name = column.getJsColumn().getName();
-                column.setHeaderCaption("");
-                column.setHeaderCaption(name == null ? "" : name);
+    private void contentChanged(Object content, StaticCell cell) {
+        // "column" is non-null only if the given cell is on default header row
+        GridColumn column = getColumnByDefaultHeaderCell(obtainJSStaticCell(cell));
+        if (content == null) {
+            contentCleared(cell, column);
+        } else if (JS.isPrimitiveType(content) || content instanceof Number) {
+            applyStringContent(cell, String.valueOf(content), column);
+        } else if (JsUtils.isElement(content)) {
+            applyElementContent(cell, (Element) content, column);
+        }
+    }
+
+    private void contentCleared(StaticCell cell, GridColumn column) {
+        if (column != null) {
+            // Default header cell content is empty, use
+            // column name as the header caption and cell html instead
+            String name = column.getJsColumn().getName();
+            name = name != null ? name : "";
+            column.setHeaderCaption(name);
+            cell.setHtml(CONTENT_WRAPPER.replace("%s", name));
+        } else {
+            cell.setHtml(null);
+        }
+    }
+
+    private void applyStringContent(StaticCell cell, String content,
+            GridColumn column) {
+        // Primitive content
+        if (column != null) {
+            column.setHeaderCaption(content);
+        }
+        cell.setHtml(CONTENT_WRAPPER.replace("%s", content));
+    }
+
+    private void applyElementContent(StaticCell cell, Element content,
+            GridColumn column) {
+        if (column != null) {
+            String name = column.getJsColumn().getName();
+            if (name != null) {
+                column.setHeaderCaption(name);
+            } else {
+                column.setHeaderCaption(String.valueOf(content));
             }
+        }
+        cell.setWidget(new SimplePanel(content) {
         });
     }
 
