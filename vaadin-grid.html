@@ -14,7 +14,7 @@ This program is available under Apache License Version 2.0, available at https:/
 </style>
 
 <!--
-Data grid for showing large amountsos of tabular data.
+Data grid for showing large amounts of tabular data.
 
 Basic usage:
 ```html
@@ -37,6 +37,25 @@ Basic usage:
 </vaadin-grid>
 ```
 
+### Styling
+
+The grid uses `--default-primary-color` from [paper-styles](https://github.com/PolymerElements/paper-styles) as a highlight color. You can customize the color by defining your own primary default color.
+
+```html
+<style is="custom-style">
+  vaadin-grid {
+    --default-primary-color: red;
+  }
+</style>
+```
+The following custom properties are available for styling:
+
+Custom property | Description | Default
+:----------------|:-------------|----------:
+`--vaadin-grid-row-height` | Data row height | `48px`
+`--vaadin-grid-header-row-height` | Header row height | `56px`
+`--vaadin-grid-footer-row-height` | Footer row height | `56px`
+
 More examples available at https://cdn.vaadin.com/vaadin-elements/latest/vaadin-grid/demo/
 -->
 <dom-module id="vaadin-grid">
@@ -46,7 +65,10 @@ More examples available at https://cdn.vaadin.com/vaadin-elements/latest/vaadin-
     -webkit-tap-highlight-color: transparent;
     -webkit-touch-callout: none;
     box-sizing: border-box;
-    font: 400 13px/1.1 Roboto, sans-serif;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.1;
     color: rgba(0, 0, 0, 0.87);
     cursor: default;
     transition: opacity 50ms;
@@ -174,7 +196,7 @@ More examples available at https://cdn.vaadin.com/vaadin-elements/latest/vaadin-
   }
 
   .vaadin-grid-body tr {
-    height: 48px;
+    height: var(--vaadin-grid-row-height, 48px);
     left: 0;
     top: 0;
     position: absolute;
@@ -219,7 +241,7 @@ More examples available at https://cdn.vaadin.com/vaadin-elements/latest/vaadin-
 
    /* Focus styles */
   .vaadin-grid-row:after {
-    background-color: #03A9F4;
+    background-color: var(--default-primary-color, #03A9F4);
     bottom: 0;
     content: "";
     height: 2px;
@@ -290,7 +312,7 @@ More examples available at https://cdn.vaadin.com/vaadin-elements/latest/vaadin-
   .vaadin-grid-header tr {
     color: rgba(0, 0, 0, 0.54);
     font-size: 12px;
-    height: 56px;
+    height: var(--vaadin-grid-header-row-height, 56px);
   }
 
   .vaadin-grid-header th {
@@ -347,7 +369,7 @@ More examples available at https://cdn.vaadin.com/vaadin-elements/latest/vaadin-
     font-size: 12px;
     font-weight: 500;
     color: rgba(0, 0, 0, 0.56);
-    height: 56px;
+    height: var(--vaadin-grid-footer-row-height, 56px);
   }
 
   .vaadin-grid-footer-deco {
