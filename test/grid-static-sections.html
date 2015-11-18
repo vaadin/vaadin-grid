@@ -68,17 +68,6 @@
           expect(cells[2].classList.toString()).to.contain('sort-asc');
         });
 
-        it('should have content in sync with column.headerContent', function() {
-          var column = grid.columns[0];
-          var headerCell = grid.header.getCell(grid.header.defaultRow, 0);
-
-          column.headerContent = "foo";
-          expect(headerCell.content).to.eql("foo");
-
-          headerCell.content = "bar";
-          expect(column.headerContent).to.eql("bar");
-        });
-
       });
 
       ['header', 'footer'].forEach(function(section) {
