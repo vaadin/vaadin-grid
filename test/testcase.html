@@ -25,9 +25,9 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
   <h3>Simplest possible with inline data</h3>
   <vaadin-grid visible-rows=1>
   <table>
-    <col header-text="Name">
-    <col header-text="Value">
-    <col header-text="Progress">
+    <col name="Name">
+    <col name="Value">
+    <col name="Progress">
     <tbody>
       <tr>
         <td>Grid</td>
@@ -48,9 +48,9 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
   <h3>Simplest possible with explicitly formatted inline data (i.e. children in cells)</h3>
   <vaadin-grid id="childrenInCells">
   <table>
-    <col header-text="Name">
-    <col header-text="Value">
-    <col header-text="Progress">
+    <col name="Name">
+    <col name="Value">
+    <col name="Progress">
     <tbody>
       <tr>
         <td>Grid</td>
@@ -72,9 +72,9 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
   <h3>Simplest possible with data source (all data available, no formatting)</h3>
   <vaadin-grid id='myGrid'>
   <table>
-    <col header-text="Name">
-    <col header-text="Value">
-    <col header-text="Progress">
+    <col name="Name">
+    <col name="Value">
+    <col name="Progress">
   </table>
   </vaadin-grid>
 
@@ -98,9 +98,9 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
   <h3>Simplest possible with lazy data source (no formatting)</h3>
   <vaadin-grid id='myBigGrid'>
   <table>
-    <col header-text="Name">
-    <col header-text="Value">
-    <col header-text="Progress">
+    <col name="Name">
+    <col name="Value">
+    <col name="Progress">
   </table>
   </vaadin-grid>
 
@@ -123,9 +123,9 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
 
   <vaadin-grid id="myFormatGrid">
   <table>
-    <col header-text="Name">
-    <col header-text="Value">
-    <col header-text="Progress">
+    <col name="Name">
+    <col name="Value">
+    <col name="Progress">
   </table>
   </vaadin-grid>
   <script>
@@ -158,9 +158,9 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
 
   <vaadin-grid id="myMapGrid">
   <table>
-    <col header-text="Name">
-    <col header-text="Value">
-    <col header-text="Progress">
+    <col name="Name">
+    <col name="Value">
+    <col name="Progress">
   </table>
   </vaadin-grid>
     <button id="updateButton">update</button>
@@ -214,7 +214,7 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
   <vaadin-grid id="with-single-column">
 
     <table>
-      <col header-text="Name">
+      <col name="Name">
     </table>
   </vaadin-grid>
   <script>
@@ -280,9 +280,9 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
 
     <vaadin-grid id="myMultiSelGrid" selection-mode="multi">
       <table>
-        <col header-text="Name">
-        <col header-text="Value">
-        <col header-text="Progress">
+        <col name="Name">
+        <col name="Value">
+        <col name="Progress">
       </table>
     </vaadin-grid>
     <div id="smbuttons">
@@ -337,9 +337,9 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
       <template>
         <vaadin-grid selectionMode='multi'>
           <table>
-            <col header-text="Name">
-            <col header-text="Value">
-            <col header-text="Progress">
+            <col name="Name">
+            <col name="Value">
+            <col name="Progress">
             <tbody>
             <template is="dom-repeat" items="{{mydata}}">
               <tr>
@@ -375,7 +375,7 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
       <template>
         <vaadin-grid selectionMode='multi'>
           <table>
-            <col header-text="Name">
+            <col name="Name">
             <tbody>
             <template is="dom-repeat" items="{{mydata}}">
               <tr>
@@ -409,9 +409,9 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
       <template>
         <vaadin-grid selectionMode='multi'>
           <table>
-            <col header-text="Name">
-            <col header-text="Value">
-            <col header-text="Progress">
+            <col name="Name">
+            <col name="Value">
+            <col name="Progress">
             <tbody>
             <template is="dom-repeat" items="{{mydata}}">
               <tr>
@@ -445,9 +445,9 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
   <h3>Sort example</h3>
     <vaadin-grid id='mySortGrid'>
       <table>
-        <col header-text="Name" sortable>
-        <col header-text="Value" sortable>
-        <col header-text="Progress" sortable>
+        <col name="Name" sortable>
+        <col name="Value" sortable>
+        <col name="Progress" sortable>
       </table>
     </vaadin-grid>
     <button id="mySortButton">Sort by column 1</button>
@@ -498,13 +498,13 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
     >
   <table >
     <colgroup>
-      <col sortable sort-direction="desc" header-text="Name">
-      <col sortable sort-direction="asc" header-text="Value">
-      <col width=40 header-text="Progress">
-      <col min-width=200 header-text="foo">
-      <col header-text="bar">
-      <col flex=100 header-text="foo">
-      <col flex=0 header-text="bar">
+      <col sortable sort-direction="desc" name="Name">
+      <col sortable sort-direction="asc" name="Value">
+      <col width=40 name="Progress">
+      <col min-width=200 name="foo">
+      <col name="bar">
+      <col flex=100 name="foo">
+      <col flex=0 name="bar">
     </colgroup>
     <tbody>
       <tr>
@@ -561,9 +561,9 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
     <h3>Simplest possible with hidden columns</h3>
     <vaadin-grid>
       <table>
-        <col header-text="Name" hiding-toggle-text="Name (hidable)" hidable>
-        <col header-text="Value" hiding-toggle-text="Value (hidable)" hidable hidden>
-        <col header-text="Progress">
+        <col name="Name" hiding-toggle-text="Name (hidable)" hidable>
+        <col name="Value" hiding-toggle-text="Value (hidable)" hidable hidden>
+        <col name="Progress">
         <tbody>
         <tr>
           <td>Grid</td>
@@ -584,8 +584,8 @@ td.blue, th.blue, .blue th, .blue td, td.foot2, .foot2 td {
     <h3>Header and Footer</h3>
     <vaadin-grid id='staticsections'>
       <table>
-        <col header-text="Name">
-        <col header-text="Value">
+        <col name="Name">
+        <col name="Value">
         <tbody>
           <tr>
             <td>Grid</td>

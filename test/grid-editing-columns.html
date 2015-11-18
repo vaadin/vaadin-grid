@@ -40,7 +40,7 @@
 
         grid.selection.mode = 'single';
         grid.frozenColumns = 0;
-        grid.columns = [{name: 'Name', headerContent: 'Name'}, {name: 'Value', headerContent: 'Value'}];
+        grid.columns = [{name: 'Name'}, {name: 'Value'}];
         grid.items = [['Grid', '10000'], ['Vaadin Components', '1000']];
 
         return grid;
@@ -49,23 +49,11 @@
 
     it('add new column', function() {
       grid.addColumn({
-        name: "foo",
-        headerContent: "<b>Foo</b>",
-        sortable: true,
-        minWidth: 100,
-        maxWidth: 200,
-        width: 150,
-        flex: 1,
+        name: "foo"
       });
 
       var c = grid.columns[grid.columns.length - 1];
-      assert.equal(c.name, "foo");
-      assert.equal(c.headerContent, "<b>Foo</b>");
-      assert.equal(c.sortable, true);
-      assert.equal(c.minWidth, 100);
-      assert.equal(c.maxWidth, 200);
-      assert.equal(c.width, 150);
-      assert.equal(c.flex, 1);
+      expect(c.name).to.equal("foo");
     });
 
     it('add new column before', function(done) {
@@ -79,18 +67,15 @@
       }, 100)).to.throw("Column not found.");
 
       grid.addColumn({
-        name: "foo",
-        headerContent: "foo"
+        name: "foo"
       }, 0);
       grid.addColumn({
-        name: "bar",
-        headerContent: "testHtml"
+        name: "bar"
       }, "foo");
 
       grid.then(function() {
-        assert.isTrue(gridContainsText(grid, "testHtml"));
         var headers = qaLocal(".vaadin-grid-header .vaadin-grid-row th > span");
-        assert.equal(headers[0].innerHTML, "testHtml");
+        assert.equal(headers[0].innerHTML, "bar");
         assert.equal(headers[1].innerHTML, "foo");
 
         expect(grid.addColumn.bind(grid, {
@@ -102,33 +87,27 @@
 
     it('edit new column', function(done) {
       var c = {
-        name: "foo",
-        headerContent: "testHtml"
+        name: "foo"
       };
       grid.addColumn(c);
 
       grid.then(function() {
-        assert.isTrue(gridContainsText(grid, "testHtml"));
-
         var headers = qaLocal(".vaadin-grid-header .vaadin-grid-row th > span");
-        assert.equal(headers[grid.columns.length - 1].innerHTML, "testHtml");
+        assert.equal(headers[grid.columns.length - 1].innerHTML, "foo");
 
-        c.headerContent = "testHtml2";
+        c.name = "bar";
 
         grid.then(function() {
-          assert.isTrue(gridContainsText(grid, "testHtml2"));
-
           headers = qaLocal(".vaadin-grid-header .vaadin-grid-row th > span");
-          assert.equal(headers[grid.columns.length - 1].innerHTML, "testHtml2");
+          assert.equal(headers[grid.columns.length - 1].innerHTML, "bar");
           done();
         });
       });
     });
 
     it('edit existing column', function(done) {
-      grid.columns[0].headerContent = "testHtml";
+      grid.columns[0].name = "testHtml";
       grid.then(function() {
-        assert.isTrue(gridContainsText(grid, "testHtml"));
         var headers = qaLocal(".vaadin-grid-header .vaadin-grid-row th > span");
         assert.equal(headers[0].innerHTML, "testHtml");
         done();
@@ -197,7 +176,7 @@
     });
 
     it('initial property values', function() {
-      assert.equal(grid.columns[0].headerContent, "Name");
+      assert.equal(grid.columns[0].name, "Name");
     });
 
     describe('modifying columns array directly', function() {
@@ -205,22 +184,18 @@
         var firstHeader = qLocal(".vaadin-grid-header .vaadin-grid-row th");
         expect(firstHeader.textContent).to.equal('Name');
 
-        grid.columns[0].headerContent = 'Foo';
+        grid.columns[0].name = 'Foo';
 
         return grid.then(function() {
           expect(firstHeader.textContent).to.equal('Foo');
         });
       });
 
-      // fails because of replacing columns doesn't render row contents,
-      // see https://trello.com/c/8e27Tv3q/58-vaadin-grid-bugs
-      it.skip('should render row contents', function() {
-        expect(grid.querySelectorAll('td').textContent).to.equal('Grid');
-
-        grid.columns = [{headerContent: 'Foo'}];
+      it('should render row contents event with replaced columns', function() {
+        grid.columns = [{name: 'Foo'}];
 
         return grid.then(function() {
-          expect(grid.querySelectorAll('td').textContent).to.equal('Grid');
+          expect(qLocal('td').textContent).to.equal('Grid');
         });
       });
     });
@@ -232,7 +207,7 @@
       grid.then(function() {
         assert.isFalse(gridContainsText(grid, "Progress"));
         grid.columns.push({
-          headerContent: "testHtml"
+          name: "testHtml"
         });
         grid.then(function() {
           assert.isTrue(gridContainsText(grid, "testHtml"));
@@ -243,8 +218,7 @@
 
     it('remove column', function(done) {
       grid.addColumn({
-        name: "test",
-        headerContent: "test"
+        name: "test"
       });
       grid.removeColumn(0);
 
@@ -263,17 +237,16 @@
       grid.columns = [];
 
       grid.columns.push({
-        name: "foo",
-        headerContent: "fooheader"
+        name: "foo"
       });
 
       grid.then(function() {
-        expect(gridContainsText(grid, 'fooheader')).to.be.true;
+        expect(gridContainsText(grid, 'foo')).to.be.true;
         done();
       });
     });
 
-    it('column without headerContent should show column name', function(done) {
+    it('column without default header content should show column name', function(done) {
       grid.columns = [];
 
       grid.columns.push({
@@ -286,15 +259,15 @@
       });
     });
 
-    it('column with empty string as headerContent should not show column name', function(done) {
+    it('column with empty string as content should not show column name', function(done) {
       grid.columns = [];
 
       grid.columns.push({
-        name: "foobar",
-        headerContent: ""
+        name: "foobar"
       });
 
       grid.then(function() {
+        grid.header.getCell(0, 0).content = "";
         expect(gridContainsText(grid, 'foobar')).to.be.false;
         done();
       });
@@ -312,8 +285,7 @@
 
     it('Should update on header column cell change', function(done) {
       grid.addColumn({
-        name: "foobar",
-        headerContent: "baz"
+        name: "foobar"
       }, 0);
 
       grid.then(function() {
@@ -325,22 +297,6 @@
         }, function() {
           done();
         });
-      });
-    });
-
-    it('Should update after headerContent set empty', function() {
-      grid.columns = [];
-
-      grid.addColumn({
-        name: "foobar",
-        headerContent: "baz"
-      });
-
-      return grid.then(function() {
-        grid.columns[0].headerContent = "";
-        return grid;
-      }).then(function(){
-        expect(gridContainsText(grid, 'foobar')).to.be.false;
       });
     });
 
@@ -376,8 +332,8 @@
     it('remove frozen column (take the selection column into account)', function() {
       grid.selection.mode = 'multi';
       grid.columns = [];
-      grid.addColumn({"headerContent": 123});
-      grid.addColumn({"headerContent": 456});
+      grid.addColumn({"name": "123"});
+      grid.addColumn({"name": "456"});
       grid.frozenColumns = 2;
       grid.columns.pop();
 
@@ -391,8 +347,8 @@
     it('remove frozen column', function() {
       grid.selection.mode = 'single';
       grid.columns = [];
-      grid.addColumn({"headerContent": 123});
-      grid.addColumn({"headerContent": 456});
+      grid.addColumn({"name": "123"});
+      grid.addColumn({"name": "456"});
       grid.frozenColumns = 2;
       grid.columns.pop();
 
@@ -406,7 +362,7 @@
     it('should add a column to an empty grid with an index', function() {
       grid.columns = [];
       return grid.then(function() {
-        grid.addColumn({headerContent: "foo"}, 0);
+        grid.addColumn({name: "foo"}, 0);
         return grid;
       }).then(function() {
         expect(qaLocal(".vaadin-grid-header .vaadin-grid-cell")).to.have.length(1);
@@ -416,8 +372,9 @@
 
     it('should reference header cell after adding a new column', function() {
       grid.addColumn({name: "foo"});
-      grid.header.getCell(0, "foo").content = "foo";
-      expect(grid.columns[2].headerContent).to.eql("foo");
+      grid.header.getCell(0, "foo").content = "bar";
+      var headers = qaLocal(".vaadin-grid-header .vaadin-grid-row th > span");
+      expect(headers[2].innerHTML).to.eql("bar");
     });
 
     it('should support nested column names', function() {
@@ -436,7 +393,7 @@
       });
     });
 
-    it('column without header-text should show name instead', function(done) {
+    it('column without content should show name instead', function(done) {
       var wrapper = document.getElementById("gridwrapper");
       var tmp = document.createElement("div");
       wrapper.appendChild(tmp);
@@ -458,13 +415,14 @@
       });
     });
 
-    it('column with empty header-text should not show name', function(done) {
+    it('column with empty cell content should not show name', function(done) {
       var wrapper = document.getElementById("gridwrapper");
       var tmp = document.createElement("div");
       wrapper.appendChild(tmp);
       tmp.innerHTML = "<vaadin-grid>" +
         "                <table>" +
-        "                  <colgroup><col header-text='' name='test'></colgroup>" +
+        "                  <colgroup><col name='test'></colgroup>" +
+        "                  <thead><th></th></thead>" +
         "                </table>" +
         "              </vaadin-grid>";
 
@@ -579,7 +537,7 @@
          return grid.then;
       }, function() {
          return grid.then(function() {
-          grid.addColumn({headerContent : 'foo'});
+          grid.addColumn({name : 'foo'});
           return grid.then(function(){
             waitUntil(function(){
               return grid.clientHeight > 0;

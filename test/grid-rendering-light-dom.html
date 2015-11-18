@@ -36,8 +36,8 @@
     <template>
       <grid-wrapper-wrapper>
         <table>
-          <col header-text='Name'></col>
-          <col header-text='Value'></col>
+          <col name='Name'></col>
+          <col name='Value'></col>
           <tbody>
             <tr>
               <td>Grid</td>
@@ -53,8 +53,8 @@
     <template>
       <vaadin-grid>
         <table>
-          <col header-text='Name' sortable sort-direction="asc"></col>
-          <col header-text='Value'></col>
+          <col name='Name' sortable sort-direction="asc"></col>
+          <col name='Value'></col>
           <tbody>
             <tr>
               <td>Grid</td>
@@ -105,8 +105,8 @@
     <template>
       <vaadin-grid>
         <table>
-          <col header-text='Name' sortable sort-direction="asc"></col>
-          <col header-text='Value' sortable></col>
+          <col name='Name' sortable sort-direction="asc"></col>
+          <col name='Value' sortable></col>
           <thead>
             <th>Text</th>
             <th><input type='text' value="Header"></input><label>Label</label></th>
@@ -150,14 +150,6 @@
         function bodyRowCount() {
           return Polymer.dom(grid.root).querySelectorAll('.vaadin-grid tbody tr').length;
         }
-
-        it('should render header names from `header-text`', function() {
-          var row = grid.$$(".vaadin-grid-header .vaadin-grid-row");
-          var contents = row.querySelectorAll('span');
-
-          assert.isTrue(contents[0].innerHTML == 'Name');
-          assert.isTrue(contents[1].innerHTML == 'Value');
-        });
 
         it('should render values from `<td>` elements', function() {
           var row = grid.$$(".vaadin-grid-body .vaadin-grid-row");
@@ -240,8 +232,7 @@
         });
 
         it('should have columns', function() {
-          expect(grid.columns[0].headerContent).to.eql('Name');
-          expect(grid.columns[1].headerContent).to.eql('Value');
+          expect(grid.columns).to.have.length(2);
         });
 
         it('should have rows', function() {

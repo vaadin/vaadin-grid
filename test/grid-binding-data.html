@@ -130,7 +130,7 @@
 
       it('should accept items before grid attached to the DOM', function() {
         var g = document.createElement("vaadin-grid");
-        g.columns = [{headerContent: "foo"}];
+        g.columns = [{name: "foo"}];
         g.items = ["bar"];
         document.body.appendChild(g);
 
