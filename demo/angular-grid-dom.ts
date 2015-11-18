@@ -9,9 +9,16 @@ import {bootstrap, Component, View, NgFor} from 'angular2/angular2';
     <table>
       <colgroup>
         <col width="80">
-        <col header-text="First name">
-        <col header-text="Last name">
+        <col>
+        <col>
       </colgroup>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>First name</th>
+          <th>Last name</th>
+        </tr>
+      </thead>
       <tbody>
         <tr *ng-for="var user of users">
           <td><img src="{{user.thumbnail}}" style="width: 30px"></td>
