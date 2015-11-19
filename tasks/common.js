@@ -77,7 +77,7 @@ module.exports = {
       if(args.autoRevert) {
         handler();
       } else {
-        gutil.log('No action. Use --auto-revert to revert changes.')
+        gutil.log('No action. Use --auto-revert to revert changes.');
         done(err);
       }
     } else {

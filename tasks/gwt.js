@@ -34,12 +34,12 @@ function system(command, cb, eb) {
       cb(err, stdout, stderr);
     }
   });
-};
+}
 
 function maven(tasks, done, log) {
   log = log || function(line) {
     console.log(line);
-  }
+  };
   var args = tasks.split(/\s+/);
   args.unshift('-f', gwtproject, '-B');
   gutil.log(" $ mvn " + args);
@@ -80,7 +80,7 @@ gulp.task('gwt:hash:js', function(done) {
     input: require('fs').createReadStream(gwtMinJs)
   });
   lines.on('line', function (line) {
-    var res = /\/\/ vaadin.elements.grid.hash = '(.*)'/.exec(line)
+    var res = /\/\/ vaadin.elements.grid.hash = '(.*)'/.exec(line);
     if (res) {
       jsHash = res[1];
       done();
@@ -112,7 +112,7 @@ gulp.task('gwt:watch', function(done) {
   gulp.watch(['demo/*', 'test/*', '*.html', 'bower_components/**/*'] , function(){
     maven('generate-sources -q');
   });
-})
+});
 
 gulp.task('gwt:run', function(done) {
   // SDM reuses certain stuff pre-cached in user's tmp folder

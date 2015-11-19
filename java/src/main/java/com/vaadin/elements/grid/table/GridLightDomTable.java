@@ -13,7 +13,6 @@ import com.google.gwt.query.client.plugins.observe.Observe;
 import com.google.gwt.query.client.plugins.observe.Observe.Changes.MutationRecord;
 import com.google.gwt.query.client.plugins.observe.Observe.MutationListener;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.HTML;
 import com.vaadin.client.widgets.Grid;
 import com.vaadin.client.widgets.Grid.StaticSection.StaticCell;
 import com.vaadin.client.widgets.Grid.StaticSection.StaticRow;
@@ -159,12 +158,6 @@ public class GridLightDomTable implements MutationListener {
 
             column.setHidingToggleText(JSValidate.String.attr($th,
                     "hiding-toggle-text", null, null));
-
-            String headerHtml = JSValidate.String.attr($th, "header-text",
-                    $th.html(), column.getName());
-            if (headerHtml != null) {
-                column.setHeaderContent(headerHtml);
-            }
         }
         gridElement.setColumns(jsColumns);
 
@@ -172,10 +165,9 @@ public class GridLightDomTable implements MutationListener {
             gridElement.then(JsUtils.wrapFunction(new Function() {
                 @Override
                 public void f() {
-                    JsUtils.prop(gridElement.getContainer(), "sortOrder", sortOrders);
+                    JsUtils.prop(gridElement.getContainer(), "sortOrder",
+                            sortOrders);
                 }
-
-                ;
             }));
         }
     }
@@ -227,7 +219,7 @@ public class GridLightDomTable implements MutationListener {
                 new Timer() {
                     @Override
                     public void run() {
-                        js.setContent(new HTML($th.html()).getElement());
+                        js.setContent($th.html());
                         js.setColspan(colspan);
                     }
                 }.schedule(0);
