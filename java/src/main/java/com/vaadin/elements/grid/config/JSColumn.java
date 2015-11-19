@@ -60,12 +60,6 @@ public interface JSColumn {
     void setRenderer(JavaScriptObject o);
 
     @JsProperty
-    Object getHeaderContent();
-
-    @JsProperty
-    void setHeaderContent(Object o);
-
-    @JsProperty
     boolean getHidable();
 
     @JsProperty

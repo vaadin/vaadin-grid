@@ -158,12 +158,6 @@ public class GridLightDomTable implements MutationListener {
 
             column.setHidingToggleText(JSValidate.String.attr($th,
                     "hiding-toggle-text", null, null));
-
-            String headerHtml = JSValidate.String.attr($th, "header-text",
-                    $th.html(), column.getName());
-            if (headerHtml != null) {
-                column.setHeaderContent(headerHtml);
-            }
         }
         gridElement.setColumns(jsColumns);
 
@@ -171,10 +165,9 @@ public class GridLightDomTable implements MutationListener {
             gridElement.then(JsUtils.wrapFunction(new Function() {
                 @Override
                 public void f() {
-                    JsUtils.prop(gridElement.getContainer(), "sortOrder", sortOrders);
+                    JsUtils.prop(gridElement.getContainer(), "sortOrder",
+                            sortOrders);
                 }
-
-                ;
             }));
         }
     }

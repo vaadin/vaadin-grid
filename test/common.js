@@ -73,8 +73,8 @@ function initializeGrid(cb) {
   wrapper = document.getElementById("gridwrapper");
   wrapper.innerHTML = "<vaadin-grid>" +
     "                     <table>" +
-    "                       <col header-text='Name'>" +
-    "                       <col header-text='Value'>" +
+    "                       <col>" +
+    "                       <col>" +
     "                       <tbody>" +
     "                         <tr>" +
     "                           <td>Grid</td>" +

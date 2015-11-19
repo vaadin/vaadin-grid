@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.TextOverflow;
@@ -12,8 +13,8 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.HTML;
 import com.vaadin.client.widgets.Grid.Column;
 import com.vaadin.elements.common.js.JS;
-import com.vaadin.elements.common.js.JSArray;
 import com.vaadin.elements.common.js.JS.Setter;
+import com.vaadin.elements.common.js.JSArray;
 import com.vaadin.elements.grid.GridElement;
 import com.vaadin.elements.grid.config.JSCell;
 import com.vaadin.elements.grid.config.JSColumn;
@@ -71,18 +72,12 @@ public final class GridColumn extends Column<Object, Object> {
     }
 
     private void bindProperties() {
-        JS.definePropertyAccessors(jsColumn, "headerContent",
-                v -> contentOrNameChanged(jsColumn.getName(), v),
-                () -> getDefaultHeaderCellReference().getContent());
-
         JS.definePropertyAccessors(jsColumn, "hidden", v -> {
             setHidden((Boolean) v);
             gridElement.updateWidth();
         }, this::isHidden);
 
-        bind("name",
-                v -> contentOrNameChanged((String) v,
-                        getDefaultHeaderCellReference().getContent()));
+        bind("name", v -> nameChanged((String) v));
         bind("hidingToggleText", v -> setHidingToggleCaption(v == null ? null
                 : v.toString()));
         bind("flex", v -> setExpandRatio(((Double) v).intValue()));
@@ -104,25 +99,15 @@ public final class GridColumn extends Column<Object, Object> {
                         : (double) v));
     }
 
-    private void contentOrNameChanged(String name, Object content) {
-        setHeaderCaption(name == null ? "" : name);
-        if (content == null || content instanceof String
-                && ((String) content).isEmpty()) {
-            getDefaultHeaderCellReference().setContent(content);
-        } else if (content instanceof JavaScriptObject
-                && JsUtils.isElement(content)) {
-            if (name != null) {
-                setHeaderCaption(name);
-            } else {
-                setHeaderCaption(((Element) content).getInnerText());
-            }
-            getDefaultHeaderCellReference().setContent(content);
-        } else {
-            setHeaderCaption(content.toString());
-            getDefaultHeaderCellReference().setContent(content);
-        }
+    private void nameChanged(String name) {
+        // Need to invoke the logic that determines whether default header cell
+        // should show content or name. Invocation must be deferred because
+        // the logic happens synchronously and the actual name property hasn't
+        // been yet applied
+        JSStaticCell reference = getDefaultHeaderCellReference();
+        Scheduler.get().scheduleDeferred(
+                () -> reference.setContent(reference.getContent()));
 
-        gridElement.updateWidth();
     }
 
     private void bind(String propertyName, final Setter setter) {
