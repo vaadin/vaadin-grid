@@ -521,6 +521,51 @@ layout: page
       </code>
     </code-example>
   </section>
+
+  <section>
+    <h3>Auto generate header text</h3>
+    When header content has not been configured, the grid produces human-readable headers based on the property names of the json data.
+    <p></p>
+    <code-example source>
+      <vaadin-grid demo>
+        <table>
+          <colgroup>
+            <col name="index">
+            <col name="user.name.firstName">
+            <col name="user.name.surname">
+            <col name="user.email">
+            <col name="user.job_info">
+          </colgroup>
+        </table>
+      </vaadin-grid>
+      <code demo-var="grid">
+        var grid = grid || document.querySelector("vaadin-grid");
+        HTMLImports.whenReady(function() {
+          grid.items = [{
+               index: 1,
+               user: {
+                 name: {
+                   firstName: "Manolo",
+                   surname: "Pirolo"
+                 },
+                 email: "manu@foo.com",
+                 job_info: "Developer"
+               }
+              },{
+               index: 1,
+               user: {
+                 name: {
+                   firstName: "Julián",
+                   surname: "Gañán"
+                 },
+                 email: "juli@bar.com",
+                 job_info: "Designer"
+               }
+              }];
+        });
+      </code>
+    </code-example>
+  </section>
 </body>
 
 </html>
