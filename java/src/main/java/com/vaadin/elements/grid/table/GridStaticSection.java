@@ -20,6 +20,7 @@ import com.vaadin.elements.grid.GridElement;
 import com.vaadin.elements.grid.ViolatedGrid;
 import com.vaadin.elements.grid.config.JSStaticCell;
 import com.vaadin.shared.ui.grid.GridStaticCellType;
+import com.vaadin.shared.util.SharedUtil;
 
 @JsNamespace(JS.VAADIN_JS_NAMESPACE + ".grid._api")
 @JsExport
@@ -80,6 +81,13 @@ public class GridStaticSection {
             // column name as the header caption and cell html instead
             String name = column.getJsColumn().getName();
             name = name != null ? name : "";
+            // Remove until last dot
+            name = name.replaceFirst(".*\\.", "");
+            // Remove certain characters used for separate words
+            name = name.replaceAll("[_+,;:-]", " ");
+            // Capitalize words
+            name = SharedUtil.camelCaseToHumanFriendly(name);
+
             column.setHeaderCaption(name);
             cell.setHtml(CONTENT_WRAPPER.replace("%CONTENT%", name));
         } else {

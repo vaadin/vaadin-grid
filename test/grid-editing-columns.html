@@ -408,7 +408,7 @@
         return grid.then;
       }, function() {
         return grid.then(function() {
-          expect(gridContainsText(grid, "test")).to.be.true;
+          expect(gridContainsText(grid, "Test")).to.be.true;
           wrapper.removeChild(tmp);
           done();
         })
