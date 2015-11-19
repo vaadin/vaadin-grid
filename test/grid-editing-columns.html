@@ -57,7 +57,6 @@
     });
 
     it('add new column before', function(done) {
-
       expect(grid.addColumn.bind(grid, {
         name: "foo"
       }, -1)).to.throw("Column not found.");
@@ -75,8 +74,8 @@
 
       grid.then(function() {
         var headers = qaLocal(".vaadin-grid-header .vaadin-grid-row th > span");
-        assert.equal(headers[0].innerHTML, "bar");
-        assert.equal(headers[1].innerHTML, "foo");
+        assert.equal(headers[0].innerHTML, "Bar");
+        assert.equal(headers[1].innerHTML, "Foo");
 
         expect(grid.addColumn.bind(grid, {
           name: "baz"
@@ -93,13 +92,13 @@
 
       grid.then(function() {
         var headers = qaLocal(".vaadin-grid-header .vaadin-grid-row th > span");
-        assert.equal(headers[grid.columns.length - 1].innerHTML, "foo");
+        assert.equal(headers[grid.columns.length - 1].innerHTML, "Foo");
 
         c.name = "bar";
 
         grid.then(function() {
           headers = qaLocal(".vaadin-grid-header .vaadin-grid-row th > span");
-          assert.equal(headers[grid.columns.length - 1].innerHTML, "bar");
+          assert.equal(headers[grid.columns.length - 1].innerHTML, "Bar");
           done();
         });
       });
@@ -109,7 +108,7 @@
       grid.columns[0].name = "testHtml";
       grid.then(function() {
         var headers = qaLocal(".vaadin-grid-header .vaadin-grid-row th > span");
-        assert.equal(headers[0].innerHTML, "testHtml");
+        assert.equal(headers[0].innerHTML, "Test Html");
         done();
       });
     });
@@ -210,7 +209,7 @@
           name: "testHtml"
         });
         grid.then(function() {
-          assert.isTrue(gridContainsText(grid, "testHtml"));
+          assert.isTrue(gridContainsText(grid, "Test Html"));
           done();
         });
       });
@@ -224,10 +223,10 @@
 
       grid.then(function() {
         assert.isFalse(gridContainsText(grid, "Name"));
-        assert.isTrue(gridContainsText(grid, "test"));
+        assert.isTrue(gridContainsText(grid, "Test"));
         grid.removeColumn("test");
         grid.then(function() {
-          assert.isFalse(gridContainsText(grid, "test"));
+          assert.isFalse(gridContainsText(grid, "Test"));
           done();
         });
       });
@@ -254,7 +253,7 @@
       });
 
       grid.then(function() {
-        expect(gridContainsText(grid, 'foobar')).to.be.true;
+        expect(gridContainsText(grid, 'Foobar')).to.be.true;
         done();
       });
     });
@@ -268,7 +267,7 @@
 
       grid.then(function() {
         grid.header.getCell(0, 0).content = "";
-        expect(gridContainsText(grid, 'foobar')).to.be.false;
+        expect(gridContainsText(grid, 'Foobar')).to.be.false;
         done();
       });
     });
@@ -279,7 +278,7 @@
       col.name = "foobaz";
 
       return grid.then(function() {
-        expect(gridContainsText(grid, 'foobaz')).to.be.true;
+        expect(gridContainsText(grid, 'Foobaz')).to.be.true;
       });
     });
 
@@ -293,7 +292,7 @@
         return grid;
       }).then(function() {
         waitUntil(function() {
-          return gridContainsText(grid, 'foobar')
+          return gridContainsText(grid, 'Foobar')
         }, function() {
           done();
         });
