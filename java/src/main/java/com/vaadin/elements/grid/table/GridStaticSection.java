@@ -29,7 +29,7 @@ public class GridStaticSection {
     private final GridElement gridElement;
     private final ViolatedGrid grid;
     private final Map<StaticCell, JSStaticCell> cells = new HashMap<>();
-    private final static String CONTENT_WRAPPER = "<span style='overflow: hidden;text-overflow: ellipsis;'>%s</span>";
+    private final static String CONTENT_WRAPPER = "<span style='overflow: hidden;text-overflow: ellipsis;'>%CONTENT%</span>";
 
     public GridStaticSection(GridElement gridElement) {
         this.gridElement = gridElement;
@@ -81,7 +81,7 @@ public class GridStaticSection {
             String name = column.getJsColumn().getName();
             name = name != null ? name : "";
             column.setHeaderCaption(name);
-            cell.setHtml(CONTENT_WRAPPER.replace("%s", name));
+            cell.setHtml(CONTENT_WRAPPER.replace("%CONTENT%", name));
         } else {
             cell.setHtml(null);
         }
@@ -93,7 +93,7 @@ public class GridStaticSection {
         if (column != null) {
             column.setHeaderCaption(content);
         }
-        cell.setHtml(CONTENT_WRAPPER.replace("%s", content));
+        cell.setHtml(CONTENT_WRAPPER.replace("%CONTENT%", content));
     }
 
     private void applyElementContent(StaticCell cell, Element content,
