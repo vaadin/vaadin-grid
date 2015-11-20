@@ -49,11 +49,11 @@
       describe('header content', function() {
         it('should be human readable when text-header is not set but column name', function() {
           var headers = Polymer.dom(grid.root).querySelectorAll('thead > tr > th > span');
-          expect(headers[0].innerText).to.be.equal('Index');
-          expect(headers[1].innerText).to.be.equal('First Name');
-          expect(headers[2].innerText).to.be.equal('Surname');
-          expect(headers[3].innerText).to.be.equal('Email');
-          expect(headers[4].innerText).to.be.equal('Job Info');
+          expect(headers[0].textContent).to.be.equal('Index');
+          expect(headers[1].textContent).to.be.equal('First Name');
+          expect(headers[2].textContent).to.be.equal('Surname');
+          expect(headers[3].textContent).to.be.equal('Email');
+          expect(headers[4].textContent).to.be.equal('Job Info');
         });
       });
     }, gridHtml);
