@@ -388,31 +388,14 @@ More examples available at https://cdn.vaadin.com/vaadin-elements/latest/vaadin-
   .vaadin-grid-header th,
   .vaadin-grid-body td,
   .vaadin-grid-footer td {
-    /* Google Material Design specifies 56dp inbetween columns.
-       Columns are as wide as their widest item. This approach
-       might not be applicable for us, as we allow column expand
-       ratio, etc. Options 1, 2 and 3 listed below. */
-    /* Divide padding equally among cells. */
        padding: 0 24px 0 24px;
-    /* Put all padding on right side.
-       padding: 0 56px 0 0; */
-    /* No padding, allow users to specify expand ratio.
-       padding: 0; */
   }
 
-  .vaadin-grid-header th.last-frozen,
-  .vaadin-grid-body td.last-frozen,
-  .vaadin-grid-footer td.last-frozen {
+  .vaadin-grid-cell.last-frozen {
     border-right: 1px solid #e3e3e3;
   }
 
-  /* TODO We need some other way of defining the frozen column divider than
-   using the cell, since this will affect all frozen columns, when we only
-    want to apply it to the last frozen column .*/
-  /* Double selector to increase specificity. Otherwise Polymer increases the
-   specificity of the ".vaadin-grid-header th" more than this, and we can't
-   override the border */
-  .vaadin-grid-cell.frozen.frozen {
+  .vaadin-grid-cell.frozen {
     position: relative;
     z-index: 1;
   }
