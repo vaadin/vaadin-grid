@@ -25,6 +25,13 @@ Simple usage (static HTML data source):
       <col name="lastName">
       <col name="email">
     </colgroup>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Value</th>
+        <th>Progress</th>
+      </tr>
+    </thead>
     <tbody>
       <tr>
         <td>Jonathan</td>
@@ -41,140 +48,161 @@ Simple usage (static HTML data source):
 </vaadin-grid>
 ```
 
+### Styling
+
+The grid uses `--default-primary-color` from [paper-styles](https://github.com/PolymerElements/paper-styles) as a highlight color. You can customize the color by defining your own primary default color.
+
+```html
+<style is="custom-style">
+  vaadin-grid {
+    --default-primary-color: red;
+  }
+</style>
+```
+The following custom properties are available for styling:
+
+Custom property | Description | Default
+:----------------|:-------------|----------:
+`--vaadin-grid-row-height` | Data row height | `48px`
+`--vaadin-grid-header-row-height` | Header row height | `56px`
+`--vaadin-grid-footer-row-height` | Footer row height | `56px`
+
 See the [demo](demo/index.html) for use case examples.
 
 @element vaadin-grid
 @demo demo/index.html
 -->
 <dom-module id="vaadin-grid">
-  <style>
-    /* Host styles */
+<style>
+  /* Host styles */
+  :host {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.1;
+    color: rgba(0, 0, 0, 0.87);
+    cursor: default;
+    transition: opacity 50ms;
+    white-space: nowrap;
+    position: relative;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+  }
 
-    :host {
-      -webkit-tap-highlight-color: transparent;
-      -webkit-touch-callout: none;
-      box-sizing: border-box;
-      font: 400 13px/1.1 Roboto, sans-serif;
-      color: rgba(0, 0, 0, 0.87);
-      cursor: default;
-      transition: opacity 50ms;
-      white-space: nowrap;
-      position: relative;
-      display: -webkit-flex;
-      display: flex;
-      -webkit-flex-direction: column;
-      flex-direction: column;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-    }
+  :host(.vaadin-grid-loading) {
+    height: 0;
+    opacity: 0;
+    transition: none;
+  }
 
-    :host(.vaadin-grid-loading) {
-      height: 0;
-      opacity: 0;
-      transition: none;
-    }
+  :host > div {
+    height: 100%;
+    outline: none;
+    position: relative;
+    z-index: 0;
+    -webkit-flex: 1 1 auto;
+    flex: 1 1 auto;
+  }
+  /* Anim */
 
-    :host > div {
-      height: 100%;
-      outline: none;
-      position: relative;
-      z-index: 0;
-      -webkit-flex: 1 1 auto;
-      flex: 1 1 auto;
+  @keyframes vaadin-grid-spin-360 {
+    100% {
+      transform: rotate(360deg);
     }
-    /* Anim */
+  }
 
-    @keyframes vaadin-grid-spin-360 {
-      100% {
-        transform: rotate(360deg);
-      }
+  @-webkit-keyframes vaadin-grid-spin-360 {
+    100% {
+      -webkit-transform: rotate(360deg);
+      transform: rotate(360deg);
     }
+  }
+  /* Table wrapper */
 
-    @-webkit-keyframes vaadin-grid-spin-360 {
-      100% {
-        -webkit-transform: rotate(360deg);
-        transform: rotate(360deg);
-      }
-    }
-    /* Table wrapper */
+  .vaadin-grid-tablewrapper {
+    box-sizing: border-box;
+    overflow: hidden;
+    outline: none;
+    position: absolute;
+    z-index: 5;
+  }
 
-    .vaadin-grid-tablewrapper {
-      box-sizing: border-box;
-      overflow: hidden;
-      outline: none;
-      position: absolute;
-      z-index: 5;
-    }
+  .vaadin-grid-tablewrapper:before {
+    display: none;
+  }
 
-    .vaadin-grid-tablewrapper:before {
-      display: none;
-    }
+  .vaadin-grid-tablewrapper > table {
+    box-sizing: border-box;
+    display: block;
+  }
 
-    .vaadin-grid-tablewrapper > table {
-      box-sizing: border-box;
-      display: block;
-    }
+  .vaadin-grid-loading-data .vaadin-grid-tablewrapper:before {
+    -webkit-animation: vaadin-grid-spin-360 400ms linear infinite;
+    animation: vaadin-grid-spin-360 400ms linear infinite;
+    border: 2px solid #03A9F4;
+    border-radius: 50%;
+    border-right-color: transparent;
+    border-top-color: transparent;
+    content: "";
+    display: block;
+    height: 16px;
+    left: 50%;
+    margin-left: -8px;
+    margin-top: -8px;
+    position: absolute;
+    top: 50%;
+    width: 16px;
+  }
+  /* Scroller styles */
 
-    .vaadin-grid-loading-data .vaadin-grid-tablewrapper:before {
-      -webkit-animation: vaadin-grid-spin-360 400ms linear infinite;
-      animation: vaadin-grid-spin-360 400ms linear infinite;
-      border: 2px solid #03A9F4;
-      border-radius: 50%;
-      border-right-color: transparent;
-      border-top-color: transparent;
-      content: "";
-      display: block;
-      height: 16px;
-      left: 50%;
-      margin-left: -8px;
-      margin-top: -8px;
-      position: absolute;
-      top: 50%;
-      width: 16px;
-    }
-    /* Scroller styles */
+  .vaadin-grid-scroller {
+    box-sizing: border-box;
+    outline: none;
+    position: absolute;
+    z-index: 1;
+  }
 
-    .vaadin-grid-scroller {
-      box-sizing: border-box;
-      outline: none;
-      position: absolute;
-      z-index: 1;
-    }
+  .vaadin-grid-scroller-horizontal {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    overflow-y: hidden;
+    -ms-overflow-y: hidden;
+  }
 
-    .vaadin-grid-scroller-horizontal {
-      bottom: 0;
-      left: 0;
-      right: 0;
-      overflow-y: hidden;
-      -ms-overflow-y: hidden;
-    }
+  .vaadin-grid-scroller-vertical {
+    bottom: 0;
+    right: 0;
+    top: 0;
+    overflow-x: hidden;
+    -ms-overflow-x: hidden;
+  }
 
-    .vaadin-grid-scroller-vertical {
-      bottom: 0;
-      right: 0;
-      top: 0;
-      overflow-x: hidden;
-      -ms-overflow-x: hidden;
-    }
+  .vaadin-grid-horizontal-scrollbar-deco {
+    bottom: 0;
+    box-sizing: border-box;
+    left: 0;
+    position: absolute;
+    right: 0;
+  }
+  /* Grid body */
 
-    .vaadin-grid-horizontal-scrollbar-deco {
-      bottom: 0;
-      box-sizing: border-box;
-      left: 0;
-      position: absolute;
-      right: 0;
-    }
-    /* Grid body */
-
-    .vaadin-grid-body {
-      box-sizing: border-box;
-      display: block;
-      left: 0;
-      position: absolute;
-      top: 0;
-      z-index: 0;
-    }
+  .vaadin-grid-body {
+    box-sizing: border-box;
+    display: block;
+    left: 0;
+    position: absolute;
+    top: 0;
+    z-index: 0;
+  }
 
     :host(:not([selection-mode])) .vaadin-grid-body,
     :host([selection-mode="single"]) .vaadin-grid-body {
@@ -705,6 +733,9 @@ See the [demo](demo/index.html) for use case examples.
        * Object for controlling and accessing the header rows in the grid.
        *
        * See the API documentation for “header” for more details.
+       *
+       * @property {header} footer
+       * @type {header}
        */
       header: {
         type: Object,
@@ -747,6 +778,9 @@ See the [demo](demo/index.html) for use case examples.
        * Object for controlling and accessing the footer rows in the grid.
        *
        * See the API documentation for “footer” for more details.
+       *
+       * @property {footer} footer
+       * @type {footer}
        */
       footer: {
         type: Object,
@@ -828,6 +862,7 @@ See the [demo](demo/index.html) for use case examples.
        *
        * See the API documentation for the “selection” object for more details.
        *
+       * @property {selection} selection
        * @type {selection}
        * @default {}
        */
@@ -884,6 +919,7 @@ See the [demo](demo/index.html) for use case examples.
        *
        * See the API documentation for the “sort-order” object for more details.
        *
+       * @property {Array<sort-order>}
        * @type {Array<sort-order>}
        */
       sortOrder: {

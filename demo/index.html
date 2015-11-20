@@ -1,307 +1,32 @@
 <!doctype html>
 <html>
-
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
-
   <title>vaadin-grid Code Examples</title>
-
-  <script src="../../webcomponentsjs/webcomponents-lite.min.js"></script>
-  <link rel="import" href="../../paper-styles/demo-pages.html">
-  <link rel="import" href="../../paper-button/paper-button.html">
-  <link rel="import" href="../vaadin-grid.html">
-  <link rel="import" href="../../vaadin-icons/vaadin-icons.html">
-  <link rel="import" href="view-source.html">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="../../elements-demo-resources/demo.css">
+  <script src="../../elements-demo-resources/ga.js"></script>
 </head>
-
 <body>
-  <template id="stuff-for-head">
-    <script src="https://cdn.vaadin.com/vaadin-components/latest/webcomponentsjs/webcomponents-lite.min.js"></script>
-    <link rel="import" href="https://cdn.vaadin.com/vaadin-components/latest/vaadin-grid/vaadin-grid.html">
-  </template>
 
-  <section class="vertical center-justified layout">
-    <h3>vaadin-grid features</h3>
-    <div class="vertical-section">
-      <view-source head="#stuff-for-head">
-        <vaadin-grid selection-mode="multi" frozen-columns="1" style="height: 447px;">
-          <table>
-            <colgroup>
-              <col name="index" header-text="#" width="80">
-              <col name="user.picture.thumbnail" header-text hiding-toggle-text="Photo" hidable>
-              <col name="user.username" header-text="Username" hidable hidden sortable>
-              <col name="user.name.first" header-text="First Name" min-width="120" flex hidable sortable>
-              <col name="user.name.last" header-text="Last Name" min-width="120" flex hidable sortable sort-direction="asc">
-              <col name="user.email" header-text="Email" flex="2" hidable sortable>
-              <col name="user.phone" header-text="Phone" hidable>
-              <col name="user.dob" header-text="Date of Birth" hidable sortable>
-              <col name="user.gender" header-text="Gender" hidable sortable>
-              <col name="actions" header-text>
-            </colgroup>
-          </table>
-        </vaadin-grid>
+  <section>
+    <h1>vaadin-grid <span>Code Examples</span></h1>
 
-        <!-- <!-- We use Polymer data binding to render the row details --> -->
-
-        <template id="details">
-          <paper-button raised>Send Email</paper-button>
-          <img src="[[item.user.picture.medium]]">
-          <h3 class="capitalize">
-            <span>[[item.user.name.title]]</span>.
-            <span>[[item.user.name.first]]</span>
-            <span>[[item.user.name.last]]</span>
-          </h3>
-          <b>Address</b><br>
-            <span>[[item.user.location.street]]</span><br>
-            <span>[[item.user.location.zip]]</span>
-            <span>[[item.user.location.city]]</span>
-            <span>[[item.user.location.state]]</span><br>
-        </template>
-
-        <style>
-          .capitalize {
-            text-transform: capitalize;
-          }
-
-          .photo {
-            width: 36px;
-            border-radius: 3px;
-          }
-
-          .details-button {
-            cursor: pointer;
-            opacity: 0.3;
-            width: 20px !important;
-          }
-
-          .details-button:hover,
-          .details-button:focus {
-            opacity: 0.6;
-          }
-
-          .details-button:active {
-            opacity: 1;
-          }
-
-          .row-details {
-            background: #fff;
-            padding: 24px;
-            overflow: hidden;
-          }
-
-          .row-details img {
-            width: 100px;
-            height: 100px;
-            float: left;
-            margin-right: 24px;
-            border-radius: 3px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-          }
-
-          .row-details paper-button {
-            background: #4285f4;
-            color: #fff;
-            float: right;
-            min-width: 150px;
-          }
-        </style>
-
-        <script>
-          var grid = document.querySelector("vaadin-grid");
-          var dataitems = [];
-
-          HTMLImports.whenReady(function() {
-            // Fetch the JSON data from a URL
-            var xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function() {
-              if (xhr.readyState == XMLHttpRequest.DONE) {
-                if (xhr.status == 200) {
-                  // Store the result for later use
-                  dataitems = JSON.parse(xhr.responseText).results;
-
-                  // Option 1: Set the resulting data items to the grid
-                  // (static in-memory data source)
-                  grid.items = dataitems;
-                }
-              }
-            };
-            xhr.open("GET", "users2.json", true);
-            xhr.send();
-
-            // Option 2: Lazy loading data source (emulate server latency)
-            // grid.datasource = function(req) {
-            //   setTimeout(function() {
-            //     req.success(dataitems.slice(req.index, req.index + req.count), dataitems.length);
-            //   }, Math.random() * 600);
-            // };
-
-            // Add a renderer for the index column
-            grid.columns[0].renderer = function(cell) {
-              cell.element.innerHTML = cell.row.index + 1;
-            };
-
-            // Add a renderer for the picture column
-            grid.columns[1].renderer = function(cell) {
-              cell.element.innerHTML = "";
-              var img = document.createElement("img");
-              img.setAttribute("src", cell.data);
-              img.className = "photo";
-              cell.element.appendChild(img);
-            };
-
-            // Add a renderer for the date of birth column
-            grid.columns[7].renderer = function(cell) {
-              var dob = new Date(cell.data);
-              var year = 1900 + dob.getYear();
-              var month = dob.getMonth() < 9 ? "0" + (dob.getMonth() + 1) : dob.getMonth() + 1;
-              var date = dob.getDate() < 10 ? "0" + dob.getDate() : dob.getDate();
-              cell.element.innerHTML = year + "-" + month + "-" + date;
-            };
-
-            // Add a renderer for the gender column, using Vaadin Icons "female"
-            // and "male" icons
-            grid.columns[8].renderer = function(cell) {
-              cell.element.innerHTML = '<iron-icon icon="vaadin-icons:' + cell.data + '"></iron-icon>';
-            };
-
-            // Add an action for showing a details for the row
-            var detailsOpen = [];
-            grid.columns[9].renderer = function(cell) {
-              cell.element.innerHTML = '<iron-icon class="details-button" title="Show/hide details" icon="vaadin-icons:ellipsis-circle-o"></iron-icon>';
-              var button = cell.element.firstChild;
-              var rowIndex = cell.row.index;
-              button.addEventListener("click", function(e) {
-                var open = detailsOpen.indexOf(rowIndex);
-                if (open > -1) {
-                  detailsOpen.splice(open, 1);
-                  grid.setRowDetailsVisible(rowIndex, false);
-                } else {
-                  detailsOpen.push(rowIndex);
-                  grid.setRowDetailsVisible(rowIndex, true);
-                }
-              });
-              cell.element.appendChild(button);
-            };
-
-            // Function which is called to render the details for a particular row
-            grid.rowDetailsGenerator = function(index) {
-              var wrapper = document.createElement("div");
-              wrapper.className = "row-details";
-              var item = grid.getItem(index, function(err, item) {
-                item.index = index;
-                wrapper.appendChild(rowDetails.getElementForItem(item));
-              });
-              return wrapper;
-            };
-
-            // Add a custom CSS class name for the name columns so that we can
-            // capitalize them using CSS
-            grid.cellClassGenerator = function(cell) {
-              if (cell.columnName.indexOf("name") > 0) {
-                return "capitalize";
-              }
-            };
-
-            // Add a footer
-            grid.footer.addRow();
-            var selectionCount = grid.footer.getCell(0, 3);
-            selectionCount.colspan = 6;
-
-            // Listen for selection events and update the footer
-            grid.addEventListener("select", function() {
-              selectionCount.content = grid.selection.size + " / " + dataitems.length + " rows selected";
-            });
-
-            // Handle sort events and sort the dataitems
-            grid.addEventListener('sort-order-changed', function() {
-              var sortOrder = grid.sortOrder[0];
-              var sortProperty = grid.columns[sortOrder.column].name;
-              var sortDirection = sortOrder.direction;
-              dataitems.sort(function(a, b) {
-                var res;
-                var path = sortProperty.split(".");
-                for (var i = 0; i < path.length; i++) {
-                  a = a[path[i]];
-                  b = b[path[i]];
-                }
-                if (!isNaN(a)) {
-                  res = parseInt(a, 10) - parseInt(b, 10);
-                } else {
-                  // Let's pretend everything that's not a number is a string.
-                  res = a.localeCompare(b);
-                }
-
-                if ('desc' === sortDirection) {
-                  res *= -1;
-                }
-                return res;
-              });
-            });
-
-            // Use Polymer data binding for the row details template
-            var RowDetails = Polymer({
-              is: "row-details",
-
-              behaviors: [
-                Polymer.Templatizer
-              ],
-
-              template: document.querySelector("#details"),
-
-              ready: function() {
-                this.templatize(this.template);
-              },
-
-              getElementForItem: function(item) {
-                var instance = this.stamp({item: item});
-                return instance.root;
-              }
-            });
-
-            var rowDetails = new RowDetails();
-          });
-        </script>
-      </view-source>
-    </div>
-    <p>An example vaadin-grid, with many of its features in use, such as:</p>
-    <style>
-      a {
-        color: #00b4f0;
-        text-decoration: none;
-      }
-    </style>
-    <ul>
-      <li><a href="columns.html">Frozen columns</a></li>
-      <li><a href="datasources.html">Lazy loading data source</a></li>
-      <li><a href="columns.html">Column hiding</a></li>
-      <li><a href="selection.html">Row selection</a></li>
-      <li><a href="details.html">Row details</a></li>
-      <li><a href="formatting.html">Custom cell renderers</a></li>
-      <li><a href="sizing.html">Row and cell CSS class generators</a></li>
-      <li><a href="headers.html">Customized headers and footers</a></li>
-      <li><a href="sort.html">Sorting</a></li>
-    </ul>
-    <p>Click the links above for more detailed code examples of each feature.</p>
-
-    <h3>Integration examples</h3>
-    <ul>
-      <li><a href="polymer.html">Polymer</a></li>
-      <li><a href="angular2.html">Angular 2</a></li>
-      <li><a href="react.html">React</a></li>
+    <ul class="toc">
+      <li><a href="datasources.html">Data Sources</a></li>
+      <li><a href="columns.html">Columns</a></li>
+      <li><a href="sizing.html">Sizing and Styling</a></li>
+      <li><a href="headers.html">Headers and Footers</a></li>
+      <li><a href="formatting.html">Formatting Data</a></li>
+      <li><a href="sort.html">Sorting Data</a></li>
+      <li><a href="selection.html">Selection</a></li>
+      <li><a href="scrolling.html">Scrolling</a></li>
+      <li><a href="details.html">Row Details</a></li>
+      <li><a href="polymer.html">Polymer Integration</a></li>
+      <li><a href="angular2.html">Angular 2 Integration</a></li>
+      <li><a href="react.html">React Integration</a></li>
     </ul>
   </section>
 
-  <style>
-  view-source {
-    color: #fff;
-  }
-  view-source > * {
-    color: #000;
-  }
-  </style>
-
 </body>
-
 </html>

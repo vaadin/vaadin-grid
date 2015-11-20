@@ -45,9 +45,16 @@ layout: page
             &lt;table&gt;
               &lt;colgroup&gt;
                 &lt;col width="80"&gt;
-                &lt;col header-text="First name"&gt;
-                &lt;col header-text="Last name"&gt;
+                &lt;col&gt;
+                &lt;col&gt;
               &lt;/colgroup&gt;
+              &lt;thead&gt;
+                &lt;tr&gt;
+                  &lt;th&gt;Name&lt;/th&gt;
+                  &lt;th&gt;First name&lt;/th&gt;
+                  &lt;th&gt;Last name&lt;/th&gt;
+                &lt;/tr&gt;
+              &lt;/thead&gt;
               &lt;tbody&gt;
                 &lt;tr *ng-for="var user of users"&gt;
                   &lt;td&gt;&lt;img src="{{user.thumbnail}}" style="width: 30px"&gt;&lt;/td&gt;
@@ -76,7 +83,7 @@ layout: page
   </section>
 
   <section>
-    <h3>Angular2 (alpha45) Integration (Function data source)</h3>
+    <h3>Angular2 (alpha44) Integration (Function data source)</h3>
     <p>In case the data is loaded lazily or it changes dynamically a
       <a href="datasources.html#toc_1_function_data_source">function datasource</a> is a better option.
     Click a row to see an enlarged user image.</p>
@@ -91,11 +98,11 @@ layout: page
         <vaadin-grid #grid (selected-items-changed)="onSelect()">
           <table>
             <colgroup>
-              <col header-text="" name="user.picture.thumbnail">
-              <col header-text="Gender" name="user.gender">
-              <col header-text="First name" name="user.name.first">
-              <col header-text="Last name" name="user.name.last">
-              <col header-text="Email" name="user.email">
+              <col name="user.picture.thumbnail">
+              <col name="user.gender">
+              <col name="user.name.first">
+              <col name="user.name.last">
+              <col name="user.email">
             </colgroup>
           </table>
         </vaadin-grid>

@@ -1,8 +1,10 @@
+<link rel='import' href='vaadin-grid.html'>
+
 <script>
   Polymer.Vaadin = Polymer.Vaadin || {};
 
   /**
-   * Object referencing a cell in the grid body and it’s data.
+   * Object referencing a cell in the grid body and its data.
    *
    * A `cell` object is passed as a parameter for both column renderers and for
    * the cell class generator.
@@ -74,6 +76,8 @@
        * ```html
        * <!-- If you omit the value of the attribute,
        *      it is considered as "1" -->
+       * <col>
+       * <col flex>
        * <col flex="2">
        * ```
        *
@@ -100,6 +104,7 @@
        * <!-- The declarative API supports string values only -->
        * <col header-text="First Name">
        * ```
+       * @type {(Object|string)}
        */
       headerContent: Object,
 
@@ -233,7 +238,7 @@
       /**
        * Enables sorting the column data by the end user.
        *
-       * To programmatically or declarative sort the columns, use the
+       * To programmatically or declaratively sort the columns, use the
        * `grid.sortOrder`property, or the `sort-direction` attribute. Columns
        * can be sorted even if this property is `false`, it only controls the
        * end user sorting.
@@ -332,7 +337,7 @@
      *
      * @param {number} rowIndex - Index of the row.
      * @param {number|string} column - Index or name of the column.
-     * @return {footer-cell} An object reference to a particular footer cell.
+     * @return {header-and-footer-cell} An object reference to a particular footer cell.
      */
     getCell: function(rowIndex, column) {},
 
@@ -414,7 +419,7 @@
      *
      * @param {number} rowIndex - Index of the row.
      * @param {number|string} column - Index or name of the column.
-     * @return {header-cell} An object reference to a particular header cell.
+     * @return {header-and-footer-cell} An object reference to a particular header cell.
      */
     getCell: function(rowIndex, column) {},
 
@@ -437,7 +442,7 @@
    * headerCell.className = "filter";
    * ```
    *
-   * @polymerBehavior header and footer cell
+   * @polymerBehavior header-and-footer-cell
    */
   Polymer.Vaadin.HeaderAndFooterCell = {
     properties: {
@@ -465,7 +470,7 @@
   /**
    * The grid passes a `params` object as the first parameter to the `items`
    * function. It contains information about the exact items/rows the grid wants
-   * to display in it’s viewport as well as the sort order of the grid (see the
+   * to display in its viewport as well as the sort order of the grid (see the
    * documentation for `SortOrder`).
    *
    * The second parameter for the `items` function is a callback function for
@@ -482,7 +487,7 @@
    * }
    * ```
    *
-   * @polymerBehavior items function
+   * @polymerBehavior items-function
    */
   Polymer.Vaadin.ItemsFunction = {
     properties: {
@@ -513,11 +518,11 @@
   /**
    * Object referencing to a row and it's data.
    *
-   * A `row` object is passed as a parameter for the row class generator
+   * A `row` object is passed as a parameter to the row class generator
    * function.
    *
    * A `row` object is also referenced from a `cell` object, passed as a
-   * parameter for column renderer functions and the cell class generator
+   * parameter to column renderer functions and the cell class generator
    * function.
    *
    * @polymerBehavior row
