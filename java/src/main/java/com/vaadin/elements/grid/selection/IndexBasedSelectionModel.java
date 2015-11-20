@@ -4,6 +4,8 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.js.JsExport;
 import com.google.gwt.core.client.js.JsNamespace;
 import com.google.gwt.core.client.js.JsType;
+import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.GwtEvent;
 import com.vaadin.client.widget.grid.selection.SelectionModel;
 import com.vaadin.elements.common.js.JS;
 import com.vaadin.elements.common.js.JSArray;
@@ -15,6 +17,34 @@ import com.vaadin.elements.common.js.JSArray;
 @JsExport
 @JsType
 public interface IndexBasedSelectionModel extends SelectionModel<Object> {
+
+    public interface SelectionModeChangedHandler extends EventHandler {
+        public void onSelectionModeChanged(SelectionModeChangedEvent event);
+    }
+
+    public static class SelectionModeChangedEvent extends
+            GwtEvent<SelectionModeChangedHandler> {
+
+        public static final String NAME = "selection-mode-changed";
+
+        public static final Type<SelectionModeChangedHandler> eventType = new Type<SelectionModeChangedHandler>();
+
+        public final IndexBasedSelectionMode oldSelectionModel, newSelectionModel;
+
+        public SelectionModeChangedEvent(IndexBasedSelectionMode oldMode,
+                IndexBasedSelectionMode newMode) {
+            oldSelectionModel = oldMode;
+            newSelectionModel = newMode;
+        }
+
+        public com.google.gwt.event.shared.GwtEvent.Type<SelectionModeChangedHandler> getAssociatedType() {
+            return eventType;
+        }
+
+        protected void dispatch(SelectionModeChangedHandler handler) {
+            handler.onSelectionModeChanged(this);
+        }
+    }
 
     /**
      * Deselects an index.

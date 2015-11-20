@@ -15,6 +15,7 @@ import com.vaadin.elements.common.js.JS;
 import com.vaadin.elements.common.js.JSArray;
 import com.vaadin.elements.common.js.JSValidate;
 
+import static com.vaadin.elements.grid.selection.IndexBasedSelectionMode.*;
 /**
  * An {@link IndexBasedSelectionModel} for multiple selection.
  */
@@ -101,13 +102,6 @@ public class IndexBasedSelectionModelMulti extends SelectionModelMulti<Object>
                 .getRowIndexByRow(grid, row)) == -1
                 : indexes.indexOf((double) SelectionUtil.getRowIndexByRow(grid,
                         row)) != -1;
-    }
-
-    @Override
-    public void reset() {
-        invertedSelection = false;
-        indexes.setLength(0);
-        grid.fireEvent(new SelectionEvent<Object>(grid, null, null, true));
     }
 
     @Override
@@ -257,23 +251,36 @@ public class IndexBasedSelectionModelMulti extends SelectionModelMulti<Object>
 
     @Override
     public void selectAll() {
+        boolean modeChanged = !invertedSelection;
         indexes.setLength(0);
         invertedSelection = true;
         grid.fireEvent(new SelectionEvent<Object>(grid, null, null, true));
+        if (modeChanged) {
+            grid.fireEvent(new SelectionModeChangedEvent(MULTI, ALL));
+        }
+    }
+
+    @Override
+    public void reset() {
+        boolean modeChanged = invertedSelection;
+        invertedSelection = false;
+        indexes.setLength(0);
+        grid.fireEvent(new SelectionEvent<Object>(grid, null, null, true));
+        if (modeChanged) {
+            grid.fireEvent(new SelectionModeChangedEvent(ALL, MULTI));
+        }
     }
 
     @Override
     public boolean deselectAll() {
-        indexes.setLength(0);
-        invertedSelection = false;
+        reset();
         grid.fireEvent(new SelectAllEvent<Object>(this));
         return true;
     }
 
     @Override
     public IndexBasedSelectionMode getMode() {
-        return invertedSelection ? IndexBasedSelectionMode.ALL
-                : IndexBasedSelectionMode.MULTI;
+        return invertedSelection ? ALL : MULTI;
     }
 
     @Override
