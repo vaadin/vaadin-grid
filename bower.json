@@ -30,7 +30,7 @@
     "web-component-tester": "~3.3.21",
     "iron-test-helpers": "polymerelements/iron-test-helpers#~1.0.6",
     "test-fixture": "polymerelements/test-fixture#~1.0.1",
-    "iron-component-page": "polymerelements/iron-component-page#~1.1.0",
-    "elements-demo-resources": "vaadin/elements-demo-resources#master"
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "vaadin-icons": "vaadin/vaadin-icons"
   }
 }
