@@ -568,6 +568,7 @@
           it('selectAll should work right', function() {
             grid.selection.selectAll();
             expect(grid.selection.mode).to.eql("all");
+            expect(getSelectionModeAttr()).to.equal('all');
           });
 
         });
@@ -651,7 +652,6 @@
             grid.selection.selectAll();
             expect(grid.selection.deselected()).to.be.empty;
           });
-
         });
 
         describe('in mode: disabled', function() {

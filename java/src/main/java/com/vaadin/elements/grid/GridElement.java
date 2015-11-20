@@ -2,6 +2,8 @@ package com.vaadin.elements.grid;
 
 import static com.google.gwt.query.client.GQuery.$;
 import static com.google.gwt.query.client.GQuery.browser;
+import static com.vaadin.elements.grid.selection.IndexBasedSelectionMode.ALL;
+import static com.vaadin.elements.grid.selection.IndexBasedSelectionMode.MULTI;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,6 +58,8 @@ import com.vaadin.elements.grid.data.GridDomTableDataSource;
 import com.vaadin.elements.grid.data.GridJsFuncDataSource;
 import com.vaadin.elements.grid.selection.IndexBasedSelectionMode;
 import com.vaadin.elements.grid.selection.IndexBasedSelectionModel;
+import com.vaadin.elements.grid.selection.IndexBasedSelectionModel.SelectionModeChangedEvent;
+import com.vaadin.elements.grid.selection.IndexBasedSelectionModel.SelectionModeChangedHandler;
 import com.vaadin.elements.grid.selection.IndexBasedSelectionModelMulti;
 import com.vaadin.elements.grid.selection.IndexBasedSelectionModelSingle;
 import com.vaadin.elements.grid.table.GridColumn;
@@ -71,7 +75,7 @@ import com.vaadin.shared.ui.grid.ScrollDestination;
 @JsExport
 @JsType
 public class GridElement implements SelectionHandler<Object>,
-        SortHandler<Object>, SelectAllHandler<Object> {
+        SortHandler<Object>, SelectAllHandler<Object>, SelectionModeChangedHandler {
 
     private final ViolatedGrid grid;
     private int visibleRows = -1;
@@ -92,14 +96,13 @@ public class GridElement implements SelectionHandler<Object>,
     @JsNoExport
     public static final int MAX_AUTO_ROWS = 10;
 
-    private static final String SELECTION_MODE_CHANGED_EVENT = "selection-mode-changed";
-
     public GridElement() {
         grid = new ViolatedGrid();
         grid.setSelectionModel(new IndexBasedSelectionModelSingle());
         grid.addSelectionHandler(this);
         grid.addSortHandler(this);
         grid.addSelectAllHandler(this);
+        grid.addHandler(this, SelectionModeChangedEvent.eventType);
         grid.getElement().getStyle().setHeight(0, Unit.PX);
 
         setColumns(JS.createArray());
@@ -362,13 +365,14 @@ public class GridElement implements SelectionHandler<Object>,
     }
 
     private void setSelectionMode(String selectionMode, boolean force) {
-        if (force || !getSelectionMode().equalsIgnoreCase(selectionMode)) {
+        boolean changed = !getSelectionMode().equalsIgnoreCase(selectionMode);
+        if (force || changed) {
             updating = true;
             IndexBasedSelectionMode mode = JSEnums.Selection.val(selectionMode);
 
-            boolean newModeIsAll = mode == IndexBasedSelectionMode.ALL;
-            boolean newModeIsMulti = mode == IndexBasedSelectionMode.MULTI;
-            boolean currentModelIsMulti = getSelectionModel() instanceof IndexBasedSelectionModelMulti;
+            boolean newModeIsAll = mode == ALL;
+            boolean newModeIsMulti = mode == MULTI;
+            boolean currentModelIsMulti = getSelectionModel().getMode() == MULTI;
 
             if (!(currentModelIsMulti && (newModeIsAll || newModeIsMulti))) {
                 grid.setSelectionModel(mode.createModel());
@@ -379,7 +383,9 @@ public class GridElement implements SelectionHandler<Object>,
             } else {
                 getSelectionModel().reset();
             }
-            triggerEvent(SELECTION_MODE_CHANGED_EVENT);
+            if (changed) {
+                triggerEvent(SelectionModeChangedEvent.NAME);
+            }
             updateSelectAllCheckBox();
             updating = false;
         }
@@ -602,17 +608,22 @@ public class GridElement implements SelectionHandler<Object>,
             updating = true;
             if (event.getSelectionModel() != getSelectionModel()) {
                 grid.setSelectionModel(event.getSelectionModel());
-                triggerEvent(SELECTION_MODE_CHANGED_EVENT);
+                triggerEvent(SelectionModeChangedEvent.NAME);
                 getSelectionModel().reset();
             } else {
                 boolean all = getSelectAllCheckBox().getValue();
-                setSelectionMode(all ? IndexBasedSelectionMode.ALL.name()
-                        : IndexBasedSelectionMode.MULTI.name(), true);
+                setSelectionMode((all ? ALL : MULTI).name(), true);
             }
             updateSelectAllCheckBox();
             updating = false;
             onSelect(null);
         }
+    }
+
+    @JsNoExport
+    @Override
+    public void onSelectionModeChanged(SelectionModeChangedEvent event) {
+        triggerEvent(SelectionModeChangedEvent.NAME);
     }
 
     private void updateSelectAllCheckBox() {
