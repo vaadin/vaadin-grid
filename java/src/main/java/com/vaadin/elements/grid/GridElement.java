@@ -64,6 +64,8 @@ import com.vaadin.elements.grid.table.GridStaticSection;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.grid.ScrollDestination;
 
+import static com.vaadin.elements.grid.selection.IndexBasedSelectionMode.*;
+
 /**
  * Class to export Vaadin Grid to JS.
  */
@@ -357,20 +359,42 @@ public class GridElement implements SelectionHandler<Object>,
         return result;
     }
 
+    @JsNoExport
+    @Override
+    public void onSelectAll(SelectAllEvent<Object> event) {
+        setSelectionMode(getSelectAllCheckBox().getValue() ? "all" : "multi", true);
+    }
+
+    public void clear() {
+        if (getSelectionModel().getMode() == ALL) {
+            setSelectionMode("multi", true);
+        } else {
+            getSelectionModel().clear();
+        }
+    }
+
+    public void selectAll() {
+        if (getSelectionModel().getMode() == MULTI) {
+            setSelectionMode("all", true);
+        } else if (getSelectionModel().getMode() == ALL) {
+            getSelectionModel().selectAll();
+        }
+    }
+
     public void setSelectionMode(String selectionMode) {
         setSelectionMode(selectionMode, false);
     }
 
     private void setSelectionMode(String selectionMode, boolean force) {
-        if (force || !getSelectionMode().equalsIgnoreCase(selectionMode)) {
+        force |= !getSelectionMode().equalsIgnoreCase(selectionMode);
+        if (force) {
             updating = true;
             IndexBasedSelectionMode mode = JSEnums.Selection.val(selectionMode);
-
-            boolean newModeIsAll = mode == IndexBasedSelectionMode.ALL;
-            boolean newModeIsMulti = mode == IndexBasedSelectionMode.MULTI;
-            boolean currentModelIsMulti = getSelectionModel() instanceof IndexBasedSelectionModelMulti;
-
-            if (!(currentModelIsMulti && (newModeIsAll || newModeIsMulti))) {
+            IndexBasedSelectionMode current = getSelectionModel().getMode();
+            boolean newModeIsAll = mode == ALL;
+            boolean newModeIsMulti = mode == MULTI || mode == ALL;
+            boolean currentModelIsMulti = current == MULTI || current == ALL;
+            if (!currentModelIsMulti || !newModeIsMulti) {
                 grid.setSelectionModel(mode.createModel());
                 updateWidth();
             }
@@ -379,8 +403,10 @@ public class GridElement implements SelectionHandler<Object>,
             } else {
                 getSelectionModel().reset();
             }
+            if (newModeIsMulti) {
+                updateSelectAllCheckBox();
+            }
             triggerEvent(SELECTION_MODE_CHANGED_EVENT);
-            updateSelectAllCheckBox();
             updating = false;
         }
     }
@@ -594,26 +620,6 @@ public class GridElement implements SelectionHandler<Object>,
           _this.onReady(resolve);
         }).then(f);
     }-*/;
-
-    @JsNoExport
-    @Override
-    public void onSelectAll(SelectAllEvent<Object> event) {
-        if (!updating) {
-            updating = true;
-            if (event.getSelectionModel() != getSelectionModel()) {
-                grid.setSelectionModel(event.getSelectionModel());
-                triggerEvent(SELECTION_MODE_CHANGED_EVENT);
-                getSelectionModel().reset();
-            } else {
-                boolean all = getSelectAllCheckBox().getValue();
-                setSelectionMode(all ? IndexBasedSelectionMode.ALL.name()
-                        : IndexBasedSelectionMode.MULTI.name(), true);
-            }
-            updateSelectAllCheckBox();
-            updating = false;
-            onSelect(null);
-        }
-    }
 
     private void updateSelectAllCheckBox() {
         CheckBox selectAllCheckBox = getSelectAllCheckBox();

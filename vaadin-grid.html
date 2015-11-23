@@ -861,22 +861,18 @@ See the [demo](demo/index.html) for use case examples.
           return {
             select: function(index) {
               _this._grid.getSelectionModel().select(index);
-
               return _this;
             },
             deselect: function(index) {
               _this._grid.getSelectionModel().deselect(index);
-
               return _this;
             },
             clear: function() {
-              _this._grid.getSelectionModel().clear();
-
+              _this._grid.clear();
               return _this;
             },
             selectAll: function() {
-              _this._grid.getSelectionModel().selectAll();
-
+              _this._grid.selectAll();
               return _this;
             },
             selected: function(mapper, from, to) {
@@ -893,7 +889,6 @@ See the [demo](demo/index.html) for use case examples.
             },
             set mode(mode) {
               _this._grid.setSelectionMode(mode);
-              _this.serializeValueToAttribute(_this.selection.mode, "selection-mode");
             }
           };
         }
@@ -955,7 +950,7 @@ See the [demo](demo/index.html) for use case examples.
        *
        * @event selection-mode-changed
        */
-      'selectionmodechange': '_onSelectionModeChange'
+      'selection-mode-changed': '_onSelectionModeChange'
     },
 
     _itemsChanged: function(items) {

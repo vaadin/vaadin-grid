@@ -314,6 +314,7 @@
             var inputs = qaLocal('.vaadin-grid-header input');
             triggerMouseEvent(inputs[0], "click");
             expect(grid.selection.selected()).to.eql([0, 1]);
+            expect(getSelectionModeAttr()).to.eql('all');
           });
 
           it('should deselect all rows', function() {
@@ -322,6 +323,7 @@
             inputs = qaLocal('.vaadin-grid-header input');
             triggerMouseEvent(inputs[0], "click");
             expect(grid.selection.selected()).to.be.empty;
+            expect(getSelectionModeAttr()).to.eql('multi');
           });
         });
 
@@ -496,7 +498,7 @@
 
           it('selectAll should work right', function() {
             grid.selection.selectAll();
-            expect(grid.selection.selected()).to.be.empty;
+            expect(grid.selection.selected()).to.eql([0]);
           });
         });
 
@@ -563,11 +565,13 @@
           it('clear should work right', function() {
             grid.selection.clear();
             expect(grid.selection.selected()).to.be.empty;
+            expect(getSelectionModeAttr()).to.equal('multi');
           });
 
           it('selectAll should work right', function() {
             grid.selection.selectAll();
             expect(grid.selection.mode).to.eql("all");
+            expect(getSelectionModeAttr()).to.equal('all');
           });
 
         });
@@ -645,13 +649,14 @@
           it('clear should work right', function() {
             grid.selection.clear();
             expect(grid.selection.mode).to.eql("multi");
+            expect(getSelectionModeAttr()).to.equal('multi');
           });
 
           it('selectAll should work right', function() {
             grid.selection.selectAll();
             expect(grid.selection.deselected()).to.be.empty;
+            expect(getSelectionModeAttr()).to.equal('all');
           });
-
         });
 
         describe('in mode: disabled', function() {

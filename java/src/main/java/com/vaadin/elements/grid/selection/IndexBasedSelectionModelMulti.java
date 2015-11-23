@@ -104,13 +104,6 @@ public class IndexBasedSelectionModelMulti extends SelectionModelMulti<Object>
     }
 
     @Override
-    public void reset() {
-        invertedSelection = false;
-        indexes.setLength(0);
-        grid.fireEvent(new SelectionEvent<Object>(grid, null, null, true));
-    }
-
-    @Override
     public JSArray<Object> selected(JavaScriptObject mapper, Integer from,
             Integer to) {
         JSArray<Object> result = JS.createArray();
@@ -256,6 +249,13 @@ public class IndexBasedSelectionModelMulti extends SelectionModelMulti<Object>
     }
 
     @Override
+    public void reset() {
+        invertedSelection = false;
+        indexes.setLength(0);
+        grid.fireEvent(new SelectionEvent<Object>(grid, null, null, true));
+    }
+
+    @Override
     public void selectAll() {
         indexes.setLength(0);
         invertedSelection = true;
@@ -264,8 +264,7 @@ public class IndexBasedSelectionModelMulti extends SelectionModelMulti<Object>
 
     @Override
     public boolean deselectAll() {
-        indexes.setLength(0);
-        invertedSelection = false;
+        clear();
         grid.fireEvent(new SelectAllEvent<Object>(this));
         return true;
     }
