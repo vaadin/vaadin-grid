@@ -2,11 +2,11 @@ var grid, wrapper;
 
 var isSDM = /:8888$/.test(window.location.host);
 
-describe.feature = function(description, suite) {
+describe.feature = function(description, suite, htmlGrid) {
   describe(description, function() {
     before(function(done) {
       HTMLImports.whenReady(function() {
-        initializeGrid(done);
+        initializeGrid(done, htmlGrid);
       });
     });
 
@@ -69,9 +69,9 @@ function triggerMouseEvent(node, eventType, properties, shiftKey) {
   node.dispatchEvent(clickEvent);
 }
 
-function initializeGrid(cb) {
+function initializeGrid(cb, htmlGrid) {
   wrapper = document.getElementById("gridwrapper");
-  wrapper.innerHTML = "<vaadin-grid>" +
+  wrapper.innerHTML = htmlGrid || "<vaadin-grid>" +
     "                     <table>" +
     "                       <col>" +
     "                       <col>" +
