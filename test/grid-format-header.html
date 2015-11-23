@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+  <meta charset="UTF-8">
+  <title></title>
+  <script src="../../webcomponentsjs/webcomponents-lite.min.js"></script>
+  <script src="../../web-component-tester/browser.js"></script>
+  <script src="common.js"></script>
+  <link rel="import" href="../vaadin-grid.html">
+</head>
+
+<body>
+  <div id="gridwrapper"></div>
+
+  <script>
+    var gridHtml = "<vaadin-grid>" +
+    "                <table>" +
+    "                 <colgroup>" +
+    "                  <col name='index'>" +
+    "                  <col name='user.name.firstName'>" +
+    "                  <col name='user.name.surname'>" +
+    "                  <col name='user.email'>" +
+    "                  <col name='user.job_info'>" +
+    "                 </colgroup>" +
+    "                </table>" +
+    "               </vaadin-grid>";
+  
+    describe.feature('format header', function() {
+      beforeEach(function() {
+        var items = [];
+        for (i = 0; i < 5; i++) {
+           items.push({
+             index: i,
+             user: {
+               name: {
+                 firstName: 'FirstName-' + i,
+                 surname: 'LastName-' + i
+               },
+               email: 'foo-' + i + '@bar.com',
+               job_info: 'developer-' + i
+             }
+           });
+        }
+        grid.items = items;
+        return grid;
+      });
+
+      describe('header content', function() {
+        it('should be human readable when text-header is not set but column name', function() {
+          var headers = Polymer.dom(grid.root).querySelectorAll('thead > tr > th > span');
+          expect(headers[0].textContent).to.be.equal('Index');
+          expect(headers[1].textContent).to.be.equal('First Name');
+          expect(headers[2].textContent).to.be.equal('Surname');
+          expect(headers[3].textContent).to.be.equal('Email');
+          expect(headers[4].textContent).to.be.equal('Job Info');
+        });
+      });
+    }, gridHtml);
+  </script>
+</body>
+
+</html>
