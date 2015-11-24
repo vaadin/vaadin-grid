@@ -255,7 +255,7 @@ public class IndexBasedSelectionModelMulti extends SelectionModelMulti<Object>
         indexes.setLength(0);
         grid.fireEvent(new SelectionEvent<Object>(grid, null, null, true));
         if (modeChanged) {
-            grid.fireEvent(new SelectionModeChangedEvent(MULTI, ALL));
+            grid.fireEvent(new SelectionModeChangedEvent());
         }
     }
 
@@ -266,7 +266,7 @@ public class IndexBasedSelectionModelMulti extends SelectionModelMulti<Object>
         indexes.setLength(0);
         grid.fireEvent(new SelectionEvent<Object>(grid, null, null, true));
         if (modeChanged) {
-            grid.fireEvent(new SelectionModeChangedEvent(ALL, MULTI));
+            grid.fireEvent(new SelectionModeChangedEvent());
         }
     }
 

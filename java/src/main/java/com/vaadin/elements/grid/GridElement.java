@@ -605,7 +605,7 @@ public class GridElement implements SelectionHandler<Object>,
     @JsNoExport
     @Override
     public void onSelectAll(SelectAllEvent<Object> event) {
-        setSelectionMode(getSelectAllCheckBox().getValue() ? "all" : "multi", true);
+        setSelectionMode(getSelectAllCheckBox().getValue() ? "all" : "multi", false);
     }
 
     @JsNoExport
