@@ -294,23 +294,35 @@
           });
 
           it('should select all rows and update attributes', function() {
-            var spy = sinon.spy(grid, '_onSelectionModeChange');
             var inputs = qaLocal('.vaadin-grid-header input');
             triggerMouseEvent(inputs[0], "click");
             expect(grid.selection.selected()).to.eql([0, 1]);
             expect(getSelectionModeAttr()).to.eql('all');
-            expect(spy.callCount).to.eql(1);
-            spy.restore();
           });
 
           it('should deselect all rows', function() {
             var inputs = qaLocal('.vaadin-grid-header input');
             triggerMouseEvent(inputs[0], "click");
-            var spy = sinon.spy(grid, '_onSelectionModeChange');
             inputs = qaLocal('.vaadin-grid-header input');
             triggerMouseEvent(inputs[0], "click");
             expect(grid.selection.selected()).to.be.empty;
             expect(getSelectionModeAttr()).to.eql('multi');
+          });
+
+          it('should fire only one selection-mode-change when selecting all using checkbox', function() {
+            var inputs = qaLocal('.vaadin-grid-header input');
+            var spy = sinon.spy(grid, '_onSelectionModeChange');
+            triggerMouseEvent(inputs[0], "click");
+            expect(spy.callCount).to.eql(1);
+            spy.restore();
+          });
+
+          it('should fire only one selection-mode-change when clearing all selection using checkbox', function() {
+            var inputs = qaLocal('.vaadin-grid-header input');
+            triggerMouseEvent(inputs[0], "click");
+            var spy = sinon.spy(grid, '_onSelectionModeChange');
+            inputs = qaLocal('.vaadin-grid-header input');
+            triggerMouseEvent(inputs[0], "click");
             expect(spy.callCount).to.eql(1);
             spy.restore();
           });
