@@ -361,7 +361,8 @@ public class GridElement implements SelectionHandler<Object>,
         setSelectionMode(selectionMode, false);
     }
 
-    private void setSelectionMode(String selectionMode, boolean force) {
+    @JsNoExport
+    public void setSelectionMode(String selectionMode, boolean force) {
         if (force || !getSelectionMode().equalsIgnoreCase(selectionMode)) {
             updating = true;
             IndexBasedSelectionMode mode = JSEnums.Selection.val(selectionMode);
@@ -371,14 +372,15 @@ public class GridElement implements SelectionHandler<Object>,
             boolean currentModelIsMulti = getSelectionModel() instanceof IndexBasedSelectionModelMulti;
 
             if (!(currentModelIsMulti && (newModeIsAll || newModeIsMulti))) {
-                grid.setSelectionModel(mode.createModel());
+                grid.setSelectionModel(mode.createModel(this));
                 updateWidth();
             }
-            if (newModeIsAll) {
-                getSelectionModel().selectAll();
-            } else {
+
+            if(currentModelIsMulti && (newModeIsAll || newModeIsMulti)) {
+                ((IndexBasedSelectionModelMulti)getSelectionModel()).setMode(mode);
                 getSelectionModel().reset();
             }
+
             triggerEvent(SELECTION_MODE_CHANGED_EVENT);
             updateSelectAllCheckBox();
             updating = false;
@@ -600,15 +602,11 @@ public class GridElement implements SelectionHandler<Object>,
     public void onSelectAll(SelectAllEvent<Object> event) {
         if (!updating) {
             updating = true;
-            if (event.getSelectionModel() != getSelectionModel()) {
-                grid.setSelectionModel(event.getSelectionModel());
-                triggerEvent(SELECTION_MODE_CHANGED_EVENT);
-                getSelectionModel().reset();
-            } else {
-                boolean all = getSelectAllCheckBox().getValue();
-                setSelectionMode(all ? IndexBasedSelectionMode.ALL.name()
-                        : IndexBasedSelectionMode.MULTI.name(), true);
-            }
+
+            boolean all = getSelectAllCheckBox().getValue();
+            setSelectionMode(all ? IndexBasedSelectionMode.ALL.name()
+                : IndexBasedSelectionMode.MULTI.name(), true);
+
             updateSelectAllCheckBox();
             updating = false;
             onSelect(null);

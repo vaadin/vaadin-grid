@@ -14,6 +14,7 @@ import com.vaadin.client.widgets.Grid;
 import com.vaadin.elements.common.js.JS;
 import com.vaadin.elements.common.js.JSArray;
 import com.vaadin.elements.common.js.JSValidate;
+import com.vaadin.elements.grid.GridElement;
 
 /**
  * An {@link IndexBasedSelectionModel} for multiple selection.
@@ -25,6 +26,7 @@ public class IndexBasedSelectionModelMulti extends SelectionModelMulti<Object>
     private Grid<Object> grid;
 
     private final JSArray<Double> indexes = JS.createArray();
+    private final GridElement gridElement;
     private boolean invertedSelection = false;
     private boolean dataSizeUpdated = false;
     private int lastSelected = -1;
@@ -81,7 +83,8 @@ public class IndexBasedSelectionModelMulti extends SelectionModelMulti<Object>
         return size() > 0 ? size() == grid.getDataSource().size() : false;
     }
 
-    public IndexBasedSelectionModelMulti(boolean invertedSelection) {
+    public IndexBasedSelectionModelMulti(GridElement gridElement, boolean invertedSelection) {
+        this.gridElement = gridElement;
         this.invertedSelection = invertedSelection;
     }
 
@@ -105,8 +108,8 @@ public class IndexBasedSelectionModelMulti extends SelectionModelMulti<Object>
 
     @Override
     public void reset() {
-        invertedSelection = false;
         indexes.setLength(0);
+
         grid.fireEvent(new SelectionEvent<Object>(grid, null, null, true));
     }
 
@@ -252,21 +255,22 @@ public class IndexBasedSelectionModelMulti extends SelectionModelMulti<Object>
 
     @Override
     public void clear() {
-        reset();
+        deselectAll();
     }
 
     @Override
     public void selectAll() {
-        indexes.setLength(0);
-        invertedSelection = true;
-        grid.fireEvent(new SelectionEvent<Object>(grid, null, null, true));
+        gridElement.setSelectionMode(IndexBasedSelectionMode.ALL.name());
+
+        reset();
     }
 
     @Override
     public boolean deselectAll() {
-        indexes.setLength(0);
-        invertedSelection = false;
-        grid.fireEvent(new SelectAllEvent<Object>(this));
+        gridElement.setSelectionMode(IndexBasedSelectionMode.MULTI.name());
+
+        reset();
+
         return true;
     }
 
@@ -274,6 +278,10 @@ public class IndexBasedSelectionModelMulti extends SelectionModelMulti<Object>
     public IndexBasedSelectionMode getMode() {
         return invertedSelection ? IndexBasedSelectionMode.ALL
                 : IndexBasedSelectionMode.MULTI;
+    }
+
+    public void setMode(IndexBasedSelectionMode mode) {
+        this.invertedSelection = mode == IndexBasedSelectionMode.ALL;
     }
 
     @Override

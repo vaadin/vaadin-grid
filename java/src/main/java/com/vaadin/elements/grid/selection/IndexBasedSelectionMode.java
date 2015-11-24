@@ -1,5 +1,7 @@
 package com.vaadin.elements.grid.selection;
 
+import com.vaadin.elements.grid.GridElement;
+
 /**
  * Enumeration for easy setting of selection mode.
  */
@@ -8,7 +10,7 @@ public enum IndexBasedSelectionMode {
     SINGLE {
 
         @Override
-        public IndexBasedSelectionModel createModel() {
+        public IndexBasedSelectionModel createModel(GridElement gridElement) {
             return new IndexBasedSelectionModelSingle();
         }
     },
@@ -16,26 +18,26 @@ public enum IndexBasedSelectionMode {
     MULTI {
 
         @Override
-        public IndexBasedSelectionModel createModel() {
-            return new IndexBasedSelectionModelMulti(false);
+        public IndexBasedSelectionModel createModel(GridElement gridElement) {
+            return new IndexBasedSelectionModelMulti(gridElement, false);
         }
     },
 
     ALL {
 
         @Override
-        public IndexBasedSelectionModel createModel() {
-            return new IndexBasedSelectionModelMulti(true);
+        public IndexBasedSelectionModel createModel(GridElement gridElement) {
+            return new IndexBasedSelectionModelMulti(gridElement, true);
         }
     },
 
     DISABLED {
 
         @Override
-        public IndexBasedSelectionModel createModel() {
+        public IndexBasedSelectionModel createModel(GridElement gridElement) {
             return new IndexBasedSelectionModelDisabled();
         }
     };
 
-    public abstract IndexBasedSelectionModel createModel();
+    public abstract IndexBasedSelectionModel createModel(GridElement gridElement);
 }
