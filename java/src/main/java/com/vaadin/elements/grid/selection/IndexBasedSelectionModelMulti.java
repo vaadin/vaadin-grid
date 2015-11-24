@@ -1,12 +1,14 @@
 package com.vaadin.elements.grid.selection;
 
+import static com.vaadin.elements.grid.selection.IndexBasedSelectionMode.ALL;
+import static com.vaadin.elements.grid.selection.IndexBasedSelectionMode.MULTI;
+
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.vaadin.client.data.DataSource.RowHandle;
 import com.vaadin.client.renderers.Renderer;
-import com.vaadin.client.widget.grid.events.SelectAllEvent;
 import com.vaadin.client.widget.grid.selection.MultiSelectionRenderer;
 import com.vaadin.client.widget.grid.selection.SelectionEvent;
 import com.vaadin.client.widget.grid.selection.SelectionModelMulti;
@@ -14,8 +16,6 @@ import com.vaadin.client.widgets.Grid;
 import com.vaadin.elements.common.js.JS;
 import com.vaadin.elements.common.js.JSArray;
 import com.vaadin.elements.common.js.JSValidate;
-
-import static com.vaadin.elements.grid.selection.IndexBasedSelectionMode.*;
 /**
  * An {@link IndexBasedSelectionModel} for multiple selection.
  */
@@ -203,7 +203,6 @@ public class IndexBasedSelectionModelMulti extends SelectionModelMulti<Object>
             return addIndex(index, skipOwnEvents);
         } else {
             return removeIndex(index, skipOwnEvents);
-
         }
     }
 
@@ -252,8 +251,8 @@ public class IndexBasedSelectionModelMulti extends SelectionModelMulti<Object>
     @Override
     public void selectAll() {
         boolean modeChanged = !invertedSelection;
-        indexes.setLength(0);
         invertedSelection = true;
+        indexes.setLength(0);
         grid.fireEvent(new SelectionEvent<Object>(grid, null, null, true));
         if (modeChanged) {
             grid.fireEvent(new SelectionModeChangedEvent(MULTI, ALL));
@@ -274,7 +273,6 @@ public class IndexBasedSelectionModelMulti extends SelectionModelMulti<Object>
     @Override
     public boolean deselectAll() {
         reset();
-        grid.fireEvent(new SelectAllEvent<Object>(this));
         return true;
     }
 

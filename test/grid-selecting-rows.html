@@ -43,9 +43,7 @@
           // force selection clear
           grid.selection.mode = 'disabled';
           grid.selection.mode = 'single';
-
           selectionModeListener.reset();
-
           return grid;
         });
       });
@@ -89,7 +87,6 @@
 
           it('should fire \'selection-mode-changed\' event', function() {
             setSelectionModeAttr('disabled');
-
             expect(selectionModeListener.calledOnce).to.be.true;
             expect(selectionModeListener.args[0][0]).to.have.property('type', 'selection-mode-changed');
           });
@@ -156,17 +153,13 @@
 
             it('should clear the selection when changing mode to disabled', function() {
               grid.selection.select(0);
-
               grid.selection.mode = 'disabled';
-
               expect(grid.selection.selected()).to.be.empty;
             });
 
             it('should clear selection when changing mode to multi', function() {
               grid.selection.select(0);
-
               grid.selection.mode = 'multi';
-
               expect(grid.selection.selected()).to.be.empty;
             });
           });
@@ -178,32 +171,25 @@
 
             it('should fire a \'select\' event', function() {
               grid.selection.select(0);
-
               expect(selectListener.calledOnce).to.be.true;
             });
 
             it('should clear the selection when changing mode to disabled', function() {
               grid.selection.select(0);
-
               grid.selection.mode = 'disabled';
-
               expect(grid.selection.selected()).to.be.empty;
             });
 
             it('should clear selection when changing mode to single', function() {
               grid.selection.select(0);
-
               grid.selection.mode = 'single';
-
               expect(grid.selection.selected()).to.be.empty;
             });
 
             it('should remove multiple selections when changing mode to single', function() {
               grid.selection.select(0);
               grid.selection.select(1);
-
               grid.selection.mode = 'single';
-
               expect(grid.selection.selected()).to.be.empty;
             });
           });
@@ -215,7 +201,6 @@
 
             it('should not select any rows', function() {
               grid.selection.select(0);
-
               expect(grid.selection.selected()).to.be.empty;
             });
           });
@@ -229,7 +214,6 @@
 
         function clickFirstCell() {
           getFirstCell().click();
-
           return grid;
         }
 
@@ -263,7 +247,6 @@
               expect(grid.selection.selected()).to.be.empty;
             });
           });
-
         });
 
         describe('with selection-mode: multi', function() {
@@ -310,18 +293,26 @@
             expect(grid.selection.selected()).to.be.empty;
           });
 
-          it('should select all rows', function() {
+          it('should select all rows and update attributes', function() {
+            var spy = sinon.spy(grid, '_onSelectionModeChange');
             var inputs = qaLocal('.vaadin-grid-header input');
             triggerMouseEvent(inputs[0], "click");
             expect(grid.selection.selected()).to.eql([0, 1]);
+            expect(getSelectionModeAttr()).to.eql('all');
+            expect(spy.callCount).to.eql(1);
+            spy.restore();
           });
 
           it('should deselect all rows', function() {
             var inputs = qaLocal('.vaadin-grid-header input');
             triggerMouseEvent(inputs[0], "click");
+            var spy = sinon.spy(grid, '_onSelectionModeChange');
             inputs = qaLocal('.vaadin-grid-header input');
             triggerMouseEvent(inputs[0], "click");
             expect(grid.selection.selected()).to.be.empty;
+            expect(getSelectionModeAttr()).to.eql('multi');
+            expect(spy.callCount).to.eql(1);
+            spy.restore();
           });
         });
 
@@ -405,9 +396,7 @@
       describe('deselecting rows using API', function() {
         it('should fire \'select\' event', function() {
           grid.selection.select(0);
-
           grid.selection.deselect(0);
-
           expect(selectListener.calledTwice).to.be.true;
         });
 
@@ -418,17 +407,13 @@
 
           it('should deselect a row', function() {
             grid.selection.select(0);
-
             grid.selection.deselect(0);
-
             expect(grid.selectedRows).to.be.empty;
           });
 
           it('should not deselect other rows', function() {
             grid.selection.select(0);
-
             grid.selection.deselect(1);
-
             expect(grid.selection.selected()).to.eql([0]);
           });
         });
@@ -441,9 +426,7 @@
           it('should deselect a single row', function() {
             grid.selection.select(0);
             grid.selection.select(1);
-
             grid.selection.deselect(0);
-
             expect(grid.selection.selected()).to.eql([1]);
           });
         });
@@ -496,7 +479,7 @@
 
           it('selectAll should work right', function() {
             grid.selection.selectAll();
-            expect(grid.selection.selected()).to.be.empty;
+            expect(grid.selection.selected()).to.eql([0]);
           });
         });
 
@@ -563,6 +546,7 @@
           it('clear should work right', function() {
             grid.selection.clear();
             expect(grid.selection.selected()).to.be.empty;
+            expect(getSelectionModeAttr()).to.equal('multi');
           });
 
           it('selectAll should work right', function() {
@@ -646,11 +630,13 @@
           it('clear should work right', function() {
             grid.selection.clear();
             expect(grid.selection.mode).to.eql("multi");
+            expect(getSelectionModeAttr()).to.equal('multi');
           });
 
           it('selectAll should work right', function() {
             grid.selection.selectAll();
             expect(grid.selection.deselected()).to.be.empty;
+            expect(getSelectionModeAttr()).to.equal('all');
           });
         });
 
@@ -702,15 +688,12 @@
 
           before(function() {
             grid.items = [0,1];
-
             return grid;
           });
 
           it('should select all rows when none selected', function() {
             grid.selection.mode = 'multi';
-
             clickOnSelectAll();
-
             expect(grid.selection.selected()).to.eql([0,1]);
           });
 
@@ -718,29 +701,23 @@
           // feature doesn't actually work properly.
           // https://connect.microsoft.com/IE/Feedback/Details/998355
           var isIE = /*@cc_on!@*/false || !!document.documentMode;
-          if(!isIE) {
-            it('should select all rows when indetermine', function() {
-              grid.selection.mode = 'multi';
-              grid.selection.select(0);
+          it.skipIf(isIE, 'should select all rows when indetermine', function() {
+            grid.selection.mode = 'multi';
+            grid.selection.select(0);
+            clickOnSelectAll();
+            expect(grid.selection.selected()).to.eql([0,1]);
+          });
 
-              clickOnSelectAll();
+          it.skipIf(isIE, 'should select all rows when indetermine after deselecting', function() {
+            grid.selection.mode = 'all';
+            grid.selection.deselect(0);
+            clickOnSelectAll();
+            expect(grid.selection.selected()).to.eql([0,1]);
+          });
 
-              expect(grid.selection.selected()).to.eql([0,1]);
-            });
-
-            it('should select all rows when indetermine after deselecting', function() {
-              grid.selection.mode = 'all';
-              grid.selection.deselect(0);
-
-              clickOnSelectAll();
-              expect(grid.selection.selected()).to.eql([0,1]);
-            });
-          }
           it('should deselect all rows when all selected', function() {
             grid.selection.mode = 'all';
-
             clickOnSelectAll();
-
             expect(grid.selection.selected()).to.eql([]);
           });
         });

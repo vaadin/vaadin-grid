@@ -369,12 +369,11 @@ public class GridElement implements SelectionHandler<Object>,
         if (force || changed) {
             updating = true;
             IndexBasedSelectionMode mode = JSEnums.Selection.val(selectionMode);
-
+            IndexBasedSelectionMode current = getSelectionModel().getMode();
             boolean newModeIsAll = mode == ALL;
-            boolean newModeIsMulti = mode == MULTI;
-            boolean currentModelIsMulti = getSelectionModel().getMode() == MULTI;
-
-            if (!(currentModelIsMulti && (newModeIsAll || newModeIsMulti))) {
+            boolean newModeIsMulti = mode == MULTI || mode == ALL;
+            boolean currentModelIsMulti = current == MULTI || current == ALL;
+            if (!currentModelIsMulti || !newModeIsMulti) {
                 grid.setSelectionModel(mode.createModel());
                 updateWidth();
             }
@@ -383,10 +382,12 @@ public class GridElement implements SelectionHandler<Object>,
             } else {
                 getSelectionModel().reset();
             }
+            if (newModeIsMulti) {
+                updateSelectAllCheckBox();
+            }
             if (changed) {
                 triggerEvent(SelectionModeChangedEvent.NAME);
             }
-            updateSelectAllCheckBox();
             updating = false;
         }
     }
@@ -604,26 +605,15 @@ public class GridElement implements SelectionHandler<Object>,
     @JsNoExport
     @Override
     public void onSelectAll(SelectAllEvent<Object> event) {
-        if (!updating) {
-            updating = true;
-            if (event.getSelectionModel() != getSelectionModel()) {
-                grid.setSelectionModel(event.getSelectionModel());
-                triggerEvent(SelectionModeChangedEvent.NAME);
-                getSelectionModel().reset();
-            } else {
-                boolean all = getSelectAllCheckBox().getValue();
-                setSelectionMode((all ? ALL : MULTI).name(), true);
-            }
-            updateSelectAllCheckBox();
-            updating = false;
-            onSelect(null);
-        }
+        setSelectionMode(getSelectAllCheckBox().getValue() ? "all" : "multi", true);
     }
 
     @JsNoExport
     @Override
     public void onSelectionModeChanged(SelectionModeChangedEvent event) {
-        triggerEvent(SelectionModeChangedEvent.NAME);
+        if (!updating) {
+            triggerEvent(SelectionModeChangedEvent.NAME);
+        }
     }
 
     private void updateSelectAllCheckBox() {

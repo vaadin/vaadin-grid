@@ -110,7 +110,6 @@ public class IndexBasedSelectionModelSingle extends
 
     @Override
     public void selectAll() {
-        clear();
     }
 
     @Override
