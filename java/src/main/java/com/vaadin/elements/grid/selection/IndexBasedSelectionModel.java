@@ -22,20 +22,10 @@ public interface IndexBasedSelectionModel extends SelectionModel<Object> {
         public void onSelectionModeChanged(SelectionModeChangedEvent event);
     }
 
-    public static class SelectionModeChangedEvent extends
-            GwtEvent<SelectionModeChangedHandler> {
-
+    public static class SelectionModeChangedEvent extends GwtEvent<SelectionModeChangedHandler> {
         public static final String NAME = "selection-mode-changed";
 
         public static final Type<SelectionModeChangedHandler> eventType = new Type<SelectionModeChangedHandler>();
-
-        public final IndexBasedSelectionMode oldSelectionModel, newSelectionModel;
-
-        public SelectionModeChangedEvent(IndexBasedSelectionMode oldMode,
-                IndexBasedSelectionMode newMode) {
-            oldSelectionModel = oldMode;
-            newSelectionModel = newMode;
-        }
 
         public com.google.gwt.event.shared.GwtEvent.Type<SelectionModeChangedHandler> getAssociatedType() {
             return eventType;
