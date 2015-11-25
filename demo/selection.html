@@ -137,7 +137,7 @@ layout: page
         modeSelect.addEventListener("change", function() {
           grid.selection.mode = modeSelect.value;
         });
-        grid.addEventListener("selected-items-changed", function() {
+        grid.addEventListener("selection-mode-changed", function() {
           modeSelect.value = grid.selection.mode;
         });
       </code>
