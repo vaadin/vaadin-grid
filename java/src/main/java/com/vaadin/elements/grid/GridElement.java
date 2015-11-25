@@ -358,12 +358,7 @@ public class GridElement implements SelectionHandler<Object>,
     }
 
     public void setSelectionMode(String selectionMode) {
-        setSelectionMode(selectionMode, false);
-    }
-
-    @JsNoExport
-    public void setSelectionMode(String selectionMode, boolean force) {
-        if (force || !getSelectionMode().equalsIgnoreCase(selectionMode)) {
+        if (!getSelectionMode().equalsIgnoreCase(selectionMode)) {
             updating = true;
             IndexBasedSelectionMode mode = JSEnums.Selection.val(selectionMode);
 
@@ -603,11 +598,12 @@ public class GridElement implements SelectionHandler<Object>,
         if (!updating) {
             updating = true;
 
-            boolean all = getSelectAllCheckBox().getValue();
-            setSelectionMode(all ? IndexBasedSelectionMode.ALL.name()
-                : IndexBasedSelectionMode.MULTI.name(), true);
+            if(!getSelectAllCheckBox().getValue()) {
+                getSelectionModel().clear();
+            } else {
+                getSelectionModel().selectAll();
+            }
 
-            updateSelectAllCheckBox();
             updating = false;
             onSelect(null);
         }
