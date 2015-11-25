@@ -58,6 +58,8 @@ import com.vaadin.elements.grid.selection.IndexBasedSelectionMode;
 import com.vaadin.elements.grid.selection.IndexBasedSelectionModel;
 import com.vaadin.elements.grid.selection.IndexBasedSelectionModelMulti;
 import com.vaadin.elements.grid.selection.IndexBasedSelectionModelSingle;
+import com.vaadin.elements.grid.selection.MultiSelectModeChangedEvent;
+import com.vaadin.elements.grid.selection.MultiSelectModeChangedHandler;
 import com.vaadin.elements.grid.table.GridColumn;
 import com.vaadin.elements.grid.table.GridLightDomTable;
 import com.vaadin.elements.grid.table.GridStaticSection;
@@ -71,7 +73,7 @@ import com.vaadin.shared.ui.grid.ScrollDestination;
 @JsExport
 @JsType
 public class GridElement implements SelectionHandler<Object>,
-        SortHandler<Object>, SelectAllHandler<Object> {
+        SortHandler<Object>, SelectAllHandler<Object>, MultiSelectModeChangedHandler {
 
     private final ViolatedGrid grid;
     private int visibleRows = -1;
@@ -100,6 +102,7 @@ public class GridElement implements SelectionHandler<Object>,
         grid.addSelectionHandler(this);
         grid.addSortHandler(this);
         grid.addSelectAllHandler(this);
+        grid.addHandler(this, MultiSelectModeChangedEvent.eventType);
         grid.getElement().getStyle().setHeight(0, Unit.PX);
 
         setColumns(JS.createArray());
@@ -358,19 +361,23 @@ public class GridElement implements SelectionHandler<Object>,
     }
 
     public void setSelectionMode(String selectionMode) {
-        if (!getSelectionMode().equalsIgnoreCase(selectionMode)) {
-            IndexBasedSelectionMode newMode = JSEnums.Selection.val(selectionMode);
+        setSelectionMode((IndexBasedSelectionMode)JSEnums.Selection.val(selectionMode));
+
+    }
+
+    @JsNoExport
+    public void setSelectionMode(IndexBasedSelectionMode newMode) {
+        if (getSelectionModel().getMode() != newMode) {
 
             if(isMultiModel(getSelectionModel().getMode()) && isMultiModel(newMode)) {
                 ((IndexBasedSelectionModelMulti)getSelectionModel()).setMode(newMode);
                 getSelectionModel().reset();
             } else {
-                grid.setSelectionModel(newMode.createModel(this));
+                grid.setSelectionModel(newMode.createModel());
                 updateWidth();
-            }
 
-            triggerEvent(SELECTION_MODE_CHANGED_EVENT);
-            updateSelectAllCheckBox();
+                onSelectionModeChanged();
+            }
         }
     }
 
@@ -596,6 +603,16 @@ public class GridElement implements SelectionHandler<Object>,
         } else {
             getSelectionModel().clear();
         }
+    }
+
+    @Override
+    public void onMultiSelectModeChanged() {
+        onSelectionModeChanged();
+    }
+
+    private void onSelectionModeChanged() {
+        triggerEvent(SELECTION_MODE_CHANGED_EVENT);
+        updateSelectAllCheckBox();
     }
 
     private void updateSelectAllCheckBox() {

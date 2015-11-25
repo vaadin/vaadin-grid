@@ -13,7 +13,6 @@ import com.vaadin.client.widgets.Grid;
 import com.vaadin.elements.common.js.JS;
 import com.vaadin.elements.common.js.JSArray;
 import com.vaadin.elements.common.js.JSValidate;
-import com.vaadin.elements.grid.GridElement;
 
 /**
  * An {@link IndexBasedSelectionModel} for multiple selection.
@@ -25,7 +24,6 @@ public class IndexBasedSelectionModelMulti extends SelectionModelMulti<Object>
     private Grid<Object> grid;
 
     private final JSArray<Double> indexes = JS.createArray();
-    private final GridElement gridElement;
     private boolean invertedSelection = false;
     private boolean dataSizeUpdated = false;
     private int lastSelected = -1;
@@ -82,8 +80,7 @@ public class IndexBasedSelectionModelMulti extends SelectionModelMulti<Object>
         return size() > 0 ? size() == grid.getDataSource().size() : false;
     }
 
-    public IndexBasedSelectionModelMulti(GridElement gridElement, boolean invertedSelection) {
-        this.gridElement = gridElement;
+    public IndexBasedSelectionModelMulti(boolean invertedSelection) {
         this.invertedSelection = invertedSelection;
     }
 
@@ -259,14 +256,14 @@ public class IndexBasedSelectionModelMulti extends SelectionModelMulti<Object>
 
     @Override
     public void selectAll() {
-        gridElement.setSelectionMode(IndexBasedSelectionMode.ALL.name());
+        setMode(IndexBasedSelectionMode.ALL);
 
         reset();
     }
 
     @Override
     public boolean deselectAll() {
-        gridElement.setSelectionMode(IndexBasedSelectionMode.MULTI.name());
+        setMode(IndexBasedSelectionMode.MULTI);
 
         reset();
 
@@ -280,7 +277,11 @@ public class IndexBasedSelectionModelMulti extends SelectionModelMulti<Object>
     }
 
     public void setMode(IndexBasedSelectionMode mode) {
-        this.invertedSelection = mode == IndexBasedSelectionMode.ALL;
+        if(getMode() != mode) {
+            this.invertedSelection = mode == IndexBasedSelectionMode.ALL;
+
+            grid.fireEvent(new MultiSelectModeChangedEvent());
+        }
     }
 
     @Override
