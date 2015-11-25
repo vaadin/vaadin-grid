@@ -521,9 +521,17 @@
 
             grid.selection.clear();
 
-            expect(selectionModeListener.calledOnce).to.be.true;
+            expect(selectionModeListener.callCount).to.eql(1);
           });
 
+          it('should fire only one `selected-items-changed` event when clearing twice', function() {
+            selectionModeListener.reset();
+
+            grid.selection.clear();
+            grid.selection.clear();
+
+            expect(selectionModeListener.callCount).to.eql(1);
+          });
         });
       });
 
@@ -562,7 +570,7 @@
 
           it('should return nothing with iterator', function() {
             var iterator = function(i){
-              // Itearate
+              // Iterate
             };
             expect(grid.selection.selected(iterator)).to.be.empty;
           });

@@ -359,27 +359,23 @@ public class GridElement implements SelectionHandler<Object>,
 
     public void setSelectionMode(String selectionMode) {
         if (!getSelectionMode().equalsIgnoreCase(selectionMode)) {
-            updating = true;
-            IndexBasedSelectionMode mode = JSEnums.Selection.val(selectionMode);
+            IndexBasedSelectionMode newMode = JSEnums.Selection.val(selectionMode);
 
-            boolean newModeIsAll = mode == IndexBasedSelectionMode.ALL;
-            boolean newModeIsMulti = mode == IndexBasedSelectionMode.MULTI;
-            boolean currentModelIsMulti = getSelectionModel() instanceof IndexBasedSelectionModelMulti;
-
-            if (!(currentModelIsMulti && (newModeIsAll || newModeIsMulti))) {
-                grid.setSelectionModel(mode.createModel(this));
-                updateWidth();
-            }
-
-            if(currentModelIsMulti && (newModeIsAll || newModeIsMulti)) {
-                ((IndexBasedSelectionModelMulti)getSelectionModel()).setMode(mode);
+            if(isMultiModel(getSelectionModel().getMode()) && isMultiModel(newMode)) {
+                ((IndexBasedSelectionModelMulti)getSelectionModel()).setMode(newMode);
                 getSelectionModel().reset();
+            } else {
+                grid.setSelectionModel(newMode.createModel(this));
+                updateWidth();
             }
 
             triggerEvent(SELECTION_MODE_CHANGED_EVENT);
             updateSelectAllCheckBox();
-            updating = false;
         }
+    }
+
+    private boolean isMultiModel(IndexBasedSelectionMode mode) {
+        return mode == IndexBasedSelectionMode.MULTI || mode == IndexBasedSelectionMode.ALL;
     }
 
     public String getSelectionMode() {
@@ -595,17 +591,10 @@ public class GridElement implements SelectionHandler<Object>,
     @JsNoExport
     @Override
     public void onSelectAll(SelectAllEvent<Object> event) {
-        if (!updating) {
-            updating = true;
-
-            if(!getSelectAllCheckBox().getValue()) {
-                getSelectionModel().clear();
-            } else {
-                getSelectionModel().selectAll();
-            }
-
-            updating = false;
-            onSelect(null);
+        if (getSelectAllCheckBox().getValue()) {
+            getSelectionModel().selectAll();
+        } else {
+            getSelectionModel().clear();
         }
     }
 
