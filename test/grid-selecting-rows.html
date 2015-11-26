@@ -743,6 +743,15 @@
       });
 
       describe('changing selection mode', function() {
+        it('should retain multi model', function() {
+          grid.selection.mode = 'multi';
+          var modelMulti = grid._grid.getSelectionModel();
+          grid.selection.mode = 'all';
+          var modelAll = grid._grid.getSelectionModel();
+
+          expect(modelMulti).to.eql(modelAll);
+        });
+
         describe('by clicking', function() {
           function clickOnSelectAll() {
             var selectAllCheckBoxLabel = qLocal('label');
