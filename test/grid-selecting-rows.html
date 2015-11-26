@@ -139,6 +139,24 @@
             });
           });
 
+          it('should not fire event when mode does not change', function() {
+            grid.selection.mode = 'single';
+
+            expect(selectionModeListener.callCount).to.eql(0);
+          });
+
+          it('should fire only one event when changing mode to multi', function() {
+            grid.selection.mode = 'multi';
+
+            expect(selectionModeListener.calledOnce).to.be.true;
+          });
+
+          it('should fire only one event when changing mode to all', function() {
+            grid.selection.mode = 'all';
+
+            expect(selectionModeListener.calledOnce).to.be.true;
+          });
+
           it('should fail setting the value to foobar', function() {
             expect(function() {
               grid.selection.mode = 'foobar';
@@ -309,20 +327,6 @@
             triggerMouseEvent(inputs[1], "mousedown");
             expect(grid.selection.selected()).to.be.empty;
           });
-
-          it('should select all rows', function() {
-            var inputs = qaLocal('.vaadin-grid-header input');
-            triggerMouseEvent(inputs[0], "click");
-            expect(grid.selection.selected()).to.eql([0, 1]);
-          });
-
-          it('should deselect all rows', function() {
-            var inputs = qaLocal('.vaadin-grid-header input');
-            triggerMouseEvent(inputs[0], "click");
-            inputs = qaLocal('.vaadin-grid-header input');
-            triggerMouseEvent(inputs[0], "click");
-            expect(grid.selection.selected()).to.be.empty;
-          });
         });
 
         describe('with selection-mode: disabled', function() {
@@ -374,6 +378,23 @@
 
             expect(grid.selection.selected()).to.eql([0]);
           });
+
+          it('should clear selection', function() {
+            grid.selection.select(0);
+
+            grid.selection.clear();
+
+            expect(grid.selection.selected()).to.be.empty;
+          });
+
+          it('should not change selection when selecting all', function() {
+            grid.selection.select(0);
+
+            grid.selection.selectAll();
+
+            expect(grid.selection.selected()).to.eql([0]);
+          });
+
         });
 
         describe('with selectionMode: multi', function() {
@@ -387,6 +408,35 @@
 
             expect(grid.selection.selected()).to.eql([0,1]);
           });
+
+          it('should change mode when selecting all', function() {
+              grid.selection.selectAll();
+
+              expect(grid.selection.mode).to.eql('all');
+              expect(getSelectionModeAttr()).to.eql('all');
+          });
+
+          it('should select all rows when selecting all', function() {
+            grid.selection.selectAll();
+
+            expect(grid.selection.selected()).to.eql([0,1]);
+          });
+
+          it('should clear selection', function() {
+            grid.selection.select(0);
+
+            grid.selection.clear();
+
+            expect(grid.selection.selected()).to.be.empty;
+          });
+
+          it('should fire only one `selection-mode-changed` event when selecting all', function() {
+            selectionModeListener.reset();
+
+            grid.selection.selectAll();
+
+            expect(selectionModeListener.calledOnce).to.be.true;
+          });
         });
 
         describe('with selectionMode: disabled', function() {
@@ -398,6 +448,12 @@
             grid.selection.select(0);
 
             expect(grid.selection.selected()).to.be.empty;
+          });
+
+          it('should not select rows when selecting all', function() {
+            grid.selection.selectAll();
+
+            expect(grid.selection.selected()).to.eql([]);
           });
         });
       });
@@ -447,6 +503,36 @@
             expect(grid.selection.selected()).to.eql([1]);
           });
         });
+
+        describe('with selectionMode: all', function() {
+          beforeEach(function() {
+            grid.selection.mode = 'all';
+          });
+
+          it('should change mode to multi when clearing', function() {
+            grid.selection.clear();
+
+            expect(grid.selection.mode).to.eql('multi');
+            expect(getSelectionModeAttr()).to.eql('multi');
+          });
+
+          it('should fire only one `selection-mode-changed` event when clearing', function() {
+            selectionModeListener.reset();
+
+            grid.selection.clear();
+
+            expect(selectionModeListener.callCount).to.eql(1);
+          });
+
+          it('should fire only one `selected-items-changed` event when clearing twice', function() {
+            selectionModeListener.reset();
+
+            grid.selection.clear();
+            grid.selection.clear();
+
+            expect(selectionModeListener.callCount).to.eql(1);
+          });
+        });
       });
 
       describe('selected indexes', function() {
@@ -484,19 +570,9 @@
 
           it('should return nothing with iterator', function() {
             var iterator = function(i){
-              // Itearate
+              // Iterate
             };
             expect(grid.selection.selected(iterator)).to.be.empty;
-          });
-
-          it('clear should work right', function() {
-            grid.selection.clear();
-            expect(grid.selection.selected()).to.be.empty;
-          });
-
-          it('selectAll should work right', function() {
-            grid.selection.selectAll();
-            expect(grid.selection.selected()).to.be.empty;
           });
         });
 
@@ -559,17 +635,6 @@
           it('should return range', function() {
             expect(grid.selection.selected(undefined, 1, 2)).to.eql([1, 80]);
           });
-
-          it('clear should work right', function() {
-            grid.selection.clear();
-            expect(grid.selection.selected()).to.be.empty;
-          });
-
-          it('selectAll should work right', function() {
-            grid.selection.selectAll();
-            expect(grid.selection.mode).to.eql("all");
-          });
-
         });
 
         describe('in mode: all', function() {
@@ -641,17 +706,6 @@
             expect(grid.selection.selected(undefined, 1, 2)).to.eql([3, 4]);
             expect(grid.selection.deselected(undefined, 1, 2)).to.eql([1, 80]);
           });
-
-          it('clear should work right', function() {
-            grid.selection.clear();
-            expect(grid.selection.mode).to.eql("multi");
-          });
-
-          it('selectAll should work right', function() {
-            grid.selection.selectAll();
-            expect(grid.selection.deselected()).to.be.empty;
-          });
-
         });
 
         describe('in mode: disabled', function() {
@@ -685,15 +739,19 @@
             expect(grid.selection.selected(mapper)).to.eql([]);
             expect(grid.selection.deselected(mapper)).to.eql([]);
           });
-
-          it('selectAll should not select rows', function() {
-            grid.selection.selectAll();
-            expect(grid.selection.selected()).to.eql([]);
-          });
         });
       });
 
       describe('changing selection mode', function() {
+        it('should retain multi model', function() {
+          grid.selection.mode = 'multi';
+          var modelMulti = grid._grid.getSelectionModel();
+          grid.selection.mode = 'all';
+          var modelAll = grid._grid.getSelectionModel();
+
+          expect(modelMulti).to.eql(modelAll);
+        });
+
         describe('by clicking', function() {
           function clickOnSelectAll() {
             var selectAllCheckBoxLabel = qLocal('label');
@@ -718,30 +776,47 @@
           // feature doesn't actually work properly.
           // https://connect.microsoft.com/IE/Feedback/Details/998355
           var isIE = /*@cc_on!@*/false || !!document.documentMode;
-          if(!isIE) {
-            it('should select all rows when indetermine', function() {
-              grid.selection.mode = 'multi';
-              grid.selection.select(0);
+          it.skipIf(isIE, 'should select all rows when indetermine', function() {
+            grid.selection.mode = 'multi';
+            grid.selection.select(0);
 
-              clickOnSelectAll();
+            clickOnSelectAll();
 
-              expect(grid.selection.selected()).to.eql([0,1]);
-            });
+            expect(grid.selection.selected()).to.eql([0,1]);
+          });
 
-            it('should select all rows when indetermine after deselecting', function() {
-              grid.selection.mode = 'all';
-              grid.selection.deselect(0);
+          it.skipIf(isIE, 'should select all rows when indetermine after deselecting', function() {
+            grid.selection.mode = 'all';
+            grid.selection.deselect(0);
 
-              clickOnSelectAll();
-              expect(grid.selection.selected()).to.eql([0,1]);
-            });
-          }
+            clickOnSelectAll();
+            expect(grid.selection.selected()).to.eql([0,1]);
+          });
+
           it('should deselect all rows when all selected', function() {
             grid.selection.mode = 'all';
 
             clickOnSelectAll();
 
             expect(grid.selection.selected()).to.eql([]);
+          });
+
+          it('should fire only one `selection-mode-changed` event when changing to all', function() {
+            grid.selection.mode = 'multi';
+            selectionModeListener.reset();
+
+            clickOnSelectAll();
+
+            expect(selectionModeListener.calledOnce).to.be.true;
+          });
+
+          it('should fire only one `selection-mode-changed` event when changing to multi', function() {
+            grid.selection.mode = 'all';
+            selectionModeListener.reset();
+
+            clickOnSelectAll();
+
+            expect(selectionModeListener.callCount).to.eql(1);
           });
         });
       });

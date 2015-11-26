@@ -55,4 +55,13 @@ public class IndexBasedSelectionModelDisabled extends
     public void dataSizeUpdated(int newSize) {
     }
 
+    @Override
+    public void setMode(IndexBasedSelectionMode mode) {
+    }
+
+    @Override
+    public boolean supportsMode(IndexBasedSelectionMode mode) {
+        return mode == IndexBasedSelectionMode.DISABLED;
+    }
+
 }

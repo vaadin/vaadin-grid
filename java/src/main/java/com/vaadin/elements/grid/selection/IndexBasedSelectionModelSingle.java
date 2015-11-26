@@ -110,7 +110,6 @@ public class IndexBasedSelectionModelSingle extends
 
     @Override
     public void selectAll() {
-        clear();
     }
 
     @Override
@@ -124,6 +123,15 @@ public class IndexBasedSelectionModelSingle extends
         if (selectedRow >= newSize) {
             selectedRow = -1;
         }
+    }
+
+    @Override
+    public void setMode(IndexBasedSelectionMode mode) {
+    }
+
+    @Override
+    public boolean supportsMode(IndexBasedSelectionMode mode) {
+        return mode == IndexBasedSelectionMode.SINGLE;
     }
 
 }

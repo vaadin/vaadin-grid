@@ -893,7 +893,6 @@ See the [demo](demo/index.html) for use case examples.
             },
             set mode(mode) {
               _this._grid.setSelectionMode(mode);
-              _this.serializeValueToAttribute(_this.selection.mode, "selection-mode");
             }
           };
         }
@@ -955,7 +954,7 @@ See the [demo](demo/index.html) for use case examples.
        *
        * @event selection-mode-changed
        */
-      'selectionmodechange': '_onSelectionModeChange'
+      'selection-mode-changed': '_onSelectionModeChange'
     },
 
     _itemsChanged: function(items) {
