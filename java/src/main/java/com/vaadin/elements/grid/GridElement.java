@@ -73,7 +73,8 @@ import com.vaadin.shared.ui.grid.ScrollDestination;
 @JsExport
 @JsType
 public class GridElement implements SelectionHandler<Object>,
-        SortHandler<Object>, SelectAllHandler<Object>, MultiSelectModeChangedHandler {
+        SortHandler<Object>, SelectAllHandler<Object>,
+        MultiSelectModeChangedHandler {
 
     private final ViolatedGrid grid;
     private int visibleRows = -1;
@@ -361,28 +362,18 @@ public class GridElement implements SelectionHandler<Object>,
     }
 
     public void setSelectionMode(String selectionMode) {
-        setSelectionMode((IndexBasedSelectionMode)JSEnums.Selection.val(selectionMode));
-
-    }
-
-    @JsNoExport
-    public void setSelectionMode(IndexBasedSelectionMode newMode) {
+        IndexBasedSelectionMode newMode = JSEnums.Selection.val(selectionMode);
         if (getSelectionModel().getMode() != newMode) {
-
-            if(isMultiModel(getSelectionModel().getMode()) && isMultiModel(newMode)) {
-                ((IndexBasedSelectionModelMulti)getSelectionModel()).setMode(newMode);
+            if (getSelectionModel().supportsMode(newMode)) {
+                getSelectionModel().setMode(newMode);
                 getSelectionModel().reset();
             } else {
                 grid.setSelectionModel(newMode.createModel());
                 updateWidth();
 
-                onSelectionModeChanged();
+                selectionModeChanged();
             }
         }
-    }
-
-    private boolean isMultiModel(IndexBasedSelectionMode mode) {
-        return mode == IndexBasedSelectionMode.MULTI || mode == IndexBasedSelectionMode.ALL;
     }
 
     public String getSelectionMode() {
@@ -605,12 +596,13 @@ public class GridElement implements SelectionHandler<Object>,
         }
     }
 
+    @JsNoExport
     @Override
     public void onMultiSelectModeChanged() {
-        onSelectionModeChanged();
+        selectionModeChanged();
     }
 
-    private void onSelectionModeChanged() {
+    private void selectionModeChanged() {
         triggerEvent(SELECTION_MODE_CHANGED_EVENT);
         updateSelectAllCheckBox();
     }

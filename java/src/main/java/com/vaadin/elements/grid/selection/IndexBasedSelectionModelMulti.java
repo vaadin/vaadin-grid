@@ -276,8 +276,9 @@ public class IndexBasedSelectionModelMulti extends SelectionModelMulti<Object>
                 : IndexBasedSelectionMode.MULTI;
     }
 
+    @Override
     public void setMode(IndexBasedSelectionMode mode) {
-        if(getMode() != mode) {
+        if (getMode() != mode) {
             this.invertedSelection = mode == IndexBasedSelectionMode.ALL;
 
             grid.fireEvent(new MultiSelectModeChangedEvent());
@@ -299,5 +300,11 @@ public class IndexBasedSelectionModelMulti extends SelectionModelMulti<Object>
         if (changed) {
             grid.fireEvent(new SelectionEvent<Object>(grid, null, null, true));
         }
+    }
+
+    @Override
+    public boolean supportsMode(IndexBasedSelectionMode mode) {
+        return mode == IndexBasedSelectionMode.ALL
+                || mode == IndexBasedSelectionMode.MULTI;
     }
 }

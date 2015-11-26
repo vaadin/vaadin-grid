@@ -125,4 +125,13 @@ public class IndexBasedSelectionModelSingle extends
         }
     }
 
+    @Override
+    public void setMode(IndexBasedSelectionMode mode) {
+    }
+
+    @Override
+    public boolean supportsMode(IndexBasedSelectionMode mode) {
+        return mode == IndexBasedSelectionMode.SINGLE;
+    }
+
 }
