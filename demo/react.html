@@ -57,6 +57,7 @@ layout: page
                 if (vGrid.selection) {
                   // Assign the data source
                   vGrid.items = _this.items;
+                  vGrid.size = 1000;
 
                   // Bind selection listener
                   vGrid.addEventListener("selected-items-changed", _this.onRowSelect);
@@ -84,7 +85,7 @@ layout: page
               xhr.onreadystatechange = function() {
                 if (xhr.readyState == XMLHttpRequest.DONE ) {
                   if(xhr.status == 200){
-                    callback(JSON.parse(xhr.responseText).results, 1000);
+                    callback(JSON.parse(xhr.responseText).results);
                   }
                 }
               };

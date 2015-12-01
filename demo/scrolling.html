@@ -107,5 +107,71 @@ layout: page
     </code-example>
   </section>
 
+  <section>
+    <h3>Infinite scrolling</h3>
+    <p>Aside the explicit <code>size</code> property, <code>vaadin-grid</code> can be informed
+    about the data source size trough a callback parameter in data source request. This comes in handy if
+    the size changes frequently or if the total size isn't even known beforehand.</p>
+
+    <p>Infinte scrolling is an example use case where this api might become useful.</p>
+
+    <code-example source>
+      <vaadin-grid demo hidden selection-mode="disabled">
+        <table>
+          <colgroup>
+            <col name="user.name.first">
+            <col name="user.name.last">
+            <col name="user.email" flex>
+          </colgroup>
+          <thead>
+            <tr>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Email</th>
+            </tr>
+          </thead>
+          <tfoot>
+            <tr>
+              <td colspan="2"><td>
+            </tr>
+          </tfoot>
+        </table>
+      </vaadin-grid>
+      <code demo-var="grid">
+        var grid = grid || document.querySelector("vaadin-grid");
+
+        HTMLImports.whenReady(function() {
+          grid.visibleRows = 5;
+          grid.size = 10;
+          grid.scrollToStart();
+          // code
+          grid.items = function(params, callback) {
+            // Fetch the JSON data from a URL
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+              if (xhr.readyState == XMLHttpRequest.DONE) {
+                if (xhr.status == 200) {
+                  var json = JSON.parse(xhr.responseText);
+                  var size = grid.size;
+                  if (params.index + params.count == size) {
+                    // Requested for the final batch of data, increase the size
+                    size += 10;
+                  }
+                  callback(json.results, size);
+                  // Update footer label
+                  grid.footer.getCell(0, 0).content = "Current size: " + size;
+                }
+              }
+            }
+            var rowsNeeded = Math.max(params.count, 1);
+            xhr.open("GET", randomUserUrl + "?results=" + rowsNeeded, true);
+            xhr.send();
+          };
+          // end-code
+        });
+      </code>
+    </code-example>
+  </section>
+
 </body>
 </html>
