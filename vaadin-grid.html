@@ -914,6 +914,16 @@ See the [demo](demo/index.html) for use case examples.
         observer: '_sortOrderChanged'
       },
 
+      /**
+       * Explicitly sets the number of records the `items` array/function
+       * provides for the grid to display.
+       *
+       * This may also be set indirectly by passing the value as the second
+       * parameter for data request callback function.
+       *
+       * @property {Number} size
+       * @type {Number}
+       */
       size: {
         type: Number,
         observer: '_sizeChanged'
@@ -1325,11 +1335,10 @@ See the [demo](demo/index.html) for use case examples.
      * visible items in the grid viewport from the `items` property or the
      * `datasource` function, and to scroll back to the top of the grid viewport.
      *
-     * Used to notify the grid when the data items are modified in some way
-     * (added, removed, updated, etc.).
+     * Needs to be called whenever the data items are modified in some way
+     * (added, removed, updated, re-ordered etc.).
      *
      * @type {Function}
-     * @param {number} size (optional) - The updated total number of items in the data source. If not defined, the old size will be used.
      */
     refreshItems: function() {
       this._grid.getDataSource().refreshItems();
