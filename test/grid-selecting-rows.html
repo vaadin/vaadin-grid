@@ -578,12 +578,13 @@
 
         describe('in mode: multi', function() {
           beforeEach(function() {
+            grid.size = 100;
             grid.items =  function(params, callback) {
               var data = [];
               for (var i = params.index; i < params.index + params.count; i++) {
                 data.push(["foo " + i, "bar " + i]);
               }
-              callback(data, 100);
+              callback(data);
             };
             grid.selection.mode = 'multi';
             grid.selection.select(0);
