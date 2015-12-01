@@ -10,8 +10,8 @@
     <module.name>com.vaadin.elements.grid.VaadinGrid</module.name>
     <modulePathPrefix></modulePathPrefix>
     <gwt.loglevel>WARN</gwt.loglevel>
-    <gwtversion>2.8.0.VC-SNAPSHOT</gwtversion>
-    <gwtmaven>2.7.0</gwtmaven>
+    <gwtversion>2.8.0-SNAPSHOT</gwtversion>
+    <gwtmaven>2.8.0-SNAPSHOT</gwtmaven>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -106,6 +106,14 @@
       </releases>
     </repository>
   </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>sonatype-snapshots</id>
+      <url>http://oss.sonatype.org/content/repositories/snapshots</url>
+      <snapshots><enabled>true</enabled></snapshots>
+      <releases><enabled>false</enabled></releases>
+    </pluginRepository>
+  </pluginRepositories>
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -157,6 +165,16 @@
       <artifactId>vaadin-widgets</artifactId>
       <version>${vaadin.version}</version>
       <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.gwt</groupId>
+          <artifactId>gwt-elemental</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.gwt</groupId>
+          <artifactId>gwt-user</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -211,6 +229,7 @@
           <enableAssertions>${gwt.enableAssertions}</enableAssertions>
           <closureCompiler>${gwt.closure}</closureCompiler>
           <jsInteropMode>JS</jsInteropMode>
+          <generateJsInteropExports>true</generateJsInteropExports>
           <persistentunitcachedir>${project.build.directory}</persistentunitcachedir>
           <modulePathPrefix>${modulePathPrefix}</modulePathPrefix>
           <extraJvmArgs>-Xmx2048m</extraJvmArgs>
