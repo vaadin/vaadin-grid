@@ -7,11 +7,10 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import jsinterop.annotations.JsIgnore;
+import jsinterop.annotations.JsType;
+
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.client.js.JsExport;
-import com.google.gwt.core.client.js.JsNamespace;
-import com.google.gwt.core.client.js.JsNoExport;
-import com.google.gwt.core.client.js.JsType;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.Function;
@@ -30,9 +29,8 @@ import com.vaadin.elements.grid.config.JSEditorRequest;
 import com.vaadin.elements.grid.data.GridDataSource;
 import com.vaadin.elements.grid.table.GridColumn;
 
-@JsNamespace(JS.VAADIN_JS_NAMESPACE + ".grid._api")
-@JsExport
-@JsType
+// Not used yet
+//@JsType(namespace = JS.VAADIN_JS_NAMESPACE + ".grid._api")
 public class GridEditor {
 
     private final Grid<Object> grid;
@@ -42,12 +40,12 @@ public class GridEditor {
 
     private final Map<JSColumn, Widget> editors = new HashMap<>();
 
-    @JsNoExport
+    @JsIgnore
     public GridEditor(GridElement gridElement) {
         this(gridElement, (JSEditorHandler) JavaScriptObject.createObject());
     }
 
-    @JsNoExport
+    @JsIgnore
     protected GridEditor(GridElement gridElement, JSEditorHandler handler) {
         this.gridElement = gridElement;
         this.grid = gridElement.getGrid();
