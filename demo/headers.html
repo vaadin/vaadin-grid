@@ -203,7 +203,7 @@ layout: page
         var timer = 0;
         function filter(){
           clearTimeout(timer);
-          timer = setTimeout(function() { grid.clearCache() }, 500);
+          timer = setTimeout(grid.refreshItems.bind(grid), 500);
         }
 
         filterElement.addEventListener("keyup", filter);
@@ -214,7 +214,7 @@ layout: page
             var filterValue = filterElement.value.toLowerCase();
             var data = employees.filter(function(val){ return (val.toString().toLowerCase()).indexOf(filterValue) != -1 } );
             var slice = data.slice(params.index, params.index + params.count);
-            callback(slice, data.length == 0 ? 1 : data.length);
+            callback(slice, data.length);
           };
 
           grid.then(function(){
