@@ -116,7 +116,7 @@ layout: page
         var grid = grid || document.querySelector("vaadin-grid");
 
         HTMLImports.whenReady(function() {
-          var dataSourceSize = 1000;
+          grid.size = 1000;
           grid.items = function(params, callback) {
             // Fetch the JSON data from a URL
             var xhr = new XMLHttpRequest();
@@ -124,7 +124,7 @@ layout: page
               if (xhr.readyState == XMLHttpRequest.DONE) {
                 if (xhr.status == 200) {
                   var json = JSON.parse(xhr.responseText);
-                  callback(json.results, dataSourceSize);
+                  callback(json.results);
                 }
               }
             }
