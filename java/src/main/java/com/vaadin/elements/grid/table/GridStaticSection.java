@@ -4,10 +4,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gwt.core.client.js.JsExport;
-import com.google.gwt.core.client.js.JsNamespace;
-import com.google.gwt.core.client.js.JsNoExport;
-import com.google.gwt.core.client.js.JsType;
+import jsinterop.annotations.JsIgnore;
+import jsinterop.annotations.JsType;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -22,9 +21,7 @@ import com.vaadin.elements.grid.config.JSStaticCell;
 import com.vaadin.shared.ui.grid.GridStaticCellType;
 import com.vaadin.shared.util.SharedUtil;
 
-@JsNamespace(JS.VAADIN_JS_NAMESPACE + ".grid._api")
-@JsExport
-@JsType
+@JsType(namespace = JS.VAADIN_JS_NAMESPACE + ".grid._api")
 public class GridStaticSection {
 
     private final GridElement gridElement;
@@ -37,7 +34,7 @@ public class GridStaticSection {
         this.grid = gridElement.getGrid();
     }
 
-    @JsNoExport
+    @JsIgnore
     public JSStaticCell obtainJSStaticCell(StaticCell cell) {
         if (!cells.containsKey(cell)) {
             JSStaticCell jsCell = JS.createJsType(JSStaticCell.class);
@@ -143,7 +140,7 @@ public class GridStaticSection {
         return getHeaderCellByColumn(rowIndex, column);
     }
 
-    @JsNoExport
+    @JsIgnore
     public JSStaticCell getHeaderCellByColumn(int rowIndex, GridColumn column) {
         StaticCell cell = grid.getHeaderRow(rowIndex).getCell(column);
         return obtainJSStaticCell(cell);

@@ -228,7 +228,6 @@
           <disableClassMetadata>${gwt.disableClassMetadata}</disableClassMetadata>
           <enableAssertions>${gwt.enableAssertions}</enableAssertions>
           <closureCompiler>${gwt.closure}</closureCompiler>
-          <jsInteropMode>JS</jsInteropMode>
           <generateJsInteropExports>true</generateJsInteropExports>
           <persistentunitcachedir>${project.build.directory}</persistentunitcachedir>
           <modulePathPrefix>${modulePathPrefix}</modulePathPrefix>

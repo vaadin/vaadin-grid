@@ -2,11 +2,10 @@ package com.vaadin.elements.grid.data;
 
 import java.util.List;
 
+import jsinterop.annotations.JsIgnore;
+import jsinterop.annotations.JsType;
+
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.client.js.JsExport;
-import com.google.gwt.core.client.js.JsType;
-import com.google.gwt.core.client.js.JsNamespace;
-import com.google.gwt.core.client.js.JsNoExport;
 import com.google.gwt.query.client.js.JsUtils;
 import com.vaadin.client.data.AbstractRemoteDataSource;
 import com.vaadin.elements.common.js.JS;
@@ -14,9 +13,7 @@ import com.vaadin.elements.common.js.JSValidate;
 import com.vaadin.elements.grid.GridElement;
 import com.vaadin.shared.ui.grid.Range;
 
-@JsNamespace(JS.VAADIN_JS_NAMESPACE + ".grid._api")
-@JsExport
-@JsType
+@JsType(namespace = JS.VAADIN_JS_NAMESPACE + ".grid._api")
 public abstract class GridDataSource extends AbstractRemoteDataSource<Object> {
     private int size = 0;
 
@@ -36,7 +33,7 @@ public abstract class GridDataSource extends AbstractRemoteDataSource<Object> {
         return size;
     }
 
-    @JsNoExport
+    @JsIgnore
     public void setSize(int nsize) {
         if (nsize != size) {
             boolean isEmpty = size == 0;
