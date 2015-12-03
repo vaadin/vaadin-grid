@@ -161,7 +161,7 @@
 
         mydata.splice(0, 1);
         mydata[0].splice(0, 1);
-        grid.clearCache();
+        grid.refreshItems();
 
         grid.columns.splice(0, 1);
         grid.then(function() {

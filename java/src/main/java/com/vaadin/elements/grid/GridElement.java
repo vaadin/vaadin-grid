@@ -32,6 +32,7 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.vaadin.client.widget.grid.DataAvailableEvent;
 import com.vaadin.client.widget.grid.DetailsGenerator;
 import com.vaadin.client.widget.grid.events.SelectAllEvent;
 import com.vaadin.client.widget.grid.events.SelectAllHandler;
@@ -342,7 +343,7 @@ public class GridElement implements SelectionHandler<Object>,
         }
 
         if (getDataSource() != null) {
-            getDataSource().refresh();
+            getDataSource().refreshItems();
         }
     }
 
@@ -510,7 +511,7 @@ public class GridElement implements SelectionHandler<Object>,
     private void clearDataSourceCache() {
         GridDataSource dataSource = getDataSource();
         if (dataSource != null) {
-            dataSource.clearCache(null);
+            dataSource.refreshItems();
         }
     }
 
@@ -668,5 +669,32 @@ public class GridElement implements SelectionHandler<Object>,
                 }
             };
         }));
+    }
+
+    public void sizeChanged(int size, int oldSize) {
+        GridDataSource ds = getDataSource();
+        if (ds != null) {
+            // Resize existing data source row data
+            if (oldSize < size) {
+                ds.insertRowData(oldSize, size - oldSize);
+            } else if (oldSize > size) {
+                ds.removeRowData(size, oldSize - size);
+            }
+        }
+
+        if (size == 0) {
+            // Grid gets stuck when the data source size is 0. It won't
+            // request new data but isWorkPending will still return true.
+            // This releases the state (grid.dataIsBeingFetched gets set
+            // false).
+            grid.fireEvent(new DataAvailableEvent(null));
+        } else if (oldSize == 0 && ds != null) {
+            // Grid stops calling requestRows when size is 0, if
+            // size changes we have to re-attach the data-source so
+            // that grid starts calling requestRows again
+            grid.setDataSource(ds);
+        }
+
+        updateHeight();
     }
 }

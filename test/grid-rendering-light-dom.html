@@ -152,11 +152,13 @@
         }
 
         it('should render values from `<td>` elements', function() {
-          var row = grid.$$(".vaadin-grid-body .vaadin-grid-row");
-          var contents = row.querySelectorAll('span');
+          return grid.then(function() {
+            var row = grid.$$(".vaadin-grid-body .vaadin-grid-row");
+            var contents = row.querySelectorAll('span');
 
-          assert.isTrue(contents[0].innerHTML == 'Grid');
-          assert.isTrue(contents[1].innerHTML == '10000');
+            assert.isTrue(contents[0].innerHTML == 'Grid');
+            assert.isTrue(contents[1].innerHTML == '10000');
+          });
         });
 
         it('should mutate on tbody inner changes', function(done) {
