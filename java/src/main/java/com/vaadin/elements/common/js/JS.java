@@ -2,11 +2,9 @@ package com.vaadin.elements.common.js;
 
 import java.util.List;
 
+import jsinterop.annotations.JsFunction;
+
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.client.JsArrayMixed;
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONValue;
-import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.js.JsUtils;
 
 /**
@@ -23,16 +21,17 @@ public abstract class JS {
     public static final String VAADIN_JS_NAMESPACE = "vaadin.elements";
 
     @SuppressWarnings("unchecked")
-    public static <T> T createJsType(Class<T> clz) {
-        if (clz == JsArrayMixed.class || clz == JSArray.class) {
-            return (T) JavaScriptObject.createArray();
-        }
+    public static <T> T createJsObject() {
         return (T) JavaScriptObject.createObject();
     }
 
     @SuppressWarnings("unchecked")
+    public static <T> T createJsArray() {
+        return (T) JavaScriptObject.createArray();
+    }
+
     public static <T> JSArray<T> createArray() {
-        return createJsType(JSArray.class);
+        return createJsArray();
     }
 
     /**
@@ -52,57 +51,17 @@ public abstract class JS {
         return Object(dataItem) !== dataItem;
     }-*/;
 
-    public static void definePropertyAccessors(Object jso, String propertyName,
-            Setter setter, Getter getter) {
-        JavaScriptObject setterJSO = setter != null ? JsUtils
-                .wrapFunction(new Function() {
-                    @Override
-                    public void f() {
-                        // Empty Strings are interpreted as null for some reason
-                        // so they need some special attention.
-                        JSONValue jsonValue = new JSONObject(arguments(1))
-                                .get("value");
-                        if (!JS.isUndefinedOrNull(jsonValue)
-                                && jsonValue.isString() != null
-                                && "".equals(jsonValue.isString().stringValue())) {
-                            setter.setValue("");
-                        } else {
-                            // Otherwise handle normally
-                            setter.setValue(arguments(0));
-                        }
-                    }
-                })
-                : null;
-
-        JavaScriptObject getterJSO = getter != null ? JsUtils
-                .wrapFunction(new Function() {
-                    @Override
-                    public Object f(Object... args) {
-                        JSArray<Object> array = JS.createArray();
-                        array.push(getter.getValue());
-                        return array;
-                    }
-                }) : null;
-        definePropertyAccessors((JavaScriptObject) jso, propertyName,
-                setterJSO, getterJSO);
-    }
-
-    private static native void definePropertyAccessors(
-            JavaScriptObject jsObject, String propertyName,
-            JavaScriptObject setter, JavaScriptObject getter)
+    public static native void definePropertyAccessors(Object jsObject, String propertyName, Setter setter, Getter getter)
     /*-{
       var _value = jsObject[propertyName];
 
       Object.defineProperty(jsObject, propertyName, {
         get: function() {
-            if (getter) {
-                return getter()[0];
-            }
-            return _value;
+            return typeof getter === 'function' ? getter() : _value;
         },
         set: function(value) {
-            if (setter){
-                setter(value, {value: value});
+            if (typeof setter === 'function'){
+                setter(value);
             }
             _value = value;
         }
@@ -113,10 +72,12 @@ public abstract class JS {
       }
     }-*/;
 
+    @JsFunction
     public interface Setter {
         void setValue(Object value);
     }
 
+    @JsFunction
     public interface Getter {
         Object getValue();
     }

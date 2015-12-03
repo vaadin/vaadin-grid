@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import jsinterop.annotations.JsIgnore;
-import jsinterop.annotations.JsType;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Document;
@@ -109,7 +108,7 @@ public class GridEditor {
 
     private JSEditorRequest createJSEditorRequest(
             EditorRequest<Object> request, final boolean clearEditorsOnSuccess) {
-        JSEditorRequest result = JS.createJsType(JSEditorRequest.class);
+        JSEditorRequest result = JS.createJsObject();
         result.setRowIndex(request.getRowIndex());
 
         Object dataItem = GridDataSource.extractDataItem(request.getRow());
