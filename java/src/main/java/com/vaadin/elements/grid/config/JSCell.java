@@ -19,26 +19,21 @@ public interface JSCell {
 
     @JsOverlay
     static JSCell create(CellReference<Object> cell, Element container) {
-        JSCell jsCell = JS.createJsType(JSCell.class);
+        JSCell jsCell = JS.createJsObject();
         GridColumn column = (GridColumn) cell.getColumn();
-        JS.definePropertyAccessors(jsCell, "element", null,
-                () -> cell.getElement());
-        JS.definePropertyAccessors(jsCell, "index", null,
-                () -> cell.getColumnIndex());
-        JS.definePropertyAccessors(jsCell, "columnName", null, () -> column
-                .getJsColumn().getName());
-        JS.definePropertyAccessors(jsCell, "data", null,
-                () -> column.getValue(cell.getRow()));
 
-        JSRow row = JS.createJsType(JSRow.class);
-        JS.definePropertyAccessors(row, "index", null, () -> cell.getRowIndex());
-        JS.definePropertyAccessors(row, "data", null,
-                () -> GridDataSource.extractDataItem(cell.getRow()));
-        JS.definePropertyAccessors(row, "element", null, () -> cell
-                .getElement().getParentElement());
+        jsCell.setElement(cell.getElement());
+        jsCell.setIndex(cell.getColumnIndex());
+        jsCell.setColumnName(column.getJsColumn().getName());
+        jsCell.setData(column.getValue(cell.getRow()));
+
+        JSRow row = JS.createJsObject();
+        row.setIndex(cell.getRowIndex());
+        row.setData(GridDataSource.extractDataItem(cell.getRow()));
+        row.setElement(cell.getElement().getParentElement());
+
         row.setGrid(container);
         jsCell.setRow(row);
-
         return jsCell;
     }
 

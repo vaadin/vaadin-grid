@@ -37,7 +37,7 @@ public class GridJsFuncDataSource extends GridDataSource {
     protected void requestRows(final int firstRowIndex, final int numberOfRows,
             final RequestRowsCallback<Object> callback) {
 
-        JSDataRequest jsDataRequest = JS.createJsType(JSDataRequest.class);
+        JSDataRequest jsDataRequest = JS.createJsObject();
         jsDataRequest.setIndex(firstRowIndex);
         jsDataRequest.setCount(numberOfRows);
         jsDataRequest.setSortOrder(JsUtils.prop(gridElement.getContainer(), "sortOrder"));

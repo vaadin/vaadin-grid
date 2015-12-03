@@ -493,7 +493,7 @@ public class GridElement implements SelectionHandler<Object>,
         List<GridColumn> dataColumns = getDataColumns();
 
         for (SortOrder order : sortOrders) {
-            JSSortOrder sortOrder = JS.createJsType(JSSortOrder.class);
+            JSSortOrder sortOrder = JS.createJsObject();
             sortOrder.setColumn(dataColumns.indexOf(order.getColumn()));
             sortOrder.setDirection(JSEnums.Direction.val(order.getDirection()));
             jsSortOrders.push(sortOrder);
