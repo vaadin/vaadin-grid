@@ -37,7 +37,7 @@ public class GridStaticSection {
     @JsIgnore
     public JSStaticCell obtainJSStaticCell(StaticCell cell) {
         if (!cells.containsKey(cell)) {
-            JSStaticCell jsCell = JS.createJsType(JSStaticCell.class);
+            JSStaticCell jsCell = JS.createJsObject();
             jsCell.setColspan(cell.getColspan());
 
             if (cell.getType() == GridStaticCellType.WIDGET) {

@@ -15,16 +15,12 @@ import com.vaadin.elements.grid.data.GridDataSource;
  */
 @JsType(isNative=true)
 public interface JSRow {
-
     @JsOverlay
     static JSRow create(RowReference<Object> row, Element container) {
-        JSRow jsRow = JS.createJsType(JSRow.class);
-        JS.definePropertyAccessors(jsRow, "index", null,
-                () -> row.getRowIndex());
-        JS.definePropertyAccessors(jsRow, "data", null,
-                () -> GridDataSource.extractDataItem(row.getRow()));
-        JS.definePropertyAccessors(jsRow, "element", null,
-                () -> row.getElement());
+        JSRow jsRow = JS.createJsObject();
+        jsRow.setIndex(row.getRowIndex());
+        jsRow.setData(GridDataSource.extractDataItem(row.getRow()));
+        jsRow.setElement(row.getElement());
         jsRow.setGrid(container);
         return jsRow;
     }
@@ -44,5 +40,4 @@ public interface JSRow {
     @JsProperty Element getElement();
 
     @JsProperty void setElement(Element element);
-
 }
