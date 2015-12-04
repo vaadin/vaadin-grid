@@ -380,7 +380,7 @@ public class GridElement implements SelectionHandler<Object>,
 
     public void setRowClassGenerator(JavaScriptObject generator) {
         grid.setRowStyleGenerator(JS.isUndefinedOrNull(generator) ? null
-                : row -> JS.exec(generator, JSRow.create(row, container)));
+                : row -> JS.exec(generator, new JSRow(row, container)));
         rowClassGenerator = generator;
     }
 
@@ -390,7 +390,7 @@ public class GridElement implements SelectionHandler<Object>,
 
     public void setCellClassGenerator(JavaScriptObject generator) {
         grid.setCellStyleGenerator(JS.isUndefinedOrNull(generator) ? null
-                : cell -> JS.exec(generator, JSCell.create(cell, container)));
+                : cell -> JS.exec(generator, new JSCell(cell, container)));
         cellClassGenerator = generator;
     }
 

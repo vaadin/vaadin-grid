@@ -1,25 +1,53 @@
 package com.vaadin.elements.grid.config;
 
-import com.google.gwt.core.client.JavaScriptObject;
+import jsinterop.annotations.JsProperty;
+import jsinterop.annotations.JsType;
+
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.query.client.js.JsUtils;
+import com.vaadin.client.widget.grid.CellReference;
 import com.vaadin.client.widget.grid.RowReference;
-import com.vaadin.elements.common.js.JS;
 import com.vaadin.elements.grid.data.GridDataSource;
+import com.vaadin.elements.grid.table.GridColumn;
 
-public interface JSRow {
+@JsType
+@SuppressWarnings("rawtypes")
+public class JSRow {
 
-    static JavaScriptObject create(RowReference<Object> row, Element container) {
-        JavaScriptObject jsRow = JS.createJsObject();
-        JS.definePropertyAccessors(jsRow, "index", null,
-                () -> row.getRowIndex());
-        JS.definePropertyAccessors(jsRow, "data", null,
-                () -> GridDataSource.extractDataItem(row.getRow()));
-        JS.definePropertyAccessors(jsRow, "element", null,
-                () -> row.getElement());
-        JsUtils.prop(jsRow, "grid", container);
+    private Element grid;
+    private CellReference cell;
+    private RowReference row;
+    private GridColumn column;
 
-        return jsRow;
+    public JSRow(Object reference, Element container) {
+        if (reference instanceof CellReference) {
+            cell = (CellReference) reference;
+            column = (GridColumn) cell.getColumn();
+        }
+        if (reference instanceof RowReference) {
+            row = (RowReference) reference;
+            column = (GridColumn) row.getGrid().getColumn(row.getRowIndex());
+        }
+        grid = container;
     }
 
+    @JsProperty int getIndex() {
+        return cell != null ? cell.getRowIndex() : row.getRowIndex();
+    }
+
+    @JsProperty Object getData() {
+        return cell != null ? column.getValue(cell.getRow()) :
+            GridDataSource.extractDataItem(row.getRow());
+    }
+
+    @JsProperty Element getElement() {
+        return cell != null ? cell.getElement() : row.getElement();
+    }
+
+    @JsProperty Element getGrid() {
+        return grid;
+    }
+
+    @JsProperty String getColumnName() {
+        return column.getJsColumn().getName();
+    }
 }
