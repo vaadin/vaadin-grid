@@ -1,43 +1,25 @@
 package com.vaadin.elements.grid.config;
 
-import jsinterop.annotations.JsOverlay;
-import jsinterop.annotations.JsProperty;
-import jsinterop.annotations.JsType;
-
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.query.client.js.JsUtils;
 import com.vaadin.client.widget.grid.RowReference;
 import com.vaadin.elements.common.js.JS;
 import com.vaadin.elements.grid.data.GridDataSource;
 
-/**
- * This class is a JsInterop wrapper for the JS object representing a row object
- * passed to row style generators.
- */
-@JsType(isNative=true)
 public interface JSRow {
-    @JsOverlay
-    static JSRow create(RowReference<Object> row, Element container) {
-        JSRow jsRow = JS.createJsObject();
-        jsRow.setIndex(row.getRowIndex());
-        jsRow.setData(GridDataSource.extractDataItem(row.getRow()));
-        jsRow.setElement(row.getElement());
-        jsRow.setGrid(container);
+
+    static JavaScriptObject create(RowReference<Object> row, Element container) {
+        JavaScriptObject jsRow = JS.createJsObject();
+        JS.definePropertyAccessors(jsRow, "index", null,
+                () -> row.getRowIndex());
+        JS.definePropertyAccessors(jsRow, "data", null,
+                () -> GridDataSource.extractDataItem(row.getRow()));
+        JS.definePropertyAccessors(jsRow, "element", null,
+                () -> row.getElement());
+        JsUtils.prop(jsRow, "grid", container);
+
         return jsRow;
     }
 
-    @JsProperty int getIndex();
-
-    @JsProperty void setIndex(int index);
-
-    @JsProperty Object getData();
-
-    @JsProperty void setData(Object data);
-
-    @JsProperty Element getGrid();
-
-    @JsProperty void setGrid(Element grid);
-
-    @JsProperty Element getElement();
-
-    @JsProperty void setElement(Element element);
 }
