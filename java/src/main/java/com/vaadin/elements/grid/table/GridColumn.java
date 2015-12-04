@@ -86,7 +86,7 @@ public final class GridColumn extends Column<Object, Object> {
         bind("readOnly", v -> setEditable(!(boolean) v));
         bind("renderer",
                 v -> setRenderer((cell, data) -> {
-                    JavaScriptObject jsCell = JSCell.create(cell,
+                    JSCell jsCell = new JSCell(cell,
                             gridElement.getContainer());
                     JS.exec(v, jsCell);
                 }));
