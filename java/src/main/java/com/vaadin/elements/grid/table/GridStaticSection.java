@@ -13,14 +13,11 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.vaadin.client.widgets.Grid.StaticSection.StaticCell;
 import com.vaadin.client.widgets.Grid.StaticSection.StaticRow;
 import com.vaadin.elements.common.js.JS;
-import com.vaadin.elements.common.js.JS.Setter;
 import com.vaadin.elements.common.js.JSArray;
 import com.vaadin.elements.grid.GridElement;
 import com.vaadin.elements.grid.ViolatedGrid;
 import com.vaadin.elements.grid.config.JSStaticCell;
-import com.vaadin.shared.ui.grid.GridStaticCellType;
 import com.vaadin.shared.util.SharedUtil;
-
 @JsType(namespace = JS.VAADIN_JS_NAMESPACE + ".grid._api")
 public class GridStaticSection {
 
@@ -37,30 +34,12 @@ public class GridStaticSection {
     @JsIgnore
     public JSStaticCell obtainJSStaticCell(StaticCell cell) {
         if (!cells.containsKey(cell)) {
-            JSStaticCell jsCell = JS.createJsObject();
-            jsCell.setColspan(cell.getColspan());
-
-            if (cell.getType() == GridStaticCellType.WIDGET) {
-                jsCell.setContent(cell.getWidget().getElement());
-            } else if (cell.getType() == GridStaticCellType.TEXT) {
-                jsCell.setContent("".equals(cell.getText()) ? null : cell
-                        .getText());
-            } else if (cell.getType() == GridStaticCellType.HTML) {
-                jsCell.setContent(cell.getHtml());
-            }
-
-            cells.put(cell, jsCell);
-            bind(jsCell, cell, "colspan",
-                    v -> cell.setColspan(((Double) v).intValue()));
-            bind(jsCell, cell, "className", v -> cell.setStyleName((String) v));
-
-            bind(jsCell, cell, "content", v -> contentChanged(v, cell));
+            cells.put(cell, new JSStaticCell(this, cell));
         }
-
         return cells.get(cell);
     }
 
-    private void contentChanged(Object content, StaticCell cell) {
+    public void contentChanged(Object content, StaticCell cell) {
         // "column" is non-null only if the given cell is on default header row
         GridColumn column = getColumnByDefaultHeaderCell(obtainJSStaticCell(cell));
         if (content == null) {
@@ -70,6 +49,11 @@ public class GridStaticSection {
         } else if (JsUtils.isElement(content)) {
             applyElementContent(cell, (Element) content, column);
         }
+    }
+
+    public void cellChanged(StaticCell staticCell) {
+        gridElement.updateWidth();
+        grid.refreshStaticSection(staticCell);
     }
 
     private void contentCleared(StaticCell cell, GridColumn column) {
@@ -124,15 +108,6 @@ public class GridStaticSection {
             }
         }
         return result;
-    }
-
-    private void bind(JSStaticCell cell, StaticCell staticCell,
-            String propertyName, Setter setter) {
-        JS.definePropertyAccessors(cell, propertyName, v -> {
-            setter.setValue(v);
-            gridElement.updateWidth();
-            grid.refreshStaticSection(staticCell);
-        }, null);
     }
 
     public JSStaticCell getHeaderCell(int rowIndex, Object columnId) {
