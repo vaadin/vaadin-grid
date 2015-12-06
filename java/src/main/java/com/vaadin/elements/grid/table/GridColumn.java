@@ -13,29 +13,31 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.HTML;
 import com.vaadin.client.widgets.Grid.Column;
 import com.vaadin.elements.common.js.JS;
-import com.vaadin.elements.common.js.JS.Setter;
 import com.vaadin.elements.common.js.JSArray;
-import com.vaadin.elements.common.js.JSFunction;
 import com.vaadin.elements.grid.GridElement;
-import com.vaadin.elements.grid.config.JSCell;
 import com.vaadin.elements.grid.config.JSColumn;
 import com.vaadin.elements.grid.config.JSStaticCell;
 import com.vaadin.elements.grid.data.GridDataSource;
 import com.vaadin.elements.grid.data.GridDomTableDataSource;
-import com.vaadin.shared.ui.grid.GridConstants;
 
 public final class GridColumn extends Column<Object, Object> {
 
     private final JSColumn jsColumn;
     private final GridElement gridElement;
 
-    public static GridColumn addColumn(JSColumn jsColumn,
-            GridElement gridElement) {
-        GridColumn result = new GridColumn(jsColumn, gridElement);
-        gridElement.getGrid().addColumn(result,
+    /**
+     * Create a new GridColumn associated with a JSColumn configuration.
+     *
+     * @param cfg it accepts either a JSO or a JSColumn, the object is
+     *   promoted to a JSColumn to add customised setters/getters.
+     */
+    public static GridColumn createColumn(Object cfg, GridElement gridElement) {
+        JSColumn jsColumn = JSColumn.promote(cfg);
+        GridColumn column = new GridColumn(jsColumn, gridElement);
+        gridElement.getGrid().addColumn(column,
                 gridElement.getGrid().getVisibleColumns().size());
-        result.bindProperties();
-        return result;
+        jsColumn.configure(gridElement, column);
+        return column;
     }
 
     private GridColumn(JSColumn jsColumn, GridElement gridElement) {
@@ -72,35 +74,7 @@ public final class GridColumn extends Column<Object, Object> {
                 staticSection.getDefaultHeader(), this);
     }
 
-    private void bindProperties() {
-        JS.definePropertyAccessors(jsColumn, "hidden", v -> {
-            setHidden((Boolean) v);
-            gridElement.updateWidth();
-        }, this::isHidden);
-
-        bind("name", v -> nameChanged((String) v));
-        bind("hidingToggleText", v -> setHidingToggleCaption(v == null ? null
-                : v.toString()));
-        bind("flex", v -> setExpandRatio(((Double) v).intValue()));
-        bind("sortable", v -> setSortable((Boolean) v));
-        bind("hidable", v -> setHidable((Boolean) v));
-        bind("readOnly", v -> setEditable(!(boolean) v));
-        bind("renderer", v -> setRenderer((cell, data) -> {
-            JSCell jsCell = new JSCell(cell, gridElement.getContainer());
-            ((JSFunction) v).f(jsCell);
-        }));
-        bind("minWidth",
-                v -> setMinimumWidth(JS.isUndefinedOrNull(v) ? GridConstants.DEFAULT_MIN_WIDTH
-                        : (double) v));
-        bind("maxWidth",
-                v -> setMaximumWidth(JS.isUndefinedOrNull(v) ? GridConstants.DEFAULT_MAX_WIDTH
-                        : (double) v));
-        bind("width",
-                v -> setWidth(JS.isUndefinedOrNull(v) ? GridConstants.DEFAULT_COLUMN_WIDTH_PX
-                        : (double) v));
-    }
-
-    private void nameChanged(String name) {
+    public void nameChanged(String name) {
         // Need to invoke the logic that determines whether default header cell
         // should show content or name. Invocation must be deferred because
         // the logic happens synchronously and the actual name property hasn't
@@ -109,13 +83,6 @@ public final class GridColumn extends Column<Object, Object> {
         Scheduler.get().scheduleDeferred(
                 () -> reference.setContent(reference.getContent()));
 
-    }
-
-    private void bind(String propertyName, final Setter setter) {
-        JS.definePropertyAccessors(jsColumn, propertyName, v -> {
-            setter.setValue(v);
-            gridElement.updateWidth();
-        }, null);
     }
 
     public JSColumn getJsColumn() {
