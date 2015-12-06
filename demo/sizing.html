@@ -192,6 +192,7 @@ layout: page
 
         HTMLImports.whenReady(function() {
           grid.items = employees;
+          // Don't return an empty class because of https://dev.vaadin.com/ticket/19364
           // code
 
           grid.cellClassGenerator = function(cell) {
@@ -199,7 +200,6 @@ layout: page
               var activity = cell.row.data[2];
               return 'activity-' + activity.toLowerCase();
             }
-            return '';
           };
           // end-code
         });

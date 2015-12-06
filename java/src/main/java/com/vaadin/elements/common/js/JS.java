@@ -2,8 +2,6 @@ package com.vaadin.elements.common.js;
 
 import java.util.List;
 
-import jsinterop.annotations.JsFunction;
-
 import com.google.gwt.core.client.JavaScriptObject;
 
 /**
@@ -50,37 +48,35 @@ public abstract class JS {
         return Object(dataItem) !== dataItem;
     }-*/;
 
-    public static native void definePropertyAccessors(Object jsObject,
-            String propertyName, Setter setter, Getter getter)
+    /**
+     * Promote a plain JSO to a GWT java class.
+     */
+    public static native <T> T promoteTo(Object o, Class<?> clz)
     /*-{
-      var _value = jsObject[propertyName];
-
-      Object.defineProperty(jsObject, propertyName, {
-        get: function() {
-            return typeof getter === 'function' ? getter() : _value;
-        },
-        set: function(value) {
-            if (typeof setter === 'function'){
-                setter(value);
-            }
-            _value = value;
+        var p = @java.lang.Class::getPrototypeForClass(*)(clz);
+        if (o.__proto__ && o.__proto__ !== p) {
+            o.__proto__ = p;
+            o.__reassignPending = true;
         }
-      });
-
-      if (_value !== undefined){
-          jsObject[propertyName] = _value;
-      }
+        return o;
     }-*/;
 
-    @JsFunction
-    public interface Setter {
-        void setValue(Object value);
-    }
-
-    @JsFunction
-    public interface Getter {
-        Object getValue();
-    }
+    /**
+     * Loop over an object properties and call customized setters which are present in its prototype.
+     * Useful after promoting a JSO to Java and make old values effective.
+     */
+    public static native void reassignProperties(Object o)
+    /*-{
+        if (o.__reassignPending) {
+            delete o.__reassignPending;
+            var p = o.__proto__;
+            for (var i in o) if (o.hasOwnProperty(i) && p.hasOwnProperty(i)) {
+                var v = o[i];
+                delete o[i];
+                o[i] = v;
+            }
+        }
+    }-*/;
 
     public static native boolean isUndefinedOrNull(Object o)
     /*-{
