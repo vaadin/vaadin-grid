@@ -16,9 +16,9 @@ import com.google.gwt.query.client.js.JsUtils;
  */
 public abstract class JS {
 
-    // This has to match with the @JsNamespace of the package-info of exported
-    // components
-    public static final String VAADIN_JS_NAMESPACE = "vaadin.elements";
+    private static final String NAMESPACE_VAADIN = "vaadin.elements";
+    public static final String NAMESPACE_API = NAMESPACE_VAADIN + "._api";
+    public static final String NAMESPACE_GRID = NAMESPACE_VAADIN + ".grid";
 
     @SuppressWarnings("unchecked")
     public static <T> T createJsObject() {

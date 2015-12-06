@@ -18,7 +18,7 @@ import com.vaadin.elements.grid.GridElement;
 import com.vaadin.elements.grid.ViolatedGrid;
 import com.vaadin.elements.grid.config.JSStaticCell;
 import com.vaadin.shared.util.SharedUtil;
-@JsType(namespace = JS.VAADIN_JS_NAMESPACE + ".grid._api")
+@JsType(namespace = JS.NAMESPACE_API)
 public class GridStaticSection {
 
     private final GridElement gridElement;
