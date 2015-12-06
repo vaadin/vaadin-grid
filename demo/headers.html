@@ -12,17 +12,10 @@ layout: page
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
   <link rel="import" href="common.html">
-  <link rel="stylesheet" href="http://css-spinners.com/css/spinner/spinner.css" type="text/css">
 
   <style>
     #page:invalid {
       border: 1px solid red;
-    }
-    .small.spinner-loader {
-      font-size: 3px;
-    }
-    .hidden.spinner-loader {
-      display: none;
     }
   </style>
 </head>
@@ -210,7 +203,7 @@ layout: page
         var timer = 0;
         function filter(){
           clearTimeout(timer);
-          timer = setTimeout(function() { grid.clearCache() }, 500);
+          timer = setTimeout(grid.refreshItems.bind(grid), 500);
         }
 
         filterElement.addEventListener("keyup", filter);
@@ -221,7 +214,7 @@ layout: page
             var filterValue = filterElement.value.toLowerCase();
             var data = employees.filter(function(val){ return (val.toString().toLowerCase()).indexOf(filterValue) != -1 } );
             var slice = data.slice(params.index, params.index + params.count);
-            callback(slice, data.length == 0 ? 1 : data.length);
+            callback(slice, data.length);
           };
 
           grid.then(function(){
@@ -435,7 +428,6 @@ layout: page
               <input id="page" type="number" min="1" max="10" value="1" required/>
               /10
               <button class="demo-button" id="next">Next</button>
-              <div class="small spinner-loader hidden">Loading…</div>
             </th>
           </tr>
           </tfoot>
@@ -445,7 +437,6 @@ layout: page
         var grid = grid || document.querySelector("vaadin-grid");
 
         function loadData(page, count) {
-          grid.$$(".spinner-loader").classList.remove('hidden');
 
           // Fetch the JSON data from a URL
           var xhr = new XMLHttpRequest();
@@ -457,7 +448,6 @@ layout: page
                   row.index = (page - 1) * count + index + 1;
                 });
                 grid.items = json.results;
-                grid.$$(".spinner-loader").classList.add('hidden');
               }
             }
           };
@@ -474,7 +464,7 @@ layout: page
           grid.$$("#prev").addEventListener('click', function(e) {
             var input = grid.$$("#page");
             var value = parseInt(input.value);
-            if (value < parseInt(input.max)) {
+            if (value > parseInt(input.min)) {
               var page = value - 1;
               input.value = page;
               loadData(page, count);

@@ -58,4 +58,14 @@ public interface IndexBasedSelectionModel extends SelectionModel<Object> {
      */
     void dataSizeUpdated(int newSize);
 
+    /**
+     * Updates the selection mode if the model supports it.
+     */
+    void setMode(IndexBasedSelectionMode mode);
+
+    /**
+     * Returns true if model supports the selection mode.
+     */
+    boolean supportsMode(IndexBasedSelectionMode mode);
+
 }

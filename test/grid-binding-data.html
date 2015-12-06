@@ -104,7 +104,7 @@
     describe('items function', function() {
       it('should set a function as items', function() {
         infiniteDataSource.size = 2;
-
+        grid.size = 2;
         grid.items = infiniteDataSource;
 
         return grid.then(function() {
@@ -141,6 +141,12 @@
           document.body.removeChild(g);
         });
       });
+
+      it('should have matching size property', function() {
+        grid.items = ["foo", "bar"];
+        expect(grid.size).to.equal(2);
+      });
+
     });
 
     describe('getItem', function() {
@@ -214,19 +220,130 @@
       });
     });
 
-    describe('clearCache', function() {
+    describe('refreshItems', function() {
+      it('should update cached items', function() {
+        grid.items = ['foo'];
+        grid.items[0] = 'bar';
+
+        expect(qLocal('.vaadin-grid-body .vaadin-grid-cell span').innerHTML).to.equal('foo');
+        grid.refreshItems();
+        expect(qLocal('.vaadin-grid-body .vaadin-grid-cell span').innerHTML).to.equal('bar');
+      });
+
       it('should work even if datasource was empty', function(){
         grid.items = [];
 
         return grid.then(function() {
-          grid.items.push(1)
-          grid.clearCache(1);
+          grid.items.push(1);
+          grid.size = grid.items.length;
           return grid;
         }).then(function() {
           expect(qLocal('.vaadin-grid-body .vaadin-grid-cell')).to.exist;
         });
       });
     });
+
+    describe('size', function() {
+
+      var unknownSizeDs = function(params, callback) {
+        var data = [];
+        for (var i = params.index; i < grid.size && i < params.index + params.count; i++) {
+          data.push(["foo " + i, "bar " + i]);
+        }
+        callback(data);
+      };
+
+      it('should not refresh visible items', function() {
+        grid.items = ['foo', 'bar', 'baz'];
+        return grid.then(function() {
+          grid.items[0] = 'qux';
+          grid.size = 2;
+        }).then(function() {
+          expect(qLocal('.vaadin-grid-body .vaadin-grid-cell span').innerHTML).to.equal('foo');
+        });
+      });
+
+      it('should be optional to provide the size for data request callback', function() {
+        grid.items = unknownSizeDs;
+        grid.size = 5;
+        return grid.then(function() {
+          expect(qaLocal('.vaadin-grid-body .vaadin-grid-row')).to.have.length(grid.size);
+        });
+      });
+
+      it('should work if size is given before the datasource', function() {
+        grid.size = 5;
+        grid.items = unknownSizeDs;
+        return grid.then(function() {
+          expect(qaLocal('.vaadin-grid-body .vaadin-grid-row')).to.have.length(grid.size);
+        });
+      });
+
+      it('should request for empty result and size if no size is provided', function() {
+        grid.size = 0;
+        infiniteDataSource.size = 1000;
+        spy = sinon.spy(infiniteDataSource);
+        grid.items = spy;
+
+        return grid.then(function() {
+          expect(spy.getCall(0).args[0].count).to.equal(0);
+          expect(spy.callCount).to.be.above(1);
+        });
+      });
+
+      it('should not request for empty result and size if size is provided', function() {
+        grid.size = 100;
+        spy = sinon.spy(unknownSizeDs);
+        grid.items = spy;
+
+        return grid.then(function() {
+          expect(spy.getCall(0).args[0].count).not.to.equal(0);
+          expect(spy.callCount).to.equal(1);
+        });
+      });
+
+      it('should request missing rows', function() {
+        grid.size = 2;
+        grid.items = unknownSizeDs;
+
+        return grid.then(function() {
+          expect(qaLocal('.vaadin-grid-body .vaadin-grid-row')).to.have.length(grid.size);
+          grid.size = 3;
+        }).then(function() {
+          expect(qaLocal('.vaadin-grid-body .vaadin-grid-row')).to.have.length(grid.size);
+        });
+      });
+
+      it('should accept size even without a datasource', function() {
+        var g = document.createElement("vaadin-grid");
+        g.size = 4;
+        expect(g.size).to.equal(4);
+      });
+
+      it('should physically resize by size', function(done) {
+        var items = [];
+        items.length = 8;
+        grid.items = items;
+        var originalHeight, reducedHeight;
+
+        grid.then(function() {
+          originalHeight = grid.clientHeight;
+          grid.size = 2;
+        }).then(function() {
+          reducedHeight = grid.clientHeight;
+          expect(reducedHeight).to.be.below(originalHeight);
+          grid.size = 3;
+        }).then(function() {
+          Polymer.Base.async(function() {
+            expect(grid.clientHeight).to.be.below(originalHeight);
+            expect(grid.clientHeight).to.be.above(reducedHeight);
+            done();
+          }, 500);
+        });
+      });
+
+    });
+
   });
 </script>
 

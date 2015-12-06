@@ -31,6 +31,7 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.vaadin.client.widget.grid.DataAvailableEvent;
 import com.vaadin.client.widget.grid.DetailsGenerator;
 import com.vaadin.client.widget.grid.events.SelectAllEvent;
 import com.vaadin.client.widget.grid.events.SelectAllHandler;
@@ -57,6 +58,8 @@ import com.vaadin.elements.grid.selection.IndexBasedSelectionMode;
 import com.vaadin.elements.grid.selection.IndexBasedSelectionModel;
 import com.vaadin.elements.grid.selection.IndexBasedSelectionModelMulti;
 import com.vaadin.elements.grid.selection.IndexBasedSelectionModelSingle;
+import com.vaadin.elements.grid.selection.MultiSelectModeChangedEvent;
+import com.vaadin.elements.grid.selection.MultiSelectModeChangedHandler;
 import com.vaadin.elements.grid.table.GridColumn;
 import com.vaadin.elements.grid.table.GridLightDomTable;
 import com.vaadin.elements.grid.table.GridStaticSection;
@@ -68,7 +71,8 @@ import com.vaadin.shared.ui.grid.ScrollDestination;
  */
 @JsType(namespace = JS.VAADIN_JS_NAMESPACE + ".grid")
 public class GridElement implements SelectionHandler<Object>,
-        SortHandler<Object>, SelectAllHandler<Object> {
+        SortHandler<Object>, SelectAllHandler<Object>,
+        MultiSelectModeChangedHandler {
 
     private final ViolatedGrid grid;
     private int visibleRows = -1;
@@ -97,6 +101,7 @@ public class GridElement implements SelectionHandler<Object>,
         grid.addSelectionHandler(this);
         grid.addSortHandler(this);
         grid.addSelectAllHandler(this);
+        grid.addHandler(this, MultiSelectModeChangedEvent.eventType);
         grid.getElement().getStyle().setHeight(0, Unit.PX);
 
         setColumns(JS.createArray());
@@ -335,7 +340,7 @@ public class GridElement implements SelectionHandler<Object>,
         }
 
         if (getDataSource() != null) {
-            getDataSource().refresh();
+            getDataSource().refreshItems();
         }
     }
 
@@ -355,30 +360,17 @@ public class GridElement implements SelectionHandler<Object>,
     }
 
     public void setSelectionMode(String selectionMode) {
-        setSelectionMode(selectionMode, false);
-    }
-
-    private void setSelectionMode(String selectionMode, boolean force) {
-        if (force || !getSelectionMode().equalsIgnoreCase(selectionMode)) {
-            updating = true;
-            IndexBasedSelectionMode mode = JSEnums.Selection.val(selectionMode);
-
-            boolean newModeIsAll = mode == IndexBasedSelectionMode.ALL;
-            boolean newModeIsMulti = mode == IndexBasedSelectionMode.MULTI;
-            boolean currentModelIsMulti = getSelectionModel() instanceof IndexBasedSelectionModelMulti;
-
-            if (!(currentModelIsMulti && (newModeIsAll || newModeIsMulti))) {
-                grid.setSelectionModel(mode.createModel());
-                updateWidth();
-            }
-            if (newModeIsAll) {
-                getSelectionModel().selectAll();
-            } else {
+        IndexBasedSelectionMode newMode = JSEnums.Selection.val(selectionMode);
+        if (getSelectionModel().getMode() != newMode) {
+            if (getSelectionModel().supportsMode(newMode)) {
+                getSelectionModel().setMode(newMode);
                 getSelectionModel().reset();
+            } else {
+                grid.setSelectionModel(newMode.createModel());
+                updateWidth();
+
+                selectionModeChanged();
             }
-            triggerEvent(SELECTION_MODE_CHANGED_EVENT);
-            updateSelectAllCheckBox();
-            updating = false;
         }
     }
 
@@ -516,7 +508,7 @@ public class GridElement implements SelectionHandler<Object>,
     private void clearDataSourceCache() {
         GridDataSource dataSource = getDataSource();
         if (dataSource != null) {
-            dataSource.clearCache(null);
+            dataSource.refreshItems();
         }
     }
 
@@ -595,21 +587,22 @@ public class GridElement implements SelectionHandler<Object>,
     @JsIgnore
     @Override
     public void onSelectAll(SelectAllEvent<Object> event) {
-        if (!updating) {
-            updating = true;
-            if (event.getSelectionModel() != getSelectionModel()) {
-                grid.setSelectionModel(event.getSelectionModel());
-                triggerEvent(SELECTION_MODE_CHANGED_EVENT);
-                getSelectionModel().reset();
-            } else {
-                boolean all = getSelectAllCheckBox().getValue();
-                setSelectionMode(all ? IndexBasedSelectionMode.ALL.name()
-                        : IndexBasedSelectionMode.MULTI.name(), true);
-            }
-            updateSelectAllCheckBox();
-            updating = false;
-            onSelect(null);
+        if (getSelectAllCheckBox().getValue()) {
+            getSelectionModel().selectAll();
+        } else {
+            getSelectionModel().clear();
         }
+    }
+
+    @JsIgnore
+    @Override
+    public void onMultiSelectModeChanged() {
+        selectionModeChanged();
+    }
+
+    private void selectionModeChanged() {
+        triggerEvent(SELECTION_MODE_CHANGED_EVENT);
+        updateSelectAllCheckBox();
     }
 
     private void updateSelectAllCheckBox() {
@@ -673,5 +666,32 @@ public class GridElement implements SelectionHandler<Object>,
                 }
             };
         }));
+    }
+
+    public void sizeChanged(int size, int oldSize) {
+        GridDataSource ds = getDataSource();
+        if (ds != null) {
+            // Resize existing data source row data
+            if (oldSize < size) {
+                ds.insertRowData(oldSize, size - oldSize);
+            } else if (oldSize > size) {
+                ds.removeRowData(size, oldSize - size);
+            }
+        }
+
+        if (size == 0) {
+            // Grid gets stuck when the data source size is 0. It won't
+            // request new data but isWorkPending will still return true.
+            // This releases the state (grid.dataIsBeingFetched gets set
+            // false).
+            grid.fireEvent(new DataAvailableEvent(null));
+        } else if (oldSize == 0 && ds != null) {
+            // Grid stops calling requestRows when size is 0, if
+            // size changes we have to re-attach the data-source so
+            // that grid starts calling requestRows again
+            grid.setDataSource(ds);
+        }
+
+        updateHeight();
     }
 }

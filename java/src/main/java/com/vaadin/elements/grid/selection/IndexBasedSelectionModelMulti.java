@@ -6,7 +6,6 @@ import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.vaadin.client.data.DataSource.RowHandle;
 import com.vaadin.client.renderers.Renderer;
-import com.vaadin.client.widget.grid.events.SelectAllEvent;
 import com.vaadin.client.widget.grid.selection.MultiSelectionRenderer;
 import com.vaadin.client.widget.grid.selection.SelectionEvent;
 import com.vaadin.client.widget.grid.selection.SelectionModelMulti;
@@ -105,8 +104,8 @@ public class IndexBasedSelectionModelMulti extends SelectionModelMulti<Object>
 
     @Override
     public void reset() {
-        invertedSelection = false;
         indexes.setLength(0);
+
         grid.fireEvent(new SelectionEvent<Object>(grid, null, null, true));
     }
 
@@ -252,21 +251,22 @@ public class IndexBasedSelectionModelMulti extends SelectionModelMulti<Object>
 
     @Override
     public void clear() {
-        reset();
+        deselectAll();
     }
 
     @Override
     public void selectAll() {
-        indexes.setLength(0);
-        invertedSelection = true;
-        grid.fireEvent(new SelectionEvent<Object>(grid, null, null, true));
+        setMode(IndexBasedSelectionMode.ALL);
+
+        reset();
     }
 
     @Override
     public boolean deselectAll() {
-        indexes.setLength(0);
-        invertedSelection = false;
-        grid.fireEvent(new SelectAllEvent<Object>(this));
+        setMode(IndexBasedSelectionMode.MULTI);
+
+        reset();
+
         return true;
     }
 
@@ -274,6 +274,15 @@ public class IndexBasedSelectionModelMulti extends SelectionModelMulti<Object>
     public IndexBasedSelectionMode getMode() {
         return invertedSelection ? IndexBasedSelectionMode.ALL
                 : IndexBasedSelectionMode.MULTI;
+    }
+
+    @Override
+    public void setMode(IndexBasedSelectionMode mode) {
+        if (getMode() != mode) {
+            this.invertedSelection = mode == IndexBasedSelectionMode.ALL;
+
+            grid.fireEvent(new MultiSelectModeChangedEvent());
+        }
     }
 
     @Override
@@ -291,5 +300,11 @@ public class IndexBasedSelectionModelMulti extends SelectionModelMulti<Object>
         if (changed) {
             grid.fireEvent(new SelectionEvent<Object>(grid, null, null, true));
         }
+    }
+
+    @Override
+    public boolean supportsMode(IndexBasedSelectionMode mode) {
+        return mode == IndexBasedSelectionMode.ALL
+                || mode == IndexBasedSelectionMode.MULTI;
     }
 }

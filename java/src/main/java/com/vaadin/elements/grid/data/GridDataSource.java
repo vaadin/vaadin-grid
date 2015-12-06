@@ -15,7 +15,6 @@ import com.vaadin.shared.ui.grid.Range;
 
 @JsType(namespace = JS.VAADIN_JS_NAMESPACE + ".grid._api")
 public abstract class GridDataSource extends AbstractRemoteDataSource<Object> {
-    private int size = 0;
 
     protected final GridElement gridElement;
 
@@ -30,44 +29,25 @@ public abstract class GridDataSource extends AbstractRemoteDataSource<Object> {
 
     @Override
     public int size() {
-        return size;
+        Object size = JsUtils.prop(gridElement.getContainer(), "size");
+        return JSValidate.Integer.val(size, 0, 0);
+    }
+
+    public void setSize(int size) {
+        JsUtils.prop(gridElement.getContainer(), "size", size);
     }
 
     @JsIgnore
-    public void setSize(int nsize) {
-        if (nsize != size) {
-            boolean isEmpty = size == 0;
-            size = nsize;
-            if (isEmpty) {
-                // Grid stops calling requestRows when size is 0, if
-                // size changes we have to re-attach the data-source so
-                // as grid starts calling requestRows again
-                boolean wasUpdating = gridElement.updating;
-                gridElement.updating = true;
-                gridElement.getGrid().setDataSource(this);
-                gridElement.updating = wasUpdating;
-            }
-
-            gridElement.updateHeight();
-        }
-    }
-
     public void refresh() {
         resetDataAndSize(size());
         gridElement.getSelectionModel().reset();
     }
 
-    public void clearCache(Double newSize) {
-        Integer intSize = JSValidate.Integer.val(newSize, size, size);
-        if (intSize == size || size == 0) {
-            Range range = getCachedRange();
-            requestRows(range.getStart(), range.length(),
-                    new RequestRowsCallback<Object>(this, range) {
-                    });
-        } else {
-            resetDataAndSize(intSize);
-        }
-        gridElement.getSelectionModel().reset();
+    public void refreshItems() {
+        Range range = getCachedRange();
+        requestRows(range.getStart(), range.length(),
+                new RequestRowsCallback<Object>(this, range) {
+                });
     }
 
     @Override
@@ -113,5 +93,26 @@ public abstract class GridDataSource extends AbstractRemoteDataSource<Object> {
             return ((DataItemContainer) itemOrContainer).getDataItem();
         }
         return itemOrContainer;
+    }
+
+    @JsIgnore
+    @Override
+    public void insertRowData(int firstRowIndex, int count) {
+        super.insertRowData(firstRowIndex, count);
+    }
+
+    @JsIgnore
+    @Override
+    public void removeRowData(int firstRowIndex, int count) {
+        // super.removeRowData(firstRowIndex, count);
+
+        // FIXME: For some bloody reason the size needs to be reduced in small
+        // batches instead or else we'll get an exception
+        int tmpCount = count;
+        while (tmpCount > 0) {
+            int amount = Math.min(tmpCount, 10);
+            tmpCount -= amount;
+            super.removeRowData(firstRowIndex + tmpCount, amount);
+        }
     }
 }

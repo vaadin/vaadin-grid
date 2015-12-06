@@ -453,7 +453,7 @@ See the [demo](demo/index.html) for use case examples.
   }
 
   input[type="checkbox"]:checked + label {
-    background-color: #03A9F4;
+    background-color: var(--default-primary-color, #03A9F4);
     border-color: transparent;
   }
 
@@ -498,7 +498,7 @@ See the [demo](demo/index.html) for use case examples.
   }
 
   input[type="checkbox"]:checked + label:before {
-    background-color: #03A9F4;
+    background-color: var(--default-primary-color, #03A9F4);
   }
 
   #measureobject {
@@ -893,7 +893,6 @@ See the [demo](demo/index.html) for use case examples.
             },
             set mode(mode) {
               _this._grid.setSelectionMode(mode);
-              _this.serializeValueToAttribute(_this.selection.mode, "selection-mode");
             }
           };
         }
@@ -913,6 +912,21 @@ See the [demo](demo/index.html) for use case examples.
         type: Array,
         notify: true,
         observer: '_sortOrderChanged'
+      },
+
+      /**
+       * Explicitly sets the number of records the `items` array/function
+       * provides for the grid to display.
+       *
+       * This may also be set indirectly by passing the value as the second
+       * parameter for data request callback function.
+       *
+       * @property {Number} size
+       * @type {Number}
+       */
+      size: {
+        type: Number,
+        observer: '_sizeChanged'
       }
     },
 
@@ -955,20 +969,26 @@ See the [demo](demo/index.html) for use case examples.
        *
        * @event selection-mode-changed
        */
-      'selectionmodechange': '_onSelectionModeChange'
+      'selection-mode-changed': '_onSelectionModeChange'
     },
 
     _itemsChanged: function(items) {
       if (Array.isArray(items)) {
         this._grid.setDataSource(function(params, callback) {
           var array = items.slice(params.index, params.index + params.count);
-          callback(array, items.length);
+          callback(array);
         });
+        this.size = items.length;
+        this.refreshItems();
       } else if (typeof items === 'function') {
         this._grid.setDataSource(items);
       } else {
         throw new Error('Unknown items type: ' + items + '. Only arrays and functions are supported.');
       }
+    },
+
+    _sizeChanged: function(size, oldSize) {
+      this._grid.sizeChanged(size, oldSize);
     },
 
     _onSelectionModeChange: function() {
@@ -1315,14 +1335,13 @@ See the [demo](demo/index.html) for use case examples.
      * visible items in the grid viewport from the `items` property or the
      * `datasource` function, and to scroll back to the top of the grid viewport.
      *
-     * Used to notify the grid when the data items are modified in some way
-     * (added, removed, updated, etc.).
+     * Needs to be called whenever the data items are modified in some way
+     * (added, removed, updated, re-ordered etc.).
      *
      * @type {Function}
-     * @param {number} size (optional) - The updated total number of items in the data source. If not defined, the old size will be used.
      */
-    clearCache: function(size) {
-      this._grid.getDataSource().clearCache(size);
+    refreshItems: function() {
+      this._grid.getDataSource().refreshItems();
     },
 
     /**

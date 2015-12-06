@@ -3,6 +3,7 @@ package com.vaadin.elements.grid.data;
 import java.util.List;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.js.JsUtils;
 import com.vaadin.elements.common.js.JS;
@@ -21,15 +22,19 @@ public class GridJsFuncDataSource extends GridDataSource {
         super(grid);
         assert JsUtils.isFunction(jso);
         jsFunction = jso;
-        // We need to do a first query to DB in order to get the initial size
-        // and then attach the data-source to the grid, otherwise the grid will
-        // never call the requestRows method when size is zero.
-        requestRows(0, 0, null);
+
+        // Grid size might be 0 so we'll check it here and make an initial empty
+        // data request to query for the size iff no size is given.
+        Scheduler.get().scheduleFinally(() -> {
+            if (size() == 0) {
+                refreshItems();
+            }
+        });
     }
 
     public void setJSFunction(JavaScriptObject jso) {
         jsFunction = jso;
-        clearCache(null);
+        refreshItems();
         gridElement.getSelectionModel().reset();
     }
 
@@ -40,13 +45,16 @@ public class GridJsFuncDataSource extends GridDataSource {
         JSDataRequest jsDataRequest = JS.createJsObject();
         jsDataRequest.setIndex(firstRowIndex);
         jsDataRequest.setCount(numberOfRows);
-        jsDataRequest.setSortOrder(JsUtils.prop(gridElement.getContainer(), "sortOrder"));
+        jsDataRequest.setSortOrder(JsUtils.prop(gridElement.getContainer(),
+                "sortOrder"));
 
         gridElement.setLoadingDataClass(true);
-        JsUtils.jsni(jsFunction, "call", jsFunction, jsDataRequest, wrapCallback(callback));
+        JsUtils.jsni(jsFunction, "call", jsFunction, jsDataRequest,
+                wrapCallback(callback));
     }
 
-    private JavaScriptObject wrapCallback(final RequestRowsCallback<Object> callback) {
+    private JavaScriptObject wrapCallback(
+            final RequestRowsCallback<Object> callback) {
         return JsUtils.wrapFunction(new Function() {
             @Override
             public void f() {
