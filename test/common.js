@@ -102,10 +102,10 @@ function infiniteDataSource(params, callback) {
   // data.length should never be greater than size, otherwise in SDM or
   // compiled code with assertions we get an exception in
   // AbstractRemoteDataSource::setRowData
-  for (var i = params.index; i < this.size && i < params.index + params.count; i++) {
+  for (var i = params.index; i < infiniteDataSource.size && i < params.index + params.count; i++) {
     data.push(["foo " + i, "bar " + i]);
   }
-  callback(data, this.size);
+  callback(data, infiniteDataSource.size);
 }
 
 var local = function() {
