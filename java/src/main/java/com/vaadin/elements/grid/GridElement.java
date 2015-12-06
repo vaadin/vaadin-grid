@@ -307,7 +307,7 @@ public class GridElement implements SelectionHandler<Object>,
             currentColumns.add(c.getJsColumn());
         }
 
-        for (JSColumn column : columns.asList()) {
+        for (Object column : columns.asList()) {
             if (!currentColumns.contains(column)) {
                 GridColumn.addColumn(column, this);
             }
