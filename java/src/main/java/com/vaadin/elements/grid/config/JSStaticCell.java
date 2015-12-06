@@ -6,13 +6,14 @@ import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 
 import com.vaadin.client.widgets.Grid.StaticSection.StaticCell;
+import com.vaadin.elements.common.js.JS;
 import com.vaadin.elements.grid.table.GridStaticSection;
 
 /**
  * This class is a JsInterop wrapper for the JS object representing a grid
  * header/footer cell configuration
  */
-@JsType()
+@JsType(namespace = JS.NAMESPACE_API)
 public class JSStaticCell {
 
     private GridStaticSection section;

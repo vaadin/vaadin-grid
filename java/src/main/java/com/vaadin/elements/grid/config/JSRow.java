@@ -6,10 +6,11 @@ import jsinterop.annotations.JsType;
 import com.google.gwt.dom.client.Element;
 import com.vaadin.client.widget.grid.CellReference;
 import com.vaadin.client.widget.grid.RowReference;
+import com.vaadin.elements.common.js.JS;
 import com.vaadin.elements.grid.data.GridDataSource;
 import com.vaadin.elements.grid.table.GridColumn;
 
-@JsType
+@JsType(namespace = JS.NAMESPACE_API)
 @SuppressWarnings("rawtypes")
 public class JSRow {
 

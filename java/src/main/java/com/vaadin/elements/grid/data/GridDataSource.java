@@ -14,7 +14,7 @@ import com.vaadin.elements.common.js.JSValidate;
 import com.vaadin.elements.grid.GridElement;
 import com.vaadin.shared.ui.grid.Range;
 
-@JsType(namespace = JS.VAADIN_JS_NAMESPACE + ".grid._api")
+@JsType(namespace = JS.NAMESPACE_API)
 public abstract class GridDataSource extends AbstractRemoteDataSource<Object> {
 
     protected final GridElement gridElement;
