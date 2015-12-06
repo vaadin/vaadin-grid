@@ -69,7 +69,7 @@ import com.vaadin.shared.ui.grid.ScrollDestination;
 /**
  * Class to export Vaadin Grid to JS.
  */
-@JsType(namespace = JS.VAADIN_JS_NAMESPACE + ".grid")
+@JsType(namespace = JS.NAMESPACE_GRID)
 public class GridElement implements SelectionHandler<Object>,
         SortHandler<Object>, SelectAllHandler<Object>,
         MultiSelectModeChangedHandler {

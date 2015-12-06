@@ -5,13 +5,14 @@ import jsinterop.annotations.JsType;
 
 import com.google.gwt.dom.client.Element;
 import com.vaadin.client.widget.grid.CellReference;
+import com.vaadin.elements.common.js.JS;
 import com.vaadin.elements.grid.table.GridColumn;
 
 /**
  * This class is a JsInterop wrapper for the JS object representing a cell
  * object passed to cell style generator.
  */
-@JsType
+@JsType(namespace = JS.NAMESPACE_API)
 public class JSCell {
 
     private CellReference<Object> cell;

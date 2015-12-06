@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import jsinterop.annotations.JsIgnore;
+import jsinterop.annotations.JsType;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Document;
@@ -29,7 +30,7 @@ import com.vaadin.elements.grid.data.GridDataSource;
 import com.vaadin.elements.grid.table.GridColumn;
 
 // Not used yet
-//@JsType(namespace = JS.VAADIN_JS_NAMESPACE + ".grid._api")
+//@JsType(namespace = JS.NAMESPACE_GRID_API)
 public class GridEditor {
 
     private final Grid<Object> grid;
