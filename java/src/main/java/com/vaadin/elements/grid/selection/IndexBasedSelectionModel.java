@@ -2,10 +2,10 @@ package com.vaadin.elements.grid.selection;
 
 import jsinterop.annotations.JsType;
 
-import com.google.gwt.core.client.JavaScriptObject;
 import com.vaadin.client.widget.grid.selection.SelectionModel;
 import com.vaadin.elements.common.js.JS;
 import com.vaadin.elements.common.js.JSArray;
+import com.vaadin.elements.common.js.JSFunction;
 
 /**
  * Selection model based on row indexes.
@@ -26,12 +26,12 @@ public interface IndexBasedSelectionModel extends SelectionModel<Object> {
     /**
      * Returns an array mapped from the selected indexes.
      */
-    JSArray<Object> selected(JavaScriptObject mapper, Integer from, Integer to);
+    JSArray<Object> selected(JSFunction<Object, Integer> mapper, Integer from, Integer to);
 
     /**
      * Returns an array mapped from the deselected indexes.
      */
-    JSArray<Object> deselected(JavaScriptObject mapper, Integer from, Integer to);
+    JSArray<Object> deselected(JSFunction<Object, Integer> mapper, Integer from, Integer to);
 
     /**
      * Returns the count of selected items.

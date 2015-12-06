@@ -20,9 +20,7 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.TableElement;
-import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.js.JsUtils;
-import com.google.gwt.query.client.js.JsUtils.JsFunction;
 import com.google.gwt.query.client.plugins.observe.Observe;
 import com.google.gwt.query.client.plugins.observe.Observe.Changes.ChangeRecord;
 import com.google.gwt.query.client.plugins.observe.Observe.ObserveListener;
@@ -45,10 +43,13 @@ import com.vaadin.client.widgets.Grid.Column;
 import com.vaadin.elements.common.js.JS;
 import com.vaadin.elements.common.js.JSArray;
 import com.vaadin.elements.common.js.JSEnums;
+import com.vaadin.elements.common.js.JSFunction;
+import com.vaadin.elements.common.js.JSFunction2;
 import com.vaadin.elements.common.js.JSPromise;
 import com.vaadin.elements.common.js.JSValidate;
 import com.vaadin.elements.grid.config.JSCell;
 import com.vaadin.elements.grid.config.JSColumn;
+import com.vaadin.elements.grid.config.JSDataRequest;
 import com.vaadin.elements.grid.config.JSRow;
 import com.vaadin.elements.grid.config.JSSortOrder;
 import com.vaadin.elements.grid.data.GridDataSource;
@@ -85,9 +86,9 @@ public class GridElement implements SelectionHandler<Object>,
     private Element measureObject;
     private JSArray<JSColumn> cols;
 
-    private JavaScriptObject rowClassGenerator;
-    private JavaScriptObject cellClassGenerator;
-    private JavaScriptObject rowDetailsGenerator;
+    private JSFunction<String, JSRow> rowClassGenerator;
+    private JSFunction<String, JSCell> cellClassGenerator;
+    private JSFunction<Object, Object> rowDetailsGenerator;
 
     @JsIgnore
     public static final int MAX_AUTO_ROWS = 10;
@@ -138,12 +139,11 @@ public class GridElement implements SelectionHandler<Object>,
         return grid;
     }
 
-    public void getItem(Double rowIndex, JavaScriptObject callback,
+    public void getItem(Double rowIndex, JSFunction2<JavaScriptObject, Object> callback,
             boolean onlyCached) {
         getDataSource().getItem(rowIndex, callback, onlyCached);
     }
 
-    @JsIgnore
     public Element getContainer() {
         return container;
     }
@@ -169,9 +169,7 @@ public class GridElement implements SelectionHandler<Object>,
         }
 
         updating = false;
-
         Scheduler.get().scheduleFinally(() -> updateHeight());
-
     }
 
     public JSColumn addColumn(JSColumn jsColumn, Object beforeColumnId) {
@@ -270,18 +268,14 @@ public class GridElement implements SelectionHandler<Object>,
         grid.setHeight(height);
     }
 
-    public void setDataSource(JavaScriptObject data) {
-        if (JsUtils.isFunction(data)) {
-            if (getDataSource() instanceof GridJsFuncDataSource) {
-                ((GridJsFuncDataSource) getDataSource()).setJSFunction(data);
-            } else {
-                grid.setDataSource(new GridJsFuncDataSource(data, this));
-            }
-            updateHeight();
+    public void setDataSource(
+            JSFunction2<JSDataRequest, JSFunction2<JSArray<?>, Double>> jsFunction) {
+        if (getDataSource() instanceof GridJsFuncDataSource) {
+            ((GridJsFuncDataSource) getDataSource()).setJSFunction(jsFunction);
         } else {
-            throw new RuntimeException("Unknown data source type: " + data
-                    + ". Functions are supported only.");
+            grid.setDataSource(new GridJsFuncDataSource(jsFunction, this));
         }
+        updateHeight();
     }
 
     public GridDataSource getDataSource() {
@@ -370,23 +364,23 @@ public class GridElement implements SelectionHandler<Object>,
         return getSelectionModel().getMode().name().toLowerCase();
     }
 
-    public void setRowClassGenerator(JavaScriptObject generator) {
+    public void setRowClassGenerator(JSFunction<String, JSRow> generator) {
         grid.setRowStyleGenerator(JS.isUndefinedOrNull(generator) ? null
-                : row -> JS.exec(generator, new JSRow(row, container)));
+                : row -> generator.f(new JSRow(row, container)));
         rowClassGenerator = generator;
     }
 
-    public JavaScriptObject getRowClassGenerator() {
+    public JSFunction<String, JSRow> getRowClassGenerator() {
         return rowClassGenerator;
     }
 
-    public void setCellClassGenerator(JavaScriptObject generator) {
+    public void setCellClassGenerator(JSFunction<String, JSCell> generator) {
         grid.setCellStyleGenerator(JS.isUndefinedOrNull(generator) ? null
-                : cell -> JS.exec(generator, new JSCell(cell, container)));
+                : cell -> generator.f(new JSCell(cell, container)));
         cellClassGenerator = generator;
     }
 
-    public JavaScriptObject getCellClassGenerator() {
+    public JSFunction<String, JSCell> getCellClassGenerator() {
         return cellClassGenerator;
     }
 
@@ -398,12 +392,10 @@ public class GridElement implements SelectionHandler<Object>,
         public void run() {
             if (!resetSizesFromDomCalled && isGridVisible()) {
                 grid.resetSizesFromDom();
-                then(JsUtils.wrapFunction(new Function() {
-                    @Override
-                    public void f() {
-                        grid.resetSizesFromDom();
-                    };
-                }));
+                then(o -> {
+                    grid.resetSizesFromDom();
+                    return null;
+                });
                 resetSizesFromDomCalled = true;
             }
             updateWidth();
@@ -524,17 +516,12 @@ public class GridElement implements SelectionHandler<Object>,
         return result;
     }
 
-    public void onReady(JavaScriptObject f) {
-        onReady(new JsFunction(f));
-    }
-
-    @JsIgnore
-    public void onReady(final Function f) {
+    public void onReady(JSFunction<?, ?> jsFunction) {
         Scheduler.get().scheduleFixedPeriod(new RepeatingCommand() {
             @Override
             public boolean execute() {
                 if (!isWorkPending()) {
-                    f.f();
+                    jsFunction.f(null);
                     return false;
                 }
                 return true;
@@ -542,7 +529,7 @@ public class GridElement implements SelectionHandler<Object>,
         }, 30);
     }
 
-    public Object then(JavaScriptObject f) {
+    public Object then(JSFunction<Object, Object> jsFunction) {
         // IE does not have support for native promises.
         if (browser.msie
                 // FIXME: static initializers in exported classes cause
@@ -551,29 +538,25 @@ public class GridElement implements SelectionHandler<Object>,
                 && Window.Navigator.getUserAgent().toLowerCase()
                         .contains("trident")) {
             JSPromise p = new JSPromise();
-            onReady(new Function() {
-                @Override
-                public void f() {
-                    try {
-                        Object v = JS.exec(f, null);
-                        p.dfd.resolve(v);
-                    } catch (JavaScriptException e) {
-                        p.dfd.reject(e.getThrown());
-                    }
+            onReady(o -> {
+                try {
+                    p.dfd.resolve(jsFunction.f(null));
+                } catch (JavaScriptException e) {
+                    p.dfd.reject(e.getThrown());
                 }
+                return null;
             });
             return p;
         } else {
-            return nativePromise(f);
+            return nativePromise(jsFunction);
         }
     }
 
-    private native JavaScriptObject nativePromise(JavaScriptObject f)
+    private native JavaScriptObject nativePromise(JSFunction<?, ?> jsFunction)
     /*-{
-        var _this = this;
         return new Promise(function(resolve, reject) {
-          _this.onReady(resolve);
-        }).then(f);
+          this.onReady(resolve);
+        }.bind(this)).then(jsFunction);
     }-*/;
 
     @JsIgnore
@@ -629,10 +612,10 @@ public class GridElement implements SelectionHandler<Object>,
         }
     }
 
-    public void setRowDetailsGenerator(JavaScriptObject generator) {
+    public void setRowDetailsGenerator(JSFunction<Object, Object> generator) {
         grid.setDetailsGenerator(JS.isUndefinedOrNull(generator) ? DetailsGenerator.NULL
                 : rowIndex -> {
-                    Object details = JS.exec(generator, rowIndex);
+                    Object details = generator.f(rowIndex);
                     return JS.isUndefinedOrNull(details) ? null
                             : new SimplePanel((Element) details) {
                             };
@@ -640,24 +623,22 @@ public class GridElement implements SelectionHandler<Object>,
         rowDetailsGenerator = generator;
     }
 
-    public JavaScriptObject getRowDetailsGenerator() {
+    public JSFunction<Object, Object> getRowDetailsGenerator() {
         return rowDetailsGenerator;
     }
 
     public void setRowDetailsVisible(int rowIndex, Object visible) {
-        then(JsUtils.wrapFunction(new Function() {
-            @Override
-            public void f() {
-                Integer validatedRowIndex = JSValidate.Integer.val(rowIndex,
-                        null, null);
-                Boolean validatedVisible = JSValidate.Boolean.val(visible,
-                        true, true);
-                if (!DetailsGenerator.NULL.equals(grid.getDetailsGenerator())
-                        && validatedRowIndex != null) {
-                    grid.setDetailsVisible(validatedRowIndex, validatedVisible);
-                }
-            };
-        }));
+        then(o -> {
+            Integer validatedRowIndex = JSValidate.Integer.val(rowIndex,
+                    null, null);
+            Boolean validatedVisible = JSValidate.Boolean.val(visible,
+                    true, true);
+            if (!DetailsGenerator.NULL.equals(grid.getDetailsGenerator())
+                    && validatedRowIndex != null) {
+                grid.setDetailsVisible(validatedRowIndex, validatedVisible);
+            }
+            return null;
+        });
     }
 
     public void sizeChanged(int size, int oldSize) {

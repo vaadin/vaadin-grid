@@ -6,10 +6,10 @@ import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsType;
 
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.client.js.JsNoExport;
 import com.google.gwt.query.client.js.JsUtils;
 import com.vaadin.client.data.AbstractRemoteDataSource;
 import com.vaadin.elements.common.js.JS;
+import com.vaadin.elements.common.js.JSFunction2;
 import com.vaadin.elements.common.js.JSValidate;
 import com.vaadin.elements.grid.GridElement;
 import com.vaadin.shared.ui.grid.Range;
@@ -39,7 +39,7 @@ public abstract class GridDataSource extends AbstractRemoteDataSource<Object> {
         JsUtils.prop(gridElement.getContainer(), "size", size);
     }
 
-    @JsNoExport
+    @JsIgnore
     public void refresh() {
         resetDataAndSize(size());
         gridElement.getSelectionModel().reset();
@@ -60,18 +60,17 @@ public abstract class GridDataSource extends AbstractRemoteDataSource<Object> {
 
     }
 
-    public void getItem(Double rowIndex, JavaScriptObject callback,
-            boolean onlyCached) {
+    public void getItem(Double rowIndex,
+            JSFunction2<JavaScriptObject, Object> callback, boolean onlyCached) {
         Integer index = JSValidate.Integer.val(rowIndex, -1, -1);
         if (index >= 0 && index < size()) {
             Object row = getRow(index);
             if (row != null) {
-                JsUtils.jsni(callback, "call", callback, JS.getUndefined(),
-                        extractDataItem(row));
+                callback.f(null, extractDataItem(row));
             } else if (onlyCached) {
-                JS.exec(callback,
+                callback.f(
                         JS.getError("Unable to retrieve row #" + index
-                                + ", it has not been cached yet"));
+                                + ", it has not been cached yet"), null);
             } else {
                 Range range = Range.withOnly(index);
                 requestRows(range.getStart(), range.length(),
@@ -79,14 +78,14 @@ public abstract class GridDataSource extends AbstractRemoteDataSource<Object> {
                             @Override
                             public void onResponse(List<Object> rowData,
                                     int totalSize) {
-                                JsUtils.jsni(callback, "call", callback,
-                                        JS.getUndefined(), rowData.get(0));
+                                callback.f(null, rowData.get(0));
                             }
                         });
             }
         } else {
-            JS.exec(callback,
-                    JS.getError("Index value #" + index + " is out of range"));
+            callback.f(
+                    JS.getError("Index value #" + index + " is out of range"),
+                    null);
         }
     }
 
@@ -97,13 +96,13 @@ public abstract class GridDataSource extends AbstractRemoteDataSource<Object> {
         return itemOrContainer;
     }
 
-    @JsNoExport
+    @JsIgnore
     @Override
     public void insertRowData(int firstRowIndex, int count) {
         super.insertRowData(firstRowIndex, count);
     }
 
-    @JsNoExport
+    @JsIgnore
     @Override
     public void removeRowData(int firstRowIndex, int count) {
         // super.removeRowData(firstRowIndex, count);
