@@ -89,7 +89,7 @@
       };
       grid.addColumn(c);
 
-      grid.then(function() {
+      return grid.then(function() {
         var headers = qaLocal('.vaadin-grid-header .vaadin-grid-row th > span');
         assert.equal(headers[grid.columns.length - 1].innerHTML, 'Foo');
 
