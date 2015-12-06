@@ -3,72 +3,149 @@ package com.vaadin.elements.grid.config;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 
-import com.google.gwt.core.client.JavaScriptObject;
+import com.vaadin.elements.common.js.JS;
+import com.vaadin.elements.common.js.JSFunction;
+import com.vaadin.elements.grid.GridElement;
+import com.vaadin.elements.grid.table.GridColumn;
+import com.vaadin.shared.ui.grid.GridConstants;
 
 /**
  * This class is a JsInterop object for the JS object representing a grid column
  * configuration.
  */
-@JsType(isNative = true)
-public interface JSColumn {
+@JsType(namespace = JS.NAMESPACE_API)
+public class JSColumn {
+
+    public static JSColumn promote(Object o) {
+        return JS.promoteTo(o, JSColumn.class);
+    }
+
+    private GridColumn col;
+    private GridElement grid;
+    private String name;
+    private JSFunction<?, JSCell> renderer;
+
+    public void configure(GridElement gridElement, GridColumn column) {
+        col = column;
+        grid = gridElement;
+        JS.reasignProperties(this);
+    }
 
     @JsProperty
-    String getName();
+    public String getName() {
+        return name;
+    }
 
     @JsProperty
-    void setName(String s);
+    public void setName(String s) {
+        name = s;
+        col.nameChanged(s);
+    }
 
     @JsProperty
-    String getHidingToggleText();
+    public JSFunction<?, JSCell> getRenderer() {
+        return renderer;
+    }
 
     @JsProperty
-    void setHidingToggleText(String s);
+    public void setRenderer(JSFunction<?, JSCell> o) {
+        renderer = o;
+        col.setRenderer((cell, data) -> {
+            renderer.f(new JSCell(cell, grid.getContainer()));
+        });
+    }
 
     @JsProperty
-    double getMinWidth();
+    public String getHidingToggleText() {
+        return col.getHidingToggleCaption();
+    }
 
     @JsProperty
-    void setMinWidth(double d);
+    public void setHidingToggleText(String s) {
+        col.setHidingToggleCaption(s == null ? null : s.toString());
+    }
 
     @JsProperty
-    double getMaxWidth();
+    public int getFlex() {
+        return col.getExpandRatio();
+    }
 
     @JsProperty
-    void setMaxWidth(double d);
+    public void setFlex(int f) {
+        col.setExpandRatio(f);
+    }
 
     @JsProperty
-    double getWidth();
+    public boolean getSortable() {
+        return col.isSortable();
+    }
 
     @JsProperty
-    void setWidth(double d);
+    public void setSortable(boolean b) {
+        col.setSortable(b);
+    }
 
     @JsProperty
-    int getFlex();
+    public boolean getHidable() {
+        return col.isHidable();
+    }
 
     @JsProperty
-    void setFlex(int i);
+    public void setHidable(boolean b) {
+        col.setHidable(b);
+    }
 
     @JsProperty
-    boolean getSortable();
+    public boolean getReadonly() {
+        return !col.isEditable();
+    }
 
     @JsProperty
-    void setSortable(boolean b);
+    public void setReadonly(boolean b) {
+        col.setEditable(!b);
+    }
 
     @JsProperty
-    JavaScriptObject getRenderer();
+    public double getMinWidth() {
+        return col.getMinimumWidth();
+    }
 
     @JsProperty
-    void setRenderer(JavaScriptObject o);
+    public void setMinWidth(double d) {
+        col.setMinimumWidth(JS.isUndefinedOrNull(d) ? GridConstants.DEFAULT_MIN_WIDTH
+                : d);
+    }
 
     @JsProperty
-    boolean getHidable();
+    public double getMaxWidth() {
+        return col.getMaximumWidth();
+    }
 
     @JsProperty
-    void setHidable(boolean b);
+    public void setMaxWidth(double d) {
+        col.setMaximumWidth(JS.isUndefinedOrNull(d) ? GridConstants.DEFAULT_MAX_WIDTH
+                : d);
+    }
 
     @JsProperty
-    boolean getHidden();
+    public double getWidth() {
+        return col.getWidth();
+    }
 
     @JsProperty
-    void setHidden(boolean b);
+    public void setWidth(double d) {
+        col.setWidth(JS.isUndefinedOrNull(d) ? GridConstants.DEFAULT_COLUMN_WIDTH_PX
+                : d);
+    }
+
+    @JsProperty
+    public boolean getHidden() {
+        return col.isHidden();
+    }
+
+    @JsProperty
+    public void setHidden(boolean b) {
+        col.setHidden(b);
+        grid.updateWidth();
+    }
 }

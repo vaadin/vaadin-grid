@@ -123,9 +123,13 @@ public class GridLightDomTable implements MutationListener {
         JSArray<JSSortOrder> sortOrders = JS.createArray();
 
         for (int i = 0; i < numberColumns; i++) {
+            jsColumns.add(new JSColumn());
+        }
+        gridElement.setColumns(jsColumns);
+
+        for (int i = 0; i < numberColumns; i++) {
             GQuery $th = columns.eq(i);
-            JSColumn column = JS.createJsObject();
-            jsColumns.add(column);
+            JSColumn column = jsColumns.get(i);
             column.setSortable(JSValidate.Boolean.attr($th, "sortable"));
             Scheduler.get().scheduleDeferred(
                     () -> column.setHidable(JSValidate.Boolean.attr($th,
