@@ -42,16 +42,16 @@ function maven(tasks, done, log) {
   };
   var args = tasks.split(/\s+/);
   args.unshift('-f', gwtproject, '-B');
-  gutil.log(" $ mvn " + args);
+  gutil.log(' $ mvn ' + args);
   var spawn = require('child_process').spawn;
   var mvn = spawn('mvn', args);
-  mvn.stdout.on('data', function (data) {
+  mvn.stdout.on('data', function(data) {
     log(('' + data).replace(/\s+$/,''));
   });
-  mvn.stderr.on('data', function (data) {
+  mvn.stderr.on('data', function(data) {
     console.log(('' + data).replace(/\s+$/,''));
   });
-  mvn.on('close', done || function(){});
+  mvn.on('close', done || function() {});
 }
 
 gulp.task('gwt:clean', function(done) {
@@ -59,8 +59,8 @@ gulp.task('gwt:clean', function(done) {
 });
 
 gulp.task('gwt:hash:src', function(done) {
-  hashFiles({ files: ['java/src/main/java/**'] }, function(err, hash) {
-    if(err) {
+  hashFiles({files: ['java/src/main/java/**']}, function(err, hash) {
+    if (err) {
       done(err);
     } else {
       gitHash = hash;
@@ -79,7 +79,7 @@ gulp.task('gwt:hash:js', function(done) {
     terminal: false,
     input: require('fs').createReadStream(gwtMinJs)
   });
-  lines.on('line', function (line) {
+  lines.on('line', function(line) {
     var res = /\/\/ vaadin.elements.grid.hash = '(.*)'/.exec(line);
     if (res) {
       jsHash = res[1];
@@ -90,7 +90,7 @@ gulp.task('gwt:hash:js', function(done) {
 
 gulp.task('gwt:compile', ['gwt:clean', 'gwt:hash:src', 'gwt:hash:js'], function(done) {
   maven('compile -q', function() {
-    var task = 'package -q' + (args.gwtPretty ? ' -Ppretty' : '')  + " -P compile";
+    var task = 'package -q' + (args.gwtPretty ? ' -Ppretty' : '')  + ' -P compile';
     maven(task, done);
   });
 });
@@ -98,7 +98,7 @@ gulp.task('gwt:compile', ['gwt:clean', 'gwt:hash:src', 'gwt:hash:js'], function(
 gulp.task('gwt:copy', ['gwt:compile'], function() {
   return gulp.src(gwtNocacheJs)
           .pipe(rename(gwtMinJs))
-          .pipe(insert.append("\n// vaadin.elements.grid.hash = '" + (gitHash ? gitHash : '-') + "';\n"))
+          .pipe(insert.append('\n// vaadin.elements.grid.hash = \'' + (gitHash ? gitHash : '-') + '\';\n'))
           .pipe(gulp.dest('./'));
 });
 
@@ -109,7 +109,7 @@ gulp.task('gwt:validate', ['gwt:hash:src', 'gwt:hash:js'], function(done) {
 });
 
 gulp.task('gwt:watch', function(done) {
-  gulp.watch(['demo/*', 'test/*', '*.html', 'bower_components/**/*'] , function(){
+  gulp.watch(['demo/*', 'test/*', '*.html', 'bower_components/**/*'] , function() {
     maven('generate-sources -q');
   });
 });

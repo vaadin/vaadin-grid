@@ -24,7 +24,7 @@
 
       editorHandler = {
         getCellEditor: function(columnObject) {
-          var input = document.createElement("input");
+          var input = document.createElement('input');
           return input;
         },
         bind: function(req) {
@@ -42,12 +42,12 @@
           for (var i = 0; i < req.grid.columns.length; i++) {
             var col = req.grid.columns[i];
             var el = req.getCellEditor(col);
-            if (el.value == "fail") {
+            if (el.value == 'fail') {
               failingColumns.push(col);
             }
           }
           if (failingColumns.length > 0) {
-            req.failure("Save failed", failingColumns);
+            req.failure('Save failed', failingColumns);
           } else {
             req.success();
           }
@@ -60,68 +60,68 @@
     });
 
     it('editor: enabled', function() {
-      grid.columns[0].name = "name";
-      grid.columns[1].name = "value";
+      grid.columns[0].name = 'name';
+      grid.columns[1].name = 'value';
       grid.editor.handler = editorHandler;
-      expect(grid.editor.editRow.bind(grid.editor, 0)).to.throw("editor is not enabled");
+      expect(grid.editor.editRow.bind(grid.editor, 0)).to.throw('editor is not enabled');
       grid.editor.enabled = true;
       grid.editor.editRow(0);
 
-      assert.isTrue(gridContainsText(grid, "vaadin-grid-editor"));
+      assert.isTrue(gridContainsText(grid, 'vaadin-grid-editor'));
     });
 
     it('editor: saveButtonText and cancelButtonText', function() {
-      grid.columns[0].name = "name";
-      grid.columns[1].name = "value";
+      grid.columns[0].name = 'name';
+      grid.columns[1].name = 'value';
       grid.editor.handler = editorHandler;
       grid.editor.enabled = true;
       grid.editor.editRow(0);
-      grid.editor.saveButtonText = "saveButtonTextFoo";
-      grid.editor.cancelButtonText = "cancelButtonTextFoo";
+      grid.editor.saveButtonText = 'saveButtonTextFoo';
+      grid.editor.cancelButtonText = 'cancelButtonTextFoo';
 
-      assert.isTrue(gridContainsText(grid, "saveButtonTextFoo"));
-      assert.isTrue(gridContainsText(grid, "cancelButtonTextFoo"));
+      assert.isTrue(gridContainsText(grid, 'saveButtonTextFoo'));
+      assert.isTrue(gridContainsText(grid, 'cancelButtonTextFoo'));
     });
 
     it('editor: editrow', function() {
-      grid.columns[0].name = "name";
-      grid.columns[1].name = "value";
+      grid.columns[0].name = 'name';
+      grid.columns[1].name = 'value';
       grid.editor.handler = editorHandler;
       grid.editor.enabled = true;
 
       grid.editor.editRow(0);
-      assert.equal(qLocal(".vaadin-grid-editor input").value, "Grid");
+      assert.equal(qLocal('.vaadin-grid-editor input').value, 'Grid');
       grid.editor.cancel();
-      assert.isFalse(gridContainsText(grid, "vaadin-grid-editor"));
+      assert.isFalse(gridContainsText(grid, 'vaadin-grid-editor'));
       grid.editor.editRow(1);
-      assert.equal(qLocal(".vaadin-grid-editor input").value, "VaadinX");
+      assert.equal(qLocal('.vaadin-grid-editor input').value, 'VaadinX');
       grid.editor.save();
-      assert.isFalse(gridContainsText(grid, "vaadin-grid-editor"));
+      assert.isFalse(gridContainsText(grid, 'vaadin-grid-editor'));
 
-      expect(grid.editor.editRow.bind(grid.editor, 10)).to.throw("Row index");
+      expect(grid.editor.editRow.bind(grid.editor, 10)).to.throw('Row index');
     });
 
     it('editor: failure', function() {
-      grid.columns[0].name = "name";
-      grid.columns[1].name = "value";
+      grid.columns[0].name = 'name';
+      grid.columns[1].name = 'value';
       grid.editor.handler = editorHandler;
       grid.editor.enabled = true;
 
       grid.editor.editRow(0);
-      var fields = qaLocal(".vaadin-grid-editor input");
-      fields[0].value = "fail";
+      var fields = qaLocal('.vaadin-grid-editor input');
+      fields[0].value = 'fail';
       grid.editor.save();
 
-      assert.isTrue(gridContainsText(grid, "Save failed"));
-      var cells = qaLocal(".vaadin-grid-editor-cells > div");
-      assert.isTrue(cells[0].classList.contains("error"));
-      assert.isFalse(cells[1].classList.contains("error"));
+      assert.isTrue(gridContainsText(grid, 'Save failed'));
+      var cells = qaLocal('.vaadin-grid-editor-cells > div');
+      assert.isTrue(cells[0].classList.contains('error'));
+      assert.isFalse(cells[1].classList.contains('error'));
 
     });
 
     it('editor: return null cell editor', function() {
-      grid.columns[0].name = "name";
-      grid.columns[1].name = "value";
+      grid.columns[0].name = 'name';
+      grid.columns[1].name = 'value';
       grid.editor.handler = {
         getCellEditor: function(columnObject) {
           return columnObject === grid.columns[0] ? null : undefined;
@@ -133,10 +133,10 @@
       grid.editor.enabled = true;
 
       grid.editor.editRow(0);
-      var cells = qaLocal(".vaadin-grid-editor .vaadin-grid-editor-cells > div");
+      var cells = qaLocal('.vaadin-grid-editor .vaadin-grid-editor-cells > div');
       assert.lengthOf(cells, 2);
 
-      var editors = qaLocal(".vaadin-grid-editor .vaadin-grid-editor-cells > div *");
+      var editors = qaLocal('.vaadin-grid-editor .vaadin-grid-editor-cells > div *');
       assert.lengthOf(editors, 0);
     });
 
@@ -171,10 +171,10 @@
       grid.editor.editRow(0);
 
       return grid.then(function() {
-        assert.equal("Grid", grid.querySelector('tbody tr td').textContent);
-        assert.equal("Grid", grid.querySelector('input').value);
+        assert.equal('Grid', grid.querySelector('tbody tr td').textContent);
+        assert.equal('Grid', grid.querySelector('input').value);
 
-        grid.querySelector('input').value = "Foo";
+        grid.querySelector('input').value = 'Foo';
         grid.editor.save();
       });
 
@@ -183,7 +183,7 @@
     it('editor: getCellEditor and read-only columns', function() {
       grid.columns[0].readOnly = true;
 
-      sinon.spy(editorHandler, "getCellEditor");
+      sinon.spy(editorHandler, 'getCellEditor');
 
       grid.editor.handler = editorHandler;
       grid.editor.enabled = true;

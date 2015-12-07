@@ -27,16 +27,16 @@ describe.feature('using properties', function() {
     assert.notOk(grid.rowClassGenerator);
     var rowClassGenerator = function(row) {
       gridEquals = gridEquals && row.grid == grid;
-      elementEquals = elementEquals && row.element == qaLocal(".vaadin-grid-body .vaadin-grid-row")[row.index];
-      return row.index + "_" + row.data[0];
+      elementEquals = elementEquals && row.element == qaLocal('.vaadin-grid-body .vaadin-grid-row')[row.index];
+      return row.index + '_' + row.data[0];
     };
 
     grid.rowClassGenerator = rowClassGenerator;
 
     assert.isTrue(elementEquals && gridEquals);
     assert.equal(grid.rowClassGenerator, rowClassGenerator);
-    return grid.then(function(){
-      assert.isTrue(qLocal(".vaadin-grid-body .vaadin-grid-row").classList.contains("0_Grid"));
+    return grid.then(function() {
+      assert.isTrue(qLocal('.vaadin-grid-body .vaadin-grid-row').classList.contains('0_Grid'));
     });
   });
 
@@ -44,7 +44,7 @@ describe.feature('using properties', function() {
     grid.items = [0];
     var spy = sinon.spy();
     grid.rowClassGenerator = spy;
-    return grid.then(function(){
+    return grid.then(function() {
         expect(spy.args[0][0].data).to.be.equal(0);
     });
   });
@@ -58,17 +58,15 @@ describe.feature('using properties', function() {
     });
   });
 
-
-
   it('cellClassGenerator', function() {
     var elementEquals = true;
 
-    grid.columns[0].name = "name";
-    grid.columns[1].name = "value";
+    grid.columns[0].name = 'name';
+    grid.columns[1].name = 'value';
     assert.notOk(grid.cellClassGenerator);
     var cellClassGenerator = function(cell) {
-      var columnIndex = cell.columnName == "name" ? 0 : 1;
-      var cellElement = qaLocal(".vaadin-grid-body .vaadin-grid-row")[cell.row.index].querySelectorAll(".vaadin-grid-cell")[columnIndex];
+      var columnIndex = cell.columnName == 'name' ? 0 : 1;
+      var cellElement = qaLocal('.vaadin-grid-body .vaadin-grid-row')[cell.row.index].querySelectorAll('.vaadin-grid-cell')[columnIndex];
       elementEquals = elementEquals && cell.element == cellElement;
       return cell.columnName;
     };
@@ -77,15 +75,15 @@ describe.feature('using properties', function() {
 
     assert.isTrue(elementEquals);
     assert.equal(grid.cellClassGenerator, cellClassGenerator);
-    return grid.then(function(){
-      assert.isTrue(qLocal(".vaadin-grid-body .vaadin-grid-row .vaadin-grid-cell").classList.contains("name"));
+    return grid.then(function() {
+      assert.isTrue(qLocal('.vaadin-grid-body .vaadin-grid-row .vaadin-grid-cell').classList.contains('name'));
     });
   });
 
   it('Row details should not be shown if generator is not set', function() {
     return grid.then(function() {
       grid.setRowDetailsVisible(0, true);
-      assert.notOk(qLocal(".vaadin-grid-spacer"));
+      assert.notOk(qLocal('.vaadin-grid-spacer'));
       grid.setRowDetailsVisible(0, false);
     });
   });
@@ -109,10 +107,10 @@ describe.feature('using properties', function() {
       grid.setRowDetailsVisible(0, true);
       return grid;
     }).then(function() {
-      waitUntil(function(){
-        return qLocal(".detail-content-0") != undefined;
-      },function(){
-        assert.equal(qLocal(".detail-content-0").textContent, "Row detail content for row 0");
+      waitUntil(function() {
+        return qLocal('.detail-content-0') !== undefined;
+      }, function() {
+        assert.equal(qLocal('.detail-content-0').textContent, 'Row detail content for row 0');
         grid.setRowDetailsVisible(0, false);
         done();
       });
@@ -124,10 +122,10 @@ describe.feature('using properties', function() {
       grid.setRowDetailsVisible(0);
       return grid;
     }).then(function() {
-      waitUntil(function(){
-        return qLocal(".detail-content-0") != undefined;
-      },function(){
-        assert.equal(qLocal(".detail-content-0").textContent, "Row detail content for row 0");
+      waitUntil(function() {
+        return qLocal('.detail-content-0') !== undefined;
+      }, function() {
+        assert.equal(qLocal('.detail-content-0').textContent, 'Row detail content for row 0');
         grid.setRowDetailsVisible(0, false);
         done();
       });
@@ -140,14 +138,14 @@ describe.feature('using properties', function() {
       grid.setRowDetailsVisible(0, false);
       return grid;
     }).then(function() {
-      assert.notOk(qLocal(".detail-content-0"));
+      assert.notOk(qLocal('.detail-content-0'));
     });
   });
 
   it('Row details should be shown even if not called from grid.then', function() {
     grid.setRowDetailsVisible(0, true);
     return grid.then(function() {
-      assert.equal(qLocal(".detail-content-0").textContent, "Row detail content for row 0");
+      assert.equal(qLocal('.detail-content-0').textContent, 'Row detail content for row 0');
       grid.setRowDetailsVisible(0, false);
     });
   });
@@ -156,7 +154,7 @@ describe.feature('using properties', function() {
     return grid.then(function() {
       grid.setRowDetailsVisible(0, true);
       grid.rowDetailsGenerator = undefined;
-      assert.notOk(qLocal(".vaadin-grid-spacer"));
+      assert.notOk(qLocal('.vaadin-grid-spacer'));
       grid.setRowDetailsVisible(0, false);
     });
   });
@@ -172,15 +170,15 @@ describe.feature('using properties', function() {
 
   it('should reflect disabled to attribute', function() {
     grid.disabled = true;
-    expect(grid.hasAttribute("disabled")).to.be.true;
+    expect(grid.hasAttribute('disabled')).to.be.true;
     grid.disabled = false;
-    expect(grid.hasAttribute("disabled")).to.be.false;
+    expect(grid.hasAttribute('disabled')).to.be.false;
   });
 
   it('should apply disabled attribute', function() {
-    grid.setAttribute("disabled", true);
+    grid.setAttribute('disabled', true);
     expect(grid.disabled).to.be.true;
-    grid.removeAttribute("disabled");
+    grid.removeAttribute('disabled');
     expect(grid.disabled).to.be.false;
   });
 });

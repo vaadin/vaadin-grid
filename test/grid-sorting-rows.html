@@ -34,7 +34,7 @@
         function assignInvalidSortOrder() {
           grid.sortOrder = [{
             column: 0,
-            direction: "ascending" // Should be asc or desc
+            direction: 'ascending' // Should be asc or desc
           }];
         }
 
@@ -46,25 +46,25 @@
         it('should set sortOrder property', function() {
           grid.sortOrder = [{
             column: 0,
-            direction: "desc"
+            direction: 'desc'
           }];
 
-          expect(qLocal(".vaadin-grid-header th").classList.contains("sort-desc")).to.be.true;
+          expect(qLocal('.vaadin-grid-header th').classList.contains('sort-desc')).to.be.true;
         });
 
         it('should set sort-order attribute', function() {
           grid.sortOrder = [{
             column: 0,
-            direction: "desc"
+            direction: 'desc'
           }];
 
-          expect(qLocal(".vaadin-grid-header th").classList.contains("sort-desc")).to.be.true;
+          expect(qLocal('.vaadin-grid-header th').classList.contains('sort-desc')).to.be.true;
         });
 
         it('should clear sort order', function() {
           grid.sortOrder = [{
             column: 0,
-            direction: "desc"
+            direction: 'desc'
           }];
           grid.sortOrder = [];
           expect(grid.sortOrder).to.be.empty;
@@ -73,22 +73,22 @@
         it('should preserve existing sort order on invalid value', function() {
           grid.sortOrder = [{
             column: 0,
-            direction: "desc"
+            direction: 'desc'
           }];
-          expect(assignInvalidSortOrder).to.throw("Invalid sort direction");
-          expect(qLocal(".vaadin-grid-header th").classList.contains("sort-desc")).to.be.true;
+          expect(assignInvalidSortOrder).to.throw('Invalid sort direction');
+          expect(qLocal('.vaadin-grid-header th').classList.contains('sort-desc')).to.be.true;
         });
 
         it('should be able to sort with multiple columns', function() {
           grid.sortOrder = [{
             column: 0,
-            direction: "desc"
+            direction: 'desc'
           }, {
             column: 1
           }];
           assert.lengthOf(grid.sortOrder, 2);
-          expect(qaLocal(".vaadin-grid-header th")[0].classList.contains("sort-desc")).to.be.true;
-          expect(qaLocal(".vaadin-grid-header th")[1].classList.contains("sort-asc")).to.be.true;
+          expect(qaLocal('.vaadin-grid-header th')[0].classList.contains('sort-desc')).to.be.true;
+          expect(qaLocal('.vaadin-grid-header th')[1].classList.contains('sort-asc')).to.be.true;
         });
 
         it('should reset selection', function() {
@@ -96,7 +96,7 @@
 
           grid.sortOrder = [{
             column: 0,
-            direction: "desc"
+            direction: 'desc'
           }];
 
           expect(grid.selection.selected()).to.be.empty;
@@ -111,64 +111,63 @@
           grid.selection.select(0);
           grid.sortOrder = [{
             column: 0,
-            direction: "desc"
+            direction: 'desc'
           }];
         });
 
         it('should ignore selection column from index', function() {
-          var firstNonFrozenHeaderCell = qLocal.bind(this, ".vaadin-grid-header .vaadin-grid-cell:not(.frozen)");
+          var firstNonFrozenHeaderCell = qLocal.bind(this, '.vaadin-grid-header .vaadin-grid-cell:not(.frozen)');
 
           firstNonFrozenHeaderCell().click();
           expect(grid.sortOrder[0].column).to.eql(0);
 
-          grid.selection.mode = "multi";
+          grid.selection.mode = 'multi';
           firstNonFrozenHeaderCell().click();
           expect(grid.sortOrder[0].column).to.eql(0);
         });
-
 
       });
 
       describe('declaratively', function() {
 
         it('should apply sortable attribute', function() {
-          qLight("table col").setAttribute("sortable", "");
+          qLight('table col').setAttribute('sortable', '');
 
-          return grid.then(function(){
+          return grid.then(function() {
             expect(grid.columns[0].sortable).to.be.true;
           });
         });
 
         it('should unapply sortable attribute', function() {
-          qLight("col").removeAttribute("sortable");
+          qLight('col').removeAttribute('sortable');
 
-          return grid.then(function(){
+          return grid.then(function() {
             expect(grid.columns[0].sortable).to.be.false;
           });
         });
 
         it('should set sort-direction attribute', function(done) {
-          qLight("col").setAttribute("sortable", "");
-          qLight("col").setAttribute("sort-direction", "asc");
+          qLight('col').setAttribute('sortable', '');
+          qLight('col').setAttribute('sort-direction', 'asc');
 
           // TODO: make this work with grid.then
           waitUntil(function() {
-            return qLocal(".vaadin-grid-header .sort-asc");
+            return qLocal('.vaadin-grid-header .sort-asc');
           }, function() {
-            expect(grid.sortOrder).to.eql([{column: 0, direction: "asc"}]);
+            expect(grid.sortOrder).to.eql([{column: 0, direction: 'asc'}]);
             done();
           });
         });
 
         it('should be able to sort with multiple columns', function(done) {
-          light().querySelectorAll("col")[1].setAttribute("sortable", "");
-          light().querySelectorAll("col")[1].setAttribute("sort-direction", "desc");
+          light().querySelectorAll('col')[1].setAttribute('sortable', '');
+          light().querySelectorAll('col')[1].setAttribute('sort-direction', 'desc');
 
           // TODO: make this work with grid.then
           waitUntil(function() {
-            return qLocal(".vaadin-grid-header .sort-asc");
+            return qLocal('.vaadin-grid-header .sort-asc');
           }, function() {
-            expect(grid.sortOrder).to.eql([{column: 0, direction: "asc"},{column: 1, direction: "desc"}]);
+            expect(grid.sortOrder).to.eql([{column: 0, direction: 'asc'},{column: 1, direction: 'desc'}]);
             done();
           });
         });
@@ -178,11 +177,11 @@
 
         it('should sort by the first columns', function() {
           grid.sortOrder = [];
-          var cells = qaLocal(".vaadin-grid-header .vaadin-grid-cell");
-          triggerMouseEvent(cells[1], "click");
+          var cells = qaLocal('.vaadin-grid-header .vaadin-grid-cell');
+          triggerMouseEvent(cells[1], 'click');
           expect(grid.sortOrder).to.eql([{
             column: 0,
-            direction: "asc"
+            direction: 'asc'
           }]);
         });
 
@@ -193,23 +192,23 @@
           };
 
           grid.selection.select(0);
-          var cells = qaLocal(".vaadin-grid-header .vaadin-grid-cell");
-          triggerMouseEvent(cells[1], "click");
+          var cells = qaLocal('.vaadin-grid-header .vaadin-grid-cell');
+          triggerMouseEvent(cells[1], 'click');
         });
 
         it('should sort by two columns', function() {
           grid.sortOrder = [];
-          var cells = qaLocal(".vaadin-grid-header .vaadin-grid-cell");
-          triggerMouseEvent(cells[1], "click");
-          triggerMouseEvent(cells[2], "click", undefined, true);
-          triggerMouseEvent(cells[2], "click", undefined, true)
+          var cells = qaLocal('.vaadin-grid-header .vaadin-grid-cell');
+          triggerMouseEvent(cells[1], 'click');
+          triggerMouseEvent(cells[2], 'click', undefined, true);
+          triggerMouseEvent(cells[2], 'click', undefined, true);
           expect(grid.sortOrder).to
             .eql([{
               column: 0,
-              direction: "asc"
+              direction: 'asc'
             }, {
               column: 1,
-              direction: "desc"
+              direction: 'desc'
             }]);
         });
       });
@@ -218,7 +217,7 @@
         grid.selection.select(0);
         grid.sortOrder = [{
           column: 0,
-          direction: "desc"
+          direction: 'desc'
         }];
         expect(grid.selection.selected()).to.be.empty;
       });

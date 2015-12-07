@@ -24,7 +24,6 @@
         return e.offsetHeight;
       }
 
-
       describe('resizing', function() {
         function assertHeightByRows(rows) {
           var headersHeight = headers * thHeight;
@@ -48,10 +47,10 @@
             footers,
             tfHeight,
             thHeight,
-            tdHeight
+            tdHeight;
 
         beforeEach(function() {
-          inner = qLocal("div.vaadin-grid");
+          inner = qLocal('div.vaadin-grid');
           tbody = qLight('table tbody');
 
           headers = qaLocal('thead tr').length;
@@ -61,8 +60,8 @@
           thHeight = height(qLocal('thead tr th'));
           tdHeight = height(qLocal('tbody tr td'));
 
-          grid.style.height = "";
-          grid.style.width = "";
+          grid.style.height = '';
+          grid.style.width = '';
           grid.removeAttribute('rows');
 
           // need to return thenable object for FF sake.
@@ -84,65 +83,65 @@
             //TODO: timeout here because of https://github.com/vaadin/vaadin-grid/issues/19
             setTimeout(function() {
               assertHeightByRows(4);
-            }, 100)
+            }, 100);
           });
         });
 
         it('should work if originally invisible', function(done) {
-          var wrapper = document.getElementById("gridwrapper");
-          var tmp = document.createElement("div");
+          var wrapper = document.getElementById('gridwrapper');
+          var tmp = document.createElement('div');
           wrapper.appendChild(tmp);
-          tmp.innerHTML = "<vaadin-grid style='display: none'>" +
-          "                     <table>" +
-          "                       <col name='Name'>" +
-          "                       <tr>" +
-          "                         <td>Grid</td>" +
-          "                       </tr>" +
-          "                     </table>" +
-          "                   </vaadin-grid>";
+          tmp.innerHTML = '<vaadin-grid style="display: none">' +
+          '                     <table>' +
+          '                       <col name="Name">' +
+          '                       <tr>' +
+          '                         <td>Grid</td>' +
+          '                       </tr>' +
+          '                     </table>' +
+          '                   </vaadin-grid>';
 
-          var grid = tmp.querySelector("vaadin-grid");
+          var grid = tmp.querySelector('vaadin-grid');
 
           // Using onRegister because in FF the new grid takes a while to be initialized
           onRegister(grid, function() {
             expect(grid.offsetHeight).to.equal(0);
 
-            grid.removeAttribute("style");
+            grid.removeAttribute('style');
 
             //TODO: wait until here because of https://github.com/vaadin/vaadin-grid/issues/19
             // We use waitUntil because resize event in iframe is not synchronous.
             waitUntil(function() {
-              return grid.offsetHeight <= 30
+              return grid.offsetHeight <= 30;
             }, done, done);
           });
         });
 
         it('should work if parent originally invisible', function(done) {
-          var wrapper = document.getElementById("gridwrapper");
-          var tmp = document.createElement("div");
-          tmp.style.display = "none";
+          var wrapper = document.getElementById('gridwrapper');
+          var tmp = document.createElement('div');
+          tmp.style.display = 'none';
           wrapper.appendChild(tmp);
-          tmp.innerHTML = "<vaadin-grid>" +
-          "                     <table>" +
-          "                       <col name='Name'>" +
-          "                       <tr>" +
-          "                         <td>Grid</td>" +
-          "                       </tr>" +
-          "                     </table>" +
-          "                   </vaadin-grid>";
+          tmp.innerHTML = '<vaadin-grid>' +
+          '                     <table>' +
+          '                       <col name="Name">' +
+          '                       <tr>' +
+          '                         <td>Grid</td>' +
+          '                       </tr>' +
+          '                     </table>' +
+          '                   </vaadin-grid>';
 
-          var grid = tmp.querySelector("vaadin-grid");
+          var grid = tmp.querySelector('vaadin-grid');
 
           // Using onRegister because in FF the new grid takes a while to be initialized
           onRegister(grid, function() {
             expect(grid.offsetHeight).to.equal(0);
 
-            tmp.removeAttribute("style");
+            tmp.removeAttribute('style');
 
             //TODO: wait until here because of https://github.com/vaadin/vaadin-grid/issues/19
             // We use waitUntil because resize event in iframe is not synchronous.
             waitUntil(function() {
-              return grid.offsetHeight <= 30
+              return grid.offsetHeight <= 30;
             }, done, done);
           });
         });
@@ -198,7 +197,7 @@
           });
 
           it('should be adjustable declaratively', function() {
-            grid.setAttribute("visible-rows", 4);
+            grid.setAttribute('visible-rows', 4);
             expect(grid.visibleRows).to.eql(4);
           });
         });
@@ -217,9 +216,9 @@
         describe('grid with a fixed height', function() {
           it('should keep the correct height after sorting', function() {
             grid.columns[0].sortable = true;
-            grid.style.height = "500px";
+            grid.style.height = '500px';
 
-            var firstNonFrozenHeaderCell = qLocal.bind(this, ".vaadin-grid-header .vaadin-grid-cell:not(.frozen)");
+            var firstNonFrozenHeaderCell = qLocal.bind(this, '.vaadin-grid-header .vaadin-grid-cell:not(.frozen)');
             firstNonFrozenHeaderCell().click();
 
             return grid.then(function() {
@@ -232,10 +231,10 @@
               var originalHeight = grid.offsetHeight;
               expect(originalHeight).not.to.eql(0);
 
-              grid.style.height = "200px";
+              grid.style.height = '200px';
 
               grid.then(function() {
-                grid.removeAttribute("style");
+                grid.removeAttribute('style');
               }).then(function() {
                 setTimeout(function() {
                   expect(grid.offsetHeight).to.eql(originalHeight);
@@ -244,8 +243,6 @@
               });
             });
           });
-
-
         });
 
         describe('using scaled dimensions', function() {
@@ -268,7 +265,7 @@
           it('should match dimensions with the surrounding div', function(done) {
             waitUntil(function() {
               return height(grid) === document.body.clientHeight &&
-                Math.abs(document.body.clientWidth - width(grid)) <= 1
+                Math.abs(document.body.clientWidth - width(grid)) <= 1;
             }, done);
           });
 
@@ -276,11 +273,11 @@
 
         it('should render to the correct level in stack', function() {
           function createDiv() {
-            var div = document.createElement("div");
-            div.style.position = "absolute";
-            div.style.top = "0";
-            div.style.width = "100px";
-            div.style.height = "100px";
+            var div = document.createElement('div');
+            div.style.position = 'absolute';
+            div.style.top = '0';
+            div.style.width = '100px';
+            div.style.height = '100px';
             return div;
           }
 
@@ -301,30 +298,30 @@
         });
 
         it('should render in a flex box', function() {
-          var wrapper = document.getElementById("gridwrapper");
-          wrapper.setAttribute("style", "height: 200px; display: -webkit-flex; display: flex;");
-          grid.setAttribute("style", "-webkit-flex: 1 1 auto; flex: 1 1 auto;");
+          var wrapper = document.getElementById('gridwrapper');
+          wrapper.setAttribute('style', 'height: 200px; display: -webkit-flex; display: flex;');
+          grid.setAttribute('style', '-webkit-flex: 1 1 auto; flex: 1 1 auto;');
 
           return grid.then(function() {
             expect(grid.clientHeight).to.eql(200);
-            wrapper.removeAttribute("style");
-            grid.removeAttribute("style");
+            wrapper.removeAttribute('style');
+            grid.removeAttribute('style');
           });
         });
 
         it('should resize when becoming visible again', function(done) {
-          grid.style.height = "400px";
-          var wrapper = document.getElementById("gridwrapper");
+          grid.style.height = '400px';
+          var wrapper = document.getElementById('gridwrapper');
           var tablewrapper = Polymer.dom(grid.root).querySelector('.vaadin-grid-tablewrapper');
-          grid.items = ["foo"];
+          grid.items = ['foo'];
           grid.then(function() {
             wrapper.style.display = 'none';
           }).then(function() {
-            grid.items = ["bar"];
+            grid.items = ['bar'];
           }).then(function() {
 
             waitUntil(function() {
-              return tablewrapper.querySelector('tbody span').innerHTML === 'bar'
+              return tablewrapper.querySelector('tbody span').innerHTML === 'bar';
             }, function() {
               wrapper.style.display = 'block';
 
@@ -347,8 +344,8 @@
 
         it('should resize with a details row open', function(done) {
           grid.rowDetailsGenerator = function() {
-            return document.createElement("input");
-          }
+            return document.createElement('input');
+          };
           var originalHeight;
 
           grid.then(function() {
@@ -356,16 +353,16 @@
             return grid;
           }).then(function() {
             originalHeight = grid.clientHeight;
-            grid.style.height = "100px";
+            grid.style.height = '100px';
 
             // Using waitUntil instead of chaining grid.then because 'onresize' event from
             // iframe is not asynchronous (very noticeable in android 5.x emulator)
             // Related with : https://github.com/vaadin/vaadin-grid/issues/19
-            waitUntil(function(){
+            waitUntil(function() {
               return originalHeight != grid.clientHeight;
-            }, function(){
-              grid.style.height = "";
-              waitUntil(function(){
+            }, function() {
+              grid.style.height = '';
+              waitUntil(function() {
                 return originalHeight == grid.clientHeight;
               }, done, done);
             }, done);

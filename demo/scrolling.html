@@ -55,22 +55,23 @@ layout: page
       <button class="demo-button" id="scrollToRow">scrollToRow(100)</button>
 
       <code hidden>
+        function random(arr) {
+          return arr[Math.floor(Math.random() * arr.length)];
+        }
+
         var employees = [];
-        var names = ["Artur", "Patrik", "Henrik", "Teemu"];
-        var surnames = ["Signell","Lehtinen","Ahlroos","Paul"];
-        var activities = ["Design","Implement","Polish","Deliver"];
-        var targets = ["soup","Vaadin","dog","world peace"];
-        for (var i = 0; i < 400; i++){
-            var row = [];
-            [names, surnames, activities, targets].forEach(function(array){
-              row.push(array[Math.floor(Math.random()*array.length)]);
-            });
-            employees.push(row);
+        var names = ['Artur', 'Patrik', 'Henrik', 'Teemu'];
+        var surnames = ['Signell', 'Lehtinen', 'Ahlroos', 'Paul'];
+        var activities = ['Design', 'Implement', 'Polish', 'Deliver'];
+        var targets = ['soup', 'Vaadin', 'dog', 'world peace'];
+        for (var i = 0; i < 400; i++) {
+          var row = [random(names), random(surnames), random(activities), random(targets)];
+          employees.push(row);
         }
       </code>
 
       <code demo-var="grid">
-        var grid = grid || document.querySelector("vaadin-grid");
+        var grid = grid || document.querySelector('vaadin-grid');
 
         HTMLImports.whenReady(function() {
           grid.items = employees;
@@ -89,17 +90,17 @@ layout: page
 
           grid.columns[0].renderer = function(cell) {
             cell.element.innerHTML = cell.row.index;
-          }
+          };
 
-          document.getElementById("scrollToStart").addEventListener("click", function() {
+          document.getElementById('scrollToStart').addEventListener('click', function() {
             grid.scrollToStart();
           });
 
-          document.getElementById("scrollToEnd").addEventListener("click", function() {
+          document.getElementById('scrollToEnd').addEventListener('click', function() {
             grid.scrollToEnd();
           });
 
-          document.getElementById("scrollToRow").addEventListener("click", function() {
+          document.getElementById('scrollToRow').addEventListener('click', function() {
             grid.scrollToRow(100);
           });
         });

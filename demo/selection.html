@@ -59,7 +59,7 @@ layout: page
       </vaadin-grid>
 
       <code demo-var="grid">
-        var grid = grid || document.querySelector("vaadin-grid");
+        var grid = grid || document.querySelector('vaadin-grid');
 
         HTMLImports.whenReady(function() {
           // code
@@ -102,53 +102,54 @@ layout: page
         </table>
       </vaadin-grid>
       <code hidden>
+        function random(arr) {
+          return arr[Math.floor(Math.random() * arr.length)];
+        }
+
         var employees = [];
-        var names = ["Artur", "Patrik", "Henrik", "Teemu"];
-        var surnames = ["Signell","Lehtinen","Ahlroos","Paul"];
-        var activities = ["Design","Implement","Polish","Deliver"];
-        var targets = ["soup","Vaadin","dog","world peace"];
-        for (var i = 0; i < 400; i++){
-            var row = [];
-            [names, surnames, activities, targets].forEach(function(array){
-              row.push(array[Math.floor(Math.random()*array.length)]);
-            });
-            employees.push(row);
+        var names = ['Artur', 'Patrik', 'Henrik', 'Teemu'];
+        var surnames = ['Signell', 'Lehtinen', 'Ahlroos', 'Paul'];
+        var activities = ['Design', 'Implement', 'Polish', 'Deliver'];
+        var targets = ['soup', 'Vaadin', 'dog', 'world peace'];
+        for (var i = 0; i < 400; i++) {
+          var row = [random(names), random(surnames), random(activities), random(targets)];
+          employees.push(row);
         }
       </code>
       <code demo-var="grid" hidden>
-        var grid = grid || document.querySelector("vaadin-grid");
+        var grid = grid || document.querySelector('vaadin-grid');
 
-        var controls = document.createElement("div");
+        var controls = document.createElement('div');
         controls.innerHTML = 'Selection mode:';
 
-        var modeSelect = document.createElement("select");
-        ["single", "multi", "all", "disabled"].forEach(function(it){
-          var option = document.createElement("option");
+        var modeSelect = document.createElement('select');
+        ['single', 'multi', 'all', 'disabled'].forEach(function(it) {
+          var option = document.createElement('option');
           option.value = it;
           option.innerHTML = it;
           modeSelect.appendChild(option);
         });
-        modeSelect.value = "multi";
+        modeSelect.value = 'multi';
 
         controls.appendChild(modeSelect);
         grid.parentElement.appendChild(controls);
 
         // Bind the mode select value to vgrid.selection.mode
-        modeSelect.addEventListener("change", function() {
+        modeSelect.addEventListener('change', function() {
           grid.selection.mode = modeSelect.value;
         });
-        grid.addEventListener("selection-mode-changed", function() {
+        grid.addEventListener('selection-mode-changed', function() {
           modeSelect.value = grid.selection.mode;
         });
       </code>
       <code demo-var="grid">
-        var grid = grid || document.querySelector("vaadin-grid");
+        var grid = grid || document.querySelector('vaadin-grid');
 
         HTMLImports.whenReady(function() {
           grid.items = employees;
           // code
           // Set the selection mode to "multi"
-          grid.selection.mode = "multi";
+          grid.selection.mode = 'multi';
           // end-code
         });
       </code>
@@ -179,29 +180,30 @@ layout: page
         </table>
       </vaadin-grid>
       <code hidden>
+        function random(arr) {
+          return arr[Math.floor(Math.random() * arr.length)];
+        }
+
         var employees = [];
-        var names = ["Artur", "Patrik", "Henrik", "Teemu"];
-        var surnames = ["Signell","Lehtinen","Ahlroos","Paul"];
-        var activities = ["Design","Implement","Polish","Deliver"];
-        var targets = ["soup","Vaadin","dog","world peace"];
-        for (var i = 0; i < 400; i++){
-            var row = [];
-            [names, surnames, activities, targets].forEach(function(array){
-              row.push(array[Math.floor(Math.random()*array.length)]);
-            });
-            employees.push(row);
+        var names = ['Artur', 'Patrik', 'Henrik', 'Teemu'];
+        var surnames = ['Signell', 'Lehtinen', 'Ahlroos', 'Paul'];
+        var activities = ['Design', 'Implement', 'Polish', 'Deliver'];
+        var targets = ['soup', 'Vaadin', 'dog', 'world peace'];
+        for (var i = 0; i < 400; i++) {
+          var row = [random(names), random(surnames), random(activities), random(targets)];
+          employees.push(row);
         }
       </code>
       <code demo-var="grid">
-        var grid = grid || document.querySelector("vaadin-grid");
+        var grid = grid || document.querySelector('vaadin-grid');
 
         HTMLImports.whenReady(function() {
           grid.items = employees;
           // code
           // Log the selections / deselection to console on select event
-          grid.addEventListener("selected-items-changed", function() {
-            console.log("Selected: " + grid.selection.selected());
-            console.log("Deselected: " + grid.selection.deselected());
+          grid.addEventListener('selected-items-changed', function() {
+            console.log('Selected: ' + grid.selection.selected());
+            console.log('Deselected: ' + grid.selection.deselected());
           });
           // end-code
         });
@@ -234,33 +236,34 @@ layout: page
         </table>
       </vaadin-grid>
       <code hidden>
+        function random(arr) {
+          return arr[Math.floor(Math.random() * arr.length)];
+        }
+
         var employees = [];
-        var names = ["Artur", "Patrik", "Henrik", "Teemu"];
-        var surnames = ["Signell","Lehtinen","Ahlroos","Paul"];
-        var activities = ["Design","Implement","Polish","Deliver"];
-        var targets = ["soup","Vaadin","dog","world peace"];
-        for (var i = 0; i < 400; i++){
-            var row = [];
-            [names, surnames, activities, targets].forEach(function(array){
-              row.push(array[Math.floor(Math.random()*array.length)]);
-            });
-            employees.push(row);
+        var names = ['Artur', 'Patrik', 'Henrik', 'Teemu'];
+        var surnames = ['Signell', 'Lehtinen', 'Ahlroos', 'Paul'];
+        var activities = ['Design', 'Implement', 'Polish', 'Deliver'];
+        var targets = ['soup', 'Vaadin', 'dog', 'world peace'];
+        for (var i = 0; i < 400; i++) {
+          var row = [random(names), random(surnames), random(activities), random(targets)];
+          employees.push(row);
         }
       </code>
 
       <code demo-var="grid">
-        var grid = grid || document.querySelector("vaadin-grid");
+        var grid = grid || document.querySelector('vaadin-grid');
 
         HTMLImports.whenReady(function() {
           grid.items = employees;
           // code
           // Log selected designers list on select event
-          grid.addEventListener("selected-items-changed", function() {
-            console.log("Selected designers:");
+          grid.addEventListener('selected-items-changed', function() {
+            console.log('Selected designers:');
             grid.selection.selected(function(index) {
               var data = employees[index];
-              if (data[2] === "Design") {
-                console.log("-" + data[0] + " " + data[1]);
+              if (data[2] === 'Design') {
+                console.log('-' + data[0] + ' ' + data[1]);
               }
             });
           });
@@ -295,29 +298,30 @@ layout: page
         </table>
       </vaadin-grid>
       <code hidden>
+        function random(arr) {
+          return arr[Math.floor(Math.random() * arr.length)];
+        }
+
         var employees = [];
-        var names = ["Artur", "Patrik", "Henrik", "Teemu"];
-        var surnames = ["Signell","Lehtinen","Ahlroos","Paul"];
-        var activities = ["Design","Implement","Polish","Deliver"];
-        var targets = ["soup","Vaadin","dog","world peace"];
-        for (var i = 0; i < 400; i++){
-            var row = [];
-            [names, surnames, activities, targets].forEach(function(array){
-              row.push(array[Math.floor(Math.random()*array.length)]);
-            });
-            employees.push(row);
+        var names = ['Artur', 'Patrik', 'Henrik', 'Teemu'];
+        var surnames = ['Signell', 'Lehtinen', 'Ahlroos', 'Paul'];
+        var activities = ['Design', 'Implement', 'Polish', 'Deliver'];
+        var targets = ['soup', 'Vaadin', 'dog', 'world peace'];
+        for (var i = 0; i < 400; i++) {
+          var row = [random(names), random(surnames), random(activities), random(targets)];
+          employees.push(row);
         }
       </code>
       <code demo-var="grid">
-        var grid = grid || document.querySelector("vaadin-grid");
+        var grid = grid || document.querySelector('vaadin-grid');
 
         HTMLImports.whenReady(function() {
           grid.items = employees;
           // code
           // Log selected indexes in batches of 5
-          grid.addEventListener("selected-items-changed", function() {
-            for (var i = 0; i < grid.selection.size; i += 5){
-              console.log(grid.selection.selected(undefined, i, i+4));
+          grid.addEventListener('selected-items-changed', function() {
+            for (var i = 0; i < grid.selection.size; i += 5) {
+              console.log(grid.selection.selected(undefined, i, i + 4));
             }
           });
           // end-code

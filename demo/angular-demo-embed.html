@@ -36,11 +36,11 @@
   <script>
     var tagName = window.location.hash.substr(1);
     document.body.appendChild(document.createElement(tagName));
-    HTMLImports.whenReady(function(){
+    HTMLImports.whenReady(function() {
 
       System.config({
        transpiler: 'typescript',
-       typescriptOptions: { emitDecoratorMetadata: true }
+       typescriptOptions: {emitDecoratorMetadata: true}
       });
       System.import(tagName + '.ts');
 

@@ -104,16 +104,16 @@ layout: page
 
       </div>
       <code hidden demo-var="grid">
-        var templateWrapper = document.getElementById("templatewrapper");
-        var template = templateWrapper.querySelector("template");
+        var templateWrapper = document.getElementById('templatewrapper');
+        var template = templateWrapper.querySelector('template');
 
         function getUserDetails(user) {
           template.user = user;
-          return templateWrapper.querySelector(".userdetails").outerHTML;
+          return templateWrapper.querySelector('.userdetails').outerHTML;
         }
       </code>
       <code demo-var="grid">
-        var grid = grid || document.querySelector("vaadin-grid");
+        var grid = grid || document.querySelector('vaadin-grid');
 
         HTMLImports.whenReady(function() {
           grid.size = 1000;
@@ -127,9 +127,9 @@ layout: page
                   callback(json.results);
                 }
               }
-            }
+            };
             var rowsNeeded = params.count > 0 ? params.count : 10;
-            xhr.open("GET", randomUserUrl + "?results=" + rowsNeeded, true);
+            xhr.open('GET', randomUserUrl + '?results=' + rowsNeeded, true);
             xhr.send();
           };
 
@@ -146,7 +146,7 @@ layout: page
             });
 
             return elem;
-          }
+          };
 
           var detailsOpenIndex = -1;
 
