@@ -42,7 +42,7 @@
 
     beforeEach(function() {
       //reset position to an arbitrary row.
-      return grid.scrollToRow(24).then(function () {
+      return grid.scrollToRow(24).then(function() {
         // calling scrollToRow - scrollToRow - then seems to quite often
         // run the callback in 'then' before the latter scrolling has finished.
         // This is most likely caused by multiple timers being fired inside the Grid,
@@ -55,65 +55,63 @@
     });
 
     it('should throw an error when scrolling to an invalid row', function() {
-      expect(grid.scrollToRow.bind(grid, -1)).to.throw("Row index");
-      expect(grid.scrollToRow.bind(grid, 100)).to.throw("Row index");
+      expect(grid.scrollToRow.bind(grid, -1)).to.throw('Row index');
+      expect(grid.scrollToRow.bind(grid, 100)).to.throw('Row index');
     });
 
     it('should scroll using scrollToRow', function(done) {
       grid.scrollToRow(50);
-      waitUntil(function(){
-        return /foo 50/.test(firstColumnContents())
+      waitUntil(function() {
+        return /foo 50/.test(firstColumnContents());
       }, done, done);
     });
 
     describe('scrolling with destination', function(done) {
       it('should scroll to row from start', function(done) {
         grid.scrollToRow(50, 'start');
-        waitUntil(function(){
-          return /foo 5[04]/.test(firstColumnContents())
+        waitUntil(function() {
+          return /foo 5[04]/.test(firstColumnContents());
         }, done, done);
       });
 
       it('should scroll to row from end', function(done) {
         grid.scrollToRow(50, 'end');
-        waitUntil(function(){
-          return /foo 5[04]/.test(firstColumnContents())
+        waitUntil(function() {
+          return /foo 5[04]/.test(firstColumnContents());
         }, done, done);
       });
     });
 
     it('should scroll to end', function(done) {
       grid.scrollToEnd();
-      waitUntil(function(){
-        return /foo 99/.test(firstColumnContents())
+      waitUntil(function() {
+        return /foo 99/.test(firstColumnContents());
       }, done, done);
     });
 
     it('should scroll to start', function(done) {
       grid.scrollToStart();
-      waitUntil(function(){
-        return /foo 0/.test(firstColumnContents())
+      waitUntil(function() {
+        return /foo 0/.test(firstColumnContents());
       }, done, done);
     });
 
     it('should scroll one page down', function(done) {
       grid.scrollToStart();
 
-      grid.then(function(){
-        var tableWrapper = qLocal(".vaadin-grid-tablewrapper");
+      grid.then(function() {
+        var tableWrapper = qLocal('.vaadin-grid-tablewrapper');
 
-        var isIE = (navigator.userAgent.indexOf("Trident") != -1);
-        triggerMouseEvent(tableWrapper.firstChild, isIE ? "mousewheel" : "wheel", {
+        var isIE = (navigator.userAgent.indexOf('Trident') != -1);
+        triggerMouseEvent(tableWrapper.firstChild, isIE ? 'mousewheel' : 'wheel', {
           deltaY: tableWrapper.offsetHeight
         });
 
-        waitUntil(function(){
-          return /foo 7/.test(firstColumnContents())
+        waitUntil(function() {
+          return /foo 7/.test(firstColumnContents());
         }, done, done);
       });
     });
-
-
   });
 </script>
 

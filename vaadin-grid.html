@@ -710,7 +710,7 @@ See the [demo](demo/index.html) for use case examples.
 
   Polymer({
 
-    is: "vaadin-grid",
+    is: 'vaadin-grid',
 
     _grid: undefined,
 
@@ -933,7 +933,7 @@ See the [demo](demo/index.html) for use case examples.
     attributeChanged: function(name, type, value) {
       switch (name) {
         case 'disabled':
-          var disabled = typeof value == "string";
+          var disabled = typeof value == 'string';
           if (this.disabled != disabled) {
             this.disabled = disabled;
           }
@@ -992,7 +992,7 @@ See the [demo](demo/index.html) for use case examples.
     },
 
     _onSelectionModeChange: function() {
-      this.serializeValueToAttribute(this.selection.mode, "selection-mode");
+      this.serializeValueToAttribute(this.selection.mode, 'selection-mode');
     },
 
     _sortOrderChanged: function(sortOrder) {
@@ -1027,7 +1027,7 @@ See the [demo](demo/index.html) for use case examples.
 
     _bindResizeListener: function() {
       var _this = this;
-      this.$.measureobject.addEventListener("load", function() {
+      this.$.measureobject.addEventListener('load', function() {
         var defaultView = this.contentDocument.defaultView;
         var prevW = -1;
         var prevH = -1;
@@ -1043,7 +1043,7 @@ See the [demo](demo/index.html) for use case examples.
         _this._grid.updateSize();
       });
 
-      this.$.measureobject.src = "about:blank";
+      this.$.measureobject.src = 'about:blank';
     },
 
     attached: function() {
@@ -1205,7 +1205,7 @@ See the [demo](demo/index.html) for use case examples.
      */
     set disabled(disabled) {
       this._grid.setDisabled(disabled);
-      this.reflectPropertyToAttribute("disabled");
+      this.reflectPropertyToAttribute('disabled');
     },
 
     /**
@@ -1234,7 +1234,7 @@ See the [demo](demo/index.html) for use case examples.
      */
     set frozenColumns(frozenColumns) {
       this._grid.setFrozenColumns(frozenColumns);
-      this.reflectPropertyToAttribute("frozenColumns");
+      this.reflectPropertyToAttribute('frozenColumns');
     },
 
     /**
@@ -1260,7 +1260,7 @@ See the [demo](demo/index.html) for use case examples.
      */
     set visibleRows(visibleRows) {
       this._grid.setVisibleRows(visibleRows);
-      this.reflectPropertyToAttribute("visibleRows");
+      this.reflectPropertyToAttribute('visibleRows');
     },
 
     /**

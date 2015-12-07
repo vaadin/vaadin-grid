@@ -19,20 +19,20 @@
 
     describe('items array', function() {
       before(function() {
-        grid.columns = [{name: "FirstName"}, {name: 'Salary'}];
+        grid.columns = [{name: 'FirstName'}, {name: 'Salary'}];
       });
 
       it('should accept array values', function() {
         grid.items = [
-          ["John", 1234.56],
-          ["Jane", 2345.67],
+          ['John', 1234.56],
+          ['Jane', 2345.67],
         ];
 
-        return grid.then(function(){
-          var cells = qaLocal(".vaadin-grid-body .vaadin-grid-cell > span");
-          assert.equal(cells[0].innerHTML, "John");
-          assert.equal(cells[1].innerHTML, "1234.56");
-          assert.equal(cells[2].innerHTML, "Jane");
+        return grid.then(function() {
+          var cells = qaLocal('.vaadin-grid-body .vaadin-grid-cell > span');
+          assert.equal(cells[0].innerHTML, 'John');
+          assert.equal(cells[1].innerHTML, '1234.56');
+          assert.equal(cells[2].innerHTML, 'Jane');
         });
       });
 
@@ -44,21 +44,20 @@
 
       it('should accept object values', function() {
         grid.items = [{
-          FirstName: "John",
+          FirstName: 'John',
           Salary: 1234.56
         }, {
-          FirstName: "Jane",
+          FirstName: 'Jane',
           Salary: 2345.67
-        }, ];
+        }];
 
         return grid.then(function() {
-          var cells = qaLocal(".vaadin-grid-body .vaadin-grid-cell > span");
-          assert.equal(cells[0].innerHTML, "John");
-          assert.equal(cells[1].innerHTML, "1234.56");
-          assert.equal(cells[2].innerHTML, "Jane");
+          var cells = qaLocal('.vaadin-grid-body .vaadin-grid-cell > span');
+          assert.equal(cells[0].innerHTML, 'John');
+          assert.equal(cells[1].innerHTML, '1234.56');
+          assert.equal(cells[2].innerHTML, 'Jane');
         });
       });
-
 
       it('should accept boolean values', function() {
         grid.items = [
@@ -66,21 +65,21 @@
           true,
         ];
 
-        return grid.then(function(){
-          var cells = qaLocal(".vaadin-grid-body .vaadin-grid-cell > span");
-          assert.equal(cells[2].innerHTML, "true");
+        return grid.then(function() {
+          var cells = qaLocal('.vaadin-grid-body .vaadin-grid-cell > span');
+          assert.equal(cells[2].innerHTML, 'true');
         });
       });
 
       it('should accept string values', function() {
         grid.items = [
-          "Lorem",
-          "Ipsum",
+          'Lorem',
+          'Ipsum',
         ];
 
-        return grid.then(function(){
-          var cells = qaLocal(".vaadin-grid-body .vaadin-grid-cell > span");
-          assert.equal(cells[2].innerHTML, "Ipsum");
+        return grid.then(function() {
+          var cells = qaLocal('.vaadin-grid-body .vaadin-grid-cell > span');
+          assert.equal(cells[2].innerHTML, 'Ipsum');
         });
       });
 
@@ -89,13 +88,13 @@
           [1, 2], [null, undefined], 3
         ];
 
-        return grid.then(function(){
-          var cells = qaLocal(".vaadin-grid-body .vaadin-grid-cell > span");
-          assert.equal(cells[0].innerHTML, "1");
-          assert.equal(cells[1].innerHTML, "2");
-          assert.equal(cells[2].innerHTML, "");
-          assert.equal(cells[3].innerHTML, "");
-          assert.equal(cells[4].innerHTML, "3");
+        return grid.then(function() {
+          var cells = qaLocal('.vaadin-grid-body .vaadin-grid-cell > span');
+          assert.equal(cells[0].innerHTML, '1');
+          assert.equal(cells[1].innerHTML, '2');
+          assert.equal(cells[2].innerHTML, '');
+          assert.equal(cells[3].innerHTML, '');
+          assert.equal(cells[4].innerHTML, '3');
         });
 
       });
@@ -108,42 +107,42 @@
         grid.items = infiniteDataSource;
 
         return grid.then(function() {
-          var cells = qaLocal(".vaadin-grid-body .vaadin-grid-cell > span");
-          assert.equal(cells[0].innerHTML, "foo 0");
-          assert.equal(cells[1].innerHTML, "bar 0");
-          assert.equal(cells[2].innerHTML, "foo 1");
+          var cells = qaLocal('.vaadin-grid-body .vaadin-grid-cell > span');
+          assert.equal(cells[0].innerHTML, 'foo 0');
+          assert.equal(cells[1].innerHTML, 'bar 0');
+          assert.equal(cells[2].innerHTML, 'foo 1');
         });
 
       });
 
       it('should render header/footer with empty items', function() {
-        grid.style.height = "";
+        grid.style.height = '';
         grid.items = [];
 
-        return grid.then(function(){
-          var headerHeight = qLocal(".vaadin-grid-header").clientHeight;
-          var footerHeight = qLocal(".vaadin-grid-footer").clientHeight;
+        return grid.then(function() {
+          var headerHeight = qLocal('.vaadin-grid-header').clientHeight;
+          var footerHeight = qLocal('.vaadin-grid-footer').clientHeight;
           expect(grid.clientHeight).to.be.above(0);
           expect(grid.clientHeight).to.eql(headerHeight + footerHeight);
         });
       });
 
       it('should accept items before grid attached to the DOM', function() {
-        var g = document.createElement("vaadin-grid");
-        g.columns = [{name: "foo"}];
-        g.items = ["bar"];
+        var g = document.createElement('vaadin-grid');
+        g.columns = [{name: 'foo'}];
+        g.items = ['bar'];
         document.body.appendChild(g);
 
-        return g.then(function(){
-          var cells = Polymer.dom(g.root).querySelectorAll(".vaadin-grid-body .vaadin-grid-cell > span");
-          assert.equal(cells[0].innerHTML, "bar");
+        return g.then(function() {
+          var cells = Polymer.dom(g.root).querySelectorAll('.vaadin-grid-body .vaadin-grid-cell > span');
+          assert.equal(cells[0].innerHTML, 'bar');
 
           document.body.removeChild(g);
         });
       });
 
       it('should have matching size property', function() {
-        grid.items = ["foo", "bar"];
+        grid.items = ['foo', 'bar'];
         expect(grid.size).to.equal(2);
       });
 
@@ -164,11 +163,11 @@
       });
 
       it('should fetch cached row data', function() {
-        return grid.then(function(){
+        return grid.then(function() {
           var callCount = spy.callCount;
           grid.getItem(0, function(err, item) {
             if (!err) {
-              expect(item[0]).to.eql("foo 0");
+              expect(item[0]).to.eql('foo 0');
               expect(spy.callCount).to.eql(callCount);
             }
           });
@@ -176,19 +175,19 @@
       });
 
       it('should fetch non-cached row data', function() {
-        return grid.then(function(){
+        return grid.then(function() {
           var callCount = spy.callCount;
           grid.getItem(900, function(err, item) {
             if (!err) {
               expect(spy.callCount).to.eql(callCount + 1);
-              expect(item[0]).to.eql("foo 900");
+              expect(item[0]).to.eql('foo 900');
             }
           });
         });
       });
 
       it('should not fetch data outside the data range', function() {
-        return grid.then(function(){
+        return grid.then(function() {
           var callCount = spy.callCount;
           grid.getItem(1000, function(err, item) {
             expect(err).to.exist;
@@ -200,7 +199,7 @@
       it('should fetch primitive row data', function() {
         grid.items = [1, 2, 3];
 
-        return grid.then(function(){
+        return grid.then(function() {
           grid.getItem(0, function(err, item) {
             if (!err) {
               expect(item).to.eql(1);
@@ -210,7 +209,7 @@
       });
 
       it('should not fetch non-cached row data', function() {
-        return grid.then(function(){
+        return grid.then(function() {
           var callCount = spy.callCount;
           grid.getItem(900, function(err, item) {
             expect(err).to.exist;
@@ -230,7 +229,7 @@
         expect(qLocal('.vaadin-grid-body .vaadin-grid-cell span').innerHTML).to.equal('bar');
       });
 
-      it('should work even if datasource was empty', function(){
+      it('should work even if datasource was empty', function() {
         grid.items = [];
 
         return grid.then(function() {
@@ -248,7 +247,7 @@
       var unknownSizeDs = function(params, callback) {
         var data = [];
         for (var i = params.index; i < grid.size && i < params.index + params.count; i++) {
-          data.push(["foo " + i, "bar " + i]);
+          data.push(['foo ' + i, 'bar ' + i]);
         }
         callback(data);
       };
@@ -315,7 +314,7 @@
       });
 
       it('should accept size even without a datasource', function() {
-        var g = document.createElement("vaadin-grid");
+        var g = document.createElement('vaadin-grid');
         g.size = 4;
         expect(g.size).to.equal(4);
       });

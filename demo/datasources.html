@@ -81,13 +81,15 @@ layout: page
         </table>
       </vaadin-grid>
       <code demo-var="grid">
-        var grid = grid || document.querySelector("vaadin-grid");
+        var grid = grid || document.querySelector('vaadin-grid');
 
         HTMLImports.whenReady(function() {
           // code
-          var data = [ [ "Project A", 10000, 0.8 ],
-                       [ "Project B", 87654, 0.2 ],
-                       [ "Project C", 12999, 0.6 ] ];
+          var data = [
+            ['Project A', 10000, 0.8],
+            ['Project B', 87654, 0.2],
+            ['Project C', 12999, 0.6]
+          ];
 
           grid.items = function(params, callback) {
             callback(data.slice(params.index, params.index + params.count));
@@ -115,16 +117,18 @@ layout: page
         </table>
       </vaadin-grid>
       <code demo-var="grid">
-        var grid = grid || document.querySelector("vaadin-grid");
+        var grid = grid || document.querySelector('vaadin-grid');
 
         HTMLImports.whenReady(function() {
           // code
-          grid.items = [ { projectName: "Project A", cost: {estimate: 10000, current: 8000 } },
-                       { projectName: "Project B", cost: {estimate: 20000, current: 11000 } },
-                       { projectName: "Project C", cost: {estimate: 15000, current: 1000 } } ];
+          grid.items = [
+            {projectName: 'Project A', cost: {estimate: 10000, current: 8000}},
+            {projectName: 'Project B', cost: {estimate: 20000, current: 11000}},
+            {projectName: 'Project C', cost: {estimate: 15000, current: 1000}}
+          ];
           // Optionally set the column names in JS
-          grid.columns[0].name = "projectName";
-          grid.columns[1].name = "cost.estimate";
+          grid.columns[0].name = 'projectName';
+          grid.columns[1].name = 'cost.estimate';
           // end-code
         });
       </code>
@@ -149,11 +153,16 @@ layout: page
         </table>
       </vaadin-grid>
       <code demo-var="grid">
-        var grid = grid || document.querySelector("vaadin-grid");
+        var grid = grid || document.querySelector('vaadin-grid');
 
         HTMLImports.whenReady(function() {
           // code
-          grid.items = ["Steel", "Dr. Manhattan", "Batman", "Black Widow", "Rorschach", "Gambit", "Swamp Thing", "Mystique", "Ozymandias", "Bubastis", "Ozymandias", "Magneto", "Goat Faced Girl", "Aqualad", "Mister Fantastic", "Superman", "Iron Monger", "Professor X", "Namor the Sub-Mariner", "Namorita", " Rocket Raccoon", " The Penguin", "Lex Luthor", "Martian Man Hunter", "Pepper Potts", "Fin Fang Foom", "Elongated Man", "Savage Dragon", "Thing", "Thor Odinson", "The Maxx", "Deadpool", "Storm", "Sabertooth", "Jezebel Jet", "Darwin", "Sasquatch", "Abe (Abraham) Sapien", "The Goon", "Ra’s Al Ghul", "Oracle", "Hellboy", " Doctor Doom", " Solomon Grundy", "Ferro Lad"];
+          grid.items = ['Steel', 'Dr. Manhattan', 'Batman', 'Black Widow', 'Rorschach', 'Gambit', 'Swamp Thing', 'Mystique',
+            'Ozymandias', 'Bubastis', 'Ozymandias', 'Magneto', 'Goat Faced Girl', 'Aqualad', 'Mister Fantastic', 'Superman',
+            'Iron Monger', 'Professor X', 'Namor the Sub-Mariner', 'Namorita', ' Rocket Raccoon', ' The Penguin', 'Lex Luthor',
+            'Martian Man Hunter', 'Pepper Potts', 'Fin Fang Foom', 'Elongated Man', 'Savage Dragon', 'Thing', 'Thor Odinson',
+            'The Maxx', 'Deadpool', 'Storm', 'Sabertooth', 'Jezebel Jet', 'Darwin', 'Sasquatch', 'Abe (Abraham) Sapien',
+            'The Goon', 'Ra’s Al Ghul', 'Oracle', 'Hellboy', ' Doctor Doom', ' Solomon Grundy', 'Ferro Lad'];
           // end-code
         });
       </code>
@@ -184,21 +193,22 @@ layout: page
         </table>
       </vaadin-grid>
       <code hidden>
+        function random(arr) {
+          return arr[Math.floor(Math.random() * arr.length)];
+        }
+
         var employees = [];
-        var names = ["Artur", "Patrik", "Henrik", "Teemu"];
-        var surnames = ["Signell","Lehtinen","Ahlroos","Paul"];
-        var activities = ["Design","Implement","Polish","Deliver"];
-        var targets = ["soup","Vaadin","dog","world peace"];
-        for (var i = 0; i < 400; i++){
-            var row = [];
-            [names, surnames, activities, targets].forEach(function(array){
-              row.push(array[Math.floor(Math.random()*array.length)]);
-            });
-            employees.push(row);
+        var names = ['Artur', 'Patrik', 'Henrik', 'Teemu'];
+        var surnames = ['Signell', 'Lehtinen', 'Ahlroos', 'Paul'];
+        var activities = ['Design', 'Implement', 'Polish', 'Deliver'];
+        var targets = ['soup', 'Vaadin', 'dog', 'world peace'];
+        for (var i = 0; i < 400; i++) {
+          var row = [random(names), random(surnames), random(activities), random(targets)];
+          employees.push(row);
         }
       </code>
       <code demo-var="grid">
-        var grid = grid || document.querySelector("vaadin-grid");
+        var grid = grid || document.querySelector('vaadin-grid');
 
         HTMLImports.whenReady(function() {
           // code
@@ -239,9 +249,9 @@ layout: page
       </vaadin-grid>
       <code demo-var="grid" hidden>
         function createButton(text, fnc) {
-          var button = document.createElement("button");
+          var button = document.createElement('button');
           button.innerHTML = text;
-          button.addEventListener("click", fnc);
+          button.addEventListener('click', fnc);
           return button;
         }
 
@@ -250,14 +260,16 @@ layout: page
         }
       </code>
       <code demo-var="grid">
-        var grid = grid || document.querySelector("vaadin-grid");
+        var grid = grid || document.querySelector('vaadin-grid');
 
         HTMLImports.whenReady(function() {
           // code
           // Define the items
-          var data = [ [ "Project A", 10000, 0.8 ],
-                       [ "Project B", 87654, 0.2 ],
-                       [ "Project C", 12999, 0.6 ] ];
+          var data = [
+            ['Project A', 10000, 0.8],
+            ['Project B', 87654, 0.2],
+            ['Project C', 12999, 0.6]
+          ];
           grid.items = data;
           // Clicking the button changes the data
           addButton('Remove the first row', function() {
@@ -305,7 +317,7 @@ layout: page
         </table>
       </vaadin-grid>
       <code demo-var="grid">
-        var grid = grid || document.querySelector("vaadin-grid");
+        var grid = grid || document.querySelector('vaadin-grid');
 
         HTMLImports.whenReady(function() {
           grid.size = 10;
@@ -325,12 +337,12 @@ layout: page
                   }
                   callback(json.results, size);
                   // Update footer label
-                  grid.footer.getCell(0, 0).content = "Current size: " + size;
+                  grid.footer.getCell(0, 0).content = 'Current size: ' + size;
                 }
               }
-            }
+            };
             var rowsNeeded = Math.max(params.count, 1);
-            xhr.open("GET", randomUserUrl + "?results=" + rowsNeeded, true);
+            xhr.open('GET', randomUserUrl + '?results=' + rowsNeeded, true);
             xhr.send();
           };
           // end-code
@@ -366,7 +378,7 @@ layout: page
         </table>
       </vaadin-grid>
       <code demo-var="grid">
-        var grid = grid || document.querySelector("vaadin-grid");
+        var grid = grid || document.querySelector('vaadin-grid');
 
         HTMLImports.whenReady(function() {
           // code
@@ -380,25 +392,25 @@ layout: page
                   callback(json.results);
                 }
               }
-            }
+            };
             var rowsNeeded = Math.max(params.count, 1);
-            xhr.open("GET", randomUserUrl + "?results=" + rowsNeeded, true);
+            xhr.open('GET', randomUserUrl + '?results=' + rowsNeeded, true);
             xhr.send();
           };
 
           // Add a renderer for the index column
           grid.columns[0].renderer = function(cell) {
-              cell.element.innerHTML = cell.row.index;
-          }
+            cell.element.innerHTML = cell.row.index;
+          };
 
           // Add a renderer for the picture column
           grid.columns[1].renderer = function(cell) {
-            cell.element.innerHTML = "";
-            var img = document.createElement("img");
-            img.style.width = "24px";
-            img.setAttribute("src", cell.data);
+            cell.element.innerHTML = '';
+            var img = document.createElement('img');
+            img.style.width = '24px';
+            img.setAttribute('src', cell.data);
             cell.element.appendChild(img);
-          }
+          };
           // end-code
         });
       </code>

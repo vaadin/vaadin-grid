@@ -75,7 +75,7 @@ layout: page
           var grid = document.querySelector('#my-grid-with-template');
 
           template.onSelect = function() {
-            if(grid.selection.selected().length === 0) {
+            if (grid.selection.selected().length === 0) {
               template.selected = null;
             } else {
               template.selected = template.users[grid.selection.selected()];
@@ -84,14 +84,13 @@ layout: page
 
           var xhr = new XMLHttpRequest();
           xhr.onreadystatechange = function() {
-
-            if (xhr.readyState == XMLHttpRequest.DONE ) {
-              if(xhr.status == 200){
+            if (xhr.readyState == XMLHttpRequest.DONE) {
+              if (xhr.status == 200) {
                 template.users = JSON.parse(xhr.responseText).results;
               }
             }
-          }
-          xhr.open("GET", randomUserUrl + "?results=25", true);
+          };
+          xhr.open('GET', randomUserUrl + '?results=25', true);
           xhr.send();
 
           // end-code
@@ -132,7 +131,7 @@ layout: page
           var grid = document.querySelector('#my-grid-with-ds');
 
           template.onSelect = function() {
-            if(grid.selection.selected().length === 0) {
+            if (grid.selection.selected().length === 0) {
               template.selected = null;
             } else {
               grid.getItem([grid.selection.selected()], function(err, item) {
@@ -146,19 +145,19 @@ layout: page
             var xhr = new XMLHttpRequest();
 
             xhr.onreadystatechange = function() {
-              if (xhr.readyState == XMLHttpRequest.DONE ) {
-                if(xhr.status == 200) {
+              if (xhr.readyState == XMLHttpRequest.DONE) {
+                if (xhr.status == 200) {
                   callback(JSON.parse(xhr.responseText).results);
                 }
               }
             };
 
-            xhr.open("GET", randomUserUrl + '?results=' + Math.max(params.count, 1), true);
+            xhr.open('GET', randomUserUrl + '?results=' + Math.max(params.count, 1), true);
             xhr.send();
           };
 
           template.onSelect = function() {
-            if(grid.selection.selected().length === 0) {
+            if (grid.selection.selected().length === 0) {
               template.selected = null;
             } else {
               grid.getItem([grid.selection.selected()], function(err, item) {
@@ -168,7 +167,7 @@ layout: page
           };
 
           grid.columns[0].renderer = function(cell) {
-            cell.element.innerHTML = "&lt;img style='width: 30px' src='" + cell.data + "' /&gt;";
+            cell.element.innerHTML = '&lt;img style="width: 30px" src="' + cell.data + '" /&gt;';
           };
           // end-code
         });

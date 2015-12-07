@@ -17,7 +17,7 @@ module.exports = {
     privateKey: function() {
       try {
         return fs.readFileSync(userhome + '/.ssh/id_rsa');
-      } catch(error) {
+      } catch (error) {
         return fs.readFileSync(userhome + '/.ssh/id_dsa');
       }
     }
