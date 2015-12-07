@@ -333,8 +333,7 @@
               }, function() {
                 // Changed the datasource of the grid in this test so need to re-init
                 wrapper.removeChild(grid);
-                initializeGrid();
-                done();
+                initializeGrid(done);
               }, function() {
                 done(new Error('failed'));
               });
