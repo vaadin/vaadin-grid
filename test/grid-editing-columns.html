@@ -369,11 +369,14 @@
       });
     });
 
-    it('should reference header cell after adding a new column', function() {
+    it('should reference header cell after adding a new column', function(done) {
       grid.addColumn({name: "foo"});
       grid.header.getCell(0, "foo").content = "bar";
-      var headers = qaLocal(".vaadin-grid-header .vaadin-grid-row th > span");
-      expect(headers[2].innerHTML).to.eql("bar");
+      grid.then(function(){
+        var headers = qaLocal(".vaadin-grid-header .vaadin-grid-row th > span");
+        expect(headers[2].innerHTML).to.eql("bar");
+        done();
+      });
     });
 
     it('should support nested column names', function() {
