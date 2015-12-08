@@ -79,7 +79,6 @@ public class GridElement implements SelectionHandler<Object>,
 
     public boolean updating = true;
     private GridLightDomTable lightDom;
-    private final GridEditor editor;
     private final GridStaticSection staticSection;
 
     private Element container;
@@ -105,14 +104,9 @@ public class GridElement implements SelectionHandler<Object>,
         grid.getElement().getStyle().setHeight(0, Unit.PX);
 
         setColumns(JS.createArray());
-        editor = new GridEditor(this);
         staticSection = new GridStaticSection(this);
 
         grid.setStylePrimaryName("vaadin-grid style-scope vaadin-grid");
-    }
-
-    public GridEditor getEditor() {
-        return editor;
     }
 
     public Element getGridElement() {
@@ -172,8 +166,6 @@ public class GridElement implements SelectionHandler<Object>,
 
             gridContainer.appendChild(grid.getElement());
             WidgetsUtils.attachWidget(grid, null);
-
-            editor.setContainer(container);
         }
 
         updating = false;
