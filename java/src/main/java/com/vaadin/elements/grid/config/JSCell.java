@@ -18,12 +18,13 @@ public class JSCell {
 
     private final CellReference<Object> cell;
     private final JSRow jsRow;
-    private Element grid;
+    public final Element grid;
 
     @JsIgnore
     public JSCell(CellReference<Object> cellReference, Element container) {
-        cell = cellReference;
-        jsRow = new JSRow(cell, container);
+        this.cell = cellReference;
+        this.jsRow = new JSRow(cell, container);
+        this.grid = container;
     }
 
     @JsProperty
@@ -44,11 +45,6 @@ public class JSCell {
     @JsProperty
     Object getData() {
         return cell.getColumn().getValue(cell.getRow());
-    }
-
-    @JsProperty
-    Element getGrid() {
-        return grid;
     }
 
     @JsProperty

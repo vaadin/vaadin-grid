@@ -14,9 +14,9 @@ import com.vaadin.elements.grid.data.GridDataSource;
 @SuppressWarnings("rawtypes")
 public class JSRow {
 
-    private final Element grid;
     private final CellReference cell;
     private final RowReference row;
+    public final Element grid;
 
     @JsIgnore
     public JSRow(RowReference row, Element container) {
@@ -47,10 +47,5 @@ public class JSRow {
     Element getElement() {
         return cell != null ? cell.getElement().getParentElement() : row
                 .getElement();
-    }
-
-    @JsProperty
-    Element getGrid() {
-        return grid;
     }
 }
