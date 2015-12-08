@@ -15,8 +15,8 @@ import com.vaadin.elements.grid.table.GridColumn;
 @JsType(namespace = JS.NAMESPACE_API)
 public class JSCell {
 
-    private CellReference<Object> cell;
-    private JSRow jsRow;
+    private final CellReference<Object> cell;
+    private final JSRow jsRow;
     private Element grid;
 
     public JSCell(CellReference<Object> cellReference, Element container) {
@@ -24,27 +24,33 @@ public class JSCell {
         jsRow = new JSRow(cell, container);
     }
 
-    @JsProperty Element getElement() {
+    @JsProperty
+    Element getElement() {
         return cell.getElement();
     }
 
-    @JsProperty int getIndex() {
+    @JsProperty
+    int getIndex() {
         return cell.getRowIndex();
     }
 
-    @JsProperty String getColumnName() {
-        return ((GridColumn)cell.getColumn()).getJsColumn().getName();
+    @JsProperty
+    String getColumnName() {
+        return ((GridColumn) cell.getColumn()).getJsColumn().getName();
     }
 
-    @JsProperty Object getData() {
+    @JsProperty
+    Object getData() {
         return cell.getColumn().getValue(cell.getRow());
     }
 
-    @JsProperty Element getGrid() {
+    @JsProperty
+    Element getGrid() {
         return grid;
     }
 
-    @JsProperty JSRow getRow() {
+    @JsProperty
+    JSRow getRow() {
         return jsRow;
     }
 }
