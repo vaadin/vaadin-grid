@@ -1,5 +1,6 @@
 package com.vaadin.elements.grid.config;
 
+import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 
@@ -19,6 +20,7 @@ public class JSCell {
     private final JSRow jsRow;
     private Element grid;
 
+    @JsIgnore
     public JSCell(CellReference<Object> cellReference, Element container) {
         cell = cellReference;
         jsRow = new JSRow(cell, container);
