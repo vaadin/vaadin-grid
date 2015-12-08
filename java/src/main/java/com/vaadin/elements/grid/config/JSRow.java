@@ -31,24 +31,29 @@ public class JSRow {
         grid = container;
     }
 
-    @JsProperty int getIndex() {
+    @JsProperty
+    int getIndex() {
         return cell != null ? cell.getRowIndex() : row.getRowIndex();
     }
 
-    @JsProperty Object getData() {
-        return cell != null ? column.getValue(cell.getRow()) :
-            GridDataSource.extractDataItem(row.getRow());
+    @JsProperty
+    Object getData() {
+        return cell != null ? column.getValue(cell.getRow()) : GridDataSource
+                .extractDataItem(row.getRow());
     }
 
-    @JsProperty Element getElement() {
+    @JsProperty
+    Element getElement() {
         return cell != null ? cell.getElement() : row.getElement();
     }
 
-    @JsProperty Element getGrid() {
+    @JsProperty
+    Element getGrid() {
         return grid;
     }
 
-    @JsProperty String getColumnName() {
+    @JsProperty
+    String getColumnName() {
         return column.getJsColumn().getName();
     }
 }

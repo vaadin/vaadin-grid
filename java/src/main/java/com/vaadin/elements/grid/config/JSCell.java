@@ -24,27 +24,33 @@ public class JSCell {
         jsRow = new JSRow(cell, container);
     }
 
-    @JsProperty Element getElement() {
+    @JsProperty
+    Element getElement() {
         return cell.getElement();
     }
 
-    @JsProperty int getIndex() {
+    @JsProperty
+    int getIndex() {
         return cell.getRowIndex();
     }
 
-    @JsProperty String getColumnName() {
-        return ((GridColumn)cell.getColumn()).getJsColumn().getName();
+    @JsProperty
+    String getColumnName() {
+        return ((GridColumn) cell.getColumn()).getJsColumn().getName();
     }
 
-    @JsProperty Object getData() {
+    @JsProperty
+    Object getData() {
         return cell.getColumn().getValue(cell.getRow());
     }
 
-    @JsProperty Element getGrid() {
+    @JsProperty
+    Element getGrid() {
         return grid;
     }
 
-    @JsProperty JSRow getRow() {
+    @JsProperty
+    JSRow getRow() {
         return jsRow;
     }
 }

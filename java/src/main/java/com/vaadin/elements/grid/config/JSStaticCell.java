@@ -28,30 +28,36 @@ public class JSStaticCell {
                         : !"".equals(cell.getText()) ? cell.getText() : null;
     }
 
-    @JsProperty public Object getContent() {
+    @JsProperty
+    public Object getContent() {
         return content;
     }
 
-    @JsProperty public void setContent(Object content) {
+    @JsProperty
+    public void setContent(Object content) {
         this.content = content;
         section.contentChanged(content, cell);
         section.cellChanged(cell);
     }
 
-    @JsProperty public int getColspan() {
+    @JsProperty
+    public int getColspan() {
         return cell.getColspan();
     }
 
-    @JsProperty public void setColspan(int colspan) {
+    @JsProperty
+    public void setColspan(int colspan) {
         cell.setColspan(colspan);
         section.cellChanged(cell);
     }
 
-    @JsProperty public String getClassName() {
+    @JsProperty
+    public String getClassName() {
         return cell.getStyleName();
     }
 
-    @JsProperty public void setClassName(String className) {
+    @JsProperty
+    public void setClassName(String className) {
         cell.setStyleName(className);
         section.cellChanged(cell);
     }

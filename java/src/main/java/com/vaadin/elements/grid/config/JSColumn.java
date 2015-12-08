@@ -9,46 +9,66 @@ import com.google.gwt.core.client.JavaScriptObject;
  * This class is a JsInterop object for the JS object representing a grid column
  * configuration.
  */
-@JsType(isNative=true)
+@JsType(isNative = true)
 public interface JSColumn {
 
-    @JsProperty String getName();
+    @JsProperty
+    String getName();
 
-    @JsProperty void setName(String s);
+    @JsProperty
+    void setName(String s);
 
-    @JsProperty String getHidingToggleText();
+    @JsProperty
+    String getHidingToggleText();
 
-    @JsProperty void setHidingToggleText(String s);
+    @JsProperty
+    void setHidingToggleText(String s);
 
-    @JsProperty double getMinWidth();
+    @JsProperty
+    double getMinWidth();
 
-    @JsProperty void setMinWidth(double d);
+    @JsProperty
+    void setMinWidth(double d);
 
-    @JsProperty double getMaxWidth();
+    @JsProperty
+    double getMaxWidth();
 
-    @JsProperty void setMaxWidth(double d);
+    @JsProperty
+    void setMaxWidth(double d);
 
-    @JsProperty double getWidth();
+    @JsProperty
+    double getWidth();
 
-    @JsProperty void setWidth(double d);
+    @JsProperty
+    void setWidth(double d);
 
-    @JsProperty int getFlex();
+    @JsProperty
+    int getFlex();
 
-    @JsProperty void setFlex(int i);
+    @JsProperty
+    void setFlex(int i);
 
-    @JsProperty boolean getSortable();
+    @JsProperty
+    boolean getSortable();
 
-    @JsProperty void setSortable(boolean b);
+    @JsProperty
+    void setSortable(boolean b);
 
-    @JsProperty JavaScriptObject getRenderer();
+    @JsProperty
+    JavaScriptObject getRenderer();
 
-    @JsProperty void setRenderer(JavaScriptObject o);
+    @JsProperty
+    void setRenderer(JavaScriptObject o);
 
-    @JsProperty boolean getHidable();
+    @JsProperty
+    boolean getHidable();
 
-    @JsProperty void setHidable(boolean b);
+    @JsProperty
+    void setHidable(boolean b);
 
-    @JsProperty boolean getHidden();
+    @JsProperty
+    boolean getHidden();
 
-    @JsProperty void setHidden(boolean b);
+    @JsProperty
+    void setHidden(boolean b);
 }
