@@ -8,23 +8,31 @@ import com.google.gwt.core.client.JavaScriptObject;
 /**
  * This class is a JsInterop wrapper for the JS object editor handler.
  */
-@JsType(isNative=true)
+@JsType(isNative = true)
 public interface JSEditorHandler {
 
-    @JsProperty JavaScriptObject getBind();
+    @JsProperty
+    JavaScriptObject getBind();
 
-    @JsProperty void setBind(JavaScriptObject bind);
+    @JsProperty
+    void setBind(JavaScriptObject bind);
 
-    @JsProperty JavaScriptObject getCancel();
+    @JsProperty
+    JavaScriptObject getCancel();
 
-    @JsProperty void setCancel(JavaScriptObject cancel);
+    @JsProperty
+    void setCancel(JavaScriptObject cancel);
 
-    @JsProperty JavaScriptObject getSave();
+    @JsProperty
+    JavaScriptObject getSave();
 
-    @JsProperty void setSave(JavaScriptObject save);
+    @JsProperty
+    void setSave(JavaScriptObject save);
 
-    @JsProperty JavaScriptObject getGetCellEditor();
+    @JsProperty
+    JavaScriptObject getGetCellEditor();
 
-    @JsProperty void setGetCellEditor(JavaScriptObject getCellEditor);
+    @JsProperty
+    void setGetCellEditor(JavaScriptObject getCellEditor);
 
 }

@@ -9,30 +9,42 @@ import com.google.gwt.dom.client.Element;
 /**
  * This class is a JsInterop wrapper for the JS object editor handler request.
  */
-@JsType(isNative=true)
+@JsType(isNative = true)
 public interface JSEditorRequest {
-    @JsProperty int getRowIndex();
+    @JsProperty
+    int getRowIndex();
 
-    @JsProperty void setRowIndex(int rowIndex);
+    @JsProperty
+    void setRowIndex(int rowIndex);
 
-    @JsProperty Object getDataItem();
+    @JsProperty
+    Object getDataItem();
 
-    @JsProperty void setDataItem(Object dataItem);
+    @JsProperty
+    void setDataItem(Object dataItem);
 
-    @JsProperty Element getGrid();
+    @JsProperty
+    Element getGrid();
 
-    @JsProperty void setGrid(Element grid);
+    @JsProperty
+    void setGrid(Element grid);
 
-    @JsProperty JavaScriptObject getSuccess();
+    @JsProperty
+    JavaScriptObject getSuccess();
 
-    @JsProperty void setSuccess(JavaScriptObject success);
+    @JsProperty
+    void setSuccess(JavaScriptObject success);
 
-    @JsProperty JavaScriptObject getFailure();
+    @JsProperty
+    JavaScriptObject getFailure();
 
-    @JsProperty void setFailure(JavaScriptObject failure);
+    @JsProperty
+    void setFailure(JavaScriptObject failure);
 
-    @JsProperty JavaScriptObject getGetCellEditor();
+    @JsProperty
+    JavaScriptObject getGetCellEditor();
 
-    @JsProperty void setGetCellEditor(JavaScriptObject getCellEditor);
+    @JsProperty
+    void setGetCellEditor(JavaScriptObject getCellEditor);
 
 }

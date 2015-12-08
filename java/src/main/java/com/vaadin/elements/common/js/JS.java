@@ -51,7 +51,8 @@ public abstract class JS {
         return Object(dataItem) !== dataItem;
     }-*/;
 
-    public static native void definePropertyAccessors(Object jsObject, String propertyName, Setter setter, Getter getter)
+    public static native void definePropertyAccessors(Object jsObject,
+            String propertyName, Setter setter, Getter getter)
     /*-{
       var _value = jsObject[propertyName];
 
