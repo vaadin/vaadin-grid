@@ -9,13 +9,19 @@
 
     <collapse-all-properties value="true" />
 
-    <set-property name="user.agent" value="safari,gecko1_8,ie10" />
+    <set-property name="user.agent" value="safari,gecko1_8" />
     <set-property name="compiler.stackMode" value="strip" />
     <set-property name="gwt.logging.enabled" value="FALSE"/>
+
+    <set-property name="selectorCapability" value="native"/>
 
     <replace-with class="com.google.gwt.query.client.impl.SelectorEngineNativeMin">
         <when-type-assignable class="com.google.gwt.query.client.impl.SelectorEngineImpl"/>
         <when-property-is name="user.agent" value="gecko1_8"/>
+    </replace-with>
+    <replace-with class="com.google.gwt.query.client.impl.SelectorEngineNativeMinIE8">
+        <when-type-assignable class="com.google.gwt.query.client.impl.SelectorEngineImpl"/>
+        <when-property-is name="user.agent" value="ie10"/>
     </replace-with>
 </module>
 
