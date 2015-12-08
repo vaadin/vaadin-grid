@@ -65,7 +65,7 @@ public final class GridColumn extends Column<Object, Object> {
         });
     }
 
-    JSStaticCell getDefaultHeaderCellReference() {
+    public JSStaticCell getDefaultHeaderCellReference() {
         GridStaticSection staticSection = gridElement.getStaticSection();
         return staticSection.getHeaderCellByColumn(
                 staticSection.getDefaultHeader(), this);
