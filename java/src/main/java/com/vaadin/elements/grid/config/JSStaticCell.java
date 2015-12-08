@@ -2,6 +2,7 @@ package com.vaadin.elements.grid.config;
 
 import static com.vaadin.shared.ui.grid.GridStaticCellType.HTML;
 import static com.vaadin.shared.ui.grid.GridStaticCellType.WIDGET;
+import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 
@@ -26,6 +27,7 @@ public class JSStaticCell {
     private final GridElement gridElement;
     private final static String CONTENT_WRAPPER = "<span style='overflow: hidden;text-overflow: ellipsis;'>%CONTENT%</span>";
 
+    @JsIgnore
     public JSStaticCell(StaticCell staticCell, GridElement gridElement) {
         this.gridElement = gridElement;
         cell = staticCell;
