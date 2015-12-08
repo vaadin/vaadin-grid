@@ -7,6 +7,8 @@
 
 `vaadin-grid` is a Web Component for showing large amounts of tabular data, part of the [vaadin-elements](https://github.com/vaadin/vaadin-elements) element bundle.
 
+<img src="screenshot.png" width="481" alt="Screenshot of vaadin-grid" />
+
 **Features:**
  - Lazy-loading
  - Virtual scrolling
@@ -54,7 +56,7 @@ Then do the following:
  ```shell
  $ npm install -g bower gulp web-component-tester polyserve
  ```
- 
+
  > Note: you might need to prepend `sudo` if you are in a unix like system (linux, mac)
 
 2. Clone the project:
@@ -70,7 +72,7 @@ Then do the following:
 
 ## Demos / examples
 
-Start a server in the root folder, and access one of the demo files inside 
+Start a server in the root folder, and access one of the demo files inside
 the elements folders, e.g:
 ```shell
 $ polyserve
