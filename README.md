@@ -101,7 +101,7 @@ $ polyserve
 
 - Compiling GWT module:
 
-Compiled module is in the repository, so you don't need to compile it unless
+The compiled module is in the repository, so you don't need to compile it unless
 you modify GWT .java files.
 
 ```shell
