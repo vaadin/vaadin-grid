@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "A free, flexible and high-quality Web Component for showing large amounts of tabular data",
   "author": "Vaadin Ltd",
-  "license": "Apache License 2.0",
+  "license": "Apache-2.0",
   "dependencies": {
     "bower": "latest",
     "fs-extra": "latest",
@@ -17,6 +17,7 @@
     "gulp-util": "latest",
     "gulp-watch": "latest",
     "web-component-tester": "3.3.10",
+    "selenium-standalone" : "4.7.0",
     "yargs": "latest"
   },
   "devDependencies": {
