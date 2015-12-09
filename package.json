@@ -17,6 +17,7 @@
     "gulp-util": "latest",
     "gulp-watch": "latest",
     "web-component-tester": "3.3.10",
+    "selenium-standalone" : "4.7.0",
     "yargs": "latest"
   },
   "devDependencies": {
