@@ -211,10 +211,10 @@ layout: page
 
   <section>
     <h3>Iterating the selections</h3>
-    <p>Another option for processing the selections is to iterate trough them.
+    <p>Another option for processing the selections is to iterate through them.
     The <code>selection.selected()</code> and <code>selection.deselected()</code> functions accept an iterator function
-    as the first argument so you can loop trough all the selections without ever populating an array.</p>
-    <p>If however your iterator function returns a value, then it's considered a mapper function meaning that
+    as the first argument so you can loop through all the selections without ever populating an array.</p>
+    <p>If, however, your iterator function returns a value, then it's considered a mapper function meaning that
     the selection API function will return an array of pre-mapped values.</p>
     <code-example source>
       <vaadin-grid demo selection-mode="multi" hidden>
@@ -275,7 +275,7 @@ layout: page
     <p>The <code>selection.selected()</code> and <code>selection.deselected()</code> functions also accept
     <i>startIndex</i> and <i>endIndex</i> as the second and third argument. These can be used to process
     the selections in batches. <code>selection.size</code> property comes in handy here.</p>
-    <p>All the three parameters <i>(iterator/mapper, startIndex, endIndex)</i> have default values so any of
+    <p>All three parameters <i>(iterator/mapper, startIndex, endIndex)</i> have default values so any of
     them can be omitted (or set as undefined).</p>
     <code-example source>
       <vaadin-grid demo selection-mode="multi" hidden>

@@ -30,10 +30,10 @@ layout: page
 
   <section>
     <h3>Customizing headers and footers</h3>
-    <p>Headers and footer can be customized in the <code>thead</code> element and
+    <p>Headers and footers can be customized in the <code>thead</code> element and
        footers respectively in the <code>tfoot</code> section</p>
     <p>JavaScript API exposes the <code>header</code> and <code>footer</code> objects
-    for same functionality. Excluding the <code>default row</code> property headers and
+    for the same functionality. Excluding the <code>default row</code> property headers and
     footers share the same exact API.</p>
     <code-example source>
       <vaadin-grid demo>
@@ -98,7 +98,7 @@ layout: page
   <section>
     <h3>Cell colspan</h3>
     <p>Colspan property defines the count of columns a single header/footer cell should span.</p>
-    <p>The value can be set either declaratively trough the lightDom API or programmatically
+    <p>The value can be set either declaratively through the lightDom API or programmatically
     with the cell API <code>header.getCell(rowIndex, colIndex).colspan</code>.</p>
 
     <code-example source>
@@ -278,8 +278,8 @@ layout: page
 
   <section>
     <h3>Default row</h3>
-    <p>Default row in the grid header is the row that contains sort-indicators if sorting
-    rules are applied and the "select all" checkbox on multi-select mode.</p>
+    <p>The default row in the grid header is the row that contains sort-indicators if sorting
+    rules are applied as well as the "select all" checkbox on multi-select mode.</p>
     <code-example source>
       <vaadin-grid selection-mode="multi" demo>
         <table>
