@@ -43,11 +43,11 @@ describe.feature('using properties', function() {
   describe('rowClassGenerator references', function() {
     var spy;
 
-    beforeEach(function(done) {
+    beforeEach(function() {
       spy = sinon.spy();
       grid.rowClassGenerator = spy;
       grid.items = [0, 1];
-      grid.then(done);
+      return grid;
     });
 
     it('rowClassGenerator with single column data', function() {
@@ -101,11 +101,11 @@ describe.feature('using properties', function() {
   describe('cellClassGenerator references', function() {
 
     var spy;
-    beforeEach(function(done) {
+    beforeEach(function() {
       spy = sinon.spy();
       grid.cellClassGenerator = spy;
       grid.items = [0, 1];
-      grid.then(done);
+      return grid;
     });
 
     it('cellClassGenerator with single column data', function() {
