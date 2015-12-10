@@ -21,8 +21,8 @@ public class GridEntryPoint implements EntryPoint {
         removePrivateApi();
     }
     
-    // We don't need to expose constructors exported under _api namespace.
+    // We don't expose constructors exported under the _api namespace.
     private static native void removePrivateApi() /*-{
-        delete $wnd.vaadin.elements.grid._api;
+        delete $wnd.vaadin.elements._api;
     }-*/;
 }

@@ -1,9 +1,8 @@
 package com.vaadin.elements.grid.selection;
 
+import jsinterop.annotations.JsType;
+
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.client.js.JsExport;
-import com.google.gwt.core.client.js.JsNamespace;
-import com.google.gwt.core.client.js.JsType;
 import com.vaadin.client.widget.grid.selection.SelectionModel;
 import com.vaadin.elements.common.js.JS;
 import com.vaadin.elements.common.js.JSArray;
@@ -11,9 +10,7 @@ import com.vaadin.elements.common.js.JSArray;
 /**
  * Selection model based on row indexes.
  */
-@JsNamespace(JS.VAADIN_JS_NAMESPACE + ".grid._api")
-@JsExport
-@JsType
+@JsType(namespace = JS.NAMESPACE_API)
 public interface IndexBasedSelectionModel extends SelectionModel<Object> {
 
     /**

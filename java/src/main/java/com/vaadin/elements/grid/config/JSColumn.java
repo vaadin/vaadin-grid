@@ -1,14 +1,15 @@
 package com.vaadin.elements.grid.config;
 
+import jsinterop.annotations.JsProperty;
+import jsinterop.annotations.JsType;
+
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.client.js.JsProperty;
-import com.google.gwt.core.client.js.JsType;
 
 /**
  * This class is a JsInterop object for the JS object representing a grid column
  * configuration.
  */
-@JsType
+@JsType(isNative = true)
 public interface JSColumn {
 
     @JsProperty

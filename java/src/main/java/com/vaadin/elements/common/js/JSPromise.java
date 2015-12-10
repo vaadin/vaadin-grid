@@ -1,10 +1,9 @@
 package com.vaadin.elements.common.js;
 
+import jsinterop.annotations.JsIgnore;
+import jsinterop.annotations.JsType;
+
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.client.js.JsExport;
-import com.google.gwt.core.client.js.JsNamespace;
-import com.google.gwt.core.client.js.JsNoExport;
-import com.google.gwt.core.client.js.JsType;
 import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.Promise;
@@ -16,22 +15,20 @@ import com.google.gwt.query.client.js.JsUtils.JsFunction;
  * Works with any browser, and exported methods allows that it can be chained
  * with native HTML5 promises.
  */
-@JsNamespace(JS.VAADIN_JS_NAMESPACE + ".common")
-@JsExport
-@JsType
+@JsType(namespace = JS.NAMESPACE_API)
 public class JSPromise {
 
     private Promise p;
     public Deferred dfd;
 
-    @JsNoExport
+    @JsIgnore
     public JSPromise() {
         dfd = GQuery.Deferred();
         p = dfd.promise();
         defineCatch();
     }
 
-    @JsNoExport
+    @JsIgnore
     public JSPromise(Promise then) {
         p = then;
         defineCatch();

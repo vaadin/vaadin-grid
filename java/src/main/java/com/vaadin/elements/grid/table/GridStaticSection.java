@@ -4,138 +4,35 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gwt.core.client.js.JsExport;
-import com.google.gwt.core.client.js.JsNamespace;
-import com.google.gwt.core.client.js.JsNoExport;
-import com.google.gwt.core.client.js.JsType;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.query.client.js.JsUtils;
-import com.google.gwt.user.client.ui.SimplePanel;
+import jsinterop.annotations.JsIgnore;
+import jsinterop.annotations.JsType;
+
 import com.vaadin.client.widgets.Grid.StaticSection.StaticCell;
 import com.vaadin.client.widgets.Grid.StaticSection.StaticRow;
 import com.vaadin.elements.common.js.JS;
-import com.vaadin.elements.common.js.JS.Setter;
 import com.vaadin.elements.common.js.JSArray;
 import com.vaadin.elements.grid.GridElement;
 import com.vaadin.elements.grid.ViolatedGrid;
 import com.vaadin.elements.grid.config.JSStaticCell;
-import com.vaadin.shared.ui.grid.GridStaticCellType;
-import com.vaadin.shared.util.SharedUtil;
 
-@JsNamespace(JS.VAADIN_JS_NAMESPACE + ".grid._api")
-@JsExport
-@JsType
+@JsType(namespace = JS.NAMESPACE_API)
 public class GridStaticSection {
 
     private final GridElement gridElement;
     private final ViolatedGrid grid;
     private final Map<StaticCell, JSStaticCell> cells = new HashMap<>();
-    private final static String CONTENT_WRAPPER = "<span style='overflow: hidden;text-overflow: ellipsis;'>%CONTENT%</span>";
 
     public GridStaticSection(GridElement gridElement) {
         this.gridElement = gridElement;
         this.grid = gridElement.getGrid();
     }
 
-    @JsNoExport
+    @JsIgnore
     public JSStaticCell obtainJSStaticCell(StaticCell cell) {
         if (!cells.containsKey(cell)) {
-            JSStaticCell jsCell = JS.createJsType(JSStaticCell.class);
-            jsCell.setColspan(cell.getColspan());
-
-            if (cell.getType() == GridStaticCellType.WIDGET) {
-                jsCell.setContent(cell.getWidget().getElement());
-            } else if (cell.getType() == GridStaticCellType.TEXT) {
-                jsCell.setContent("".equals(cell.getText()) ? null : cell
-                        .getText());
-            } else if (cell.getType() == GridStaticCellType.HTML) {
-                jsCell.setContent(cell.getHtml());
-            }
-
-            cells.put(cell, jsCell);
-            bind(jsCell, cell, "colspan",
-                    v -> cell.setColspan(((Double) v).intValue()));
-            bind(jsCell, cell, "className", v -> cell.setStyleName((String) v));
-
-            bind(jsCell, cell, "content", v -> contentChanged(v, cell));
+            cells.put(cell, new JSStaticCell(cell, gridElement));
         }
-
         return cells.get(cell);
-    }
-
-    private void contentChanged(Object content, StaticCell cell) {
-        // "column" is non-null only if the given cell is on default header row
-        GridColumn column = getColumnByDefaultHeaderCell(obtainJSStaticCell(cell));
-        if (content == null) {
-            contentCleared(cell, column);
-        } else if (JS.isPrimitiveType(content) || content instanceof Number) {
-            applyStringContent(cell, String.valueOf(content), column);
-        } else if (JsUtils.isElement(content)) {
-            applyElementContent(cell, (Element) content, column);
-        }
-    }
-
-    private void contentCleared(StaticCell cell, GridColumn column) {
-        if (column != null) {
-            // Default header cell content is empty, use
-            // column name as the header caption and cell html instead
-            String name = column.getJsColumn().getName();
-            name = name != null ? name : "";
-            // Remove until last dot
-            name = name.replaceFirst(".*\\.", "");
-            // Remove certain characters used for separate words
-            name = name.replaceAll("[_+,;:-]", " ");
-            // Capitalize words
-            name = SharedUtil.camelCaseToHumanFriendly(name);
-
-            column.setHeaderCaption(name);
-            cell.setHtml(CONTENT_WRAPPER.replace("%CONTENT%", name));
-        } else {
-            cell.setHtml(null);
-        }
-    }
-
-    private void applyStringContent(StaticCell cell, String content,
-            GridColumn column) {
-        // Primitive content
-        if (column != null) {
-            column.setHeaderCaption(content);
-        }
-        cell.setHtml(CONTENT_WRAPPER.replace("%CONTENT%", content));
-    }
-
-    private void applyElementContent(StaticCell cell, Element content,
-            GridColumn column) {
-        if (column != null) {
-            String name = column.getJsColumn().getName();
-            if (name != null) {
-                column.setHeaderCaption(name);
-            } else {
-                column.setHeaderCaption(String.valueOf(content));
-            }
-        }
-        cell.setWidget(new SimplePanel(content) {
-        });
-    }
-
-    private GridColumn getColumnByDefaultHeaderCell(JSStaticCell cell) {
-        GridColumn result = null;
-        for (GridColumn col : gridElement.getDataColumns()) {
-            if (col.getDefaultHeaderCellReference() == cell) {
-                result = col;
-                break;
-            }
-        }
-        return result;
-    }
-
-    private void bind(JSStaticCell cell, StaticCell staticCell,
-            String propertyName, Setter setter) {
-        JS.definePropertyAccessors(cell, propertyName, v -> {
-            setter.setValue(v);
-            gridElement.updateWidth();
-            grid.refreshStaticSection(staticCell);
-        }, null);
     }
 
     public JSStaticCell getHeaderCell(int rowIndex, Object columnId) {
@@ -143,7 +40,7 @@ public class GridStaticSection {
         return getHeaderCellByColumn(rowIndex, column);
     }
 
-    @JsNoExport
+    @JsIgnore
     public JSStaticCell getHeaderCellByColumn(int rowIndex, GridColumn column) {
         StaticCell cell = grid.getHeaderRow(rowIndex).getCell(column);
         return obtainJSStaticCell(cell);

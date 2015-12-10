@@ -40,25 +40,41 @@ describe.feature('using properties', function() {
     });
   });
 
-  it('rowClassGenerator with single column data', function() {
-    grid.items = [0];
-    var spy = sinon.spy();
-    grid.rowClassGenerator = spy;
-    return grid.then(function(){
-        expect(spy.args[0][0].data).to.be.equal(0);
+  describe('rowClassGenerator references', function() {
+    var spy;
+
+    beforeEach(function() {
+      spy = sinon.spy();
+      grid.rowClassGenerator = spy;
+      grid.items = [0, 1];
+      return grid;
     });
-  });
 
-  it('cellClassGenerator with single column data', function() {
-    grid.items = [0];
-    var spy = sinon.spy();
-    grid.cellClassGenerator = spy;
-    return grid.then(function() {
-      expect(spy.args[0][0].row.data).to.be.equal(0);
+    it('rowClassGenerator with single column data', function() {
+      expect(spy.args[1][0].data).to.be.equal(1);
     });
+
+    it('should have valid data property in row reference', function() {
+      grid.items = [['foo']];
+      return grid.then(function() {
+        expect(spy.args[0][0].data).to.be.equal(grid.items[0]);
+      });
+    });
+
+    it('should have valid grid property in row reference', function() {
+      expect(spy.args[0][0].grid).to.be.equal(grid);
+    });
+
+    it('should have valid index property in row reference', function() {
+      expect(spy.args[1][0].index).to.be.equal(1);
+    });
+
+    it('should have valid element property in row reference', function() {
+      var rowElement = qaLocal('.vaadin-grid-body .vaadin-grid-row')[1];
+      expect(spy.args[1][0].element).to.be.equal(rowElement);
+    });
+
   });
-
-
 
   it('cellClassGenerator', function() {
     var elementEquals = true;
@@ -80,6 +96,66 @@ describe.feature('using properties', function() {
     return grid.then(function(){
       assert.isTrue(qLocal(".vaadin-grid-body .vaadin-grid-row .vaadin-grid-cell").classList.contains("name"));
     });
+  });
+
+  describe('cellClassGenerator references', function() {
+
+    var spy;
+    beforeEach(function() {
+      spy = sinon.spy();
+      grid.cellClassGenerator = spy;
+      grid.items = [0, 1];
+      return grid;
+    });
+
+    it('cellClassGenerator with single column data', function() {
+      expect(spy.args[3][0].row.data).to.be.equal(1);
+    });
+
+    it('should have valid data property in cell reference', function() {
+      grid.items = [['foo', 'bar']];
+      return grid.then(function() {
+        expect(spy.args[1][0].data).to.be.equal(grid.items[0][1]);
+      });
+    });
+
+    it('should have valid grid property in cell reference', function() {
+      expect(spy.args[0][0].grid).to.be.equal(grid);
+    });
+
+    it('should have valid index property in cell reference', function() {
+      expect(spy.args[3][0].index).to.be.equal(1);
+    });
+
+    it('should have valid element property in cell reference', function() {
+      var cellElement = qaLocal('.vaadin-grid-body .vaadin-grid-cell')[3];
+      expect(spy.args[3][0].element).to.be.equal(cellElement);
+    });
+
+    describe('cell row reference', function() {
+
+      it('should have valid data property in cell row reference', function() {
+        grid.items = [['foo']];
+        return grid.then(function() {
+          expect(spy.args[0][0].row.data).to.be.equal(grid.items[0]);
+        });
+      });
+
+      it('should have valid grid property in cell row reference', function() {
+        expect(spy.args[0][0].row.grid).to.be.equal(grid);
+      });
+
+      it('should have valid index property in cell row reference', function() {
+        expect(spy.args[3][0].row.index).to.be.equal(1);
+      });
+
+      it('should have valid element property in cell row reference', function() {
+        var rowElement = qaLocal('.vaadin-grid-body .vaadin-grid-row')[1];
+        expect(spy.args[3][0].row.element).to.be.equal(rowElement);
+      });
+
+    });
+
   });
 
   it('Row details should not be shown if generator is not set', function() {

@@ -8,14 +8,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import jsinterop.annotations.JsIgnore;
+import jsinterop.annotations.JsType;
+
 import com.google.gwt.core.client.JavaScriptException;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
-import com.google.gwt.core.client.js.JsExport;
-import com.google.gwt.core.client.js.JsNamespace;
-import com.google.gwt.core.client.js.JsNoExport;
-import com.google.gwt.core.client.js.JsType;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
@@ -70,9 +69,7 @@ import com.vaadin.shared.ui.grid.ScrollDestination;
 /**
  * Class to export Vaadin Grid to JS.
  */
-@JsNamespace(JS.VAADIN_JS_NAMESPACE + ".grid")
-@JsExport
-@JsType
+@JsType(namespace = JS.NAMESPACE_GRID)
 public class GridElement implements SelectionHandler<Object>,
         SortHandler<Object>, SelectAllHandler<Object>,
         MultiSelectModeChangedHandler {
@@ -82,7 +79,6 @@ public class GridElement implements SelectionHandler<Object>,
 
     public boolean updating = true;
     private GridLightDomTable lightDom;
-    private final GridEditor editor;
     private final GridStaticSection staticSection;
 
     private Element container;
@@ -93,7 +89,7 @@ public class GridElement implements SelectionHandler<Object>,
     private JavaScriptObject cellClassGenerator;
     private JavaScriptObject rowDetailsGenerator;
 
-    @JsNoExport
+    @JsIgnore
     public static final int MAX_AUTO_ROWS = 10;
 
     private static final String SELECTION_MODE_CHANGED_EVENT = "selection-mode-changed";
@@ -108,14 +104,9 @@ public class GridElement implements SelectionHandler<Object>,
         grid.getElement().getStyle().setHeight(0, Unit.PX);
 
         setColumns(JS.createArray());
-        editor = new GridEditor(this);
         staticSection = new GridStaticSection(this);
 
         grid.setStylePrimaryName("vaadin-grid style-scope vaadin-grid");
-    }
-
-    public GridEditor getEditor() {
-        return editor;
     }
 
     public Element getGridElement() {
@@ -152,7 +143,7 @@ public class GridElement implements SelectionHandler<Object>,
         getDataSource().getItem(rowIndex, callback, onlyCached);
     }
 
-    @JsNoExport
+    @JsIgnore
     public Element getContainer() {
         return container;
     }
@@ -175,8 +166,6 @@ public class GridElement implements SelectionHandler<Object>,
 
             gridContainer.appendChild(grid.getElement());
             WidgetsUtils.attachWidget(grid, null);
-
-            editor.setContainer(container);
         }
 
         updating = false;
@@ -195,7 +184,7 @@ public class GridElement implements SelectionHandler<Object>,
         return jsColumn;
     }
 
-    @JsNoExport
+    @JsIgnore
     public int getColumnIndexByIndexOrName(Object indexOrName) {
         String stringId = String.valueOf(indexOrName);
         if (stringId.matches("[+-]?\\d+")) {
@@ -262,7 +251,7 @@ public class GridElement implements SelectionHandler<Object>,
         return staticSection;
     }
 
-    @JsNoExport
+    @JsIgnore
     @Override
     public void onSelect(SelectionEvent<Object> ev) {
         updateSelectAllCheckBox();
@@ -353,7 +342,7 @@ public class GridElement implements SelectionHandler<Object>,
      * it's excluded from the result.
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    @JsNoExport
+    @JsIgnore
     public List<GridColumn> getDataColumns() {
         List result = grid.getColumns();
         if (getSelectionModel() instanceof SelectionModel.Multi) {
@@ -383,7 +372,7 @@ public class GridElement implements SelectionHandler<Object>,
 
     public void setRowClassGenerator(JavaScriptObject generator) {
         grid.setRowStyleGenerator(JS.isUndefinedOrNull(generator) ? null
-                : row -> JS.exec(generator, JSRow.create(row, container)));
+                : row -> JS.exec(generator, new JSRow(row, container)));
         rowClassGenerator = generator;
     }
 
@@ -393,7 +382,7 @@ public class GridElement implements SelectionHandler<Object>,
 
     public void setCellClassGenerator(JavaScriptObject generator) {
         grid.setCellStyleGenerator(JS.isUndefinedOrNull(generator) ? null
-                : cell -> JS.exec(generator, JSCell.create(cell, container)));
+                : cell -> JS.exec(generator, new JSCell(cell, container)));
         cellClassGenerator = generator;
     }
 
@@ -438,13 +427,13 @@ public class GridElement implements SelectionHandler<Object>,
         sizeUpdater.schedule(50);
     }
 
-    @JsNoExport
+    @JsIgnore
     public void updateWidth() {
         grid.setWidth("100%");
         Scheduler.get().scheduleDeferred(() -> grid.recalculateColumnWidths());
     }
 
-    @JsNoExport
+    @JsIgnore
     public void updateHeight() {
         if (!updating) {
             grid.setHeight("100%");
@@ -488,7 +477,7 @@ public class GridElement implements SelectionHandler<Object>,
         List<GridColumn> dataColumns = getDataColumns();
 
         for (SortOrder order : sortOrders) {
-            JSSortOrder sortOrder = JS.createJsType(JSSortOrder.class);
+            JSSortOrder sortOrder = JS.createJsObject();
             sortOrder.setColumn(dataColumns.indexOf(order.getColumn()));
             sortOrder.setDirection(JSEnums.Direction.val(order.getDirection()));
             jsSortOrders.push(sortOrder);
@@ -539,7 +528,7 @@ public class GridElement implements SelectionHandler<Object>,
         onReady(new JsFunction(f));
     }
 
-    @JsNoExport
+    @JsIgnore
     public void onReady(final Function f) {
         Scheduler.get().scheduleFixedPeriod(new RepeatingCommand() {
             @Override
@@ -587,7 +576,7 @@ public class GridElement implements SelectionHandler<Object>,
         }).then(f);
     }-*/;
 
-    @JsNoExport
+    @JsIgnore
     @Override
     public void onSelectAll(SelectAllEvent<Object> event) {
         if (getSelectAllCheckBox().getValue()) {
@@ -597,7 +586,7 @@ public class GridElement implements SelectionHandler<Object>,
         }
     }
 
-    @JsNoExport
+    @JsIgnore
     @Override
     public void onMultiSelectModeChanged() {
         selectionModeChanged();
@@ -629,7 +618,7 @@ public class GridElement implements SelectionHandler<Object>,
         return result;
     }
 
-    @JsNoExport
+    @JsIgnore
     public void setLoadingDataClass(boolean loadingData) {
         String loadingDataClassName = "vaadin-grid-loading-data";
 

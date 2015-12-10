@@ -1,72 +1,54 @@
 package com.vaadin.elements.grid.config;
 
-import com.google.gwt.core.client.js.JsProperty;
-import com.google.gwt.core.client.js.JsType;
+import jsinterop.annotations.JsIgnore;
+import jsinterop.annotations.JsProperty;
+import jsinterop.annotations.JsType;
+
 import com.google.gwt.dom.client.Element;
 import com.vaadin.client.widget.grid.CellReference;
 import com.vaadin.elements.common.js.JS;
-import com.vaadin.elements.grid.data.GridDataSource;
 import com.vaadin.elements.grid.table.GridColumn;
 
 /**
  * This class is a JsInterop wrapper for the JS object representing a cell
  * object passed to cell style generator.
  */
-@JsType
-public interface JSCell {
+@JsType(namespace = JS.NAMESPACE_API)
+public class JSCell {
 
-    static JSCell create(CellReference<Object> cell, Element container) {
-        JSCell jsCell = JS.createJsType(JSCell.class);
-        GridColumn column = (GridColumn) cell.getColumn();
-        JS.definePropertyAccessors(jsCell, "element", null,
-                () -> cell.getElement());
-        JS.definePropertyAccessors(jsCell, "index", null,
-                () -> cell.getColumnIndex());
-        JS.definePropertyAccessors(jsCell, "columnName", null, () -> column
-                .getJsColumn().getName());
-        JS.definePropertyAccessors(jsCell, "data", null,
-                () -> column.getValue(cell.getRow()));
+    private final CellReference<Object> cell;
+    private final JSRow jsRow;
+    public final Element grid;
 
-        JSRow row = JS.createJsType(JSRow.class);
-        JS.definePropertyAccessors(row, "index", null, () -> cell.getRowIndex());
-        JS.definePropertyAccessors(row, "data", null,
-                () -> GridDataSource.extractDataItem(cell.getRow()));
-        JS.definePropertyAccessors(row, "element", null, () -> cell
-                .getElement().getParentElement());
-        row.setGrid(container);
-        jsCell.setRow(row);
-
-        return jsCell;
+    @JsIgnore
+    public JSCell(CellReference<Object> cellReference, Element container) {
+        this.cell = cellReference;
+        this.jsRow = new JSRow(cell, container);
+        this.grid = container;
     }
 
     @JsProperty
-    String getColumnName();
+    Element getElement() {
+        return cell.getElement();
+    }
 
     @JsProperty
-    void setColumnName(String columnName);
+    int getIndex() {
+        return cell.getRowIndex();
+    }
 
     @JsProperty
-    Element getElement();
+    String getColumnName() {
+        return ((GridColumn) cell.getColumn()).getJsColumn().getName();
+    }
 
     @JsProperty
-    void setElement(Element element);
+    Object getData() {
+        return cell.getColumn().getValue(cell.getRow());
+    }
 
     @JsProperty
-    JSRow getRow();
-
-    @JsProperty
-    void setRow(JSRow row);
-
-    @JsProperty
-    Object getData();
-
-    @JsProperty
-    void setData(Object data);
-
-    @JsProperty
-    int getIndex();
-
-    @JsProperty
-    void setIndex(int index);
-
+    JSRow getRow() {
+        return jsRow;
+    }
 }

@@ -65,7 +65,7 @@ public final class GridColumn extends Column<Object, Object> {
         });
     }
 
-    JSStaticCell getDefaultHeaderCellReference() {
+    public JSStaticCell getDefaultHeaderCellReference() {
         GridStaticSection staticSection = gridElement.getStaticSection();
         return staticSection.getHeaderCellByColumn(
                 staticSection.getDefaultHeader(), this);
@@ -85,7 +85,7 @@ public final class GridColumn extends Column<Object, Object> {
         bind("hidable", v -> setHidable((Boolean) v));
         bind("readOnly", v -> setEditable(!(boolean) v));
         bind("renderer", v -> setRenderer((cell, data) -> {
-            JSCell jsCell = JSCell.create(cell, gridElement.getContainer());
+            JSCell jsCell = new JSCell(cell, gridElement.getContainer());
             JS.exec(v, jsCell);
         }));
         bind("minWidth",

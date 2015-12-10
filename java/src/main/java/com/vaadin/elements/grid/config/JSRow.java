@@ -1,53 +1,51 @@
 package com.vaadin.elements.grid.config;
 
-import com.google.gwt.core.client.js.JsProperty;
-import com.google.gwt.core.client.js.JsType;
+import jsinterop.annotations.JsIgnore;
+import jsinterop.annotations.JsProperty;
+import jsinterop.annotations.JsType;
+
 import com.google.gwt.dom.client.Element;
+import com.vaadin.client.widget.grid.CellReference;
 import com.vaadin.client.widget.grid.RowReference;
 import com.vaadin.elements.common.js.JS;
 import com.vaadin.elements.grid.data.GridDataSource;
 
-/**
- * This class is a JsInterop wrapper for the JS object representing a row object
- * passed to row style generators.
- */
-@JsType
-public interface JSRow {
+@JsType(namespace = JS.NAMESPACE_API)
+@SuppressWarnings("rawtypes")
+public class JSRow {
 
-    static JSRow create(RowReference<Object> row, Element container) {
-        JSRow jsRow = JS.createJsType(JSRow.class);
-        JS.definePropertyAccessors(jsRow, "index", null,
-                () -> row.getRowIndex());
-        JS.definePropertyAccessors(jsRow, "data", null,
-                () -> GridDataSource.extractDataItem(row.getRow()));
-        JS.definePropertyAccessors(jsRow, "element", null,
-                () -> row.getElement());
-        jsRow.setGrid(container);
-        return jsRow;
+    private final CellReference cell;
+    private final RowReference row;
+    public final Element grid;
+
+    @JsIgnore
+    public JSRow(RowReference row, Element container) {
+        this.row = row;
+        this.cell = null;
+        this.grid = container;
+    }
+
+    @JsIgnore
+    public JSRow(CellReference cell, Element container) {
+        this.row = null;
+        this.cell = cell;
+        this.grid = container;
     }
 
     @JsProperty
-    int getIndex();
+    int getIndex() {
+        return cell != null ? cell.getRowIndex() : row.getRowIndex();
+    }
 
     @JsProperty
-    void setIndex(int index);
+    Object getData() {
+        return GridDataSource.extractDataItem(cell != null ? cell.getRow()
+                : row.getRow());
+    }
 
     @JsProperty
-    Object getData();
-
-    @JsProperty
-    void setData(Object data);
-
-    @JsProperty
-    Element getGrid();
-
-    @JsProperty
-    void setGrid(Element grid);
-
-    @JsProperty
-    Element getElement();
-
-    @JsProperty
-    void setElement(Element element);
-
+    Element getElement() {
+        return cell != null ? cell.getElement().getParentElement() : row
+                .getElement();
+    }
 }
