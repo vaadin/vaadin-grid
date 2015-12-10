@@ -1,9 +1,9 @@
 package com.vaadin.elements.grid.selection;
 
-import com.google.gwt.core.client.JavaScriptObject;
 import com.vaadin.client.widget.grid.selection.SelectionModelNone;
 import com.vaadin.elements.common.js.JS;
 import com.vaadin.elements.common.js.JSArray;
+import com.vaadin.elements.common.js.JSFunction;
 
 /**
  * An {@link IndexBasedSelectionModel} for selection disabled.
@@ -17,14 +17,14 @@ public class IndexBasedSelectionModelDisabled extends
     }
 
     @Override
-    public JSArray<Object> selected(JavaScriptObject mapper, Integer from,
-            Integer to) {
+    public JSArray<Object> selected(JSFunction<Object, Integer> mapper,
+            Integer from, Integer to) {
         return JS.createArray();
     }
 
     @Override
-    public JSArray<Object> deselected(JavaScriptObject mapper, Integer from,
-            Integer to) {
+    public JSArray<Object> deselected(JSFunction<Object, Integer> mapper,
+            Integer from, Integer to) {
         return JS.createArray();
     }
 

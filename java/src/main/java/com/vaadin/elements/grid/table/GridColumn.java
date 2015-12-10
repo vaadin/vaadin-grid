@@ -15,6 +15,7 @@ import com.vaadin.client.widgets.Grid.Column;
 import com.vaadin.elements.common.js.JS;
 import com.vaadin.elements.common.js.JS.Setter;
 import com.vaadin.elements.common.js.JSArray;
+import com.vaadin.elements.common.js.JSFunction;
 import com.vaadin.elements.grid.GridElement;
 import com.vaadin.elements.grid.config.JSCell;
 import com.vaadin.elements.grid.config.JSColumn;
@@ -86,7 +87,7 @@ public final class GridColumn extends Column<Object, Object> {
         bind("readOnly", v -> setEditable(!(boolean) v));
         bind("renderer", v -> setRenderer((cell, data) -> {
             JSCell jsCell = new JSCell(cell, gridElement.getContainer());
-            JS.exec(v, jsCell);
+            ((JSFunction) v).f(jsCell);
         }));
         bind("minWidth",
                 v -> setMinimumWidth(JS.isUndefinedOrNull(v) ? GridConstants.DEFAULT_MIN_WIDTH

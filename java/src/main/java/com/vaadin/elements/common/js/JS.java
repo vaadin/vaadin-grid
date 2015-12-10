@@ -5,7 +5,6 @@ import java.util.List;
 import jsinterop.annotations.JsFunction;
 
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.query.client.js.JsUtils;
 
 /**
  * Class with static utilities for @JsType
@@ -81,11 +80,6 @@ public abstract class JS {
     @JsFunction
     public interface Getter {
         Object getValue();
-    }
-
-    public static <T> T exec(Object o, Object arg) {
-        return JsUtils.jsni((JavaScriptObject) o, "call", (JavaScriptObject) o,
-                arg);
     }
 
     public static native boolean isUndefinedOrNull(Object o)

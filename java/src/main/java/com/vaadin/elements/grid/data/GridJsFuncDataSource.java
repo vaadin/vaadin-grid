@@ -2,11 +2,11 @@ package com.vaadin.elements.grid.data;
 
 import java.util.List;
 
-import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.js.JsUtils;
 import com.vaadin.elements.common.js.JS;
+import com.vaadin.elements.common.js.JSArray;
+import com.vaadin.elements.common.js.JSFunction2;
 import com.vaadin.elements.grid.GridElement;
 import com.vaadin.elements.grid.config.JSDataRequest;
 
@@ -15,13 +15,14 @@ import com.vaadin.elements.grid.config.JSDataRequest;
  */
 public class GridJsFuncDataSource extends GridDataSource {
 
-    private JavaScriptObject jsFunction;
+    private JSFunction2<JSDataRequest, JSFunction2<JSArray<?>, Double>> jsFunction;
     private boolean initialRowSetReceived;
 
-    public GridJsFuncDataSource(JavaScriptObject jso, GridElement grid) {
+    public GridJsFuncDataSource(
+            JSFunction2<JSDataRequest, JSFunction2<JSArray<?>, Double>> jsFunction,
+            GridElement grid) {
         super(grid);
-        assert JsUtils.isFunction(jso);
-        jsFunction = jso;
+        this.jsFunction = jsFunction;
 
         // Grid size might be 0 so we'll check it here and make an initial empty
         // data request to query for the size iff no size is given.
@@ -32,8 +33,9 @@ public class GridJsFuncDataSource extends GridDataSource {
         });
     }
 
-    public void setJSFunction(JavaScriptObject jso) {
-        jsFunction = jso;
+    public void setJSFunction(
+            JSFunction2<JSDataRequest, JSFunction2<JSArray<?>, Double>> jsFunction) {
+        this.jsFunction = jsFunction;
         refreshItems();
         gridElement.getSelectionModel().reset();
     }
@@ -49,40 +51,28 @@ public class GridJsFuncDataSource extends GridDataSource {
                 "sortOrder"));
 
         gridElement.setLoadingDataClass(true);
-        JsUtils.jsni(jsFunction, "call", jsFunction, jsDataRequest,
-                wrapCallback(callback));
-    }
 
-    private JavaScriptObject wrapCallback(
-            final RequestRowsCallback<Object> callback) {
-        return JsUtils.wrapFunction(new Function() {
-            @Override
-            public void f() {
-                List<Object> list = JS.asList(arguments(0));
-                Double totalSize = arguments(1);
-
-                for (int i = 0; i < list.size(); i++) {
-                    if (JS.isPrimitiveType(list.get(i))) {
-                        list.set(i, new DataItemContainer(list.get(i)));
-                    }
+        jsFunction.f(jsDataRequest, (array, totalSize) -> {
+            List<Object> list = JS.asList(array);
+            for (int i = 0; i < list.size(); i++) {
+                if (JS.isPrimitiveType(list.get(i))) {
+                    list.set(i, new DataItemContainer(list.get(i)));
                 }
+            }
 
-                if (totalSize != null) {
-                    setSize(totalSize.intValue());
-                }
+            if (totalSize != null) {
+                setSize(totalSize.intValue());
+            }
+            if (callback != null) {
+                callback.onResponse(list, size());
+            }
 
-                if (callback != null) {
-                    callback.onResponse(list, size());
-                }
+            gridElement.setLoadingDataClass(false);
 
-                gridElement.setLoadingDataClass(false);
-
-                if (!initialRowSetReceived && !list.isEmpty()) {
-                    initialRowSetReceived = true;
-                    gridElement.updateWidth();
-                }
+            if (!initialRowSetReceived && !list.isEmpty()) {
+                initialRowSetReceived = true;
+                gridElement.updateWidth();
             }
         });
     }
-
 }

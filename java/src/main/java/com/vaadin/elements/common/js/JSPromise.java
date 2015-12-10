@@ -53,10 +53,10 @@ public class JSPromise {
         return p.state();
     }
 
-    public JSPromise then(JavaScriptObject f) {
+    public JSPromise then(JSFunction<Object, Object> cb) {
         return new JSPromise(p.then(new Function(){
             public Object f(Object... args) {
-                return JS.exec(f, arguments(0));
+                return cb.f(arguments(0));
             }
         }));
     }

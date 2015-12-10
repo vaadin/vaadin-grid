@@ -6,7 +6,6 @@ import java.util.List;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.query.client.Function;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.observe.Observe;
@@ -162,13 +161,10 @@ public class GridLightDomTable implements MutationListener {
         gridElement.setColumns(jsColumns);
 
         if (!sortOrders.isEmpty()) {
-            gridElement.then(JsUtils.wrapFunction(new Function() {
-                @Override
-                public void f() {
-                    JsUtils.prop(gridElement.getContainer(), "sortOrder",
-                            sortOrders);
-                }
-            }));
+            gridElement.then(o -> {
+                JsUtils.prop(gridElement.getContainer(), "sortOrder", sortOrders);
+                return null;
+            });
         }
     }
 

@@ -1,8 +1,6 @@
 package com.vaadin.elements.grid.selection;
 
-import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.query.client.GQuery;
-import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.vaadin.client.data.DataSource.RowHandle;
 import com.vaadin.client.renderers.Renderer;
@@ -12,6 +10,7 @@ import com.vaadin.client.widget.grid.selection.SelectionModelMulti;
 import com.vaadin.client.widgets.Grid;
 import com.vaadin.elements.common.js.JS;
 import com.vaadin.elements.common.js.JSArray;
+import com.vaadin.elements.common.js.JSFunction;
 import com.vaadin.elements.common.js.JSValidate;
 
 /**
@@ -33,7 +32,6 @@ public class IndexBasedSelectionModelMulti extends SelectionModelMulti<Object>
         super.setGrid(grid);
         this.grid = grid;
         renderer = new MultiSelectionRenderer<Object>(grid) {
-
             @Override
             public CheckBox createWidget() {
                 CheckBox checkBox = super.createWidget();
@@ -53,7 +51,6 @@ public class IndexBasedSelectionModelMulti extends SelectionModelMulti<Object>
                     lastSelected = logicalRow;
                 }
             }
-
         };
     }
 
@@ -110,49 +107,37 @@ public class IndexBasedSelectionModelMulti extends SelectionModelMulti<Object>
     }
 
     @Override
-    public JSArray<Object> selected(JavaScriptObject mapper, Integer from,
-            Integer to) {
+    public JSArray<Object> selected(JSFunction<Object, Integer> mapper,
+            Integer from, Integer to) {
+        return invertedSelection ?
+        //
+        fillSelectionArrayInverted(mapper, from, to)
+                : fillSelectionArray(mapper, from, to);
+    }
+
+    @Override
+    public JSArray<Object> deselected(JSFunction<Object, Integer> mapper,
+            Integer from, Integer to) {
+        return invertedSelection ?
+        //
+        fillSelectionArray(mapper, from, to)
+                : JS.createArray();
+    }
+
+    private JSArray<Object> fillSelectionArray(
+            JSFunction<Object, Integer> mapper, Integer from, Integer to) {
         JSArray<Object> result = JS.createArray();
-        mapper = SelectionUtil.verifyMapper(mapper);
-        if (invertedSelection) {
 
-            int size = size();
+        int fromIndex = JSValidate.Integer.val(from, 0, 0);
+        fromIndex = Math.min(fromIndex, indexes.length() - 1);
+        int defaultTo = indexes.length() - 1;
+        int toIndex = JSValidate.Integer.val(to, defaultTo, defaultTo);
+        toIndex = Math.min(toIndex, indexes.length() - 1);
 
-            int fromIndex = JSValidate.Integer.val(from, 0, 0);
-            fromIndex = Math.min(Math.max(fromIndex, 0), size - 1);
-
-            int defaultTo = size() - 1;
-            int toIndex = JSValidate.Integer.val(to, defaultTo, defaultTo);
-            toIndex = Math.min(Math.max(toIndex, 0), size - 1);
-
-            int count = toIndex - fromIndex + 1;
-
-            int index = 0;
-            int selectedIndexCount = 0;
-            int addedSelectedIndexCount = 0;
-            while (addedSelectedIndexCount < count) {
-                if (indexes.indexOf((double) index) == -1) {
-                    if (selectedIndexCount++ >= fromIndex) {
-                        addedSelectedIndexCount++;
-                        Object mappedValue = JsUtils.jsni(mapper, "call",
-                                mapper, index);
-                        if (mappedValue != null) {
-                            result.add(mappedValue);
-                        }
-                    }
-                }
-                index++;
-            }
-        } else {
-            int fromIndex = JSValidate.Integer.val(from, 0, 0);
-            fromIndex = Math.min(fromIndex, indexes.length() - 1);
-            int defaultTo = indexes.length() - 1;
-            int toIndex = JSValidate.Integer.val(to, defaultTo, defaultTo);
-            toIndex = Math.min(toIndex, indexes.length() - 1);
-
-            for (int i = fromIndex; i <= toIndex; i++) {
-                Object mappedValue = JsUtils.jsni(mapper, "call", mapper,
-                        indexes.get(i));
+        for (int i = fromIndex; i <= toIndex; i++) {
+            Double value = indexes.get(i);
+            if (value != null) {
+                Object mappedValue = mapper == null ? value : mapper.f(value.intValue());
                 if (mappedValue != null) {
                     result.add(mappedValue);
                 }
@@ -161,30 +146,37 @@ public class IndexBasedSelectionModelMulti extends SelectionModelMulti<Object>
         return result;
     }
 
-    @Override
-    public JSArray<Object> deselected(JavaScriptObject mapper, Integer from,
-            Integer to) {
-        if (invertedSelection) {
-            JSArray<Object> result = JS.createArray();
-            mapper = SelectionUtil.verifyMapper(mapper);
+    private JSArray<Object> fillSelectionArrayInverted(JSFunction<Object, Integer> mapper,
+            Integer from, Integer to) {
 
-            int fromIndex = JSValidate.Integer.val(from, 0, 0);
-            fromIndex = Math.min(fromIndex, indexes.length() - 1);
-            int defaultTo = indexes.length() - 1;
-            int toIndex = JSValidate.Integer.val(to, defaultTo, defaultTo);
-            toIndex = Math.min(toIndex, indexes.length() - 1);
+        JSArray<Object> result = JS.createArray();
 
-            for (int i = fromIndex; i <= toIndex; i++) {
-                Object mappedValue = JsUtils.jsni(mapper, "call", mapper,
-                        indexes.get(i));
-                if (mappedValue != null) {
-                    result.add(mappedValue);
+        int size = size();
+
+        int fromIndex = JSValidate.Integer.val(from, 0, 0);
+        fromIndex = Math.min(Math.max(fromIndex, 0), size - 1);
+        int defaultTo = size() - 1;
+        int toIndex = JSValidate.Integer.val(to, defaultTo, defaultTo);
+        toIndex = Math.min(Math.max(toIndex, 0), size - 1);
+
+        int count = toIndex - fromIndex + 1;
+
+        int index = 0;
+        int selectedIndexCount = 0;
+        int addedSelectedIndexCount = 0;
+        while (addedSelectedIndexCount < count) {
+            if (indexes.indexOf((double) index) == -1) {
+                if (selectedIndexCount++ >= fromIndex) {
+                    addedSelectedIndexCount++;
+                    Object mappedValue = mapper == null ? index : mapper.f(index);
+                    if (mappedValue != null) {
+                        result.add(mappedValue);
+                    }
                 }
             }
-            return result;
-        } else {
-            return JS.createArray();
+            index++;
         }
+        return result;
     }
 
     @Override
@@ -288,8 +280,7 @@ public class IndexBasedSelectionModelMulti extends SelectionModelMulti<Object>
     @Override
     public void dataSizeUpdated(int newSize) {
         dataSizeUpdated = true;
-        // If row indexes contain values that are out of bounds, remove
-        // them.
+        // If row indexes contain values that are out of bounds, remove them.
         boolean changed = false;
         for (int i = 0; i < indexes.length(); i++) {
             if (indexes.get(i) >= newSize) {

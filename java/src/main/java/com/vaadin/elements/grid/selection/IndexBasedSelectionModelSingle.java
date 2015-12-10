@@ -1,12 +1,11 @@
 package com.vaadin.elements.grid.selection;
 
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.query.client.js.JsUtils;
 import com.vaadin.client.widget.grid.selection.SelectionEvent;
 import com.vaadin.client.widget.grid.selection.SelectionModelSingle;
 import com.vaadin.client.widgets.Grid;
 import com.vaadin.elements.common.js.JS;
 import com.vaadin.elements.common.js.JSArray;
+import com.vaadin.elements.common.js.JSFunction;
 import com.vaadin.elements.common.js.JSValidate;
 
 /**
@@ -52,14 +51,11 @@ public class IndexBasedSelectionModelSingle extends
     }
 
     @Override
-    public JSArray<Object> selected(JavaScriptObject mapper, Integer from,
-            Integer to) {
+    public JSArray<Object> selected(JSFunction<Object, Integer> mapper,
+            Integer from, Integer to) {
         JSArray<Object> result = JS.createArray();
-        mapper = SelectionUtil.verifyMapper(mapper);
-
         if (selectedRow != -1) {
-            Object mappedValue = JsUtils.jsni(mapper, "call", mapper,
-                    selectedRow);
+            Object mappedValue = mapper == null ? selectedRow : mapper.f(selectedRow);
             if (mappedValue != null) {
                 result.add(mappedValue);
             }
@@ -69,8 +65,8 @@ public class IndexBasedSelectionModelSingle extends
     }
 
     @Override
-    public JSArray<Object> deselected(JavaScriptObject mapper, Integer from,
-            Integer to) {
+    public JSArray<Object> deselected(JSFunction<Object, Integer> mapper,
+            Integer from, Integer to) {
         return JS.createArray();
     }
 
