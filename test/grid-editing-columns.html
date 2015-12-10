@@ -56,7 +56,7 @@
       expect(c.name).to.equal("foo");
     });
 
-    it('add new column before', function(done) {
+    it('add new column before', function() {
       expect(grid.addColumn.bind(grid, {
         name: "foo"
       }, -1)).to.throw("Column not found.");
@@ -72,7 +72,7 @@
         name: "bar"
       }, "foo");
 
-      grid.then(function() {
+      return grid.then(function() {
         var headers = qaLocal(".vaadin-grid-header .vaadin-grid-row th > span");
         assert.equal(headers[0].innerHTML, "Bar");
         assert.equal(headers[1].innerHTML, "Foo");
@@ -80,11 +80,10 @@
         expect(grid.addColumn.bind(grid, {
           name: "baz"
         }, "foobar")).to.throw("Column not found.");
-        done();
       });
     });
 
-    it('edit new column', function(done) {
+    it('edit new column', function() {
       var c = {
         name: "foo"
       };
@@ -96,31 +95,28 @@
 
         c.name = "bar";
 
-        grid.then(function() {
+        return grid.then(function() {
           headers = qaLocal(".vaadin-grid-header .vaadin-grid-row th > span");
           assert.equal(headers[grid.columns.length - 1].innerHTML, "Bar");
-          done();
         });
       });
     });
 
-    it('edit existing column', function(done) {
+    it('edit existing column', function() {
       grid.columns[0].name = "testHtml";
-      grid.then(function() {
+      return grid.then(function() {
         var headers = qaLocal(".vaadin-grid-header .vaadin-grid-row th > span");
         assert.equal(headers[0].innerHTML, "Test Html");
-        done();
       });
     });
 
-    it('renderer property', function(done) {
+    it('renderer property', function() {
       grid.columns[0].renderer = function(cell) {
         cell.element.innerHTML = "<b>" + cell.data + "</b>";
       };
 
-      grid.then(function() {
+      return grid.then(function() {
         assert.isTrue(gridContainsText(grid, "<b>Grid</b>"));
-        done();
       });
     });
 
@@ -232,43 +228,40 @@
       });
     });
 
-    it('add new column to an empty grid', function(done) {
+    it('add new column to an empty grid', function() {
       grid.columns = [];
 
       grid.columns.push({
         name: "foo"
       });
 
-      grid.then(function() {
+      return grid.then(function() {
         expect(gridContainsText(grid, 'foo')).to.be.true;
-        done();
       });
     });
 
-    it('column without default header content should show column name', function(done) {
+    it('column without default header content should show column name', function() {
       grid.columns = [];
 
       grid.columns.push({
         name: "foobar",
       });
 
-      grid.then(function() {
+      return grid.then(function() {
         expect(gridContainsText(grid, 'Foobar')).to.be.true;
-        done();
       });
     });
 
-    it('column with empty string as content should not show column name', function(done) {
+    it('column with empty string as content should not show column name', function() {
       grid.columns = [];
 
       grid.columns.push({
         name: "foobar"
       });
 
-      grid.then(function() {
+      return grid.then(function() {
         grid.header.getCell(0, 0).content = "";
         expect(gridContainsText(grid, 'Foobar')).to.be.false;
-        done();
       });
     });
 
@@ -299,15 +292,14 @@
       });
     });
 
-    it('frozen column', function(done) {
+    it('frozen column', function() {
       grid.frozenColumns = 2;
 
-      grid.then(function() {
+      return grid.then(function() {
         var headers = qaLocal(".vaadin-grid-header .vaadin-grid-row th");
         assert.isTrue(headers[0].classList.contains("frozen"));
         assert.isTrue(headers[1].classList.contains("frozen"));
         assert.isTrue(headers[1].classList.contains("last-frozen"));
-        done();
       });
 
     });
@@ -369,13 +361,12 @@
       });
     });
 
-    it('should reference header cell after adding a new column', function(done) {
+    it('should reference header cell after adding a new column', function() {
       grid.addColumn({name: "foo"});
       grid.header.getCell(0, "foo").content = "bar";
-      grid.then(function(){
+      return grid.then(function(){
         var headers = qaLocal(".vaadin-grid-header .vaadin-grid-row th > span");
         expect(headers[2].innerHTML).to.eql("bar");
-        done();
       });
     });
 
