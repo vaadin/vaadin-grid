@@ -53,7 +53,7 @@ layout: page
 
       </vaadin-grid>
       <code demo-var="grid">
-        var grid = grid || document.querySelector("vaadin-grid");
+        var grid = grid || document.querySelector('vaadin-grid');
 
         HTMLImports.whenReady(function() {
           // code
@@ -62,7 +62,7 @@ layout: page
           grid.columns[1].sortable = true;
           grid.columns[2].sortable = true;
 
-          grid.sortOrder = [{column: 0, direction: "asc"}, {column: 1, direction: "desc"}];
+          grid.sortOrder = [{column: 0, direction: 'asc'}, {column: 1, direction: 'desc'}];
           // end-code
         });
       </code>
@@ -92,16 +92,18 @@ layout: page
         </table>
       </vaadin-grid>
       <code demo-var="grid">
-        var grid = grid || document.querySelector("vaadin-grid");
+        var grid = grid || document.querySelector('vaadin-grid');
 
         HTMLImports.whenReady(function() {
           // code
           // Set a data source for the grid
-          var data = [ [ "Project A", 10000, 0.8 ],
-                       [ "Project D", 999999, 0.2 ],
-                       [ "Project C", 43256, 0.01 ],
-                       [ "Project E", 1967, 0.9 ],
-                       [ "Project B", 19672, 1 ] ];
+          var data = [
+            ['Project A', 10000, 0.8],
+            ['Project D', 999999, 0.2],
+            ['Project C', 43256, 0.01],
+            ['Project E', 1967, 0.9],
+            ['Project B', 19672, 1]
+          ];
           grid.items = data;
 
           // Re-order the data array on sort-order-changed event

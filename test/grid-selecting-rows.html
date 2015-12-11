@@ -98,7 +98,7 @@
 
       describe('using properties', function() {
         describe('selection.mode', function() {
-          var checkBoxQuery = "input[type='checkbox']";
+          var checkBoxQuery = 'input[type="checkbox"]';
 
           it('should be single by default', function() {
             expect(grid.selection.mode).to.equal('single');
@@ -298,33 +298,33 @@
 
           it('should fire only one selection event', function() {
             var spy = sinon.spy();
-            grid.addEventListener("selected-items-changed", spy);
+            grid.addEventListener('selected-items-changed', spy);
 
             var inputs = qaLocal('.vaadin-grid-body input');
-            triggerMouseEvent(inputs[0], "mousedown");
-            triggerMouseEvent(inputs[0], "mouseup");
+            triggerMouseEvent(inputs[0], 'mousedown');
+            triggerMouseEvent(inputs[0], 'mouseup');
             expect(spy.callCount).to.eql(1);
           });
 
           // Skip in SDM due to an assertion in MultiSelectionRenderer.AutoScrollHandler
           // which prevents changing the selection if handlerRegistration exists
-          //  assert handlerRegistration == null : "handlerRegistration was not null"
+          //  assert handlerRegistration == null : 'handlerRegistration was not null'
           it.skipIf(isSDM, 'should select multiple rows', function() {
             var inputs = qaLocal('.vaadin-grid-body input');
-            triggerMouseEvent(inputs[0], "mousedown");
-            triggerMouseEvent(inputs[1], "mousedown");
+            triggerMouseEvent(inputs[0], 'mousedown');
+            triggerMouseEvent(inputs[1], 'mousedown');
             expect(grid.selection.selected()).to.eql([0, 1]);
           });
 
           it.skipIf(isSDM, 'should deselect multiple rows', function() {
             var inputs = qaLocal('.vaadin-grid-body input');
-            triggerMouseEvent(inputs[0], "mousedown");
-            triggerMouseEvent(inputs[1], "mousedown");
+            triggerMouseEvent(inputs[0], 'mousedown');
+            triggerMouseEvent(inputs[1], 'mousedown');
             // Selection mode changes after both rows have been selected which
             // alters the DOM structure so we need to fetch the inputs again.
             inputs = qaLocal('.vaadin-grid-body input');
-            triggerMouseEvent(inputs[0], "mousedown");
-            triggerMouseEvent(inputs[1], "mousedown");
+            triggerMouseEvent(inputs[0], 'mousedown');
+            triggerMouseEvent(inputs[1], 'mousedown');
             expect(grid.selection.selected()).to.be.empty;
           });
         });
@@ -562,14 +562,14 @@
           });
 
           it('should return right mapped value', function() {
-            var mapper = function(index){
-              return "foo " + index;
+            var mapper = function(index) {
+              return 'foo ' + index;
             };
-            expect(grid.selection.selected(mapper)).to.eql(["foo 0"]);
+            expect(grid.selection.selected(mapper)).to.eql(['foo 0']);
           });
 
           it('should return nothing with iterator', function() {
-            var iterator = function(i){
+            var iterator = function(i) {
               // Iterate
             };
             expect(grid.selection.selected(iterator)).to.be.empty;
@@ -582,7 +582,7 @@
             grid.items =  function(params, callback) {
               var data = [];
               for (var i = params.index; i < params.index + params.count; i++) {
-                data.push(["foo " + i, "bar " + i]);
+                data.push(['foo ' + i, 'bar ' + i]);
               }
               callback(data);
             };
@@ -612,14 +612,14 @@
           });
 
           it('should return right mapped value', function() {
-            var mapper = function(index){
-              return "foo " + index;
+            var mapper = function(index) {
+              return 'foo ' + index;
             };
-            expect(grid.selection.selected(mapper)).to.eql(["foo 0", "foo 1", "foo 80", "foo 81"]);
+            expect(grid.selection.selected(mapper)).to.eql(['foo 0', 'foo 1', 'foo 80', 'foo 81']);
           });
 
           it('should return nothing with iterator', function() {
-            var iterator = function(i){
+            var iterator = function(i) {
               // Itearate
             };
             expect(grid.selection.selected(iterator)).to.be.empty;
@@ -643,7 +643,7 @@
             grid.items = function(params, callback) {
               var data = [];
               for (var i = params.index; i < params.index + params.count; i++) {
-                data.push(["foo " + i, "bar " + i]);
+                data.push(['foo ' + i, 'bar ' + i]);
               }
               callback(data, 100);
             };
@@ -673,15 +673,15 @@
           });
 
           it('should return right mapped value', function() {
-            var mapper = function(index){
-              return "foo " + index;
+            var mapper = function(index) {
+              return 'foo ' + index;
             };
-            expect(grid.selection.selected(mapper)).to.contain("foo 2");
-            expect(grid.selection.deselected(mapper)).to.eql(["foo 0", "foo 1", "foo 80", "foo 81"]);
+            expect(grid.selection.selected(mapper)).to.contain('foo 2');
+            expect(grid.selection.deselected(mapper)).to.eql(['foo 0', 'foo 1', 'foo 80', 'foo 81']);
           });
 
           it('should return nothing with iterator', function() {
-            var iterator = function(i){
+            var iterator = function(i) {
               // Itearate
             };
             expect(grid.selection.selected(iterator)).to.be.empty;
@@ -734,8 +734,8 @@
           });
 
           it('should not return any mapped values', function() {
-            var mapper = function(index){
-              return "foo " + index;
+            var mapper = function(index) {
+              return 'foo ' + index;
             };
             expect(grid.selection.selected(mapper)).to.eql([]);
             expect(grid.selection.deselected(mapper)).to.eql([]);

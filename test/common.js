@@ -21,21 +21,21 @@ describe.feature = function(description, suite, htmlGrid) {
     it.skipIf = function(bool, title, test) {
       bool = typeof bool == 'function' ? bool() : bool;
       (bool ? it.skip : it)(title, test);
-    }
+    };
 
     suite();
   });
 };
 
 function gridContainsText(_grid, text) {
-  return Polymer.dom(_grid.root).querySelector(".vaadin-grid-tablewrapper").parentElement.innerHTML.indexOf(text) > -1;
+  return Polymer.dom(_grid.root).querySelector('.vaadin-grid-tablewrapper').parentElement.innerHTML.indexOf(text) > -1;
 }
 
 function onRegister(e, cb) {
   waitUntil(function() {
     return !!e && e.constructor !== window.HTMLElement && e.constructor != window.HTMLUnknownElement;
   }, function() {
-    e.then && e.then(cb) ||  cb();
+    e.then && e.then(cb) || cb();
   });
 }
 
@@ -70,30 +70,30 @@ function triggerMouseEvent(node, eventType, properties, shiftKey) {
 }
 
 function initializeGrid(cb, htmlGrid) {
-  wrapper = document.getElementById("gridwrapper");
-  wrapper.innerHTML = htmlGrid || "<vaadin-grid>" +
-    "                     <table>" +
-    "                       <col>" +
-    "                       <col>" +
-    "                       <tbody>" +
-    "                         <tr>" +
-    "                           <td>Grid</td>" +
-    "                           <td>10000</td>" +
-    "                         </tr>" +
-    "                         <tr>" +
-    "                           <td>VaadinX</td>" +
-    "                           <td>1000</td>" +
-    "                         </tr>" +
-    "                       </tbody>" +
-    "                     <tfoot>" +
-    "                       <tr>" +
-    "                         <td>Name</td>" +
-    "                         <td>Value</td>" +
-    "                       </tr>" +
-    "                     </tfoot>" +
-    "                     </table>" +
-    "                     </vaadin-grid>";
-  grid = wrapper.querySelector("vaadin-grid");
+  wrapper = document.getElementById('gridwrapper');
+  wrapper.innerHTML = htmlGrid || '<vaadin-grid>' +
+    '                     <table>' +
+    '                       <col>' +
+    '                       <col>' +
+    '                       <tbody>' +
+    '                         <tr>' +
+    '                           <td>Grid</td>' +
+    '                           <td>10000</td>' +
+    '                         </tr>' +
+    '                         <tr>' +
+    '                           <td>VaadinX</td>' +
+    '                           <td>1000</td>' +
+    '                         </tr>' +
+    '                       </tbody>' +
+    '                     <tfoot>' +
+    '                       <tr>' +
+    '                         <td>Name</td>' +
+    '                         <td>Value</td>' +
+    '                       </tr>' +
+    '                     </tfoot>' +
+    '                     </table>' +
+    '                     </vaadin-grid>';
+  grid = wrapper.querySelector('vaadin-grid');
   onRegister(grid, cb);
 }
 
@@ -103,7 +103,7 @@ function infiniteDataSource(params, callback) {
   // compiled code with assertions we get an exception in
   // AbstractRemoteDataSource::setRowData
   for (var i = params.index; i < infiniteDataSource.size && i < params.index + params.count; i++) {
-    data.push(["foo " + i, "bar " + i]);
+    data.push(['foo ' + i, 'bar ' + i]);
   }
   callback(data, infiniteDataSource.size);
 }

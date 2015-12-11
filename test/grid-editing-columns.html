@@ -49,74 +49,74 @@
 
     it('add new column', function() {
       grid.addColumn({
-        name: "foo"
+        name: 'foo'
       });
 
       var c = grid.columns[grid.columns.length - 1];
-      expect(c.name).to.equal("foo");
+      expect(c.name).to.equal('foo');
     });
 
     it('add new column before', function() {
       expect(grid.addColumn.bind(grid, {
-        name: "foo"
-      }, -1)).to.throw("Column not found.");
+        name: 'foo'
+      }, -1)).to.throw('Column not found.');
 
       expect(grid.addColumn.bind(grid, {
-        name: "foo"
-      }, 100)).to.throw("Column not found.");
+        name: 'foo'
+      }, 100)).to.throw('Column not found.');
 
       grid.addColumn({
-        name: "foo"
+        name: 'foo'
       }, 0);
       grid.addColumn({
-        name: "bar"
-      }, "foo");
+        name: 'bar'
+      }, 'foo');
 
       return grid.then(function() {
-        var headers = qaLocal(".vaadin-grid-header .vaadin-grid-row th > span");
-        assert.equal(headers[0].innerHTML, "Bar");
-        assert.equal(headers[1].innerHTML, "Foo");
+        var headers = qaLocal('.vaadin-grid-header .vaadin-grid-row th > span');
+        assert.equal(headers[0].innerHTML, 'Bar');
+        assert.equal(headers[1].innerHTML, 'Foo');
 
         expect(grid.addColumn.bind(grid, {
-          name: "baz"
-        }, "foobar")).to.throw("Column not found.");
+          name: 'baz'
+        }, 'foobar')).to.throw('Column not found.');
       });
     });
 
     it('edit new column', function() {
       var c = {
-        name: "foo"
+        name: 'foo'
       };
       grid.addColumn(c);
 
       grid.then(function() {
-        var headers = qaLocal(".vaadin-grid-header .vaadin-grid-row th > span");
-        assert.equal(headers[grid.columns.length - 1].innerHTML, "Foo");
+        var headers = qaLocal('.vaadin-grid-header .vaadin-grid-row th > span');
+        assert.equal(headers[grid.columns.length - 1].innerHTML, 'Foo');
 
-        c.name = "bar";
+        c.name = 'bar';
 
         return grid.then(function() {
-          headers = qaLocal(".vaadin-grid-header .vaadin-grid-row th > span");
-          assert.equal(headers[grid.columns.length - 1].innerHTML, "Bar");
+          headers = qaLocal('.vaadin-grid-header .vaadin-grid-row th > span');
+          assert.equal(headers[grid.columns.length - 1].innerHTML, 'Bar');
         });
       });
     });
 
     it('edit existing column', function() {
-      grid.columns[0].name = "testHtml";
+      grid.columns[0].name = 'testHtml';
       return grid.then(function() {
-        var headers = qaLocal(".vaadin-grid-header .vaadin-grid-row th > span");
-        assert.equal(headers[0].innerHTML, "Test Html");
+        var headers = qaLocal('.vaadin-grid-header .vaadin-grid-row th > span');
+        assert.equal(headers[0].innerHTML, 'Test Html');
       });
     });
 
     it('renderer property', function() {
       grid.columns[0].renderer = function(cell) {
-        cell.element.innerHTML = "<b>" + cell.data + "</b>";
+        cell.element.innerHTML = '<b>' + cell.data + '</b>';
       };
 
       return grid.then(function() {
-        assert.isTrue(gridContainsText(grid, "<b>Grid</b>"));
+        assert.isTrue(gridContainsText(grid, '<b>Grid</b>'));
       });
     });
 
@@ -137,8 +137,8 @@
 
     it('renderer: cell values on change', function(done) {
       var mydata = [
-        ["John", "TestFoo"],
-        ["Jane", "TestBar"],
+        ['John', 'TestFoo'],
+        ['Jane', 'TestBar'],
       ];
 
       grid.items = mydata;
@@ -149,9 +149,9 @@
       };
 
       grid.then(function() {
-        assert.isTrue(gridContainsText(grid, "TestFoo"));
+        assert.isTrue(gridContainsText(grid, 'TestFoo'));
 
-        var cell = qaLocal(".vaadin-grid-body .vaadin-grid-cell")[3].cell;
+        var cell = qaLocal('.vaadin-grid-body .vaadin-grid-cell')[3].cell;
         assert.equal(cell.row.index, 1);
         assert.equal(cell.index, 1);
 
@@ -161,7 +161,7 @@
 
         grid.columns.splice(0, 1);
         grid.then(function() {
-          assert.isFalse(gridContainsText(grid, "TestFoo"));
+          assert.isFalse(gridContainsText(grid, 'TestFoo'));
           assert.equal(cell.row.index, 0);
           assert.equal(cell.index, 0);
           done();
@@ -171,12 +171,12 @@
     });
 
     it('initial property values', function() {
-      assert.equal(grid.columns[0].name, "Name");
+      assert.equal(grid.columns[0].name, 'Name');
     });
 
     describe('modifying columns array directly', function() {
       it('should replace header content', function() {
-        var firstHeader = qLocal(".vaadin-grid-header .vaadin-grid-row th");
+        var firstHeader = qLocal('.vaadin-grid-header .vaadin-grid-row th');
         expect(firstHeader.textContent).to.equal('Name');
 
         grid.columns[0].name = 'Foo';
@@ -200,12 +200,12 @@
       grid.columns.splice(1, 1);
 
       grid.then(function() {
-        assert.isFalse(gridContainsText(grid, "Progress"));
+        assert.isFalse(gridContainsText(grid, 'Progress'));
         grid.columns.push({
-          name: "testHtml"
+          name: 'testHtml'
         });
         grid.then(function() {
-          assert.isTrue(gridContainsText(grid, "Test Html"));
+          assert.isTrue(gridContainsText(grid, 'Test Html'));
           done();
         });
       });
@@ -213,16 +213,16 @@
 
     it('remove column', function(done) {
       grid.addColumn({
-        name: "test"
+        name: 'test'
       });
       grid.removeColumn(0);
 
       grid.then(function() {
-        assert.isFalse(gridContainsText(grid, "Name"));
-        assert.isTrue(gridContainsText(grid, "Test"));
-        grid.removeColumn("test");
+        assert.isFalse(gridContainsText(grid, 'Name'));
+        assert.isTrue(gridContainsText(grid, 'Test'));
+        grid.removeColumn('test');
         grid.then(function() {
-          assert.isFalse(gridContainsText(grid, "Test"));
+          assert.isFalse(gridContainsText(grid, 'Test'));
           done();
         });
       });
@@ -232,7 +232,7 @@
       grid.columns = [];
 
       grid.columns.push({
-        name: "foo"
+        name: 'foo'
       });
 
       return grid.then(function() {
@@ -244,7 +244,7 @@
       grid.columns = [];
 
       grid.columns.push({
-        name: "foobar",
+        name: 'foobar',
       });
 
       return grid.then(function() {
@@ -256,11 +256,11 @@
       grid.columns = [];
 
       grid.columns.push({
-        name: "foobar"
+        name: 'foobar'
       });
 
       return grid.then(function() {
-        grid.header.getCell(0, 0).content = "";
+        grid.header.getCell(0, 0).content = '';
         expect(gridContainsText(grid, 'Foobar')).to.be.false;
       });
     });
@@ -268,7 +268,7 @@
     it('Should add non-empty name in an empty header', function() {
       var col = {};
       grid.addColumn(col);
-      col.name = "foobaz";
+      col.name = 'foobaz';
 
       return grid.then(function() {
         expect(gridContainsText(grid, 'Foobaz')).to.be.true;
@@ -277,7 +277,7 @@
 
     it('Should update on header column cell change', function(done) {
       grid.addColumn({
-        name: "foobar"
+        name: 'foobar'
       }, 0);
 
       grid.then(function() {
@@ -285,7 +285,7 @@
         return grid;
       }).then(function() {
         waitUntil(function() {
-          return gridContainsText(grid, 'Foobar')
+          return gridContainsText(grid, 'Foobar');
         }, function() {
           done();
         });
@@ -296,39 +296,41 @@
       grid.frozenColumns = 2;
 
       return grid.then(function() {
-        var headers = qaLocal(".vaadin-grid-header .vaadin-grid-row th");
-        assert.isTrue(headers[0].classList.contains("frozen"));
-        assert.isTrue(headers[1].classList.contains("frozen"));
-        assert.isTrue(headers[1].classList.contains("last-frozen"));
+        var headers = qaLocal('.vaadin-grid-header .vaadin-grid-row th');
+        assert.isTrue(headers[0].classList.contains('frozen'));
+        assert.isTrue(headers[1].classList.contains('frozen'));
+        assert.isTrue(headers[1].classList.contains('last-frozen'));
       });
 
     });
 
     it('frozen column declarative', function() {
-      grid.setAttribute("frozen-columns", "1");
+      grid.setAttribute('frozen-columns', '1');
 
       return grid.then(function() {
-        expect(function(){grid.selection.mode = "multi";}).not.to.throw();
+        expect(function() {
+          grid.selection.mode = 'multi';
+        }).not.to.throw();
       });
     });
 
     it('frozen column: unfreeze selection column', function() {
-      grid.selection.mode = "multi";
-      assert.ok(qLocal(".frozen"));
+      grid.selection.mode = 'multi';
+      assert.ok(qLocal('.frozen'));
 
       grid.frozenColumns = -1;
-      assert.notOk(qLocal(".frozen"));
+      assert.notOk(qLocal('.frozen'));
     });
 
     it('remove frozen column (take the selection column into account)', function() {
       grid.selection.mode = 'multi';
       grid.columns = [];
-      grid.addColumn({"name": "123"});
-      grid.addColumn({"name": "456"});
+      grid.addColumn({'name': '123'});
+      grid.addColumn({'name': '456'});
       grid.frozenColumns = 2;
       grid.columns.pop();
 
-      return grid.then(function () {
+      return grid.then(function() {
         expect(grid.columns.length).to.eql(1);
         expect(grid.frozenColumns).to.eql(1);
       });
@@ -338,12 +340,12 @@
     it('remove frozen column', function() {
       grid.selection.mode = 'single';
       grid.columns = [];
-      grid.addColumn({"name": "123"});
-      grid.addColumn({"name": "456"});
+      grid.addColumn({'name': '123'});
+      grid.addColumn({'name': '456'});
       grid.frozenColumns = 2;
       grid.columns.pop();
 
-      return grid.then(function () {
+      return grid.then(function() {
         expect(grid.columns.length).to.eql(1);
         expect(grid.frozenColumns).to.eql(1);
       });
@@ -353,101 +355,101 @@
     it('should add a column to an empty grid with an index', function() {
       grid.columns = [];
       return grid.then(function() {
-        grid.addColumn({name: "foo"}, 0);
+        grid.addColumn({name: 'foo'}, 0);
         return grid;
       }).then(function() {
-        expect(qaLocal(".vaadin-grid-header .vaadin-grid-cell")).to.have.length(1);
+        expect(qaLocal('.vaadin-grid-header .vaadin-grid-cell')).to.have.length(1);
         return grid;
       });
     });
 
     it('should reference header cell after adding a new column', function() {
-      grid.addColumn({name: "foo"});
-      grid.header.getCell(0, "foo").content = "bar";
-      return grid.then(function(){
-        var headers = qaLocal(".vaadin-grid-header .vaadin-grid-row th > span");
-        expect(headers[2].innerHTML).to.eql("bar");
+      grid.addColumn({name: 'foo'});
+      grid.header.getCell(0, 'foo').content = 'bar';
+      return grid.then(function() {
+        var headers = qaLocal('.vaadin-grid-header .vaadin-grid-row th > span');
+        expect(headers[2].innerHTML).to.eql('bar');
       });
     });
 
     it('should support nested column names', function() {
       grid.addColumn({
-        name: "foo.bar.baz",
+        name: 'foo.bar.baz',
       });
       grid.items = [{
         foo: {
           bar: {
-            baz: "testing"
+            baz: 'testing'
           }
         }
       }];
       return grid.then(function() {
-        expect(gridContainsText(grid, "testing")).to.be.true;
+        expect(gridContainsText(grid, 'testing')).to.be.true;
       });
     });
 
     it('column without content should show name instead', function(done) {
-      var wrapper = document.getElementById("gridwrapper");
-      var tmp = document.createElement("div");
+      var wrapper = document.getElementById('gridwrapper');
+      var tmp = document.createElement('div');
       wrapper.appendChild(tmp);
-      tmp.innerHTML = "<vaadin-grid>" +
-        "                <table>" +
-        "                  <colgroup><col name='test'></colgroup>" +
-        "                </table>" +
-        "              </vaadin-grid>";
+      tmp.innerHTML = '<vaadin-grid>' +
+        '                <table>' +
+        '                  <colgroup><col name="test"></colgroup>' +
+        '                </table>' +
+        '              </vaadin-grid>';
 
-      var grid = tmp.querySelector("vaadin-grid");
+      var grid = tmp.querySelector('vaadin-grid');
       waitUntil(function() {
         return grid.then;
       }, function() {
         return grid.then(function() {
-          expect(gridContainsText(grid, "Test")).to.be.true;
+          expect(gridContainsText(grid, 'Test')).to.be.true;
           wrapper.removeChild(tmp);
           done();
-        })
+        });
       });
     });
 
     it('column with empty cell content should not show name', function(done) {
-      var wrapper = document.getElementById("gridwrapper");
-      var tmp = document.createElement("div");
+      var wrapper = document.getElementById('gridwrapper');
+      var tmp = document.createElement('div');
       wrapper.appendChild(tmp);
-      tmp.innerHTML = "<vaadin-grid>" +
-        "                <table>" +
-        "                  <colgroup><col name='test'></colgroup>" +
-        "                  <thead><th></th></thead>" +
-        "                </table>" +
-        "              </vaadin-grid>";
+      tmp.innerHTML = '<vaadin-grid>' +
+        '                <table>' +
+        '                  <colgroup><col name="test"></colgroup>' +
+        '                  <thead><th></th></thead>' +
+        '                </table>' +
+        '              </vaadin-grid>';
 
-      var grid = tmp.querySelector("vaadin-grid");
+      var grid = tmp.querySelector('vaadin-grid');
       waitUntil(function() {
         return grid.then;
       }, function() {
         return grid.then(function() {
-          expect(gridContainsText(grid, "test")).to.be.false;
+          expect(gridContainsText(grid, 'test')).to.be.false;
           wrapper.removeChild(tmp);
           done();
-        })
+        });
       });
     });
 
     it('should not return values from name path', function() {
       grid.addColumn({
-        name: "foo.bar.baz",
+        name: 'foo.bar.baz',
       });
       grid.items = [{
         foo: {
-          bar: "testing"
+          bar: 'testing'
         }
       }];
       return grid.then(function() {
-        expect(gridContainsText(grid, "testing")).to.be.false;
+        expect(gridContainsText(grid, 'testing')).to.be.false;
       });
     });
 
     it('should allow undefined nested values', function() {
       grid.addColumn({
-        name: "foo.bar.baz",
+        name: 'foo.bar.baz',
       });
       grid.items = [{
         foo: {
@@ -455,12 +457,12 @@
         }
       }];
       return grid.then(function() {
-        expect(qaLocal(".vaadin-grid-body .vaadin-grid-cell > span")[2].innerHTML).to.be.empty;
+        expect(qaLocal('.vaadin-grid-body .vaadin-grid-cell > span')[2].innerHTML).to.be.empty;
       });
     });
 
     it('should have the right default value if flex attribute exists', function() {
-      qLight("table col").setAttribute("flex", "");
+      qLight('table col').setAttribute('flex', '');
       return grid.then(function() {
         expect(grid.columns[0].flex).to.eql(1);
         expect(grid.columns[1].flex).to.eql(-1);
@@ -468,27 +470,27 @@
     });
 
     it('should size columns with width attribute', function() {
-      qLight("col").setAttribute("width", "110");
-      return grid.then(function(){
+      qLight('col').setAttribute('width', '110');
+      return grid.then(function() {
         expect(grid.columns[0].width).to.eql(110);
-        expect(qLocal(".vaadin-grid-cell").offsetWidth).to.eql(110);
+        expect(qLocal('.vaadin-grid-cell').offsetWidth).to.eql(110);
       });
     });
 
     it('should size columns with min-width attribute', function() {
-      qLight("col").setAttribute("width", "110");
-      qLight("col").setAttribute("min-width", "130");
-      return grid.then(function(){
+      qLight('col').setAttribute('width', '110');
+      qLight('col').setAttribute('min-width', '130');
+      return grid.then(function() {
         expect(grid.columns[0].width).to.eql(110);
-        expect(qLocal(".vaadin-grid-cell").offsetWidth).to.eql(130);
+        expect(qLocal('.vaadin-grid-cell').offsetWidth).to.eql(130);
       });
     });
 
     it('should size columns with max-width attribute', function() {
-      qLight("col").setAttribute("width", "210");
-      qLight("col").setAttribute("max-width", "140");
+      qLight('col').setAttribute('width', '210');
+      qLight('col').setAttribute('max-width', '140');
 
-      return grid.then(function(){
+      return grid.then(function() {
         expect(grid.columns[0].width).to.eql(210);
         expect(grid.columns[0].maxWidth).to.eql(140);
         // waiting for fix in the Grid.java
@@ -498,43 +500,43 @@
 
     it('should size columns with width property', function() {
       grid.columns[0].width = 100;
-      return grid.then(function(){
-        expect(qLocal(".vaadin-grid-cell").offsetWidth).to.eql(100);
+      return grid.then(function() {
+        expect(qLocal('.vaadin-grid-cell').offsetWidth).to.eql(100);
       });
     });
 
     it('should size columns with minWidth property', function() {
       grid.columns[0].width = 100;
       grid.columns[0].minWidth = 150;
-      return grid.then(function(){
-        expect(qLocal(".vaadin-grid-cell").offsetWidth).to.eql(150);
+      return grid.then(function() {
+        expect(qLocal('.vaadin-grid-cell').offsetWidth).to.eql(150);
       });
     });
 
     it('should size columns with maxWidth property', function() {
       grid.columns[0].maxWidth = 100;
-      return grid.then(function(){
-        expect(qLocal(".vaadin-grid-cell").offsetWidth).to.eql(100);
+      return grid.then(function() {
+        expect(qLocal('.vaadin-grid-cell').offsetWidth).to.eql(100);
       });
     });
 
     it('should have valid height with no DS set but with column(s) added', function(done) {
-      var wrapper = document.getElementById("gridwrapper");
-      var tmp = document.createElement("div");
+      var wrapper = document.getElementById('gridwrapper');
+      var tmp = document.createElement('div');
       wrapper.appendChild(tmp);
 
-      var grid = document.createElement("vaadin-grid");
+      var grid = document.createElement('vaadin-grid');
       tmp.appendChild(grid);
 
       waitUntil(function() {
          return grid.then;
       }, function() {
          return grid.then(function() {
-          grid.addColumn({name : 'foo'});
-          return grid.then(function(){
-            waitUntil(function(){
+          grid.addColumn({name: 'foo'});
+          return grid.then(function() {
+            waitUntil(function() {
               return grid.clientHeight > 0;
-            },function(){
+            },function() {
               wrapper.removeChild(tmp);
               done();
             });
@@ -543,37 +545,37 @@
       });
     });
 
-    it('should hide columns with hidden attribute', function () {
-      qLight("col").setAttribute("hidable", "");
-      qLight("col").setAttribute("hidden", "");
+    it('should hide columns with hidden attribute', function() {
+      qLight('col').setAttribute('hidable', '');
+      qLight('col').setAttribute('hidden', '');
 
-      return grid.then(function () {
+      return grid.then(function() {
         expect(countVisibleColumns(grid)).to.eql(1);
 
         grid.columns[0].hidden = false;
-      }).then(function () {
+      }).then(function() {
         expect(countVisibleColumns(grid)).to.eql(2);
       });
     });
 
-    it('should hide columns with hidden property', function () {
+    it('should hide columns with hidden property', function() {
       grid.columns[1].hidable = true;
       grid.columns[1].hidden = true;
 
-      return grid.then(function () {
+      return grid.then(function() {
         expect(countVisibleColumns(grid)).to.eql(1);
 
         grid.columns[1].hidden = false;
-      }).then(function () {
+      }).then(function() {
         expect(countVisibleColumns(grid)).to.eql(2);
       });
     });
 
-    it('should call _frozenColumnsChanged observer only once', function () {
-      var spy = sinon.spy(grid._grid, "setFrozenColumns");
+    it('should call _frozenColumnsChanged observer only once', function() {
+      var spy = sinon.spy(grid._grid, 'setFrozenColumns');
       grid.frozenColumns = 2;
 
-      return grid.then(function () {
+      return grid.then(function() {
         expect(spy.calledOnce).to.be.true;
       });
     });

@@ -15,21 +15,25 @@ function cleanDone(done) {
   };
 }
 
-function checkArguments(arguments) {
-  _.forEach(arguments, function(a) {
-    if(!args.hasOwnProperty(a)) {
-      throw Error('Required argument \'--'+ a +'\' is missing.');
+function checkArguments(argumentsArray) {
+  _.forEach(argumentsArray, function(a) {
+    if (!args.hasOwnProperty(a)) {
+      throw Error('Required argument \'--' + a + '\' is missing.');
     }
   });
 }
 
 function localAddress() {
   var ip, tun, ifaces = require('os').networkInterfaces();
-  Object.keys(ifaces).forEach(function (ifname) {
-    ifaces[ifname].forEach(function (iface) {
+  Object.keys(ifaces).forEach(function(ifname) {
+    ifaces[ifname].forEach(function(iface) {
       if ('IPv4' == iface.family && !iface.internal) {
-        if (!ip) ip = iface.address;
-        if (/tun/.test(ifname)) tun = iface.address;
+        if (!ip) {
+          ip = iface.address;
+        }
+        if (/tun/.test(ifname)) {
+          tun = iface.address;
+        }
       }
     });
   });
@@ -72,9 +76,9 @@ module.exports = {
   },
 
   autoRevert: function(err, handler, done) {
-    if(err) {
+    if (err) {
       gutil.log(err.toString());
-      if(args.autoRevert) {
+      if (args.autoRevert) {
         handler();
       } else {
         gutil.log('No action. Use --auto-revert to revert changes.');

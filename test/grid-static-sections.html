@@ -75,25 +75,25 @@
 
           function appendThead() {
             // Need to include thead element in the light dom for declarative tests
-            var colGroup = qLight("colgroup");
+            var colGroup = qLight('colgroup');
             if (colGroup) {
               colGroup.parentElement.removeChild(colGroup);
-              qLight("table").innerHTML =
-                "<thead><tr><th>Name</th><th>Value</th></tr></thead>" +
-                qLight("table").innerHTML;
+              qLight('table').innerHTML =
+                '<thead><tr><th>Name</th><th>Value</th></tr></thead>' +
+                qLight('table').innerHTML;
             }
-          };
+          }
 
           function appendEmptyThead() {
             // Need to include thead element in the light dom for declarative tests
-            var colGroup = qLight("colgroup");
+            var colGroup = qLight('colgroup');
             if (colGroup) {
               colGroup.parentElement.removeChild(colGroup);
-              qLight("table").innerHTML =
-                "<thead></thead>" +
-                qLight("table").innerHTML;
+              qLight('table').innerHTML =
+                '<thead></thead>' +
+                qLight('table').innerHTML;
             }
-          };
+          }
 
           it('should be readonly', function() {
             var originalValue = grid[section];
@@ -149,10 +149,10 @@
                 appendThead();
 
                 var ldCell = section === 'header' ? 'thead th' : 'tfoot td';
-                qLight(ldCell).innerHTML = "<span class='foo'>bar</span>";
+                qLight(ldCell).innerHTML = '<span class="foo">bar</span>';
 
                 return grid.then(function() {
-                  expect(qLocal('.vaadin-grid-' + section + ' .vaadin-grid-cell .foo').innerHTML).to.eql("bar");
+                  expect(qLocal('.vaadin-grid-' + section + ' .vaadin-grid-cell .foo').innerHTML).to.eql('bar');
                 });
               });
             });
@@ -168,20 +168,20 @@
               it('should clear innerHTML: declarative', function() {
                 appendThead();
 
-                qLight(section === 'header' ? 'thead' : 'tfoot').setAttribute("hidden", true);
+                qLight(section === 'header' ? 'thead' : 'tfoot').setAttribute('hidden', true);
 
                 return grid.then(function() {
-                  expect(qLocal(".vaadin-grid-" + section).innerHTML).to.be.empty;
+                  expect(qLocal('.vaadin-grid-' + section).innerHTML).to.be.empty;
                 });
               });
 
               it('should clear innerHTML: empty section', function() {
                 appendEmptyThead();
 
-                qLight(section === 'header' ? 'thead' : 'tfoot').setAttribute("hidden", true);
+                qLight(section === 'header' ? 'thead' : 'tfoot').setAttribute('hidden', true);
 
                 return grid.then(function() {
-                  expect(qLocal(".vaadin-grid-" + section).innerHTML).to.be.empty;
+                  expect(qLocal('.vaadin-grid-' + section).innerHTML).to.be.empty;
                 });
               });
             });
@@ -193,7 +193,7 @@
                 cell.colspan = 2;
 
                 return grid.then(function() {
-                  expect(qaLocal(".vaadin-grid-" + section + " .vaadin-grid-cell")[1].style.display).to.equal('none');
+                  expect(qaLocal('.vaadin-grid-' + section + ' .vaadin-grid-cell')[1].style.display).to.equal('none');
                 });
               });
 
@@ -201,14 +201,14 @@
                 appendThead();
 
                 var ldCell = section === 'header' ? 'thead th' : 'tfoot td';
-                qLight(ldCell).innerHTML = "<span class='foo'>bar</span>";
-                light().querySelectorAll(ldCell)[1].setAttribute("colspan", 2);
+                qLight(ldCell).innerHTML = '<span class="foo">bar</span>';
+                light().querySelectorAll(ldCell)[1].setAttribute('colspan', 2);
 
                 var ldSection = section === 'header' ? 'thead' : 'tfoot';
-                qLight(ldSection).removeAttribute("hidden");
+                qLight(ldSection).removeAttribute('hidden');
 
                 return grid.then(function() {
-                  expect(qaLocal(".vaadin-grid-" + section + " .vaadin-grid-cell")[1].getAttribute("colspan")).to.equal('2');
+                  expect(qaLocal('.vaadin-grid-' + section + ' .vaadin-grid-cell')[1].getAttribute('colspan')).to.equal('2');
                   expect(grid[section].getCell(0, 1).colspan).to.equal(2);
                 });
               });
@@ -245,7 +245,7 @@
             it('should insert content to a new row', function() {
               grid[section].addRow(0, ['foo', 'bar']);
 
-              var cells = qaLocal(".vaadin-grid-" + section + " .vaadin-grid-cell > span");
+              var cells = qaLocal('.vaadin-grid-' + section + ' .vaadin-grid-cell > span');
               expect(cells[0].innerHTML).to.equal('foo');
               expect(cells[1].innerHTML).to.equal('bar');
             });
@@ -273,7 +273,7 @@
 
               grid[section].setRowClassName(1, 'second');
 
-              var rows = qaLocal(".vaadin-grid-" + section + " .vaadin-grid-row");
+              var rows = qaLocal('.vaadin-grid-' + section + ' .vaadin-grid-row');
               expect(rows[1].classList.toString()).to.contain('second');
             });
           });
@@ -282,7 +282,7 @@
             it('should have 2 rows', function() {
               appendThead();
               var ldSection = section === 'header' ? 'thead' : 'tfoot';
-              qLight(ldSection).removeAttribute("hidden");
+              qLight(ldSection).removeAttribute('hidden');
               qLight(ldSection).innerHTML = '<tr><td>foo</td><td>bar</td></tr><tr><td>foo2</td><td>bar2</td></tr>';
 
               return grid.then(function() {

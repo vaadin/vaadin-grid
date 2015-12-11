@@ -22,19 +22,19 @@
     // evaluate the jsx code in react.html manually here
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
-      if (xhr.readyState == XMLHttpRequest.DONE ) {
-        if(xhr.status == 200) {
+      if (xhr.readyState == XMLHttpRequest.DONE) {
+        if (xhr.status == 200) {
           var text = xhr.responseText;
-          var scriptTag = "<script type=\"text/jsx\">";
+          var scriptTag = '<script type="text/jsx">';
           var start = text.indexOf(scriptTag) + scriptTag.length;
-          var end = text.indexOf("<\/script>", start);
-          HTMLImports.whenReady(function(){
-            JSXTransformer.exec(text.substr(start, end-start));
+          var end = text.indexOf('<\/script>', start);
+          HTMLImports.whenReady(function() {
+            JSXTransformer.exec(text.substr(start, end - start));
           });
         }
       }
-    }
-    xhr.open("GET", "react.html", true);
+    };
+    xhr.open('GET', 'react.html', true);
     xhr.send();
   </script>
 

@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 var gulp = require('gulp');
 require('require-dir')('./tasks');
 var common = require('./tasks/common');

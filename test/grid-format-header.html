@@ -14,18 +14,18 @@
   <div id="gridwrapper"></div>
 
   <script>
-    var gridHtml = "<vaadin-grid>" +
-    "                <table>" +
-    "                 <colgroup>" +
-    "                  <col name='index'>" +
-    "                  <col name='user.name.firstName'>" +
-    "                  <col name='user.name.surname'>" +
-    "                  <col name='user.email'>" +
-    "                  <col name='user.job_info'>" +
-    "                 </colgroup>" +
-    "                </table>" +
-    "               </vaadin-grid>";
-  
+    var gridHtml = '<vaadin-grid>' +
+    '                <table>' +
+    '                 <colgroup>' +
+    '                  <col name="index">' +
+    '                  <col name="user.name.firstName">' +
+    '                  <col name="user.name.surname">' +
+    '                  <col name="user.email">' +
+    '                  <col name="user.jobInfo">' +
+    '                 </colgroup>' +
+    '                </table>' +
+    '               </vaadin-grid>';
+
     describe.feature('format header', function() {
       beforeEach(function() {
         var items = [];
@@ -38,7 +38,7 @@
                  surname: 'LastName-' + i
                },
                email: 'foo-' + i + '@bar.com',
-               job_info: 'developer-' + i
+               jobInfo: 'developer-' + i
              }
            });
         }
