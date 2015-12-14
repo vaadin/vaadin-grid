@@ -112,8 +112,12 @@ public class JSColumn {
 
     @JsProperty
     public void setMinWidth(double d) {
-        col.setMinimumWidth(JS.isUndefinedOrNull(d) ? GridConstants.DEFAULT_MIN_WIDTH
-                : d);
+        if (d >= 0) 
+        if (getMinWidth() != d) {
+            col.setMinimumWidth(JS.isUndefinedOrNull(d) ? GridConstants.DEFAULT_MIN_WIDTH
+                    : d);
+            grid.updateWidth();
+        }
     }
 
     @JsProperty
@@ -123,8 +127,11 @@ public class JSColumn {
 
     @JsProperty
     public void setMaxWidth(double d) {
-        col.setMaximumWidth(JS.isUndefinedOrNull(d) ? GridConstants.DEFAULT_MAX_WIDTH
-                : d);
+        if (getMaxWidth() != d) {
+            col.setMaximumWidth(JS.isUndefinedOrNull(d) ? GridConstants.DEFAULT_MAX_WIDTH
+                    : d);
+            grid.updateWidth();
+        }
     }
 
     @JsProperty
@@ -134,8 +141,11 @@ public class JSColumn {
 
     @JsProperty
     public void setWidth(double d) {
-        col.setWidth(JS.isUndefinedOrNull(d) ? GridConstants.DEFAULT_COLUMN_WIDTH_PX
-                : d);
+        if (getWidth() != d) {
+            col.setWidth(JS.isUndefinedOrNull(d) ? GridConstants.DEFAULT_COLUMN_WIDTH_PX
+                    : d);
+            grid.updateWidth();
+        }
     }
 
     @JsProperty
