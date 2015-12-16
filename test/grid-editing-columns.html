@@ -89,7 +89,7 @@
       };
       grid.addColumn(c);
 
-      grid.then(function() {
+      return grid.then(function() {
         var headers = qaLocal('.vaadin-grid-header .vaadin-grid-row th > span');
         assert.equal(headers[grid.columns.length - 1].innerHTML, 'Foo');
 
@@ -160,7 +160,7 @@
         grid.refreshItems();
 
         grid.columns.splice(0, 1);
-        grid.then(function() {
+        Polymer.Base.async(function() {
           assert.isFalse(gridContainsText(grid, 'TestFoo'));
           assert.equal(cell.row.index, 0);
           assert.equal(cell.index, 0);
@@ -261,6 +261,8 @@
 
       return grid.then(function() {
         grid.header.getCell(0, 0).content = '';
+        return grid;
+      }).then(function() {
         expect(gridContainsText(grid, 'Foobar')).to.be.false;
       });
     });
@@ -498,25 +500,37 @@
       });
     });
 
-    it('should size columns with width property', function() {
-      grid.columns[0].width = 100;
-      return grid.then(function() {
-        expect(qLocal('.vaadin-grid-cell').offsetWidth).to.eql(100);
+    it('should size columns with width property', function(done) {
+      grid.then(function() {
+        grid.columns[0].width = 100;
+
+        Polymer.Base.async(function() {
+          expect(qLocal('.vaadin-grid-cell').offsetWidth).to.eql(100);
+          done();
+        }, 1);
       });
     });
 
-    it('should size columns with minWidth property', function() {
-      grid.columns[0].width = 100;
-      grid.columns[0].minWidth = 150;
-      return grid.then(function() {
-        expect(qLocal('.vaadin-grid-cell').offsetWidth).to.eql(150);
+    it('should size columns with minWidth property', function(done) {
+      grid.then(function() {
+        grid.columns[0].width = 100;
+        grid.columns[0].minWidth = 150;
+
+        Polymer.Base.async(function() {
+          expect(qLocal('.vaadin-grid-cell').offsetWidth).to.eql(150);
+          done();
+        }, 1);
       });
     });
 
-    it('should size columns with maxWidth property', function() {
-      grid.columns[0].maxWidth = 100;
-      return grid.then(function() {
-        expect(qLocal('.vaadin-grid-cell').offsetWidth).to.eql(100);
+    it('should size columns with maxWidth property', function(done) {
+      grid.then(function() {
+        grid.columns[0].maxWidth = 100;
+
+        Polymer.Base.async(function() {
+          expect(qLocal('.vaadin-grid-cell').offsetWidth).to.eql(100);
+          done();
+        }, 1);
       });
     });
 
