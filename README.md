@@ -7,7 +7,7 @@
 
 `vaadin-grid` is a Web Component for showing large amounts of tabular data, part of the [vaadin-elements](https://github.com/vaadin/vaadin-elements) element bundle.
 
-<img src="screenshot.png" width="481" alt="Screenshot of vaadin-grid" />
+<img src="https://github.com/vaadin/vaadin-grid/raw/master/screenshot.png" width="481" alt="Screenshot of vaadin-grid" />
 
 **Features:**
  - Lazy-loading
