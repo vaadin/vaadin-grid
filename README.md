@@ -1,11 +1,11 @@
 
-[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/vaadin/vaadin-elements?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/vaadin/vaadin-core-elements?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 [![Build Status](https://travis-ci.org/vaadin/vaadin-grid.svg?branch=master)](https://travis-ci.org/vaadin/vaadin-grid)
 
 # vaadin-grid
 
-`vaadin-grid` is a Web Component for showing large amounts of tabular data, part of the [vaadin-elements](https://github.com/vaadin/vaadin-elements) element bundle.
+`vaadin-grid` is a Web Component for showing large amounts of tabular data, part of the [vaadin-core-elements](https://github.com/vaadin/vaadin-core-elements) element bundle.
 
 <img src="https://github.com/vaadin/vaadin-grid/raw/master/screenshot.png" width="481" alt="Screenshot of vaadin-grid" />
 
@@ -23,8 +23,8 @@
 
 ## Getting started
 
- - [Demos](https://cdn.vaadin.com/vaadin-elements/latest/vaadin-grid/demo/)
- - [Getting started instructions](https://cdn.vaadin.com/vaadin-elements/latest/vaadin-elements/demo/)
+ - [Demos](https://cdn.vaadin.com/vaadin-core-elements/latest/vaadin-grid/demo/)
+ - [Getting started instructions](https://cdn.vaadin.com/vaadin-core-elements/latest/vaadin-core-elements/demo/)
 
 ## Overview of this repository
 
