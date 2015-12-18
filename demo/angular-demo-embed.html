@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-  <link rel="import" href="../../polymer/polymer.html">
+
   <script src="xhrpatch.js"></script>
   <script>
     var randomUserUrl = 'https://randomuser.me/api/';
@@ -32,10 +32,20 @@
   .demo-wrapper > * {
     position: relative;
   }
+
+  vaadin-grid > table {
+    display: none;
+  }
   </style>
   <script>
     var tagName = window.location.hash.substr(1);
     document.body.appendChild(document.createElement(tagName));
+
+    var common = document.createElement('link');
+    common.rel = 'import';
+    common.href = 'common.html';
+    document.head.appendChild(common);
+
     HTMLImports.whenReady(function() {
 
       System.config({
@@ -44,12 +54,6 @@
       });
       System.import(tagName + '.ts');
 
-      // Angular2 (alpha44) builds template views in phases, so that it will
-      // first append an empty <vaadin-grid> element to the DOM and after that
-      // modify it to match the template. Current implementation of <vaadin-grid>
-      // doesn't pick modifications to the light DOM, so we need to import/upgrade
-      // the component after Angular has done its importing.
-      Polymer.Base.importHref('../vaadin-grid.html');
     });
   </script>
 
