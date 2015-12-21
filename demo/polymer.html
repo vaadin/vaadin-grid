@@ -22,10 +22,11 @@ layout: page
     <table-of-contents select="h3" class="toc"></table-of-contents>
   </section>
 
-  <section>
+  <section id="template-example">
     <h3 id="headers">Polymer Integration (Light DOM data source)</h3>
     <p>Static data can be easily bound to vaadin-grid <a href="datasources.html#toc_0_inline_data">light DOM cells</a> with <a href="https://www.polymer-project.org/1.0/docs/devguide/templates.html#dom-repeat">the template repeater</a>.</p>
-    <code-example source>
+
+    <!--<code-example source>
       <div>
         <template is="dom-bind" class="my-grid-with-template" demo>
           <vaadin-grid id="my-grid-with-template" on-selected-items-changed="onSelect">
@@ -47,17 +48,17 @@ layout: page
                 </tr>
               </thead>
               <tbody>
-              <template is="dom-repeat" items="[[users]]">
-                <tr>
-                  <td>{{index}}</td>
-                  <td>
-                    <img src="{{item.user.picture.thumbnail}}" style="width: 24px"/>
-                  </td>
-                  <td>{{item.user.name.first}}</td>
-                  <td>{{item.user.name.last}}</td>
-                  <td>{{item.user.email}}</td>
-                </tr>
-              </template>
+                <template is="dom-repeat" items="[[users]]">
+                  <tr>
+                    <td>{{index}}</td>
+                    <td>
+                      <img src="{{item.user.picture.thumbnail}}" style="width: 24px"/>
+                    </td>
+                    <td>{{item.user.name.first}}</td>
+                    <td>{{item.user.name.last}}</td>
+                    <td>{{item.user.email}}</td>
+                  </tr>
+                </template>
               </tbody>
             </table>
           </vaadin-grid>
@@ -96,7 +97,15 @@ layout: page
           // end-code
         });
       </code>
-    </code-example>
+    </code-example>-->
+    <script>
+    // Need this hack to make this demo work on vaadin-docs site
+    // (by default JSoup, which is used at server-side parsing of the source files,
+    // doesn't allow a template tag in a table tbody)
+    var wrapper = document.querySelector('#template-example');
+    wrapper.innerHTML = wrapper.innerHTML.replace(/<!--|-->/g, '');
+    </script>
+
   </section>
 
   <section>
