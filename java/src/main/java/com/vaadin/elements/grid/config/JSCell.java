@@ -34,7 +34,7 @@ public class JSCell {
 
     @JsProperty
     int getIndex() {
-        return cell.getRowIndex();
+        return cell.getColumnIndex();
     }
 
     @JsProperty
