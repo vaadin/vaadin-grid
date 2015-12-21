@@ -137,6 +137,8 @@ layout: page
         HTMLImports.whenReady(function() {
           // code
           var template = template || document.querySelector('template.my-grid-with-ds');
+          template.render();
+
           var grid = document.querySelector('#my-grid-with-ds');
 
           template.onSelect = function() {
