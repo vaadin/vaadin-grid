@@ -52,7 +52,7 @@ layout: page
                   <tr>
                     <td>{{index}}</td>
                     <td>
-                      <img src="{{item.user.picture.thumbnail}}" style="width: 24px"/>
+                      <img src="{{item.user.picture.thumbnail}}" style="width: 24px"></img>
                     </td>
                     <td>{{item.user.name.first}}</td>
                     <td>{{item.user.name.last}}</td>
@@ -64,7 +64,7 @@ layout: page
           </vaadin-grid>
           <template is="dom-if" if="{{selected}}">
             <div class="user-image">
-              <img src="{{selected.user.picture.large}}" />
+              <img src="{{selected.user.picture.large}}"></img>
             </div>
           </template>
         </template>
