@@ -1,0 +1,123 @@
+<!doctype html>
+<!--
+title: Overview
+order: 0
+layout: page
+-->
+<html>
+
+<head>
+  <title>vaadin-grid Overview</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <link rel="import" href="common.html">
+</head>
+
+<body unresolved>
+
+  <section>
+    <h3>Overview</h3>
+    <p>
+      The <code>vaadin-grid</code> element
+      is a free, flexible and high-quality Web Component for showing large amounts of tabular data.
+    </p>
+    <p>
+      <img src="https://github.com/vaadin/vaadin-grid/raw/master/screenshot.png" width="380" height="446"/>
+    </p>
+    <p>
+      <strong>Features:</strong>
+    </p>
+    <ul>
+      <li>Lazy-loading</li>
+      <li>Virtual scrolling</li>
+      <li>Frozen/fixed columns</li>
+      <li>Customizable headers and footers</li>
+      <li>Custom cell renderers</li>
+      <li>Touch support</li>
+      <li>Keyboard navigation</li>
+      <li>Sorting</li>
+      <li>Accessibility</li>
+      <li>Declarative and imperative APIs</li>
+    </ul>
+      
+  </section>
+
+  <section>
+    <h3>Getting started</h3>
+    
+    <h4>
+      Importing
+      <code>vaadin-grid</code>.
+    </h4>
+  
+    <p>
+      Like any other web component, the normal way is to add the element to your project using
+      <code>bower</code>
+      .
+    </p>
+  
+    <pre>
+      <code> $ bower install --save vaadin-grid</code>
+    </pre>
+  
+    <p>Then import the web component in your page.</p>
+  
+    <pre>
+      <code>&lt;link rel=&quot;import&quot; href=&quot;bower_components/vaadin-grid/vaadin-grid.html&quot; &gt;</code>
+    </pre>
+  
+    <p>Instead of installing the component in your server, you might want to import the component directly from our CDN infrastruncture:</p>
+  
+    <pre>
+      <code>&lt;link rel=&quot;import&quot; href=&quot;https://cdn.vaadin.com/vaadin-core-elements/latest/vaadin-grid/vaadin-grid.html&quot; &gt;</code>
+    </pre>
+
+    <h4>
+      Basic usage.
+    </h4>
+  
+    <p>
+      Configure the element just using declarative HTML tags and attributes and add your data array via the
+      <code>items</code> properties.
+    </p>
+
+    <code-example source>
+      <vaadin-grid demo>
+        <table>
+          <colgroup>
+            <col><col><col>
+          </colgroup>
+          <thead>
+            <tr>
+              <th>Name</th><th>Surname</th><th>Number</th>
+            </tr>
+          </thead>
+        </table>
+      </vaadin-grid>
+      <code demo-var="grid">
+        var grid = grid || document.querySelector('vaadin-grid');
+
+        HTMLImports.whenReady(function() {
+          grid.items = [
+            ['Luz', 'Rojas', '+34 666 111 222'],
+            ['Debora', 'Cabezas', '+00 987 456 765'],
+            ['Yola', 'Prieto', '+32 123 456 789']
+          ];
+        });
+      </code>
+    </code-example>
+    
+    <h3>
+      Documentation.
+    </h3>
+    
+    <p>
+      For more options, visit our feature <a href='datasources.html'>demo pages</a>,
+      or check the vaadin-grid API <a href='https://cdn.vaadin.com/vaadin-core-elements/latest/vaadin-grid/'>documentation</a>.
+    </p>
+    
+  </section>
+</body>
+
+</html>
