@@ -8,75 +8,130 @@ layout: page
 
 <head>
   <title>vaadin-grid Overview</title>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-  <link rel="import" href="common.html">
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1' />
+  <script src='../../webcomponentsjs/webcomponents-lite.js'></script>
+  <link rel='import' href='common.html'>
 </head>
 
 <body unresolved>
 
   <section>
     <h3>Overview</h3>
-    <p>
-      The <code>vaadin-grid</code> element
-      is a free, flexible and high-quality Web Component for showing large amounts of tabular data.
-    </p>
-    <p>
-      <img src="https://github.com/vaadin/vaadin-grid/raw/master/screenshot.png" width="380" height="446"/>
-    </p>
-    <p>
+      <p>
+        The <code>vaadin-grid</code> element
+        is a free, flexible and high-quality Web Component for showing large amounts of tabular data.
+      </p>
       <strong>Features:</strong>
-    </p>
-    <ul>
-      <li>Lazy-loading</li>
-      <li>Virtual scrolling</li>
-      <li>Frozen/fixed columns</li>
-      <li>Customizable headers and footers</li>
-      <li>Custom cell renderers</li>
-      <li>Touch support</li>
-      <li>Keyboard navigation</li>
-      <li>Sorting</li>
-      <li>Accessibility</li>
-      <li>Declarative and imperative APIs</li>
-    </ul>
-      
-  </section>
+      <ul>
+        <li>Lazy-loading</li>
+        <li>Virtual scrolling</li>
+        <li>Frozen/fixed columns</li>
+        <li>Customizable headers and footers</li>
+        <li>Custom cell renderers</li>
+        <li>Touch support</li>
+        <li>Keyboard navigation</li>
+        <li>Sorting</li>
+        <li>Accessibility</li>
+        <li>Declarative and imperative APIs</li>
+      </ul>
 
-  <section>
-    <h3>Getting started</h3>
-    
-    <h4>
-      Importing
-      <code>vaadin-grid</code>.
-    </h4>
-  
+      <strong>Demo:</strong>
+      <p>
+        In this demo you can check most of the <code>vaadin-grid</code> element features.
+      </p>
+     <style>
+      #example {
+        height: 400px;
+      }
+      .color-0 td:nth-child(3) {
+        color: #ff6961;
+      }
+      .color-1 td:nth-child(3) {
+        color: #03c03c;
+      }
+      .color-2 td:nth-child(3) {
+        color: #966fd6;
+      }
+      .color-3 td:nth-child(3) {
+        color: black;
+      }
+     </style>
+     <vaadin-grid id='example' selection-mode='multi' size='1000' frozen-columns='2'>
+      <table>
+        <colgroup>
+          <col name='user.picture.thumbnail' width='70' hidable>
+          <col name='user.name.first' hidable>
+          <col name='user.name.last' flex hidable>
+          <col name='user.email' hidable>
+          <col name='user.phone' width='160' hidable>
+        </colgroup>
+        <thead>
+          <tr>
+            <th>Pic</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+          </tr>
+        </thead>
+      </table>
+    </vaadin-grid>
+    <script>
+    HTMLImports.whenReady(function() {
+      var grid = document.getElementById('example');
+      grid.items = function(params, callback) {
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState == XMLHttpRequest.DONE) {
+            if (xhr.status == 200) {
+              var json = JSON.parse(xhr.responseText);
+              console.log(json.results[0]);
+              callback(json.results);
+            }
+          }
+        }
+        var rowsNeeded = Math.max(params.count, 1);
+        xhr.open('GET', randomUserUrl + '?results=' + rowsNeeded, true);
+        xhr.send();
+      };
+      grid.columns[0].renderer = function(cell) {
+        cell.element.innerHTML = '';
+        var img = document.createElement('img');
+        img.style.width = '24px';
+        img.setAttribute('src', cell.data);
+        cell.element.appendChild(img);
+      }
+      grid.rowClassGenerator = function(row) {
+        return "color-" + row.data.user.email.length % 4;
+      }
+    });
+    </script>
+
+   <h3>Getting started</h3>
+
+    <h4>Importing <code>vaadin-grid</code>.</h4>
+
     <p>
       Like any other web component, the normal way is to add the element to your project using
       <code>bower</code>
-      .
     </p>
-  
     <pre>
       <code> $ bower install --save vaadin-grid</code>
     </pre>
-  
+
     <p>Then import the web component in your page.</p>
-  
     <pre>
       <code>&lt;link rel=&quot;import&quot; href=&quot;bower_components/vaadin-grid/vaadin-grid.html&quot; &gt;</code>
     </pre>
-  
+
     <p>Instead of installing the component in your server, you might want to import the component directly from our CDN infrastruncture:</p>
-  
     <pre>
       <code>&lt;link rel=&quot;import&quot; href=&quot;https://cdn.vaadin.com/vaadin-core-elements/latest/vaadin-grid/vaadin-grid.html&quot; &gt;</code>
     </pre>
 
-    <h4>
-      Basic usage.
-    </h4>
-  
+    <h4>Basic usage.</h4>
+
     <p>
       Configure the element just using declarative HTML tags and attributes and add your data array via the
       <code>items</code> properties.
@@ -95,7 +150,7 @@ layout: page
           </thead>
         </table>
       </vaadin-grid>
-      <code demo-var="grid">
+      <code demo-var='grid'>
         var grid = grid || document.querySelector('vaadin-grid');
 
         HTMLImports.whenReady(function() {
@@ -107,16 +162,14 @@ layout: page
         });
       </code>
     </code-example>
-    
-    <h3>
-      Documentation.
-    </h3>
-    
+
+   <h3>Documentation.</h3>
+
     <p>
       For more options, visit our feature <a href='datasources.html'>demo pages</a>,
       or check the vaadin-grid API <a href='https://cdn.vaadin.com/vaadin-core-elements/latest/vaadin-grid/'>documentation</a>.
     </p>
-    
+
   </section>
 </body>
 
