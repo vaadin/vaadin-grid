@@ -90,7 +90,7 @@ layout: page
               callback(json.results);
             }
           }
-        }
+        };
         var rowsNeeded = Math.max(params.count, 1);
         xhr.open('GET', randomUserUrl + '?results=' + rowsNeeded, true);
         xhr.send();
@@ -101,10 +101,10 @@ layout: page
         img.style.width = '24px';
         img.setAttribute('src', cell.data);
         cell.element.appendChild(img);
-      }
+      };
       grid.rowClassGenerator = function(row) {
-        return "color-" + row.data.user.email.length % 4;
-      }
+        return 'color-' + row.data.user.email.length % 4;
+      };
     });
     </script>
 
@@ -122,19 +122,20 @@ layout: page
 
     <p>Then import the web component in your page.</p>
     <pre>
-      <code>&lt;link rel=&quot;import&quot; href=&quot;bower_components/vaadin-grid/vaadin-grid.html&quot; &gt;</code>
+      <code>&lt;link rel=&quot;import&quot; href=&quot;bower_components/vaadin-grid/vaadin-grid.html&quot;&gt;</code>
     </pre>
 
-    <p>Instead of installing the component in your server, you might want to import the component directly from our CDN infrastruncture:</p>
+    <p>Instead of installing the component in your server, you might want to import the component directly from our CDN infrastructure:</p>
     <pre>
-      <code>&lt;link rel=&quot;import&quot; href=&quot;https://cdn.vaadin.com/vaadin-core-elements/latest/vaadin-grid/vaadin-grid.html&quot; &gt;</code>
+      <code>&lt;link rel=&quot;import&quot; href=&quot;https://cdn.vaadin.com/vaadin-core-elements/latest/vaadin-grid/vaadin-grid.html&quot;&gt;</code>
     </pre>
 
-    <h4>Basic usage.</h4>
+    <h4>Basic usage</h4>
 
     <p>
-      Configure the element just using declarative HTML tags and attributes and add your data array via the
-      <code>items</code> properties.
+      Configure the element using declarative HTML tags and attributes and eventually
+      add your data using either way: inlining HTML data, using customized functions,
+      or setting the <code>items</code> array. In this example we will use the last one.
     </p>
 
     <code-example source>
@@ -163,7 +164,7 @@ layout: page
       </code>
     </code-example>
 
-   <h3>Documentation.</h3>
+   <h3>Documentation</h3>
 
     <p>
       For more options, visit our feature <a href='datasources.html'>demo pages</a>,
