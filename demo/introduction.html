@@ -90,7 +90,7 @@ layout: page
               callback(json.results);
             }
           }
-        }
+        };
         var rowsNeeded = Math.max(params.count, 1);
         xhr.open('GET', randomUserUrl + '?results=' + rowsNeeded, true);
         xhr.send();
@@ -101,10 +101,10 @@ layout: page
         img.style.width = '24px';
         img.setAttribute('src', cell.data);
         cell.element.appendChild(img);
-      }
+      };
       grid.rowClassGenerator = function(row) {
-        return "color-" + row.data.user.email.length % 4;
-      }
+        return 'color-' + row.data.user.email.length % 4;
+      };
     });
     </script>
 
