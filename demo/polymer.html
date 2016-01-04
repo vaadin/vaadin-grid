@@ -25,7 +25,7 @@ layout: page
   <section id="template-example">
     <h3 id="headers">Polymer Integration (Light DOM data source)</h3>
     <p>Static data can be easily bound to vaadin-grid <a href="datasources.html#toc_0_inline_data">light DOM cells</a> with <a href="https://www.polymer-project.org/1.0/docs/devguide/templates.html#dom-repeat">the template repeater</a>.</p>
-
+    <p><strong>Note:</strong> IE/Edge doesn't support template-repeating inside a table element.</p>
     <!--<code-example source>
       <div>
         <template is="dom-bind" class="my-grid-with-template" demo>
@@ -103,7 +103,12 @@ layout: page
     // (by default JSoup, which is used at server-side parsing of the source files,
     // doesn't allow a template tag in a table tbody)
     var wrapper = document.querySelector('#template-example');
-    wrapper.innerHTML = wrapper.innerHTML.replace(/<!--|-->/g, '');
+
+    if (/Trident|Edge/.test(navigator.userAgent)) {
+      wrapper.parentElement.removeChild(wrapper);
+    } else {
+      wrapper.innerHTML = wrapper.innerHTML.replace(/<!--|-->/g, '');
+    }
     </script>
 
   </section>
