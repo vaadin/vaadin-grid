@@ -59,50 +59,49 @@ layout: page
     e.g. detailed information about the row contents.</p>
     <p>Select a row to open user details.</p>
     <code-example source>
-      <div>
-        <vaadin-grid demo hidden>
-          <table>
-            <colgroup>
-              <col name="user.name.first">
-              <col name="user.name.last">
-              <col name="user.email" flex>
-            </colgroup>
-          </table>
-        </vaadin-grid>
 
-        <div id="templatewrapper" style="display: none;">
-          <template is="dom-bind">
-            <style>.userdata {-webkit-flex: 1; flex: 1; max-height: 20px;}
-            .usercolumn { display: -webkit-flex; display: flex; -webkit-flex-direction: column; flex-direction: column; }</style>
-            <div class="userdetails" style="display: -webkit-flex; display: flex; height: 170px;">
-              <img src="{{user.picture.large}}" style="height: 100px; width: 100px;" />
-              <div class="usercolumn">
-                <small>Name</small>
-                <div class="userdata">{{user.name.first}}</div>
-                <small>Surname</small>
-                <div class="userdata">{{user.name.last}}</div>
-                <small>Title</small>
-                <div class="userdata">Designer</div>
-                <small>Hire date</small>
-                <div class="userdata">10th August 2015</div>
-              </div>
-              <div class="usercolumn">
-                <small>City</small>
-                <div class="userdata">{{user.location.city}}</div>
-                <small>Street</small>
-                <div class="userdata">{{user.location.street}}</div>
-                <small>Phone</small>
-                <div class="userdata">{{user.phone}}</div>
-                <div style="display: -webkit-flex; display: flex;">
-                  <button class="demo-button">MESSAGE</BUTTON>
-                  <button class="demo-button whitebutton">EDIT</BUTTON>
-                </div>
+      <vaadin-grid demo hidden>
+        <table>
+          <colgroup>
+            <col name="user.name.first">
+            <col name="user.name.last">
+            <col name="user.email" flex>
+          </colgroup>
+        </table>
+      </vaadin-grid>
+
+      <div id="templatewrapper" style="display: none;">
+        <template is="dom-bind">
+          <style>.userdata {-webkit-flex: 1; flex: 1; max-height: 20px;}
+          .usercolumn { display: -webkit-flex; display: flex; -webkit-flex-direction: column; flex-direction: column; }</style>
+          <div class="userdetails" style="display: -webkit-flex; display: flex; height: 170px;">
+            <img src="{{user.picture.large}}" style="height: 100px; width: 100px;" />
+            <div class="usercolumn">
+              <small>Name</small>
+              <div class="userdata">{{user.name.first}}</div>
+              <small>Surname</small>
+              <div class="userdata">{{user.name.last}}</div>
+              <small>Title</small>
+              <div class="userdata">Designer</div>
+              <small>Hire date</small>
+              <div class="userdata">10th August 2015</div>
+            </div>
+            <div class="usercolumn">
+              <small>City</small>
+              <div class="userdata">{{user.location.city}}</div>
+              <small>Street</small>
+              <div class="userdata">{{user.location.street}}</div>
+              <small>Phone</small>
+              <div class="userdata">{{user.phone}}</div>
+              <div style="display: -webkit-flex; display: flex;">
+                <button class="demo-button">MESSAGE</BUTTON>
+                <button class="demo-button whitebutton">EDIT</BUTTON>
               </div>
             </div>
-          </template>
-        </div>
-
+          </div>
+        </template>
       </div>
+
       <code hidden demo-var="grid">
         var templateWrapper = document.getElementById('templatewrapper');
         var template = templateWrapper.querySelector('template');
