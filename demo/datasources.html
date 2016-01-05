@@ -335,7 +335,7 @@ layout: page
                     // Requested for the final batch of data, increase the size
                     size += 10;
                   }
-                  callback(json.results, size);
+                  callback(json.results.slice(0, params.count), size);
                   // Update footer label
                   grid.footer.getCell(0, 0).content = 'Current size: ' + size;
                 }
