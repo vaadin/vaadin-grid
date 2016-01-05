@@ -44,7 +44,7 @@ layout: page
           var UserGrid = React.createClass({
             render: function(){
               return (
-                <vaadin-grid />
+                <vaadin-grid></vaadin-grid>
               )
             },
 
@@ -63,7 +63,7 @@ layout: page
                   vGrid.addEventListener("selected-items-changed", _this.onRowSelect);
 
                   var pictureRenderer = function(cell) {
-                    cell.element.innerHTML = "<img style='width: 30px' src='" + cell.data + "' />";
+                    cell.element.innerHTML = "<img style='width: 30px' src='" + cell.data + "'></img>";
                   };
 
                   // Define columns
@@ -107,12 +107,12 @@ layout: page
             render: function() {
               var userImage;
               if (this.state.selected) {
-                userImage = <img className="user-image" src={this.state.selected.picture.large} />;
+                userImage = <img className="user-image" src={this.state.selected.picture.large} ></img>;
               }
 
               return (
                 <div>
-                  <UserGrid onUserSelect={this.userSelect} />
+                  <UserGrid onUserSelect={this.userSelect}></UserGrid>
                   {userImage}
                 </div>
               );
@@ -128,7 +128,7 @@ layout: page
           });
 
           HTMLImports.whenReady(function(){
-              React.render(<UserApp />, document.getElementById('reactdemo'));
+              React.render(<UserApp></UserApp>, document.getElementById('reactdemo'));
           });
 
         </script>
