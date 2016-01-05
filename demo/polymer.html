@@ -70,9 +70,10 @@ layout: page
         </template>
       </div>
       <code demo-var="template">
-        HTMLImports.whenReady(function() {
+        var template = template || document.querySelector('template.my-grid-with-template');
+
+        template.addEventListener('dom-change', function() {
           // code
-          var template = template || document.querySelector('template.my-grid-with-template');
           var grid = document.querySelector('#my-grid-with-template');
 
           template.onSelect = function() {
@@ -139,12 +140,15 @@ layout: page
         </template>
       </div>
       <code demo-var="template">
-        HTMLImports.whenReady(function() {
-          // code
-          var template = template || document.querySelector('template.my-grid-with-ds');
-          template.render();
+        // code
+        var template = template || document.querySelector('template.my-grid-with-ds');
 
+        template.addEventListener('dom-change', function() {
           var grid = document.querySelector('#my-grid-with-ds');
+
+          grid.columns[0].renderer = function(cell) {
+            cell.element.innerHTML = '&lt;img style="width: 30px" src="' + cell.data + '" /&gt;';
+          };
 
           template.onSelect = function() {
             if (grid.selection.selected().length === 0) {
@@ -172,21 +176,14 @@ layout: page
             xhr.send();
           };
 
-          template.onSelect = function() {
-            if (grid.selection.selected().length === 0) {
-              template.selected = null;
-            } else {
-              grid.getItem([grid.selection.selected()], function(err, item) {
-                template.selected = item;
-              });
-            }
-          };
-
-          grid.columns[0].renderer = function(cell) {
-            cell.element.innerHTML = '&lt;img style="width: 30px" src="' + cell.data + '" /&gt;';
-          };
-          // end-code
         });
+
+        // end-code
+
+        if (template.render) {
+          // This is needed to make the template render on Chrome in vaadin-doc portlet
+          template.render();
+        }
       </code>
     </code-example>
   </section>
