@@ -504,10 +504,10 @@
       grid.then(function() {
         grid.columns[0].width = 100;
 
-        Polymer.Base.async(function() {
+        grid.then(function() {
           expect(qLocal('.vaadin-grid-cell').offsetWidth).to.eql(100);
           done();
-        }, 1);
+        });
       });
     });
 
@@ -516,10 +516,10 @@
         grid.columns[0].width = 100;
         grid.columns[0].minWidth = 150;
 
-        Polymer.Base.async(function() {
+        grid.then(function() {
           expect(qLocal('.vaadin-grid-cell').offsetWidth).to.eql(150);
           done();
-        }, 1);
+        });
       });
     });
 
@@ -527,10 +527,10 @@
       grid.then(function() {
         grid.columns[0].maxWidth = 100;
 
-        Polymer.Base.async(function() {
+        grid.then(function() {
           expect(qLocal('.vaadin-grid-cell').offsetWidth).to.eql(100);
           done();
-        }, 1);
+        });
       });
     });
 
