@@ -97,6 +97,11 @@ layout: page
 
           // end-code
         });
+
+        if (template.render) {
+          // This is needed to make the template render on Chrome in vaadin-doc portlet
+          template.render();
+        }
       </code>
     </code-example>-->
     <script>
@@ -134,7 +139,7 @@ layout: page
           </vaadin-grid>
           <template is="dom-if" if="{{selected}}">
             <div class="user-image">
-              <img src="{{selected.user.picture.large}}">
+              <img src="{{selected.user.picture.large}}"></img>
             </div>
           </template>
         </template>
