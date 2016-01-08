@@ -6,6 +6,19 @@ This program is available under Apache License Version 2.0, available at https:/
 
 <link rel='import' href='../polymer/polymer.html'>
 <script src="vaadin-grid.min.js"></script>
+<script>
+if (!window.vaadin) {
+  // Include GWT superdevmode workaround only if in development mode
+  var xhr = new XMLHttpRequest();
+  // Needs to be loaded/run synchronously
+  xhr.open('GET', '../sdm.js', false);
+  xhr.send('');
+  var script = document.createElement('script');
+  script.text = xhr.responseText;
+  document.getElementsByTagName('head')[0].appendChild(script);
+}
+</script>
+
 
 <style>
   vaadin-grid > table {
@@ -674,40 +687,6 @@ See the [demo](demo/index.html) for use case examples.
 </dom-module>
 
 <script>
-  function gridLoaded() {
-    return window.vaadin && vaadin.elements && vaadin.elements.grid && vaadin.elements.grid.GridElement;
-  }
-  if (!gridLoaded()) {
-    // This is needed when vaadin-grid.min.js is loaded asynchronously like
-    // in SDM. We must guarantee that gwt grid is loaded and exported before
-    // Polymer is called.
-    var _Polymer = Polymer;
-    // Override Polymer
-    Polymer = function(obj) {
-      // Restore Polymer
-      Polymer = _Polymer;
-      var _done = false;
-      // Overwrite whenReady
-      var _whenReady = HTMLImports.whenReady;
-      HTMLImports.whenReady = function(done) {
-        var id = setInterval(function() {
-          if (gridLoaded()) {
-            clearInterval(id);
-            if (!_done) {
-              // Run original Polymer
-              _Polymer(obj);
-              _done = true;
-            }
-            // Restore whenReady
-            HTMLImports.whenReady = _whenReady;
-            // Run original whenReady
-            _whenReady(done);
-          }
-        }, 3);
-      };
-    };
-  }
-
   Polymer({
 
     is: 'vaadin-grid',
