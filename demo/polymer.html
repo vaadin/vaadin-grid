@@ -84,17 +84,9 @@ layout: page
             }
           };
 
-          var xhr = new XMLHttpRequest();
-          xhr.onreadystatechange = function() {
-            if (xhr.readyState == XMLHttpRequest.DONE) {
-              if (xhr.status == 200) {
-                template.users = JSON.parse(xhr.responseText).results;
-              }
-            }
-          };
-          xhr.open('GET', randomUserUrl + '?results=25', true);
-          xhr.send();
-
+          getJSON('https://randomuser.me/api?results=25', function(data) {
+            template.users = data.results;
+          });
           // end-code
         });
 
@@ -167,18 +159,10 @@ layout: page
 
           template.size = 100;
           template.items = function(params, callback) {
-            var xhr = new XMLHttpRequest();
-
-            xhr.onreadystatechange = function() {
-              if (xhr.readyState == XMLHttpRequest.DONE) {
-                if (xhr.status == 200) {
-                  callback(JSON.parse(xhr.responseText).results);
-                }
-              }
-            };
-
-            xhr.open('GET', randomUserUrl + '?results=' + Math.max(params.count, 1), true);
-            xhr.send();
+            var url = 'https://randomuser.me/api?index=' + params.index + '&results=' + params.count;
+            getJSON(url, function(data) {
+              callback(data.results);
+            });
           };
 
         });

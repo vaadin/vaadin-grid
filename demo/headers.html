@@ -444,22 +444,15 @@ layout: page
         var grid = grid || document.querySelector('vaadin-grid');
 
         function loadData(page, count) {
-
           // Fetch the JSON data from a URL
-          var xhr = new XMLHttpRequest();
-          xhr.onreadystatechange = function() {
-            if (xhr.readyState == XMLHttpRequest.DONE) {
-              if (xhr.status == 200) {
-                var json = JSON.parse(xhr.responseText);
-                json.results.forEach(function(row, index) {
-                  row.index = (page - 1) * count + index + 1;
-                });
-                grid.items = json.results;
-              }
-            }
-          };
-          xhr.open('GET', randomUserUrl + '?results=' + count, true);
-          xhr.send();
+          var index = (page - 1) * count;
+          var request = 'https://randomuser.me/api?index=' + index + '&results=' + count;
+          getJSON(request, function(data) {
+            data.results.forEach(function(item, i) {
+              item.index = index + i + 1;
+            });
+            grid.items = result.results;
+          });
         }
 
         HTMLImports.whenReady(function() {
