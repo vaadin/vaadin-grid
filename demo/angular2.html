@@ -70,9 +70,9 @@ layout: page
         })
         export class AngularGridDom {
           users = [
-              {"firstname":"raul","lastname":"diez","thumbnail":randomUserUrl + "portraits/thumb/men/39.jpg"},
-              {"firstname":"sonia","lastname":"benitez","thumbnail":randomUserUrl + "portraits/thumb/women/91.jpg"},
-              {"firstname":"luis","lastname":"torres","thumbnail":randomUserUrl + "portraits/thumb/men/11.jpg"},
+              {"firstname":"raul","lastname":"diez","thumbnail":"https://randomuser.me/api/portraits/thumb/men/39.jpg"},
+              {"firstname":"sonia","lastname":"benitez","thumbnail":"https://randomuser.me/api/portraits/thumb/women/91.jpg"},
+              {"firstname":"luis","lastname":"torres","thumbnail":"https://randomuser.me/api/portraits/thumb/men/11.jpg"},
           ]
         }
 
@@ -168,7 +168,7 @@ layout: page
           }
 
           getUrl(gender: string, results: number) : string {
-            return randomUserUrl + '?nat=us&gender=' + gender + '&results=' + results;
+            return https://randomuser.me/api?nat=us&gender=' + gender + '&results=' + results;
           }
 
           onSelect() {

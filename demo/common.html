@@ -3,14 +3,21 @@
 <script src="../../elements-demo-resources/ga.js"></script>
 
 <script>
-  window.randomUserUrl = 'https://randomuser.me/api/';
-  window.localUserUrl = 'users.json';
-  var bowerComponents = '../../';
-
   window.xCodeExampleSourceHead =
   '  <script src="https://cdn.vaadin.com/vaadin-elements/latest/webcomponentsjs/webcomponents-lite.js"><\/script>\n' +
   '  <link href="https://cdn.vaadin.com/vaadin-elements/latest/vaadin-grid/vaadin-grid.html" rel="import">\n' +
-  '  <script>var randomUserUrl = "' + randomUserUrl + '";<\/script>\n';
+  '  <script>\n' +
+  '  function getJSON(url, callback) {\n' +
+  '    var xhr = new XMLHttpRequest();\n' +
+  '    xhr.onreadystatechange = function() {\n' +
+  '      if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {\n' +
+  '        callback(JSON.parse(xhr.responseText));\n' +
+  '      }\n' +
+  '    };\n' +
+  '    xhr.open(\'GET\', url, true);\n' +
+  '    xhr.send();\n' +
+  '  }\n' +
+  '  <\/script>\n';
 
   function createButton(text, fnc) {
     var button = document.createElement('button');
@@ -22,6 +29,7 @@
   if (!window.Polymer) {
     var link = document.querySelector('link[href$="common.html"]');
     var baseCommon = link.href.replace(/common.html/, '');
+    var bowerComponents = '../../';
     var base = baseCommon + bowerComponents;
     // Delay all HTMLImports.whenReady calls until polymer and
     // grid are ready.
@@ -47,15 +55,11 @@
     pol.rel = 'import';
     pol.href = base + 'polymer/polymer.html';
     pol.onload = function() {
-      // Set base url for xhrpatch
-      window.localUserUrl = baseCommon + 'users.json';
       Polymer.Base.importHref(base + 'code-example/code-example.html');
       Polymer.Base.importHref(base + 'table-of-contents/table-of-contents.html');
       Polymer.Base.importHref(base + 'vaadin-grid/vaadin-grid.html');
+      Polymer.Base.importHref(base + 'elements-demo-resources/getjson.html');
     };
     document.head.appendChild(pol);
   }
 </script>
-
-<!-- load xhr hack after random and user urls have been defined -->
-<script src="xhrpatch.js"></script>
