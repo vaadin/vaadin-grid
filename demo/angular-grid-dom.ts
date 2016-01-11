@@ -34,9 +34,9 @@ import {bootstrap, Component, View, NgFor} from 'angular2/angular2';
 
 class AngularGridDom {
   users = [
-      {"firstname":"raul","lastname":"diez","thumbnail":randomUserUrl + "portraits/thumb/men/39.jpg"},
-      {"firstname":"sonia","lastname":"benitez","thumbnail":randomUserUrl + "portraits/thumb/women/91.jpg"},
-      {"firstname":"luis","lastname":"torres","thumbnail":randomUserUrl + "portraits/thumb/men/11.jpg"},
+      {"firstname":"raul","lastname":"diez","thumbnail":"https://randomuser.me/api/portraits/thumb/men/39.jpg"},
+      {"firstname":"sonia","lastname":"benitez","thumbnail":"https://randomuser.me/api/portraits/thumb/women/91.jpg"},
+      {"firstname":"luis","lastname":"torres","thumbnail":"https://randomuser.me/api/portraits/thumb/men/11.jpg"},
   ]
 }
 

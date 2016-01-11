@@ -117,19 +117,10 @@ layout: page
         HTMLImports.whenReady(function() {
           grid.size = 1000;
           grid.items = function(params, callback) {
-            // Fetch the JSON data from a URL
-            var xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function() {
-              if (xhr.readyState == XMLHttpRequest.DONE) {
-                if (xhr.status == 200) {
-                  var json = JSON.parse(xhr.responseText);
-                  callback(json.results);
-                }
-              }
-            };
-            var rowsNeeded = params.count > 0 ? params.count : 10;
-            xhr.open('GET', randomUserUrl + '?results=' + rowsNeeded, true);
-            xhr.send();
+            var url = 'https://randomuser.me/api?index=' + params.index + '&results=' + params.count;
+            getJSON(url, function(data) {
+              callback(data.results);
+            });
           };
 
           // code

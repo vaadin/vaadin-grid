@@ -325,25 +325,17 @@ layout: page
           // code
           grid.items = function(params, callback) {
             // Fetch the JSON data from a URL
-            var xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function() {
-              if (xhr.readyState == XMLHttpRequest.DONE) {
-                if (xhr.status == 200) {
-                  var json = JSON.parse(xhr.responseText);
-                  var size = grid.size;
-                  if (params.index + params.count == size) {
-                    // Requested for the final batch of data, increase the size
-                    size += 10;
-                  }
-                  callback(json.results.slice(0, params.count), size);
-                  // Update footer label
-                  grid.footer.getCell(0, 0).content = 'Current size: ' + size;
-                }
+            var url = 'https://randomuser.me/api?index=' + params.index + '&results=' + params.count;
+            getJSON(url, function(data) {
+              var size = grid.size;
+              if (params.index + params.count == size) {
+                // Requested for the final batch of data, increase the size
+                size += 10;
               }
-            };
-            var rowsNeeded = Math.max(params.count, 1);
-            xhr.open('GET', randomUserUrl + '?results=' + rowsNeeded, true);
-            xhr.send();
+              callback(data.results, size);
+              // Update footer label
+              grid.footer.getCell(0, 0).content = 'Current size: ' + size;
+            });
           };
           // end-code
         });
@@ -383,19 +375,10 @@ layout: page
         HTMLImports.whenReady(function() {
           // code
           grid.items = function(params, callback) {
-            // Fetch the JSON data from a URL
-            var xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function() {
-              if (xhr.readyState == XMLHttpRequest.DONE) {
-                if (xhr.status == 200) {
-                  var json = JSON.parse(xhr.responseText);
-                  callback(json.results);
-                }
-              }
-            };
-            var rowsNeeded = Math.max(params.count, 1);
-            xhr.open('GET', randomUserUrl + '?results=' + rowsNeeded, true);
-            xhr.send();
+            var url = 'https://randomuser.me/api?index=' + params.index + '&results=' + params.count;
+            getJSON(url, function(data) {
+              callback(data.results);
+            });
           };
 
           // Add a renderer for the index column
