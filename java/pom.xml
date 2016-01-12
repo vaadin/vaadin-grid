@@ -291,7 +291,6 @@
                 <resource>
                   <directory>../</directory>
                   <includes>
-                    <include>sdm.js</include>
                     <include>vaadin-grid.html</include>
                     <include>vaadin-grid-doc.html</include>
                     <include>img/**/*</include>
