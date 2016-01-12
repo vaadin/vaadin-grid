@@ -6,19 +6,6 @@ This program is available under Apache License Version 2.0, available at https:/
 
 <link rel='import' href='../polymer/polymer.html'>
 <script src="vaadin-grid.min.js"></script>
-<script>
-if (!window.vaadin) {
-  // Include GWT superdevmode workaround only if in development mode
-  var xhr = new XMLHttpRequest();
-  // Needs to be loaded/run synchronously
-  xhr.open('GET', '../sdm.js', false);
-  xhr.send('');
-  var script = document.createElement('script');
-  script.text = xhr.responseText;
-  document.getElementsByTagName('head')[0].appendChild(script);
-}
-</script>
-
 
 <style>
   vaadin-grid > table {
