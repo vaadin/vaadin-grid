@@ -230,11 +230,11 @@ See the [demo](demo/index.html) for use case examples.
       width: 100%;
   }
 
-  .vaadin-grid-body td {
+  .vaadin-grid-body td, :host .vaadin-grid-spacer > td {
     opacity: 0;
   }
 
-  .vaadin-grid-row-has-data td {
+  .vaadin-grid-row-has-data td, :host .vaadin-grid-spacer > td {
     border-bottom: 1px solid #e3e3e3;
     opacity: 1;
   }
