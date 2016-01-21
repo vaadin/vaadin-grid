@@ -5,9 +5,9 @@
 
 # vaadin-grid
 
-`vaadin-grid` is a Web Component for showing large amounts of tabular data, part of the [vaadin-core-elements](https://github.com/vaadin/vaadin-core-elements) element bundle.
+[`&lt;vaadin-grid&gt;`](https://vaadin.com/elements/-/element/vaadin-grid) is a Web Component for showing large amounts of tabular data, part of the [vaadin-core-elements](https://vaadin.com/elements) element bundle.
 
-<img src="https://github.com/vaadin/vaadin-grid/raw/master/screenshot.png" width="481" alt="Screenshot of vaadin-grid" />
+[<img src="https://github.com/vaadin/vaadin-grid/raw/master/screenshot.png" width="481" alt="Screenshot of vaadin-grid" />](https://vaadin.com/elements/-/element/vaadin-grid)
 
 **Features:**
  - Lazy-loading
@@ -20,24 +20,7 @@
  - Sorting
  - Accessibility
  - Declarative and imperative APIs
-
-## Getting started
-
- - [Demos](https://vaadin.com/docs/-/part/elements/vaadin-grid/overview.html)
- - [Getting started instructions](https://vaadin.com/docs/-/part/elements/vaadin-grid/overview.html#getting_started)
-
-## Overview of this repository
-
-- **demo**:
-  A set of examples using the element
-
-- **test**:
-  Unit and visual tests
-
-- **java**:
-  The internal GWT implementation of the element
-  exported to JavaScript which is used by the Polymer-based implementation.
-
+ - [Learn more](https://vaadin.com/elements/-/element/vaadin-grid)
 
 ## Developing
 
