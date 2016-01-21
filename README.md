@@ -5,7 +5,7 @@
 
 # vaadin-grid
 
-[`&lt;vaadin-grid&gt;`](https://vaadin.com/elements/-/element/vaadin-grid) is a Web Component for showing large amounts of tabular data, part of the [vaadin-core-elements](https://vaadin.com/elements) element bundle.
+[`<vaadin-grid>`](https://vaadin.com/elements/-/element/vaadin-grid) is a Web Component for showing large amounts of tabular data, part of the [vaadin-core-elements](https://vaadin.com/elements) element bundle.
 
 [<img src="https://github.com/vaadin/vaadin-grid/raw/master/screenshot.png" width="481" alt="Screenshot of vaadin-grid" />](https://vaadin.com/elements/-/element/vaadin-grid)
 
