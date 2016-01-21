@@ -23,8 +23,8 @@
 
 ## Getting started
 
- - [Demos](https://cdn.vaadin.com/vaadin-core-elements/latest/vaadin-grid/demo/)
- - [Getting started instructions](https://cdn.vaadin.com/vaadin-core-elements/latest/vaadin-core-elements/demo/)
+ - [Demos](https://vaadin.com/docs/-/part/elements/vaadin-grid/overview.html)
+ - [Getting started instructions](https://vaadin.com/docs/-/part/elements/vaadin-grid/overview.html#getting_started)
 
 ## Overview of this repository
 
