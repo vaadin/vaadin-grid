@@ -1,0 +1,46 @@
+---
+title: Selection
+order: 2
+layout: page
+---
+
+[[vaadin-grid.selection]]
+= Selection
+
+Vaadin Grid allows index based selection of data rows either through UI interaction or using the JavaScript API.
+The selection behavior depends on the currently selected selection mode.
+
+== Selection Mode
+
+Vaadin Grid has four separate selection modes.
+Defining the selection mode can be done using the `selection-mode` attribute or the `selection.mode` property of the JavaScript API.
+
+* *Single* (`single`) is the default selection mode. It allows only one row to be selected at once.
+* *Multi* (`multi`) selection mode reveals an additional checkbox column allowing the user to select multiple rows.
+* *All* (`all`) selection mode has each row selected by default allowing the user to deselect individual rows using an additional checkbox column.
+* *Disabled* (`disabled`) disables the selection functionality.
+
+The selection mode can also be changed by some operations on the selection API.
+Also if the user selects all items in `multi` selection mode, the mode will change to `all`.
+
+To get notified of changes in the selection mode, you can listen to an event named `selection-mode-changed`.
+
+== Selection API
+
+This chapter explains the basic operations available through the selection API.
+
+`selection.select(index)`::
+  Selects the row with the given index. If the selection mode is `single`, this operation will remove the previous selection.
+
+`selection.deselect(index)`::
+  Deselects the row with the given index.
+
+`selection.selectAll()`::
+  Selects all rows and changes the selection mode to `all`.
+
+`selection.clear()`::
+  Deselects all selected rows. If the selection mode is `all`, this operation will change the selection mode to `multi`.
+
+== Accessing the Selected Rows
+
+The selected rows can be accessed as an array of selected indexes or using an iterator function to loop through the selection.
