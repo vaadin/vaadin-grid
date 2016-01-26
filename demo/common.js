@@ -14,46 +14,43 @@ window.xCodeExampleSourceHead =
 '  }\n' +
 '  <\/script>\n';
 
-function createButton(text, fnc) {
-  var button = document.createElement('button');
-  button.innerHTML = text;
-  button.addEventListener('click', fnc);
-  return button;
-}
+var link = document.querySelector('link[href$="common.html"]');
+var baseCommon = link.href.replace(/common.html/, '');
+var bowerComponents = '../../';
+var base = baseCommon + bowerComponents;
 
-if (!window.Polymer) {
-  var link = document.querySelector('link[href$="common.html"]');
-  var baseCommon = link.href.replace(/common.html/, '');
-  var bowerComponents = '../../';
-  var base = baseCommon + bowerComponents;
-  // Delay all HTMLImports.whenReady calls until polymer and
-  // grid are ready.
-  var _whenReady = HTMLImports.whenReady;
-  HTMLImports.whenReady = function(done) {
-    var id = setInterval(function() {
-      if (window.Polymer && window.vaadin && vaadin.elements &&
-            vaadin.elements.grid && vaadin.elements.grid.GridElement) {
-        clearInterval(id);
-        // Restore whenReady
-        HTMLImports.whenReady = _whenReady;
-        // Run original whenReady
-        _whenReady(done);
-        _whenReady(function() {
-          // For some reason this is not removed in polyfilled browsers
-          document.body.removeAttribute('unresolved');
-        });
-      }
-    }, 3);
-  };
+var dependencies = ['polymer/polymer.html',
+  'code-example/code-example.html',
+  'table-of-contents/table-of-contents.html',
+  'elements-demo-resources/getjson.html',
+  'vaadin-grid/vaadin-grid.html'
+];
 
-  var pol = document.createElement('link');
-  pol.rel = 'import';
-  pol.href = base + 'polymer/polymer.html';
-  pol.onload = function() {
-    Polymer.Base.importHref(base + 'code-example/code-example.html');
-    Polymer.Base.importHref(base + 'table-of-contents/table-of-contents.html');
-    Polymer.Base.importHref(base + 'vaadin-grid/vaadin-grid.html');
-    Polymer.Base.importHref(base + 'elements-demo-resources/getjson.html');
-  };
-  document.head.appendChild(pol);
-}
+dependencies.forEach(function(path) {
+  if (!document.querySelector('link[href$="' + path + '"]')) {
+    var link = document.createElement('link');
+    link.rel = 'import';
+    link.href = base + path;
+    document.head.appendChild(link);
+  }
+});
+
+// Delay all HTMLImports.whenReady calls until polymer and
+// grid are ready.
+var _whenReady = HTMLImports.whenReady;
+HTMLImports.whenReady = function(done) {
+  var id = setInterval(function() {
+    if (window.Polymer && window.vaadin && vaadin.elements &&
+          vaadin.elements.grid && vaadin.elements.grid.GridElement) {
+      clearInterval(id);
+      // Restore whenReady
+      HTMLImports.whenReady = _whenReady;
+      // Run original whenReady
+      _whenReady(done);
+      _whenReady(function() {
+        // For some reason this is not removed in polyfilled browsers
+        document.body.removeAttribute('unresolved');
+      });
+    }
+  }, 3);
+};
