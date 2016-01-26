@@ -158,6 +158,7 @@
         mydata.splice(0, 1);
         mydata[0].splice(0, 1);
         grid.refreshItems();
+        grid.size = mydata.length;
 
         grid.columns.splice(0, 1);
         grid.then(function() {
