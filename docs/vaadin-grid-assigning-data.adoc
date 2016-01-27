@@ -1,0 +1,155 @@
+---
+title: Assigning Data
+order: 1
+layout: page
+---
+
+[[vaadin.grid.assigning.data.overview]]
+= Overview
+
+In this chapter, we'll show you how to get started with assigning data to your `<vaadin-grid>`.
+
+We'll go through the basics of using HTML and JSON Objects to generate a grid that looks like the one below.
+
+image:img/vaadin-grid-assigning-data.png[]
+
+For more advanced data assignment topics, see <<vaadin.grid.lazy.loading, "Lazy Loading and Remote Data">>.
+
+[[vaadin.grid.assigning.data.html]]
+= Using Data from a HTML Table
+
+Easiest way to assign data into `<vaadin-grid>` is to use a HTML table.
+
+To get started, you can take any existing `<table>` element and place it inside the
+`<vaadin-grid>` element.
+
+Then, you need to define the number of columns displayed by inserting `<col>` elements inside the `<table>` element. You can wrap them inside
+a `<colgroup>` element like done in the example below, but that's optional.
+
+[source,html]
+----
+<vaadin-grid>
+  <table>
+    <colgroup>
+      <col>
+      <col>
+    </colgroup>
+    <thead>
+      <tr>
+        <th>Project Name</th>
+        <th>Estimate</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Project A</td>
+        <td>10000</td>
+      </tr>
+      <tr>
+        <td>Project B</td>
+        <td>20000</td>
+      </tr>
+      <tr>
+        <td>Project C</td>
+        <td>15000</td>
+      </tr>
+    </tbody>
+  </table>
+</vaadin-grid>
+----
+
+[[vaadin.grid.assigning.json.data.object]]
+= Using Object Values
+
+When using dynamic data, you can provide an array of objects to `<vaadin-grid>`.
+
+First, you need to define which columns will be displayed. +
+You can do this using the `<col>`
+elements, like in the example below.
+
+[source,html]
+----
+<vaadin-grid>
+  <table>
+    <colgroup>
+      <col name="projectName">
+      <col name="cost.estimate">
+    </colgroup>
+  </table>
+</vaadin-grid>
+----
+
+Optionally, you can dismiss the whole `<table>` element configure the columns using the javascript API, as described in <<vaadin.grid.configuring.columns, "Configuring Columns">>.
+
+[source,javascript]
+----
+grid.columns = [ {name: 'projectName'},
+                 {name: 'cost.estimate'} ];
+----
+
+The `name` attribute defines which property from the data items are displayed in each column.
+
+If you do not provide a `<thead>` element for the header, headers will be automatically generated
+from the `name` attributes, as described in <<vaadin.grid.customizing.headers, "Customizing Headers and Footers">>.
+
+After you have configured the columns, you can go ahead and assign the data array.
+
+[source,javascript]
+----
+grid.items = [ { projectName: "Project A", cost: {estimate: 10000, current: 8000 } },
+             { projectName: "Project B", cost: {estimate: 20000, current: 11000 } },
+             { projectName: "Project C", cost: {estimate: 15000, current: 1000 } } ];
+----
+
+ifdef::web[]
+====
+See link:https://cdn.vaadin.com/vaadin-elements/latest/vaadin-grid/demo/datasources.html[live example].
+====
+endif::web[]
+
+[[vaadin.grid.assigning.json.data.primitive]]
+= Using Primitive Values
+
+When your data consist of primitive values, columns are mapped indexes instead of `name` property.
+
+First, you need to define a column by a `<col>` element without
+a `name` attribute, like in the example below, or by using the javascript API, as described in <<vaadin.grid.configuring.columns, "Configuring Columns">>.
+
+Note: The header auto generation does not apply here because we're missing the `name` property, so you *have* to define a `<thead>` element also.
+
+[source,html]
+----
+<vaadin-grid>
+  <table>
+    <colgroup>
+      <col>
+    </colgroup>
+    <thead>
+      <tr>
+        <th>Project Name</th>
+      </tr>
+    </thead>
+  </table>
+</vaadin-grid>
+----
+
+After you have configured the columns, you can go ahead and assign the data.
+
+[source,javascript]
+----
+grid.items = ['Project A', 'Project B', 'Project C', 'Project D', ...]
+----
+
+In case you need more columns than one, add another `<col>` and `<th>` elements and provide the data
+using nested arrays.
+
+[source, javascript]
+----
+grid.items = [['Project A', 'New York'], ['Project B', 'Chicago'], ['Project C', 'Gotham'], ...]
+----
+
+ifdef::web[]
+====
+See link:https://cdn.vaadin.com/vaadin-elements/master/vaadin-grid/demo/datasources.html[live example].
+====
+endif::web[]
