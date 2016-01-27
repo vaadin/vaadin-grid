@@ -86,29 +86,6 @@
       flex: Number,
 
       /**
-       * Content of the column in the default header row (a column can have
-       * multiple headers). Can be a String or a reference to an HTML element.
-       *
-       * Defaults to the column name property.
-       *
-       * #### JavaScript example:
-       * ```js
-       * // Set to a string value
-       * grid.columns[0].headerContent = "First Name";
-       *
-       * // Set to an HTML element
-       * grid.columns[0].headerContent = document.createElement("input");
-       * ```
-       * #### Declarative example:
-       * ```html
-       * <!-- The declarative API supports string values only -->
-       * <col header-text="First Name">
-       * ```
-       * @type {(Object|string)}
-       */
-      headerContent: Object,
-
-      /**
        * Set whether it is possible for the user to hide this column or not.
        *
        * #### JavaScript example:
