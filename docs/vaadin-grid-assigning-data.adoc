@@ -58,10 +58,10 @@ a `<colgroup>` element like done in the example below, but that's optional.
 </vaadin-grid>
 ----
 
-[[vaadin.grid.assigning.json.data.object]]
+[[vaadin.grid.assigning.data.object]]
 = Using Object Values
 
-When using dynamic data, you can provide an array of objects to `<vaadin-grid>`.
+When using objects as data, you can provide the array of objects to `<vaadin-grid>`.
 
 First, you need to define which columns will be displayed. +
 You can do this using the `<col>`
@@ -107,7 +107,7 @@ See link:https://cdn.vaadin.com/vaadin-elements/latest/vaadin-grid/demo/datasour
 ====
 endif::web[]
 
-[[vaadin.grid.assigning.json.data.primitive]]
+[[vaadin.grid.assigning.data.primitive]]
 = Using Primitive Values
 
 When your data consist of primitive values, columns are mapped indexes instead of `name` property.
@@ -143,9 +143,41 @@ grid.items = ['Project A', 'Project B', 'Project C', 'Project D', ...]
 In case you need more columns than one, add another `<col>` and `<th>` elements and provide the data
 using nested arrays.
 
-[source, javascript]
+[source,javascript]
 ----
 grid.items = [['Project A', 'New York'], ['Project B', 'Chicago'], ['Project C', 'Gotham'], ...]
+----
+
+ifdef::web[]
+====
+See link:https://cdn.vaadin.com/vaadin-elements/master/vaadin-grid/demo/datasources.html[live example].
+====
+endif::web[]
+
+[[vaadin.grid.assigning.data.dynamic]]
+= Using Dynamic Data
+
+When using data that changes dynamically, `<vaadin-grid>` must be notified by the changes.
+
+* `size` property is used to tell `<vaadin-grid>` the size of the active dataset. +
+If you add or remove items, you need to update the size accordingly.
+
+[source,javascript]
+----
+// in this case, grid.items.push(...); would do the same, but using grid.push('items', ...); is preferred.
+grid.push('items', { projectName: 'Project D', cost: { estimate: 30000, cost: 5000}});
+
+// increase the size after pushing a new item.
+grid.size++;
+----
+
+* `refreshItems()` function is used to tell `<vaadin-grid>` to refresh the displayed data. +
+If the contents of the data changes, you need to call `refreshItems()`.
+
+[source,javascript]
+----
+grid.items[0].projectName = 'Project X';
+grid.refreshItems();
 ----
 
 ifdef::web[]
