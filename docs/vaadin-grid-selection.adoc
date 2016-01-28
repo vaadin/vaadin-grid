@@ -10,10 +10,14 @@ layout: page
 Vaadin Grid allows index based selection of data rows either through UI interaction or using the JavaScript API.
 The selection behavior depends on the currently selected selection mode.
 
+[[figure.vaadin-grid.selection.example]]
+.A Grid with four rows selected
+image::img/vaadin-grid-selection.png[]
+
 == Selection Mode
 
 Vaadin Grid has four separate selection modes.
-Defining the selection mode can be done using the `selection-mode` attribute or the `selection.mode` property of the JavaScript API.
+Defining the selection mode can be done using the `selection-mode` attribute or the `grid.selection.mode` property of the JavaScript API.
 
 * *Single* (`single`) is the default selection mode. It allows only one row to be selected at once.
 * *Multi* (`multi`) selection mode reveals an additional checkbox column allowing the user to select multiple rows.
@@ -29,18 +33,24 @@ To get notified of changes in the selection mode, you can listen to an event nam
 
 This chapter explains the basic operations available through the selection API.
 
-`selection.select(index)`::
+`grid.selection.select(index)`::
   Selects the row with the given index. If the selection mode is `single`, this operation will remove the previous selection.
 
-`selection.deselect(index)`::
+`grid.selection.deselect(index)`::
   Deselects the row with the given index.
 
-`selection.selectAll()`::
+`grid.selection.selectAll()`::
   Selects all rows and changes the selection mode to `all`.
 
-`selection.clear()`::
+`grid.selection.clear()`::
   Deselects all selected rows. If the selection mode is `all`, this operation will change the selection mode to `multi`.
 
 == Accessing the Selected Rows
 
-The selected rows can be accessed as an array of selected indexes or using an iterator function to loop through the selection.
+In order to access the selected row indexes, you can call `grid.selection.selected()` method.
+The return value is an array of indexes currently selected.
+
+If your grid has a very large set of items combined with the selection mode `all`, you might want to use the `grid.selection.deselected()` method.
+This method returns the indexes of rows that are *not* selected.
+
+The total number of selected items is always available through `grid.selection.size` property.
