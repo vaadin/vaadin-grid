@@ -50,6 +50,15 @@ This chapter explains the basic operations available through the selection API.
 In order to access the selected row indexes, you can call `grid.selection.selected()` method.
 The return value is an array of indexes currently selected.
 
+[source,javascript]
+----
+// Log the selections to console on select event.
+// Example output: "Selected: 3,5,6"
+grid.addEventListener('selected-items-changed', function() {
+  console.log('Selected: ' + grid.selection.selected());
+});
+----
+
 If your grid has a very large set of items combined with the selection mode `all`, you might want to use the `grid.selection.deselected()` method.
 This method returns the indexes of rows that are *not* selected.
 
