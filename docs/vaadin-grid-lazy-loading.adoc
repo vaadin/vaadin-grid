@@ -10,7 +10,9 @@ layout: page
 In this chapter, you'll learn how to use functions as data sources. That enables you to use
 lazy loading and remote data, like REST APIs.
 
-image:img/vaadin-grid-lazy-loading.png[]
+[[figure.overview]]
+.A <vaadin-grid> displaying data with three columns.
+image::img/vaadin-grid-lazy-loading.png[]
 
 [[functions]]
 = Function Data Source
@@ -25,10 +27,17 @@ data should be returned, and how many items should be returned, respectively.
 
 [source,javascript]
 ----
-var employees = [ { name: 'Teemu', surname: 'Lehtinen', activity: 'Design' },
-                  { name: 'Artur', surname: 'Paul', activity: 'Design' },
-                  { name: 'Teemu', surname: 'Ahlroos', activity: 'Design' },
-                  ... ];
+var employees = [ { user: {
+                      name: { first: 'amber', last: 'crawford' },
+                      email: 'amber.crawford@example.com' },
+                    user: {
+                      name: { first: 'zoe', last: 'caldwell' },
+                      email: 'zoe.caldwell@example.com' },
+                    user: {
+                      name: { first: 'jessie', last: 'brooks' },
+                      email: 'jessie.brooks@example.com' },
+                    ...
+                  } ];
 
 grid.size = employees.length;
 grid.items = function(params, callback) {

@@ -11,7 +11,9 @@ In this chapter, we'll show you how to get started with assigning data to your `
 
 We'll go through the basics of using HTML and JSON Objects to generate a grid that looks like the one below.
 
-image:img/vaadin-grid-assigning-data.png[]
+[[figure.overview]]
+.A <vaadin-grid> displaying data with three columns.
+image::img/vaadin-grid-assigning-data.png[]
 
 For more advanced data assignment topics, see <<vaadin.grid.lazy.loading#overview, "Lazy Loading and Remote Data">>.
 
@@ -36,22 +38,29 @@ a `<colgroup>` element like done in the example below, but that's optional.
     </colgroup>
     <thead>
       <tr>
-        <th>Project Name</th>
-        <th>Estimate</th>
+        <th>First</th>
+        <th>Last</th>
+        <th>Email</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td>Project A</td>
-        <td>10000</td>
+        <td>amber</td>
+        <td>crawford</td>
+        <td>amber.crawford@example.com</td>
       </tr>
       <tr>
-        <td>Project B</td>
-        <td>20000</td>
+        <td>zoe</td>
+        <td>caldwell</td>
+        <td>zoe.caldwell@example.com</td>
       </tr>
       <tr>
-        <td>Project C</td>
-        <td>15000</td>
+        <td>jessie</td>
+        <td>brooks</td>
+        <td>jessie.brooks@example.com</td>
+      </tr>
+      <tr>
+        ...
       </tr>
     </tbody>
   </table>
@@ -72,8 +81,9 @@ elements, like in the example below.
 <vaadin-grid>
   <table>
     <colgroup>
-      <col name="projectName">
-      <col name="cost.estimate">
+      <col name="user.name.first">
+      <col name="user.name.last">
+      <col name="user.email">
     </colgroup>
   </table>
 </vaadin-grid>
@@ -83,8 +93,9 @@ Optionally, you can dismiss the whole `<table>` element configure the columns us
 
 [source,javascript]
 ----
-grid.columns = [ {name: 'projectName'},
-                 {name: 'cost.estimate'} ];
+grid.columns = [ {name: 'user.name.first'},
+                 {name: 'user.name.last'},
+                 {name: 'user.email'} ];
 ----
 
 The `name` attribute defines which property from the data items are displayed in each column.
@@ -96,9 +107,17 @@ After you have configured the columns, you can go ahead and assign the data arra
 
 [source,javascript]
 ----
-grid.items = [ { projectName: "Project A", cost: {estimate: 10000, current: 8000 } },
-             { projectName: "Project B", cost: {estimate: 20000, current: 11000 } },
-             { projectName: "Project C", cost: {estimate: 15000, current: 1000 } } ];
+grid.items = [ { user: {
+                  name: { first: 'amber', last: 'crawford' },
+                  email: 'amber.crawford@example.com' },
+                user: {
+                  name: { first: 'zoe', last: 'caldwell' },
+                  email: 'zoe.caldwell@example.com' },
+                user: {
+                  name: { first: 'jessie', last: 'brooks' },
+                  email: 'jessie.brooks@example.com' },
+                ...
+              } ];
 ----
 
 ifdef::web[]
@@ -126,7 +145,7 @@ Note: The header auto generation does not apply here because we're missing the `
     </colgroup>
     <thead>
       <tr>
-        <th>Project Name</th>
+        <th>First Name</th>
       </tr>
     </thead>
   </table>
@@ -137,7 +156,7 @@ After you have configured the columns, you can go ahead and assign the data.
 
 [source,javascript]
 ----
-grid.items = ['Project A', 'Project B', 'Project C', 'Project D', ...]
+grid.items = ['amber', 'zoe', 'jessie', 'eva', ...]
 ----
 
 In case you need more columns than one, add another `<col>` and `<th>` elements and provide the data
@@ -145,7 +164,7 @@ using nested arrays.
 
 [source,javascript]
 ----
-grid.items = [['Project A', 'New York'], ['Project B', 'Chicago'], ['Project C', 'Gotham'], ...]
+grid.items = [['amber', 'crawford'], ['zoe', 'caldwell'], ['jessie', 'brooks'], ...]
 ----
 
 ifdef::web[]
@@ -168,7 +187,7 @@ Note: When using arrays as data, the `length` of the original item array is set 
 [source,javascript]
 ----
 // in this case, grid.items.push(...); would do the same, but using grid.push('items', ...); is preferred.
-grid.push('items', { projectName: 'Project D', cost: { estimate: 30000, cost: 5000}});
+grid.push('items', { user: { name: { first: 'eva', last: 'burke' }, email: 'eva.burke@example.com' } };
 
 // increase the size after pushing a new item.
 grid.size++;
@@ -179,7 +198,7 @@ If the contents of the data changes, you need to call `refreshItems()`.
 
 [source,javascript]
 ----
-grid.items[0].projectName = 'Project X';
+grid.items[0].email = 'amber.crawford@example.co.uk';
 grid.refreshItems();
 ----
 
