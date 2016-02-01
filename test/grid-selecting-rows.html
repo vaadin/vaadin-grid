@@ -117,7 +117,7 @@
 
             return grid.then(function() {
               expect(getSelectionModeAttr()).to.equal('disabled');
-              expect(qLocal(checkBoxQuery)).to.be.undefined;
+              expect(qLocal(checkBoxQuery)).to.be.null;
             });
           });
 
@@ -126,7 +126,7 @@
 
             return grid.then(function() {
               expect(getSelectionModeAttr()).to.equal('single');
-              expect(qLocal(checkBoxQuery)).to.be.undefined;
+              expect(qLocal(checkBoxQuery)).to.be.null;
             });
           });
 
@@ -135,7 +135,7 @@
 
             return grid.then(function() {
               expect(getSelectionModeAttr()).to.equal('multi');
-              expect(qLocal(checkBoxQuery)).to.not.be.undefined;
+              expect(qLocal(checkBoxQuery)).to.not.be.null;
             });
           });
 
