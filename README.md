@@ -64,4 +64,4 @@ $ gulp gwt:sdm
 
 ## License
 
-`vaadin-grid` is licensed under the Apache License 2.0.
+Apache License 2.0
