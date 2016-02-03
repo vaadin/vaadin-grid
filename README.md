@@ -2,7 +2,7 @@
 
 # &lt;vaadin-grid&gt;
 
-[&lt;vaadin-grid&gt;](https://vaadin.com/elements/-/element/vaadin-grid) is a [Polymer](https://polymer-project.org) element for showing large amounts of tabular data, part of the [Vaadin Core Elements](https://vaadin.com/elements).
+[&lt;vaadin-grid&gt;](https://vaadin.com/elements/-/element/vaadin-grid) is a [Polymer](http://polymer-project.org) element for showing large amounts of tabular data, part of the [Vaadin Core Elements](https://vaadin.com/elements).
 
 [<img src="https://github.com/vaadin/vaadin-grid/raw/master/screenshot.png" width="481" alt="Screenshot of vaadin-grid" />](https://vaadin.com/elements/-/element/vaadin-grid)
 
@@ -18,7 +18,7 @@ See the [development instructions](https://github.com/vaadin/vaadin-core-element
 
 ### &lt;vaadin-grid&gt; specific development instructions
 
-The internal implementation of vaadin-grid (1.0) is written in [GWT](https://gwtproject.org), as it is based on the same implementation which is used in [Vaadin Framework 7](https://vaadin.com/framework).
+The internal implementation of vaadin-grid (1.0) is written in [GWT](http://gwtproject.org), as it is based on the same implementation which is used in [Vaadin Framework 7](https://vaadin.com/framework).
 
 Below are instructions how to work with the GWT/Java code:
 
