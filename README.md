@@ -6,6 +6,8 @@
 
 [<img src="https://github.com/vaadin/vaadin-grid/raw/master/screenshot.png" width="481" alt="Screenshot of vaadin-grid" />](https://vaadin.com/elements/-/element/vaadin-grid)
 
+## Getting started
+
 Visit https://vaadin.com/elements/-/element/vaadin-grid for features, demos and documentation.
 
 ## Contributing
