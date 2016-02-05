@@ -249,6 +249,8 @@
 
           beforeEach(function() {
             return grid.then(function() {
+              document.body.style.margin = 0;
+              document.body.style.padding = 0;
               grid.style.position = 'absolute';
               grid.style.width = '100%';
               grid.style.height = '100%';
@@ -265,6 +267,7 @@
           it('should match dimensions with the surrounding div', function(done) {
             waitUntil(function() {
               return height(grid) === document.body.clientHeight &&
+                document.body.scrollHeight === height(grid) &&
                 Math.abs(document.body.clientWidth - width(grid)) <= 1;
             }, done);
           });
