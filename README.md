@@ -2,7 +2,7 @@
 
 # &lt;vaadin-grid&gt;
 
-[&lt;vaadin-grid&gt;](https://vaadin.com/elements/-/element/vaadin-grid) is a [Polymer](http://polymer-project.org) element for showing large amounts of tabular data, part of the [Vaadin Core Elements](https://vaadin.com/elements).
+[&lt;vaadin-grid&gt;](https://vaadin.com/elements/-/element/vaadin-grid) is a free, high quality data grid / data table [Polymer](http://polymer-project.org) element, part of the [Vaadin Core Elements](https://vaadin.com/elements).
 
 [<img src="https://github.com/vaadin/vaadin-grid/raw/master/screenshot.png" width="481" alt="Screenshot of vaadin-grid" />](https://vaadin.com/elements/-/element/vaadin-grid)
 
