@@ -9,7 +9,12 @@
     "web-components",
     "vaadin",
     "vaadin elements",
-    "grid"
+    "grid",
+    "table",
+    "datagrid",
+    "datatable",
+    "data-grid"
+    "data-table",
   ],
   "main": "vaadin-grid.html",
   "ignore": [
