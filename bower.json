@@ -13,8 +13,8 @@
     "table",
     "datagrid",
     "datatable",
-    "data-grid"
-    "data-table",
+    "data-grid",
+    "data-table"
   ],
   "main": "vaadin-grid.html",
   "ignore": [
