@@ -29,13 +29,13 @@
     "wct.conf.js"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#^1.1.1"
+    "polymer": "Polymer/polymer#^1.0.0"
   },
   "devDependencies": {
-    "web-component-tester": "4.0.3",
-    "iron-test-helpers": "polymerelements/iron-test-helpers#~1.0.6",
-    "test-fixture": "polymerelements/test-fixture#~1.0.1",
-    "iron-component-page": "polymerelements/iron-component-page#~1.1.0",
+    "web-component-tester": "^4.0.0",
+    "iron-test-helpers": "polymerelements/iron-test-helpers#^1.0.0",
+    "test-fixture": "polymerelements/test-fixture#^1.0.0",
+    "iron-component-page": "polymerelements/iron-component-page#^1.0.0",
     "elements-demo-resources": "vaadin/elements-demo-resources#master"
   }
 }
