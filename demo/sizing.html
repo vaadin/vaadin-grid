@@ -211,12 +211,12 @@ layout: page
 
   <section>
     <h3>Styling with Custom Properties</h3>
-    <p>The grid uses <code>--default-primary-color</code> from <a href="https://github.com/PolymerElements/paper-styles">paper-styles</a> as a highlight color.</p>
+    <p>The grid uses <code>--primary-color</code> from <a href="https://github.com/PolymerElements/paper-styles">paper-styles</a> as a highlight color.</p>
     <p>Modifying the row height is enabled with <code>--vaadin-grid-row-height</code> custom property. For header and footer heights use <code>--vaadin-grid-header-row-height</code> and/or <code>--vaadin-grid-footer-row-height</code> properties.</p>
 
     <style is="custom-style">
       vaadin-grid.themed {
-        --default-primary-color: red;
+        --primary-color: red;
         --vaadin-grid-row-height: 36px;
         --vaadin-grid-header-row-height: 44px;
         --vaadin-grid-footer-row-height: 44px;
@@ -249,7 +249,7 @@ layout: page
         // code
         &lt;style is=&quot;custom-style&quot;&gt;
           vaadin-grid {
-            --default-primary-color: red;
+            --primary-color: red;
             --vaadin-grid-row-height: 36px;
             --vaadin-grid-header-row-height: 44px;
             --vaadin-grid-footer-row-height: 44px;
