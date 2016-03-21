@@ -50,12 +50,12 @@ Simple usage (static HTML data source):
 
 ### Styling
 
-The grid uses `--default-primary-color` from [paper-styles](https://github.com/PolymerElements/paper-styles) as a highlight color. You can customize the color by defining your own primary default color.
+The grid uses `--primary-color` from [paper-styles](https://github.com/PolymerElements/paper-styles) as a highlight color. You can customize the color by defining your own primary default color.
 
 ```html
 <style is="custom-style">
   vaadin-grid {
-    --default-primary-color: red;
+    --primary-color: red;
   }
 </style>
 ```
@@ -259,7 +259,7 @@ See the [demo](demo/index.html) for use case examples.
 
    /* Focus styles */
   .vaadin-grid-row:after {
-    background-color: var(--default-primary-color, #03A9F4);
+    background-color: var(--primary-color, #03A9F4);
     bottom: 0;
     content: "";
     height: 2px;
@@ -457,7 +457,7 @@ See the [demo](demo/index.html) for use case examples.
   }
 
   input[type="checkbox"]:checked + label {
-    background-color: var(--default-primary-color, #03A9F4);
+    background-color: var(--primary-color, #03A9F4);
     border-color: transparent;
   }
 
@@ -502,7 +502,7 @@ See the [demo](demo/index.html) for use case examples.
   }
 
   input[type="checkbox"]:checked + label:before {
-    background-color: var(--default-primary-color, #03A9F4);
+    background-color: var(--primary-color, #03A9F4);
   }
 
   #measureobject {
