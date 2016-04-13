@@ -10,13 +10,13 @@
     <module.name>com.vaadin.elements.grid.VaadinGrid</module.name>
     <modulePathPrefix></modulePathPrefix>
     <gwt.loglevel>WARN</gwt.loglevel>
-    <gwtversion>2.8.0.VC-SNAPSHOT</gwtversion>
-    <gwtmaven>2.8.0.VC-SNAPSHOT</gwtmaven>
+    <gwtversion>2.8.0-SNAPSHOT</gwtversion>
+    <gwtmaven>2.8.0-SNAPSHOT</gwtmaven>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <gQueryVersion>1.4.4-SNAPSHOT</gQueryVersion>
-    <vaadin.version>7.6.0.alpha5</vaadin.version>
+    <vaadin.version>7.6.4</vaadin.version>
     <gwt.outputstyle>OBF</gwt.outputstyle>
     <gwt.disableCastChecking>true</gwt.disableCastChecking>
     <gwt.disableClassMetadata>true</gwt.disableClassMetadata>
