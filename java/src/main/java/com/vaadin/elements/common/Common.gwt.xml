@@ -1,7 +1,6 @@
 <module>
     <inherits name='com.google.gwt.user.User'/>
     <inherits name='com.google.gwt.query.QueryMin'/>
-    <inherits name='com.google.gwt.query.Observe'/>
     <inherits name='elemental.Json' />
     <inherits name='com.vaadin.Vaadin'/>
 
