@@ -82,7 +82,7 @@ public class GridElement implements SelectionHandler<Object>,
     private GridLightDomTable lightDom;
     private final GridStaticSection staticSection;
 
-    private Element container;
+    public Element container;
     private Element measureObject;
     private JSArray<JSColumn> cols;
 
@@ -152,19 +152,21 @@ public class GridElement implements SelectionHandler<Object>,
             Element gridContainer, Element measureObject) {
         if (this.container == null) {
             this.container = container;
-            this.measureObject = measureObject;
+            this.measureObject = measureObject != null ? measureObject : container;
 
             if (lightDomElement != null) {
                 lightDom = new GridLightDomTable(lightDomElement, this);
-                // Check if we have the data in the DOM
-                GridDomTableDataSource ds = GridDomTableDataSource
-                        .createInstance(lightDomElement, this);
+                GridDataSource ds = getDataSource();
+                if (ds == null) {
+                    // Check if we have the data in the DOM
+                    ds = GridDomTableDataSource.createInstance(lightDomElement, this);
+                }
                 if (ds != null) {
                     grid.setDataSource(ds);
                 }
             }
 
-            gridContainer.appendChild(grid.getElement());
+            (gridContainer != null ? gridContainer : container).appendChild(grid.getElement());
             WidgetsUtils.attachWidget(grid, null);
         }
 
@@ -258,11 +260,12 @@ public class GridElement implements SelectionHandler<Object>,
         }
     }
 
-    private void triggerEvent(String eventName) {
-        NativeEvent event = Document.get().createHtmlEvent(eventName, false,
-                true);
-        container.dispatchEvent(event);
-    }
+	private void triggerEvent(String eventName) {
+		if (container != null) {
+			NativeEvent event = Document.get().createHtmlEvent(eventName, false, true);
+			container.dispatchEvent(event);
+		}
+	}
 
     public void setHeight(String height) {
         grid.setHeight(height);
