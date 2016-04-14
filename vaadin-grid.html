@@ -815,6 +815,22 @@ See the [demo](demo/index.html) for use case examples.
         observer: '_itemsChanged'
       },
 
+
+      /**
+       * The array of columns attached to the grid.
+       *
+       * See the API documentation for “column” for more details about the
+       * column objects.
+       *
+       * @property {Array<object>} columns
+       * @type {Array<object>}
+       */
+      columns: {
+        type: Array,
+        observer: '_columnsChanged',
+        notify: true
+      },
+
       /**
        * Object for controlling and accessing the selected rows in the grid.
        *
@@ -943,6 +959,10 @@ See the [demo](demo/index.html) for use case examples.
       'selection-mode-changed': '_onSelectionModeChange'
     },
 
+    _columnsChanged: function(cols) {
+      this._grid.setColumns(cols);
+    },
+
     _itemsChanged: function(items) {
       if (Array.isArray(items)) {
         this._grid.setDataSource(function(params, callback) {
@@ -982,6 +1002,11 @@ See the [demo](demo/index.html) for use case examples.
           this.attributeChanged(this.attributes[i].nodeName, null, this.attributes[i].nodeValue);
         }
       });
+      if (this.colums) {
+        this._grid.setColumns(this.columns);
+      } else {
+        this.columns = this._grid.getColumns();
+      }
       this._grid.init(this, this._findTableElement(Polymer.dom(this).children), Polymer.dom(this.root), this.$.measureobject);
     },
 
@@ -1232,25 +1257,6 @@ See the [demo](demo/index.html) for use case examples.
     set visibleRows(visibleRows) {
       this._grid.setVisibleRows(visibleRows);
       this.reflectPropertyToAttribute('visibleRows');
-    },
-
-    /**
-     * The array of columns attached to the grid.
-     *
-     * See the API documentation for “column” for more details about the
-     * column objects.
-     *
-     * @property {Array<object>} columns
-     * @type {Array<object>}
-     */
-    get columns() {
-      return this._grid.getColumns();
-    },
-    /**
-     * @private
-     */
-    set columns(cols) {
-      this._grid.setColumns(cols);
     },
 
     /**

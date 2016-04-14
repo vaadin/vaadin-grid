@@ -21,9 +21,6 @@ import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.TableElement;
 import com.google.gwt.query.client.js.JsUtils;
-import com.google.gwt.query.client.plugins.observe.Observe;
-import com.google.gwt.query.client.plugins.observe.Observe.Changes.ChangeRecord;
-import com.google.gwt.query.client.plugins.observe.Observe.ObserveListener;
 import com.google.gwt.query.client.plugins.widgets.WidgetsUtils;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
@@ -260,12 +257,12 @@ public class GridElement implements SelectionHandler<Object>,
         }
     }
 
-	private void triggerEvent(String eventName) {
-		if (container != null) {
-			NativeEvent event = Document.get().createHtmlEvent(eventName, false, true);
-			container.dispatchEvent(event);
-		}
-	}
+    private void triggerEvent(String eventName) {
+        if (container != null) {
+            NativeEvent event = Document.get().createHtmlEvent(eventName, false, true);
+            container.dispatchEvent(event);
+        }
+    }
 
     public void setHeight(String height) {
         grid.setHeight(height);
@@ -290,6 +287,8 @@ public class GridElement implements SelectionHandler<Object>,
     }
 
     public void setColumns(JSArray<JSColumn> columns) {
+        this.cols = columns;
+
         // Add all missing columns to grid
         Collection<JSColumn> currentColumns = new ArrayList<JSColumn>();
         for (GridColumn c : getDataColumns()) {
@@ -319,16 +318,6 @@ public class GridElement implements SelectionHandler<Object>,
                         .indexOf(o2.getJsColumn()) ? 1 : -1);
         if (array.length > 0) {
             grid.setColumnOrder(array);
-        }
-
-        if (cols != columns) {
-            Observe.unobserve(cols);
-            Observe.observe(cols = columns, new ObserveListener() {
-                @Override
-                public void onChange(List<ChangeRecord> changes) {
-                    setColumns(cols);
-                }
-            });
         }
 
         if (getDataSource() != null) {
