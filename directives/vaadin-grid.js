@@ -18,8 +18,17 @@ System.register(['angular2/core'], function(exports_1) {
         execute: function() {
             VaadinGrid = (function () {
                 function VaadinGrid(el) {
-                    Polymer.Base.importHref('bower_components/vaadin-grid/vaadin-grid.html', this.onImport.bind(this, el));
+                    this.importHref('bower_components/vaadin-grid/vaadin-grid.html', el);
                 }
+                VaadinGrid.prototype.importHref = function (href, el) {
+                    if (!document.querySelector('head link[href="' + href + '"]')) {
+                        var link = document.createElement('link');
+                        link.rel = 'import';
+                        link.href = href;
+                        document.head.appendChild(link);
+                    }
+                    HTMLImports.whenReady(this.onImport.bind(this, el));
+                };
                 VaadinGrid.prototype.onImport = function (el) {
                     var grid = el.nativeElement;
                     // Configuration <table> might be placed in a wrong container.

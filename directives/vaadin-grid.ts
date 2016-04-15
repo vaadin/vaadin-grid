@@ -4,7 +4,17 @@ import {Directive, ElementRef, Input} from 'angular2/core';
 export class VaadinGrid {
 
   constructor(el: ElementRef) {
-    Polymer.Base.importHref('bower_components/vaadin-grid/vaadin-grid.html', this.onImport.bind(this, el));
+    this.importHref('bower_components/vaadin-grid/vaadin-grid.html', el);
+  }
+
+  importHref(href, el: ElementRef) {
+    if (!document.querySelector('head link[href="' + href + '"]')) {
+      const link = document.createElement('link');
+      link.rel = 'import';
+      link.href = href;
+      document.head.appendChild(link);
+    }
+    HTMLImports.whenReady(this.onImport.bind(this, el));
   }
 
   onImport(el: ElementRef) {
