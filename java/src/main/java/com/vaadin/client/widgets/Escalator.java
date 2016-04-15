@@ -2386,9 +2386,9 @@ public class Escalator extends Widget implements RequiresResize,
             setTopRowLogicalIndex(topRowLogicalIndex + diff);
         }
 
-        private class DeferredDomSorter extends Timer {
-            // 1000/60 (@60fps)
-            private static final int SORT_DELAY_MILLIS = 16;
+        private class DeferredDomSorter extends Timer implements ScheduledCommand {
+            // 1000/50 (@50fps)
+            private static final int SORT_DELAY_MILLIS = 20;
 
             public void reschedule() {
                 schedule(SORT_DELAY_MILLIS);
@@ -2396,6 +2396,11 @@ public class Escalator extends Widget implements RequiresResize,
 
             @Override
             public void run() {
+                Scheduler.get().scheduleFinally(this);
+            }
+
+            @Override
+            public void execute() {
                 sortDomElements();
                 bodyElem.removeClassName("scrolling");
             }
