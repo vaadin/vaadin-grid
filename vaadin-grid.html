@@ -688,6 +688,46 @@ See the [demo](demo/index.html) for use case examples.
     properties: {
 
       /**
+       * A function which is used for generating CSS class names for data cells.
+       *
+       * See the API documentation for the “cell” object for more details about
+       * the parameter of this function.
+       *
+       * #### Example:
+       * ```js
+       * grid.cellClassGenerator = function(cell) {
+       *   if (cell.index == 2) {
+       *      return "activity-" + cell.data.toLowerCase();
+       *    }
+       *  };
+       * ```
+       * @property {function} cellClassGenerator
+       * @type {function}
+       */
+      cellClassGenerator: {
+        type: Function,
+        observer: '_cellClassGeneratorChanged'
+      },
+
+      /**
+       * Disables the grid.
+       *
+       * #### Declarative example:
+       * ```html
+       * <vaadin-grid disabled>...</vaadin-grid>
+       * ```
+       *
+       * @default false
+       * @type {boolean}
+       */
+      disabled: {
+        type: Boolean,
+        observer: '_disabledChanged',
+        reflectToAttribute: true,
+        value: false
+      },
+
+      /**
        * Object for controlling and accessing the header rows in the grid.
        *
        * See the API documentation for “header” for more details.
@@ -772,6 +812,31 @@ See the [demo](demo/index.html) for use case examples.
       },
 
       /**
+       * The index of the last frozen columns in this grid. A frozen column will
+       * always stay visible in the grid viewport when the user scrolls the grid
+       * viewport horizontally.
+       *
+       * Setting the property to 0 means that no columns will be frozen,
+       * but the built-in selection checkbox column will still be frozen if
+       * it’s in use. Setting the count to -1 will unfreeze the selection
+       * column also.
+       *
+       * #### Declarative example:
+       * ```html
+       * <vaadin-grid frozen-columns="2">...</vaadin-grid>
+       * ```
+       *
+       * @default 0
+       * @type {number}
+       */
+      frozenColumns: {
+        type: Number,
+        observer: '_frozenColumnsChanged',
+        reflectToAttribute: true,
+        value: 0
+      },
+
+      /**
        * An array or a function containing or returning items determining
        * the row data in the grid (i.e. the data source).
        *
@@ -829,6 +894,49 @@ See the [demo](demo/index.html) for use case examples.
         type: Array,
         observer: '_columnsChanged',
         notify: true
+      },
+
+      /**
+       * A function which is used for generating CSS class names for data rows.
+       *
+       * See the API documentation for the “row” object for more details about
+       * the parameter of this function.
+       *
+       * #### Example:
+       * ```js
+       * grid.rowClassGenerator = function(row) {
+       *   var activity = row.data[2];
+       *   return "activity-" + activity.toLowerCase();
+       * };
+       *```
+       *
+       * @property {function} rowClassGenerator
+       * @type {function}
+       */
+      rowClassGenerator: {
+        type: Function,
+        observer: '_rowClassGeneratorChanged'
+      },
+
+      /**
+       * The row details generator is used for generating detail content for
+       * data rows. The details element is added directly under the row.
+       *
+       * #### Example:
+       * ```js
+       * grid.rowDetailsGenerator = function(rowIndex) {
+       *   var detail = document.createElement("div");
+       *   detail.textContent = "Row detail content for row " + rowIndex;
+       *   return detail;
+       * };
+       *```
+       *
+       * @property {function} rowDetailsGenerator
+       * @type {function}
+       */
+      rowDetailsGenerator: {
+        type: Function,
+        observer: '_rowDetailsGeneratorChanged'
       },
 
       /**
@@ -914,27 +1022,35 @@ See the [demo](demo/index.html) for use case examples.
       size: {
         type: Number,
         observer: '_sizeChanged'
+      },
+
+      /**
+       * Sets the height of the grid so that the specified amount of data rows
+       * is visible. Overrides any height specified in CSS.
+       *
+       * #### Declarative example:
+       * ```html
+       * <vaadin-grid visible-rows="5">...</vaadin-grid>
+       * ```
+       *
+       * @property {number} visibleRows
+       * @default 10
+       * @type {number}
+       */
+      visibleRows: {
+        type: Number,
+        reflectToAttribute: true,
+        observer: '_visibleRowsChanged'
       }
     },
 
     attributeChanged: function(name, type, value) {
       switch (name) {
-        case 'disabled':
-          var disabled = typeof value == 'string';
-          if (this.disabled != disabled) {
-            this.disabled = disabled;
-          }
-          break;
         case 'selection-mode':
           if (this.selection.mode != value) {
             this.selection.mode = value;
           }
           break;
-        default:
-          var property = Polymer.CaseMap.dashToCamelCase(name);
-          if (this[property] != value) {
-            this[property] = value;
-          }
       }
     },
 
@@ -1126,137 +1242,26 @@ See the [demo](demo/index.html) for use case examples.
       this._grid.removeColumn(id);
     },
 
-    /**
-     * @private
-     */
-    get rowClassGenerator() {
-      return this._grid.getRowClassGenerator();
-    },
-
-    /**
-     * A function which is used for generating CSS class names for data rows.
-     *
-     * See the API documentation for the “row” object for more details about
-     * the parameter of this function.
-     *
-     * #### Example:
-     * ```js
-     * grid.rowClassGenerator = function(row) {
-     *   var activity = row.data[2];
-     *   return "activity-" + activity.toLowerCase();
-     * };
-     *```
-     *
-     * @property {function} rowClassGenerator
-     * @type {function}
-     */
-    set rowClassGenerator(row) {
+    _rowClassGeneratorChanged: function(row) {
       this._grid.setRowClassGenerator(row);
     },
 
-    /**
-     * @private
-     */
-    get cellClassGenerator() {
-      return this._grid.getCellClassGenerator();
-    },
-
-    /**
-     * A function which is used for generating CSS class names for data cells.
-     *
-     * See the API documentation for the “cell” object for more details about
-     * the parameter of this function.
-     *
-     * #### Example:
-     * ```js
-     * grid.cellClassGenerator = function(cell) {
-     *   if (cell.index == 2) {
-     *      return "activity-" + cell.data.toLowerCase();
-     *    }
-     *  };
-     * ```
-     * @property {function} cellClassGenerator
-     * @type {function}
-     */
-    set cellClassGenerator(cell) {
+    _cellClassGeneratorChanged: function(cell) {
       this._grid.setCellClassGenerator(cell);
     },
 
-    /**
-     * Disables the grid.
-     *
-     * #### Declarative example:
-     * ```html
-     * <vaadin-grid disabled>...</vaadin-grid>
-     * ```
-     *
-     * @default false
-     * @type {boolean}
-     */
-    get disabled() {
-      return this._grid.isDisabled();
-    },
-    /**
-     * @private
-     */
-    set disabled(disabled) {
+    _disabledChanged: function(disabled) {
       this._grid.setDisabled(disabled);
-      this.reflectPropertyToAttribute('disabled');
     },
 
-    /**
-     * The index of the last frozen columns in this grid. A frozen column will
-     * always stay visible in the grid viewport when the user scrolls the grid
-     * viewport horizontally.
-     *
-     * Setting the property to 0 means that no columns will be frozen,
-     * but the built-in selection checkbox column will still be frozen if
-     * it’s in use. Setting the count to -1 will unfreeze the selection
-     * column also.
-     *
-     * #### Declarative example:
-     * ```html
-     * <vaadin-grid frozen-columns="2">...</vaadin-grid>
-     * ```
-     *
-     * @default 0
-     * @type {number}
-     */
-    get frozenColumns() {
-      return this._grid.getFrozenColumns();
-    },
-    /**
-     * @private
-     */
-    set frozenColumns(frozenColumns) {
-      this._grid.setFrozenColumns(frozenColumns);
-      this.reflectPropertyToAttribute('frozenColumns');
+    _frozenColumnsChanged: function(frozenColumns) {
+      this.then(function() {
+        this._grid.setFrozenColumns(frozenColumns);
+      }.bind(this));
     },
 
-    /**
-     * Sets the height of the grid so that the specified amount of data rows
-     * is visible. Overrides any height specified in CSS.
-     *
-     * #### Declarative example:
-     * ```html
-     * <vaadin-grid visible-rows="5">...</vaadin-grid>
-     * ```
-     *
-     * @property {number} visibleRows
-     * @default 10
-     * @type {number}
-     */
-    get visibleRows() {
-      var rows = this._grid.getVisibleRows();
-      return rows > 0 ? rows : undefined;
-    },
-
-    /**
-     * @private
-     */
-    set visibleRows(visibleRows) {
+    _visibleRowsChanged: function(visibleRows) {
       this._grid.setVisibleRows(visibleRows);
-      this.reflectPropertyToAttribute('visibleRows');
     },
 
     /**
@@ -1270,30 +1275,8 @@ See the [demo](demo/index.html) for use case examples.
       return this._grid.then(callback);
     },
 
-    /**
-     * The row details generator is used for generating detail content for
-     * data rows. The details element is added directly under the row.
-     *
-     * #### Example:
-     * ```js
-     * grid.rowDetails.detailsGenerator = function(rowIndex) {
-     *   var detail = document.createElement("div");
-     *   detail.textContent = "Row detail content for row " + rowIndex;
-     *   return detail;
-     * };
-     *```
-     *
-     * @property {function} rowDetailsGenerator
-     * @type {function}
-     */
-    set rowDetailsGenerator(rowDetailsGenerator) {
+    _rowDetailsGeneratorChanged: function(rowDetailsGenerator) {
       this._grid.setRowDetailsGenerator(rowDetailsGenerator);
-    },
-    /**
-     * @private
-     */
-    get rowDetailsGenerator() {
-      return this._grid.getRowDetailsGenerator();
     },
 
     /**
