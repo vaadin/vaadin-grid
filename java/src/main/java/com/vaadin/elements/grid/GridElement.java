@@ -201,6 +201,7 @@ public class GridElement implements SelectionHandler<Object>,
 
     public void removeColumn(String columnId) {
         cols.remove(cols.get(getColumnIndexByIndexOrName(columnId)));
+        setColumns(cols);
     }
 
     public void setDisabled(boolean disabled) {
