@@ -1,5 +1,8 @@
 import {Directive, ElementRef, Input} from 'angular2/core';
 
+declare var HTMLImports;
+declare var Polymer;
+
 @Directive({selector: 'vaadin-grid'})
 export class VaadinGrid {
 
