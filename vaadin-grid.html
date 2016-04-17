@@ -748,7 +748,7 @@ See the [demo](demo/index.html) for use case examples.
               _this._grid.getStaticSection().addHeader(rowIndex, cellContent);
             },
             removeRow: function(rowIndex) {
-              _this._grid.getStaticSection().removeHeader(rowIndex);
+              _this._grid.getStaticSection().removeHeader(rowIndex || 0);
             },
             setRowClassName: function(rowIndex, className) {
               _this._grid.getStaticSection().setHeaderRowClassName(rowIndex, className);
@@ -793,7 +793,7 @@ See the [demo](demo/index.html) for use case examples.
               _this._grid.getStaticSection().addFooter(rowIndex, cellContent);
             },
             removeRow: function(rowIndex) {
-              _this._grid.getStaticSection().removeFooter(rowIndex);
+              _this._grid.getStaticSection().removeFooter(rowIndex || 0);
             },
             setRowClassName: function(rowIndex, className) {
               _this._grid.getStaticSection().setFooterRowClassName(rowIndex, className);
@@ -892,7 +892,6 @@ See the [demo](demo/index.html) for use case examples.
        */
       columns: {
         type: Array,
-        observer: '_columnsChanged',
         notify: true
       },
 
@@ -1074,6 +1073,10 @@ See the [demo](demo/index.html) for use case examples.
        */
       'selection-mode-changed': '_onSelectionModeChange'
     },
+
+    observers: [
+      '_columnsChanged(columns, columns.*)'
+    ],
 
     _columnsChanged: function(cols) {
       this._grid.setColumns(cols);
