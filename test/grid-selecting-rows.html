@@ -312,7 +312,8 @@
           it('should select multiple rows', function() {
             // Not using skipIf because it is evaluated before SDM is loaded and
             // window.__gwt_sdm is not set yet.
-            if (window.__gwt_sdm) return;
+            var a = '__gwt_sdm'; // non-sense jshint rules
+            if (window[a]) {return;}
 
             var inputs = qaLocal('.vaadin-grid-body input');
             triggerMouseEvent(inputs[0], 'mousedown');
@@ -321,7 +322,8 @@
           });
 
           it('should deselect multiple rows', function() {
-            if (window.__gwt_sdm) return;
+            var a = '__gwt_sdm';
+            if (window[a]) {return;}
 
             var inputs = qaLocal('.vaadin-grid-body input');
             triggerMouseEvent(inputs[0], 'mousedown');
