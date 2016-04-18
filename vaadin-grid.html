@@ -1125,18 +1125,15 @@ See the [demo](demo/index.html) for use case examples.
       } else {
         this.columns = this._grid.getColumns();
       }
-      this._grid.init(this, this._findTableElement(Polymer.dom(this).children), Polymer.dom(this.root), this.$.measureobject);
-    },
+      this._grid.init(this, Polymer.dom(this.root), this.$.measureobject);
 
-    _findTableElement: function(nodes) {
-      for (var i = 0; i < nodes.length; i++) {
-        if (nodes[i].nodeName === 'TABLE') {
-          return nodes[i];
-        } else if (nodes[i].nodeName === 'CONTENT') {
-          var contentNodes = Polymer.dom(nodes[i]).getDistributedNodes();
-          return this._findTableElement(contentNodes);
-        }
-      }
+      Polymer.dom(this).observeNodes(function(info) {
+        info.addedNodes.forEach(function(node) {
+          if (node.tagName === 'TABLE') {
+            this._grid.setLightDomTable(node);
+          }
+        }.bind(this));
+      });
     },
 
     _bindResizeListener: function() {

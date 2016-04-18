@@ -1,6 +1,4 @@
-System.register(['angular2/core'], function(exports_1, context_1) {
-    "use strict";
-    var __moduleName = context_1 && context_1.id;
+System.register(['angular2/core'], function(exports_1) {
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
         var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
         if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -39,29 +37,13 @@ System.register(['angular2/core'], function(exports_1, context_1) {
                     if (localDomTable) {
                         Polymer.dom(grid).appendChild(localDomTable);
                     }
-                    // vaadin-grid 1.0 doesn't support placing a configuration table dynamically. A hacky workaround needed for now.
-                    var c;
-                    for (var i in grid._grid) {
-                        if (grid._grid[i] && grid._grid[i].tagName == 'VAADIN-GRID') {
-                            c = i;
-                            break;
-                        }
-                    }
-                    var _c = grid._grid[c];
-                    try {
-                        grid._grid[c] = null;
-                        grid._grid.init(grid, grid._findTableElement(Polymer.dom(grid).children), Polymer.dom(grid.root), grid.$.measureobject);
-                    }
-                    catch (e) {
-                        grid._grid[c] = _c;
-                    }
                 };
                 VaadinGrid = __decorate([
                     core_1.Directive({ selector: 'vaadin-grid' }), 
                     __metadata('design:paramtypes', [core_1.ElementRef])
                 ], VaadinGrid);
                 return VaadinGrid;
-            }());
+            })();
             exports_1("VaadinGrid", VaadinGrid);
         }
     }

@@ -30,21 +30,5 @@ export class VaadinGrid {
       Polymer.dom(grid).appendChild(localDomTable);
     }
 
-    // vaadin-grid 1.0 doesn't support placing a configuration table dynamically. A hacky workaround needed for now.
-    var c;
-    for (var i in grid._grid) {
-      if (grid._grid[i] && grid._grid[i].tagName == 'VAADIN-GRID') {
-       c = i;
-       break;
-      }
-    }
-    const _c = grid._grid[c];
-
-    try {
-      grid._grid[c] = null;
-      grid._grid.init(grid, grid._findTableElement(Polymer.dom(grid).children), Polymer.dom(grid.root), grid.$.measureobject);
-    } catch (e) {
-      grid._grid[c] = _c;
-    }
   }
 }

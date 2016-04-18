@@ -79,7 +79,7 @@ public class GridElement implements SelectionHandler<Object>,
     private GridLightDomTable lightDom;
     private final GridStaticSection staticSection;
 
-    public Element container;
+    private Element container;
     private Element measureObject;
     private JSArray<JSColumn> cols;
 
@@ -136,8 +136,8 @@ public class GridElement implements SelectionHandler<Object>,
         return grid;
     }
 
-    public void getItem(Double rowIndex, JSFunction2<JavaScriptObject, Object> callback,
-            boolean onlyCached) {
+    public void getItem(Double rowIndex,
+            JSFunction2<JavaScriptObject, Object> callback, boolean onlyCached) {
         getDataSource().getItem(rowIndex, callback, onlyCached);
     }
 
@@ -145,30 +145,31 @@ public class GridElement implements SelectionHandler<Object>,
         return container;
     }
 
-    public void init(Element container, TableElement lightDomElement,
-            Element gridContainer, Element measureObject) {
+    public void init(Element container, Element gridContainer,
+            Element measureObject) {
         if (this.container == null) {
             this.container = container;
-            this.measureObject = measureObject != null ? measureObject : container;
-
-            if (lightDomElement != null) {
-                lightDom = new GridLightDomTable(lightDomElement, this);
-                GridDataSource ds = getDataSource();
-                if (ds == null) {
-                    // Check if we have the data in the DOM
-                    ds = GridDomTableDataSource.createInstance(lightDomElement, this);
-                }
-                if (ds != null) {
-                    grid.setDataSource(ds);
-                }
-            }
-
-            (gridContainer != null ? gridContainer : container).appendChild(grid.getElement());
+            this.measureObject = measureObject;
+            gridContainer.appendChild(grid.getElement());
             WidgetsUtils.attachWidget(grid, null);
         }
 
         updating = false;
         Scheduler.get().scheduleFinally(() -> updateHeight());
+    }
+
+    public void setLightDomTable(TableElement lightDomElement) {
+        lightDom = new GridLightDomTable(lightDomElement, this);
+
+        GridDataSource ds = getDataSource();
+        if (ds == null) {
+            // Check if we have the data in the DOM
+            ds = GridDomTableDataSource.createInstance(lightDomElement, this);
+        }
+        if (ds != null) {
+            grid.setDataSource(ds);
+            getSelectionModel().reset();
+        }
     }
 
     public JSColumn addColumn(JSColumn jsColumn, Object beforeColumnId) {
@@ -260,7 +261,8 @@ public class GridElement implements SelectionHandler<Object>,
 
     private void triggerEvent(String eventName) {
         if (container != null) {
-            NativeEvent event = Document.get().createHtmlEvent(eventName, false, true);
+            NativeEvent event = Document.get().createHtmlEvent(eventName,
+                    false, true);
             container.dispatchEvent(event);
         }
     }
@@ -299,7 +301,8 @@ public class GridElement implements SelectionHandler<Object>,
         for (Object object : columns.asList()) {
             if (!currentColumns.contains(object)) {
                 // We handle either JS objects or JSColumns, if column is an
-                // Object, it's promoted to a JSColumn so as it has the appropriate
+                // Object, it's promoted to a JSColumn so as it has the
+                // appropriate
                 // prototype for handling set/get properties.
                 GridColumn.createColumn(object, this);
             }
@@ -625,10 +628,10 @@ public class GridElement implements SelectionHandler<Object>,
 
     public void setRowDetailsVisible(int rowIndex, Object visible) {
         then(o -> {
-            Integer validatedRowIndex = JSValidate.Integer.val(rowIndex,
-                    null, null);
-            Boolean validatedVisible = JSValidate.Boolean.val(visible,
-                    true, true);
+            Integer validatedRowIndex = JSValidate.Integer.val(rowIndex, null,
+                    null);
+            Boolean validatedVisible = JSValidate.Boolean.val(visible, true,
+                    true);
             if (!DetailsGenerator.NULL.equals(grid.getDetailsGenerator())
                     && validatedRowIndex != null) {
                 grid.setDetailsVisible(validatedRowIndex, validatedVisible);
