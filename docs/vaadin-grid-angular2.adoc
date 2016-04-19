@@ -1,0 +1,75 @@
+---
+title: Usage with Angular 2
+order: 3
+layout: page
+---
+
+[[vaadin-grid.angular2]]
+= Usage with Angular 2
+
+This chapter will briefly go through Angular 2 specific features.
+For the most part you can use the API provided by the element described in other sections of the documentation.
+Before jumping in, you should follow the common installation instructions which apply to all Vaadin Core Elements.
+
+== Configuration
+
+The easiest way is to use the declarative way, so as you can configure the grid using a table section in your template.
+
+[source,html]
+----
+<vaadin-grid>
+  <table>
+    <colgroup>
+      <col name="merchant" width="200" sortable/>
+      <col name="total" width="150" sortable/>
+      <col name="comment" sortable/>
+    </colgroup>
+  </table>
+</vaadin-grid>
+----
+
+== Data-binding
+
+In order to bind an array of items to the [elementname]#vaadin-grid# element, you can use normal data-binding syntax of Angular 2.
+
+[source,html]
+----
+<vaadin-grid [(value)]="myValue" [items]="myItems">
+  <table>
+    <colgroup>
+      <col /> <col />
+    </colgroup>
+  </table>
+</vaadin-grid>
+----
+
+== Function items
+
+To have a full data control, you can use functions. The item function accepts two parameters. The first parameter is an object
+with the data index and count properties, the second one is a callback to inform the grid with the data array and total size.
+
+[source,html]
+----
+<vaadin-grid [items]="expensesFunction" [frozenColumns]="1">
+  <table>
+    <colgroup>
+      <col name="total" width="150" sortable/>
+      <col name="status" width="150" sortable/>
+      <col name="comment" sortable/>
+    </colgroup>
+  </table>
+</vaadin-grid>
+----
+
+[source,typescript]
+----
+private expensesFunction(params, callback) {
+  const filters: any = this.filters || {};
+  const url = './api/expenses?index=' + params.index + '&count=' + params.count;
+  const totalCount = 200;
+
+  this.getJSON(url, (data) => {
+    callback(data, totalCount);
+  });
+}
+----
