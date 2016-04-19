@@ -876,8 +876,7 @@ See the [demo](demo/index.html) for use case examples.
        * @type {(Array<Object>|function)}
        */
       items: {
-        type: Object,
-        observer: '_itemsChanged'
+        type: Object
       },
 
       /**
@@ -1074,19 +1073,25 @@ See the [demo](demo/index.html) for use case examples.
     },
 
     observers: [
-      '_columnsChanged(columns, columns.*)'
+      '_columnsChanged(columns, columns.*)',
+      '_itemsChanged(items, items.*)',
     ],
 
     _columnsChanged: function(cols) {
       this._grid.setColumns(cols);
     },
 
-    _itemsChanged: function(items) {
+    _currentItems: undefined,
+
+    _itemsChanged: function(items, a) {
       if (Array.isArray(items)) {
-        this._grid.setDataSource(function(params, callback) {
-          var array = items.slice(params.index, params.index + params.count);
-          callback(array);
-        });
+        if (items != this._currentItems) {
+          this._currentItems = items;
+          this._grid.setDataSource(function(params, callback) {
+            var array = items.slice(params.index, params.index + params.count);
+            callback(array);
+          });
+        }
         this.size = items.length;
         this.refreshItems();
       } else if (typeof items === 'function') {

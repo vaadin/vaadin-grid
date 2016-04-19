@@ -59,6 +59,49 @@
         });
       });
 
+      it('should support item removals', function() {
+        grid.items = [];
+        return grid.then(function() {
+          grid.push('items', {
+            FirstName: 'John',
+            Salary: 1234.56
+          });
+          return grid.then(function() {
+            var cells = qaLocal('.vaadin-grid-body .vaadin-grid-cell > span');
+            assert.equal(cells.length, 2);
+          });
+        });
+      });
+
+      it('should support item additions', function() {
+        grid.items = [{
+          FirstName: 'John',
+          Salary: 1234.56
+        }];
+        return grid.then(function() {
+          grid.pop('items');
+          return grid.then(function() {
+            var cells = qaLocal('.vaadin-grid-body .vaadin-grid-cell > span');
+            assert.equal(cells.length, 0);
+          });
+        });
+      });
+
+      it('should support item changes', function() {
+        window.g = grid;
+        grid.items = [{
+          FirstName: 'John',
+          Salary: 1234.56
+        }];
+        return grid.then(function() {
+          grid.set('items.0.FirstName', 'Peter');
+          return grid.then(function() {
+            var cells = qaLocal('.vaadin-grid-body .vaadin-grid-cell > span');
+            assert.equal(cells[0].innerHTML, 'Peter');
+          });
+        });
+      });
+
       it('should accept boolean values', function() {
         grid.items = [
           false,
@@ -297,7 +340,7 @@
 
         return grid.then(function() {
           expect(spy.getCall(0).args[0].count).not.to.equal(0);
-          expect(spy.callCount).to.equal(1);
+          expect(spy.callCount).to.equal(2);
         });
       });
 
