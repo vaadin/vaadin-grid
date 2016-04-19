@@ -18,6 +18,7 @@ System.register(['angular2/core'], function(exports_1) {
         execute: function() {
             VaadinGrid = (function () {
                 function VaadinGrid(el) {
+                    this.ready = new core_1.EventEmitter(false);
                     this.importHref('bower_components/vaadin-grid/vaadin-grid.html', el);
                 }
                 VaadinGrid.prototype.importHref = function (href, el) {
@@ -30,6 +31,7 @@ System.register(['angular2/core'], function(exports_1) {
                     HTMLImports.whenReady(this.onImport.bind(this, el));
                 };
                 VaadinGrid.prototype.onImport = function (el) {
+                    var _this = this;
                     var grid = el.nativeElement;
                     // Configuration <table> might be placed in a wrong container.
                     // Let's move it in the light dom programmatically to fix that.
@@ -37,7 +39,14 @@ System.register(['angular2/core'], function(exports_1) {
                     if (localDomTable) {
                         Polymer.dom(grid).appendChild(localDomTable);
                     }
+                    grid.then(function () {
+                        _this.ready.emit(grid);
+                    });
                 };
+                __decorate([
+                    core_1.Output(), 
+                    __metadata('design:type', core_1.EventEmitter)
+                ], VaadinGrid.prototype, "ready", void 0);
                 VaadinGrid = __decorate([
                     core_1.Directive({ selector: 'vaadin-grid' }), 
                     __metadata('design:paramtypes', [core_1.ElementRef])

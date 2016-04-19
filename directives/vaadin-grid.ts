@@ -1,10 +1,12 @@
-import {Directive, ElementRef, Input} from 'angular2/core';
+import {Directive, ElementRef, Input, Output, EventEmitter} from 'angular2/core';
 
 declare var HTMLImports;
 declare var Polymer;
 
 @Directive({selector: 'vaadin-grid'})
 export class VaadinGrid {
+
+  @Output() ready: EventEmitter<any> = new EventEmitter(false);
 
   constructor(el: ElementRef) {
     this.importHref('bower_components/vaadin-grid/vaadin-grid.html', el);
@@ -30,5 +32,8 @@ export class VaadinGrid {
       Polymer.dom(grid).appendChild(localDomTable);
     }
 
+    grid.then(() => {
+      this.ready.emit(grid);
+    });
   }
 }
