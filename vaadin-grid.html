@@ -11,6 +11,53 @@ This program is available under Apache License Version 2.0, available at https:/
   vaadin-grid > table {
     display: none;
   }
+
+  .vaadin-grid-sidebar-popup {
+    background-color: #ffffff;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 6px 0 rgba(0,0,0,.12);
+    border-radius: 2px;
+    font-family: arial;
+    font-size: 12px;
+  }
+
+  .vaadin-grid-sidebar-content > div {
+    padding: 16px 0;
+  }
+
+  .vaadin-grid-sidebar-content span:before {
+    content: url(img/ic_check_black_24px.svg);
+    opacity: 0.6;
+    display: inline-block;
+    padding: 0 20px;
+  }
+
+  .vaadin-grid-sidebar-content span div {
+    display: inline-block;
+  }
+
+  .vaadin-grid-sidebar-content .v-off:before {
+    visibility: hidden;
+  }
+
+  .vaadin-grid-sidebar-content span div {
+    display: inline-block;
+    vertical-align: super;
+    padding-right: 20px;
+  }
+
+  .vaadin-grid-sidebar-content table {
+    border-collapse: collapse;
+    border-top: 1px solid #E6E6E6;
+    border-bottom: 1px solid #E6E6E6;
+  }
+
+  .vaadin-grid-sidebar-content .column-hiding-toggle {
+    cursor: pointer;
+  }
+
+  .vaadin-grid-sidebar-content .gwt-MenuItem-selected {
+    background: #eeeeee;
+  }
 </style>
 
 <!--
@@ -544,10 +591,11 @@ See the [demo](demo/index.html) for use case examples.
   .vaadin-grid-sidebar {
     z-index: 5;
     position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
+    top: 2px;
     pointer-events: none;
+    right: 4px;
+    width: 38px;
+    height: 38px;
   }
 
   .vaadin-grid-sidebar-button {
@@ -575,25 +623,12 @@ See the [demo](demo/index.html) for use case examples.
 
   .vaadin-grid-sidebar-button:after {
     content: url(img/ic_view_column_black_24px.svg);
+    opacity: 0.4;
     display: inline-block;
     position:absolute;
     top: 14px;
     left: 16px;
     width: 24px;
-  }
-
-  .vaadin-grid-sidebar-content {
-    background-color: #ffffff;
-    position: absolute;
-    right: 0;
-    top: 44px;
-    box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 6px 0 rgba(0,0,0,.12);
-    border-radius: 2px;
-    max-height: calc(100% - 56px);
-    pointer-events: all;
-    overflow-y: auto;
-    -webkit-animation: vaadin-grid-sidebar-transition 0.2s ease-in;
-    animation: vaadin-grid-sidebar-transition 0.2s ease-in;
   }
 
   @keyframes vaadin-grid-sidebar-transition {
@@ -618,60 +653,8 @@ See the [demo](demo/index.html) for use case examples.
     }
   }
 
-  .vaadin-grid-sidebar-content::content > div {
-    padding: 6px 0;
-  }
 
-  .vaadin-grid-sidebar-content::content span:before {
-    content: url(img/ic_check_black_24px.svg);
-    display: inline-block;
-    padding: 0 20px;
-  }
 
-  .vaadin-grid-sidebar-content::content .v-off:before {
-    visibility: hidden;
-  }
-
-  .vaadin-grid-sidebar-content::content span div {
-    display: inline-block;
-    vertical-align: super;
-    padding-right: 20px;
-  }
-
-  .vaadin-grid-sidebar-content::content table {
-    border-collapse: collapse;
-  }
-
-  .vaadin-grid-sidebar-content::content .column-hiding-toggle {
-    cursor: pointer;
-  }
-
-  .vaadin-grid-sidebar-content::content .gwt-MenuItem-selected {
-    background: #eeeeee;
-  }
-
-  .vaadin-grid-sidebar.closed:after {
-    content: "Show/hide columns";
-    z-index: 999;
-    background: rgba(97,97,97,.9);
-    border-radius: 2px;
-    color: #fff;
-    display: inline-block;
-    font-size: 10px;
-    font-weight: 500;
-    line-height: 14px;
-    padding: 8px;
-    text-align: center;
-    position: absolute;
-    right: 0;
-    top: 44px;
-    opacity: 0;
-    transition: opacity 0.1s ease-in;
-  }
-
-  .vaadin-grid-sidebar.closed:hover:after {
-    opacity: 1;
-  }
   </style>
   <template>
     <iframe id="measureobject" class="vaadin-grid"></iframe>
