@@ -1025,12 +1025,8 @@ See the [demo](demo/index.html) for use case examples.
     },
 
     attributeChanged: function(name, type, value) {
-      switch (name) {
-        case 'selection-mode':
-          if (this.selection.mode != value) {
-            this.selection.mode = value;
-          }
-          break;
+      if (name === 'selection-mode' && this.selection.mode != value) {
+        this.selection.mode = value;
       }
     },
 
@@ -1103,11 +1099,9 @@ See the [demo](demo/index.html) for use case examples.
     ready: function() {
       // hide until fully loaded
       this.toggleClass('vaadin-grid-loading', true);
-      this.async(function() {
-        for (var i = 0; i < this.attributes.length; i++) {
-          this.attributeChanged(this.attributes[i].nodeName, null, this.attributes[i].nodeValue);
-        }
-      });
+      if (this.hasAttribute('selection-mode')) {
+        this.selection.mode = this.getAttribute('selection-mode');
+      }
       if (this.colums) {
         this._grid.setColumns(this.columns);
       } else {
@@ -1118,7 +1112,11 @@ See the [demo](demo/index.html) for use case examples.
       Polymer.dom(this).observeNodes(function(info) {
         info.addedNodes.forEach(function(node) {
           if (node.tagName === 'TABLE') {
+            var size = this.size;
             this._grid.setLightDomTable(node);
+            if (size) {
+              this.size = size;
+            }
           }
         }.bind(this));
       });
