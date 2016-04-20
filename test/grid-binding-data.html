@@ -59,7 +59,7 @@
         });
       });
 
-      it('should support item removals', function() {
+      it('should support item additions', function() {
         grid.items = [];
         return grid.then(function() {
           grid.push('items', {
@@ -68,12 +68,12 @@
           });
           return grid;
         }).then(function() {
-          var cells = qaLocal('.vaadin-grid-body .vaadin-grid-cell > span');
-          assert.equal(cells.length, 2);
+          var rows = qaLocal('.vaadin-grid-body .vaadin-grid-row');
+          expect(rows.length).to.equal(1);
         });
       });
 
-      it('should support item additions', function() {
+      it('should support item removals', function() {
         grid.items = [{
           FirstName: 'John',
           Salary: 1234.56
@@ -82,8 +82,8 @@
           grid.pop('items');
           return grid;
         }).then(function() {
-          var cells = qaLocal('.vaadin-grid-body .vaadin-grid-cell > span');
-          assert.equal(cells.length, 0);
+          var rows = qaLocal('.vaadin-grid-body .vaadin-grid-row');
+          expect(rows.length).to.equal(0);
         });
       });
 
@@ -96,8 +96,8 @@
           grid.set('items.0.FirstName', 'Peter');
           return grid;
         }).then(function() {
-          var cells = qaLocal('.vaadin-grid-body .vaadin-grid-cell > span');
-          assert.equal(cells[0].innerHTML, 'Peter');
+          var cell = qLocal('.vaadin-grid-body .vaadin-grid-cell > span');
+          expect(cell.innerHTML).to.equal('Peter');
         });
       });
 
