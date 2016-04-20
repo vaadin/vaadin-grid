@@ -59,46 +59,45 @@
         });
       });
 
-      it('should support item removals', function() {
+      it('should support item additions', function() {
         grid.items = [];
         return grid.then(function() {
           grid.push('items', {
             FirstName: 'John',
             Salary: 1234.56
           });
-          return grid.then(function() {
-            var cells = qaLocal('.vaadin-grid-body .vaadin-grid-cell > span');
-            assert.equal(cells.length, 2);
-          });
+          return grid;
+        }).then(function() {
+          var rows = qaLocal('.vaadin-grid-body .vaadin-grid-row');
+          expect(rows.length).to.equal(1);
         });
       });
 
-      it('should support item additions', function() {
+      it('should support item removals', function() {
         grid.items = [{
           FirstName: 'John',
           Salary: 1234.56
         }];
         return grid.then(function() {
           grid.pop('items');
-          return grid.then(function() {
-            var cells = qaLocal('.vaadin-grid-body .vaadin-grid-cell > span');
-            assert.equal(cells.length, 0);
-          });
+          return grid;
+        }).then(function() {
+          var rows = qaLocal('.vaadin-grid-body .vaadin-grid-row');
+          expect(rows.length).to.equal(0);
         });
       });
 
       it('should support item changes', function() {
-        window.g = grid;
         grid.items = [{
           FirstName: 'John',
           Salary: 1234.56
         }];
         return grid.then(function() {
           grid.set('items.0.FirstName', 'Peter');
-          return grid.then(function() {
-            var cells = qaLocal('.vaadin-grid-body .vaadin-grid-cell > span');
-            assert.equal(cells[0].innerHTML, 'Peter');
-          });
+          return grid;
+        }).then(function() {
+          var cell = qLocal('.vaadin-grid-body .vaadin-grid-cell > span');
+          expect(cell.innerHTML).to.equal('Peter');
         });
       });
 

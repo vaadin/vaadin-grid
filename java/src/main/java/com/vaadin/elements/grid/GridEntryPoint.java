@@ -36,11 +36,10 @@ public class GridEntryPoint implements EntryPoint {
        i = i.@com.google.gwt.dom.client.DOMImpl::getClass()();
 
        var c = ua == 'safari' ? @com.google.gwt.dom.client.DOMImplWebkit::class :
-         ua == 'gecko1_8' ? @com.google.gwt.dom.client.DOMImplWebkit::class :
-           'unknown';
+         ua == 'gecko1_8' ? @com.google.gwt.dom.client.DOMImplWebkit::class : 'unknown';
 
        if (i != c) {
-       	 $wnd.console.error("VaadinGrid: wrong permutation selected for UA=" + ua);
+         $wnd.console.error("VaadinGrid: wrong permutation selected for UA=" + ua);
        }
     }-*/;
     

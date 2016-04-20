@@ -125,6 +125,16 @@
     </template>
   </test-fixture>
 
+  <test-fixture id='sized'>
+    <template>
+      <vaadin-grid size="1000">
+        <table>
+          <col>
+        </table>
+      </vaadin-grid>
+    </template>
+  </test-fixture>
+
   <script>
     HTMLImports.whenReady(function() {
       Polymer({
@@ -145,6 +155,14 @@
           waitUntil(function() {
             return grid.sortOrder && grid.sortOrder[0].direction === 'asc';
           }, done);
+        });
+
+        it('should not affect explicit size', function(done) {
+          var grid = fixture('sized');
+          grid.async(function() {
+            expect(grid.size).to.equal(1000);
+            done();
+          });
         });
 
         it('should support dynamically changing the light dom table', function() {

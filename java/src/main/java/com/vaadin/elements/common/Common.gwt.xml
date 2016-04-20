@@ -19,5 +19,6 @@
         <when-type-assignable class="com.google.gwt.query.client.impl.SelectorEngineImpl"/>
         <when-property-is name="user.agent" value="gecko1_8"/>
     </replace-with>
+
 </module>
 
