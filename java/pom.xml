@@ -145,10 +145,6 @@
       <artifactId>gwt-codeserver</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-elemental</artifactId>
-    </dependency>
-    <dependency>
       <groupId>com.googlecode.gwtquery</groupId>
       <artifactId>gwtquery</artifactId>
       <version>${gQueryVersion}</version>
