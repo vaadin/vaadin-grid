@@ -66,10 +66,10 @@
             FirstName: 'John',
             Salary: 1234.56
           });
-          return grid.then(function() {
-            var cells = qaLocal('.vaadin-grid-body .vaadin-grid-cell > span');
-            assert.equal(cells.length, 2);
-          });
+          return grid;
+        }).then(function() {
+          var cells = qaLocal('.vaadin-grid-body .vaadin-grid-cell > span');
+          assert.equal(cells.length, 2);
         });
       });
 
@@ -80,25 +80,24 @@
         }];
         return grid.then(function() {
           grid.pop('items');
-          return grid.then(function() {
-            var cells = qaLocal('.vaadin-grid-body .vaadin-grid-cell > span');
-            assert.equal(cells.length, 0);
-          });
+          return grid;
+        }).then(function() {
+          var cells = qaLocal('.vaadin-grid-body .vaadin-grid-cell > span');
+          assert.equal(cells.length, 0);
         });
       });
 
       it('should support item changes', function() {
-        window.g = grid;
         grid.items = [{
           FirstName: 'John',
           Salary: 1234.56
         }];
         return grid.then(function() {
           grid.set('items.0.FirstName', 'Peter');
-          return grid.then(function() {
-            var cells = qaLocal('.vaadin-grid-body .vaadin-grid-cell > span');
-            assert.equal(cells[0].innerHTML, 'Peter');
-          });
+          return grid;
+        }).then(function() {
+          var cells = qaLocal('.vaadin-grid-body .vaadin-grid-cell > span');
+          assert.equal(cells[0].innerHTML, 'Peter');
         });
       });
 

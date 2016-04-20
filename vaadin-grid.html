@@ -1021,6 +1021,10 @@ See the [demo](demo/index.html) for use case examples.
         type: Number,
         reflectToAttribute: true,
         observer: '_visibleRowsChanged'
+      },
+
+      _currentItems: {
+        value: undefined
       }
     },
 
@@ -1060,9 +1064,7 @@ See the [demo](demo/index.html) for use case examples.
       this._grid.setColumns(cols);
     },
 
-    _currentItems: undefined,
-
-    _itemsChanged: function(items, a) {
+    _itemsChanged: function(items) {
       if (Array.isArray(items)) {
         if (items != this._currentItems) {
           this._currentItems = items;
