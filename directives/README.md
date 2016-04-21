@@ -55,7 +55,7 @@ import { VaadinGrid } from '../bower_components/vaadin-grid/directives/vaadin-gr
 
 @Component({
   selector: 'my-component',
-  template: '<vaadin-grid [items]="dataItems"><table><columns></columns></table></vaadin-grid>',
+  template: '<vaadin-grid [items]="dataItems"><table><colgroup><col></colgroup></table></vaadin-grid>',
   directives: [VaadinGrid]
 })
 ```

@@ -1,6 +1,6 @@
 ---
-title: Usage with Angular 2
-order: 3
+title: Grid Usage with Angular 2
+order: 1
 layout: page
 ---
 
