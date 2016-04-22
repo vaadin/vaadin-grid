@@ -355,6 +355,26 @@
       });
     });
 
+    it('should apply frozen columns even after columns are initialized', function(done) {
+      grid.columns = [];
+      grid.frozenColumns = 1;
+
+      grid.then(function() {
+        var table = document.createElement('table');
+        table.innerHTML = '<col><col>';
+
+        var oldTable = Polymer.dom(grid).querySelector('table');
+        Polymer.dom(grid).replaceChild(table, oldTable);
+
+        waitUntil(function() {
+          var firstHeaderCell = qLocal('.vaadin-grid-header .vaadin-grid-row th');
+          return firstHeaderCell && firstHeaderCell.classList.contains('last-frozen');
+        }, function() {
+          done();
+        });
+      });
+    });
+
     it('should add a column to an empty grid with an index', function() {
       grid.columns = [];
       return grid.then(function() {

@@ -816,7 +816,7 @@ See the [demo](demo/index.html) for use case examples.
        */
       frozenColumns: {
         type: Number,
-        observer: '_frozenColumnsChanged',
+        observer: '_applyFrozenColumns',
         reflectToAttribute: true,
         value: 0
       },
@@ -1062,8 +1062,9 @@ See the [demo](demo/index.html) for use case examples.
       '_itemsChanged(items, items.*)',
     ],
 
-    _columnsChanged: function(cols) {
-      this._grid.setColumns(cols);
+    _columnsChanged: function() {
+      this._grid.setColumns(this.columns);
+      this._applyFrozenColumns();
     },
 
     _itemsChanged: function(items) {
@@ -1121,6 +1122,7 @@ See the [demo](demo/index.html) for use case examples.
             if (size) {
               this.size = size;
             }
+            this._columnsChanged();
           }
         }.bind(this));
       });
@@ -1243,10 +1245,10 @@ See the [demo](demo/index.html) for use case examples.
       this._grid.setDisabled(disabled);
     },
 
-    _frozenColumnsChanged: function(frozenColumns) {
-      this.then(function() {
-        this._grid.setFrozenColumns(frozenColumns);
-      }.bind(this));
+    _applyFrozenColumns: function() {
+      if (this.columns && this.columns.length >= this.frozenColumns) {
+         this._grid.setFrozenColumns(this.frozenColumns);
+      }
     },
 
     _visibleRowsChanged: function(visibleRows) {
