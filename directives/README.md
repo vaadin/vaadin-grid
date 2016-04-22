@@ -62,3 +62,25 @@ import { VaadinGrid } from '../bower_components/vaadin-grid/directives/vaadin-gr
 
 The table element is used to declaratively configure columns, headers and footers.
 Items can be either a data array or a function providing the data.
+
+In case you'll need to apply modifications to the declaratively configured
+`vaadin-grid` columns, you must wait for the component to be fully initialized first.
+Use the `vaadin-grid`'s `ready` event for this as follows:
+
+```html
+<vaadin-grid (ready)="gridReady($event)" [items]="dataItems">
+  <table>
+    <colgroup>
+      <col>
+    </colgroup>
+  </table>
+</vaadin-grid>
+```
+
+```javascript
+gridReady(grid) {
+  grid.columns[0].renderer = (cell) => {
+    cell.element.innerHTML = 'row-' + cell.row.index;
+  }
+}
+```
