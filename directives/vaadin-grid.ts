@@ -8,7 +8,7 @@ export class VaadinGrid {
   @Output() ready: EventEmitter<any> = new EventEmitter(false);
 
   constructor(el: ElementRef) {
-    if (!(<any>window).Polymer || !Polymer.isInstance(el)) {
+    if (!(<any>window).Polymer || !Polymer.isInstance(el.nativeElement)) {
       console.error("vaadin-grid has not been registered yet, please remember to import vaadin-grid.html in your main HTML page.");
       return;
     }

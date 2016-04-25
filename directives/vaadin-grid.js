@@ -21,7 +21,7 @@ System.register(['angular2/core'], function(exports_1, context_1) {
             VaadinGrid = (function () {
                 function VaadinGrid(el) {
                     this.ready = new core_1.EventEmitter(false);
-                    if (!window.Polymer || !Polymer.isInstance(el)) {
+                    if (!window.Polymer || !Polymer.isInstance(el.nativeElement)) {
                         console.error("vaadin-grid has not been registered yet, please remember to import vaadin-grid.html in your main HTML page.");
                         return;
                     }
