@@ -1150,11 +1150,13 @@ See the [demo](demo/index.html) for use case examples.
     },
 
     attached: function() {
-      var _this = this;
+      this._grid.setHeaderHeight(parseFloat(this.getComputedStyleValue('--vaadin-grid-header-row-height')) || 56);
+      this._grid.setFooterHeight(parseFloat(this.getComputedStyleValue('--vaadin-grid-footer-row-height')) || 56);
+      this._grid.setBodyHeight(parseFloat(this.getComputedStyleValue('--vaadin-grid-row-height')) || 48);
       this._bindResizeListener();
       this.then(function() {
-        _this.toggleClass('vaadin-grid-loading', false);
-      });
+        this.toggleClass('vaadin-grid-loading', false);
+      }.bind(this));
     },
 
     /**

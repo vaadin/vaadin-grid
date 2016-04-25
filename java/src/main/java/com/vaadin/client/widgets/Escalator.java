@@ -15,20 +15,6 @@
  */
 package com.vaadin.client.widgets;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.Duration;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -59,6 +45,7 @@ import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
+
 import com.vaadin.client.BrowserInfo;
 import com.vaadin.client.DeferredWorker;
 import com.vaadin.client.Profiler;
@@ -91,6 +78,20 @@ import com.vaadin.shared.ui.grid.HeightMode;
 import com.vaadin.shared.ui.grid.Range;
 import com.vaadin.shared.ui.grid.ScrollDestination;
 import com.vaadin.shared.util.SharedUtil;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /*-
 
@@ -1133,6 +1134,8 @@ public class Escalator extends Widget implements RequiresResize,
 
         private double defaultRowHeight = INITIAL_DEFAULT_ROW_HEIGHT;
 
+        private boolean autodetectRowHeightLaterQueued = false;
+
         public AbstractRowContainer(
                 final TableSectionElement rowContainerElement) {
             root = rowContainerElement;
@@ -1928,42 +1931,51 @@ public class Escalator extends Widget implements RequiresResize,
         }
 
         public void autodetectRowHeightLater() {
-            Scheduler.get().scheduleFinally(new Scheduler.ScheduledCommand() {
-                @Override
-                public void execute() {
-                    if (defaultRowHeightShouldBeAutodetected && isAttached()) {
-                        autodetectRowHeightNow();
-                        defaultRowHeightShouldBeAutodetected = false;
+            if (!autodetectRowHeightLaterQueued) {
+                autodetectRowHeightLaterQueued = true;
+                Scheduler.get().scheduleFinally(new Scheduler.ScheduledCommand() {
+                    @Override
+                    public void execute() {
+                        if (isAttached()) {
+                            autodetectRowHeightLaterQueued = false;
+                            autodetectRowHeightNow();
+                        }
                     }
-                }
-            });
+                });
+            }
         }
+        
+        private Element detectionTr, cellElem;
 
         public void autodetectRowHeightNow() {
-            if (!isAttached()) {
-                // Run again when attached
-                defaultRowHeightShouldBeAutodetected = true;
+            if (!defaultRowHeightShouldBeAutodetected || !isAttached()) {
                 return;
             }
+            
+            if (detectionTr == null) {
+                detectionTr = DOM.createTR();
+                detectionTr.setClassName(getStylePrimaryName() + "-row");
+                cellElem = DOM.createElement(getCellElementTagName());
+                cellElem.setClassName(getStylePrimaryName() + "-cell");
+                cellElem.setInnerText("Ij");
+                detectionTr.appendChild(cellElem);
+            }
 
-            final Element detectionTr = DOM.createTR();
-            detectionTr.setClassName(getStylePrimaryName() + "-row");
-
-            final Element cellElem = DOM.createElement(getCellElementTagName());
-            cellElem.setClassName(getStylePrimaryName() + "-cell");
-            cellElem.setInnerText("Ij");
-
-            detectionTr.appendChild(cellElem);
             root.appendChild(detectionTr);
             double boundingHeight = WidgetUtil
                     .getRequiredHeightBoundingClientRectDouble(cellElem);
-            defaultRowHeight = Math.max(1.0d, boundingHeight);
             root.removeChild(detectionTr);
 
-            if (root.hasChildNodes()) {
-                reapplyDefaultRowHeights();
-                applyHeightByRows();
+            // Height lesser than 1px causes serious performance problems.
+            if (boundingHeight >= 1) {
+                defaultRowHeight = boundingHeight;
+                defaultRowHeightShouldBeAutodetected = false;
+                if (root.hasChildNodes()) {
+                    reapplyDefaultRowHeights();
+                    applyHeightByRows();
+                }
             }
+            
         }
 
         @Override

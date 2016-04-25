@@ -15,7 +15,8 @@ public class GridEntryPoint implements EntryPoint {
 
     @Override
     public void onModuleLoad() {
-    	checkPermutation(System.getProperty("user.agent"));
+    	// FIXME(manolo): Commenting out so as users don't have this message in console
+    	// checkPermutation(System.getProperty("user.agent"));
 
         Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
             @Override

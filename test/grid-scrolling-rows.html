@@ -112,6 +112,14 @@
         }, done, done);
       });
     });
+
+    it('should not throw any error when there are no rows', function() {
+      grid.set('items', []);
+      expect(grid.scrollToRow.bind(grid, -1)).not.to.throw('Row index');
+      expect(grid.scrollToRow.bind(grid, 100)).not.to.throw('Row index');
+      grid.set('items', infiniteDataSource);
+    });
+
   });
 </script>
 

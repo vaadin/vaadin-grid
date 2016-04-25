@@ -13,8 +13,10 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.vaadin.client.BrowserInfo;
 import com.vaadin.client.WidgetUtil;
 import com.vaadin.client.widget.grid.selection.SelectionModelMulti;
+import com.vaadin.client.widgets.Escalator;
 import com.vaadin.client.widgets.Grid;
 import com.vaadin.client.widgets.Overlay;
+import com.vaadin.shared.ui.grid.ScrollDestination;
 
 public class ViolatedGrid extends Grid<Object> {
 
@@ -37,10 +39,10 @@ public class ViolatedGrid extends Grid<Object> {
         private native void adjustPosition(Element p, Element r) /*-{
             p.style.margin = '0px'
             p.style.left = (r.getClientRects()[0].left
-                        + (document.documentElement.scrollLeft || document.body.scrollLeft)
+                        + ($doc.documentElement.scrollLeft || $doc.body.scrollLeft)
                         + r.clientWidth - p.clientWidth) + 'px'
             p.style.top = (r.getClientRects()[0].top
-                        + (document.documentElement.scrollTop || document.body.scrollTop)
+                        + ($doc.documentElement.scrollTop || $doc.body.scrollTop)
                         + r.clientHeight) + 'px'
         }-*/;
     }
@@ -76,6 +78,11 @@ public class ViolatedGrid extends Grid<Object> {
                 GQuery.$(".vaadin-grid-scroller", this).attr("invisible", "");
             }
         }
+    }
+
+    @Override
+    public Escalator getEscalator() {
+        return super.getEscalator();
     }
 
     public native boolean refreshHeader()

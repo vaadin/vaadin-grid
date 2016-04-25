@@ -3,14 +3,6 @@ package com.vaadin.elements.grid;
 import static com.google.gwt.query.client.GQuery.$;
 import static com.google.gwt.query.client.GQuery.browser;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-
-import jsinterop.annotations.JsIgnore;
-import jsinterop.annotations.JsType;
-
 import com.google.gwt.core.client.JavaScriptException;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.Scheduler;
@@ -26,6 +18,7 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.SimplePanel;
+
 import com.vaadin.client.widget.grid.DataAvailableEvent;
 import com.vaadin.client.widget.grid.DetailsGenerator;
 import com.vaadin.client.widget.grid.events.SelectAllEvent;
@@ -64,6 +57,14 @@ import com.vaadin.elements.grid.table.GridStaticSection;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.grid.ScrollDestination;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
+import jsinterop.annotations.JsIgnore;
+import jsinterop.annotations.JsType;
+
 /**
  * Class to export Vaadin Grid to JS.
  */
@@ -91,9 +92,10 @@ public class GridElement implements SelectionHandler<Object>,
     public static final int MAX_AUTO_ROWS = 10;
 
     private static final String SELECTION_MODE_CHANGED_EVENT = "selection-mode-changed";
-
+    
     public GridElement() {
         grid = new ViolatedGrid();
+        
         grid.setSelectionModel(new IndexBasedSelectionModelSingle());
         grid.addSelectionHandler(this);
         grid.addSortHandler(this);
@@ -172,6 +174,18 @@ public class GridElement implements SelectionHandler<Object>,
         }
     }
 
+    public void setHeaderHeight(double d) {
+        grid.getEscalator().getHeader().setDefaultRowHeight(d);
+    }
+
+    public void setFooterHeight(double d) {
+        grid.getEscalator().getFooter().setDefaultRowHeight(d);
+    }
+
+    public void setBodyHeight(double d) {
+        grid.getEscalator().getBody().setDefaultRowHeight(d);
+    }
+
     public JSColumn addColumn(JSColumn jsColumn, Object beforeColumnId) {
         int index = cols.length();
         if (beforeColumnId != null) {
@@ -222,20 +236,21 @@ public class GridElement implements SelectionHandler<Object>,
     }
 
     public void scrollToRow(int index, String scrollDestination) {
-        if (scrollDestination != null) {
-            grid.scrollToRow(index,
-                    ScrollDestination.valueOf(scrollDestination.toUpperCase()));
-        } else {
-            grid.scrollToRow(index);
+        if (grid.getEscalator().getBody().getRowCount() > 0) {
+            if (scrollDestination != null) {
+                grid.scrollToRow(index, ScrollDestination.valueOf(scrollDestination.toUpperCase()));
+            } else {
+                grid.scrollToRow(index);
+            }
         }
     }
 
     public void scrollToStart() {
-        grid.scrollToStart();
+        scrollToRow(0, "start");
     }
 
     public void scrollToEnd() {
-        grid.scrollToEnd();
+        scrollToRow(grid.getEscalator().getBody().getRowCount() - 1, "end");
     }
 
     public double getScrollTop() {
@@ -411,7 +426,7 @@ public class GridElement implements SelectionHandler<Object>,
         // We currently implement the feature by checking the client height of
         // measure object because it has 1px bottom padding and
         // thus has client height of 1 if it's visible in the DOM.
-        return measureObject.getClientHeight() > 0;
+        return measureObject != null && measureObject.getClientHeight() > 0;
     }
 
     public void updateSize() {
