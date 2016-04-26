@@ -25,19 +25,18 @@ System.register(['angular2/core'], function(exports_1, context_1) {
                         console.error("vaadin-grid has not been registered yet, please remember to import vaadin-grid.html in your main HTML page.");
                         return;
                     }
-                    this.init(el);
+                    this.grid = el.nativeElement;
                 }
-                VaadinGrid.prototype.init = function (el) {
+                VaadinGrid.prototype.ngAfterViewInit = function () {
                     var _this = this;
-                    var grid = el.nativeElement;
                     // Configuration <table> might be placed in a wrong container.
                     // Let's move it in the light dom programmatically to fix that.
-                    var localDomTable = grid.querySelector("table:not(.vaadin-grid)");
+                    var localDomTable = this.grid.querySelector("table:not(.vaadin-grid)");
                     if (localDomTable) {
-                        Polymer.dom(grid).appendChild(localDomTable);
+                        Polymer.dom(this.grid).appendChild(localDomTable);
                     }
-                    grid.then(function () {
-                        _this.ready.emit(grid);
+                    this.grid.then(function () {
+                        _this.ready.emit(_this.grid);
                     });
                 };
                 __decorate([

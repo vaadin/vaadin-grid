@@ -7,26 +7,26 @@ export class VaadinGrid {
 
   @Output() ready: EventEmitter<any> = new EventEmitter(false);
 
+  private grid: any;
+
   constructor(el: ElementRef) {
     if (!(<any>window).Polymer || !Polymer.isInstance(el.nativeElement)) {
       console.error("vaadin-grid has not been registered yet, please remember to import vaadin-grid.html in your main HTML page.");
       return;
     }
-    this.init(el);
+    this.grid = el.nativeElement;
   }
 
-  init(el: ElementRef) {
-    const grid = el.nativeElement;
-
+  ngAfterViewInit() {
     // Configuration <table> might be placed in a wrong container.
     // Let's move it in the light dom programmatically to fix that.
-    var localDomTable = grid.querySelector("table:not(.vaadin-grid)");
+    var localDomTable = this.grid.querySelector("table:not(.vaadin-grid)");
     if (localDomTable) {
-      Polymer.dom(grid).appendChild(localDomTable);
+      Polymer.dom(this.grid).appendChild(localDomTable);
     }
 
-    grid.then(() => {
-      this.ready.emit(grid);
+    this.grid.then(() => {
+      this.ready.emit(this.grid);
     });
   }
 }
