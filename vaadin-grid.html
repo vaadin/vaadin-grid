@@ -66,7 +66,7 @@ Custom property | Description | Default
 `--vaadin-grid-row-height` | Data row height | `48px`
 `--vaadin-grid-header-row-height` | Header row height | `56px`
 `--vaadin-grid-footer-row-height` | Footer row height | `56px`
-`--vaadin-grid-selected-row` | Selected row mixin | {}
+`--vaadin-grid-selected-row-cell` | Mixin which applies to the cell elements of a selected row | {}
 
 See the [demo](demo/index.html) for use case examples.
 
@@ -256,7 +256,7 @@ See the [demo](demo/index.html) for use case examples.
 
   .vaadin-grid-row-selected td {
     background-color: #f5f5f5;
-    @apply(--vaadin-grid-selected-row);
+    @apply(--vaadin-grid-selected-row-cell);
   }
 
    /* Focus styles */
