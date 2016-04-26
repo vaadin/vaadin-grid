@@ -1944,14 +1944,14 @@ public class Escalator extends Widget implements RequiresResize,
                 });
             }
         }
-        
+
         private Element detectionTr, cellElem;
 
         public void autodetectRowHeightNow() {
             if (!defaultRowHeightShouldBeAutodetected || !isAttached()) {
                 return;
             }
-            
+
             if (detectionTr == null) {
                 detectionTr = DOM.createTR();
                 detectionTr.setClassName(getStylePrimaryName() + "-row");
@@ -1975,7 +1975,6 @@ public class Escalator extends Widget implements RequiresResize,
                     applyHeightByRows();
                 }
             }
-            
         }
 
         @Override

@@ -16,7 +16,6 @@ import com.vaadin.client.widget.grid.selection.SelectionModelMulti;
 import com.vaadin.client.widgets.Escalator;
 import com.vaadin.client.widgets.Grid;
 import com.vaadin.client.widgets.Overlay;
-import com.vaadin.shared.ui.grid.ScrollDestination;
 
 public class ViolatedGrid extends Grid<Object> {
 
@@ -37,16 +36,11 @@ public class ViolatedGrid extends Grid<Object> {
         }
 
         private native void adjustPosition(Element p, Element r) /*-{
-            var bodyPosition = $wnd.getComputedStyle($doc.body).position;
-            var bodyClientRect = $doc.body.getBoundingClientRect();
+         var overlayRect = p.getBoundingClientRect();
+         var partnerRect = r.getBoundingClientRect();
 
-            p.style.margin = '0px'
-            p.style.left = (r.getClientRects()[0].left
-                        + (bodyPosition !== 'static' ? -bodyClientRect.left : ($doc.documentElement.scrollLeft || $doc.body.scrollLeft))
-                        + r.clientWidth - p.clientWidth) + 'px'
-            p.style.top = (r.getClientRects()[0].top
-                        + (bodyPosition !== 'static' ? -bodyClientRect.top : ($doc.documentElement.scrollTop || $doc.body.scrollTop))
-                        + r.clientHeight) + 'px'
+         p.style.left = (partnerRect.right - overlayRect.left - overlayRect.width) + 'px';
+         p.style.top = (partnerRect.top - overlayRect.top + partnerRect.height) + 'px';
         }-*/;
     }
 

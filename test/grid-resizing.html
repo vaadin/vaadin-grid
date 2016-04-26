@@ -40,9 +40,7 @@
       function appendAdditionalGrid(div) {
         var wrapper = document.getElementById('gridwrapper');
         wrapper.appendChild(div);
-        var grid = div.querySelector('vaadin-grid');
-        window.g = grid;
-        return grid;
+        return div.querySelector('vaadin-grid');
       }
 
       describe('resizing', function() {
