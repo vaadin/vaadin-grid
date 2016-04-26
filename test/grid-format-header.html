@@ -48,7 +48,7 @@
 
       describe('header content', function() {
         it('should be human readable when text-header is not set but column name', function() {
-          var headers = Polymer.dom(grid.root).querySelectorAll('thead > tr > th > span');
+          var headers = Polymer.dom(grid.root).querySelectorAll('thead > tr > th span');
           expect(headers[0].textContent).to.be.equal('Index');
           expect(headers[1].textContent).to.be.equal('First Name');
           expect(headers[2].textContent).to.be.equal('Surname');

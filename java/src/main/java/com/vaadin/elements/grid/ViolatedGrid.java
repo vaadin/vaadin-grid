@@ -9,11 +9,40 @@ import com.google.gwt.query.client.GQuery;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.RootPanel;
+
 import com.vaadin.client.BrowserInfo;
 import com.vaadin.client.WidgetUtil;
 import com.vaadin.client.widget.grid.selection.SelectionModelMulti;
+import com.vaadin.client.widgets.Escalator;
+import com.vaadin.client.widgets.Grid;
+import com.vaadin.client.widgets.Overlay;
 
-public class ViolatedGrid extends com.vaadin.client.widgets.Grid<Object> {
+public class ViolatedGrid extends Grid<Object> {
+
+    public static class ViolatedOverlay extends Overlay {
+        private Element partnerElement;
+
+        @Override
+        public void addAutoHidePartner(Element partner) {
+            partnerElement = partner;
+        }
+
+        @Override
+        public void setPopupPositionAndShow(PositionCallback callback) {
+            this.getElement().getStyle().setOpacity(0);
+            show();
+            adjustPosition(this.getElement(), partnerElement);
+            this.getElement().getStyle().setOpacity(1);
+        }
+
+        private native void adjustPosition(Element p, Element r) /*-{
+         var overlayRect = p.getBoundingClientRect();
+         var partnerRect = r.getBoundingClientRect();
+
+         p.style.left = (partnerRect.right - overlayRect.left - overlayRect.width) + 'px';
+         p.style.top = (partnerRect.top - overlayRect.top + partnerRect.height) + 'px';
+        }-*/;
+    }
 
     public ViolatedGrid() {
         super();
@@ -46,6 +75,11 @@ public class ViolatedGrid extends com.vaadin.client.widgets.Grid<Object> {
                 GQuery.$(".vaadin-grid-scroller", this).attr("invisible", "");
             }
         }
+    }
+
+    @Override
+    public Escalator getEscalator() {
+        return super.getEscalator();
     }
 
     public native boolean refreshHeader()

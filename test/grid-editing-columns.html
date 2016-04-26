@@ -73,7 +73,7 @@
       }, 'foo');
 
       return grid.then(function() {
-        var headers = qaLocal('.vaadin-grid-header .vaadin-grid-row th > span');
+        var headers = qaLocal('.vaadin-grid-column-header-content span');
         assert.equal(headers[0].innerHTML, 'Bar');
         assert.equal(headers[1].innerHTML, 'Foo');
 
@@ -90,13 +90,13 @@
       grid.addColumn(c);
 
       return grid.then(function() {
-        var headers = qaLocal('.vaadin-grid-header .vaadin-grid-row th > span');
+        var headers = qaLocal('.vaadin-grid-column-header-content span');
         assert.equal(headers[grid.columns.length - 1].innerHTML, 'Foo');
 
         c.name = 'bar';
 
         return grid.then(function() {
-          headers = qaLocal('.vaadin-grid-header .vaadin-grid-row th > span');
+          headers = qaLocal('.vaadin-grid-column-header-content span');
           assert.equal(headers[grid.columns.length - 1].innerHTML, 'Bar');
         });
       });
@@ -105,7 +105,7 @@
     it('edit existing column', function() {
       grid.columns[0].name = 'testHtml';
       return grid.then(function() {
-        var headers = qaLocal('.vaadin-grid-header .vaadin-grid-row th > span');
+        var headers = qaLocal('.vaadin-grid-column-header-content span');
         assert.equal(headers[0].innerHTML, 'Test Html');
       });
     });
@@ -160,7 +160,7 @@
         grid.refreshItems();
         grid.size = mydata.length;
 
-        grid.columns.splice(0, 1);
+        grid.splice('columns', 0, 1);
         grid.then(function() {
           assert.isFalse(gridContainsText(grid, 'TestFoo'));
           assert.equal(cell.row.index, 0);
@@ -198,11 +198,11 @@
 
     it('modify columns array', function(done) {
       var col = grid.columns[0];
-      grid.columns.splice(1, 1);
+      grid.splice('columns', 1, 1);
 
       grid.then(function() {
         assert.isFalse(gridContainsText(grid, 'Progress'));
-        grid.columns.push({
+        grid.push('columns', {
           name: 'testHtml'
         });
         grid.then(function() {
@@ -232,7 +232,7 @@
     it('add new column to an empty grid', function() {
       grid.columns = [];
 
-      grid.columns.push({
+      grid.push('columns', {
         name: 'foo'
       });
 
@@ -244,7 +244,7 @@
     it('column without default header content should show column name', function() {
       grid.columns = [];
 
-      grid.columns.push({
+      grid.push('columns', {
         name: 'foobar',
       });
 
@@ -256,7 +256,7 @@
     it('column with empty string as content should not show column name', function() {
       grid.columns = [];
 
-      grid.columns.push({
+      grid.push('columns', {
         name: 'foobar'
       });
 
@@ -320,9 +320,11 @@
     it('frozen column: unfreeze selection column', function() {
       grid.selection.mode = 'multi';
       assert.ok(qLocal('.frozen'));
-
       grid.frozenColumns = -1;
-      assert.notOk(qLocal('.frozen'));
+
+      return grid.then(function() {
+        assert.notOk(qLocal('.frozen'));
+      });
     });
 
     it('remove frozen column (take the selection column into account)', function() {
@@ -330,14 +332,13 @@
       grid.columns = [];
       grid.addColumn({'name': '123'});
       grid.addColumn({'name': '456'});
-      grid.frozenColumns = 2;
-      grid.columns.pop();
+      grid.frozenColumns = 1;
+      grid.pop('columns');
 
       return grid.then(function() {
         expect(grid.columns.length).to.eql(1);
         expect(grid.frozenColumns).to.eql(1);
       });
-
     });
 
     it('remove frozen column', function() {
@@ -345,14 +346,33 @@
       grid.columns = [];
       grid.addColumn({'name': '123'});
       grid.addColumn({'name': '456'});
-      grid.frozenColumns = 2;
-      grid.columns.pop();
+      grid.frozenColumns = 1;
+      grid.pop('columns');
 
       return grid.then(function() {
         expect(grid.columns.length).to.eql(1);
         expect(grid.frozenColumns).to.eql(1);
       });
+    });
 
+    it('should apply frozen columns even after columns are initialized', function(done) {
+      grid.columns = [];
+      grid.frozenColumns = 1;
+
+      grid.then(function() {
+        var table = document.createElement('table');
+        table.innerHTML = '<col><col>';
+
+        var oldTable = Polymer.dom(grid).querySelector('table');
+        Polymer.dom(grid).replaceChild(table, oldTable);
+
+        waitUntil(function() {
+          var firstHeaderCell = qLocal('.vaadin-grid-header .vaadin-grid-row th');
+          return firstHeaderCell && firstHeaderCell.classList.contains('last-frozen');
+        }, function() {
+          done();
+        });
+      });
     });
 
     it('should add a column to an empty grid with an index', function() {
@@ -370,7 +390,7 @@
       grid.addColumn({name: 'foo'});
       grid.header.getCell(0, 'foo').content = 'bar';
       return grid.then(function() {
-        var headers = qaLocal('.vaadin-grid-header .vaadin-grid-row th > span');
+        var headers = qaLocal('.vaadin-grid-column-header-content span');
         expect(headers[2].innerHTML).to.eql('bar');
       });
     });

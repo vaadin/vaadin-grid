@@ -15,24 +15,7 @@
  */
 package com.vaadin.client.widgets;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import com.google.gwt.animation.client.Animation;
-import com.google.gwt.animation.client.AnimationScheduler;
-import com.google.gwt.animation.client.AnimationScheduler.AnimationCallback;
-import com.google.gwt.animation.client.AnimationScheduler.AnimationHandle;
 import com.google.gwt.core.client.Duration;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
@@ -56,11 +39,13 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
+
 import com.vaadin.client.BrowserInfo;
 import com.vaadin.client.DeferredWorker;
 import com.vaadin.client.Profiler;
@@ -93,6 +78,20 @@ import com.vaadin.shared.ui.grid.HeightMode;
 import com.vaadin.shared.ui.grid.Range;
 import com.vaadin.shared.ui.grid.ScrollDestination;
 import com.vaadin.shared.util.SharedUtil;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /*-
 
@@ -1135,6 +1134,8 @@ public class Escalator extends Widget implements RequiresResize,
 
         private double defaultRowHeight = INITIAL_DEFAULT_ROW_HEIGHT;
 
+        private boolean autodetectRowHeightLaterQueued = false;
+
         public AbstractRowContainer(
                 final TableSectionElement rowContainerElement) {
             root = rowContainerElement;
@@ -1808,7 +1809,13 @@ public class Escalator extends Widget implements RequiresResize,
 
             Element row = root.getFirstChildElement();
             while (row != null) {
-                row.getStyle().setWidth(rowWidth, Unit.PX);
+                // IF there is a rounding error when summing the columns, we
+                // need to round the tr width up to ensure that columns fit and
+                // do not wrap
+                // E.g.122.95+123.25+103.75+209.25+83.52+88.57+263.45+131.21+126.85+113.13=1365.9299999999998
+                // For this we must set 1365.93 or the last column will wrap
+                row.getStyle().setWidth(WidgetUtil.roundSizeUp(rowWidth),
+                        Unit.PX);
                 row = row.getNextSiblingElement();
             }
         }
@@ -1924,41 +1931,49 @@ public class Escalator extends Widget implements RequiresResize,
         }
 
         public void autodetectRowHeightLater() {
-            Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-                @Override
-                public void execute() {
-                    if (defaultRowHeightShouldBeAutodetected && isAttached()) {
-                        autodetectRowHeightNow();
-                        defaultRowHeightShouldBeAutodetected = false;
+            if (!autodetectRowHeightLaterQueued) {
+                autodetectRowHeightLaterQueued = true;
+                Scheduler.get().scheduleFinally(new Scheduler.ScheduledCommand() {
+                    @Override
+                    public void execute() {
+                        if (isAttached()) {
+                            autodetectRowHeightLaterQueued = false;
+                            autodetectRowHeightNow();
+                        }
                     }
-                }
-            });
+                });
+            }
         }
 
+        private Element detectionTr, cellElem;
+
         public void autodetectRowHeightNow() {
-            if (!isAttached()) {
-                // Run again when attached
-                defaultRowHeightShouldBeAutodetected = true;
+            if (!defaultRowHeightShouldBeAutodetected || !isAttached()) {
                 return;
             }
 
-            final Element detectionTr = DOM.createTR();
-            detectionTr.setClassName(getStylePrimaryName() + "-row");
+            if (detectionTr == null) {
+                detectionTr = DOM.createTR();
+                detectionTr.setClassName(getStylePrimaryName() + "-row");
+                cellElem = DOM.createElement(getCellElementTagName());
+                cellElem.setClassName(getStylePrimaryName() + "-cell");
+                cellElem.setInnerText("Ij");
+                detectionTr.appendChild(cellElem);
+            }
 
-            final Element cellElem = DOM.createElement(getCellElementTagName());
-            cellElem.setClassName(getStylePrimaryName() + "-cell");
-            cellElem.setInnerText("Ij");
-
-            detectionTr.appendChild(cellElem);
             root.appendChild(detectionTr);
             double boundingHeight = WidgetUtil
                     .getRequiredHeightBoundingClientRectDouble(cellElem);
-            defaultRowHeight = Math.max(1.0d, boundingHeight);
             root.removeChild(detectionTr);
 
-            if (root.hasChildNodes()) {
-                reapplyDefaultRowHeights();
-                applyHeightByRows();
+            // Height lesser than 1px causes serious performance problems.
+            if (boundingHeight >= 1) {
+                defaultRowHeight = boundingHeight;
+                defaultRowHeightShouldBeAutodetected = false;
+                if (root.hasChildNodes()) {
+                    reapplyDefaultRowHeights();
+                    applyHeightByRows();
+                }
             }
         }
 
@@ -2006,54 +2021,67 @@ public class Escalator extends Widget implements RequiresResize,
             return new Cell(domRowIndex, domColumnIndex, cellElement);
         }
 
-        double getMaxCellWidth(int colIndex) throws IllegalArgumentException {
-            double maxCellWidth = -1;
+        double measureCellWidth(TableCellElement cell, boolean withContent) {
+            /*
+             * To get the actual width of the contents, we need to get the cell
+             * content without any hardcoded height or width.
+             * 
+             * But we don't want to modify the existing column, because that
+             * might trigger some unnecessary listeners and whatnot. So,
+             * instead, we make a deep clone of that cell, but without any
+             * explicit dimensions, and measure that instead.
+             */
 
-            assert isAttached() : "Can't measure max width of cell, since Escalator is not attached to the DOM.";
+            TableCellElement cellClone = TableCellElement.as((Element) cell
+                    .cloneNode(withContent));
+            cellClone.getStyle().clearHeight();
+            cellClone.getStyle().clearWidth();
 
-            NodeList<TableRowElement> rows = root.getRows();
-            for (int row = 0; row < rows.getLength(); row++) {
-                TableRowElement rowElement = rows.getItem(row);
-                TableCellElement cellOriginal = rowElement.getCells().getItem(
-                        colIndex);
-
-                if (cellOriginal == null || cellIsPartOfSpan(cellOriginal)) {
-                    continue;
-                }
-
+            cell.getParentElement().insertBefore(cellClone, cell);
+            double requiredWidth = WidgetUtil
+                    .getRequiredWidthBoundingClientRectDouble(cellClone);
+            if (BrowserInfo.get().isIE()) {
                 /*
-                 * To get the actual width of the contents, we need to get the
-                 * cell content without any hardcoded height or width.
-                 * 
-                 * But we don't want to modify the existing column, because that
-                 * might trigger some unnecessary listeners and whatnot. So,
-                 * instead, we make a deep clone of that cell, but without any
-                 * explicit dimensions, and measure that instead.
+                 * IE browsers have some issues with subpixels. Occasionally
+                 * content is overflown even if not necessary. Increase the
+                 * counted required size by 0.01 just to be on the safe side.
                  */
-
-                TableCellElement cellClone = TableCellElement
-                        .as((Element) cellOriginal.cloneNode(true));
-                cellClone.getStyle().clearHeight();
-                cellClone.getStyle().clearWidth();
-
-                rowElement.insertBefore(cellClone, cellOriginal);
-                double requiredWidth = WidgetUtil
-                        .getRequiredWidthBoundingClientRectDouble(cellClone);
-                if (BrowserInfo.get().isIE()) {
-                    /*
-                     * IE browsers have some issues with subpixels. Occasionally
-                     * content is overflown even if not necessary. Increase the
-                     * counted required size by 0.01 just to be on the safe
-                     * side.
-                     */
-                    requiredWidth += 0.01;
-                }
-
-                maxCellWidth = Math.max(requiredWidth, maxCellWidth);
-                cellClone.removeFromParent();
+                requiredWidth += 0.01;
             }
 
-            return maxCellWidth;
+            cellClone.removeFromParent();
+
+            return requiredWidth;
+        }
+
+        /**
+         * Gets the minimum width needed to display the cell properly.
+         * 
+         * @param colIndex
+         *            index of column to measure
+         * @param withContent
+         *            <code>true</code> if content is taken into account,
+         *            <code>false</code> if not
+         * @return cell width needed for displaying correctly
+         */
+        double measureMinCellWidth(int colIndex, boolean withContent) {
+            assert isAttached() : "Can't measure max width of cell, since Escalator is not attached to the DOM.";
+
+            double minCellWidth = -1;
+            NodeList<TableRowElement> rows = root.getRows();
+
+            for (int row = 0; row < rows.getLength(); row++) {
+
+                TableCellElement cell = rows.getItem(row).getCells()
+                        .getItem(colIndex);
+
+                if (cell != null && !cellIsPartOfSpan(cell)) {
+                    double cellWidth = measureCellWidth(cell, withContent);
+                    minCellWidth = Math.max(minCellWidth, cellWidth);
+                }
+            }
+
+            return minCellWidth;
         }
 
         private boolean cellIsPartOfSpan(TableCellElement cell) {
@@ -2369,63 +2397,23 @@ public class Escalator extends Widget implements RequiresResize,
             setTopRowLogicalIndex(topRowLogicalIndex + diff);
         }
 
-        private class DeferredDomSorter {
-            private static final int SORT_DELAY_MILLIS = 50;
-
-            // as it happens, 3 frames = 50ms @ 60fps.
-            private static final int REQUIRED_FRAMES_PASSED = 3;
-
-            private final AnimationCallback frameCounter = new AnimationCallback() {
-                @Override
-                public void execute(double timestamp) {
-                    framesPassed++;
-                    boolean domWasSorted = sortIfConditionsMet();
-                    if (!domWasSorted) {
-                        animationHandle = AnimationScheduler.get()
-                                .requestAnimationFrame(this);
-                    } else {
-                        waiting = false;
-                        bodyElem.removeClassName("scrolling");
-                    }
-                }
-            };
-
-            private int framesPassed;
-            private double startTime;
-            private AnimationHandle animationHandle;
-
-            /** <code>true</code> if a sort is scheduled */
-            public boolean waiting = false;
+        private class DeferredDomSorter extends Timer implements ScheduledCommand {
+            // 1000/50 (@50fps)
+            private static final int SORT_DELAY_MILLIS = 20;
 
             public void reschedule() {
-                waiting = true;
-                resetConditions();
-                animationHandle = AnimationScheduler.get()
-                        .requestAnimationFrame(frameCounter);
+                schedule(SORT_DELAY_MILLIS);
             }
 
-            private boolean sortIfConditionsMet() {
-                boolean enoughFramesHavePassed = framesPassed >= REQUIRED_FRAMES_PASSED;
-                boolean enoughTimeHasPassed = (Duration.currentTimeMillis() - startTime) >= SORT_DELAY_MILLIS;
-                boolean notTouchActivity = !scroller.touchHandlerBundle.touching;
-                boolean conditionsMet = enoughFramesHavePassed
-                        && enoughTimeHasPassed && notTouchActivity;
-
-                if (conditionsMet) {
-                    resetConditions();
-                    sortDomElements();
-                }
-
-                return conditionsMet;
+            @Override
+            public void run() {
+                Scheduler.get().scheduleFinally(this);
             }
 
-            private void resetConditions() {
-                if (animationHandle != null) {
-                    animationHandle.cancel();
-                    animationHandle = null;
-                }
-                startTime = Duration.currentTimeMillis();
-                framesPassed = 0;
+            @Override
+            public void execute() {
+                sortDomElements();
+                bodyElem.removeClassName("scrolling");
             }
         }
 
@@ -3137,6 +3125,15 @@ public class Escalator extends Widget implements RequiresResize,
                                 - allEscalatorRows.length();
                         moveAndUpdateEscalatorRows(allEscalatorRows, 0,
                                 logicalTargetIndex);
+
+                        /*
+                         * moveAndUpdateEscalatorRows recalculates the rows, but
+                         * logical top row index bookkeeping is handled in this
+                         * method.
+                         * 
+                         * TODO: Redesign how to keep it easy to track this.
+                         */
+                        updateTopRowLogicalIndex(-removedLogicalInside.length());
 
                         /*
                          * Scrolling the body to the correct location will be
@@ -4340,14 +4337,26 @@ public class Escalator extends Widget implements RequiresResize,
 
         private double getMaxCellWidth(int colIndex)
                 throws IllegalArgumentException {
-            double headerWidth = header.getMaxCellWidth(colIndex);
-            double bodyWidth = body.getMaxCellWidth(colIndex);
-            double footerWidth = footer.getMaxCellWidth(colIndex);
+            double headerWidth = header.measureMinCellWidth(colIndex, true);
+            double bodyWidth = body.measureMinCellWidth(colIndex, true);
+            double footerWidth = footer.measureMinCellWidth(colIndex, true);
 
             double maxWidth = Math.max(headerWidth,
                     Math.max(bodyWidth, footerWidth));
             assert maxWidth >= 0 : "Got a negative max width for a column, which should be impossible.";
             return maxWidth;
+        }
+
+        private double getMinCellWidth(int colIndex)
+                throws IllegalArgumentException {
+            double headerWidth = header.measureMinCellWidth(colIndex, false);
+            double bodyWidth = body.measureMinCellWidth(colIndex, false);
+            double footerWidth = footer.measureMinCellWidth(colIndex, false);
+
+            double minWidth = Math.max(headerWidth,
+                    Math.max(bodyWidth, footerWidth));
+            assert minWidth >= 0 : "Got a negative max width for a column, which should be impossible.";
+            return minWidth;
         }
 
         /**
@@ -5370,8 +5379,8 @@ public class Escalator extends Widget implements RequiresResize,
             int[] indices = new int[splitArgs.length - 1];
             for (int i = 0; i < indices.length; ++i) {
                 String tmp = splitArgs[i + 1];
-                indices[i] = Integer
-                        .parseInt(tmp.substring(0, tmp.length() - 1));
+                indices[i] = Integer.parseInt(tmp.substring(0,
+                        tmp.indexOf("]", 1)));
             }
             return new SubPartArguments(type, indices);
         }
@@ -5993,7 +6002,7 @@ public class Escalator extends Widget implements RequiresResize,
     public void scrollToRow(final int rowIndex,
             final ScrollDestination destination, final int padding)
             throws IndexOutOfBoundsException, IllegalArgumentException {
-        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+        Scheduler.get().scheduleFinally(new ScheduledCommand() {
             @Override
             public void execute() {
                 validateScrollDestination(destination, padding);
@@ -6481,8 +6490,8 @@ public class Escalator extends Widget implements RequiresResize,
 
     @Override
     public boolean isWorkPending() {
-        return body.domSorter.waiting || verticalScrollbar.isWorkPending()
-                || horizontalScrollbar.isWorkPending();
+        return body.domSorter.isRunning() || verticalScrollbar.isWorkPending()
+                || horizontalScrollbar.isWorkPending() || layoutIsScheduled;
     }
 
     @Override
@@ -6705,5 +6714,15 @@ public class Escalator extends Widget implements RequiresResize,
 
     private void logWarning(String message) {
         getLogger().warning(message);
+    }
+
+    /**
+     * This is an internal method for calculating minimum width for Column
+     * resize.
+     * 
+     * @return minimum width for column
+     */
+    double getMinCellWidth(int colIndex) {
+        return columnConfiguration.getMinCellWidth(colIndex);
     }
 }

@@ -11,6 +11,55 @@ This program is available under Apache License Version 2.0, available at https:/
   vaadin-grid > table {
     display: none;
   }
+
+  .vaadin-grid-sidebar-popup {
+    background-color: #ffffff;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 6px 0 rgba(0,0,0,.12);
+    border-radius: 2px;
+    font-family: arial;
+    font-size: 12px;
+    transition: opacity 0.1s ease-in;
+  }
+
+  .vaadin-grid-sidebar-content > div {
+    padding: 16px 0;
+  }
+
+  .vaadin-grid-sidebar-content span:before {
+    content: url(img/ic_check_black_24px.svg);
+    opacity: 0.6;
+    display: inline-block;
+    padding: 0 20px;
+  }
+
+  .vaadin-grid-sidebar-content span div {
+    display: inline-block;
+  }
+
+  .vaadin-grid-sidebar-content .v-off:before {
+    visibility: hidden;
+  }
+
+  .vaadin-grid-sidebar-content span div {
+    display: inline-block;
+    vertical-align: super;
+    padding-right: 20px;
+  }
+
+  .vaadin-grid-sidebar-content table {
+    border-collapse: collapse;
+    border-top: 1px solid #E6E6E6;
+    border-bottom: 1px solid #E6E6E6;
+    min-width: 150px;
+  }
+
+  .vaadin-grid-sidebar-content .column-hiding-toggle {
+    cursor: pointer;
+  }
+
+  .vaadin-grid-sidebar-content .gwt-MenuItem-selected {
+    background: #eeeeee;
+  }
 </style>
 
 <!--
@@ -546,10 +595,13 @@ See the [demo](demo/index.html) for use case examples.
   .vaadin-grid-sidebar {
     z-index: 5;
     position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
+    top: 2px;
     pointer-events: none;
+    right: 0;
+    padding-right: 4px;
+    overflow: hidden;
+    width: 38px;
+    height: 38px;
   }
 
   .vaadin-grid-sidebar-button {
@@ -577,25 +629,12 @@ See the [demo](demo/index.html) for use case examples.
 
   .vaadin-grid-sidebar-button:after {
     content: url(img/ic_view_column_black_24px.svg);
+    opacity: 0.4;
     display: inline-block;
     position:absolute;
     top: 14px;
     left: 16px;
     width: 24px;
-  }
-
-  .vaadin-grid-sidebar-content {
-    background-color: #ffffff;
-    position: absolute;
-    right: 0;
-    top: 44px;
-    box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 6px 0 rgba(0,0,0,.12);
-    border-radius: 2px;
-    max-height: calc(100% - 56px);
-    pointer-events: all;
-    overflow-y: auto;
-    -webkit-animation: vaadin-grid-sidebar-transition 0.2s ease-in;
-    animation: vaadin-grid-sidebar-transition 0.2s ease-in;
   }
 
   @keyframes vaadin-grid-sidebar-transition {
@@ -620,60 +659,8 @@ See the [demo](demo/index.html) for use case examples.
     }
   }
 
-  .vaadin-grid-sidebar-content::content > div {
-    padding: 6px 0;
-  }
 
-  .vaadin-grid-sidebar-content::content span:before {
-    content: url(img/ic_check_black_24px.svg);
-    display: inline-block;
-    padding: 0 20px;
-  }
 
-  .vaadin-grid-sidebar-content::content .v-off:before {
-    visibility: hidden;
-  }
-
-  .vaadin-grid-sidebar-content::content span div {
-    display: inline-block;
-    vertical-align: super;
-    padding-right: 20px;
-  }
-
-  .vaadin-grid-sidebar-content::content table {
-    border-collapse: collapse;
-  }
-
-  .vaadin-grid-sidebar-content::content .column-hiding-toggle {
-    cursor: pointer;
-  }
-
-  .vaadin-grid-sidebar-content::content .gwt-MenuItem-selected {
-    background: #eeeeee;
-  }
-
-  .vaadin-grid-sidebar.closed:after {
-    content: "Show/hide columns";
-    z-index: 999;
-    background: rgba(97,97,97,.9);
-    border-radius: 2px;
-    color: #fff;
-    display: inline-block;
-    font-size: 10px;
-    font-weight: 500;
-    line-height: 14px;
-    padding: 8px;
-    text-align: center;
-    position: absolute;
-    right: 0;
-    top: 44px;
-    opacity: 0;
-    transition: opacity 0.1s ease-in;
-  }
-
-  .vaadin-grid-sidebar.closed:hover:after {
-    opacity: 1;
-  }
   </style>
   <template>
     <iframe id="measureobject" class="vaadin-grid"></iframe>
@@ -688,6 +675,46 @@ See the [demo](demo/index.html) for use case examples.
     _grid: undefined,
 
     properties: {
+
+      /**
+       * A function which is used for generating CSS class names for data cells.
+       *
+       * See the API documentation for the “cell” object for more details about
+       * the parameter of this function.
+       *
+       * #### Example:
+       * ```js
+       * grid.cellClassGenerator = function(cell) {
+       *   if (cell.index == 2) {
+       *      return "activity-" + cell.data.toLowerCase();
+       *    }
+       *  };
+       * ```
+       * @property {function} cellClassGenerator
+       * @type {function}
+       */
+      cellClassGenerator: {
+        type: Function,
+        observer: '_cellClassGeneratorChanged'
+      },
+
+      /**
+       * Disables the grid.
+       *
+       * #### Declarative example:
+       * ```html
+       * <vaadin-grid disabled>...</vaadin-grid>
+       * ```
+       *
+       * @default false
+       * @type {boolean}
+       */
+      disabled: {
+        type: Boolean,
+        observer: '_disabledChanged',
+        reflectToAttribute: true,
+        value: false
+      },
 
       /**
        * Object for controlling and accessing the header rows in the grid.
@@ -710,7 +737,7 @@ See the [demo](demo/index.html) for use case examples.
               _this._grid.getStaticSection().addHeader(rowIndex, cellContent);
             },
             removeRow: function(rowIndex) {
-              _this._grid.getStaticSection().removeHeader(rowIndex);
+              _this._grid.getStaticSection().removeHeader(rowIndex || 0);
             },
             setRowClassName: function(rowIndex, className) {
               _this._grid.getStaticSection().setHeaderRowClassName(rowIndex, className);
@@ -755,7 +782,7 @@ See the [demo](demo/index.html) for use case examples.
               _this._grid.getStaticSection().addFooter(rowIndex, cellContent);
             },
             removeRow: function(rowIndex) {
-              _this._grid.getStaticSection().removeFooter(rowIndex);
+              _this._grid.getStaticSection().removeFooter(rowIndex || 0);
             },
             setRowClassName: function(rowIndex, className) {
               _this._grid.getStaticSection().setFooterRowClassName(rowIndex, className);
@@ -771,6 +798,31 @@ See the [demo](demo/index.html) for use case examples.
             }
           };
         }
+      },
+
+      /**
+       * The index of the last frozen columns in this grid. A frozen column will
+       * always stay visible in the grid viewport when the user scrolls the grid
+       * viewport horizontally.
+       *
+       * Setting the property to 0 means that no columns will be frozen,
+       * but the built-in selection checkbox column will still be frozen if
+       * it’s in use. Setting the count to -1 will unfreeze the selection
+       * column also.
+       *
+       * #### Declarative example:
+       * ```html
+       * <vaadin-grid frozen-columns="2">...</vaadin-grid>
+       * ```
+       *
+       * @default 0
+       * @type {number}
+       */
+      frozenColumns: {
+        type: Number,
+        observer: '_applyFrozenColumns',
+        reflectToAttribute: true,
+        value: 0
       },
 
       /**
@@ -813,8 +865,64 @@ See the [demo](demo/index.html) for use case examples.
        * @type {(Array<Object>|function)}
        */
       items: {
-        type: Object,
-        observer: '_itemsChanged'
+        type: Object
+      },
+
+      /**
+       * The array of columns attached to the grid.
+       *
+       * See the API documentation for “column” for more details about the
+       * column objects.
+       *
+       * @property {Array<object>} columns
+       * @type {Array<object>}
+       */
+      columns: {
+        type: Array,
+        notify: true
+      },
+
+      /**
+       * A function which is used for generating CSS class names for data rows.
+       *
+       * See the API documentation for the “row” object for more details about
+       * the parameter of this function.
+       *
+       * #### Example:
+       * ```js
+       * grid.rowClassGenerator = function(row) {
+       *   var activity = row.data[2];
+       *   return "activity-" + activity.toLowerCase();
+       * };
+       *```
+       *
+       * @property {function} rowClassGenerator
+       * @type {function}
+       */
+      rowClassGenerator: {
+        type: Function,
+        observer: '_rowClassGeneratorChanged'
+      },
+
+      /**
+       * The row details generator is used for generating detail content for
+       * data rows. The details element is added directly under the row.
+       *
+       * #### Example:
+       * ```js
+       * grid.rowDetailsGenerator = function(rowIndex) {
+       *   var detail = document.createElement("div");
+       *   detail.textContent = "Row detail content for row " + rowIndex;
+       *   return detail;
+       * };
+       *```
+       *
+       * @property {function} rowDetailsGenerator
+       * @type {function}
+       */
+      rowDetailsGenerator: {
+        type: Function,
+        observer: '_rowDetailsGeneratorChanged'
       },
 
       /**
@@ -900,27 +1008,35 @@ See the [demo](demo/index.html) for use case examples.
       size: {
         type: Number,
         observer: '_sizeChanged'
+      },
+
+      /**
+       * Sets the height of the grid so that the specified amount of data rows
+       * is visible. Overrides any height specified in CSS.
+       *
+       * #### Declarative example:
+       * ```html
+       * <vaadin-grid visible-rows="5">...</vaadin-grid>
+       * ```
+       *
+       * @property {number} visibleRows
+       * @default 10
+       * @type {number}
+       */
+      visibleRows: {
+        type: Number,
+        reflectToAttribute: true,
+        observer: '_visibleRowsChanged'
+      },
+
+      _currentItems: {
+        value: undefined
       }
     },
 
     attributeChanged: function(name, type, value) {
-      switch (name) {
-        case 'disabled':
-          var disabled = typeof value == 'string';
-          if (this.disabled != disabled) {
-            this.disabled = disabled;
-          }
-          break;
-        case 'selection-mode':
-          if (this.selection.mode != value) {
-            this.selection.mode = value;
-          }
-          break;
-        default:
-          var property = Polymer.CaseMap.dashToCamelCase(name);
-          if (this[property] != value) {
-            this[property] = value;
-          }
+      if (name === 'selection-mode' && this.selection.mode != value) {
+        this.selection.mode = value;
       }
     },
 
@@ -945,12 +1061,25 @@ See the [demo](demo/index.html) for use case examples.
       'selection-mode-changed': '_onSelectionModeChange'
     },
 
+    observers: [
+      '_columnsChanged(columns, columns.*)',
+      '_itemsChanged(items, items.*)',
+    ],
+
+    _columnsChanged: function() {
+      this._grid.setColumns(this.columns);
+      this._applyFrozenColumns();
+    },
+
     _itemsChanged: function(items) {
       if (Array.isArray(items)) {
-        this._grid.setDataSource(function(params, callback) {
-          var array = items.slice(params.index, params.index + params.count);
-          callback(array);
-        });
+        if (items != this._currentItems) {
+          this._currentItems = items;
+          this._grid.setDataSource(function(params, callback) {
+            var array = items.slice(params.index, params.index + params.count);
+            callback(array);
+          });
+        }
         this.size = items.length;
         this.refreshItems();
       } else if (typeof items === 'function') {
@@ -979,23 +1108,28 @@ See the [demo](demo/index.html) for use case examples.
     ready: function() {
       // hide until fully loaded
       this.toggleClass('vaadin-grid-loading', true);
-      this.async(function() {
-        for (var i = 0; i < this.attributes.length; i++) {
-          this.attributeChanged(this.attributes[i].nodeName, null, this.attributes[i].nodeValue);
-        }
-      });
-      this._grid.init(this, this._findTableElement(Polymer.dom(this).children), Polymer.dom(this.root), this.$.measureobject);
-    },
-
-    _findTableElement: function(nodes) {
-      for (var i = 0; i < nodes.length; i++) {
-        if (nodes[i].nodeName === 'TABLE') {
-          return nodes[i];
-        } else if (nodes[i].nodeName === 'CONTENT') {
-          var contentNodes = Polymer.dom(nodes[i]).getDistributedNodes();
-          return this._findTableElement(contentNodes);
-        }
+      if (this.hasAttribute('selection-mode')) {
+        this.selection.mode = this.getAttribute('selection-mode');
       }
+      if (this.colums) {
+        this._grid.setColumns(this.columns);
+      } else {
+        this.columns = this._grid.getColumns();
+      }
+      this._grid.init(this, Polymer.dom(this.root), this.$.measureobject);
+
+      Polymer.dom(this).observeNodes(function(info) {
+        info.addedNodes.forEach(function(node) {
+          if (node.tagName === 'TABLE') {
+            var size = this.size;
+            this._grid.setLightDomTable(node);
+            if (size) {
+              this.size = size;
+            }
+            this._columnsChanged();
+          }
+        }.bind(this));
+      });
     },
 
     _bindResizeListener: function() {
@@ -1020,11 +1154,13 @@ See the [demo](demo/index.html) for use case examples.
     },
 
     attached: function() {
-      var _this = this;
+      this._grid.setHeaderHeight(parseFloat(this.getComputedStyleValue('--vaadin-grid-header-row-height')) || 56);
+      this._grid.setFooterHeight(parseFloat(this.getComputedStyleValue('--vaadin-grid-footer-row-height')) || 56);
+      this._grid.setBodyHeight(parseFloat(this.getComputedStyleValue('--vaadin-grid-row-height')) || 48);
       this._bindResizeListener();
       this.then(function() {
-        _this.toggleClass('vaadin-grid-loading', false);
-      });
+        this.toggleClass('vaadin-grid-loading', false);
+      }.bind(this));
     },
 
     /**
@@ -1103,156 +1239,26 @@ See the [demo](demo/index.html) for use case examples.
       this._grid.removeColumn(id);
     },
 
-    /**
-     * @private
-     */
-    get rowClassGenerator() {
-      return this._grid.getRowClassGenerator();
-    },
-
-    /**
-     * A function which is used for generating CSS class names for data rows.
-     *
-     * See the API documentation for the “row” object for more details about
-     * the parameter of this function.
-     *
-     * #### Example:
-     * ```js
-     * grid.rowClassGenerator = function(row) {
-     *   var activity = row.data[2];
-     *   return "activity-" + activity.toLowerCase();
-     * };
-     *```
-     *
-     * @property {function} rowClassGenerator
-     * @type {function}
-     */
-    set rowClassGenerator(row) {
+    _rowClassGeneratorChanged: function(row) {
       this._grid.setRowClassGenerator(row);
     },
 
-    /**
-     * @private
-     */
-    get cellClassGenerator() {
-      return this._grid.getCellClassGenerator();
-    },
-
-    /**
-     * A function which is used for generating CSS class names for data cells.
-     *
-     * See the API documentation for the “cell” object for more details about
-     * the parameter of this function.
-     *
-     * #### Example:
-     * ```js
-     * grid.cellClassGenerator = function(cell) {
-     *   if (cell.index == 2) {
-     *      return "activity-" + cell.data.toLowerCase();
-     *    }
-     *  };
-     * ```
-     * @property {function} cellClassGenerator
-     * @type {function}
-     */
-    set cellClassGenerator(cell) {
+    _cellClassGeneratorChanged: function(cell) {
       this._grid.setCellClassGenerator(cell);
     },
 
-    /**
-     * Disables the grid.
-     *
-     * #### Declarative example:
-     * ```html
-     * <vaadin-grid disabled>...</vaadin-grid>
-     * ```
-     *
-     * @default false
-     * @type {boolean}
-     */
-    get disabled() {
-      return this._grid.isDisabled();
-    },
-    /**
-     * @private
-     */
-    set disabled(disabled) {
+    _disabledChanged: function(disabled) {
       this._grid.setDisabled(disabled);
-      this.reflectPropertyToAttribute('disabled');
     },
 
-    /**
-     * The index of the last frozen columns in this grid. A frozen column will
-     * always stay visible in the grid viewport when the user scrolls the grid
-     * viewport horizontally.
-     *
-     * Setting the property to 0 means that no columns will be frozen,
-     * but the built-in selection checkbox column will still be frozen if
-     * it’s in use. Setting the count to -1 will unfreeze the selection
-     * column also.
-     *
-     * #### Declarative example:
-     * ```html
-     * <vaadin-grid frozen-columns="2">...</vaadin-grid>
-     * ```
-     *
-     * @default 0
-     * @type {number}
-     */
-    get frozenColumns() {
-      return this._grid.getFrozenColumns();
-    },
-    /**
-     * @private
-     */
-    set frozenColumns(frozenColumns) {
-      this._grid.setFrozenColumns(frozenColumns);
-      this.reflectPropertyToAttribute('frozenColumns');
+    _applyFrozenColumns: function() {
+      if (this.columns && this.columns.length >= this.frozenColumns) {
+         this._grid.setFrozenColumns(this.frozenColumns);
+      }
     },
 
-    /**
-     * Sets the height of the grid so that the specified amount of data rows
-     * is visible. Overrides any height specified in CSS.
-     *
-     * #### Declarative example:
-     * ```html
-     * <vaadin-grid visible-rows="5">...</vaadin-grid>
-     * ```
-     *
-     * @property {number} visibleRows
-     * @default 10
-     * @type {number}
-     */
-    get visibleRows() {
-      var rows = this._grid.getVisibleRows();
-      return rows > 0 ? rows : undefined;
-    },
-
-    /**
-     * @private
-     */
-    set visibleRows(visibleRows) {
+    _visibleRowsChanged: function(visibleRows) {
       this._grid.setVisibleRows(visibleRows);
-      this.reflectPropertyToAttribute('visibleRows');
-    },
-
-    /**
-     * The array of columns attached to the grid.
-     *
-     * See the API documentation for “column” for more details about the
-     * column objects.
-     *
-     * @property {Array<object>} columns
-     * @type {Array<object>}
-     */
-    get columns() {
-      return this._grid.getColumns();
-    },
-    /**
-     * @private
-     */
-    set columns(cols) {
-      this._grid.setColumns(cols);
     },
 
     /**
@@ -1266,30 +1272,8 @@ See the [demo](demo/index.html) for use case examples.
       return this._grid.then(callback);
     },
 
-    /**
-     * The row details generator is used for generating detail content for
-     * data rows. The details element is added directly under the row.
-     *
-     * #### Example:
-     * ```js
-     * grid.rowDetails.detailsGenerator = function(rowIndex) {
-     *   var detail = document.createElement("div");
-     *   detail.textContent = "Row detail content for row " + rowIndex;
-     *   return detail;
-     * };
-     *```
-     *
-     * @property {function} rowDetailsGenerator
-     * @type {function}
-     */
-    set rowDetailsGenerator(rowDetailsGenerator) {
+    _rowDetailsGeneratorChanged: function(rowDetailsGenerator) {
       this._grid.setRowDetailsGenerator(rowDetailsGenerator);
-    },
-    /**
-     * @private
-     */
-    get rowDetailsGenerator() {
-      return this._grid.getRowDetailsGenerator();
     },
 
     /**

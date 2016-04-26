@@ -15,29 +15,21 @@
 
   <script>
     describe.feature('static sections', function() {
-      function removeHeaders() {
-        for (var i = grid.header.rowCount; i > 0; i--) {
-          grid.header.removeRow();
-        }
-      }
-
-      function removeFooters() {
-        for (var i = grid.footer.rowCount; i > 0; i--) {
-          grid.footer.removeRow();
+      function removeAllRows(section) {
+        while (section.rowCount) {
+          section.removeRow();
         }
       }
 
       beforeEach(function() {
-        removeHeaders();
-        removeFooters();
-
-        grid.header.addRow(0, ['Name', 'Value']);
-        grid.footer.addRow(0, ['Name', 'Value']);
-
-        grid.header.hidden = false;
-        grid.footer.hidden = false;
-
-        return grid;
+        return grid.then(function() {
+          removeAllRows(grid.header);
+          removeAllRows(grid.footer);
+          grid.header.addRow(0, ['Name', 'Value']);
+          grid.footer.addRow(0, ['Name', 'Value']);
+          grid.header.hidden = false;
+          grid.footer.hidden = false;
+        });
       });
 
       describe('header.defaultRow', function() {
@@ -222,7 +214,7 @@
               grid[section].getCell(1, 0).content = 'foo';
               grid[section].getCell(1, 1).content = 'bar';
 
-              var cells = qaLocal('.vaadin-grid-' + section + ' .vaadin-grid-cell > span');
+              var cells = qaLocal('.vaadin-grid-' + section + ' .vaadin-grid-cell span');
               expect(cells[0].innerHTML).to.equal('Name');
               expect(cells[1].innerHTML).to.equal('Value');
               expect(cells[2].innerHTML).to.equal('foo');
@@ -235,7 +227,7 @@
               grid[section].getCell(0, 0).content = 'foo';
               grid[section].getCell(0, 1).content = 'bar';
 
-              var cells = qaLocal('.vaadin-grid-' + section + ' .vaadin-grid-cell > span');
+              var cells = qaLocal('.vaadin-grid-' + section + ' .vaadin-grid-cell span');
               expect(cells[0].innerHTML).to.equal('foo');
               expect(cells[1].innerHTML).to.equal('bar');
               expect(cells[2].innerHTML).to.equal('Name');
@@ -245,7 +237,7 @@
             it('should insert content to a new row', function() {
               grid[section].addRow(0, ['foo', 'bar']);
 
-              var cells = qaLocal('.vaadin-grid-' + section + ' .vaadin-grid-cell > span');
+              var cells = qaLocal('.vaadin-grid-' + section + ' .vaadin-grid-cell span');
               expect(cells[0].innerHTML).to.equal('foo');
               expect(cells[1].innerHTML).to.equal('bar');
             });

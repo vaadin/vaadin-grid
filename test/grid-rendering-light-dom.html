@@ -125,6 +125,16 @@
     </template>
   </test-fixture>
 
+  <test-fixture id='sized'>
+    <template>
+      <vaadin-grid size="1000">
+        <table>
+          <col>
+        </table>
+      </vaadin-grid>
+    </template>
+  </test-fixture>
+
   <script>
     HTMLImports.whenReady(function() {
       Polymer({
@@ -136,6 +146,81 @@
     });
 
     describe('rendering light DOM', function() {
+
+      describe('changing light DOM', function() {
+
+        beforeEach(function(done) {
+          grid = fixture('cols');
+
+          waitUntil(function() {
+            return grid.sortOrder && grid.sortOrder[0].direction === 'asc';
+          }, done);
+        });
+
+        it('should not affect explicit size', function(done) {
+          var grid = fixture('sized');
+          grid.async(function() {
+            expect(grid.size).to.equal(1000);
+            done();
+          });
+        });
+
+        it('should support dynamically changing the light dom table', function() {
+          var table = document.createElement('table');
+          table.innerHTML = '<col><thead><th>foobar</th></thead>';
+
+          var oldTable = Polymer.dom(grid).querySelector('table');
+          Polymer.dom(grid).replaceChild(table, oldTable);
+
+          return grid.then(function() {
+            expect(grid.header.getCell(0, 0).content).to.equal('foobar');
+          });
+        });
+
+        it('should support dynamic changes to light dom table configuration', function() {
+          var col = Polymer.dom(grid).querySelector('col');
+          col.setAttribute('name', 'foobar');
+
+          return grid.then(function() {
+            expect(grid.columns[0].name).to.equal('foobar');
+          });
+        });
+
+        it('should not replace existing function data source', function() {
+          grid.items = ['foobar'];
+
+          var table = Polymer.dom(grid).querySelector('table');
+          table.querySelector('col').setAttribute('name', 'foobar');
+          return grid.then(function() {
+            expect(Polymer.dom(grid.root).querySelector('tbody td').textContent).to.equal('foobar');
+          });
+        });
+
+        it('should reflect changes to light dom datasource', function() {
+          var tbody = Polymer.dom(grid).querySelector('table tbody');
+          var newRow = document.createElement('tr');
+          newRow.innerHTML = '<td>foobar</td>';
+          tbody.appendChild(newRow);
+
+          return grid.then(function() {
+            expect(Polymer.dom(grid.root).querySelector('tbody tr:last-child td').textContent).to.equal('foobar');
+          });
+        });
+
+        it('should work if items defined before table', function() {
+          grid.items = ['foobar', 'bazqux'];
+
+          var table = document.createElement('table');
+          table.innerHTML = '<col name="fooBar">';
+          Polymer.dom(grid).appendChild(table);
+
+          return grid.then(function() {
+            expect(Polymer.dom(grid.root).querySelector('thead th').textContent).to.equal('Foo Bar');
+            expect(Polymer.dom(grid.root).querySelector('tbody td').textContent).to.equal('foobar');
+          });
+        });
+      });
+
       describe('with colgroup', function() {
         var grid;
 

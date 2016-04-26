@@ -24,6 +24,25 @@
         return e.offsetHeight;
       }
 
+      function createAdditionalGrid(style) {
+        var tmp = document.createElement('div');
+        tmp.innerHTML = '<vaadin-grid style="' + (style || '') + '">' +
+          '                     <table>' +
+          '                       <col name="Name">' +
+          '                       <tr>' +
+          '                         <td>Grid</td>' +
+          '                       </tr>' +
+          '                     </table>' +
+          '                   </vaadin-grid>';
+        return tmp;
+      }
+
+      function appendAdditionalGrid(div) {
+        var wrapper = document.getElementById('gridwrapper');
+        wrapper.appendChild(div);
+        return div.querySelector('vaadin-grid');
+      }
+
       describe('resizing', function() {
         function assertHeightByRows(rows) {
           var headersHeight = headers * thHeight;
@@ -88,60 +107,32 @@
         });
 
         it('should work if originally invisible', function(done) {
-          var wrapper = document.getElementById('gridwrapper');
-          var tmp = document.createElement('div');
-          wrapper.appendChild(tmp);
-          tmp.innerHTML = '<vaadin-grid style="display: none">' +
-          '                     <table>' +
-          '                       <col name="Name">' +
-          '                       <tr>' +
-          '                         <td>Grid</td>' +
-          '                       </tr>' +
-          '                     </table>' +
-          '                   </vaadin-grid>';
-
-          var grid = tmp.querySelector('vaadin-grid');
+          var div = createAdditionalGrid('display: none');
+          var grid = appendAdditionalGrid(div);
 
           // Using onRegister because in FF the new grid takes a while to be initialized
           onRegister(grid, function() {
             expect(grid.offsetHeight).to.equal(0);
-
             grid.removeAttribute('style');
-
-            //TODO: wait until here because of https://github.com/vaadin/vaadin-grid/issues/19
             // We use waitUntil because resize event in iframe is not synchronous.
             waitUntil(function() {
-              return grid.offsetHeight <= 30;
+              return grid.offsetHeight > 30;
             }, done, done);
           });
         });
 
-        it('should work if parent originally invisible', function(done) {
-          var wrapper = document.getElementById('gridwrapper');
-          var tmp = document.createElement('div');
-          tmp.style.display = 'none';
-          wrapper.appendChild(tmp);
-          tmp.innerHTML = '<vaadin-grid>' +
-          '                     <table>' +
-          '                       <col name="Name">' +
-          '                       <tr>' +
-          '                         <td>Grid</td>' +
-          '                       </tr>' +
-          '                     </table>' +
-          '                   </vaadin-grid>';
-
-          var grid = tmp.querySelector('vaadin-grid');
+        it('should work if originally invisible', function(done) {
+          var div = createAdditionalGrid();
+          div.style.display = 'none';
+          var grid = appendAdditionalGrid(div);
 
           // Using onRegister because in FF the new grid takes a while to be initialized
           onRegister(grid, function() {
             expect(grid.offsetHeight).to.equal(0);
-
-            tmp.removeAttribute('style');
-
-            //TODO: wait until here because of https://github.com/vaadin/vaadin-grid/issues/19
+            div.removeAttribute('style');
             // We use waitUntil because resize event in iframe is not synchronous.
             waitUntil(function() {
-              return grid.offsetHeight <= 30;
+              return grid.offsetHeight > 30;
             }, done, done);
           });
         });

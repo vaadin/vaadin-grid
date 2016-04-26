@@ -1,7 +1,5 @@
 var grid, wrapper;
 
-var isSDM = /:8888$/.test(window.location.host);
-
 describe.feature = function(description, suite, htmlGrid) {
   describe(description, function() {
     before(function(done) {
