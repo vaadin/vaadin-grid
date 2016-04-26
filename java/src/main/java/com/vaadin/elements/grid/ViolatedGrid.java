@@ -37,12 +37,15 @@ public class ViolatedGrid extends Grid<Object> {
         }
 
         private native void adjustPosition(Element p, Element r) /*-{
+            var bodyPosition = $wnd.getComputedStyle($doc.body).position;
+            var bodyClientRect = $doc.body.getBoundingClientRect();
+
             p.style.margin = '0px'
             p.style.left = (r.getClientRects()[0].left
-                        + ($doc.documentElement.scrollLeft || $doc.body.scrollLeft)
+                        + (bodyPosition !== 'static' ? -bodyClientRect.left : ($doc.documentElement.scrollLeft || $doc.body.scrollLeft))
                         + r.clientWidth - p.clientWidth) + 'px'
             p.style.top = (r.getClientRects()[0].top
-                        + ($doc.documentElement.scrollTop || $doc.body.scrollTop)
+                        + (bodyPosition !== 'static' ? -bodyClientRect.top : ($doc.documentElement.scrollTop || $doc.body.scrollTop))
                         + r.clientHeight) + 'px'
         }-*/;
     }
