@@ -5,7 +5,7 @@ declare var Polymer;
 @Directive({selector: 'vaadin-grid'})
 export class VaadinGrid {
 
-  @Output() ready: EventEmitter<any> = new EventEmitter(false);
+  @Output('grid-ready') gridReady: EventEmitter<any> = new EventEmitter(false);
 
   private grid: any;
 
@@ -26,7 +26,7 @@ export class VaadinGrid {
     }
 
     this.grid.then(() => {
-      this.ready.emit(this.grid);
+      this.gridReady.emit(this.grid);
     });
   }
 }
