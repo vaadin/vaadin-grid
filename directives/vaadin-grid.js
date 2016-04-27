@@ -1,6 +1,4 @@
-System.register(['angular2/core'], function(exports_1, context_1) {
-    "use strict";
-    var __moduleName = context_1 && context_1.id;
+System.register(['angular2/core'], function(exports_1) {
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
         var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
         if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -20,7 +18,7 @@ System.register(['angular2/core'], function(exports_1, context_1) {
         execute: function() {
             VaadinGrid = (function () {
                 function VaadinGrid(el) {
-                    this.ready = new core_1.EventEmitter(false);
+                    this.gridReady = new core_1.EventEmitter(false);
                     if (!window.Polymer || !Polymer.isInstance(el.nativeElement)) {
                         console.error("vaadin-grid has not been registered yet, please remember to import vaadin-grid.html in your main HTML page.");
                         return;
@@ -36,19 +34,19 @@ System.register(['angular2/core'], function(exports_1, context_1) {
                         Polymer.dom(this.grid).appendChild(localDomTable);
                     }
                     this.grid.then(function () {
-                        _this.ready.emit(_this.grid);
+                        _this.gridReady.emit(_this.grid);
                     });
                 };
                 __decorate([
-                    core_1.Output(), 
+                    core_1.Output('grid-ready'), 
                     __metadata('design:type', core_1.EventEmitter)
-                ], VaadinGrid.prototype, "ready", void 0);
+                ], VaadinGrid.prototype, "gridReady", void 0);
                 VaadinGrid = __decorate([
                     core_1.Directive({ selector: 'vaadin-grid' }), 
                     __metadata('design:paramtypes', [core_1.ElementRef])
                 ], VaadinGrid);
                 return VaadinGrid;
-            }());
+            })();
             exports_1("VaadinGrid", VaadinGrid);
         }
     }
