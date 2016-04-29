@@ -10,7 +10,13 @@ import {VaadinGrid} from '../../directives/vaadin-grid';
         <colgroup>
           <col>
           <col>
+          <col *ngIf="thirdColumn" />
         </colgroup>
+        <tbody>
+          <tr *ngFor="let item of items">
+            <td>foo</td><td>bar</td>
+          </tr>
+        </tbody>
       </table>
     </vaadin-grid>
     `,
@@ -20,6 +26,8 @@ export class TestApp {
 
   private _host;
   private _ref;
+  public items = [];
+  public thirdColumn;
 
   constructor(e: ElementRef, ref: ChangeDetectorRef) {
     this._host = e.nativeElement;

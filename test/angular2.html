@@ -75,8 +75,27 @@
         document.body.dispatchEvent(new CustomEvent('bootstrap'));
       });
 
-      it('should have grid', function() {
-        expect(grid).to.be.ok;
+      it('should initialize grid from light dom', function() {
+        expect(grid.columns).to.have.length(2);
+        expect(grid.columns[0].flex).to.equal('2');
+      });
+
+      it('should support dynamic changes to light dom table', function(done) {
+        testApp.items = [1, 2, 3];
+        testApp.detectChanges();
+        grid.async(function() {
+          expect(grid.size).to.equal(3);
+          done();
+        }, 1);
+      });
+
+      it('should support dynamic changes to light dom table 2', function(done) {
+        testApp.thirdColumn = true;
+        testApp.detectChanges();
+        grid.async(function() {
+          expect(grid.columns).to.have.length(3);
+          done();
+        }, 1);
       });
 
     });
