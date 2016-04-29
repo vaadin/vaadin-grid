@@ -13,7 +13,7 @@ import {VaadinGrid} from '../../directives/vaadin-grid';
           <col *ngIf="thirdColumn" />
         </colgroup>
         <tbody>
-          <tr *ngFor="let item of items">
+          <tr *ngFor="#item of items">
             <td>foo</td><td>bar</td>
           </tr>
         </tbody>
