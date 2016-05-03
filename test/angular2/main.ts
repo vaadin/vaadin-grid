@@ -1,5 +1,5 @@
-import {bootstrap}    from 'angular2/platform/browser';
-import {Component, ElementRef, ChangeDetectorRef} from 'angular2/core';
+import {bootstrap}    from '@angular/platform-browser-dynamic';
+import {Component, ElementRef, ChangeDetectorRef} from '@angular/core';
 import {VaadinGrid} from '../../directives/vaadin-grid';
 
 @Component({
@@ -13,7 +13,7 @@ import {VaadinGrid} from '../../directives/vaadin-grid';
           <col *ngIf="thirdColumn" />
         </colgroup>
         <tbody>
-          <tr *ngFor="#item of items">
+          <tr *ngFor="let item of items">
             <td>foo</td><td>bar</td>
           </tr>
         </tbody>
