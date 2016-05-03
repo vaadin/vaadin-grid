@@ -5,8 +5,6 @@ declare var Polymer;
 @Directive({selector: 'vaadin-grid'})
 export class VaadinGrid {
 
-  @Output('grid-ready') gridReady: EventEmitter<any> = new EventEmitter(false);
-
   private grid: any;
 
   constructor(el: ElementRef) {
@@ -24,9 +22,5 @@ export class VaadinGrid {
     if (localDomTable) {
       Polymer.dom(this.grid).appendChild(localDomTable);
     }
-
-    this.grid.then(() => {
-      this.gridReady.emit(this.grid);
-    });
   }
 }

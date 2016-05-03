@@ -5,7 +5,7 @@ import {VaadinGrid} from '../../directives/vaadin-grid';
 @Component({
   selector: 'test-app',
   template: `
-    <vaadin-grid (grid-ready)="onGridReady($event)">
+    <vaadin-grid (grid-ready)="onGridReady($event.detail)">
       <table>
         <colgroup>
           <col>

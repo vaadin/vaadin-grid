@@ -186,6 +186,19 @@
           });
         });
 
+        it('should fire event when configured', function(done) {
+          grid.addEventListener('grid-ready', function(e) {
+            expect(e.detail.header.getCell(0, 0).content).to.equal('foobar');
+            done();
+          });
+
+          var table = document.createElement('table');
+          table.innerHTML = '<col><thead><th>foobar</th></thead>';
+
+          var oldTable = Polymer.dom(grid).querySelector('table');
+          Polymer.dom(grid).replaceChild(table, oldTable);
+        });
+
         it('should not replace existing function data source', function() {
           grid.items = ['foobar'];
 
