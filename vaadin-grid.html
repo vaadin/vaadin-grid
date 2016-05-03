@@ -1127,6 +1127,10 @@ See the [demo](demo/index.html) for use case examples.
               this.size = size;
             }
             this._columnsChanged();
+
+            this.async(function() {
+              this.fire('grid-ready', this);
+            }, 1);
           }
         }.bind(this));
       });

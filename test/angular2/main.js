@@ -41,7 +41,7 @@ System.register(['angular2/platform/browser', 'angular2/core', '../../directives
                 TestApp = __decorate([
                     core_1.Component({
                         selector: 'test-app',
-                        template: "\n    <vaadin-grid (grid-ready)=\"onGridReady($event)\">\n      <table>\n        <colgroup>\n          <col>\n          <col>\n          <col *ngIf=\"thirdColumn\" />\n        </colgroup>\n        <tbody>\n          <tr *ngFor=\"#item of items\">\n            <td>foo</td><td>bar</td>\n          </tr>\n        </tbody>\n      </table>\n    </vaadin-grid>\n    ",
+                        template: "\n    <vaadin-grid (grid-ready)=\"onGridReady($event.detail)\">\n      <table>\n        <colgroup>\n          <col>\n          <col>\n          <col *ngIf=\"thirdColumn\" />\n        </colgroup>\n        <tbody>\n          <tr *ngFor=\"#item of items\">\n            <td>foo</td><td>bar</td>\n          </tr>\n        </tbody>\n      </table>\n    </vaadin-grid>\n    ",
                         directives: [vaadin_grid_1.VaadinGrid]
                     }), 
                     __metadata('design:paramtypes', [core_1.ElementRef, core_1.ChangeDetectorRef])
