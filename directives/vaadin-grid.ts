@@ -1,6 +1,6 @@
 import {Directive, ElementRef, Input, Output, EventEmitter} from '@angular/core';
 
-declare var Polymer;
+const Polymer = (<any>window).Polymer;
 
 @Directive({selector: 'vaadin-grid'})
 export class VaadinGrid {
@@ -10,7 +10,7 @@ export class VaadinGrid {
   private grid: any;
 
   constructor(el: ElementRef) {
-    if (!(<any>window).Polymer || !Polymer.isInstance(el.nativeElement)) {
+    if (!Polymer || !Polymer.isInstance(el.nativeElement)) {
       console.error("vaadin-grid has not been registered yet, please remember to import vaadin-grid.html in your main HTML page.");
       return;
     }

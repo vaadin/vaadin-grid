@@ -1,27 +1,28 @@
-System.register(['@angular/core'], function(exports_1, context_1) {
-    "use strict";
-    var __moduleName = context_1 && context_1.id;
+System.register(['@angular/core'], function(exports_1) {
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-        var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-        if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-        else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-        return c > 3 && r && Object.defineProperty(target, key, r), r;
+        if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
+        switch (arguments.length) {
+            case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
+            case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
+            case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
+        }
     };
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
     var core_1;
-    var VaadinGrid;
+    var Polymer, VaadinGrid;
     return {
         setters:[
             function (core_1_1) {
                 core_1 = core_1_1;
             }],
         execute: function() {
+            Polymer = window.Polymer;
             VaadinGrid = (function () {
                 function VaadinGrid(el) {
                     this.gridReady = new core_1.EventEmitter(false);
-                    if (!window.Polymer || !Polymer.isInstance(el.nativeElement)) {
+                    if (!Polymer || !Polymer.isInstance(el.nativeElement)) {
                         console.error("vaadin-grid has not been registered yet, please remember to import vaadin-grid.html in your main HTML page.");
                         return;
                     }
@@ -42,16 +43,15 @@ System.register(['@angular/core'], function(exports_1, context_1) {
                 __decorate([
                     core_1.Output('grid-ready'), 
                     __metadata('design:type', core_1.EventEmitter)
-                ], VaadinGrid.prototype, "gridReady", void 0);
+                ], VaadinGrid.prototype, "gridReady");
                 VaadinGrid = __decorate([
                     core_1.Directive({ selector: 'vaadin-grid' }), 
                     __metadata('design:paramtypes', [core_1.ElementRef])
                 ], VaadinGrid);
                 return VaadinGrid;
-            }());
+            })();
             exports_1("VaadinGrid", VaadinGrid);
         }
     }
 });
-
 //# sourceMappingURL=vaadin-grid.js.map
