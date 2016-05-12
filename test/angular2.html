@@ -30,14 +30,13 @@
         defaultExtension: 'js'
       };
 
-      packages['vaadin-grid'] = {
-        defaultExtension: 'js',
-        main: 'vaadin-grid.js'
+      packages['@vaadin/angular2-polymer'] = {
+        main: 'index.js'
       };
 
       System.config({
         map: {
-          'vaadin-grid': '../directives',
+          '@vaadin': '../node_modules/@vaadin',
           '@angular': '../node_modules/@angular'
         },
         packages: packages
