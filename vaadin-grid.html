@@ -116,6 +116,8 @@ Custom property | Description | Default
 `--vaadin-grid-header-row-height` | Header row height | `56px`
 `--vaadin-grid-footer-row-height` | Footer row height | `56px`
 `--vaadin-grid-selected-row-cell` | Mixin which applies to the cell elements of a selected row | {}
+'--vaadin-grid-row-cell' | Mixin which applies to the cell elements of the table | {}
+
 
 See the [demo](demo/index.html) for use case examples.
 
@@ -457,7 +459,8 @@ See the [demo](demo/index.html) for use case examples.
   .vaadin-grid-header th,
   .vaadin-grid-body td,
   .vaadin-grid-footer td {
-       padding: 0 24px 0 24px;
+    @apply(--vaadin-grid-row-cell);
+    padding: 0 24px 0 24px;
   }
 
   .vaadin-grid-cell.last-frozen {
