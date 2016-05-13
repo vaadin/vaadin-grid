@@ -125,6 +125,7 @@ See the [demo](demo/index.html) for use case examples.
 @demo demo/index.html
 -->
 <dom-module id="vaadin-grid">
+<dom-module id="vaadin-grid">
   <style>
  /* Host styles */
   :host {
@@ -459,8 +460,9 @@ See the [demo](demo/index.html) for use case examples.
   .vaadin-grid-header th,
   .vaadin-grid-body td,
   .vaadin-grid-footer td {
-    @apply(--vaadin-grid-row-cell);
     padding: 0 24px 0 24px;
+    @apply(--vaadin-grid-row-cell);
+
   }
 
   .vaadin-grid-cell.last-frozen {
