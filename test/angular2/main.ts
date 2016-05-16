@@ -1,11 +1,12 @@
 import {bootstrap}    from '@angular/platform-browser-dynamic';
-import {Component, ElementRef, ChangeDetectorRef} from '@angular/core';
-import {VaadinGrid} from '../../directives/vaadin-grid';
+import {Component, ElementRef, ChangeDetectorRef, ViewChild, enableProdMode} from '@angular/core';
+import {PolymerElement} from '@vaadin/angular2-polymer';
+enableProdMode();
 
 @Component({
   selector: 'test-app',
   template: `
-    <vaadin-grid (grid-ready)="onGridReady($event)">
+    <vaadin-grid #grid>
       <table>
         <colgroup>
           <col>
@@ -20,7 +21,7 @@ import {VaadinGrid} from '../../directives/vaadin-grid';
       </table>
     </vaadin-grid>
     `,
-  directives: [VaadinGrid]
+  directives: [PolymerElement('vaadin-grid')]
 })
 export class TestApp {
 
@@ -28,6 +29,8 @@ export class TestApp {
   private _ref;
   public items = [];
   public thirdColumn;
+
+  @ViewChild('grid') grid: any;
 
   constructor(e: ElementRef, ref: ChangeDetectorRef) {
     this._host = e.nativeElement;
@@ -38,10 +41,13 @@ export class TestApp {
     this._ref.detectChanges();
   }
 
-  onGridReady(grid) {
-    grid.columns[0].flex = '2';
-    var event = new CustomEvent('readyForTests', {detail: this});
-    this._host.dispatchEvent(event);
+  ngAfterViewInit() {
+    var grid = this.grid.nativeElement;
+    grid.then(() => {
+      grid.columns[0].flex = '2';
+      var event = new CustomEvent('readyForTests', {detail: this});
+      this._host.dispatchEvent(event);
+    });
   }
 }
 
