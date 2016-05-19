@@ -25,6 +25,7 @@
     "@angular/core": "^2.0.0-rc.0",
     "@angular/platform-browser": "^2.0.0-rc.0",
     "@angular/platform-browser-dynamic": "^2.0.0-rc.0",
+    "@vaadin/angular2-polymer": "^1.0.0-alpha1",
     "chalk": "latest",
     "es6-shim": "^0.35.0",
     "gulp-bower": "0.0.10",
