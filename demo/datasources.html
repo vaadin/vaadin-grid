@@ -440,11 +440,6 @@ layout: page
               </tbody>
             </table>
           </vaadin-grid>
-          <template is="dom-if" if="{{selected}}">
-            <div class="user-image">
-              <img src="{{selected.user.picture.large}}"></img>
-            </div>
-          </template>
         </template>
       </div>
       <code demo-var="template">
@@ -452,16 +447,6 @@ layout: page
 
         template.addEventListener('dom-change', function() {
           // code
-          var grid = document.querySelector('#my-grid-with-template');
-
-          template.onSelect = function() {
-            if (grid.selection.selected().length === 0) {
-              template.selected = null;
-            } else {
-              template.selected = template.users[grid.selection.selected()];
-            }
-          };
-
           getJSON('https://randomuser.me/api?results=25', function(data) {
             template.users = data.results;
           });
