@@ -51,7 +51,7 @@ public class ViolatedGrid extends Grid<Object> {
         if (BrowserInfo.get().isChrome()) {
             setWidgetUtilNativeScrollbarSize(getWidgetUtilNativeScrollbarSize());
         }
-
+        
         if (WidgetUtil.getNativeScrollbarSize() == 0) {
             // "invisible" scrollbars
             if (BrowserInfo.get().isSafari()) {
@@ -75,6 +75,7 @@ public class ViolatedGrid extends Grid<Object> {
                 GQuery.$(".vaadin-grid-scroller", this).attr("invisible", "");
             }
         }
+        super.setColumnReorderingAllowed(false);
     }
 
     @Override
@@ -210,4 +211,6 @@ public class ViolatedGrid extends Grid<Object> {
             setFrozenColumnCount(initialFrozenColumnCount);
         }
     }
+ 
+    
 }

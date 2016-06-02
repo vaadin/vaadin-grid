@@ -1317,6 +1317,16 @@ See the [demo](demo/index.html) for use case examples.
      */
     getItem: function(rowIndex, callback, onlyCached) {
       this._grid.getItem(rowIndex, callback, onlyCached);
+    },
+
+    /**
+     * Used to change setting allowing grid columns to be reordered by drag abd drop
+     *
+     * @method setColumnReorderingAllowed
+     * @param {boolean} isAllowed
+     */
+    setColumnReorderingAllowed: function(isAllowed){
+        this._grid.setColumnReorderingAllowed(isAllowed);
     }
   }); // End Polymer prototype
 </script>

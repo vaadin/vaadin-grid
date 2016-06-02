@@ -108,6 +108,10 @@ public class GridElement implements SelectionHandler<Object>,
 
         grid.setStylePrimaryName("vaadin-grid style-scope vaadin-grid");
     }
+    
+    public void setColumnReorderingAllowed(boolean isAllowed){
+        grid.setColumnReorderingAllowed(isAllowed);
+    }
 
     public Element getGridElement() {
         return grid.getElement();
