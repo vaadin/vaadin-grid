@@ -1,5 +1,11 @@
 import {Directive, ElementRef, Input, Output, EventEmitter} from '@angular/core';
 
+console.warn(
+  'The `VaadinGrid` directive is deprecated. Please use ' +
+  '`PolymerElement(\'vaadin-grid\')` from the `@vaadin/angular2-polymer` ' +
+  'npm package instead.'
+);
+
 const Polymer = (<any>window).Polymer;
 
 @Directive({selector: 'vaadin-grid'})
