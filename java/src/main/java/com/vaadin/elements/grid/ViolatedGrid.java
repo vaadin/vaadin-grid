@@ -161,10 +161,23 @@ public class ViolatedGrid extends Grid<Object> {
         focusGridIfSelectAllClicked(event);
 
         Element targetElement = (Element)event.getEventTarget().cast();
-        if (targetElement != WidgetUtil.getFocusedElement() || isElementOutsideStaticSection(targetElement)) {
+
+        // by default Grid steals focus from focusable elements inside cells,
+        // so we need to prevent that.
+        Element focusedElement = WidgetUtil.getFocusedElement();
+        if (elementContains(targetElement, focusedElement)) {
+          return;
+        }
+
+        if (targetElement != focusedElement || isElementOutsideStaticSection(targetElement)) {
             super.onBrowserEvent(event);
         }
     }
+
+    private native Boolean elementContains(Element parent, Element child)
+        /*-{
+          return parent.contains(child);
+        }-*/;
 
     private boolean isElementOutsideStaticSection(Element element) {
         TableSectionElement headerElement = getEscalator().getHeader().getElement();
