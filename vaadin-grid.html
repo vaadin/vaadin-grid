@@ -1132,6 +1132,10 @@ See the [demo](demo/index.html) for use case examples.
       this._grid.setSortOrder(sortOrder);
     },
 
+    _columnReorderingAllowedChanged: function(){
+      this._grid.setColumnReorderingAllowed(this.columnReorderingAllowed);
+    },
+
     created: function() {
       this._grid = new vaadin.elements.grid.GridElement();
     },
@@ -1344,15 +1348,6 @@ See the [demo](demo/index.html) for use case examples.
      */
     getItem: function(rowIndex, callback, onlyCached) {
       this._grid.getItem(rowIndex, callback, onlyCached);
-    },
-
-    /**
-     * Used to change setting allowing grid columns to be reordered by drag and drop
-     *
-     * @method setColumnReorderingAllowed
-     */
-    _columnReorderingAllowedChanged: function(){
-        this._grid.setColumnReorderingAllowed(isAllowed);
     },
 
   }); // End Polymer prototype
