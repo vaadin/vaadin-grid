@@ -51,7 +51,7 @@ public class ViolatedGrid extends Grid<Object> {
         if (BrowserInfo.get().isChrome()) {
             setWidgetUtilNativeScrollbarSize(getWidgetUtilNativeScrollbarSize());
         }
-        
+       
         if (WidgetUtil.getNativeScrollbarSize() == 0) {
             // "invisible" scrollbars
             if (BrowserInfo.get().isSafari()) {
@@ -211,6 +211,4 @@ public class ViolatedGrid extends Grid<Object> {
             setFrozenColumnCount(initialFrozenColumnCount);
         }
     }
- 
-    
 }
