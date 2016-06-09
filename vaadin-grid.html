@@ -116,7 +116,9 @@ Custom property | Description | Default
 `--vaadin-grid-header-row-height` | Header row height | `56px`
 `--vaadin-grid-footer-row-height` | Footer row height | `56px`
 `--vaadin-grid-selected-row-cell` | Mixin which applies to the cell elements of a selected row | {}
-'--vaadin-grid-row-cell' | Mixin which applies to the cell elements of the table | {}
+`--vaadin-grid-row-cell` | Mixin which applies to the cell elements of the table | {}
+`--header-drag-table-background-color` | Mixin which applies to the background of header drag table | `#EEEEEE`
+`--header-drop-marker-color` | Mixin which applies to the color of the drop marker | `#03A9F4`
 
 
 See the [demo](demo/index.html) for use case examples.
@@ -663,6 +665,17 @@ See the [demo](demo/index.html) for use case examples.
     }
   }
 
+ :host ::content .header-drag-table .vaadin-grid-cell {
+     background-color: var(--header-drag-table-background-color, #EEEEEE);
+     position: absolute;
+     opacity: 0.5;
+ }
+
+ :host ::content .header-drag-table .vaadin-grid-drop-marker {
+     background-color: var(--header-drop-marker-color, #03A9F4);
+     position: absolute;
+     width: 3px;
+ }
 
 
   </style>
@@ -1035,7 +1048,14 @@ See the [demo](demo/index.html) for use case examples.
 
       _currentItems: {
         value: undefined
-      }
+      },
+
+      columnReorderingAllowed: {
+        type: Boolean,
+        default: false,
+        observer: '_columnReorderingAllowedChanged'
+      },
+
     },
 
     attributeChanged: function(name, type, value) {
@@ -1320,13 +1340,13 @@ See the [demo](demo/index.html) for use case examples.
     },
 
     /**
-     * Used to change setting allowing grid columns to be reordered by drag abd drop
+     * Used to change setting allowing grid columns to be reordered by drag and drop
      *
      * @method setColumnReorderingAllowed
-     * @param {boolean} isAllowed
      */
-    setColumnReorderingAllowed: function(isAllowed){
+    _columnReorderingAllowedChanged: function(){
         this._grid.setColumnReorderingAllowed(isAllowed);
-    }
+    },
+
   }); // End Polymer prototype
 </script>
