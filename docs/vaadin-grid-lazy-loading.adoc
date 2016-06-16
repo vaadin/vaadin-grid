@@ -18,7 +18,7 @@ image::img/vaadin-grid-lazy-loading.png[]
 = Function Data Source
 
 In addition to assigning an array to the `items` property, you can alternatively assign a function. +
-`<vaadin-grid>` will call this function lazily, only when it needs more data to be displayed.
+The [vaadinelement]#vaadin-grid# element will call this function lazily, only when it needs more data to be displayed.
 
 `params` argument provides `index` and `count` properties, telling the starting index from which
 data should be returned, and how many items should be returned, respectively.
