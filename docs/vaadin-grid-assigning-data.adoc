@@ -93,9 +93,11 @@ Optionally, you can dismiss the whole `<table>` element configure the columns us
 
 [source,javascript]
 ----
-grid.columns = [ {name: 'user.name.first'},
-                 {name: 'user.name.last'},
-                 {name: 'user.email'} ];
+grid.columns = [
+  { name: 'user.name.first' },
+  { name: 'user.name.last' },
+  { name: 'user.email' }
+];
 ----
 
 The `name` attribute defines which property from the data items are displayed in each column.
@@ -107,17 +109,27 @@ After you have configured the columns, you can go ahead and assign the data arra
 
 [source,javascript]
 ----
-grid.items = [ { user: {
-                  name: { first: 'amber', last: 'crawford' },
-                  email: 'amber.crawford@example.com' },
-                user: {
-                  name: { first: 'zoe', last: 'caldwell' },
-                  email: 'zoe.caldwell@example.com' },
-                user: {
-                  name: { first: 'jessie', last: 'brooks' },
-                  email: 'jessie.brooks@example.com' },
-                ...
-              } ];
+grid.items = [
+  {
+    user: {
+      name: { first: 'amber', last: 'crawford' },
+      email: 'amber.crawford@example.com'
+    }
+  },
+  {
+    user: {
+      name: { first: 'zoe', last: 'caldwell' },
+      email: 'zoe.caldwell@example.com'
+    }
+  },
+  {
+    user: {
+      name: { first: 'jessie', last: 'brooks' },
+      email: 'jessie.brooks@example.com'
+    }
+  }
+  ...
+];
 ----
 
 ifdef::web[]

@@ -27,17 +27,27 @@ data should be returned, and how many items should be returned, respectively.
 
 [source,javascript]
 ----
-var employees = [ { user: {
-                      name: { first: 'amber', last: 'crawford' },
-                      email: 'amber.crawford@example.com' },
-                    user: {
-                      name: { first: 'zoe', last: 'caldwell' },
-                      email: 'zoe.caldwell@example.com' },
-                    user: {
-                      name: { first: 'jessie', last: 'brooks' },
-                      email: 'jessie.brooks@example.com' },
-                    ...
-                  } ];
+var employees = [
+  {
+    user: {
+      name: { first: 'amber', last: 'crawford' },
+      email: 'amber.crawford@example.com'
+    }
+  },
+  {
+    user: {
+      name: { first: 'zoe', last: 'caldwell' },
+      email: 'zoe.caldwell@example.com'
+    }
+  },
+  {
+    user: {
+      name: { first: 'jessie', last: 'brooks' },
+      email: 'jessie.brooks@example.com'
+    }
+  }
+  ...
+];
 
 grid.size = employees.length;
 grid.items = function(params, callback) {
