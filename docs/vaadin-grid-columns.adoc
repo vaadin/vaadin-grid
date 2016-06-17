@@ -1,0 +1,151 @@
+---
+title: Configuring Columns
+order: 2
+layout: page
+---
+
+[[overview]]
+= Overview
+
+This chapter will introduce configuration options for the columns of [vaadinelement]#vaadin-grid#.
+
+[[defining]]
+= Defining the Columns
+You can define the number of columns in [vaadinelement]#vaadin-grid# by using the `col` element.
+These elements should be placed inside a `colgroup` wrapper inside a `table` element.
+
+To define a caption for the column, you should use the `th` element inside a table row wrapped in the `thead` element.
+See the example below for a simple two column configuration.
+[source,html]
+----
+<vaadin-grid>
+  <table>
+    <colgroup>
+      <col>
+      <col>
+    </colgroup>
+    <thead>
+      <tr>
+        <th>First column</th>
+        <th>Second column</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>One</td>
+        <td>Two</td>
+      </tr>
+    </tbody>
+  </table>
+</vaadin-grid>
+----
+
+An alternative way to define the columns is to use the JavaScript API.
+You can modify the columns via the [propertyname]#grid.columns# array.
+[source,javascript]
+----
+// Columns can also be configured in JS.
+grid.columns = [
+  { name: "firstColumn" },
+  { name: "secondColumn" }
+];
+----
+
+[[dynamic]]
+= Adding and Removing Columns Dynamically
+
+The [vaadinelement]#vaadin-grid# element has a JavaScript API for dynamically inserting and removing columns.
+To add a column, you can use the [methodname]#addColumn()# method, which takes a column object and an optional index or column name as its parameters.
+
+[source,javascript]
+----
+grid.addColumn({name: 'secondColumn'});
+
+// Specify the index or name of the column before which to add the new column.
+grid.addColumn({name: 'firstColumn'}, 0);
+----
+
+In order to remove columns, there is a method called [methodname]#removeColumn()#, which takes the column index or name as a parameter.
+
+[source,javascript]
+----
+// Remove the first column of the grid.
+grid.removeColumn(0);
+
+// Remove the second column of the grid.
+grid.removeColumn('secondColumn');
+----
+
+[[width]]
+= Defining Column Widths
+By default all the columns share the available size equally.
+You can use the [propertyname]#column.flex# property to adjust how much a column spans in width relative to other columns.
+Columns may also be assigned an explicit width, a maximum width and a minimum width with [propertyname]#column.width#, [propertyname]#column.maxWidth# and [propertyname]#column.minWidth# properties.
+
+[source,html]
+----
+<vaadin-grid>
+  <table>
+    <colgroup>
+      <col width="100" flex="1">
+      <col max-width="200" flex="2">
+      <col min-width="100" flex="1">
+    </colgroup>
+    <!-- ... -->
+  </table>
+</vaadin-grid>
+----
+
+[source,javascript]
+----
+// Setting the width properties with JS API.
+grid.columns[0].width = 100;
+grid.columns[1].maxWidth = 200;
+grid.columns[2].minWidth = 100;
+
+// Setting the flex properties with JS API.
+grid.columns[0].flex = 1;
+grid.columns[1].flex = 2;
+grid.columns[2].flex = 1;
+----
+
+[[frozen]]
+= Frozen Columns
+A number of columns starting from the left may be set "frozen" which forces them to remain horizontally still while the rest of the columns scroll normally.
+
+You can do this by assigning the number of columns to [propertyname]#grid.frozenColumns# property or declaratively using the `frozen-columns` attribute.
+On multi-select mode the selection column containing the checkboxes is frozen by default but setting [propertyname]#grid.frozenColumns# to -1 will unfreeze it as well.
+[source,javascript]
+----
+// Define a single column to be frozen.
+grid.frozenColumns = 1;
+----
+
+[[hiding]]
+= Hiding Columns
+Columns can be either hidden or visible, which is determined by the [propertyname]#column.hidden# property.
+Another property called [propertyname]#column.hidable# can be used to make some columns hidable by the user.
+Setting a column's [propertyname]#hidable# property to `true` appends it a dropdown menu on the right where individual columns can be toggled hidden/visible by the user.
+
+[source,html]
+----
+<vaadin-grid>
+  <table>
+    <colgroup>
+      <col>
+      <col hidable="">
+      <col hidable="" hidden="">
+      <col hidden="">
+    </colgroup>
+    <!-- ... -->
+  </table>
+</vaadin-grid>
+----
+[source,javascript]
+----
+// Setting the properties with JS API.
+grid.columns[1].hidable = true;
+grid.columns[2].hidable = true;
+grid.columns[2].hidden = true;
+grid.columns[3].hidden = true;
+----
