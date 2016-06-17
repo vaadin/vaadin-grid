@@ -17,13 +17,14 @@ image::img/vaadin-grid-lazy-loading.png[]
 [[functions]]
 = Function Data Source
 
-In addition to assigning an array to the `items` property, you can alternatively assign a function. +
+In addition to assigning an array to the `items` property, you can alternatively assign a function.
 The [vaadinelement]#vaadin-grid# element will call this function lazily, only when it needs more data to be displayed.
 
-`params` argument provides `index` and `count` properties, telling the starting index from which
+The function takes two parameters, a `params` object and a `callback` function.
+The `params` object provides `index` and `count` properties, expressing the starting index from which
 data should be returned, and how many items should be returned, respectively.
 
-`callback` argument is a callback function which takes an array of the requested items as a parameter.
+The `callback` parameter is a callback function which is provided an array of the requested items as a parameter.
 
 [source,javascript]
 ----
@@ -55,7 +56,7 @@ grid.items = function(params, callback) {
 };
 ----
 
-When using function data sources, `size` needs always to be set manually. +
+When using function data sources, `size` needs always to be set manually.
 You can set it once, like done in the example above, or alternatively as a parameter given to the `callback` function.
 
 [source,javascript]
@@ -97,7 +98,7 @@ grid.items = function(params, callback) {
 };
 ----
 
-Now, in most cases using remote data, you can't know the dataset size in advance.
+In most cases using remote data, you can't know the dataset size in advance.
 Below are a few examples how you could set the `size` in different scenarios.
 
 * There is a separate API for fetching the size:
