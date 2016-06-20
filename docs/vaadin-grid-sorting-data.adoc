@@ -56,7 +56,7 @@ As mentioned in the previous example, there are multiple ways to change the sort
 None of them will, however, automatically order any data inside [vaadinelement]#vaadin-grid#.
 The data source implementation is always responsible of providing appropriate data that is ordered by the sort order definitions.
 
-You can also listen for changes in the sort order by listenening to the `sort-order-changed` event.
+You can also listen for changes in the sort order by listening to the `sort-order-changed` event.
 See the example below for a simple case of sorting based on one sortable column.
 
 [source,javascript]
