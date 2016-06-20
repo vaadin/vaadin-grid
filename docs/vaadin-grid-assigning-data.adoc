@@ -1,6 +1,6 @@
 ---
 title: Assigning Data
-order: 1
+order: 2
 layout: page
 ---
 

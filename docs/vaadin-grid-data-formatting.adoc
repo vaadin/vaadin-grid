@@ -1,6 +1,6 @@
 ---
 title: Data Formatting
-order: 6
+order: 7
 layout: page
 ---
 

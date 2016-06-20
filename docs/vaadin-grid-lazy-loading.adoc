@@ -1,6 +1,6 @@
 ---
 title: Lazy Loading and Remote Data
-order: 2
+order: 3
 layout: page
 ---
 
