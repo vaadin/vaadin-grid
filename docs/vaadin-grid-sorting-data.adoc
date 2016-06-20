@@ -1,5 +1,5 @@
 ---
-title: Sorting Data
+title: Sorting and Filtering Data
 order: 6
 layout: page
 ---
@@ -79,4 +79,28 @@ grid.addEventListener('sort-order-changed', function() {
     return (a[idx] < b[idx]) ? lesser : -lesser;
   });
 });
+----
+
+== Filtering the Data
+
+A common requirement is also to filter the displayed data.
+Unfortunately there aren't any built-in helpers for doing filtering, but you should implement the filtering in your data source.
+
+See the example below for a function data source, which uses the value from a `filterElement` to filter the provided data.
+Notice that you also need to call [methodname]#refreshItems()# method in order to get the items to update after the filter is changed.
+[source,javascript]
+----
+var filterElement = document.querySelector('#filter');
+filterElement.addEventListener('input', function() {
+  grid.refreshItems();
+});
+
+grid.items = function(params, callback) {
+  var filterValue = filterElement.value.toLowerCase();
+  var data = dataArray.filter(function(item) {
+    return (item.toString().toLowerCase()).indexOf(filterValue) != -1;
+  });
+  var slice = data.slice(params.index, params.index + params.count);
+  callback(slice, data.length);
+};
 ----
