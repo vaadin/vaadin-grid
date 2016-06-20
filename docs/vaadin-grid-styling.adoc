@@ -1,6 +1,6 @@
 ---
 title: Styling
-order: 4
+order: 8
 layout: page
 ---
 

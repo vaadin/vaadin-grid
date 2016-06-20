@@ -1,6 +1,6 @@
 ---
 title: Selection
-order: 2
+order: 5
 layout: page
 ---
 

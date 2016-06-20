@@ -1,6 +1,6 @@
 ---
 title: Customizing headers and footers
-order: 3
+order: 4
 layout: page
 ---
 

@@ -1,6 +1,6 @@
 ---
 title: Sorting and Filtering Data
-order: 6
+order: 7
 layout: page
 ---
 
