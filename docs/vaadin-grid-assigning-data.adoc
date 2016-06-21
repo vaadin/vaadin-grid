@@ -8,8 +8,7 @@ layout: page
 = Overview
 
 In this chapter, we'll show you how to get started with assigning data to your [vaadinelement]#vaadin-grid#.
-
-We'll go through the basics of using HTML and JSON Objects to generate a grid that looks like the one below.
+We'll go through the basics of using HTML and JSON objects to generate a grid that looks like the screenshot below.
 
 [[figure.overview]]
 .A <vaadin-grid> displaying data with three columns.
@@ -21,17 +20,18 @@ For more advanced data assignment topics, see <<vaadin.grid.lazy.loading#overvie
 = Using Data from a HTML Table
 
 Easiest way to assign data into [vaadinelement]#vaadin-grid# is to use a HTML table.
-
 To get started, you can take any existing `<table>` element and place it inside the [vaadinelement]#vaadin-grid# element.
 
-Then, you need to define the number of columns displayed by inserting `<col>` elements inside the `<table>` element. You can wrap them inside
-a `<colgroup>` element like done in the example below, but that's optional.
+To define the number of columns displayed, you need to insert `<col>` elements inside the `<table>` element.
+You can wrap them inside a `<colgroup>` element like in the example below, but that's optional.
+Headers for each column can be configured using `<th>` elements in the `<thead>` section.
 
 [source,html]
 ----
 <vaadin-grid>
   <table>
     <colgroup>
+      <col>
       <col>
       <col>
     </colgroup>
@@ -71,9 +71,8 @@ a `<colgroup>` element like done in the example below, but that's optional.
 
 When using objects as data, you can provide the array of objects to [vaadinelement]#vaadin-grid#.
 
-First, you need to define which columns will be displayed. +
-You can do this using the `<col>`
-elements, like in the example below.
+First, you need to define the columns and a mapping between object properties and the columns.
+You can do this using the `<col>` elements and its `name` attribute, like in the example below.
 
 [source,html]
 ----
@@ -88,7 +87,8 @@ elements, like in the example below.
 </vaadin-grid>
 ----
 
-Optionally, you can dismiss the whole `<table>` element configure the columns using the javascript API, as described in <<vaadin.grid.configuring.columns#overview, "Configuring Columns">>.
+Optionally, you can dismiss the whole `<table>` element and configure the columns using the JavaScript API.
+See the example below and also <<vaadin.grid.configuring.columns#overview, "Configuring Columns">> for more details.
 
 [source,javascript]
 ----
@@ -99,12 +99,10 @@ grid.columns = [
 ];
 ----
 
-The `name` attribute defines which property from the data items are displayed in each column.
-
 If you do not provide a `<thead>` element for the header, headers will be automatically generated
 from the `name` attributes, as described in <<vaadin.grid.customizing.headers#overview, "Customizing Headers and Footers">>.
 
-After you have configured the columns, you can go ahead and assign the data array.
+After you have configured the columns, you can go ahead and assign the data array to the [propertyname]#items# property of the grid.
 
 [source,javascript]
 ----
@@ -140,12 +138,13 @@ endif::web[]
 [[primitive]]
 = Using Primitive Values
 
-When your data consist of primitive values, columns are mapped indexes instead of `name` property.
+When your data consist of primitive values, columns are mapped by indexes instead of `name` property.
 
 First, you need to define a column by a `<col>` element without
-a `name` attribute, like in the example below, or by using the javascript API, as described in <<vaadin.grid.configuring.columns#overview, "Configuring Columns">>.
+a `name` attribute, like in the example below, or by using the JavaScript API, as described in <<vaadin.grid.configuring.columns#overview, "Configuring Columns">>.
 
-Note: The header auto generation does not apply here because we're missing the `name` property, so you *have* to define a `<thead>` element also.
+[NOTE]
+The header auto generation does not apply here because we're missing the `name` property, so you *have* to define a `<thead>` element also.
 
 [source,html]
 ----
@@ -175,7 +174,12 @@ using nested arrays.
 
 [source,javascript]
 ----
-grid.items = [['amber', 'crawford'], ['zoe', 'caldwell'], ['jessie', 'brooks'], ...]
+grid.items = [
+  ['amber', 'crawford'],
+  ['zoe', 'caldwell'],
+  ['jessie', 'brooks'],
+  ...
+]
 ----
 
 ifdef::web[]
@@ -189,23 +193,33 @@ endif::web[]
 
 When using data that changes dynamically, [vaadinelement]#vaadin-grid# must be notified by the changes.
 
-* `size` property is used to tell [vaadinelement]#vaadin-grid# the size of the active dataset. +
-If you add or remove items, you need to update the size accordingly. +
-Like any other property, `size` can also be applied as an attribute: `<vaadin-grid size="100">``
+The `size` property is used to tell [vaadinelement]#vaadin-grid# the size of the active dataset.
+If you add or remove items, you need to update the size accordingly.
+Like any other property, `size` can also be applied as an attribute.
+[source,html]
+----
+<vaadin-grid size="100"></vaadin-grid>
+----
 
-Note: When using arrays as data, the `length` of the original item array is set as the initial `size`.
+[NOTE]
+When using arrays as data, the `length` of the original item array is set as the initial `size`.
 
 [source,javascript]
 ----
-// in this case, grid.items.push(...); would do the same, but using grid.push('items', ...); is preferred.
-grid.push('items', { user: { name: { first: 'eva', last: 'burke' }, email: 'eva.burke@example.com' } };
+// In this case, grid.items.push(...); would do the same,
+// but using grid.push('items', ...); is preferred.
+grid.push('items', {
+  user: {
+    name: { first: 'eva', last: 'burke' }, email: 'eva.burke@example.com'
+  }
+});
 
-// increase the size after pushing a new item.
+// Increase the size after pushing a new item.
 grid.size++;
 ----
 
-* `refreshItems()` function is used to tell [vaadinelement]#vaadin-grid# to refresh the displayed data. +
-If the contents of the data changes, you need to call `refreshItems()`.
+The [methodname]#refreshItems()# method is used to tell [vaadinelement]#vaadin-grid# to refresh the displayed data.
+If the contents of the data changes, you need to call [methodname]#refreshItems()#.
 
 [source,javascript]
 ----
