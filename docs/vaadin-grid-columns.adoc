@@ -11,10 +11,10 @@ This chapter will introduce configuration options for the columns of [vaadinelem
 
 [[defining]]
 = Defining the Columns
-You can define the number of columns in [vaadinelement]#vaadin-grid# by using the `col` element.
-These elements should be placed inside a `colgroup` wrapper inside a `table` element.
+You can define the number of columns in [vaadinelement]#vaadin-grid# by using the `<col>` element.
+These elements should be placed inside a `<colgroup>` wrapper inside a `<table>` element.
 
-To define a caption for the column, you should use the `th` element inside a table row wrapped in the `thead` element.
+To define a caption for the column, you should use the `<th>` element inside a table row wrapped in the `<thead>` element.
 See the example below for a simple two column configuration.
 [source,html]
 ----
@@ -44,7 +44,7 @@ An alternative way to define the columns is to use the JavaScript API.
 You can modify the columns via the [propertyname]#grid.columns# array.
 [source,javascript]
 ----
-// Columns can also be configured in JS.
+// Columns can also be configured in JavaScript.
 grid.columns = [
   { name: "firstColumn" },
   { name: "secondColumn" }
@@ -59,6 +59,7 @@ To add a column, you can use the [methodname]#addColumn()# method, which takes a
 
 [source,javascript]
 ----
+// Add a column as the last column of the grid.
 grid.addColumn({name: 'secondColumn'});
 
 // Specify the index or name of the column before which to add the new column.
@@ -98,12 +99,12 @@ Columns may also be assigned an explicit width, a maximum width and a minimum wi
 
 [source,javascript]
 ----
-// Setting the width properties with JS API.
+// Setting the width properties with JavaScript API.
 grid.columns[0].width = 100;
 grid.columns[1].maxWidth = 200;
 grid.columns[2].minWidth = 100;
 
-// Setting the flex properties with JS API.
+// Setting the flex properties with JavaScript API.
 grid.columns[0].flex = 1;
 grid.columns[1].flex = 2;
 grid.columns[2].flex = 1;
@@ -126,6 +127,10 @@ grid.frozenColumns = 1;
 Columns can be either hidden or visible, which is determined by the [propertyname]#column.hidden# property.
 Another property called [propertyname]#column.hidable# can be used to make some columns hidable by the user.
 Setting a column's [propertyname]#hidable# property to `true` appends it a dropdown menu on the right where individual columns can be toggled hidden/visible by the user.
+
+[[figure.vaadin-grid.column-hiding]]
+.A screenshot of the dropdown to hide columns
+image::img/vaadin-grid-column-hiding.png[]
 
 [source,html]
 ----
