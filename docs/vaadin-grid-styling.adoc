@@ -11,19 +11,21 @@ The appearance of [vaadinelement]#vaadin-grid# is designed to fit in with the ht
 This chapter will explain how you can customize the look of your [vaadinelement]#vaadin-grid# to fit your own application theme.
 Some CSS properties like `font-family` will be inherited from the containing page while others may need to be changed with custom CSS properties and mixins.
 
+[[vaadin-grid.sorting.sizing]]
 == Sizing
 
 By default [vaadinelement]#vaadin-grid# takes all horizontal space available and set its height depending on the number of data rows.
 You can change this behavior by using standard CSS properties like `width` and `height`.
 
-The height can also be defined as the number of rows to be displayed by using the `visible-rows` attribute or `grid.visibleRows` JavaScript property.
+The height can also be defined as the number of rows to be displayed by using the [propertyname]#visible-rows# attribute or [propertyname]#grid.visibleRows# JavaScript property.
 
+[[vaadin-grid.sorting.custom]]
 == Custom Properties
 The [vaadinelement]#vaadin-grid# element is compatible with https://github.com/PolymerElements/paper-styles[paper-styles] from the https://elements.polymer-project.org/[Polymer Element Catalog].
 The selection checkboxes and focus highlights inherit their color from the `--primary-color` defined in the `paper-styles`.
 
 You can also use some custom properties defined by [vaadinelement]#vaadin-grid#.
-Currently these only cover mixins for the row cells and CSS properties for changing the row heights.
+Currently these cover mixins for the row cells and CSS properties for changing the row heights.
 
 .Available custom properties
 |===

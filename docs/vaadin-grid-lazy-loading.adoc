@@ -4,13 +4,13 @@ order: 3
 layout: page
 ---
 
-[[overview]]
+[[vaadin-grid.lazy-loading]]
 = Overview
 
 In this chapter, you'll learn how to use functions as data sources.
 This enables you to use lazy loading and remote data, like for example REST APIs.
 
-[[functions]]
+[[vaadin-grid.lazy-loading.functions]]
 = Function Data Source
 
 In addition to assigning an array to the [propertyname]#items# property, you can alternatively assign a function.
@@ -68,7 +68,7 @@ See link:https://cdn.vaadin.com/vaadin-elements/master/vaadin-grid/demo/datasour
 ====
 endif::web[]
 
-[[remote]]
+[[vaadin-grid.lazy-loading.remote]]
 = Remote Data
 
 Using remote data does not differ much from using arrays within a function data source.
@@ -95,7 +95,7 @@ grid.items = function(params, callback) {
 ----
 
 
-[[size]]
+[[vaadin-grid.lazy-loading.size]]
 = Defining the Data Set Size
 In most cases using remote data, you can't know the size of the data set in advance.
 Below are a few examples how you could set the [propertyname]#size# in different scenarios.

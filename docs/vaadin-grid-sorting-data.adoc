@@ -15,6 +15,7 @@ The user can also select multiple columns for sorting by shift-clicking more col
 .A <vaadin-grid> displaying three sorting indicators.
 image::img/vaadin-grid-sort-indicators.png[]
 
+[[vaadin-grid.sorting.columns]]
 == Sortable Columns
 
 While defining the columns you can define whether the user should be able to sort by that column or not.
@@ -50,6 +51,7 @@ grid.sortOrder = [
 ];
 ----
 
+[[vaadin-grid.sorting.sort]]
 == Sorting the Data
 
 As mentioned in the previous example, there are multiple ways to change the sort order of [vaadinelement]#vaadin-grid#.
@@ -81,6 +83,7 @@ grid.addEventListener('sort-order-changed', function() {
 });
 ----
 
+[[vaadin-grid.sorting.filtering]]
 == Filtering the Data
 
 A common requirement is also to filter the displayed data.

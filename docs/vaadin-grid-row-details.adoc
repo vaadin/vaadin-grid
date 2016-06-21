@@ -14,6 +14,7 @@ The [vaadinelement]#vaadin-grid# provides an API to assign a function to act as 
 .A <vaadin-grid> displaying row details.
 image::img/vaadin-grid-row-details.png[]
 
+[[vaadin-grid.row-details.generator]]
 == Generator Function
 
 The row details generator should be a function assigned to the [propertyname]#grid.rowDetailsGenerator# property.
@@ -37,6 +38,7 @@ grid.rowDetailsGenerator = function(rowIndex) {
 };
 ----
 
+[[vaadin-grid.row-details.display]]
 == Displaying the Details
 
 In order to actually display the row details, you need to call the [methodname]#setRowDetailsVisible()# method.

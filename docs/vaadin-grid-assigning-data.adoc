@@ -4,7 +4,7 @@ order: 2
 layout: page
 ---
 
-[[overview]]
+[[vaadin-grid.data]]
 = Overview
 
 In this chapter, we'll show you how to get started with assigning data to your [vaadinelement]#vaadin-grid#.
@@ -13,10 +13,9 @@ We'll go through the basics of using HTML and JSON objects to generate a grid th
 [[figure.overview]]
 .A <vaadin-grid> displaying data with three columns.
 image::img/vaadin-grid-assigning-data.png[]
+For more advanced data assignment topics, see <<vaadin-grid-lazy-loading#vaadin-grid.lazy-loading, "Lazy Loading and Remote Data">>.
 
-For more advanced data assignment topics, see <<vaadin.grid.lazy.loading#overview, "Lazy Loading and Remote Data">>.
-
-[[html]]
+[[vaadin-grid.data.html]]
 = Using Data from a HTML Table
 
 Easiest way to assign data into [vaadinelement]#vaadin-grid# is to use a HTML table.
@@ -66,7 +65,7 @@ Headers for each column can be configured using `<th>` elements in the `<thead>`
 </vaadin-grid>
 ----
 
-[[object]]
+[[vaadin-grid.data.object]]
 = Using Object Values
 
 When using objects as data, you can provide the array of objects to [vaadinelement]#vaadin-grid#.
@@ -88,7 +87,7 @@ You can do this using the `<col>` elements and its `name` attribute, like in the
 ----
 
 Optionally, you can dismiss the whole `<table>` element and configure the columns using the JavaScript API.
-See the example below and also <<vaadin.grid.configuring.columns#overview, "Configuring Columns">> for more details.
+See the example below and also <<vaadin-grid-columns#vaadin-grid.columns, "Configuring Columns">> for more details.
 
 [source,javascript]
 ----
@@ -100,7 +99,7 @@ grid.columns = [
 ----
 
 If you do not provide a `<thead>` element for the header, headers will be automatically generated
-from the `name` attributes, as described in <<vaadin.grid.customizing.headers#overview, "Customizing Headers and Footers">>.
+from the `name` attributes, as described in <<vaadin-grid-headers#vaadin-grid.headers, "Customizing Headers and Footers">>.
 
 After you have configured the columns, you can go ahead and assign the data array to the [propertyname]#items# property of the grid.
 
@@ -135,13 +134,13 @@ See link:https://cdn.vaadin.com/vaadin-elements/latest/vaadin-grid/demo/datasour
 ====
 endif::web[]
 
-[[primitive]]
+[[vaadin-grid.data.primitive]]
 = Using Primitive Values
 
 When your data consist of primitive values, columns are mapped by indexes instead of `name` property.
 
 First, you need to define a column by a `<col>` element without
-a `name` attribute, like in the example below, or by using the JavaScript API, as described in <<vaadin.grid.configuring.columns#overview, "Configuring Columns">>.
+a `name` attribute, like in the example below, or by using the JavaScript API, as described in <<vaadin-grid-columns#vaadin-grid.columns, "Configuring Columns">>.
 
 [NOTE]
 The header auto generation does not apply here because we're missing the `name` property, so you *have* to define a `<thead>` element also.
@@ -188,7 +187,7 @@ See link:https://cdn.vaadin.com/vaadin-elements/master/vaadin-grid/demo/datasour
 ====
 endif::web[]
 
-[[dynamic]]
+[[vaadin-grid.data.dynamic]]
 = Using Dynamic Data
 
 When using data that changes dynamically, [vaadinelement]#vaadin-grid# must be notified by the changes.

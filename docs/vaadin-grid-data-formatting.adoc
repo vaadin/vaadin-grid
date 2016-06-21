@@ -7,10 +7,11 @@ layout: page
 [[vaadin-grid.formatting]]
 = Data Formatting
 
-In the <<vaadin.grid.assigning.data, "Assigning Data">> chapter we learned how to assign data items to be displayed as the rows of the Grid.
+In the <<vaadin-grid-assigning-data#vaadin-grid.data, "Assigning Data">> chapter we learned how to assign data items to be displayed as the rows of the Grid.
 Often the provided items might have data in a different format that is suitable for displaying in the user interface.
 This chapter explains how to do formatting on your data before being displayed in the Grid.
 
+[[vaadin-grid.formatting.inline]]
 == Inline Data
 
 If you are providing the items using as an HTML `<table>` using the DOM directly, you can add any HTML elements into Grid cells.
@@ -34,7 +35,7 @@ In the example below, you can see how a `<progress>` element is used within the 
 .Adding an HTML element into a cell.
 image::img/vaadin-grid-formatting-inline.png[]
 
-
+[[vaadin-grid.formatting.renderers]]
 == Using Data Renderers
 
 When providing data as an array of items or as a datasource function, you can to use a renderer function to format the data.

@@ -4,14 +4,15 @@ order: 5
 layout: page
 ---
 
-[[headers]]
+[[vaadin-grid.headers]]
 = Customizing Headers and Footers
 
 The [vaadinelement]#vaadin-grid# element has a header section above and a footer section below the scrollable data area (compares to `<thead>` and `<tfoot>` sections of an HTML `<table>` element).
 
 Typically you would use the header section to place a caption above an individual column.
-This chapter explains the special cases, please see <<vaadin.grid.columns#overview, "Configuring Columns">> for details on the basic configuration.
+This chapter explains the special cases, please see <<vaadin-grid-columns#vaadin-grid.columns, "Configuring Columns">> for details on the basic configuration.
 
+[[vaadin-grid.headers.html]]
 == HTML Cell Content
 
 What can be placed inside header and footer isn't limited to text only.
@@ -40,6 +41,7 @@ The following example adds HTML (an image and some bolded text) in [vaadinelemen
 </vaadin-grid>
 ----
 
+[[vaadin-grid.headers.cell]]
 === Cell and Content API
 
 The [vaadinelement]#vaadin-grid# element exposes JavaScript APIs for programmatically changing the content of a cell in the header (and footer respectively).
@@ -63,6 +65,7 @@ grid.footer.getCell(0, 0).content = '<b>Bold text</b>'
 grid.header.getCell(0, 1).content = this.$.filterTextField;
 ----
 
+[[vaadin-grid.headers.colspan]]
 == Column Span
 
 By default each cell in the header/footer has the same width as the column's data cells.
@@ -102,6 +105,7 @@ Colspan can also be adjusted in JavaScript by changing the cell's [propertyname]
 grid.footer.getCell(0, 0).colspan = 2;
 ----
 
+[[vaadin-grid.headers.rows]]
 == Additional Rows
 
 By default there's one row in the [vaadinelement]#vaadin-grid# header and no rows in the footer.
@@ -144,6 +148,7 @@ The header and footer in the image above is achieved with the following markup.
 </vaadin-grid>
 ----
 
+[[vaadin-grid.headers.api]]
 === Header and Footer APIs
 
 In addition to already mentioned [methodname]#getCell(rowIndex, columnIndex)# method, the header/footer objects expose also other APIs.

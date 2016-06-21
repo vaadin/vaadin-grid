@@ -14,6 +14,7 @@ The selection behavior depends on the currently active selection mode.
 .A [elementname]#vaadin-grid# with four rows selected
 image::img/vaadin-grid-selection.png[]
 
+[[vaadin-grid.selection.mode]]
 == Selection Mode
 
 The [elementname]#vaadin-grid# has four separate selection modes.
@@ -29,6 +30,7 @@ Also if the user selects all items in `multi` selection mode, the mode will chan
 
 To get notified of changes in the selection mode, you can listen to an event named `selection-mode-changed`.
 
+[[vaadin-grid.selection.api]]
 == Selection API
 
 This section explains the basic operations available through the selection API.
@@ -45,6 +47,7 @@ This section explains the basic operations available through the selection API.
 [methodname]#grid.selection.clear()#::
   Deselects all selected rows. If the selection mode is `all`, this operation will change the selection mode to `multi`.
 
+[[vaadin-grid.selection.selected]]
 == Accessing the Selected Rows
 
 In order to access the selected row indexes, you can call [methodname]#grid.selection.selected()# method.
