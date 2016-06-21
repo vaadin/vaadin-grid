@@ -13,8 +13,8 @@ This chapter explains how to do formatting on your data before being displayed i
 
 == Inline Data
 
-If you are providing the items using as an HTML `table` using the DOM directly, you can add any HTML elements into Grid cells.
-In the example below, you can see how a `progress` element is used within the provided data.
+If you are providing the items using as an HTML `<table>` using the DOM directly, you can add any HTML elements into Grid cells.
+In the example below, you can see how a `<progress>` element is used within the provided data.
 
 [source,html]
 ----
@@ -31,16 +31,16 @@ In the example below, you can see how a `progress` element is used within the pr
 ----
 
 [[figure.vaadin-grid.formatting.inline]]
-.Adding HTML elements into Grid cell.
+.Adding an HTML element into a cell.
 image::img/vaadin-grid-formatting-inline.png[]
 
 
 == Using Data Renderers
 
-When providing data as an array of items or as a datasource function, you need to use a renderer function to format the data.
-Each Grid column can be given a function as their `renderer` property.
+When providing data as an array of items or as a datasource function, you can to use a renderer function to format the data.
+Each column can be given a renderer function with their [propertyname]#renderer# property.
 
-A renderer function will get a reference to the `cell` being rendered as an argument.
+A renderer function will get a reference to the `cell` being rendered as a parameter.
 This reference can be used to manipulate its `innerHTML` property or for example use standard DOM API to append a child element.
 
 In order to re-create the usage of `progress` element in the previous section, we can write a following renderer function.
@@ -57,7 +57,7 @@ var progressRenderer = function(cell) {
 ----
 
 After we have defined the function, we still need to hook it into a column of the Grid.
-You can do this by using the `grid.columns` array as follows.
+You can do this by using the [propertyname]#grid.columns# array as follows.
 
 
 [source,javascript]
