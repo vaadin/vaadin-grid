@@ -94,7 +94,10 @@ grid.items = function(params, callback) {
 };
 ----
 
-In most cases using remote data, you can't know the dataset size in advance.
+
+[[size]]
+= Defining the Data Set Size
+In most cases using remote data, you can't know the size of the data set in advance.
 Below are a few examples how you could set the [propertyname]#size# in different scenarios.
 
 * There is a separate API for fetching the size.
@@ -153,7 +156,7 @@ grid.items = function(params, callback) {
     if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
       var response = JSON.parse(xhr.responseText);
       callback(response.employees);
-      
+
       // Increase the size dynamically, resulting in "infinite" scrolling.
       if (params.index + params.count == grid.size) {
         grid.size += 10;
