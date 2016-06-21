@@ -7,24 +7,20 @@ layout: page
 [[overview]]
 = Overview
 
-In this chapter, you'll learn how to use functions as data sources. That enables you to use
-lazy loading and remote data, like REST APIs.
-
-[[figure.overview]]
-.A <vaadin-grid> displaying data with three columns.
-image::img/vaadin-grid-lazy-loading.png[]
+In this chapter, you'll learn how to use functions as data sources.
+This enables you to use lazy loading and remote data, like for example REST APIs.
 
 [[functions]]
 = Function Data Source
 
-In addition to assigning an array to the `items` property, you can alternatively assign a function.
+In addition to assigning an array to the [propertyname]#items# property, you can alternatively assign a function.
 The [vaadinelement]#vaadin-grid# element will call this function lazily, only when it needs more data to be displayed.
 
 The function takes two parameters, a `params` object and a `callback` function.
 The `params` object provides `index` and `count` properties, expressing the starting index from which
 data should be returned, and how many items should be returned, respectively.
 
-The `callback` parameter is a callback function which is provided an array of the requested items as a parameter.
+The `callback` parameter is a callback function which you must call with an array of the requested items as a parameter.
 
 [source,javascript]
 ----
@@ -56,8 +52,8 @@ grid.items = function(params, callback) {
 };
 ----
 
-When using function data sources, `size` needs always to be set manually.
-You can set it once, like done in the example above, or alternatively as a parameter given to the `callback` function.
+When using function data sources, [propertyname]#size# needs always to be set manually.
+You can set it once, like done in the example above, or alternatively as a second parameter given to the `callback` function.
 
 [source,javascript]
 ----
@@ -99,13 +95,14 @@ grid.items = function(params, callback) {
 ----
 
 In most cases using remote data, you can't know the dataset size in advance.
-Below are a few examples how you could set the `size` in different scenarios.
+Below are a few examples how you could set the [propertyname]#size# in different scenarios.
 
-* There is a separate API for fetching the size:
+* There is a separate API for fetching the size.
 
 [source,javascript]
 ----
-// Define a function that you call manually every time you believe the size might've changed.
+// Define a function that you call manually every time
+// you believe the size might've changed.
 function setSize() {
   var url = 'https://my.data/size';
   var xhr = new XMLHttpRequest();
@@ -120,7 +117,7 @@ function setSize() {
 }
 ----
 
-* The size is delivered with the data payload:
+* The size is delivered with the data payload.
 
 [source,javascript]
 ----
@@ -130,8 +127,8 @@ grid.items = function(params, callback) {
   xhr.onreadystatechange = function() {
     if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
       var response = JSON.parse(xhr.responseText);
-
       callback(response.employees);
+
       // Assign size from the data payload.
       grid.size = response.totalSize;
     }
@@ -142,11 +139,11 @@ grid.items = function(params, callback) {
 };
 ----
 
-* There is no API for getting the total size at all:
+* There is no API for getting the total size at all.
 
 [source,javascript]
 ----
-// Set an initial size;
+// Set an initial size.
 grid.size = 10;
 
 grid.items = function(params, callback) {
@@ -155,8 +152,8 @@ grid.items = function(params, callback) {
   xhr.onreadystatechange = function() {
     if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
       var response = JSON.parse(xhr.responseText);
-
       callback(response.employees);
+      
       // Increase the size dynamically, resulting in "infinite" scrolling.
       if (params.index + params.count == grid.size) {
         grid.size += 10;
