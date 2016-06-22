@@ -11,13 +11,13 @@ Grid allows index based selection of data rows either through UI interaction or 
 The selection behavior depends on the currently active selection mode.
 
 [[figure.vaadin-grid.selection.example]]
-.A [elementname]#vaadin-grid# with four rows selected
+.A [vaadinelement]#vaadin-grid# with four rows selected
 image::img/vaadin-grid-selection.png[]
 
 [[vaadin-grid.selection.mode]]
 == Selection Mode
 
-The [elementname]#vaadin-grid# has four separate selection modes.
+The [vaadinelement]#vaadin-grid# has four separate selection modes.
 Defining the selection mode can be done using the [propertyname]#selection-mode# attribute or the [propertyname]#grid.selection.mode# property of the JavaScript API.
 
 * *Single* (`single`) is the default selection mode. It allows only one row to be selected at once.

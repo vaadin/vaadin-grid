@@ -14,8 +14,8 @@ This chapter explains how to do formatting on your data before being displayed i
 [[vaadin-grid.formatting.inline]]
 == Inline Data
 
-If you are providing the items using as an HTML `<table>` using the DOM directly, you can add any HTML elements into Grid cells.
-In the example below, you can see how a `<progress>` element is used within the provided data.
+If you are providing the items using as an HTML [elementname]#table# using the DOM directly, you can add any HTML elements into Grid cells.
+In the example below, you can see how a [elementname]#progress# element is used within the provided data.
 
 [source,html]
 ----

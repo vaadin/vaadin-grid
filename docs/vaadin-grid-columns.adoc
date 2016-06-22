@@ -11,10 +11,10 @@ This chapter will introduce configuration options for the columns of [vaadinelem
 
 [[vaadin-grid.columns.defining]]
 = Defining the Columns
-You can define the number of columns in [vaadinelement]#vaadin-grid# by using the `<col>` element.
-These elements should be placed inside a `<colgroup>` wrapper inside a `<table>` element.
+You can define the number of columns in [vaadinelement]#vaadin-grid# by using the [elementname]#col# element.
+These elements should be placed inside a [elementname]#colgroup# wrapper inside a [elementname]#table# element.
 
-To define a caption for the column, you should use the `<th>` element inside a table row wrapped in the `<thead>` element.
+To define a caption for the column, you should use the [elementname]#th# element inside a table row wrapped in the [elementname]#thead# element.
 See the example below for a simple two column configuration.
 [source,html]
 ----

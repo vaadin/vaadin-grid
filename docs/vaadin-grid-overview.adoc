@@ -7,7 +7,7 @@ layout: page
 [[vaadin-grid.overview]]
 = Overview
 
-The [elementname]#vaadin-grid# is a Polymer element that can be used to display large amounts of tabular data.
+The [vaadinelement]#vaadin-grid# is a Polymer element that can be used to display large amounts of tabular data.
 
 = Features
 

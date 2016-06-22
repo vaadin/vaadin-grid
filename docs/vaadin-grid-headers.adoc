@@ -7,7 +7,7 @@ layout: page
 [[vaadin-grid.headers]]
 = Customizing Headers and Footers
 
-The [vaadinelement]#vaadin-grid# element has a header section above and a footer section below the scrollable data area (compares to `<thead>` and `<tfoot>` sections of an HTML `<table>` element).
+The [vaadinelement]#vaadin-grid# element has a header section above and a footer section below the scrollable data area (compares to [elementname]#thead# and [elementname]#tfoot# sections of an HTML [elementname]#table# element).
 
 Typically you would use the header section to place a caption above an individual column.
 This chapter explains the special cases, please see <<vaadin-grid-columns#vaadin-grid.columns, "Configuring Columns">> for details on the basic configuration.
@@ -109,7 +109,7 @@ grid.footer.getCell(0, 0).colspan = 2;
 == Additional Rows
 
 By default there's one row in the [vaadinelement]#vaadin-grid# header and no rows in the footer.
-You can add new `<tr>` elements to your declarative `<table>` configurator on each section to affect the number of visible rows.
+You can add new [elementname]#tr# elements to your declarative [elementname]#table# configurator on each section to affect the number of visible rows.
 
 image:img/vaadin-grid-headers-row-count.png[]
 
