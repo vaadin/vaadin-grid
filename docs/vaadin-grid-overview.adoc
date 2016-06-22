@@ -9,7 +9,7 @@ layout: page
 
 The [vaadinelement]#vaadin-grid# is a Polymer element that can be used to display large amounts of tabular data.
 
-= Features
+== Features
 
 - Support for `Array` data or lazy loading with functions.
 - Renderer functions for data formatting.

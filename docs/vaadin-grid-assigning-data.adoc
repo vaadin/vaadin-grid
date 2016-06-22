@@ -16,7 +16,7 @@ image::img/vaadin-grid-assigning-data.png[]
 For more advanced data assignment topics, see <<vaadin-grid-lazy-loading#vaadin-grid.lazy-loading, "Lazy Loading and Remote Data">>.
 
 [[vaadin-grid.data.html]]
-= Using Data from a HTML Table
+== Using Data from a HTML Table
 
 Easiest way to assign data into [vaadinelement]#vaadin-grid# is to use a HTML table.
 To get started, you can take any existing [elementname]#table# element and place it inside the [vaadinelement]#vaadin-grid# element.
@@ -66,7 +66,7 @@ Headers for each column can be configured using [elementname]#th# elements in th
 ----
 
 [[vaadin-grid.data.object]]
-= Using Object Values
+== Using Object Values
 
 When using objects as data, you can provide the array of objects to [vaadinelement]#vaadin-grid#.
 
@@ -135,7 +135,7 @@ See link:https://cdn.vaadin.com/vaadin-elements/latest/vaadin-grid/demo/datasour
 endif::web[]
 
 [[vaadin-grid.data.primitive]]
-= Using Primitive Values
+== Using Primitive Values
 
 When your data consist of primitive values, columns are mapped by indexes instead of `name` property.
 
@@ -188,7 +188,7 @@ See link:https://cdn.vaadin.com/vaadin-elements/master/vaadin-grid/demo/datasour
 endif::web[]
 
 [[vaadin-grid.data.dynamic]]
-= Using Dynamic Data
+== Using Dynamic Data
 
 When using data that changes dynamically, [vaadinelement]#vaadin-grid# must be notified by the changes.
 

@@ -10,7 +10,7 @@ layout: page
 This chapter will introduce configuration options for the columns of [vaadinelement]#vaadin-grid#.
 
 [[vaadin-grid.columns.defining]]
-= Defining the Columns
+== Defining the Columns
 You can define the number of columns in [vaadinelement]#vaadin-grid# by using the [elementname]#col# element.
 These elements should be placed inside a [elementname]#colgroup# wrapper inside a [elementname]#table# element.
 
@@ -52,7 +52,7 @@ grid.columns = [
 ----
 
 [[vaadin-grid.columns.dynamic]]
-= Adding and Removing Columns Dynamically
+== Adding and Removing Columns Dynamically
 
 The [vaadinelement]#vaadin-grid# element has a JavaScript API for dynamically inserting and removing columns.
 To add a column, you can use the [methodname]#addColumn()# method, which takes a column object and an optional index or column name as its parameters.
@@ -78,7 +78,7 @@ grid.removeColumn('secondColumn');
 ----
 
 [[vaadin-grid.columns.width]]
-= Defining Column Widths
+== Defining Column Widths
 By default all the columns share the available size equally.
 You can use the [propertyname]#column.flex# property to adjust how much a column spans in width relative to other columns.
 Columns may also be assigned an explicit width, a maximum width and a minimum width with [propertyname]#column.width#, [propertyname]#column.maxWidth# and [propertyname]#column.minWidth# properties.
@@ -111,7 +111,7 @@ grid.columns[2].flex = 1;
 ----
 
 [[vaadin-grid.columns.frozen]]
-= Frozen Columns
+== Frozen Columns
 A number of columns starting from the left may be set "frozen" which forces them to remain horizontally still while the rest of the columns scroll normally.
 
 You can do this by assigning the number of columns to [propertyname]#grid.frozenColumns# property or declaratively using the `frozen-columns` attribute.
@@ -123,7 +123,7 @@ grid.frozenColumns = 1;
 ----
 
 [[vaadin-grid.columns.hiding]]
-= Hiding Columns
+== Hiding Columns
 Columns can be either hidden or visible, which is determined by the [propertyname]#column.hidden# property.
 Another property called [propertyname]#column.hidable# can be used to make some columns hidable by the user.
 Setting a column's [propertyname]#hidable# property to `true` appends it a dropdown menu on the right where individual columns can be toggled hidden/visible by the user.

@@ -149,7 +149,7 @@ The header and footer in the image above is achieved with the following markup.
 ----
 
 [[vaadin-grid.headers.api]]
-=== Header and Footer APIs
+== Header and Footer APIs
 
 In addition to already mentioned [methodname]#getCell(rowIndex, columnIndex)# method, the header/footer objects expose also other APIs.
 
