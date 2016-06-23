@@ -400,6 +400,81 @@ layout: page
     </code-example>
   </section>
 
+  <section id="template-example">
+    <h3 id="headers">Polymer Integration (Light DOM data source)</h3>
+    <p>Static data can be easily bound to vaadin-grid light DOM cells with <a href="https://www.polymer-project.org/1.0/docs/devguide/templates.html#dom-repeat">the template repeater</a>.</p>
+    <p><strong>Note:</strong> IE/Edge doesn't support template-repeating inside a table element.</p>
+    <!--<code-example source>
+      <div>
+        <template is="dom-bind" class="my-grid-with-template" demo>
+          <vaadin-grid id="my-grid-with-template" on-selected-items-changed="onSelect">
+            <table>
+              <colgroup>
+                <col width="64">
+                <col width="100">
+                <col>
+                <col>
+                <col>
+              </colgroup>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th></th>
+                  <th>First Name</th>
+                  <th>Last Name</th>
+                  <th>Email</th>
+                </tr>
+              </thead>
+              <tbody>
+                <template is="dom-repeat" items="[[users]]">
+                  <tr>
+                    <td>{{index}}</td>
+                    <td>
+                      <img src="{{item.user.picture.thumbnail}}" style="width: 24px"></img>
+                    </td>
+                    <td>{{item.user.name.first}}</td>
+                    <td>{{item.user.name.last}}</td>
+                    <td>{{item.user.email}}</td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </vaadin-grid>
+        </template>
+      </div>
+      <code demo-var="template">
+        var template = template || document.querySelector('template.my-grid-with-template');
+
+        template.addEventListener('dom-change', function() {
+          // code
+          getJSON('https://randomuser.me/api?results=25', function(data) {
+            template.users = data.results;
+          });
+          // end-code
+        });
+
+        if (template.render) {
+          // This is needed to make the template render on Chrome in vaadin-doc portlet
+          template.render();
+        }
+      </code>
+    </code-example>-->
+    <script>
+    // Need this hack to make this demo work on vaadin-docs site
+    // (by default JSoup, which is used at server-side parsing of the source files,
+    // doesn't allow a template tag in a table tbody)
+    var wrapper = document.querySelector('#template-example');
+
+    if (/Trident|Edge/.test(navigator.userAgent)) {
+      wrapper.parentElement.removeChild(wrapper);
+    } else {
+      wrapper.innerHTML = wrapper.innerHTML.replace(/<!--|-->/g, '');
+    }
+    </script>
+
+  </section>
+
+
 
 </body>
 
