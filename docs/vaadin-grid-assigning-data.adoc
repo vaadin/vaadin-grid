@@ -5,24 +5,24 @@ layout: page
 ---
 
 [[vaadin-grid.data]]
-= Overview
+= Assigning Data
 
-In this chapter, we'll show you how to get started with assigning data to your [vaadinelement]#vaadin-grid#.
-We'll go through the basics of using HTML and JSON objects to generate a grid that looks like the screenshot below.
+In this section, we will show you how to get started with assigning data to your [vaadinelement]#vaadin-grid#.
+We will go through the basics of using HTML and JSON objects to generate a grid that looks like in <<figure.vaadin-grid.data.overview>>.
 
-[[figure.overview]]
-.A <vaadin-grid> displaying data with three columns.
+[[figure.vaadin-grid.data.overview]]
+.A [vaadinelement]#vaadin-grid# displaying data with three columns
 image::img/vaadin-grid-assigning-data.png[]
 For more advanced data assignment topics, see <<vaadin-grid-lazy-loading#vaadin-grid.lazy-loading, "Lazy Loading and Remote Data">>.
 
 [[vaadin-grid.data.html]]
-== Using Data from a HTML Table
+== Using Data from an HTML Table
 
-Easiest way to assign data into [vaadinelement]#vaadin-grid# is to use a HTML table.
+The easiest way to assign data into [vaadinelement]#vaadin-grid# is to use an HTML table.
 To get started, you can take any existing [elementname]#table# element and place it inside the [vaadinelement]#vaadin-grid# element.
 
 To define the number of columns displayed, you need to insert [elementname]#col# elements inside the [elementname]#table# element.
-You can wrap them inside a [elementname]#colgroup# element like in the example below, but that's optional.
+You can wrap them inside a [elementname]#colgroup# element as in the example below, but that is optional.
 Headers for each column can be configured using [elementname]#th# elements in the [elementname]#thead# section.
 
 [source,html]
@@ -71,7 +71,7 @@ Headers for each column can be configured using [elementname]#th# elements in th
 When using objects as data, you can provide the array of objects to [vaadinelement]#vaadin-grid#.
 
 First, you need to define the columns and a mapping between object properties and the columns.
-You can do this using the [elementname]#col# elements and its `name` attribute, like in the example below.
+You can do this using the [elementname]#col# elements and its `name` attribute, as in the example below.
 
 [source,html]
 ----
@@ -87,7 +87,7 @@ You can do this using the [elementname]#col# elements and its `name` attribute, 
 ----
 
 Optionally, you can dismiss the whole [elementname]#table# element and configure the columns using the JavaScript API.
-See the example below and also <<vaadin-grid-columns#vaadin-grid.columns, "Configuring Columns">> for more details.
+See the following example and also <<vaadin-grid-columns#vaadin-grid.columns, "Configuring Columns">> for more details.
 
 [source,javascript]
 ----
@@ -130,20 +130,20 @@ grid.items = [
 
 ifdef::web[]
 ====
-See link:https://cdn.vaadin.com/vaadin-elements/latest/vaadin-grid/demo/datasources.html[live example].
+See the link:https://cdn.vaadin.com/vaadin-elements/latest/vaadin-grid/demo/datasources.html[live example].
 ====
 endif::web[]
 
 [[vaadin-grid.data.primitive]]
 == Using Primitive Values
 
-When your data consist of primitive values, columns are mapped by indexes instead of `name` property.
+When your data consists of primitive values, columns are mapped by indexes instead of the `name` property.
 
 First, you need to define a column by a [elementname]#col# element without
-a `name` attribute, like in the example below, or by using the JavaScript API, as described in <<vaadin-grid-columns#vaadin-grid.columns, "Configuring Columns">>.
+a `name` attribute, as done in the following example, or by using the JavaScript API, as described in <<vaadin-grid-columns#vaadin-grid.columns, "Configuring Columns">>.
 
 [NOTE]
-The header auto generation does not apply here because we're missing the `name` property, so you *have* to define a [elementname]#thead# element also.
+The header auto generation does not apply here because we are missing the `name` property, so you also _have to_ define a [elementname]#thead# element.
 
 [source,html]
 ----
@@ -168,7 +168,7 @@ After you have configured the columns, you can go ahead and assign the data.
 grid.items = ['amber', 'zoe', 'jessie', 'eva', ...]
 ----
 
-In case you need more columns than one, add another [elementname]#col# and [elementname]#th# elements and provide the data
+In case you need more than one column, add another pair of [elementname]#col# and [elementname]#th# elements and provide the data
 using nested arrays.
 
 [source,javascript]
@@ -183,16 +183,16 @@ grid.items = [
 
 ifdef::web[]
 ====
-See link:https://cdn.vaadin.com/vaadin-elements/master/vaadin-grid/demo/datasources.html[live example].
+See the link:https://cdn.vaadin.com/vaadin-elements/master/vaadin-grid/demo/datasources.html[live example].
 ====
 endif::web[]
 
 [[vaadin-grid.data.dynamic]]
 == Using Dynamic Data
 
-When using data that changes dynamically, [vaadinelement]#vaadin-grid# must be notified by the changes.
+If the data can change dynamically, [vaadinelement]#vaadin-grid# must be notified of the changes.
 
-The `size` property is used to tell [vaadinelement]#vaadin-grid# the size of the active dataset.
+You can define the size of the active dataset with the `size` property of [vaadinelement]#vaadin-grid#.
 If you add or remove items, you need to update the size accordingly.
 Like any other property, `size` can also be applied as an attribute.
 [source,html]
@@ -217,8 +217,8 @@ grid.push('items', {
 grid.size++;
 ----
 
-The [methodname]#refreshItems()# method is used to tell [vaadinelement]#vaadin-grid# to refresh the displayed data.
-If the contents of the data changes, you need to call [methodname]#refreshItems()#.
+If the data changes, you need to call [methodname]#refreshItems()#.
+The [methodname]#refreshItems()# method is used to trigger [vaadinelement]#vaadin-grid# to refresh the displayed data.
 
 [source,javascript]
 ----
@@ -228,6 +228,6 @@ grid.refreshItems();
 
 ifdef::web[]
 ====
-See link:https://cdn.vaadin.com/vaadin-elements/master/vaadin-grid/demo/datasources.html[live example].
+See the link:https://cdn.vaadin.com/vaadin-elements/master/vaadin-grid/demo/datasources.html[live example].
 ====
 endif::web[]

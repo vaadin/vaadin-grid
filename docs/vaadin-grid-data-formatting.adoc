@@ -32,7 +32,7 @@ In the example below, you can see how a [elementname]#progress# element is used 
 ----
 
 [[figure.vaadin-grid.formatting.inline]]
-.Adding an HTML element into a cell.
+.Adding an HTML element into a cell
 image::img/vaadin-grid-formatting-inline.png[]
 
 [[vaadin-grid.formatting.renderers]]

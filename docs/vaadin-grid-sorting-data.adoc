@@ -11,8 +11,8 @@ You can define which columns of the [vaadinelement]#vaadin-grid# are sortable.
 This will enable the user to click on the column header to update the [propertyname]#sortOrder# property.
 The user can also select multiple columns for sorting by shift-clicking more column headers.
 
-[[figure.overview]]
-.A <vaadin-grid> displaying three sorting indicators.
+[[figure.vaadin-grid.sorting.overview]]
+.A [vaadinelement]#vaadin-grid# displaying three sorting indicators
 image::img/vaadin-grid-sort-indicators.png[]
 
 [[vaadin-grid.sorting.columns]]

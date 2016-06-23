@@ -54,5 +54,5 @@ Currently these cover mixins for the row cells and CSS properties for changing t
 
 
 [[figure.vaadin-grid.styling.example]]
-.An example of custom highlight color and row heights.
+.An example of custom highlight color and row heights
 image::img/vaadin-grid-styling.png[]

@@ -5,7 +5,7 @@ layout: page
 ---
 
 [[vaadin-grid.columns]]
-= Overview
+= Configuring Columns
 
 This chapter will introduce configuration options for the columns of [vaadinelement]#vaadin-grid#.
 

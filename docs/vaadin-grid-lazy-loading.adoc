@@ -5,7 +5,7 @@ layout: page
 ---
 
 [[vaadin-grid.lazy-loading]]
-= Overview
+= Lazy Loading and Remote Data
 
 In this chapter, you'll learn how to use functions as data sources.
 This enables you to use lazy loading and remote data, like for example REST APIs.
@@ -64,7 +64,7 @@ For more details, see the API Documentation https://cdn.vaadin.com/vaadin-core-e
 
 ifdef::web[]
 ====
-See link:https://cdn.vaadin.com/vaadin-elements/master/vaadin-grid/demo/datasources.html[live example].
+See the link:https://cdn.vaadin.com/vaadin-elements/master/vaadin-grid/demo/datasources.html[live example].
 ====
 endif::web[]
 
@@ -171,6 +171,6 @@ grid.items = function(params, callback) {
 
 ifdef::web[]
 ====
-See link:https://cdn.vaadin.com/vaadin-elements/master/vaadin-grid/demo/datasources.html[live example].
+See the link:https://cdn.vaadin.com/vaadin-elements/master/vaadin-grid/demo/datasources.html[live example].
 ====
 endif::web[]

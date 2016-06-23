@@ -10,8 +10,8 @@ layout: page
 Row details feature can be used to display additional information related to a single row inside the data grid.
 The [vaadinelement]#vaadin-grid# provides an API to assign a function to act as a row details generator and toggle the visibility of the row details.
 
-[[figure.row-details]]
-.A <vaadin-grid> displaying row details.
+[[figure.vaadin-grid.row-details]]
+.A <vaadin-grid> displaying row details
 image::img/vaadin-grid-row-details.png[]
 
 [[vaadin-grid.row-details.generator]]
