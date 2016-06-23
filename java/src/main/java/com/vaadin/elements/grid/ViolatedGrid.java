@@ -164,6 +164,9 @@ public class ViolatedGrid extends Grid<Object> {
         if (targetElement != WidgetUtil.getFocusedElement() || isElementOutsideStaticSection(targetElement)) {
             super.onBrowserEvent(event);
         }
+        if (targetElement == null){
+        	throw new NullPointerException();
+        }
     }
 
     private boolean isElementOutsideStaticSection(Element element) {
