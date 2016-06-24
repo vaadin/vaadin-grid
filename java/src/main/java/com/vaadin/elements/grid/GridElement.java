@@ -111,7 +111,7 @@ public class GridElement implements SelectionHandler<Object>,
         staticSection = new GridStaticSection(this);
         grid.setStylePrimaryName("vaadin-grid style-scope vaadin-grid");
     }
-    
+
     public void setColumnReorderingAllowed(boolean isAllowed){
         grid.setColumnReorderingAllowed(isAllowed);
     }
@@ -140,17 +140,16 @@ public class GridElement implements SelectionHandler<Object>,
 
         return order;
     }
-    
+
     private void updateOrder(){
         List<GridColumn> dataColumns = getDataColumns();
         if (dataColumns.size() == 0)
-        	return;
-        
-        for (int i = cols.size(); i>0;i--){
-        	cols.remove(cols.get(0));
+            return;
+        for (int i = cols.size(); i > 0; i--){
+            cols.remove(cols.get(0));
         }
         for (int i = 0; i<dataColumns.size();i++){
-        	cols.add(dataColumns.get(i).getJsColumn());
+            cols.add(dataColumns.get(i).getJsColumn());
         }
     }
 
@@ -606,8 +605,8 @@ public class GridElement implements SelectionHandler<Object>,
     @JsIgnore 
     @Override
 	public void onColumnReorder(ColumnReorderEvent<Object> event) {
-    	updateOrder();
-    	triggerEvent(COLUMN_ORDER_CHANGED_EVENT);
+        updateOrder();
+        triggerEvent(COLUMN_ORDER_CHANGED_EVENT);
 	}
     
     @JsIgnore

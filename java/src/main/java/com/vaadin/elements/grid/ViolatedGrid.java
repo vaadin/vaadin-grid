@@ -74,7 +74,6 @@ public class ViolatedGrid extends Grid<Object> {
                 GQuery.$(".vaadin-grid-scroller", this).attr("invisible", "");
             }
         }
-        super.setColumnReorderingAllowed(false);
     }
 
     @Override
@@ -171,9 +170,6 @@ public class ViolatedGrid extends Grid<Object> {
 
         if (targetElement != focusedElement || isElementOutsideStaticSection(targetElement)) {
             super.onBrowserEvent(event);
-        }
-        if (targetElement == null){
-        	throw new NullPointerException();
         }
     }
 

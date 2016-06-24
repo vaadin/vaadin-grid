@@ -1059,7 +1059,6 @@ See the [demo](demo/index.html) for use case examples.
       */
       columnReorderingAllowed: {
         type: Boolean,
-        default: false,
         observer: '_columnReorderingAllowedChanged'
       },
 
@@ -1090,7 +1089,7 @@ See the [demo](demo/index.html) for use case examples.
        * @event selection-mode-changed
        */
       'selection-mode-changed': '_onSelectionModeChange',
-      'column-order-changed': '_onColumnOrderChanged',
+      'column-order-changed': '_columnOrderChanged',
     },
 
     observers: [
@@ -1098,7 +1097,7 @@ See the [demo](demo/index.html) for use case examples.
       '_itemsChanged(items, items.*)',
     ],
 
-    _onColumnOrderChanged: function(){
+    _columnOrderChanged: function(){
       this.columns = this._grid.getColumns();
     },
 
