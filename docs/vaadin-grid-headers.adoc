@@ -9,15 +9,15 @@ layout: page
 
 The [vaadinelement]#vaadin-grid# element has a header section above and a footer section below the scrollable data area (compares to [elementname]#thead# and [elementname]#tfoot# sections of an HTML [elementname]#table# element).
 
-Typically you would use the header section to place a caption above an individual column.
-This chapter explains the special cases, please see <<vaadin-grid-columns#vaadin-grid.columns, "Configuring Columns">> for details on the basic configuration.
+Typically, you would use the header section to place a caption above an individual column.
+This section explains the special cases, while <<vaadin-grid-columns#vaadin-grid.columns, "Configuring Columns">> gives the details of the basic configuration.
 
 [[vaadin-grid.headers.html]]
 == HTML Cell Content
 
-What can be placed inside header and footer isn't limited to text only.
+What can be placed inside header and footer is not limited to text only.
 You may define the cell content in plain HTML to add elements and style tweaks for the content.
-The following example adds HTML (an image and some bolded text) in [vaadinelement]#vaadin-grid# footer.
+The following example adds HTML (an image and some bolded text) in the [vaadinelement]#vaadin-grid# footer.
 
 [source,html]
 ----
@@ -46,22 +46,22 @@ The following example adds HTML (an image and some bolded text) in [vaadinelemen
 
 The [vaadinelement]#vaadin-grid# element exposes JavaScript APIs for programmatically changing the content of a cell in the header (and footer respectively).
 
-First thing you'll need is access to the `cell` whose content is to be changed.
-There are properties [propertyname]#grid.header# and [propertyname]#grid.footer# for accessing the dedicated APIs under the sections.
-Attaining access to a specific cell happens via [methodname]#getCell(rowIndex, columnIndex)# method on those very objects.
+The first thing you will need is access to the cell whose content is to be changed.
+There are properties [propertyname]#grid.header# and [propertyname]#grid.footer# for accessing the dedicated APIs.
+You can access a specific cell using the [methodname]#getCell(rowIndex, columnIndex)# method on the header and footer objects.
 
 From there on changing the content is a matter of modifying the cell's [propertyname]#content# property.
-Similarly to the declarative version, the imperative API accepts plain text, HTML or an element to be displayed inside the cell.
+Similarly to the declarative version, the imperative API accepts plain text, HTML, or an element to be displayed inside the cell.
 
 [source,javascript]
 ----
-// Text placed in the first cell of the first row in the grid header.
+// Text placed in the first cell of the first row in the grid header
 grid.header.getCell(0, 0).content = 'Project Name';
 
-// HTML placed in the first cell of the first row in the grid footer.
+// HTML placed in the first cell of the first row in the grid footer
 grid.footer.getCell(0, 0).content = '<b>Bold text</b>'
 
-// A pre-defined element placed in the second cell of the first row in the grid header.
+// A pre-defined element placed in the second cell of the first row in the grid header
 grid.header.getCell(0, 1).content = this.$.filterTextField;
 ----
 
@@ -108,12 +108,14 @@ grid.footer.getCell(0, 0).colspan = 2;
 [[vaadin-grid.headers.rows]]
 == Additional Rows
 
-By default there's one row in the [vaadinelement]#vaadin-grid# header and no rows in the footer.
+By default there is one row in the [vaadinelement]#vaadin-grid# header and no rows in the footer.
 You can add new [elementname]#tr# elements to your declarative [elementname]#table# configurator on each section to affect the number of visible rows.
 
+[[figure.vaadin-grid.headers.row.count]]
+.Customized header and footer
 image:img/vaadin-grid-headers-row-count.png[]
 
-The header and footer in the image above is achieved with the following markup.
+The header and footer in <<figure.vaadin-grid.headers.row.count>> is achieved with the following markup.
 
 [source,html]
 ----
@@ -151,11 +153,11 @@ The header and footer in the image above is achieved with the following markup.
 [[vaadin-grid.headers.api]]
 == Header and Footer APIs
 
-In addition to already mentioned [methodname]#getCell(rowIndex, columnIndex)# method, the header/footer objects expose also other APIs.
+In addition to the [methodname]#getCell(rowIndex, columnIndex)# method mentioned earlier, the header/footer objects expose also other APIs.
 
-New rows can be added with [methodname]#addRow(rowIndex, cellContent)# method and existing ones removed with [methodname]#removeRow(rowIndex)#.
-The parameter `rowIndex` is quite self explanatory in both cases; a zero-based index of the targeted row.
-The second parameter `cellContent` is an optional array which allows you to easily specify content for the cells on the new row.
+New rows can be added with the [methodname]#addRow(rowIndex, cellContent)# method and existing ones removed with [methodname]#removeRow(rowIndex)#.
+The parameter `rowIndex` should be self-explanatory in both cases; a zero-based index of the targeted row.
+The second parameter `cellContent` is an optional array that allows you to easily specify content for the cells on the new row.
 
 [source,javascript]
 ----
@@ -164,10 +166,10 @@ The second parameter `cellContent` is an optional array which allows you to easi
 grid.header.addRow(1, ['First Name', document.createElement('input'), '<b>Score</b>']);
 ----
 
-There's also a handful of related properties in a header and footer objects.
+There are also a handful of related properties in the header and footer objects.
 
-If you have multiple header rows, you can define the placement of the default row by using [propertyname]#header.defaultRow# property.
-Default row is the one containing column headers as well as sort indicators and the select all checkbox.
+If you have multiple header rows, you can define the placement of the default row by using the [propertyname]#header.defaultRow# property.
+The default row is the one containing column headers as well as sort indicators and the select all checkbox.
 
-Also [propertyname]#header.rowCount# and [propertyname]#footer.rowCount# properties (read-only) can be used to get the number of header or footer rows currently defined.
-In case you need to completely toggle the visibility of the section, you can use the [propertyname]#header.hidden# or [propertyname]#footer.hidden# properties.
+Also the [propertyname]#header.rowCount# and [propertyname]#footer.rowCount# properties (read-only) can be used to get the number of currently defined header or footer rows.
+In case you need to completely toggle the visibility of the header or footer section, you can use the respective [propertyname]#header.hidden# or [propertyname]#footer.hidden# properties.

@@ -8,7 +8,7 @@ layout: page
 = Styling
 
 The appearance of [vaadinelement]#vaadin-grid# is designed to fit in with the https://www.google.com/design/spec/material-design/[Material Design] language from Google.
-This chapter will explain how you can customize the look of your [vaadinelement]#vaadin-grid# to fit your own application theme.
+This section will explain how you can customize the look of your [vaadinelement]#vaadin-grid# to fit your own application theme.
 Some CSS properties like `font-family` will be inherited from the containing page while others may need to be changed with custom CSS properties and mixins.
 
 [[vaadin-grid.sorting.sizing]]

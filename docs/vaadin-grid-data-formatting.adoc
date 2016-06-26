@@ -7,15 +7,15 @@ layout: page
 [[vaadin-grid.formatting]]
 = Data Formatting
 
-In the <<vaadin-grid-assigning-data#vaadin-grid.data, "Assigning Data">> chapter we learned how to assign data items to be displayed as the rows of the Grid.
-Often the provided items might have data in a different format that is suitable for displaying in the user interface.
-This chapter explains how to do formatting on your data before being displayed in the Grid.
+In the <<vaadin-grid-assigning-data#vaadin-grid.data, "Assigning Data">> section, we learned how to assign data items to be displayed as the rows of the Grid.
+You often need to format data in a more suitable way for displaying it in the user interface.
+This section explains how to format your data before it is displayed in [vaadinelement]#vaadin-grid#.
 
 [[vaadin-grid.formatting.inline]]
 == Inline Data
 
-If you are providing the items using as an HTML [elementname]#table# using the DOM directly, you can add any HTML elements into Grid cells.
-In the example below, you can see how a [elementname]#progress# element is used within the provided data.
+If you are providing the data for the grid with an inline HTML [elementname]#table#, you can have any HTML elements in the grid cells.
+In the following example, we use a [elementname]#progress# element within the provided data.
 
 [source,html]
 ----
@@ -38,13 +38,13 @@ image::img/vaadin-grid-formatting-inline.png[]
 [[vaadin-grid.formatting.renderers]]
 == Using Data Renderers
 
-When providing data as an array of items or as a datasource function, you can to use a renderer function to format the data.
+When providing data as an array of items or as a datasource function, you can use a renderer function to format the data.
 Each column can be given a renderer function with their [propertyname]#renderer# property.
 
-A renderer function will get a reference to the `cell` being rendered as a parameter.
-This reference can be used to manipulate its `innerHTML` property or for example use standard DOM API to append a child element.
+A renderer function will get a reference to the cell being rendered as a parameter.
+This reference can be used to manipulate the `innerHTML` property of the cell or, for example, use the standard DOM API to append a child element.
 
-In order to re-create the usage of `progress` element in the previous section, we can write a following renderer function.
+For example, if you have numeric data and want to represent it with a [elementname]#progress# element, as we did in an earlier example with inline HTML, you can write a renderer function such as the following:
 
 [source,javascript]
 ----
@@ -57,7 +57,7 @@ var progressRenderer = function(cell) {
 };
 ----
 
-After we have defined the function, we still need to hook it into a column of the Grid.
+After you have defined the function, you still need to hook it into a column in the grid.
 You can do this by using the [propertyname]#grid.columns# array as follows.
 
 

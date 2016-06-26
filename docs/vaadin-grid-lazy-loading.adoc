@@ -7,7 +7,7 @@ layout: page
 [[vaadin-grid.lazy-loading]]
 = Lazy Loading and Remote Data
 
-In this chapter, you'll learn how to use functions as data sources.
+In this section, you will learn how to use functions as data sources.
 This enables you to use lazy loading and remote data, like for example REST APIs.
 
 [[vaadin-grid.lazy-loading.functions]]
