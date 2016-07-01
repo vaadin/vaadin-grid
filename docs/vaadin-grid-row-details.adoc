@@ -7,21 +7,21 @@ layout: page
 [[vaadin-grid.row-details]]
 = Row Details
 
-Row details feature can be used to display additional information related to a single row inside the data grid.
-The [vaadinelement]#vaadin-grid# provides an API to assign a function to act as a row details generator and toggle the visibility of the row details.
+The row details feature can be used to display additional information related to a single row inside the data grid.
+The [vaadinelement]#vaadin-grid# element provides an API to assign a function that acts as a row details generator and to toggle the visibility of the row details.
 
 [[figure.vaadin-grid.row-details]]
-.A <vaadin-grid> displaying row details
+.A [vaadinelement]#vaadin-grid# displaying row details
 image::img/vaadin-grid-row-details.png[]
 
 [[vaadin-grid.row-details.generator]]
 == Generator Function
 
 The row details generator should be a function assigned to the [propertyname]#grid.rowDetailsGenerator# property.
-This callback function is called when the row details will be displayed and it is expected to return an HTML element to be displayed below the row.
-As a sole parameter the function gets the index of the row.
+This callback function is called when the row details are displayed and it is expected to return an HTML element that is to be displayed below the row.
+As the sole parameter the function gets the index of the row.
 
-See the example below on how you can implement this function.
+See the following example on how you can implement this function:
 [source,javascript]
 ----
 grid.rowDetailsGenerator = function(rowIndex) {
@@ -42,9 +42,9 @@ grid.rowDetailsGenerator = function(rowIndex) {
 == Displaying the Details
 
 In order to actually display the row details, you need to call the [methodname]#setRowDetailsVisible()# method.
-This method takes two parameters, the index number of the row and a `Boolean` value to indicate whether to display or hide the row details.
+This method takes two parameters: the index number of the row and a `Boolean` value to indicate whether to display or hide the row details.
 
-See the example below on how to display details for the currently selected row.
+See the following example on how to display details for the currently selected row:
 [source,javascript]
 ----
 var detailsOpenIndex = -1;

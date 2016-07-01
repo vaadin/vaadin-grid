@@ -8,15 +8,15 @@ layout: page
 = Lazy Loading and Remote Data
 
 In this section, you will learn how to use functions as data sources.
-This enables you to use lazy loading and remote data, like for example REST APIs.
+This enables you to use lazy loading and remote data, such as with REST APIs.
 
 [[vaadin-grid.lazy-loading.functions]]
 == Function Data Source
 
 In addition to assigning an array to the [propertyname]#items# property, you can alternatively assign a function.
-The [vaadinelement]#vaadin-grid# element will call this function lazily, only when it needs more data to be displayed.
+The [vaadinelement]#vaadin-grid# element calls this function lazily, only when it needs more data to be displayed.
 
-The function takes two parameters, a `params` object and a `callback` function.
+The function takes two parameters: a `params` object and a `callback` function.
 The `params` object provides `index` and `count` properties, expressing the starting index from which
 data should be returned, and how many items should be returned, respectively.
 
@@ -52,8 +52,8 @@ grid.items = function(params, callback) {
 };
 ----
 
-When using function data sources, [propertyname]#size# needs always to be set manually.
-You can set it once, like done in the example above, or alternatively as a second parameter given to the `callback` function.
+When using function data sources, [propertyname]#size# always needs to be set manually.
+You can set it once, as was done in the example above, or alternatively as a second parameter given to the `callback` function.
 
 [source,javascript]
 ----
@@ -72,10 +72,10 @@ endif::web[]
 == Remote Data
 
 Using remote data does not differ much from using arrays within a function data source.
-You just need make sure you're handing over an array of data to the `callback` function.
+You just need make sure you are handing an array of data over to the `callback` function.
 
-The `index` and `count` properties from the `params` argument come in handy if you're using a
-REST API which supports fetching partial result sets.
+The `index` and `count` properties from the `params` argument come in handy if you are using a
+REST API that supports fetching partial result sets.
 
 [source,javascript]
 ----
@@ -97,11 +97,11 @@ grid.items = function(params, callback) {
 
 [[vaadin-grid.lazy-loading.size]]
 == Defining the Data Set Size
-In most cases using remote data, you can't know the size of the data set in advance.
-Below are a few examples how you could set the [propertyname]#size# in different scenarios.
+In most cases when using remote data, you cannot know the size of the data set in advance.
+In the following are a few examples how you could set the [propertyname]#size# in different scenarios.
 
 * There is a separate API for fetching the size.
-
++
 [source,javascript]
 ----
 // Define a function that you call manually every time
@@ -121,7 +121,7 @@ function setSize() {
 ----
 
 * The size is delivered with the data payload.
-
++
 [source,javascript]
 ----
 grid.items = function(params, callback) {
@@ -143,7 +143,7 @@ grid.items = function(params, callback) {
 ----
 
 * There is no API for getting the total size at all.
-
++
 [source,javascript]
 ----
 // Set an initial size.

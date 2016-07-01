@@ -8,7 +8,7 @@ layout: page
 = Sorting Data
 
 You can define which columns of the [vaadinelement]#vaadin-grid# are sortable.
-This will enable the user to click on the column header to update the [propertyname]#sortOrder# property.
+This enables the user to click on the column header to update the [propertyname]#sortOrder# property.
 The user can also select multiple columns for sorting by shift-clicking more column headers.
 
 [[figure.vaadin-grid.sorting.overview]]
@@ -18,7 +18,7 @@ image::img/vaadin-grid-sort-indicators.png[]
 [[vaadin-grid.sorting.columns]]
 == Sortable Columns
 
-While defining the columns you can define whether the user should be able to sort by that column or not.
+While defining the columns, you can define whether the user should be able to sort by that column or not.
 This is done with the [propertyname]#sortable# property.
 A predefined sorting order can also be achieved via the [propertyname]#sort-direction# attribute.
 The value of [propertyname]#sort-direction# should be either `asc` or `desc` for ascending and descending sort direction.
@@ -59,7 +59,7 @@ None of them will, however, automatically order any data inside [vaadinelement]#
 The data source implementation is always responsible of providing appropriate data that is ordered by the sort order definitions.
 
 You can also listen for changes in the sort order by listening to the `sort-order-changed` event.
-See the example below for a simple case of sorting based on one sortable column.
+See the following example for a simple case of sorting based on one sortable column.
 
 [source,javascript]
 ----
@@ -87,9 +87,9 @@ grid.addEventListener('sort-order-changed', function() {
 == Filtering the Data
 
 A common requirement is also to filter the displayed data.
-Unfortunately there aren't any built-in helpers for doing filtering, but you should implement the filtering in your data source.
+Unfortunately, there are not any built-in helpers for doing filtering, but you can implement the filtering in your data source.
 
-See the example below for a function data source, which uses the value from a `filterElement` to filter the provided data.
+See the following example for a function data source that uses the value from a `filterElement` to filter the provided data.
 Notice that you also need to call [methodname]#refreshItems()# method in order to get the items to update after the filter is changed.
 [source,javascript]
 ----

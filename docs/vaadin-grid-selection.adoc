@@ -25,8 +25,8 @@ Defining the selection mode can be done using the [propertyname]#selection-mode#
 * *All* (`all`) selection mode has each row selected by default allowing the user to deselect individual rows using an additional checkbox column.
 * *Disabled* (`disabled`) disables the selection functionality.
 
-The selection mode can also be changed by some operations on the selection API.
-Also if the user selects all items in `multi` selection mode, the mode will change to `all`.
+The selection mode can also be changed by some operations in the selection API.
+Also, if the user selects all items while in the `multi` selection mode, the mode will automatically change to `all`.
 
 To get notified of changes in the selection mode, you can listen to an event named `selection-mode-changed`.
 
@@ -36,7 +36,7 @@ To get notified of changes in the selection mode, you can listen to an event nam
 This section explains the basic operations available through the selection API.
 
 [methodname]#grid.selection.select(index)#::
-  Selects the row with the given index. If the selection mode is `single`, this operation will remove the previous selection.
+  Selects the row with the given index. If the selection mode is `single`, the method deselects the previously selected row.
 
 [methodname]#grid.selection.deselect(index)#::
   Deselects the row with the given index.
@@ -45,13 +45,13 @@ This section explains the basic operations available through the selection API.
   Selects all rows and changes the selection mode to `all`.
 
 [methodname]#grid.selection.clear()#::
-  Deselects all selected rows. If the selection mode is `all`, this operation will change the selection mode to `multi`.
+  Deselects all selected rows. If the selection mode is `all`, the method will change the selection mode to `multi`.
 
 [[vaadin-grid.selection.selected]]
 == Accessing the Selected Rows
 
 In order to access the selected row indexes, you can call [methodname]#grid.selection.selected()# method.
-The return value is an array of indexes currently selected.
+The return value is an array containing the currently selected indexes.
 
 [source,javascript]
 ----
@@ -62,7 +62,7 @@ grid.addEventListener('selected-items-changed', function() {
 });
 ----
 
-If your grid has a very large set of items combined with the selection mode `all`, you might want to use the [methodname]#grid.selection.deselected()# method.
-This method returns the indexes of rows that are *not* selected.
+If your grid has a very large set of items and the selection mode is `all`, you may want to use the [methodname]#grid.selection.deselected()# method instead.
+The method returns the indexes of rows that are _not_ selected.
 
 The total number of selected items is always available through [propertyname]#grid.selection.size# property.
