@@ -165,7 +165,8 @@ public class ViolatedGrid extends Grid<Object> {
         // by default Grid steals focus from focusable elements inside cells,
         // so we need to prevent that.
         Element focusedElement = WidgetUtil.getFocusedElement();
-        if (elementContains(targetElement, focusedElement)) {
+        if (focusedElement != getElement()
+                && elementContains(targetElement, focusedElement)) {
           return;
         }
 
