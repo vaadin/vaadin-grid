@@ -1115,11 +1115,7 @@ See the [demo](demo/index.html) for use case examples.
       if (this.hasAttribute('selection-mode')) {
         this.selection.mode = this.getAttribute('selection-mode');
       }
-      if (this.colums) {
-        this._grid.setColumns(this.columns);
-      } else {
-        this.columns = this._grid.getColumns();
-      }
+      this.columns = this._grid.getColumns();
       this._grid.init(this, Polymer.dom(this.root), this.$.measureobject);
 
       Polymer.dom(this).observeNodes(function(info) {
