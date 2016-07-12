@@ -2,20 +2,20 @@ package com.vaadin.elements.grid;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.dom.client.TableSectionElement;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.RootPanel;
-
 import com.vaadin.client.BrowserInfo;
 import com.vaadin.client.WidgetUtil;
 import com.vaadin.client.widget.grid.selection.SelectionModelMulti;
 import com.vaadin.client.widgets.Escalator;
 import com.vaadin.client.widgets.Grid;
 import com.vaadin.client.widgets.Overlay;
+import com.vaadin.elements.common.js.JS;
+import com.vaadin.elements.grid.selection.IndexBasedSelectionModelMulti;
 
 public class ViolatedGrid extends Grid<Object> {
 
@@ -154,51 +154,39 @@ public class ViolatedGrid extends Grid<Object> {
 
     @Override
     public void onBrowserEvent(Event event) {
+        if ("click".equalsIgnoreCase(event.getType())) {
+            Element targetElement = event.getEventTarget().cast();
+            // Don't handle click events over elements on header/footers, or certain
+            // HTML elements in the body. For any other element, the user has to call
+            // the stopPropagation.
+            if (isElementInStaticSection(targetElement) || isClickableElement(targetElement)) {
+                return;
+            }
 
-        // clicking on the select all checkbox moves focus away from the grid
-        // causing the :focus transition effect to be reapplied. Forcing focus
-        // on the grid will mitigate the issue.
-        focusGridIfSelectAllClicked(event);
-
-        Element targetElement = (Element)event.getEventTarget().cast();
-
-        // by default Grid steals focus from focusable elements inside cells,
-        // so we need to prevent that.
-        Element focusedElement = WidgetUtil.getFocusedElement();
-        if (focusedElement != getElement()
-                && elementContains(targetElement, focusedElement)) {
-          return;
-        }
-
-        if (targetElement != focusedElement || isElementOutsideStaticSection(targetElement)) {
-            super.onBrowserEvent(event);
-        }
-    }
-
-    private native Boolean elementContains(Element parent, Element child)
-        /*-{
-          return parent.contains(child);
-        }-*/;
-
-    private boolean isElementOutsideStaticSection(Element element) {
-        TableSectionElement headerElement = getEscalator().getHeader().getElement();
-        TableSectionElement footerElement = getEscalator().getFooter().getElement();
-
-        return !headerElement.isOrHasChild(element) && !footerElement.isOrHasChild(element);
-    }
-
-    private void focusGridIfSelectAllClicked(Event event) {
-        EventTarget target = event.getEventTarget();
-        if (Element.is(target)) {
-            Element targetElement = Element.as(target);
-
-            // Currently targeting all gwt-checkboxes, might need refinement in
-            // the future.
-            if("label".equals(targetElement.getTagName())
-                    && targetElement.getParentElement().hasClassName("gwt-CheckBox")) {
+            // clicking on the select all checkbox moves focus away from the grid
+            // causing the :focus transition effect to be reapplied. Forcing focus
+            // on the grid will mitigate the issue.
+            if (isSelectAll(targetElement)) {
                 getElement().focus();
             }
         }
+
+        super.onBrowserEvent(event);
+    }
+
+    private boolean isElementInStaticSection(Element element) {
+        TableSectionElement headerElement = getEscalator().getHeader().getElement();
+        TableSectionElement footerElement = getEscalator().getFooter().getElement();
+        return headerElement.isOrHasChild(element) || footerElement.isOrHasChild(element);
+    }
+
+    private boolean isClickableElement(Element element) {
+        return element.getTagName().toLowerCase().matches(".*(input|button|text|vaadin|select|option).*|a");
+    }
+
+    private boolean isSelectAll(Element element) {
+        return this.getSelectionModel() instanceof IndexBasedSelectionModelMulti
+                && element == JS.querySelector(getElement(), "thead .vaadin-grid-select-all-checkbox label");
     }
 
     @Override

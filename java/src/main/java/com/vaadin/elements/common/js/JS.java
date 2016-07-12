@@ -2,7 +2,9 @@ package com.vaadin.elements.common.js;
 
 import java.util.List;
 
+import com.gargoylesoftware.htmlunit.javascript.host.dom.NodeList;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.dom.client.Element;
 
 /**
  * Class with static utilities for @JsType
@@ -96,5 +98,10 @@ public abstract class JS {
     public static native JavaScriptObject getUndefined()
     /*-{
         return undefined;
+    }-*/;
+
+    public static native Element querySelector(Element parent, String css)
+    /*-{
+       return parent.querySelector(css);
     }-*/;
 }
