@@ -1,5 +1,6 @@
 package com.vaadin.elements.grid;
 
+import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.IFrameElement;
@@ -10,6 +11,7 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.vaadin.client.BrowserInfo;
 import com.vaadin.client.WidgetUtil;
+import com.vaadin.client.widget.grid.CellReference;
 import com.vaadin.client.widget.grid.selection.SelectionModelMulti;
 import com.vaadin.client.widgets.Escalator;
 import com.vaadin.client.widgets.Grid;
@@ -46,6 +48,13 @@ public class ViolatedGrid extends Grid<Object> {
 
     public ViolatedGrid() {
         super();
+        super.cellFocusHandler = new CellFocusHandler(){
+            public void handleNavigationEvent(Event event, CellReference<Object> cell) {
+                if (!event.getType().equals(BrowserEvents.CLICK)) {
+                    super.handleNavigationEvent(event, cell);
+                }
+            }
+        };
         // This is needed for detecting the correct native scrollbar size in
         // (OS X) Chrome [https://github.com/vaadin/vaadin-grid/issues/30]
         if (BrowserInfo.get().isChrome()) {
@@ -81,16 +90,6 @@ public class ViolatedGrid extends Grid<Object> {
     public Escalator getEscalator() {
         return super.getEscalator();
     }
-
-    public native boolean refreshHeader()
-    /*-{
-        this.@com.vaadin.client.widgets.Grid::refreshHeader()();
-    }-*/;
-
-    public native boolean refreshFooter()
-    /*-{
-      this.@com.vaadin.client.widgets.Grid::refreshFooter()();
-    }-*/;
 
     public void refreshStaticSection(StaticSection.StaticCell cell) {
         if (cell instanceof HeaderCell) {
@@ -159,7 +158,7 @@ public class ViolatedGrid extends Grid<Object> {
             // Don't handle click events over elements on header/footers, or certain
             // HTML elements in the body. For any other element, the user has to call
             // the stopPropagation.
-            if (isElementInStaticSection(targetElement) || isClickableElement(targetElement)) {
+            if (isElementInStaticSection(targetElement)) {
                 return;
             }
 
@@ -178,10 +177,6 @@ public class ViolatedGrid extends Grid<Object> {
         TableSectionElement headerElement = getEscalator().getHeader().getElement();
         TableSectionElement footerElement = getEscalator().getFooter().getElement();
         return headerElement.isOrHasChild(element) || footerElement.isOrHasChild(element);
-    }
-
-    private boolean isClickableElement(Element element) {
-        return element.getTagName().toLowerCase().matches(".*(input|button|text|vaadin|select|option).*|a");
     }
 
     private boolean isSelectAll(Element element) {
