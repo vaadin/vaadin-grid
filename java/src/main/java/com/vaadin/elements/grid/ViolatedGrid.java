@@ -164,7 +164,6 @@ public class ViolatedGrid extends Grid<Object> {
         Element target = event.getEventTarget().cast();
         if (target != getElement()) {
             Element focused = lastFocused != null ? lastFocused : WidgetUtil.getFocusedElement();
-            // focusin happens about 100-300 ms before that click event in Webkit && IE
             if (event.getType().equals(BrowserEvents.FOCUSIN)) {
                 lastFocused = target;
                 return;
@@ -174,7 +173,8 @@ public class ViolatedGrid extends Grid<Object> {
                 return;
             }
             if (event.getType().equals(BrowserEvents.CLICK)) {
-                Element targetCell = GQuery.$(target).closest("td.vaadin-grid-cell").get(0);
+                lastFocused = null;
+                Element targetCell = GQuery.$(target).closest(".vaadin-grid-cell").get(0);
                 if (targetCell != null && targetCell != focused && targetCell.isOrHasChild(focused)) {
                     return;
                 }
