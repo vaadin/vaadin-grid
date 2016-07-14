@@ -16,7 +16,7 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <gQueryVersion>1.4.4-SNAPSHOT</gQueryVersion>
-    <vaadin.version>7.7.0.elements3</vaadin.version>
+    <vaadin.version>7.7.0.elements2</vaadin.version>
     <gwt.outputstyle>OBF</gwt.outputstyle>
     <gwt.disableCastChecking>true</gwt.disableCastChecking>
     <gwt.disableClassMetadata>true</gwt.disableClassMetadata>

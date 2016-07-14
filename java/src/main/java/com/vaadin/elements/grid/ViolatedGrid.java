@@ -1,17 +1,16 @@
 package com.vaadin.elements.grid;
 
+import com.google.gwt.core.client.Duration;
 import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.IFrameElement;
-import com.google.gwt.dom.client.TableSectionElement;
 import com.google.gwt.query.client.GQuery;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.vaadin.client.BrowserInfo;
 import com.vaadin.client.WidgetUtil;
-import com.vaadin.client.widget.grid.CellReference;
 import com.vaadin.client.widget.grid.selection.SelectionModelMulti;
 import com.vaadin.client.widgets.Escalator;
 import com.vaadin.client.widgets.Grid;
@@ -48,13 +47,8 @@ public class ViolatedGrid extends Grid<Object> {
 
     public ViolatedGrid() {
         super();
-        super.cellFocusHandler = new CellFocusHandler(){
-            public void handleNavigationEvent(Event event, CellReference<Object> cell) {
-                if (!event.getType().equals(BrowserEvents.CLICK)) {
-                    super.handleNavigationEvent(event, cell);
-                }
-            }
-        };
+        this.sinkBitlessEvent("focusin");
+
         // This is needed for detecting the correct native scrollbar size in
         // (OS X) Chrome [https://github.com/vaadin/vaadin-grid/issues/30]
         if (BrowserInfo.get().isChrome()) {
@@ -98,6 +92,16 @@ public class ViolatedGrid extends Grid<Object> {
             refreshFooter();
         }
     }
+
+    public native void refreshHeader()
+    /*-{
+        this.@com.vaadin.client.widgets.Grid::refreshHeader();
+    }-*/;
+
+    public native void refreshFooter()
+    /*-{
+        this.@com.vaadin.client.widgets.Grid::refreshFooter();
+    }-*/;
 
     /**
      * The method is overridden for now to avoid IE related bugs and performance
@@ -151,32 +155,40 @@ public class ViolatedGrid extends Grid<Object> {
         return detectedScrollbarSize;
     }
 
+    private double lastFocusIn = 0;
+    private Element lastFocused;
+
     @Override
     public void onBrowserEvent(Event event) {
-        if ("click".equalsIgnoreCase(event.getType())) {
-            Element targetElement = event.getEventTarget().cast();
-            // Don't handle click events over elements on header/footers, or certain
-            // HTML elements in the body. For any other element, the user has to call
-            // the stopPropagation.
-            if (isElementInStaticSection(targetElement)) {
+        // All this code is to cancel click events when the grid has focusable elements
+        // in cells (body, headers or footers). Related issues: #387 #402 #398 #407
+        Element target = event.getEventTarget().cast();
+        if (target != getElement()) {
+            Element focused = WidgetUtil.getFocusedElement();
+            // focusin happens about 100-300 ms before that click event in Webkit && IE
+            if (event.getType().equals(BrowserEvents.FOCUSIN)) {
+                if (focused != getElement()) {
+                    lastFocusIn = Duration.currentTimeMillis();
+                    lastFocused = focused;
+                }
                 return;
             }
-
-            // clicking on the select all checkbox moves focus away from the grid
-            // causing the :focus transition effect to be reapplied. Forcing focus
-            // on the grid will mitigate the issue.
-            if (isSelectAll(targetElement)) {
-                getElement().focus();
+            if (event.getType().equals(BrowserEvents.CLICK)) {
+                // We have to check target == lastFocused because in IE we get focusin of the container
+                // of the target, even though it doesn't have tabindex. That could be a problem when clicking
+                // on a child of a focusable element.
+                if (target == lastFocused && Duration.currentTimeMillis() - lastFocusIn < 300) {
+                    return;
+                }
+                // There is no focusin in FF, and focus cannot be used since happens after click.
+                // lastFocused == null guarantees that this block only is run in FF.
+                if (lastFocused == null && getElement() != focused && getElement().isOrHasChild(focused)
+                        && focused.isOrHasChild(target)) {
+                    return;
+                }
             }
         }
-
         super.onBrowserEvent(event);
-    }
-
-    private boolean isElementInStaticSection(Element element) {
-        TableSectionElement headerElement = getEscalator().getHeader().getElement();
-        TableSectionElement footerElement = getEscalator().getFooter().getElement();
-        return headerElement.isOrHasChild(element) || footerElement.isOrHasChild(element);
     }
 
     private boolean isSelectAll(Element element) {
