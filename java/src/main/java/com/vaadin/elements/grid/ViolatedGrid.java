@@ -155,7 +155,6 @@ public class ViolatedGrid extends Grid<Object> {
         return detectedScrollbarSize;
     }
 
-    private double lastFocusIn = 0;
     private Element lastFocused;
 
     @Override
@@ -164,26 +163,18 @@ public class ViolatedGrid extends Grid<Object> {
         // in cells (body, headers or footers). Related issues: #387 #402 #398 #407
         Element target = event.getEventTarget().cast();
         if (target != getElement()) {
-            Element focused = WidgetUtil.getFocusedElement();
+            Element focused = lastFocused != null ? lastFocused : WidgetUtil.getFocusedElement();
             // focusin happens about 100-300 ms before that click event in Webkit && IE
             if (event.getType().equals(BrowserEvents.FOCUSIN)) {
-                if (focused != getElement()) {
-                    lastFocusIn = Duration.currentTimeMillis();
-                    lastFocused = focused;
-                }
+                lastFocused = target;
+                return;
+            }
+            if (event.getType().equals(BrowserEvents.FOCUSOUT)) {
+                lastFocused = null;
                 return;
             }
             if (event.getType().equals(BrowserEvents.CLICK)) {
-                // We have to check target == lastFocused because in IE we get focusin of the container
-                // of the target, even though it doesn't have tabindex. That could be a problem when clicking
-                // on a child of a focusable element.
-                if (target == lastFocused && Duration.currentTimeMillis() - lastFocusIn < 300) {
-                    return;
-                }
-                // There is no focusin in FF, and focus cannot be used since happens after click.
-                // lastFocused == null guarantees that this block only is run in FF.
-                if (lastFocused == null && getElement() != focused && getElement().isOrHasChild(focused)
-                        && focused.isOrHasChild(target)) {
+                if (target.isOrHasChild(focused)) {
                     return;
                 }
             }
