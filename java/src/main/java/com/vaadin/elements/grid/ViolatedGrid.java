@@ -174,7 +174,8 @@ public class ViolatedGrid extends Grid<Object> {
                 return;
             }
             if (event.getType().equals(BrowserEvents.CLICK)) {
-                if (target.isOrHasChild(focused)) {
+                Element targetCell = GQuery.$(target).closest("td.vaadin-grid-cell").get(0);
+                if (targetCell != null && targetCell != focused && targetCell.isOrHasChild(focused)) {
                     return;
                 }
             }
