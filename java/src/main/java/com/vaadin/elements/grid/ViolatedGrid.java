@@ -47,8 +47,6 @@ public class ViolatedGrid extends Grid<Object> {
 
     public ViolatedGrid() {
         super();
-        this.sinkBitlessEvent("focusin");
-
         // This is needed for detecting the correct native scrollbar size in
         // (OS X) Chrome [https://github.com/vaadin/vaadin-grid/issues/30]
         if (BrowserInfo.get().isChrome()) {
@@ -159,24 +157,47 @@ public class ViolatedGrid extends Grid<Object> {
 
     @Override
     public void onBrowserEvent(Event event) {
-        // All this code is to cancel click events when the grid has focusable elements
-        // in cells (body, headers or footers). Related issues: #387 #402 #398 #407
         Element target = event.getEventTarget().cast();
         if (target != getElement()) {
-            Element focused = lastFocused != null ? lastFocused : WidgetUtil.getFocusedElement();
-            if (event.getType().equals(BrowserEvents.FOCUSIN)) {
-                lastFocused = target;
-                return;
-            }
-            if (event.getType().equals(BrowserEvents.FOCUSOUT)) {
-                lastFocused = null;
-                return;
-            }
             if (event.getType().equals(BrowserEvents.CLICK)) {
-                lastFocused = null;
+                // clicking on the select all checkbox moves focus away from the
+                // grid causing the :focus transition effect to be reapplied.
+                // Forcing focus on the grid will mitigate the issue.
+                if (isSelectAll(target)) {
+                    getElement().focus();
+                }
+
+                // All this code is to cancel click events when the grid has
+                // focusable elements in cells (body, headers or footers).
+                // Related issues: #387 #402 #398 #407
+                Element focused = WidgetUtil.getFocusedElement();
                 Element targetCell = GQuery.$(target).closest(".vaadin-grid-cell").get(0);
-                if (targetCell != null && targetCell != focused && targetCell.isOrHasChild(focused)) {
-                    return;
+                if (targetCell != null) {
+                    if (focused.getParentNode() == targetCell) {
+                        // NOTE: In IE11 the flex items, which the immediate
+                        // children of the grid cells are, can also receive
+                        // focus and be the value of document.activeElement.
+                        // We need to check the type and the tabindex attribute
+                        // of the focused element.
+                        boolean focusable = focused.hasAttribute("tabindex");
+                        switch (focused.getTagName()) {
+                            case "button": case "input": case "select": case "textarea": case "object": case "iframe":
+                                focusable = true;
+                                break;
+                            case "a": case "area":
+                                focusable = focused.hasAttribute("href");
+                                break;
+                        }
+                        if (!focusable) {
+                            focused = targetCell;
+                        }
+                    }
+                    if (targetCell != focused && targetCell.isOrHasChild(focused)) {
+                        // If something is focused in the clicked cell, then
+                        // stop processing the click event to prevent stealing
+                        // the focus to the grid.
+                        return;
+                    }
                 }
             }
         }
@@ -185,7 +206,7 @@ public class ViolatedGrid extends Grid<Object> {
 
     private boolean isSelectAll(Element element) {
         return this.getSelectionModel() instanceof IndexBasedSelectionModelMulti
-                && element == JS.querySelector(getElement(), "thead .vaadin-grid-select-all-checkbox label");
+                && element.getParentNode() == JS.querySelector(getElement(), "thead .vaadin-grid-select-all-checkbox");
     }
 
     @Override
