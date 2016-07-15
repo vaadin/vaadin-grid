@@ -164,7 +164,7 @@ public class ViolatedGrid extends Grid<Object> {
                     // Forcing focus on the grid will mitigate the issue.
                     getElement().focus();
                 } else {
-                    boolean focusable = !JS.ISIE || isFocusable(focused, target);
+                    boolean focusable = !JS.ISIE || isFocusable(focused);
                     if (focusable && focused.isOrHasChild(target)) {
                         return;
                     }
@@ -174,14 +174,13 @@ public class ViolatedGrid extends Grid<Object> {
         super.onBrowserEvent(event);
     }
 
-    private boolean isFocusable(Element focused, Element target) {
+    private boolean isFocusable(Element focused) {
         // In IE11 flex items can also receive focus and be the
         // value of document.activeElement.
         String fTag = focused.getTagName().toLowerCase();
-        String tTag = target.getTagName().toLowerCase();
         return !focused.hasAttribute("disabled") && (focused.hasAttribute("tabindex")
                 || fTag.matches("button|input|select|option|textarea|object|iframe|label")
-                || fTag.matches("a|area") && focused.hasAttribute("href") || tTag.matches("label"));
+                || fTag.matches("a|area") && focused.hasAttribute("href"));
     }
 
     private boolean isSelectAll(Element element) {
