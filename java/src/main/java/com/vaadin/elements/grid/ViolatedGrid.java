@@ -86,6 +86,16 @@ public class ViolatedGrid extends Grid<Object> {
         return super.getEscalator();
     }
 
+    public native void refreshHeader()
+    /*-{
+        this.@com.vaadin.client.widgets.Grid::refreshHeader()();
+    }-*/;
+
+    public native void refreshFooter()
+    /*-{
+        this.@com.vaadin.client.widgets.Grid::refreshFooter()();
+    }-*/;
+
     public void refreshStaticSection(StaticSection.StaticCell cell) {
         if (cell instanceof HeaderCell) {
             refreshHeader();
@@ -93,16 +103,6 @@ public class ViolatedGrid extends Grid<Object> {
             refreshFooter();
         }
     }
-
-    public native void refreshHeader()
-    /*-{
-        this.@com.vaadin.client.widgets.Grid::refreshHeader();
-    }-*/;
-
-    public native void refreshFooter()
-    /*-{
-        this.@com.vaadin.client.widgets.Grid::refreshFooter();
-    }-*/;
 
     /**
      * The method is overridden for now to avoid IE related bugs and performance
@@ -171,7 +171,7 @@ public class ViolatedGrid extends Grid<Object> {
                         // be reapplied.
                         // Forcing focus on the grid will mitigate the issue.
                         getElement().focus();
-                    } else if (getElement().isOrHasChild(target)) {
+                    } else if (getElement().isOrHasChild(focused)) {
                         // Cancel click events when the grid has focusable
                         // elements in cells (body, headers or footers).
                         // Related issues: #387 #402 #398 #407
@@ -184,10 +184,10 @@ public class ViolatedGrid extends Grid<Object> {
     }
 
     private void workaroundFlexParentsIE11(Element target) {
-        // In IE11 flex items can also receive focus and spoof the
-        // value of the activeElement in WidgetUtil.getFocusedElement()
-        // Disabling the top parent of non-focusable parents, makes IE focus
-        // the correct element.
+        // In IE11, flex elements and table cells can receive focus and spoof
+        // the value of the activeElement in WidgetUtil.getFocusedElement().
+        // Disabling the top parent of non-focusable ancestors, makes IE focus
+        // the correct container element.
         GQuery tree = $(target).parents().filter(new Predicate() {
             boolean b = true;
             public boolean f(Element e, int index) {
@@ -199,8 +199,8 @@ public class ViolatedGrid extends Grid<Object> {
 
     private boolean isFocusable(Element focused) {
         String fTag = focused.getTagName().toLowerCase();
-        return !focused.hasAttribute("disabled") && (focused.hasAttribute("tabindex")
-                || fTag.matches("button|input|select|option|textarea|object|iframe|label")
+        return !focused.getPropertyBoolean("disabled") && (focused.hasAttribute("tabindex")
+                || fTag.matches("button|input|select|textarea|object|iframe")
                 || fTag.matches("a|area") && focused.hasAttribute("href"));
     }
 
