@@ -1,10 +1,14 @@
 package com.vaadin.elements.grid;
 
+import static com.google.gwt.query.client.GQuery.$;
+import static com.google.gwt.query.client.GQuery.lazy;
+
 import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.query.client.GQuery;
+import com.google.gwt.query.client.Predicate;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -155,17 +159,22 @@ public class ViolatedGrid extends Grid<Object> {
     @Override
     public void onBrowserEvent(Event event) {
         Element target = event.getEventTarget().cast();
-        if (target != getElement() && event.getType().equals(BrowserEvents.CLICK)) {
-            Element focused = WidgetUtil.getFocusedElement();
-            if (focused != getElement()) {
-                if (isSelectAll(target)) {
-                    // clicking on the select all checkbox moves focus away from the
-                    // grid causing the :focus transition effect to be reapplied.
-                    // Forcing focus on the grid will mitigate the issue.
-                    getElement().focus();
-                } else {
-                    boolean focusable = !JS.ISIE || isFocusable(focused);
-                    if (focusable && focused.isOrHasChild(target)) {
+        if (target != getElement()) {
+            if (event.getType().equals(BrowserEvents.MOUSEDOWN) && JS.ISIE && !isFocusable(target)) {
+                workaroundFlexParentsIE11(target);
+            } else if (event.getType().equals(BrowserEvents.CLICK)) {
+                Element focused = WidgetUtil.getFocusedElement();
+                if (focused != getElement()) {
+                    if (isSelectAll(target)) {
+                        // clicking on the select all checkbox moves focus away
+                        // from the grid causing the :focus transition effect to
+                        // be reapplied.
+                        // Forcing focus on the grid will mitigate the issue.
+                        getElement().focus();
+                    } else if (focused.isOrHasChild(target)) {
+                        // Cancel click events when the grid has focusable
+                        // elements in cells (body, headers or footers).
+                        // Related issues: #387 #402 #398 #407
                         return;
                     }
                 }
@@ -174,9 +183,20 @@ public class ViolatedGrid extends Grid<Object> {
         super.onBrowserEvent(event);
     }
 
+    private void workaroundFlexParentsIE11(Element target) {
+        // In IE11 flex items can also receive focus and spoof the
+        // value of the activeElement in WidgetUtil.getFocusedElement()
+        // Disabling all parents non-focusable parents, makes IE focus
+        // the correct element.
+        $(target).parents().filter(new Predicate() {
+            boolean b = true;
+            public boolean f(Element e, int index) {
+                return (b = b && !isFocusable(e));
+            }
+        }).prop("disabled", true).delay(2, lazy().prop("disabled", false).done());
+    }
+
     private boolean isFocusable(Element focused) {
-        // In IE11 flex items can also receive focus and be the
-        // value of document.activeElement.
         String fTag = focused.getTagName().toLowerCase();
         return !focused.hasAttribute("disabled") && (focused.hasAttribute("tabindex")
                 || fTag.matches("button|input|select|option|textarea|object|iframe|label")
