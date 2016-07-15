@@ -1,6 +1,5 @@
 package com.vaadin.elements.grid;
 
-import com.google.gwt.core.client.Duration;
 import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
@@ -153,49 +152,20 @@ public class ViolatedGrid extends Grid<Object> {
         return detectedScrollbarSize;
     }
 
-    private Element lastFocused;
-
     @Override
     public void onBrowserEvent(Event event) {
         Element target = event.getEventTarget().cast();
-        if (target != getElement()) {
-            if (event.getType().equals(BrowserEvents.CLICK)) {
-                // clicking on the select all checkbox moves focus away from the
-                // grid causing the :focus transition effect to be reapplied.
-                // Forcing focus on the grid will mitigate the issue.
+        if (target != getElement() && event.getType().equals(BrowserEvents.CLICK)) {
+            Element focused = WidgetUtil.getFocusedElement();
+            if (focused != getElement()) {
                 if (isSelectAll(target)) {
+                    // clicking on the select all checkbox moves focus away from the
+                    // grid causing the :focus transition effect to be reapplied.
+                    // Forcing focus on the grid will mitigate the issue.
                     getElement().focus();
-                }
-
-                // All this code is to cancel click events when the grid has
-                // focusable elements in cells (body, headers or footers).
-                // Related issues: #387 #402 #398 #407
-                Element focused = WidgetUtil.getFocusedElement();
-                Element targetCell = GQuery.$(target).closest(".vaadin-grid-cell").get(0);
-                if (targetCell != null) {
-                    if (focused.getParentNode() == targetCell) {
-                        // NOTE: In IE11 the flex items, which the immediate
-                        // children of the grid cells are, can also receive
-                        // focus and be the value of document.activeElement.
-                        // We need to check the type and the tabindex attribute
-                        // of the focused element.
-                        boolean focusable = focused.hasAttribute("tabindex");
-                        switch (focused.getTagName()) {
-                            case "button": case "input": case "select": case "textarea": case "object": case "iframe":
-                                focusable = true;
-                                break;
-                            case "a": case "area":
-                                focusable = focused.hasAttribute("href");
-                                break;
-                        }
-                        if (!focusable) {
-                            focused = targetCell;
-                        }
-                    }
-                    if (targetCell != focused && targetCell.isOrHasChild(focused)) {
-                        // If something is focused in the clicked cell, then
-                        // stop processing the click event to prevent stealing
-                        // the focus to the grid.
+                } else {
+                    boolean focusable = !JS.ISIE || isFocusable(focused, target);
+                    if (focusable && focused.isOrHasChild(target)) {
                         return;
                     }
                 }
@@ -204,9 +174,19 @@ public class ViolatedGrid extends Grid<Object> {
         super.onBrowserEvent(event);
     }
 
+    private boolean isFocusable(Element focused, Element target) {
+        // In IE11 flex items can also receive focus and be the
+        // value of document.activeElement.
+        String fTag = focused.getTagName().toLowerCase();
+        String tTag = target.getTagName().toLowerCase();
+        return !focused.hasAttribute("disabled") && (focused.hasAttribute("tabindex")
+                || fTag.matches("button|input|select|option|textarea|object|iframe|label")
+                || fTag.matches("a|area") && focused.hasAttribute("href") || tTag.matches("label"));
+    }
+
     private boolean isSelectAll(Element element) {
         return this.getSelectionModel() instanceof IndexBasedSelectionModelMulti
-                && element.getParentNode() == JS.querySelector(getElement(), "thead .vaadin-grid-select-all-checkbox");
+                && element.getParentNode() == JS.querySelector(getElement(), ".vaadin-grid-select-all-checkbox");
     }
 
     @Override
