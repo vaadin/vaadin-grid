@@ -56,10 +56,11 @@
 
           grid.header.defaultRow = 1;
 
-          var cells = qaLocal('.vaadin-grid-header .vaadin-grid-cell');
-          expect(cells[2].classList.toString()).to.contain('sort-asc');
+          return grid.then(function() {
+            var cells = qaLocal('.vaadin-grid-header .vaadin-grid-cell');
+            expect(cells[2].classList.toString()).to.contain('sort-asc')
+          });
         });
-
       });
 
       ['header', 'footer'].forEach(function(section) {
@@ -150,11 +151,11 @@
             });
 
             describe('hidden', function() {
-
               it('should clear innerHTML', function() {
                 grid[section].hidden = true;
-
-                expect(qLocal('.vaadin-grid-' + section).innerHTML).to.be.empty;
+                return grid.then(function(){
+                  expect(qLocal('.vaadin-grid-' + section).innerHTML).to.be.empty;
+                });
               });
 
               it('should clear innerHTML: declarative', function() {
@@ -214,11 +215,13 @@
               grid[section].getCell(1, 0).content = 'foo';
               grid[section].getCell(1, 1).content = 'bar';
 
-              var cells = qaLocal('.vaadin-grid-' + section + ' .vaadin-grid-cell span');
-              expect(cells[0].innerHTML).to.equal('Name');
-              expect(cells[1].innerHTML).to.equal('Value');
-              expect(cells[2].innerHTML).to.equal('foo');
-              expect(cells[3].innerHTML).to.equal('bar');
+              return grid.then(function() {
+                var cells = qaLocal('.vaadin-grid-' + section + ' .vaadin-grid-cell span');
+                expect(cells[0].innerHTML).to.equal('Name');
+                expect(cells[1].innerHTML).to.equal('Value');
+                expect(cells[2].innerHTML).to.equal('foo');
+                expect(cells[3].innerHTML).to.equal('bar');
+              });
             });
 
             it('should insert new row to correct index', function() {
@@ -227,27 +230,32 @@
               grid[section].getCell(0, 0).content = 'foo';
               grid[section].getCell(0, 1).content = 'bar';
 
-              var cells = qaLocal('.vaadin-grid-' + section + ' .vaadin-grid-cell span');
-              expect(cells[0].innerHTML).to.equal('foo');
-              expect(cells[1].innerHTML).to.equal('bar');
-              expect(cells[2].innerHTML).to.equal('Name');
-              expect(cells[3].innerHTML).to.equal('Value');
+              return grid.then(function() {
+                var cells = qaLocal('.vaadin-grid-' + section + ' .vaadin-grid-cell span');
+                expect(cells[0].innerHTML).to.equal('foo');
+                expect(cells[1].innerHTML).to.equal('bar');
+                expect(cells[2].innerHTML).to.equal('Name');
+                expect(cells[3].innerHTML).to.equal('Value');
+              });
             });
 
             it('should insert content to a new row', function() {
               grid[section].addRow(0, ['foo', 'bar']);
 
-              var cells = qaLocal('.vaadin-grid-' + section + ' .vaadin-grid-cell span');
-              expect(cells[0].innerHTML).to.equal('foo');
-              expect(cells[1].innerHTML).to.equal('bar');
+              return grid.then(function() {
+                var cells = qaLocal('.vaadin-grid-' + section + ' .vaadin-grid-cell span');
+                expect(cells[0].innerHTML).to.equal('foo');
+                expect(cells[1].innerHTML).to.equal('bar');
+              });
             });
           });
 
           describe('removeRow', function() {
             it('should remove first row', function() {
               grid[section].removeRow();
-
-              expect(qaLocal('.vaadin-grid-' + section + ' .vaadin-grid-cell')).to.be.empty;
+              return grid.then(function() {
+                expect(qaLocal('.vaadin-grid-' + section + ' .vaadin-grid-cell')).to.be.empty;
+              });
             });
 
             it('should remove a specific row', function() {
@@ -255,7 +263,9 @@
 
               grid[section].removeRow(1);
 
-              expect(qaLocal('.vaadin-grid-' + section + ' .vaadin-grid-cell')).to.have.length(2);
+              return grid.then(function() {
+                expect(qaLocal('.vaadin-grid-' + section + ' .vaadin-grid-cell')).to.have.length(2);
+              });
             });
           });
 
@@ -265,8 +275,10 @@
 
               grid[section].setRowClassName(1, 'second');
 
-              var rows = qaLocal('.vaadin-grid-' + section + ' .vaadin-grid-row');
-              expect(rows[1].classList.toString()).to.contain('second');
+              return grid.then(function() {
+                var rows = qaLocal('.vaadin-grid-' + section + ' .vaadin-grid-row');
+                expect(rows[1].classList.toString()).to.contain('second');
+              });
             });
           });
 
