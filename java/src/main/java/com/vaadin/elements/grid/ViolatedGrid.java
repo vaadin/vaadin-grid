@@ -171,7 +171,7 @@ public class ViolatedGrid extends Grid<Object> {
                         // be reapplied.
                         // Forcing focus on the grid will mitigate the issue.
                         getElement().focus();
-                    } else if (focused.isOrHasChild(target)) {
+                    } else if (getElement().isOrHasChild(target)) {
                         // Cancel click events when the grid has focusable
                         // elements in cells (body, headers or footers).
                         // Related issues: #387 #402 #398 #407
@@ -186,14 +186,15 @@ public class ViolatedGrid extends Grid<Object> {
     private void workaroundFlexParentsIE11(Element target) {
         // In IE11 flex items can also receive focus and spoof the
         // value of the activeElement in WidgetUtil.getFocusedElement()
-        // Disabling all parents non-focusable parents, makes IE focus
+        // Disabling the top parent of non-focusable parents, makes IE focus
         // the correct element.
-        $(target).parents().filter(new Predicate() {
+        GQuery tree = $(target).parents().filter(new Predicate() {
             boolean b = true;
             public boolean f(Element e, int index) {
                 return (b = b && !isFocusable(e));
             }
-        }).prop("disabled", true).delay(2, lazy().prop("disabled", false).done());
+        });
+        tree.eq(tree.size() - 1).prop("disabled", true).delay(0, lazy().prop("disabled", false).done());
     }
 
     private boolean isFocusable(Element focused) {
