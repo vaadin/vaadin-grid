@@ -1,8 +1,8 @@
 package com.vaadin.elements.grid;
 
 import static com.google.gwt.query.client.GQuery.$;
-import static com.google.gwt.query.client.GQuery.lazy;
 
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
@@ -50,6 +50,7 @@ public class ViolatedGrid extends Grid<Object> {
 
     public ViolatedGrid() {
         super();
+        sinkBitlessEvent(BrowserEvents.MOUSEUP);
         // This is needed for detecting the correct native scrollbar size in
         // (OS X) Chrome [https://github.com/vaadin/vaadin-grid/issues/30]
         if (BrowserInfo.get().isChrome()) {
@@ -156,19 +157,30 @@ public class ViolatedGrid extends Grid<Object> {
         return detectedScrollbarSize;
     }
 
+    // Used for the IE11 focus workaround
+    private GQuery topNonfocusableIE11 = null;
+
     @Override
     public void onBrowserEvent(Event event) {
         Element target = event.getEventTarget().cast();
         if (target != getElement()) {
             if (event.getType().equals(BrowserEvents.MOUSEDOWN) && JS.ISIE && !isFocusable(target)) {
-                workaroundFlexParentsIE11(target);
+                // In IE11, flex elements and table cells can receive focus and spoof
+                // the value of the activeElement in WidgetUtil.getFocusedElement().
+                // Disabling the top parent of non-focusable ancestors, makes IE focus
+                // the correct container element.
+                topNonfocusableIE11 = findTopNonfocusableIE11(target);
+                topNonfocusableIE11.prop("disabled", true);
+            } else if (event.getType().equals(BrowserEvents.MOUSEUP) && topNonfocusableIE11 != null) {
+                topNonfocusableIE11.prop("disabled", false);
+                topNonfocusableIE11 = null;
             } else if (event.getType().equals(BrowserEvents.CLICK)) {
                 Element focused = WidgetUtil.getFocusedElement();
                 if (focused != getElement()) {
                     if (isSelectAll(target)) {
                         // clicking on the select all checkbox moves focus away
                         // from the grid causing the :focus transition effect to
-                        // be reapplied.
+                        // be re-applied.
                         // Forcing focus on the grid will mitigate the issue.
                         getElement().focus();
                     } else if (getElement().isOrHasChild(focused)) {
@@ -183,18 +195,13 @@ public class ViolatedGrid extends Grid<Object> {
         super.onBrowserEvent(event);
     }
 
-    private void workaroundFlexParentsIE11(Element target) {
-        // In IE11, flex elements and table cells can receive focus and spoof
-        // the value of the activeElement in WidgetUtil.getFocusedElement().
-        // Disabling the top parent of non-focusable ancestors, makes IE focus
-        // the correct container element.
-        GQuery tree = $(target).parents().filter(new Predicate() {
+    private GQuery findTopNonfocusableIE11(Element target) {
+        return $(target).parents().filter(new Predicate() {
             boolean b = true;
             public boolean f(Element e, int index) {
                 return (b = b && !isFocusable(e));
             }
-        });
-        tree.eq(tree.size() - 1).prop("disabled", true).delay(0, lazy().prop("disabled", false).done());
+        }).eq(-1);
     }
 
     private boolean isFocusable(Element focused) {
