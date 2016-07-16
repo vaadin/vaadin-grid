@@ -2,7 +2,6 @@ package com.vaadin.elements.grid;
 
 import static com.google.gwt.query.client.GQuery.$;
 
-import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
@@ -50,7 +49,7 @@ public class ViolatedGrid extends Grid<Object> {
 
     public ViolatedGrid() {
         super();
-        sinkBitlessEvent(BrowserEvents.MOUSEUP);
+        sinkEvents(Event.getTypeInt(BrowserEvents.MOUSEUP));
         // This is needed for detecting the correct native scrollbar size in
         // (OS X) Chrome [https://github.com/vaadin/vaadin-grid/issues/30]
         if (BrowserInfo.get().isChrome()) {

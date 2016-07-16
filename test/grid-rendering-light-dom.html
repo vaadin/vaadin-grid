@@ -114,7 +114,7 @@
           <tbody>
             <tr>
               <td>Grid</td>
-              <td><input type='text' value="Header"></input>10000</td>
+              <td><input type='text' value="Body"></input><span>1000</span></td>
             </tr>
           </tbody>
           <tfoot>
@@ -328,12 +328,20 @@
         });
       });
 
-      describe('using elements inside header and footer', function() {
+      describe('using elements inside body, header and footer', function() {
         var grid;
 
         function tap(element) {
           element.focus();
           MockInteractions.tap(element);
+        }
+
+        function fullClick(element) {
+          // A click on an element does all this stuff (skiping focusin focusout)
+          triggerMouseEvent(element, 'mousedown');
+          element.focus();
+          triggerMouseEvent(element, 'mouseup');
+          triggerMouseEvent(element, 'click');
         }
 
         beforeEach(function(done) {
@@ -351,6 +359,29 @@
 
           waitUntil(function() {
             return document.activeElement == input;
+          }, done, done);
+        });
+
+        it('should focus top grid when clicking an element inside a cell', function(done) {
+          var elem = grid.$$('.vaadin-grid tbody span');
+          var gridfocusable = grid.$$('.vaadin-grid[tabindex]');
+          fullClick(elem);
+          waitUntil(function() {
+            // IE11 would return the first flex-element or table cell
+            return document.activeElement == gridfocusable;
+          }, done, done);
+        });
+
+        it('should focus top grid when clicking a disabled focusable element', function(done) {
+          var elem = grid.$$('.vaadin-grid tbody input');
+          elem.disabled = true;
+          var gridfocusable = grid.$$('.vaadin-grid[tabindex]');
+          fullClick(elem);
+          waitUntil(function() {
+            // IE11 without the focusable workaround (ViolatedGrid.java) would return
+            // the first flex-element or table cell
+            // FF focuses the body instead of the first focusable parent.
+            return document.activeElement == gridfocusable || document.activeElement == document.body;
           }, done, done);
         });
 
