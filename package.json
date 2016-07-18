@@ -17,6 +17,7 @@
     "gulp-util": "latest",
     "gulp-watch": "latest",
     "web-component-tester": "4.0.3",
+    "wct-local": "2.0.5",
     "yargs": "latest"
   },
   "devDependencies": {
