@@ -203,7 +203,7 @@ public class ViolatedGrid extends Grid<Object> {
     private boolean isFocusable(Element focused) {
         String fTag = focused.getTagName().toLowerCase();
         return !focused.getPropertyBoolean("disabled") && (focused.hasAttribute("tabindex")
-                || fTag.matches("button|input|select|textarea|object|iframe")
+                || fTag.matches("button|input|select|textarea|object|iframe|label")
                 || fTag.matches("a|area") && focused.hasAttribute("href"));
     }
 
