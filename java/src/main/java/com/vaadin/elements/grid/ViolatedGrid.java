@@ -2,6 +2,7 @@ package com.vaadin.elements.grid;
 
 import static com.google.gwt.query.client.GQuery.$;
 
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
@@ -49,7 +50,6 @@ public class ViolatedGrid extends Grid<Object> {
 
     public ViolatedGrid() {
         super();
-        sinkEvents(Event.getTypeInt(BrowserEvents.MOUSEUP));
         // This is needed for detecting the correct native scrollbar size in
         // (OS X) Chrome [https://github.com/vaadin/vaadin-grid/issues/30]
         if (BrowserInfo.get().isChrome()) {
@@ -156,9 +156,6 @@ public class ViolatedGrid extends Grid<Object> {
         return detectedScrollbarSize;
     }
 
-    // Used for the IE11 focus workaround
-    private GQuery topNonfocusableIE11 = null;
-
     @Override
     public void onBrowserEvent(Event event) {
         Element target = event.getEventTarget().cast();
@@ -168,11 +165,11 @@ public class ViolatedGrid extends Grid<Object> {
                 // the value of the activeElement in WidgetUtil.getFocusedElement().
                 // Disabling the top parent of non-focusable ancestors, makes IE focus
                 // the correct container element.
-                topNonfocusableIE11 = findTopNonfocusableIE11(target);
+                GQuery topNonfocusableIE11 = findTopNonfocusableIE11(target);
                 topNonfocusableIE11.prop("disabled", true);
-            } else if (event.getType().equals(BrowserEvents.MOUSEUP) && topNonfocusableIE11 != null) {
-                topNonfocusableIE11.prop("disabled", false);
-                topNonfocusableIE11 = null;
+
+                Scheduler.get().scheduleDeferred(() -> topNonfocusableIE11.prop("disabled", false));
+
             } else if (event.getType().equals(BrowserEvents.CLICK)) {
                 Element focused = WidgetUtil.getFocusedElement();
                 if (focused != getElement()) {
