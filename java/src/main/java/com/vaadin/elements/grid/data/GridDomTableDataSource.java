@@ -30,7 +30,7 @@ public class GridDomTableDataSource extends GridDataSource {
 
     private GQuery rows() {
         if (tableRows == null || tableRows.isEmpty()) {
-            tableRows = $(table).find("tbody tr:not([template])");
+            tableRows = $(table).children("tbody").children("tr:not([template])");
         }
         return tableRows;
     }
@@ -44,7 +44,7 @@ public class GridDomTableDataSource extends GridDataSource {
         for (Element row : rows().gt(firstRowIndex - 1).lt(numberOfRows)
                 .elements()) {
             JsArrayMixed values = JsArrayMixed.createArray().cast();
-            for (Element e : $(row).find("td").elements()) {
+            for (Element e : $(row).children("td").elements()) {
                 values.push($(e).html());
             }
             list.add(values);

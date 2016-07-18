@@ -1,7 +1,11 @@
 package com.vaadin.elements.grid;
 
 import static com.google.gwt.query.client.GQuery.$;
-import static com.google.gwt.query.client.GQuery.browser;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 import com.google.gwt.core.client.JavaScriptException;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -15,10 +19,8 @@ import com.google.gwt.dom.client.TableElement;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.widgets.WidgetsUtils;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.SimplePanel;
-
 import com.vaadin.client.widget.grid.DataAvailableEvent;
 import com.vaadin.client.widget.grid.DetailsGenerator;
 import com.vaadin.client.widget.grid.events.SelectAllEvent;
@@ -57,11 +59,6 @@ import com.vaadin.elements.grid.table.GridStaticSection;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.grid.ScrollDestination;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-
 import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsType;
 
@@ -92,10 +89,10 @@ public class GridElement implements SelectionHandler<Object>,
     public static final int MAX_AUTO_ROWS = 10;
 
     private static final String SELECTION_MODE_CHANGED_EVENT = "selection-mode-changed";
-    
+
     public GridElement() {
         grid = new ViolatedGrid();
-        
+
         grid.setSelectionModel(new IndexBasedSelectionModelSingle());
         grid.addSelectionHandler(this);
         grid.addSortHandler(this);
@@ -545,12 +542,7 @@ public class GridElement implements SelectionHandler<Object>,
 
     public Object then(JSFunction<Object, Object> jsFunction) {
         // IE does not have support for native promises.
-        if (browser.msie
-                // FIXME: static initializers in exported classes cause
-                // unexpected errors
-                || browser.mozilla
-                && Window.Navigator.getUserAgent().toLowerCase()
-                        .contains("trident")) {
+        if (JS.ISIE) {
             JSPromise p = new JSPromise();
             onReady(o -> {
                 try {

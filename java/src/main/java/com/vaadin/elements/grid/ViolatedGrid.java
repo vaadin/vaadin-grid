@@ -1,21 +1,25 @@
 package com.vaadin.elements.grid;
 
+import static com.google.gwt.query.client.GQuery.$;
+
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.dom.client.IFrameElement;
-import com.google.gwt.dom.client.TableSectionElement;
 import com.google.gwt.query.client.GQuery;
+import com.google.gwt.query.client.Predicate;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.RootPanel;
-
 import com.vaadin.client.BrowserInfo;
 import com.vaadin.client.WidgetUtil;
 import com.vaadin.client.widget.grid.selection.SelectionModelMulti;
 import com.vaadin.client.widgets.Escalator;
 import com.vaadin.client.widgets.Grid;
 import com.vaadin.client.widgets.Overlay;
+import com.vaadin.elements.common.js.JS;
+import com.vaadin.elements.grid.selection.IndexBasedSelectionModelMulti;
 
 public class ViolatedGrid extends Grid<Object> {
 
@@ -82,14 +86,14 @@ public class ViolatedGrid extends Grid<Object> {
         return super.getEscalator();
     }
 
-    public native boolean refreshHeader()
+    public native void refreshHeader()
     /*-{
         this.@com.vaadin.client.widgets.Grid::refreshHeader()();
     }-*/;
 
-    public native boolean refreshFooter()
+    public native void refreshFooter()
     /*-{
-      this.@com.vaadin.client.widgets.Grid::refreshFooter()();
+        this.@com.vaadin.client.widgets.Grid::refreshFooter()();
     }-*/;
 
     public void refreshStaticSection(StaticSection.StaticCell cell) {
@@ -154,50 +158,58 @@ public class ViolatedGrid extends Grid<Object> {
 
     @Override
     public void onBrowserEvent(Event event) {
+        Element target = event.getEventTarget().cast();
+        if (target != getElement()) {
+            if (event.getType().equals(BrowserEvents.MOUSEDOWN) && JS.ISIE && !isFocusable(target)) {
+                // In IE11, flex elements and table cells can receive focus and spoof
+                // the value of the activeElement in WidgetUtil.getFocusedElement().
+                // Disabling the top parent of non-focusable ancestors, makes IE focus
+                // the correct container element.
+                GQuery topNonfocusableIE11 = findTopNonfocusableIE11(target);
+                topNonfocusableIE11.prop("disabled", true);
 
-        // clicking on the select all checkbox moves focus away from the grid
-        // causing the :focus transition effect to be reapplied. Forcing focus
-        // on the grid will mitigate the issue.
-        focusGridIfSelectAllClicked(event);
+                Scheduler.get().scheduleDeferred(() -> topNonfocusableIE11.prop("disabled", false));
 
-        Element targetElement = (Element)event.getEventTarget().cast();
-
-        // by default Grid steals focus from focusable elements inside cells,
-        // so we need to prevent that.
-        Element focusedElement = WidgetUtil.getFocusedElement();
-        if (elementContains(targetElement, focusedElement)) {
-          return;
-        }
-
-        if (targetElement != focusedElement || isElementOutsideStaticSection(targetElement)) {
-            super.onBrowserEvent(event);
-        }
-    }
-
-    private native Boolean elementContains(Element parent, Element child)
-        /*-{
-          return parent.contains(child);
-        }-*/;
-
-    private boolean isElementOutsideStaticSection(Element element) {
-        TableSectionElement headerElement = getEscalator().getHeader().getElement();
-        TableSectionElement footerElement = getEscalator().getFooter().getElement();
-
-        return !headerElement.isOrHasChild(element) && !footerElement.isOrHasChild(element);
-    }
-
-    private void focusGridIfSelectAllClicked(Event event) {
-        EventTarget target = event.getEventTarget();
-        if (Element.is(target)) {
-            Element targetElement = Element.as(target);
-
-            // Currently targeting all gwt-checkboxes, might need refinement in
-            // the future.
-            if("label".equals(targetElement.getTagName())
-                    && targetElement.getParentElement().hasClassName("gwt-CheckBox")) {
-                getElement().focus();
+            } else if (event.getType().equals(BrowserEvents.CLICK)) {
+                Element focused = WidgetUtil.getFocusedElement();
+                if (focused != getElement()) {
+                    if (isSelectAll(target)) {
+                        // clicking on the select all checkbox moves focus away
+                        // from the grid causing the :focus transition effect to
+                        // be re-applied.
+                        // Forcing focus on the grid will mitigate the issue.
+                        getElement().focus();
+                    } else if (getElement().isOrHasChild(focused)) {
+                        // Cancel click events when the grid has focusable
+                        // elements in cells (body, headers or footers).
+                        // Related issues: #387 #402 #398 #407
+                        return;
+                    }
+                }
             }
         }
+        super.onBrowserEvent(event);
+    }
+
+    private GQuery findTopNonfocusableIE11(Element target) {
+        return $(target).parents().filter(new Predicate() {
+            boolean b = true;
+            public boolean f(Element e, int index) {
+                return (b = b && !isFocusable(e));
+            }
+        }).eq(-1);
+    }
+
+    private boolean isFocusable(Element focused) {
+        String fTag = focused.getTagName().toLowerCase();
+        return !focused.getPropertyBoolean("disabled") && (focused.hasAttribute("tabindex")
+                || fTag.matches("button|input|select|textarea|object|iframe")
+                || fTag.matches("a|area") && focused.hasAttribute("href"));
+    }
+
+    private boolean isSelectAll(Element element) {
+        return this.getSelectionModel() instanceof IndexBasedSelectionModelMulti
+                && element.getParentNode() == JS.querySelector(getElement(), ".vaadin-grid-select-all-checkbox");
     }
 
     @Override

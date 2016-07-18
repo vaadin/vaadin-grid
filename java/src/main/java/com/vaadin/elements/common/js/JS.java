@@ -3,6 +3,9 @@ package com.vaadin.elements.common.js;
 import java.util.List;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.query.client.GQuery;
+import com.google.gwt.user.client.Window;
 
 /**
  * Class with static utilities for @JsType
@@ -16,6 +19,9 @@ public abstract class JS {
     private static final String NAMESPACE_VAADIN = "vaadin.elements";
     public static final String NAMESPACE_API = NAMESPACE_VAADIN + "._api";
     public static final String NAMESPACE_GRID = NAMESPACE_VAADIN + ".grid";
+
+    public static final boolean ISIE = GQuery.browser.msie
+            || GQuery.browser.mozilla && Window.Navigator.getUserAgent().toLowerCase().contains("trident");
 
     @SuppressWarnings("unchecked")
     public static <T> T createJsObject() {
@@ -96,5 +102,10 @@ public abstract class JS {
     public static native JavaScriptObject getUndefined()
     /*-{
         return undefined;
+    }-*/;
+
+    public static native Element querySelector(Element parent, String css)
+    /*-{
+       return parent.querySelector(css);
     }-*/;
 }
