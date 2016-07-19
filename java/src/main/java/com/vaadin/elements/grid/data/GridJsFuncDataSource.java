@@ -71,11 +71,11 @@ public class GridJsFuncDataSource extends GridDataSource {
 
     public void setJSFunction(
             JSFunction2<JSDataRequest, JSFunction2<JSArray<?>, Double>> jsFunction) {
-        if (this.jsFunction == null || size() > 0) {
+        if (this.jsFunction != jsFunction) {
+            this.jsFunction = jsFunction;
             refreshItems();
             gridElement.getSelectionModel().reset();
         }
-        this.jsFunction = jsFunction;
     }
 
     @Override
