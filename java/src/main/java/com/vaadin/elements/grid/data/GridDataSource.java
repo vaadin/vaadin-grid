@@ -2,9 +2,6 @@ package com.vaadin.elements.grid.data;
 
 import java.util.List;
 
-import jsinterop.annotations.JsIgnore;
-import jsinterop.annotations.JsType;
-
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.query.client.js.JsUtils;
 import com.vaadin.client.data.AbstractRemoteDataSource;
@@ -13,6 +10,9 @@ import com.vaadin.elements.common.js.JSFunction2;
 import com.vaadin.elements.common.js.JSValidate;
 import com.vaadin.elements.grid.GridElement;
 import com.vaadin.shared.ui.grid.Range;
+
+import jsinterop.annotations.JsIgnore;
+import jsinterop.annotations.JsType;
 
 @JsType(namespace = JS.NAMESPACE_API)
 public abstract class GridDataSource extends AbstractRemoteDataSource<Object> {
@@ -55,9 +55,7 @@ public abstract class GridDataSource extends AbstractRemoteDataSource<Object> {
     @Override
     protected void resetDataAndSize(int newSize) {
         super.resetDataAndSize(newSize);
-
         gridElement.getSelectionModel().dataSizeUpdated(newSize);
-
     }
 
     public void getItem(Double rowIndex,
