@@ -649,7 +649,7 @@ public class GridElement implements SelectionHandler<Object>,
 
     public void sizeChanged(int size, int oldSize) {
         GridDataSource ds = getDataSource();
-        if (ds != null) {
+        if (ds != null && oldSize > 0) {
             // Resize existing data source row data
             if (oldSize < size) {
                 ds.insertRowData(oldSize, size - oldSize);

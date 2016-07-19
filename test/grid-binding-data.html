@@ -339,7 +339,7 @@
 
         return grid.then(function() {
           expect(spy.getCall(0).args[0].count).not.to.equal(0);
-          expect(spy.callCount).to.equal(2);
+          expect(spy.callCount).to.equal(1);
         });
       });
 
