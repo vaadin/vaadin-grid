@@ -97,7 +97,7 @@ public class GridElement implements SelectionHandler<Object>,
 
     private static final String SELECTION_MODE_CHANGED_EVENT = "selection-mode-changed";
     private static final String COLUMN_ORDER_CHANGED_EVENT = "column-order-changed";
-    
+
     public GridElement() {
         grid = new ViolatedGrid();
         grid.setSelectionModel(new IndexBasedSelectionModelSingle());
@@ -143,12 +143,13 @@ public class GridElement implements SelectionHandler<Object>,
 
     private void updateOrder(){
         List<GridColumn> dataColumns = getDataColumns();
-        if (dataColumns.size() == 0)
+        if (dataColumns.size() == 0) {
             return;
-        for (int i = cols.size(); i > 0; i--){
+        }
+        for (int i = cols.size(); i > 0; i--) {
             cols.remove(cols.get(0));
         }
-        for (int i = 0; i<dataColumns.size();i++){
+        for (int i = 0; i  < dataColumns.size(); i++) {
             cols.add(dataColumns.get(i).getJsColumn());
         }
     }
@@ -604,17 +605,17 @@ public class GridElement implements SelectionHandler<Object>,
 
     @JsIgnore 
     @Override
-	public void onColumnReorder(ColumnReorderEvent<Object> event) {
+    public void onColumnReorder(ColumnReorderEvent<Object> event) {
         updateOrder();
         triggerEvent(COLUMN_ORDER_CHANGED_EVENT);
-	}
-    
+    }
+
     @JsIgnore
     @Override
     public void onMultiSelectModeChanged() {
         selectionModeChanged();
     }
-    
+
     private void selectionModeChanged() {
         triggerEvent(SELECTION_MODE_CHANGED_EVENT);
         updateSelectAllCheckBox();

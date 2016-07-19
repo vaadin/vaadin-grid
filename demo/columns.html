@@ -267,37 +267,50 @@ layout: page
 
   <section>
     <h3>Column Reordering</h3>
-    <p>Columns can reordered by user drag and drop. Column reordering will respect frozen columns and is
-    disabled by default.</p>
+    <p>Non frozen columns can be reordered by dragging header cells. By default reordering is disabled, thus
+      you have either to set the columnReorderingAllowed property, or to add the column-reordering-allowed attribute to enable it.</p>
     <code-example source>
-      <vaadin-grid demo>
+      <vaadin-grid demo column-reordering-allowed frozen-columns="1">
         <table>
           <colgroup>
+            <col>
+            <col>
+            <col>
             <col>
             <col>
           </colgroup>
           <thead>
           <tr>
-            <th>First column</th>
+            <th>Frozen First column</th>
             <th>Second column</th>
+            <th>Third column</th>
+            <th>Fourth column</th>
+            <th>Fifth column</th>
           </tr>
           </thead>
           <tbody>
           <tr>
             <td>One</td>
             <td>Two</td>
+            <td>Three</td>
+            <td>Four</td>
+            <td>Five</td>
+          </tr>
+          <tr>
+            <td>Six</td>
+            <td>Seven</td>
+            <td>Eight</td>
+            <td>Nine</td>
+            <td>Tne</td>
           </tr>
           </tbody>
         </table>
       </vaadin-grid>
       <code demo-var="grid">
         var grid = grid || document.querySelector('vaadin-grid');
-        grid.columnReorderingAllowed = true;
         HTMLImports.whenReady(function() {
         /*
         // code
-        grid.columnReorderingAllowed = true;
-        //Allow column reordering in a grid by changing boolean "columnReorderingAllowed" to true
         // end-code
         */
         });
