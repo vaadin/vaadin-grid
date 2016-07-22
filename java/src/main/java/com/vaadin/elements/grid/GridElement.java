@@ -149,7 +149,7 @@ public class GridElement implements SelectionHandler<Object>,
         for (int i = cols.size(); i > 0; i--) {
             cols.remove(cols.get(0));
         }
-        for (int i = 0; i  < dataColumns.size(); i++) {
+        for (int i = 0; i < dataColumns.size(); i++) {
             cols.add(dataColumns.get(i).getJsColumn());
         }
     }
