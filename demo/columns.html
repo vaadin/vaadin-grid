@@ -213,7 +213,10 @@ layout: page
     <p>Columns can be hidden or visible.
       By default none of the columns are user-hidable. Setting a column's <code>hidable</code> property
       true appends it to the dropdown menu on the right where individual columns can be toggled
-      hidden/visible by the user.</p>
+      hidden/visible by the user.
+      When a column is is set as <code>hidden</code> but is not <code>hidable</code>, will no appear
+      in the dropdown menu.
+    </p>
     <code-example source>
       <vaadin-grid demo>
         <table>
@@ -227,8 +230,8 @@ layout: page
             <tr>
               <th>Name</th>
               <th>Surname</th>
-              <th>Activity</th>
-              <th>Target</th>
+              <th>Team Activity</th>
+              <th>Project Target</th>
             </tr>
           </thead>
         </table>
