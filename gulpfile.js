@@ -33,7 +33,7 @@ gulp.task('test:desktop', function(done) {
 gulp.task('test:mobile', function(done) {
   common.testSauce(
     [],
-    ['OS X 10.10/iphone@9',
+    ['OS X 10.11/iphone@9.3',
       'Linux/android@5.1'],
     'vaadin-grid',
     done);
