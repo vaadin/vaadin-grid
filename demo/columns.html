@@ -268,7 +268,7 @@ layout: page
   <section>
     <h3>Column Reordering</h3>
     <p>Non frozen columns can be reordered by dragging header cells. By default reordering is disabled, thus
-      you have either to set the columnReorderingAllowed property, or to add the column-reordering-allowed attribute to enable it.</p>
+      you have either to set the <code>columnReorderingAllowed</code> property, or to add the <code>column-reordering-allowed</code> attribute to enable it.</p>
     <code-example source>
       <vaadin-grid demo column-reordering-allowed frozen-columns="1">
         <table>
@@ -306,16 +306,6 @@ layout: page
           </tbody>
         </table>
       </vaadin-grid>
-      <code demo-var="grid">
-        var grid = grid || document.querySelector('vaadin-grid');
-        HTMLImports.whenReady(function() {
-        /*
-        // code
-        grid.columnReorderingAllowed = true;
-        // end-code
-        */
-        });
-      </code>
     </code-example>
 
   </section>
