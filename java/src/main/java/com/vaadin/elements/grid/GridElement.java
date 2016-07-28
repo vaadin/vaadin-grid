@@ -1,11 +1,7 @@
 package com.vaadin.elements.grid;
 
 import static com.google.gwt.query.client.GQuery.$;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import static com.google.gwt.query.client.GQuery.browser;
 
 import com.google.gwt.core.client.JavaScriptException;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -15,14 +11,19 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.shared.GwtEvent.Type;
 import com.google.gwt.dom.client.TableElement;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.widgets.WidgetsUtils;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.SimplePanel;
+
 import com.vaadin.client.widget.grid.DataAvailableEvent;
 import com.vaadin.client.widget.grid.DetailsGenerator;
+import com.vaadin.client.widget.grid.events.ColumnReorderEvent;
+import com.vaadin.client.widget.grid.events.ColumnReorderHandler;
 import com.vaadin.client.widget.grid.events.SelectAllEvent;
 import com.vaadin.client.widget.grid.events.SelectAllHandler;
 import com.vaadin.client.widget.grid.selection.SelectionEvent;
@@ -59,6 +60,11 @@ import com.vaadin.elements.grid.table.GridStaticSection;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.grid.ScrollDestination;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
 import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsType;
 
@@ -68,6 +74,7 @@ import jsinterop.annotations.JsType;
 @JsType(namespace = JS.NAMESPACE_GRID)
 public class GridElement implements SelectionHandler<Object>,
         SortHandler<Object>, SelectAllHandler<Object>,
+        ColumnReorderHandler<Object>,
         MultiSelectModeChangedHandler {
 
     private final ViolatedGrid grid;
@@ -89,21 +96,24 @@ public class GridElement implements SelectionHandler<Object>,
     public static final int MAX_AUTO_ROWS = 10;
 
     private static final String SELECTION_MODE_CHANGED_EVENT = "selection-mode-changed";
+    private static final String COLUMN_ORDER_CHANGED_EVENT = "column-order-changed";
 
     public GridElement() {
         grid = new ViolatedGrid();
-
         grid.setSelectionModel(new IndexBasedSelectionModelSingle());
         grid.addSelectionHandler(this);
         grid.addSortHandler(this);
         grid.addSelectAllHandler(this);
+        grid.addColumnReorderHandler(this);
         grid.addHandler(this, MultiSelectModeChangedEvent.eventType);
         grid.getElement().getStyle().setHeight(0, Unit.PX);
-
         setColumns(JS.createArray());
         staticSection = new GridStaticSection(this);
-
         grid.setStylePrimaryName("vaadin-grid style-scope vaadin-grid");
+    }
+
+    public void setColumnReorderingAllowed(boolean isAllowed){
+        grid.setColumnReorderingAllowed(isAllowed);
     }
 
     public Element getGridElement() {
@@ -129,6 +139,19 @@ public class GridElement implements SelectionHandler<Object>,
         }
 
         return order;
+    }
+
+    private void updateOrder(){
+        List<GridColumn> dataColumns = getDataColumns();
+        if (dataColumns.size() == 0) {
+            return;
+        }
+        for (int i = cols.size(); i > 0; i--) {
+            cols.remove(cols.get(0));
+        }
+        for (int i = 0; i < dataColumns.size(); i++) {
+            cols.add(dataColumns.get(i).getJsColumn());
+        }
     }
 
     public ViolatedGrid getGrid() {
@@ -542,7 +565,12 @@ public class GridElement implements SelectionHandler<Object>,
 
     public Object then(JSFunction<Object, Object> jsFunction) {
         // IE does not have support for native promises.
-        if (JS.ISIE) {
+        if (browser.msie
+                // FIXME: static initializers in exported classes cause
+                // unexpected errors
+                || browser.mozilla
+                && Window.Navigator.getUserAgent().toLowerCase()
+                        .contains("trident")) {
             JSPromise p = new JSPromise();
             onReady(o -> {
                 try {
@@ -573,6 +601,13 @@ public class GridElement implements SelectionHandler<Object>,
         } else {
             getSelectionModel().clear();
         }
+    }
+
+    @JsIgnore 
+    @Override
+    public void onColumnReorder(ColumnReorderEvent<Object> event) {
+        updateOrder();
+        triggerEvent(COLUMN_ORDER_CHANGED_EVENT);
     }
 
     @JsIgnore
@@ -649,7 +684,7 @@ public class GridElement implements SelectionHandler<Object>,
 
     public void sizeChanged(int size, int oldSize) {
         GridDataSource ds = getDataSource();
-        if (ds != null && oldSize > 0) {
+        if (ds != null) {
             // Resize existing data source row data
             if (oldSize < size) {
                 ds.insertRowData(oldSize, size - oldSize);

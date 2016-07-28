@@ -116,8 +116,7 @@ Custom property | Description | Default
 `--vaadin-grid-header-row-height` | Header row height | `56px`
 `--vaadin-grid-footer-row-height` | Footer row height | `56px`
 `--vaadin-grid-selected-row-cell` | Mixin which applies to the cell elements of a selected row | {}
-'--vaadin-grid-row-cell' | Mixin which applies to the cell elements of the table | {}
-
+`--vaadin-grid-row-cell` | Mixin which applies to the cell elements of the table | {}
 
 See the [demo](demo/index.html) for use case examples.
 
@@ -663,7 +662,19 @@ See the [demo](demo/index.html) for use case examples.
     }
   }
 
+  :host ::content .dragged-column-header,
+  .dragged-column-header {
+    background-color: var(--primary-background-color, #EEEEEE);
+    position: absolute;
+    opacity: 0.5;
+  }
 
+  :host ::content .vaadin-grid-drop-marker,
+  .vaadin-grid-drop-marker {
+    background-color: var(--primary-color, #00B4F0);
+    position: absolute;
+    width: 3px;
+  }
 
   </style>
   <template>
@@ -1035,7 +1046,20 @@ See the [demo](demo/index.html) for use case examples.
 
       _currentItems: {
         value: undefined
-      }
+      },
+
+      /*
+      * Boolean property to set whether column reordering is allowed by the grid.
+      *
+      * @property {boolean} columnReorderingAllowed
+      * @default false
+      * @type {boolean}
+      */
+      columnReorderingAllowed: {
+        type: Boolean,
+        observer: '_columnReorderingAllowedChanged'
+      },
+
     },
 
     attributeChanged: function(name, type, value) {
@@ -1062,13 +1086,18 @@ See the [demo](demo/index.html) for use case examples.
        *
        * @event selection-mode-changed
        */
-      'selection-mode-changed': '_onSelectionModeChange'
+      'selection-mode-changed': '_onSelectionModeChange',
+      'column-order-changed': '_columnOrderChanged',
     },
 
     observers: [
       '_columnsChanged(columns, columns.*)',
       '_itemsChanged(items, items.*)',
     ],
+
+    _columnOrderChanged: function(){
+      this.columns = this._grid.getColumns();
+    },
 
     _columnsChanged: function() {
       this._grid.setColumns(this.columns);
@@ -1103,6 +1132,10 @@ See the [demo](demo/index.html) for use case examples.
 
     _sortOrderChanged: function(sortOrder) {
       this._grid.setSortOrder(sortOrder);
+    },
+
+    _columnReorderingAllowedChanged: function(){
+      this._grid.setColumnReorderingAllowed(this.columnReorderingAllowed);
     },
 
     created: function() {
