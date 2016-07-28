@@ -20,6 +20,11 @@
 <script>
   describe.feature('Column Reordering', function() {
 
+    // This tests do not pass in IE
+    if (document.documentMode) {
+      return;
+    }
+
     beforeEach(function() {
       return grid.then(function() {
         grid.selection.mode = 'single';
