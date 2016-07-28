@@ -12,8 +12,6 @@ gulp.task('default', function() {
   console.log('\n  Use:\n    gulp <clean|gwt[ --gwt-pretty]|test[:validation:sauce]>\n');
 });
 
-gulp.task('clean', ['gwt:clean']);
-
 gulp.task('gwt', ['gwt:copy']);
 
 gulp.task('test', ['gwt:validate', 'test:local']);
