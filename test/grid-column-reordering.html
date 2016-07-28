@@ -24,7 +24,7 @@
       return grid.then(function() {
         grid.selection.mode = 'single';
         grid.frozenColumns = 0;
-        grid.columns = [{name: 'Name'}, {name: 'Value'}, {name:'Age'}];
+        grid.columns = [{name: 'Name'}, {name: 'Value'}, {name: 'Age'}];
         grid.items = [['Grid', '10000', '10'], ['Vaadin Components', '1000', '20']];
 
         return grid;
@@ -32,7 +32,7 @@
     });
 
     it('columnReorderingAllowed changes listener test', function() {
-      var setColumnReorderingAllowedSpy = sinon.spy(grid._grid, "setColumnReorderingAllowed");
+      var setColumnReorderingAllowedSpy = sinon.spy(grid._grid, 'setColumnReorderingAllowed');
 
       grid.columnReorderingAllowed = true;
       expect(setColumnReorderingAllowedSpy.calledOnce).to.be.true;
@@ -42,11 +42,11 @@
       grid.columnReorderingAllowed = false;
       expect(setColumnReorderingAllowedSpy.calledTwice).to.be.true;
       expect(setColumnReorderingAllowedSpy.calledWith(true)).to.be.true;
-      expect(setColumnReorderingAllowedSpy.calledWith(false)).to.be.true
+      expect(setColumnReorderingAllowedSpy.calledWith(false)).to.be.true;
       grid._grid.setColumnReorderingAllowed.restore();
     });
 
-    it('column-order-changed listener test', function(){
+    it('column-order-changed listener test', function() {
       var getColumnsSpy = sinon.spy(grid._grid, 'getColumns');
 
       grid.fire('column-order-changed');
@@ -57,14 +57,14 @@
       grid._grid.getColumns.restore();
     });
 
-    it('Mock interactions, drag and drop test', function(){
+    it('Mock interactions, drag and drop test', function() {
       grid.columnReorderingAllowed = true;
       var getColumnsSpy = sinon.spy(grid._grid, 'getColumns');
       grid.columns[0].width = 400;
       grid.columns[1].width = 400;
       grid.columns[2].width = 400;
       //mock interaction of moving column header
-      var elem = Polymer.dom(grid.root).querySelectorAll("th")[0];
+      var elem = Polymer.dom(grid.root).querySelectorAll('th')[0];
       MockInteractions.track(elem, 401 ,0);
       expect(grid.columns[0].name).to.equal('Value');
       expect(grid.columns[1].name).to.equal('Name');
@@ -73,7 +73,7 @@
       grid._grid.getColumns.restore();
     });
 
-    it('Mock interaction, drag and drop with frozen column', function(){
+    it('Mock interaction, drag and drop with frozen column', function() {
         grid.columnReorderingAllowed = true;
         var getColumnsSpy = sinon.spy(grid._grid, 'getColumns');
         grid.columns[0].width = 400;
@@ -81,7 +81,7 @@
         grid.columns[2].width = 400;
         grid.frozenColumns = 1;
         //mock interaction of moving column header
-        var elem = Polymer.dom(grid.root).querySelectorAll("th")[1];
+        var elem = Polymer.dom(grid.root).querySelectorAll('th')[1];
         MockInteractions.track(elem, -401 ,0);
         //Shouldn't have changed column names
         expect(grid.columns[0].name).to.equal('Name');
