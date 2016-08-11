@@ -23,6 +23,8 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.vaadin.client.widget.grid.DataAvailableEvent;
 import com.vaadin.client.widget.grid.DetailsGenerator;
 import com.vaadin.client.widget.grid.events.ColumnReorderEvent;
+import com.vaadin.client.widget.grid.events.ColumnResizeEvent;
+import com.vaadin.client.widget.grid.events.ColumnResizeHandler;
 import com.vaadin.client.widget.grid.events.ColumnReorderHandler;
 import com.vaadin.client.widget.grid.events.SelectAllEvent;
 import com.vaadin.client.widget.grid.events.SelectAllHandler;
@@ -75,6 +77,7 @@ import jsinterop.annotations.JsType;
 public class GridElement implements SelectionHandler<Object>,
         SortHandler<Object>, SelectAllHandler<Object>,
         ColumnReorderHandler<Object>,
+        ColumnResizeHandler<Object>,
         MultiSelectModeChangedHandler {
 
     private final ViolatedGrid grid;
@@ -97,6 +100,7 @@ public class GridElement implements SelectionHandler<Object>,
 
     private static final String SELECTION_MODE_CHANGED_EVENT = "selection-mode-changed";
     private static final String COLUMN_ORDER_CHANGED_EVENT = "column-order-changed";
+    private static final String COLUMN_RESIZE_CHANGED_EVENT = "column-resize-changed";
 
     public GridElement() {
         grid = new ViolatedGrid();
@@ -105,6 +109,7 @@ public class GridElement implements SelectionHandler<Object>,
         grid.addSortHandler(this);
         grid.addSelectAllHandler(this);
         grid.addColumnReorderHandler(this);
+        grid.addColumnResizeHandler(this);
         grid.addHandler(this, MultiSelectModeChangedEvent.eventType);
         grid.getElement().getStyle().setHeight(0, Unit.PX);
         setColumns(JS.createArray());
@@ -115,7 +120,15 @@ public class GridElement implements SelectionHandler<Object>,
     public void setColumnReorderingAllowed(boolean isAllowed){
         grid.setColumnReorderingAllowed(isAllowed);
     }
-
+    
+    public void setColumnResizingAllowed(boolean isAllowed) {
+    	List<Column<?, Object>> columnList = grid.getColumns();
+    	
+    	for (Column<?, Object> column : columnList) {
+    		column.setResizable(isAllowed);
+    	}
+    }
+    
     public Element getGridElement() {
         return grid.getElement();
     }
@@ -608,6 +621,13 @@ public class GridElement implements SelectionHandler<Object>,
     public void onColumnReorder(ColumnReorderEvent<Object> event) {
         updateOrder();
         triggerEvent(COLUMN_ORDER_CHANGED_EVENT);
+    }
+    
+    @JsIgnore
+    @Override
+    public void onColumnResize(ColumnResizeEvent<Object> event) {
+//    	updateColumnSize();
+    	triggerEvent(COLUMN_RESIZE_CHANGED_EVENT);
     }
 
     @JsIgnore
