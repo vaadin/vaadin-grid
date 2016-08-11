@@ -1061,6 +1061,17 @@ See the [demo](demo/index.html) for use case examples.
         observer: '_columnReorderingAllowedChanged'
       },
 
+      /**
+       * Boolean property to set whether column resizing is allowed for the grid.
+       *
+       * @property {boolean} columnResizingAllowed
+       * @default false
+       * @type {boolean}
+       */
+      columnResizingAllowed: {
+        type: Boolean,
+        observer: '_columnResizingAllowedChanged'
+      }
     },
 
     attributeChanged: function(name, type, value) {
@@ -1137,6 +1148,10 @@ See the [demo](demo/index.html) for use case examples.
 
     _columnReorderingAllowedChanged: function() {
       this._grid.setColumnReorderingAllowed(this.columnReorderingAllowed);
+    },
+
+    _columnResizingAllowedChanged: function() {
+      this._grid.setColumnResizingAllowed(this.columnResizingAllowed);
     },
 
     created: function() {
