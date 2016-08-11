@@ -96,6 +96,16 @@ public class JSColumn {
     }
 
     @JsProperty
+    public boolean getResizable() {
+        return col.isResizable();
+    }
+
+    @JsProperty
+    public void setResizable(boolean b) {
+        col.setResizable(b);
+    }
+
+    @JsProperty
     public boolean getReadonly() {
         return !col.isEditable();
     }
