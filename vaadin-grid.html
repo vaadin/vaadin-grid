@@ -389,6 +389,7 @@ See the [demo](demo/index.html) for use case examples.
   .vaadin-grid-header th {
     font-weight: 500;
     text-align: left;
+    position: relative;
   }
 
   .vaadin-grid-header-deco {
@@ -679,12 +680,23 @@ See the [demo](demo/index.html) for use case examples.
 
   :host ::content .vaadin-grid-column-resize-handle,
   .vaadin-grid-column-resize-handle {
-    background-color: var(--primary-color, #00B4F0);
-    position: relative;
-    margin-left: 5px;
-    height: 50%;
-    width: 3px;
+    position: absolute;
+    cursor: ew-resize;
+    height: 100%;
+    width: 2px;
+    right: 0;
+    top: 0;
   }
+
+ :host ::content .vaadin-grid-column-resize-handle,
+ .vaadin-grid-column-resize-handle {
+   background-color: var(--secondary-color, #e3e3e3);
+ }
+
+ :host ::content .vaadin-grid-column-resize-handle:active,
+ .vaadin-grid-column-resize-handle:active {
+   background-color: var(--primary-color, #00B4F0);
+ }
 
   </style>
   <template>
