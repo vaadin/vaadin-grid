@@ -29,7 +29,7 @@
       });
     });
 
-    it('Mock interactions, resize test', function () {
+    it('Mock interactions, resize test (one column)', function () {
       grid.columns[0].width = 400;
       grid.columns[0].resizable = false;
       grid.columns[1].width = 400;
@@ -42,10 +42,27 @@
       //resize only the second column
       MockInteractions.track(elem, 450, 0);
       expect(grid.columns[0].width).to.equal(400);
-      expect(grid.columns[1].width).to.equal(668);
+      expect(grid.columns[1].width).to.not.equal(400);
       expect(grid.columns[2].width).to.equal(400);
     });
-  })
+
+    it('Mock interactions, resize test (frozen column)', function () {
+      grid.frozenColumns = 1;
+      grid.columns[0].resizable = true;
+      grid.columns[1].width = 400;
+      grid.columns[1].resizable = true;
+      grid.columns[2].width = 400;
+      grid.columns[2].resizable = true;
+
+      //get the column resize handle div for the frozen column
+      var elem = Polymer.dom(grid.root).querySelectorAll('.vaadin-grid-column-resize-handle')[0];
+      //resize only the frozen column
+      MockInteractions.track(elem, 450, 0);
+      expect(grid.columns[0].width).to.not.equal(400);
+      expect(grid.columns[1].width).to.equal(400);
+      expect(grid.columns[2].width).to.equal(400);
+    });
+  });
 </script>
 
 </body>
