@@ -677,6 +677,15 @@ See the [demo](demo/index.html) for use case examples.
     width: 3px;
   }
 
+  :host ::content .vaadin-grid-column-resize-handle,
+  .vaadin-grid-column-resize-handle {
+    background-color: var(--primary-color, #00B4F0);
+    position: relative;
+    margin-left: 5px;
+    height: 50%;
+    width: 3px;
+  }
+
   </style>
   <template>
     <iframe id="measureobject" class="vaadin-grid"></iframe>
@@ -1059,18 +1068,6 @@ See the [demo](demo/index.html) for use case examples.
       columnReorderingAllowed: {
         type: Boolean,
         observer: '_columnReorderingAllowedChanged'
-      },
-
-      /**
-       * Boolean property to set whether column resizing is allowed for the grid.
-       *
-       * @property {boolean} columnResizingAllowed
-       * @default false
-       * @type {boolean}
-       */
-      columnResizingAllowed: {
-        type: Boolean,
-        observer: '_columnResizingAllowedChanged'
       }
     },
 
@@ -1148,10 +1145,6 @@ See the [demo](demo/index.html) for use case examples.
 
     _columnReorderingAllowedChanged: function() {
       this._grid.setColumnReorderingAllowed(this.columnReorderingAllowed);
-    },
-
-    _columnResizingAllowedChanged: function() {
-      this._grid.setColumnResizingAllowed(this.columnResizingAllowed);
     },
 
     created: function() {
