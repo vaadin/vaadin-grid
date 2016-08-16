@@ -315,16 +315,16 @@ layout: page
 
   <section>
     <h3>Column Resizing</h3>
-    <p>Non-frozen columns can be resized. By default, resizing is disabled. You must either set the
+    <p>Columns can be resized. By default, resizing is disabled. You must either set the
       <code>columnResizingAllowed</code> property, or add the <code>column-resizing-allowed</code> attribute to enable it.</p>
     <code-example source>
-      <vaadin-grid demo column-resizing-allowed>
+      <vaadin-grid demo>
         <table>
           <colgroup>
             <col>
-            <col>
-            <col>
-            <col>
+            <col resizable>
+            <col resizable>
+            <col resizable>
           </colgroup>
         <thead>
           <tr>

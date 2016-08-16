@@ -121,14 +121,6 @@ public class GridElement implements SelectionHandler<Object>,
         grid.setColumnReorderingAllowed(isAllowed);
     }
     
-    public void setColumnResizingAllowed(boolean isAllowed) {
-    	List<Column<?, Object>> columnList = grid.getColumns();
-    	
-    	for (Column<?, Object> column : columnList) {
-    		column.setResizable(isAllowed);
-    	}
-    }
-    
     public Element getGridElement() {
         return grid.getElement();
     }
@@ -626,7 +618,6 @@ public class GridElement implements SelectionHandler<Object>,
     @JsIgnore
     @Override
     public void onColumnResize(ColumnResizeEvent<Object> event) {
-//    	updateColumnSize();
     	triggerEvent(COLUMN_RESIZE_CHANGED_EVENT);
     }
 
