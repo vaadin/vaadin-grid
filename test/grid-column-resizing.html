@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head lang-="en">
+  <meta charset="UTF-8">
+  <title></title>
+  <script src="../../webcomponentsjs/webcomponents-lite.min.js"></script>
+  <script src="../../web-component-tester/browser.js"></script>
+  <link rel="import" href="../../test-fixture/test-fixture.html">
+  <script src='../../test-fixture/test-fixture-mocha.js'></script>
+  <script src='../../iron-test-helpers/mock-interactions.js'></script>
+
+  <script src="common.js"></script>
+  <link rel="import" href="../vaadin-grid.html">
+</head>
+<body>
+<div id="gridwrapper"></div>
+
+<script>
+  describe.feature('Column Resizing', function () {
+
+    beforeEach(function () {
+      return grid.then(function () {
+        grid.selection.mode = 'single';
+        grid.frozenColumns = 0;
+        grid.columns = [{name: 'Name'}, {name: 'Value'}, {name: 'Age'}];
+        grid.items = [['Grid', '10000', '10'], ['Vaadin Components', '1000', '20']];
+
+        return grid;
+      });
+    });
+
+    it('Mock interactions, resize test', function () {
+      grid.columns[0].width = 400;
+      grid.columns[0].resizable = false;
+      grid.columns[1].width = 400;
+      grid.columns[1].resizable = true;
+      grid.columns[2].width = 400;
+      grid.columns[2].resizable = true;
+
+      //get the column resize handle div for the second column
+      var elem = Polymer.dom(grid.root).querySelectorAll('.vaadin-grid-column-resize-handle')[0];
+      //resize only the second column
+      MockInteractions.track(elem, 450, 0);
+      expect(grid.columns[0].width).to.equal(400);
+      expect(grid.columns[1].width).to.equal(668);
+      expect(grid.columns[2].width).to.equal(400);
+    });
+  })
+</script>
+
+</body>
+</html>
