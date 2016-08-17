@@ -29,6 +29,92 @@
         sortListener = sinon.spy();
       });
 
+      describe('sorting array data source', function() {
+        beforeEach(function() {
+          grid.columns[0].sortable = true;
+          grid.columns[1].sortable = true;
+
+          grid.items = [['VaadinX', 100], ['Grid', 100], ['VaadinX', 101]];
+        });
+
+        it('should sort items using single columns', function() {
+          grid.sortOrder = [{
+            column: 0,
+            direction: 'asc'
+          }];
+
+          var firstCell = Polymer.dom(grid.root).querySelector('tbody td');
+
+          expect(firstCell.textContent).to.eql('Grid');
+        });
+
+        it('should sort items using multiple columns', function() {
+          grid.sortOrder = [{
+            column: 0,
+            direction: 'desc'
+          }, {
+            column: 1,
+            direction: 'desc'
+          }];
+
+          var firstCell = Polymer.dom(grid.root).querySelectorAll('tbody td')[0];
+          var secondCell = Polymer.dom(grid.root).querySelectorAll('tbody td')[1];
+
+          expect(firstCell.textContent).to.eql('VaadinX');
+          expect(secondCell.textContent).to.eql('101');
+        });
+
+        it('should not sort items when prevented', function() {
+          var preventDefault = function(e) { e.preventDefault(); grid.removeEventListener('sort-order-changed', preventDefault); };
+          var listener = grid.addEventListener('sort-order-changed', preventDefault);
+
+          grid.sortOrder = [{
+            column: 0,
+            direction: 'asc'
+          }];
+
+          var firstCell = Polymer.dom(grid.root).querySelector('tbody td');
+
+          expect(firstCell.textContent).to.eql('VaadinX');
+        });
+
+        describe('using named columns', function() {
+          beforeEach(function() {
+            grid.columns[0].name = 'name';
+            grid.columns[1].name = 'value';
+
+            grid.items = [{name: 'VaadinX', value: 100}, {name: 'Grid', value: 100}, {name: 'VaadinX', value: 101}];
+          });
+
+          it('should sort items using single columns', function() {
+            grid.sortOrder = [{
+              column: 0,
+              direction: 'asc'
+            }];
+
+            var firstCell = Polymer.dom(grid.root).querySelector('tbody td');
+
+            expect(firstCell.textContent).to.eql('Grid');
+          });
+
+          it('should sort items using multiple columns', function() {
+            grid.sortOrder = [{
+              column: 0,
+              direction: 'desc'
+            }, {
+              column: 1,
+              direction: 'desc'
+            }];
+
+            var firstCell = Polymer.dom(grid.root).querySelectorAll('tbody td')[0];
+            var secondCell = Polymer.dom(grid.root).querySelectorAll('tbody td')[1];
+
+            expect(firstCell.textContent).to.eql('VaadinX');
+            expect(secondCell.textContent).to.eql('101');
+          });
+        });
+      });
+
       describe('using api', function() {
 
         function assignInvalidSortOrder() {
