@@ -140,9 +140,9 @@ image::img/vaadin-grid-column-hiding.png[]
   <table>
     <colgroup>
       <col>
-      <col hidable="">
-      <col hidable="" hidden="">
-      <col hidden="">
+      <col hidable>
+      <col hidable hidden>
+      <col hidden>
     </colgroup>
     <!-- ... -->
   </table>
@@ -156,3 +156,36 @@ grid.columns[2].hidable = true;
 grid.columns[2].hidden = true;
 grid.columns[3].hidden = true;
 ----
+
+ifdef::web[]
+====
+See the link:https://cdn.vaadin.com/vaadin-elements/latest/vaadin-grid/demo/columns.html[live example].
+====
+endif::web[]
+
+[[vaadin-grid.columns.reordering]]
+== Column Reordering
+Non-frozen columns can be reordered by the end users by dragging the header cells.
+By default, column reordering is disabled, and can be enabled by setting the [propertyname]#columnReorderingAllowed# property to true.
+
+[[figure.vaadin-grid.column-reordering]]
+.User can drag the header cells to reorder the columns
+image::img/vaadin-grid-column-reordering.png[]
+
+[source,html]
+----
+<vaadin-grid column-reordering-allowed>
+  <!-- ... -->
+</vaadin-grid>
+----
+[source,javascript]
+----
+// Setting the property with JS API
+grid.columnReorderingAllowed = true;
+----
+
+ifdef::web[]
+====
+See the link:https://cdn.vaadin.com/vaadin-elements/latest/vaadin-grid/demo/columns.html[live example].
+====
+endif::web[]
