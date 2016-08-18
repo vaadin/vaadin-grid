@@ -1007,7 +1007,6 @@ See the [demo](demo/index.html) for use case examples.
        */
       sortOrder: {
         type: Array,
-        notify: true,
         observer: '_sortOrderChanged'
       },
 
@@ -1088,7 +1087,7 @@ See the [demo](demo/index.html) for use case examples.
        * @event selection-mode-changed
        */
       'selection-mode-changed': '_onSelectionModeChange',
-      'column-order-changed': '_columnOrderChanged',
+      'column-order-changed': '_columnOrderChanged'
     },
 
     observers: [
@@ -1132,6 +1131,24 @@ See the [demo](demo/index.html) for use case examples.
     },
 
     _sortOrderChanged: function(sortOrder) {
+      var evt = this.fire('sort-order-changed', {value: sortOrder}, {cancelable: true});
+
+      function _compare(a, b) {
+        return (a < b ? -1 : a > b ? 1 : 0);
+      }
+
+      if (!evt.defaultPrevented && Array.isArray(this.items) && sortOrder.length > 0) {
+        this.items.sort(function(a, b) {
+          return sortOrder.map(function(sort) {
+            var col = this.columns[sort.column];
+            var prop = col.name || sort.column;
+            return (sort.direction === 'asc' ? 1 : -1) * _compare(a[prop], b[prop]);
+          }.bind(this)).reduce(function firstNonZeroValue(p, n) {
+            return p ? p : n;
+          }, 0);
+        }.bind(this));
+      }
+
       this._grid.setSortOrder(sortOrder);
     },
 
