@@ -165,8 +165,8 @@ endif::web[]
 
 [[vaadin-grid.columns.reordering]]
 == Column Reordering
-Non-frozen columns can be reordered by the end users by dragging the header cells.
-By default, column reordering is disabled, and can be enabled by setting the [propertyname]#columnReorderingAllowed# property to true.
+The end users can reorder non-frozen columns by dragging the header cells.
+By default, column reordering is disabled, but can be enabled by setting the [propertyname]#columnReorderingAllowed# property to true.
 
 [[figure.vaadin-grid.column-reordering]]
 .User can drag the header cells to reorder the columns
