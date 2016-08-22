@@ -118,6 +118,7 @@ Custom property | Description | Default
 `--vaadin-grid-footer-row-height` | Footer row height | `56px`
 `--vaadin-grid-selected-row-cell` | Mixin which applies to the cell elements of a selected row | {}
 `--vaadin-grid-row-cell` | Mixin which applies to the cell elements of the table | {}
+`--vaadin-grid-row-stripe-cell` | Mixin applied on the cells of the striped rows | {}
 
 See the [demo](demo/index.html) for use case examples.
 
@@ -305,6 +306,10 @@ See the [demo](demo/index.html) for use case examples.
     background-color: #eeeeee;
   }
 
+  .vaadin-grid-row-stripe td {
+    @apply(--vaadin-grid-row-stripe-cell);
+  }
+
   .vaadin-grid-row-selected td {
     background-color: #f5f5f5;
     @apply(--vaadin-grid-selected-row-cell);
@@ -381,12 +386,12 @@ See the [demo](demo/index.html) for use case examples.
   }
 
   .vaadin-grid-header tr {
-    color: rgba(0, 0, 0, 0.54);
-    font-size: 12px;
     height: var(--vaadin-grid-header-row-height, 56px);
   }
 
   .vaadin-grid-header th {
+    color: rgba(0, 0, 0, 0.54);
+    font-size: 12px;
     font-weight: 500;
     text-align: left;
     position: relative;
@@ -664,18 +669,38 @@ See the [demo](demo/index.html) for use case examples.
     }
   }
 
-  :host ::content .dragged-column-header,
+  :host ::content .header-drag-table {
+    display: block;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
   .dragged-column-header {
     background-color: var(--primary-background-color, #EEEEEE);
     position: absolute;
-    opacity: 0.5;
+    margin-top: calc(var(--vaadin-grid-header-row-height, 56px) * 0.75);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
   }
 
-  :host ::content .vaadin-grid-drop-marker,
-  .vaadin-grid-drop-marker {
-    background-color: var(--primary-color, #00B4F0);
+  :host ::content .vaadin-grid-drop-marker {
+    background-color: var(--primary-color, #03A9F4);
     position: absolute;
-    width: 3px;
+    width: 2px;
+  }
+
+  :host ::content .vaadin-grid-drop-marker::before {
+    content: "";
+    display: block;
+    width: 1px;
+    background: rgba(0,0,0,0.07);
+    height: 9999px;
+    margin-top: 56px;
+  }
+
+  .vaadin-grid-header th.dragged {
+    opacity: 0.3;
   }
 
   :host ::content .vaadin-grid-column-resize-handle,
@@ -1028,7 +1053,6 @@ See the [demo](demo/index.html) for use case examples.
        */
       sortOrder: {
         type: Array,
-        notify: true,
         observer: '_sortOrderChanged'
       },
 
@@ -1108,7 +1132,7 @@ See the [demo](demo/index.html) for use case examples.
        * @event selection-mode-changed
        */
       'selection-mode-changed': '_onSelectionModeChange',
-      'column-order-changed': '_columnOrderChanged',
+      'column-order-changed': '_columnOrderChanged'
     },
 
     observers: [
@@ -1152,6 +1176,24 @@ See the [demo](demo/index.html) for use case examples.
     },
 
     _sortOrderChanged: function(sortOrder) {
+      var evt = this.fire('sort-order-changed', {value: sortOrder}, {cancelable: true});
+
+      function _compare(a, b) {
+        return (a < b ? -1 : a > b ? 1 : 0);
+      }
+
+      if (!evt.defaultPrevented && Array.isArray(this.items) && sortOrder.length > 0) {
+        this.items.sort(function(a, b) {
+          return sortOrder.map(function(sort) {
+            var col = this.columns[sort.column];
+            var prop = col.name || sort.column;
+            return (sort.direction === 'asc' ? 1 : -1) * _compare(a[prop], b[prop]);
+          }.bind(this)).reduce(function firstNonZeroValue(p, n) {
+            return p ? p : n;
+          }, 0);
+        }.bind(this));
+      }
+
       this._grid.setSortOrder(sortOrder);
     },
 
