@@ -237,6 +237,13 @@ describe.feature('using properties', function() {
     });
   });
 
+  it('index parameter in RowDetailsGenerator should be a number', function() {
+    grid.rowDetailsGenerator = function(rowIndex) {
+      assert.equal(typeof rowIndex, 'number');
+    };
+    grid.setRowDetailsVisible(0, true);
+  });
+
   it('should be enabled by default', function() {
     expect(grid.disabled).to.be.false;
   });
