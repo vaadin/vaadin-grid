@@ -394,6 +394,7 @@ See the [demo](demo/index.html) for use case examples.
     font-size: 12px;
     font-weight: 500;
     text-align: left;
+    position: relative;
   }
 
   .vaadin-grid-header-deco {
@@ -700,6 +701,26 @@ See the [demo](demo/index.html) for use case examples.
 
   .vaadin-grid-header th.dragged {
     opacity: 0.3;
+  }
+
+  :host ::content .vaadin-grid-column-resize-handle,
+  .vaadin-grid-column-resize-handle {
+    position: absolute;
+    cursor: ew-resize;
+    height: 100%;
+    width: 2px;
+    right: 0;
+    top: 0;
+  }
+
+  :host ::content .vaadin-grid-column-resize-handle,
+  .vaadin-grid-column-resize-handle {
+    background-color: var(--primary-color, #e3e3e3);
+  }
+
+  :host ::content .vaadin-grid-column-resize-handle:active,
+  .vaadin-grid-column-resize-handle:active {
+    background-color: var(--primary-color, #00B4F0);
   }
 
   </style>
@@ -1083,8 +1104,7 @@ See the [demo](demo/index.html) for use case examples.
       columnReorderingAllowed: {
         type: Boolean,
         observer: '_columnReorderingAllowedChanged'
-      },
-
+      }
     },
 
     attributeChanged: function(name, type, value) {
