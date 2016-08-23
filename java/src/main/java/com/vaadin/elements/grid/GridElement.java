@@ -11,7 +11,6 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.shared.GwtEvent.Type;
 import com.google.gwt.dom.client.TableElement;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.widgets.WidgetsUtils;
@@ -140,17 +139,13 @@ public class GridElement implements SelectionHandler<Object>,
 
         return order;
     }
-
-    private void updateOrder(){
-        List<GridColumn> dataColumns = getDataColumns();
-        if (dataColumns.size() == 0) {
-            return;
-        }
-        for (int i = cols.size(); i > 0; i--) {
-            cols.remove(cols.get(0));
-        }
-        for (int i = 0; i < dataColumns.size(); i++) {
-            cols.add(dataColumns.get(i).getJsColumn());
+    
+    private void updateOrder() {
+        cols.setLength(0); // Clear.
+        
+        // Apply the column order from the Grid to cols.
+        for (GridColumn dataCol : getDataColumns()) {
+            cols.add(dataCol.getJsColumn());
         }
     }
 
