@@ -139,10 +139,10 @@ public class GridElement implements SelectionHandler<Object>,
 
         return order;
     }
-    
+
     private void updateOrder() {
         cols.setLength(0); // Clear.
-        
+
         // Apply the column order from the Grid to cols.
         for (GridColumn dataCol : getDataColumns()) {
             cols.add(dataCol.getJsColumn());
