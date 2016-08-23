@@ -29,8 +29,13 @@
       return grid.then(function() {
         grid.selection.mode = 'single';
         grid.frozenColumns = 0;
-        grid.columns = [{name: 'Name'}, {name: 'Value'}, {name: 'Age'}];
-        grid.items = [['Grid', '10000', '10'], ['Vaadin Components', '1000', '20']];
+        grid.columns = [
+          {name: 'name'}, {name: 'value'}, {name: 'age'}
+        ];
+        grid.items = [
+          { name: 'Grid', value: '10000', age: '10'},
+          { name: 'Vaadin Elements', value: '1000', age: '20'}
+        ];
 
         return grid;
       });
@@ -56,9 +61,9 @@
 
       grid.fire('column-order-changed');
       expect(getColumnsSpy.calledOnce).to.be.true;
-      expect(grid.columns[0].name).to.equal('Name');
-      expect(grid.columns[1].name).to.equal('Value');
-      expect(grid.columns[2].name).to.equal('Age');
+      expect(grid.columns[0].name).to.equal('name');
+      expect(grid.columns[1].name).to.equal('value');
+      expect(grid.columns[2].name).to.equal('age');
       grid._grid.getColumns.restore();
     });
 
@@ -69,9 +74,18 @@
       // Mock interaction of moving column header
       var elem = Polymer.dom(grid.root).querySelectorAll('th')[0];
       MockInteractions.track(elem, 401 ,0);
-      expect(grid.columns[0].name).to.equal('Value');
-      expect(grid.columns[1].name).to.equal('Name');
-      expect(grid.columns[2].name).to.equal('Age');
+      expect(grid.columns[0].name).to.equal('value');
+      expect(grid.columns[1].name).to.equal('name');
+      expect(grid.columns[2].name).to.equal('age');
+
+      // Verify also cell data.
+      var cells = Polymer.dom(grid.root).querySelectorAll('.vaadin-grid-body .vaadin-grid-cell > span');
+      expect(cells[0].innerHTML).to.equal('10000');
+      expect(cells[1].innerHTML).to.equal('Grid');
+      expect(cells[2].innerHTML).to.equal('10');
+      expect(cells[3].innerHTML).to.equal('1000');
+      expect(cells[4].innerHTML).to.equal('Vaadin Elements');
+      expect(cells[5].innerHTML).to.equal('20');
       expect(getColumnsSpy.calledOnce).to.be.true;
       grid._grid.getColumns.restore();
     });
@@ -84,10 +98,10 @@
         // Mock interaction of moving column header
         var elem = Polymer.dom(grid.root).querySelectorAll('th')[1];
         MockInteractions.track(elem, -401 ,0);
-        //Shouldn't have changed column names
-        expect(grid.columns[0].name).to.equal('Name');
-        expect(grid.columns[1].name).to.equal('Value');
-        expect(grid.columns[2].name).to.equal('Age');
+        // Shouldn't have changed column names
+        expect(grid.columns[0].name).to.equal('name');
+        expect(grid.columns[1].name).to.equal('value');
+        expect(grid.columns[2].name).to.equal('age');
         expect(getColumnsSpy.called).to.be.false;
         grid._grid.getColumns.restore();
     });
