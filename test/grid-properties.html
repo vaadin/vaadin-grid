@@ -237,11 +237,19 @@ describe.feature('using properties', function() {
     });
   });
 
-  it('index parameter in RowDetailsGenerator should be a number', function() {
-    grid.rowDetailsGenerator = function(rowIndex) {
-      assert.equal(typeof rowIndex, 'number');
+  it('index parameter in RowDetailsGenerator should be a number', function(done) {
+    var rowIndex;
+    grid.rowDetailsGenerator = function(i) {
+      rowIndex = i;
     };
+
     grid.setRowDetailsVisible(0, true);
+    waitUntil(function() {
+      return rowIndex !== undefined;
+    }, function() {
+      assert.equal(typeof rowIndex, 'number');
+      done();
+    });
   });
 
   it('should be enabled by default', function() {
