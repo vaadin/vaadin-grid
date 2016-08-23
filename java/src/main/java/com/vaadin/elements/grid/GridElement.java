@@ -11,7 +11,6 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.shared.GwtEvent.Type;
 import com.google.gwt.dom.client.TableElement;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.widgets.WidgetsUtils;
@@ -656,7 +655,7 @@ public class GridElement implements SelectionHandler<Object>,
     public void setRowDetailsGenerator(JSFunction<Object, Object> generator) {
         grid.setDetailsGenerator(JS.isUndefinedOrNull(generator) ? DetailsGenerator.NULL
                 : rowIndex -> {
-                    Object details = generator.f(rowIndex);
+                    Object details = generator.f((double)rowIndex);
                     return JS.isUndefinedOrNull(details) ? null
                             : new SimplePanel((Element) details) {
                             };
