@@ -1082,6 +1082,7 @@ See the [demo](demo/index.html) for use case examples.
       */
       columnReorderingAllowed: {
         type: Boolean,
+        value: false,
         observer: '_columnReorderingAllowedChanged'
       },
 
@@ -1122,6 +1123,7 @@ See the [demo](demo/index.html) for use case examples.
 
     _columnOrderChanged: function() {
       this.columns = this._grid.getColumns();
+      this.refreshItems();
     },
 
     _columnsChanged: function() {
@@ -1374,7 +1376,9 @@ See the [demo](demo/index.html) for use case examples.
      * @type {Function}
      */
     refreshItems: function() {
-      this._grid.getDataSource().refreshItems();
+      if (this._grid.getDataSource()) {
+        this._grid.getDataSource().refreshItems();
+      }
     },
 
     /**
