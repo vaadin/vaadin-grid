@@ -168,6 +168,12 @@ endif::web[]
 The end users can reorder non-frozen columns by dragging the header cells.
 By default, column reordering is disabled, but can be enabled by setting the [propertyname]#columnReorderingAllowed# property to true.
 
+Column reordering works only when the data source is based on objects bound to the column configuration using the `name` attribute.
+Usage of object values is described in section <<vaadin-grid-assigning-data#vaadin-grid.data.object, "Using Object Values">>.
+
+When using arrays as data, you need to take care of reordering the data after the column order is changed.
+You will get notified of this by listening to the `column-order-changed` event.
+
 [[figure.vaadin-grid.column-reordering]]
 .User can drag the header cells to reorder the columns
 image::img/vaadin-grid-column-reordering.png[]
@@ -182,6 +188,14 @@ image::img/vaadin-grid-column-reordering.png[]
 ----
 // Setting the property with JS API
 grid.columnReorderingAllowed = true;
+----
+[source,javascript]
+----
+// Listening to column order changes
+grid.addEventListener('column-order-changed', function() {
+  var columnNames = grid.columns.map(function(col) { return col.name; });
+  console.log('Column order is now: ' + columnNames.join(', '));
+});
 ----
 
 ifdef::web[]
