@@ -277,8 +277,11 @@ layout: page
       <code>columnReorderingAllowed</code> property to true.
     </p>
     <p>
-      Column reordering is only supported when the data source is based on objects
-      bound to the column configuration using the <code>name</code> attribute.
+      Column reordering works automatically only when the data source is based on
+      objects bound to the column configuration using the <code>name</code> attribute.
+      When using arrays as data, you need to take care of reordering the data after
+      the column order is changed. You will get notified of this by listening to
+      the <code>column-order-changed</code> event.
     </p>
     <code-example source>
       <vaadin-grid demo column-reordering-allowed frozen-columns="1">
