@@ -651,7 +651,7 @@ public class GridElement implements SelectionHandler<Object>,
     public void setRowDetailsGenerator(JSFunction<Object, Object> generator) {
         grid.setDetailsGenerator(JS.isUndefinedOrNull(generator) ? DetailsGenerator.NULL
                 : rowIndex -> {
-                    Object details = generator.f(rowIndex);
+                    Object details = generator.f((double)rowIndex);
                     return JS.isUndefinedOrNull(details) ? null
                             : new SimplePanel((Element) details) {
                             };
