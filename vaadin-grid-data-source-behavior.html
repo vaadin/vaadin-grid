@@ -1,0 +1,251 @@
+<dom-module id="vaadin-grid-data-source-styles">
+  <template>
+    <style>
+      :host([loading]) #items tr {
+        opacity: 0.1;
+      }
+
+      :host([loading]::before)  {
+        visibility: visible;
+      }
+
+      /* Anim */
+      @keyframes vaadin-grid-spin-360 {
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      @-webkit-keyframes vaadin-grid-spin-360 {
+        100% {
+          -webkit-transform: rotate(360deg);
+          transform: rotate(360deg);
+        }
+      }
+      :host(::before) {
+        -webkit-animation: vaadin-grid-spin-360 400ms linear infinite;
+        animation: vaadin-grid-spin-360 400ms linear infinite;
+        border: 2px solid var(--primary-color, #03A9F4);
+        border-radius: 50%;
+        border-right-color: transparent;
+        border-top-color: transparent;
+        content: "";
+        height: 16px;
+        left: 50%;
+        margin-left: -8px;
+        margin-top: -8px;
+        position: absolute;
+        top: 50%;
+        width: 16px;
+
+        visibility: hidden;
+      }
+
+      :host(:not([has-data])) tr::after {
+        visibility: hidden;
+        content: '-';
+        width: 0;
+
+         /* Must use the same padding (+border-top) as the cell wrapper itself.
+         FIXME: Use the vertical paddings on the cell directly (not the wrapper).
+         Then this could be removed.*/
+        padding: 9px 0 8px;
+      }
+    </style>
+  </template>
+</dom-module>
+
+
+<script>
+  window.vaadin = window.vaadin || {};
+  vaadin.elements = vaadin.elements || {};
+  vaadin.elements.grid = vaadin.elements.grid || {};
+
+  vaadin.elements.grid.DataSourceBehavior = {
+
+    properties: {
+
+      /**
+       * Number of items fetched at a time from the datasource.
+       */
+      pageSize: {
+        type: Number,
+        value: 50
+      },
+
+      /**
+       * Function that provides items lazily. Receives parameters `params`, `callback`
+       *
+       * `params.page` Requested page index
+       *
+       * `params.pageSize` Current page size
+       */
+      dataSource: Function,
+
+      /**
+       * `true` while data is being requested from the data source.
+       */
+      loading: Boolean,
+
+      _cache: {
+        value: function() {
+          return {};
+        }
+      },
+
+      _pendingRequests: {
+        value: function() {
+          return {};
+        }
+      },
+    },
+
+    observers: [
+      'clearCache(pageSize)'
+    ],
+
+    _getItem: function() {
+      this._cachedPagesForPhysicalItems().forEach(this._loadPage.bind(this));
+      this._eagerlyLoadPages();
+
+      var uncachedPages = this._uncachedPagesForPhysicalItems();
+      if (uncachedPages.length > 0) {
+        this.loading = true;
+        // avoid debounce during scroll to mitigate scrollbar flickering on iOS.
+        // debouncing only when data is needed to be fetched. eager loading
+        // should somewhat prevent from getting here when scrolling slowly.
+        this.debounce('load', function() {
+          uncachedPages.forEach(this._loadPage.bind(this));
+        }, 100);
+      }
+    },
+
+    _cachedPagesForPhysicalItems: function() {
+      return this._pagesForPhysicalItems().filter(function(page) {
+        return this._cache !== undefined && this._cache[page] !== undefined;
+      }.bind(this));
+    },
+
+    _uncachedPagesForPhysicalItems: function() {
+      return this._pagesForPhysicalItems().filter(function(page) {
+        return this._cache === undefined || this._cache[page] === undefined;
+      }.bind(this));
+    },
+
+    _eagerlyLoadPages: function() {
+      var pages = this._cachedPagesForPhysicalItems().slice(0);
+
+      if (pages.length > 0) {
+        pages.sort(function(a, b) {
+          return a > b;
+        });
+
+        var prev = Math.max(0, pages[0] - 1);
+        var next = Math.min(pages[pages.length - 1] + 1, Math.floor(this.size / this.pageSize) - 1);
+
+        this._loadPage(prev);
+        this._loadPage(next);
+      }
+    },
+
+    _pagesForPhysicalItems: function() {
+      // TODO: potentially heavy operation to run first visible index,
+      // reconsider if performance issues occur on data binding / scrolling.
+      var firstVisiblePage = this._getPageForIndex(this.$.scroller.firstVisibleIndex + this.$.scroller._vidxOffset);
+
+      return [firstVisiblePage].concat(
+       this.$.scroller._physicalItems
+        .filter(function(row) { return row.index; })
+        .map(function(row) {
+        return this._getPageForIndex(row.index);
+      }.bind(this)))
+      .reduce(function(prev, curr) {
+        if (prev.indexOf(curr) === -1) {
+          prev.push(curr);
+        }
+
+        return prev;
+      }, []);
+    },
+
+    _updateItems: function(page, items) {
+      var map = {};
+      this.$.scroller._physicalItems.map(function(row) {
+        map[row.index] = row;
+      });
+
+      for(var i=0;i<this.pageSize;i++) {
+        var index = page*this.pageSize + i;
+        var row = map[index];
+        if (row) {
+          //TODO: items should not be null ever, this check can be removed?
+          if (items) {
+            var item = items[i];
+            this._updateItem(row, item);
+
+            if (row._item === item) {
+              continue;
+            }
+            row._item = item;
+
+            // Allow the content to determine row height
+            row.style.minHeight = '';
+
+            if (!this.$.scroller.hasAttribute('has-data')) {
+              // First set of actual data set to rows, have average height re-measured
+              this.$.scroller._resetAverage();
+              this.$.scroller.toggleAttribute('has-data', true);
+            }
+
+            // update heights if any of the items change.
+            this.debounce('update-heights', function() {
+              this.$.scroller._update();
+            }, 1);
+          } else {
+            this._updateItem(row, null);
+
+            // Item was cleared, use current physical average as min height
+            row.style.minHeight = this.$.scroller._physicalAverage + 'px';
+          }
+        }
+      }
+    },
+
+    _loadPage: function(page) {
+      if (this._cache[page]) {
+        this._updateItems(page, this._cache[page]);
+      } else {
+        // make sure same page isn't requested multiple times.
+        if (!this._pendingRequests[page] && this.dataSource) {
+          this._pendingRequests[page] = true;
+          var opts = {page: page, pageSize: this.pageSize};
+          this.dataSource(opts, function(items) {
+            this._cache[page] = items;
+            delete this._pendingRequests[page];
+            this._updateItems(page, items);
+
+            this.loading = this._pendingRequests.length > 0;
+          }.bind(this));
+        }
+      }
+    },
+
+    _getPageForIndex: function(index) {
+      return Math.floor(index / this.pageSize);
+    },
+
+    /**
+     * Clears the cached pages and reloads data from datasource when needed.
+     */
+    clearCache: function() {
+      this._cache = {};
+      this._pendingRequests = {};
+      this.$.scroller._update();
+      this._flushItemsDebouncer();
+    },
+
+    _flushItemsDebouncer: function() {
+      this.flushDebouncer('load');
+    }
+
+  };
+</script>

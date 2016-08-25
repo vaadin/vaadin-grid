@@ -1,0 +1,202 @@
+<link rel="import" href="../paper-checkbox/paper-checkbox.html">
+
+<dom-module id="selection-styles">
+  <template>
+    <style>
+      tbody tr[selected] td {
+        background-color: #cdd1f1;
+      }
+    </style>
+  </template>
+</dom-module>
+
+<dom-module id="vaadin-grid-multi-select-column">
+  <template>
+    <vaadin-grid-column id="column" width="52px" flex="0">
+      <template is="header">
+        <paper-checkbox style="padding-left: 8px" checked="{{selectAll}}"></paper-checkbox>
+      </template>
+      <template>
+        <paper-checkbox style="padding-left: 8px" checked="{{selected}}"></paper-checkbox>
+      </template>
+    </vaadin-grid-column>
+  </template>
+  <script>
+    Polymer({
+      is: 'vaadin-grid-multi-select-column',
+
+      properties: {
+        selectAll: {
+          notify: true
+        },
+      }
+
+    });
+  </script>
+</dom-module>
+
+<script>
+  window.vaadin = window.vaadin || {};
+  vaadin.elements = vaadin.elements || {};
+  vaadin.elements.grid = vaadin.elements.grid || {};
+
+  vaadin.elements.grid.SelectionBehavior = {
+
+    properties: {
+
+      /**
+       * When `true`, multiple items may be selected at once (in this case,
+       * `selected` is an array of currently selected items).  When `false`,
+       * only one item may be selected at a time.
+       */
+      multiSelection: {
+        type: Boolean,
+        value: false
+      },
+
+      /**
+       * This is the currently selected item, or `null`
+       * if no item is selected.
+       */
+      selectedItem: {
+        type: Object,
+        notify: true,
+        computed: '_getSelectedItem(selectedItems.*)'
+      },
+
+      /**
+       * When `multiSelection` is true, this is an array that contains the selected items.
+       */
+      selectedItems: {
+        type: Object,
+        notify: true,
+        value: function() {
+          return [];
+        }
+      },
+
+      _columns: {
+        computed: '_getColumns(columns, columns.*, multiSelection)'
+      },
+
+      _frozenColumns: {
+        computed: '_getFrozenColumns(frozenColumns, multiSelection)'
+      },
+
+      _multiSelectColumn: {
+        value: function() {
+          var msColumn = document.createElement('vaadin-grid-multi-select-column');
+          this.listen(msColumn, 'select-all-changed', '_onSelectAllChanged');
+          return msColumn;
+        }
+      }
+
+    },
+
+    observers: [
+      '_selectedItemsChanged(selectedItems.*)'
+    ],
+
+    listeners: {
+      'template-instance-changed': '_templateInstanceChangedSelection'
+    },
+
+    _templateInstanceChangedSelection: function(e) {
+      if (e.detail.prop === 'selected') {
+        var item = e.detail.inst.item;
+        (this._isSelected(item) ? this.deselectItem : this.selectItem).bind(this)(item);
+
+        // stop this internal event from propagating outside.
+        e.stopPropagation();
+      }
+    },
+
+    _isSelected: function(item) {
+      var selected = this.selectedItems.indexOf(item) > -1;
+      return this.selectedItems.inverted ? !selected : selected;
+    },
+
+    _onSelectAllChanged: function(e) {
+      var selectedItems = [];
+      selectedItems.inverted = e.detail.value;
+      this.selectedItems = selectedItems;
+    },
+
+    /**
+     * Selects the given item.
+     *
+     * @method selectItem
+     * @param {Object} item The item object
+     */
+    selectItem: function(item) {
+      if (typeof item === 'number' && item >= 0 && this.items && this.items.length > item) {
+        this._selectItem(this.items[item]);
+      } else {
+        this._selectItem(item);
+      }
+    },
+
+    _selectItem: function(item) {
+      if (this.multiSelection) {
+        if (this.selectedItems.inverted) {
+          var index;
+          if ((index = this.selectedItems.indexOf(item)) > -1) {
+            this.splice('selectedItems', index, 1);
+          }
+        } else {
+          this.push('selectedItems', item);
+        }
+      } else {
+        this.splice('selectedItems', 0, this.selectedItems.length, item);
+      }
+    },
+
+    /**
+     * Deselects the given item if it is already selected.
+     *
+     * @method deselect
+     * @param {Object} item The item object
+     */
+    deselectItem: function(item) {
+      if (typeof item === 'number' && item >= 0 && this.items && this.items.length > item) {
+        this._deselectItem(this.items[item]);
+      } else {
+        this._deselectItem(item);
+      }
+    },
+
+    _deselectItem: function(item) {
+      var index = this.selectedItems.indexOf(item);
+      if (this.selectedItems.inverted) {
+        if (index === -1) {
+          this.push('selectedItems', item);
+        }
+      } else {
+        if (index > -1) {
+          this.splice('selectedItems', index, 1);
+        }
+      }
+    },
+
+    _selectedItemsChanged: function() {
+      this.$.scroller._update();
+    },
+
+    _getColumns: function() {
+      if (this.multiSelection) {
+        return [this._multiSelectColumn.$.column].concat(this.columns);
+      } else {
+        return this.columns;
+      }
+    },
+
+    _getFrozenColumns: function () {
+      return this.frozenColumns + (this.multiSelection ? 1 : 0);
+    },
+
+    _getSelectedItem: function() {
+      return this.selectedItems[0] || null;
+    }
+
+  };
+</script>

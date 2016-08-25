@@ -1,0 +1,186 @@
+<!doctype html>
+
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../../web-component-tester/browser.js"></script>
+  <script src="../../iron-test-helpers/mock-interactions.js"></script>
+
+  <link rel="import" href="helpers.html">
+  <link rel="import" href="x-list.html">
+</head>
+
+<body>
+
+  <test-fixture id="default">
+    <template>
+      <x-list style="width: 50px;"></x-list>
+    </template>
+  </test-fixture>
+
+  <script>
+    describe('outer scroller', function() {
+      var scroller;
+      var outerScroller;
+      var target;
+      var listRect;
+
+      beforeEach(function(done) {
+        scroller = fixture('default');
+        outerScroller = scroller.list.$.outerscroller;
+        target = outerScroller.scrollTarget;
+        listRect = scroller.list.getBoundingClientRect();
+        Polymer.Base.async(done, 1);
+      });
+
+      it('should invoke onScroll synchronously', function() {
+        var spy = sinon.spy(scroller.list, '_translateStationaryElements');
+        outerscroller._syncScrollTarget();
+        expect(spy.called).to.be.true;
+      });
+
+      it('should invoke frozen element translate handler once', function(done) {
+        var spy = sinon.spy(scroller.list, '_translateStationaryElements');
+        outerScroller.scrollLeft = 1;
+        setTimeout(function () {
+          expect(spy.callCount).to.equal(1);
+          done();
+        }, 200);
+      });
+
+      it('should have the same size as the scroller', function() {
+        var outerRect = outerScroller.getBoundingClientRect();
+        expect(outerRect.left).to.eql(listRect.left);
+        expect(outerRect.right).to.eql(listRect.right);
+        expect(outerRect.top).to.eql(listRect.top);
+        expect(outerRect.bottom).to.eql(listRect.bottom);
+      });
+
+      it('should have the same scrollHeight/scrollWidth as the target', function() {
+        expect(outerScroller.scrollHeight).to.eql(target.scrollHeight);
+        expect(outerScroller.scrollWidth).to.eql(target.scrollWidth);
+      });
+
+      describe('syncing with scroll target', function() {
+
+        it('should scroll the target', function(done) {
+          outerScroller.addEventListener('scroll', function() {
+            expect(target.scrollLeft).to.equal(1);
+            done();
+          });
+          outerScroller.scrollLeft = 1;
+        });
+
+        it('should scroll the outer scroller', function(done) {
+          target.addEventListener('scroll', function() {
+            expect(outerScroller.scrollLeft).to.equal(1);
+            done();
+          });
+          target.scrollLeft = 1;
+        });
+
+      });
+
+      describe('passtrough pointer events', function() {
+
+        function move(x, y) {
+          makeMouseEvent('mousemove', {x: x, y: y}, scroller.list);
+        }
+
+        var HAS_NEW_MOUSE = (function() {
+          var has = false;
+          try {
+            has = Boolean(new MouseEvent('x'));
+          } catch (_) {}
+          return has;
+        })();
+
+        function makeMouseEvent(type, xy, node) {
+          var props = {
+            bubbles: true,
+            cancelable: true,
+            clientX: xy.x,
+            clientY: xy.y,
+            // Make this a primary input.
+            buttons: 1 // http://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/buttons
+          };
+          var e;
+          if (HAS_NEW_MOUSE) {
+            e = new MouseEvent(type, props);
+          } else {
+            e = document.createEvent('MouseEvent');
+            e.initMouseEvent(
+              type, props.bubbles, props.cancelable,
+              null, /* view */
+              null, /* detail */
+              0,    /* screenX */
+              0,    /* screenY */
+              props.clientX, props.clientY,
+              false, /*ctrlKey */
+              false, /*altKey */
+              false, /*shiftKey */
+              false, /*metaKey */
+              0,     /*button */
+              null   /*relatedTarget*/);
+          }
+          node.dispatchEvent(e);
+        }
+
+        var scrollbarWidth = (function() {
+          // Create the measurement node
+          var scrollDiv = document.createElement("div");
+          scrollDiv.style.width = '100px';
+          scrollDiv.style.height = '100px';
+          scrollDiv.style.overflow = 'scroll';
+          scrollDiv.style.position = 'absolute';
+          scrollDiv.style.top = '-9999px';
+          document.body.appendChild(scrollDiv);
+          // Get the scrollbar width
+          var scrollbarWidth = scrollDiv.offsetWidth - scrollDiv.clientWidth;
+
+          // Delete the DIV
+          document.body.removeChild(scrollDiv);
+          return scrollbarWidth;
+        })();
+
+        function outerScrollerInUse() {
+          return window.getComputedStyle(outerScroller).pointerEvents !== 'none';
+        }
+
+        it('should passtrough pointer events', function(done) {
+          scroller.list.addEventListener('mousemove', function() {
+            expect(outerScrollerInUse()).to.be.false;
+            done();
+          });
+
+          move(1, 1);
+        });
+
+        it('should not passtrough iff scrollbars exist (vertical scrollbar hover)', function(done) {
+          scroller.list.addEventListener('mousemove', function() {
+            expect(outerScrollerInUse()).to.be[scrollbarWidth > 0 ? 'true' : 'false'];
+            done();
+          });
+          move(listRect.width, 1);
+        });
+
+        it('should not passtrough iff scrollbars exist (horizontal scrollbar hover)', function(done) {
+          scroller.list.addEventListener('mousemove', function() {
+            expect(outerScrollerInUse()).to.be[scrollbarWidth > 0 ? 'true' : 'false'];
+            done();
+          });
+          move(1, listRect.height);
+        });
+
+      });
+
+    });
+  </script>
+
+</body>
+
+</html>

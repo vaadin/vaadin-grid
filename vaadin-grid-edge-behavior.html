@@ -1,0 +1,57 @@
+<dom-module is="vaadin-grid-edge-styles">
+  <template>
+    <style>
+      :host([edge]) {
+        /* Any value other than ‘none’ for the transform results in the creation of both a stacking context and
+        a containing block. The object acts as a containing block for fixed positioned descendants. */
+        transform: translateZ(0);
+        overflow: hidden;
+      }
+
+      :host([edge]) thead,
+      :host([edge]) tfoot {
+        position: fixed;
+      }
+
+      :host([edge]) tbody#items {
+        position: fixed;
+        width: 100%;
+        will-change: transform;
+      }
+
+      :host([edge]) table {
+        transform: none;
+      }
+    </style>
+  </template>
+</dom-module>
+
+<script>
+  window.vaadin = window.vaadin || {};
+  vaadin.elements = vaadin.elements || {};
+  vaadin.elements.grid = vaadin.elements.grid || {};
+
+  vaadin.elements.grid.EdgeBehaviorImpl = {
+
+    hostAttributes: {
+      edge: true
+    },
+
+    _translateStationaryElements: function() {
+      this.$.items.style.transform =
+        this._getTranslate3d(-this._scrollLeft || 0, -this._scrollPosition || 0);
+
+      this.$.footer.style.transform = this.$.header.style.transform =
+        this._getTranslate3d(-this._scrollLeft || 0, 0);
+
+      var frozenCellTransform = this._getTranslate3d(this._scrollLeft, 0);
+      for (var i = 0; i < this._frozenCells.length; i++) {
+        this._frozenCells[i].style.transform = frozenCellTransform;
+      }
+    }
+  };
+
+  vaadin.elements.grid.EdgeBehavior = [
+    vaadin.elements.grid.GridScrollBehavior, vaadin.elements.grid.EdgeBehaviorImpl
+  ];
+</script>

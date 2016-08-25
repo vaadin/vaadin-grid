@@ -1,0 +1,139 @@
+<!doctype html>
+
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../../web-component-tester/browser.js"></script>
+
+  <link rel="import" href="helpers.html">
+  <link rel="import" href="../vaadin-grid.html">
+</head>
+
+<body>
+
+  <test-fixture id="frozen-columns">
+    <template>
+      <vaadin-grid frozen-columns="1" style="width: 200px; height: 400px;" size="1000">
+        <vaadin-grid-column>
+          <template>foo</template>
+          <template is="header">foo</template>
+        </vaadin-grid-column>
+        <vaadin-grid-column>
+          <template>foo</template>
+          <template is="header">foo</template>
+        </vaadin-grid-column>
+        <vaadin-grid-column>
+          <template>foo</template>
+          <template is="header">foo</template>
+        </vaadin-grid-column>
+      </vaadin-grid>
+    </template>
+  </test-fixture>
+
+  <script>
+    describe('frozen columns', function() {
+      var grid;
+      var scroller;
+
+      beforeEach(function(done) {
+        grid = fixture('frozen-columns');
+        grid.dataSource = infiniteDataSource;
+        scroller = grid.$.scroller;
+
+        Polymer.Base.async(done, 1);
+
+      });
+
+      ['thead', 'tbody'].forEach(function(container) {
+
+        describe(container, function() {
+
+          var containerElement;
+          var containerRows;
+
+          beforeEach(function() {
+            containerElement = scroller.$$(container);
+            containerRows = getRows(containerElement);
+          });
+
+          it('should have a frozen cell in a row', function() {
+            var cells = getRowCells(containerRows[0]);
+            expect(cells[0].hasAttribute('frozen')).to.be.true;
+            expect(cells[1].hasAttribute('frozen')).not.to.be.true;
+            expect(cells[2].hasAttribute('frozen')).not.to.be.true;
+          });
+
+          it('should have the correct last-frozen cell in a row', function() {
+            scroller.frozenColumns = 2;
+            var cells = getRowCells(containerRows[0]);
+            expect(cells[0].hasAttribute('last-frozen')).not.to.be.true;
+            expect(cells[1].hasAttribute('last-frozen')).to.be.true;
+            expect(cells[2].hasAttribute('last-frozen')).not.to.be.true;
+          });
+
+          it('should not move while content scrolls horizontally', function(done) {
+            var initialContainerRect = containerElement.getBoundingClientRect();
+            var containerTop = initialContainerRect.top + 2;
+            var cells = getRowCells(containerRows[0]);
+
+            scroller.$.table.addEventListener('scroll', function() {
+              var scrollingCellContent = getItemFromPoint(
+                initialContainerRect.left + defaultCellWidth * 1.5, containerTop);
+
+              expect(scrollingCellContent).to.equal(getCellContent(cells[2]));
+
+              var frozenCellContent = getItemFromPoint(
+                initialContainerRect.left + defaultCellWidth * 0.5, containerTop);
+              expect(frozenCellContent).to.equal(getCellContent(cells[0]));
+
+              done();
+            });
+
+            scroller.$.table.scrollLeft = defaultCellWidth;
+          });
+
+          it('should update transforms when frozen columns decrease', function(done) {
+            var cells = getRowCells(containerRows[0]);
+
+            scroller.$.table.addEventListener('scroll', function() {
+              expect(cells[0].style.transform).to.eql('translate3d(' + defaultCellWidth + 'px, 0px, 0px)');
+
+              scroller.frozenColumns = 0;
+              scroller.flushDebouncer('cache-elements');
+
+              expect(cells[0].style.transform).to.be.empty;
+              done();
+            });
+            scroller.$.table.scrollLeft = defaultCellWidth;
+
+          });
+
+          it('should update transforms when frozen columns increase', function(done) {
+            var cells = getRowCells(containerRows[0]);
+
+            scroller.$.table.addEventListener('scroll', function() {
+              expect(cells[1].style.transform).to.eql('');
+
+              scroller.frozenColumns = 2;
+              scroller.flushDebouncer('cache-elements');
+              
+              expect(cells[1].style.transform).to.eql('translate3d(' + defaultCellWidth + 'px, 0px, 0px)');
+              done();
+            });
+            scroller.$.table.scrollLeft = defaultCellWidth;
+
+          });
+        });
+      });
+
+
+    });
+  </script>
+
+</body>
+
+</html>

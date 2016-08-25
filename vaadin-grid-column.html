@@ -1,0 +1,102 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<dom-module id="vaadin-grid-column">
+  <template>
+    <style>
+      :host {
+        display: none;
+      }
+    </style>
+  </template>
+  <script>
+    Polymer({
+      is: 'vaadin-grid-column',
+
+      properties: {
+        headers: {
+          type: Array,
+          notify: true,
+          value: function() {
+            var headerTemplates = Polymer.dom(this).querySelectorAll('template[is=header]');
+            if (headerTemplates) {
+              return headerTemplates.map(function(t) {
+                var colspan = t.hasAttribute('colspan') && parseInt(t.getAttribute('colspan')) || 0;
+
+                if (this.dataHost) {
+                  // set dataHost to the context where template has been defined
+                  t._rootDataHost = this.dataHost._rootDataHost || this.dataHost;
+                }
+
+                return { template: t, colspan: colspan };
+              }.bind(this));
+            } else {
+              return [];
+            }
+          }
+        },
+        footers: {
+          type: Array,
+          notify: true,
+          value: function() {
+            var headerTemplates = Polymer.dom(this).querySelectorAll('template[is=footer]');
+            if (headerTemplates) {
+              return headerTemplates.map(function(t) {
+                var colspan = t.hasAttribute('colspan') && parseInt(t.getAttribute('colspan')) || 0;
+
+                if (this.dataHost) {
+                  // set dataHost to the context where template has been defined
+                  t._rootDataHost = this.dataHost._rootDataHost || this.dataHost;
+                }
+
+                return { template: t, colspan: colspan };
+              }.bind(this));
+            } else {
+              return [];
+            }
+          }
+        },
+        instances: {
+          type: Array,
+          value: function() {
+            return [];
+          }
+        },
+        name: {
+          type: String,
+          value: ''
+        },
+        template: {
+          type: Object,
+          notify: true,
+          value: function() {
+            var template = Polymer.dom(this).querySelector('template:not([is=header])');
+            if (this.dataHost) {
+              // set dataHost to the context where template has been defined
+              template._rootDataHost = this.dataHost._rootDataHost || this.dataHost;
+            }
+            return template;
+          }
+        },
+        width: {
+          type: String,
+          notify: true,
+          value: '100px'
+        },
+        flex: {
+          value: 1,
+          notify: true
+        }
+      },
+
+      ready: function() {
+        // when using Polymer bindings, default values trickle down using observers.
+        // we're not using bindings between columns and cells so we need to use
+        // and fire notifications manually.
+        this.fire('width-changed', {value: this.width});
+        this.fire('flex-changed', {value: this.flex});
+        this.fire('headers-changed', {value: this.headers});
+        this.fire('footers-changed', {value: this.footers});
+      },
+    });
+  </script>
+</dom-module>

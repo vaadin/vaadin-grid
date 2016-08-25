@@ -1,0 +1,177 @@
+<dom-module id="scroll-styles">
+  <template>
+    <style>
+      :host {
+        transform: translateZ(0);
+      }
+
+      thead {
+        position: absolute;
+        top: 0;
+        width: 100%;
+      }
+
+      tfoot {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+      }
+
+      tbody {
+        z-index: -1;
+      }
+
+      table {
+        position: relative;
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
+        z-index: -2;
+
+        /* translate Z needed to be applied to keep scroll bars from disappearing
+        when scrolling on desktop Safari.
+        Also, this rule can't be applied on mobile
+        Safari to keep scroll bars visible in there :-) */
+        transform: translateZ(0);
+      }
+
+      :host([ios]) table {
+        transform: none;
+      }
+
+    </style>
+  </template>
+</dom-module>
+
+<script>
+  window.vaadin = window.vaadin || {};
+  vaadin.elements = vaadin.elements || {};
+  vaadin.elements.grid = vaadin.elements.grid || {};
+
+  vaadin.elements.grid.GridScrollBehaviorImpl = {
+
+    properties: {
+
+      _vidxOffset: {
+        value: 0
+      },
+
+      ios: {
+        value: navigator.userAgent.match(/iP(?:hone|ad;(?: U;)? CPU) OS (\d+)/),
+        reflectToAttribute: true
+      },
+
+      // Cached array of frozen cells
+      _frozenCells: Array
+    },
+
+    observers: [
+      '_frozenCellsChanged(columns, frozenColumns, _physicalCount)'
+    ],
+
+    ready: function() {
+      this.scrollTarget = this.$.table;
+      this.listen(this.$.table, 'wheel', '_onWheel');
+    },
+
+    _onWheel: function(e) {
+      e.preventDefault();
+      this.$.table.scrollTop += e.deltaY;
+      this.$.table.scrollLeft += e.deltaX;
+      this._scrollHandler();
+      this._ignoreScroll = true;
+    },
+
+    _adjustVirtualIndexOffset: function(delta) {
+      if (Math.abs(delta) > 10000) {
+        if (this._noScale) {
+          this._noScale = false;
+          return;
+        }
+
+        var scale = Math.round(this._scrollPosition / this._scrollHeight * 1000) / 1000;
+        var offset = scale * this.size;
+
+        this._vidxOffset = Math.round(offset - scale * this._virtualCount);
+
+        if (this._scrollTop === 0) {
+          // fixes issues when scrolling to start but correct items are not bound. :-()
+          this.scrollToIndex(0);
+        }
+      } else {
+        // Make sure user can always swipe/wheel scroll to the start and end
+        // TODO: causes a small jump in the scroll handle
+
+        var oldOffset = this._vidxOffset || 0;
+        var threshold = 1000;
+        var maxShift = 100;
+
+        // At start
+        if (this._scrollTop === 0) {
+          this._vidxOffset = 0;
+          if (oldOffset !== this._vidxOffset) {
+            this.scrollToIndex(0);
+          }
+        } else if (this.firstVisibleIndex < threshold && this._vidxOffset > 0) {
+          this._vidxOffset -= Math.min(this._vidxOffset, maxShift);
+          this.scrollToIndex(this.firstVisibleIndex + (oldOffset - this._vidxOffset) + 1);
+          this._noScale = true;
+        }
+
+        // At end
+        var maxOffset = this.size - this._virtualCount;
+        if (this._scrollTop >= this._maxScrollTop) {
+          this._vidxOffset = maxOffset;
+          if (oldOffset !== this._vidxOffset) {
+            this.scrollToIndex(this._virtualCount);
+          }
+        } else if (this.firstVisibleIndex > this._virtualCount - threshold && this._vidxOffset < maxOffset) {
+          this._vidxOffset += Math.min(maxOffset - this._vidxOffset, maxShift);
+          this.scrollToIndex(this.firstVisibleIndex - (this._vidxOffset - oldOffset));
+          this._noScale = true;
+        }
+
+      }
+    },
+
+    _scheduleReorder: function() {
+      var tbody = Polymer.dom(this.$.items);
+      this.debounce('reorderrows', function() {
+        this._physicalItems.slice(0)
+          .sort(function(a, b) {
+            return a.index - b.index;
+          }).forEach(function(row) {
+            tbody.appendChild(row);
+          }, this);
+      }, 100);
+    },
+
+    _frozenCellsChanged: function() {
+      this.debounce('cache-elements', function() {
+        Polymer.dom(this.root).querySelectorAll('td, th').forEach(function(cell) {
+          cell.style.transform = '';
+        });
+        this._frozenCells = Polymer.dom(this.root).querySelectorAll('[frozen]');
+        this._translateStationaryElements();
+      });
+    },
+
+    _translateStationaryElements: function() {
+      this.$.footer.style.transform = this.$.header.style.transform = this._getTranslate3d(0, this._scrollTop);
+
+      var frozenCellTransform = this._getTranslate3d(this._scrollLeft, 0);
+      for (var i = 0; i < this._frozenCells.length; i++) {
+        this._frozenCells[i].style.transform = frozenCellTransform;
+      }
+    },
+
+    _getTranslate3d: function(x, y) {
+      return 'translate3d(' + x + 'px,' + y + 'px, 0)';
+    },
+
+  };
+
+  vaadin.elements.grid.GridScrollBehavior = [
+    vaadin.elements.grid.GridScrollBehaviorImpl
+  ];
+
+</script>

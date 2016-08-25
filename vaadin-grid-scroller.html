@@ -1,0 +1,416 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-resizable-behavior/iron-resizable-behavior.html">
+<link rel="import" href="../iron-a11y-keys-behavior/iron-a11y-keys-behavior.html">
+<link rel="import" href="../iron-scroll-target-behavior/iron-scroll-target-behavior.html">
+<link rel="import" href="vaadin-grid-scroll-behavior.html">
+<link rel="import" href="vaadin-grid-sizer.html">
+<link rel="import" href="vaadin-grid-outer-scroller.html">
+<link rel="import" href="vaadin-grid-header.html">
+<link rel="import" href="vaadin-grid-footer.html">
+<link rel="import" href="vaadin-grid-edge-behavior.html">
+<link rel="import" href="vaadin-grid-cell.html">
+<link rel="import" href="vaadin-grid-row.html">
+<link rel="import" href="vaadin-grid-row-details-behavior.html">
+<link rel="import" href="vaadin-grid-data-source-behavior.html">
+<link rel="import" href="vaadin-grid-selection-behavior.html">
+<link rel="import" href="iron-list-behavior.html">
+
+<dom-module id="vaadin-grid-scroller">
+  <template>
+    <style include="scroll-styles"></style>
+    <style include="vaadin-grid-edge-styles"></style>
+    <style include="row-details-styles"></style>
+    <style include="vaadin-grid-data-source-styles"></style>
+    <style include="selection-styles"></style>
+
+    <style>
+      :host {
+        display: block;
+        position: relative;
+      }
+
+      @media only screen and (-webkit-max-device-pixel-ratio: 1) {
+        :host {
+          will-change: transform;
+        }
+      }
+
+      #items {
+        @apply(--iron-list-items-container);
+        position: relative;
+      }
+
+      :host(:not([grid])) #items > ::content > * {
+        width: 100%;
+      };
+
+      #items > tr {
+        box-sizing: border-box;
+        margin: 0;
+        position: absolute;
+        /* iron-list expects top to be 0. Might cause issues */
+        /*top: 0;*/
+        will-change: transform;
+      }
+
+      table {
+        height: 100%;
+        width: 100%;
+        display: block;
+        overflow: auto;
+        box-sizing: border-box;
+      }
+
+      table[overflow-hidden] {
+        overflow: hidden;
+      }
+
+      tbody {
+        display: block;
+      }
+
+      thead th,
+      tfoot td {
+        top: 0;
+        background-color: #fff;
+      }
+
+      td, th {
+        background-color: #fff;
+
+        /* Bootstrap adds 8px padding to each cell, IE flexbasis ignores border-box so need to revert */
+        padding: 0 !important;
+      }
+
+      tr:hover td {
+        background-color: lightgrey;
+      }
+
+      tr:not([hidden]) {
+        display: flex;
+        width: 100%;
+      }
+
+      [frozen] {
+        z-index: 1;
+      }
+
+      caption {
+        position: absolute;
+        display: block;
+        padding: 0;
+        width: 100%;
+        z-index: -100;
+      }
+
+      /* Theme styles */
+      thead tr:last-child th {
+        border-bottom: 2px solid #ddd;
+      }
+      tfoot tr:first-child td {
+        border-top: 2px solid #ddd;
+      }
+
+      td, th {
+        border-top: 1px solid #ddd;
+        text-align: left;
+      }
+
+      tr[odd] td {
+        background-color: #f9f9f9;
+      }
+
+      [last-frozen] {
+        border-right: 2px solid #ddd;
+      }
+    </style>
+
+    <table id="table" class="table table-striped" overflow-hidden$="[[_hideTableOverflow(scrollbarWidth, safari)]]">
+      <caption>
+        <div is="vaadin-grid-sizer" scroll-height="[[_estScrollHeight]]" columns="[[columns]]">
+        </div>
+      </caption>
+      <thead id="header" is="vaadin-grid-header" columns="[[columns]]" frozen-columns="[[frozenColumns]]"></thead>
+      <tbody id="items"></tbody>
+      <tfoot id="footer" is="vaadin-grid-footer" columns="[[columns]]" frozen-columns="[[frozenColumns]]"></tfoot>
+    </table>
+
+    <vaadin-grid-outer-scroller id="outerscroller" scroll-target="[[scrollTarget]]" hidden="[[_hideOuterScroller(scrollbarWidth, safari)]]">
+      <div is="vaadin-grid-sizer" scroll-height="[[_estScrollHeight]]" columns="[[columns]]"></div>
+    </vaadin-grid-outer-scroller>
+
+  </template>
+</dom-module>
+
+<script>
+
+  Polymer({
+
+    is: 'vaadin-grid-scroller',
+
+    behaviors: [
+      vaadin.elements.grid.IronListBehavior,
+      Polymer.Templatizer,
+      Polymer.IronResizableBehavior,
+      Polymer.IronScrollTargetBehavior,
+
+      navigator.userAgent.match(/Edge/) ? vaadin.elements.grid.EdgeBehavior : vaadin.elements.grid.GridScrollBehavior
+    ],
+
+    properties: {
+      size: Number,
+
+      columns: Array,
+      frozenColumns: {
+        value: 0
+      },
+
+      bindData: Function,
+
+      rowDetailsTemplate: Object,
+
+      safari: {
+        value: /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
+      },
+
+      scrollbarWidth: {
+        value: function() {
+          // Create the measurement node
+          var scrollDiv = document.createElement("div");
+          scrollDiv.style.width = '100px';
+          scrollDiv.style.height = '100px';
+          scrollDiv.style.overflow = 'scroll';
+          scrollDiv.style.position = 'absolute';
+          scrollDiv.style.top = '-9999px';
+          document.body.appendChild(scrollDiv);
+          // Get the scrollbar width
+          var scrollbarWidth = scrollDiv.offsetWidth - scrollDiv.clientWidth;
+
+          // Delete the DIV
+          document.body.removeChild(scrollDiv);
+          return scrollbarWidth;
+        }
+      }
+
+    },
+
+    observers: [
+      '_columnsChanged(columns, frozenColumns, _physicalCount, _physicalItems)',
+      '_sizeChanged(size, bindData)',
+      '_rowDetailsTemplateChanged(rowDetailsTemplate, _physicalCount)'
+    ],
+
+    // The following values aim at avoiding having 2 overlapping semi-invisible
+    // scrollbars visible at the same time when scrollbar width is 0
+    // (OSX's "show scrollbars: when scrolling").
+    // 1. hide the outerscroller altogether when scrollbar width is 0
+    _hideOuterScroller: function (scrollbarWidth, safari) {
+      return scrollbarWidth === 0 && !safari;
+    },
+    // 2. Safari (on desktop and IOS) requires outer scroller to work properly
+    // so in that case we hide the table's scrollbar instead.
+    _hideTableOverflow: function (scrollbarWidth, safari) {
+      return scrollbarWidth === 0 && safari;
+    },
+
+    _rowDetailsTemplateChanged: function(rowDetailsTemplate, _physicalCount) {
+      if (_physicalCount) {
+        this._physicalItems.forEach(function(row) {
+          row.rowDetailsTemplate = this.rowDetailsTemplate;
+        }, this);
+      }
+    },
+
+    // TODO: we should observe _physicalItems.splices instead of _physicalCount
+    _columnsChanged: function(columns, frozenColumns) {
+      this._physicalItems.forEach(function(row) {
+        row.columns = columns;
+        row.frozenColumns = frozenColumns;
+      });
+
+      Polymer.RenderStatus.afterNextRender(this.$.header, function() {
+        this.$.outerscroller.style.paddingTop = this.$.table.style.paddingTop = this.$.header.clientHeight + 'px';
+        this.$.outerscroller.style.paddingBottom = this.$.table.style.paddingBottom = this.$.footer.clientHeight + 'px';
+      }.bind(this));
+    },
+
+    /**
+     * Creates a pool of DOM elements and attaches them to the local dom.
+     */
+    _createPool: function(size) {
+      var physicalItems = new Array(size);
+
+      for (var i = 0; i < size; i++) {
+        var row = document.createElement('tr', 'vaadin-grid-row');
+        row.target = this.domHost;
+        physicalItems[i] = row;
+        row.setAttribute('hidden', ''); //hidden by default, removed when data is bound.
+        Polymer.dom(this.$.items).appendChild(row);
+      }
+
+      return physicalItems;
+    },
+
+    _sizeChanged: function(size) {
+      this._virtualStart = 0;
+      this._physicalTop = 0;
+
+      /* TODO: virtual count of 500k will make the sizer.top too large for Firefox */
+      this._virtualCount = Math.min(size, 100000);
+      this._physicalIndexForKey = {};
+      this._firstVisibleIndexVal = null;
+      this._lastVisibleIndexVal = null;
+
+      this._vidxOffset = 0;
+      this._resetScrollPosition(0);
+
+      if (!this._physicalItems) {
+        var DEFAULT_PHYSICAL_COUNT = 25;
+
+        this._physicalCount = Math.max(1, Math.min(DEFAULT_PHYSICAL_COUNT, this._virtualCount));
+        this._physicalItems = this._createPool(this._physicalCount);
+        this._physicalSizes = new Array(this._physicalCount);
+      }
+
+      this._physicalStart = 0;
+
+      this._itemsRendered = false;
+      this._debounceTemplate(this._render);
+    },
+
+    /**
+     * Assigns the data models to a given set of items.
+     * @param {!Array<number>=} itemSet
+     */
+    _assignModels: function(itemSet) {
+      this._iterateItems(function(pidx, vidx) {
+        var el = this._physicalItems[pidx];
+        el.index = vidx + this._vidxOffset;
+        el.toggleAttribute('hidden', el.index >= this.size);
+        this.bindData(el.index, el);
+      }, itemSet);
+    },
+
+    /**
+     * Update the models, the position of the
+     * items in the viewport and recycle tiles as needed.
+     */
+    _scrollHandler: function(e) {
+      // We may ignore a duplicate invocation if this was handled on wheel event already
+      if (this._ignoreScroll && e) {
+        this._ignoreScroll = false;
+        return;
+      }
+      // clamp the `scrollTop` value
+      var scrollTop = Math.max(0, Math.min(this._maxScrollTop, this._scrollTop));
+      var delta = scrollTop - this._scrollPosition;
+      var tileHeight, tileTop, kth, recycledTileSet, scrollBottom, physicalBottom;
+      var ratio = this._ratio;
+      var recycledTiles = 0;
+      var hiddenContentSize = this._hiddenContentSize;
+      var currentRatio = ratio;
+      var movingUp = [];
+
+      // track the last `scrollTop`
+      this._scrollPosition = scrollTop;
+
+      // clear cached visible indexes
+      this._firstVisibleIndexVal = null;
+      this._lastVisibleIndexVal = null;
+
+      scrollBottom = this._scrollBottom;
+      physicalBottom = this._physicalBottom;
+
+      // random access
+      if (Math.abs(delta) > this._physicalSize) {
+        this._physicalTop += delta;
+        recycledTiles =  Math.round(delta / this._physicalAverage);
+      }
+      // scroll up
+      else if (delta < 0) {
+        var topSpace = scrollTop - this._physicalTop;
+        var virtualStart = this._virtualStart;
+
+        recycledTileSet = [];
+
+        kth = this._physicalEnd;
+        currentRatio = topSpace / hiddenContentSize;
+
+        // move tiles from bottom to top
+        while (
+            // approximate `currentRatio` to `ratio`
+            currentRatio < ratio &&
+            // recycle less physical items than the total
+            recycledTiles < this._physicalCount &&
+            // ensure that these recycled tiles are needed
+            virtualStart - recycledTiles > 0 &&
+            // ensure that the tile is not visible
+            physicalBottom - this._getPhysicalSizeIncrement(kth) > scrollBottom
+        ) {
+
+          tileHeight = this._getPhysicalSizeIncrement(kth);
+          currentRatio += tileHeight / hiddenContentSize;
+          physicalBottom -= tileHeight;
+          recycledTileSet.push(kth);
+          recycledTiles++;
+          kth = (kth === 0) ? this._physicalCount - 1 : kth - 1;
+        }
+
+        movingUp = recycledTileSet;
+        recycledTiles = -recycledTiles;
+      }
+      // scroll down
+      else if (delta > 0) {
+        var bottomSpace = physicalBottom - scrollBottom;
+        var virtualEnd = this._virtualEnd;
+        var lastVirtualItemIndex = this._virtualCount-1;
+
+        recycledTileSet = [];
+
+        kth = this._physicalStart;
+        currentRatio = bottomSpace / hiddenContentSize;
+
+        // move tiles from top to bottom
+        while (
+            // approximate `currentRatio` to `ratio`
+            currentRatio < ratio &&
+            // recycle less physical items than the total
+            recycledTiles < this._physicalCount &&
+            // ensure that these recycled tiles are needed
+            virtualEnd + recycledTiles < lastVirtualItemIndex &&
+            // ensure that the tile is not visible
+            this._physicalTop + this._getPhysicalSizeIncrement(kth) < scrollTop
+          ) {
+
+          tileHeight = this._getPhysicalSizeIncrement(kth);
+          currentRatio += tileHeight / hiddenContentSize;
+
+          this._physicalTop += tileHeight;
+          recycledTileSet.push(kth);
+          recycledTiles++;
+          kth = (kth + 1) % this._physicalCount;
+        }
+      }
+
+      if (this._virtualCount < this.size) {
+        this._adjustVirtualIndexOffset(delta);
+      }
+
+      if (recycledTiles === 0) {
+        // Try to increase the pool if the list's client height isn't filled up with physical items
+        if (physicalBottom < scrollBottom || this._physicalTop > scrollTop) {
+          this._increasePoolIfNeeded();
+        }
+      } else {
+        this._virtualStart = this._virtualStart + recycledTiles;
+        this._physicalStart = this._physicalStart + recycledTiles;
+        this._update(recycledTileSet, movingUp);
+      }
+
+      this._translateStationaryElements();
+      this._scheduleReorder();
+    }
+
+  });
+
+</script>

@@ -1,0 +1,77 @@
+<dom-module id="row-details-styles">
+  <template>
+    <style>
+      [detailscell] {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: #fff !important;
+      }
+    </style>
+  </template>
+</dom-module>
+
+<script>
+  window.vaadin = window.vaadin || {};
+  vaadin.elements = vaadin.elements || {};
+  vaadin.elements.grid = vaadin.elements.grid || {};
+
+  vaadin.elements.grid.GridRowDetailsBehavior = {
+
+    properties: {
+
+      /**
+       * An array containing references to expanded items.
+       */
+      expandedItems: {
+        value: function() {
+          return [];
+        }
+      }
+    },
+
+    listeners: {
+      'template-instance-changed': '_templateInstanceChangedExpanded'
+    },
+
+    observers: [
+      '_expandedItemsChanged(expandedItems.*, dataSource)'
+    ],
+
+    _expandedItemsChanged: function(expandedItems, dataSource) {
+      // make sure _update() isn't called before dataSource is set.
+      this.$.scroller._update();
+      this._flushItemsDebouncer();
+    },
+
+    _isExpanded: function(item) {
+      return this.expandedItems.indexOf(item) !== -1;
+    },
+
+    expandItem: function(item) {
+      if (!this._isExpanded(item)) {
+        this.push('expandedItems', item);
+      }
+    },
+
+    collapseItem: function(item) {
+      if (this._isExpanded(item)) {
+        this.splice('expandedItems', this.expandedItems.indexOf(item), 1);
+      }
+    },
+
+    _templateInstanceChangedExpanded: function(e) {
+      if (e.detail.prop === 'expanded') {
+        if (e.detail.value) {
+          this.expandItem(e.detail.inst.item);
+        } else {
+          this.collapseItem(e.detail.inst.item);
+        }
+
+        // stop this internal event from propagating outside.
+        e.stopPropagation();
+      }
+    }
+  };
+</script>

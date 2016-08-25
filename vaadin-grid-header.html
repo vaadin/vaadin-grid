@@ -1,0 +1,38 @@
+<dom-module id="vaadin-grid-header">
+  <script>
+    Polymer({
+      is: 'vaadin-grid-header',
+
+      extends: 'thead',
+
+      properties: {
+        columns: Array,
+        frozenColumns: Number,
+        _rows: Array
+      },
+
+      observers: ['_columnsChanged(columns.*, frozenColumns)'],
+
+      _columnsChanged: function() {
+        Polymer.dom(this).innerHTML = "";
+
+        var rows = [];
+        var rowCount = Math.max.apply(Math, this.columns.map(function(column) {
+          return Polymer.dom(column).querySelectorAll('[is="header"]').length;
+        }));
+        while (rows.length < rowCount) {
+          var row = document.createElement('tr', 'vaadin-grid-header-row');
+          row.headerIndex = rows.length;
+          row.frozenColumns = this.frozenColumns;
+          row.target = this.domHost.domHost;
+          row.columns = this.columns;
+          rows.push(row);
+          Polymer.dom(this).appendChild(row);
+        }
+
+        this._rows = rows;
+      }
+
+    });
+  </script>
+</dom-module>

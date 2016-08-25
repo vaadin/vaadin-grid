@@ -1,0 +1,89 @@
+<link rel="import" href="../polymer/polymer.html">
+<dom-module id="vaadin-grid-outer-scroller">
+  <template>
+    <style>
+      :host {
+        display: block;
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        top: 0;
+        box-sizing: border-box;
+        /*z-index: 1;*/
+        overflow: auto;
+        /*transform: translateZ(0);*/
+      }
+
+      :host([passthrough]) {
+        pointer-events: none;
+      }
+    </style>
+
+    <content></content>
+
+  </template>
+  <script>
+    Polymer({
+      is: 'vaadin-grid-outer-scroller',
+
+      properties: {
+        scrollTarget: {
+          observer: '_scrollTargetChanged'
+        },
+
+        passthrough: {
+          reflectToAttribute: true,
+          value: true
+        }
+      },
+
+      listeners: {
+        'scroll': '_syncScrollTarget'
+      },
+
+      attached: function() {
+        this.listen(this.domHost, 'mousemove', '_onMouseMove');
+
+        // for some reason scroll bars are hidden in iOS if this style is
+        // added in stylesheets or before attaching.
+        this.style.webkitOverflowScrolling = 'touch';
+      },
+
+      detached: function() {
+        this.unlisten(this.domHost, 'mousemove', '_onMouseMove');
+      },
+
+      _scrollTargetChanged: function(scrollTarget, oldScrollTarget) {
+        if (oldScrollTarget) {
+          this.unlisten(oldScrollTarget, 'scroll', '_syncOuterScroller');
+        }
+        this.listen(scrollTarget, 'scroll', '_syncOuterScroller');
+      },
+
+      _onMouseMove: function(e) {
+        this.passthrough = e.offsetY <= this.clientHeight && e.offsetX <= this.clientWidth;
+      },
+
+      _syncOuterScroller: function() {
+        if (!this._syncingScrollTarget) {
+          this._syncingOuterScroller = true;
+          this.scrollTop = this.domHost._scrollTop;
+          this.scrollLeft = this.domHost._scrollLeft;
+        }
+        this._syncingScrollTarget = false;
+      },
+
+      _syncScrollTarget: function() {
+        if (!this._syncingOuterScroller) {
+          this._syncingScrollTarget = true;
+          this.scrollTarget.scrollTop = this.scrollTop;
+          this.scrollTarget.scrollLeft = this.scrollLeft;
+
+          this.domHost._scrollHandler();
+          this.domHost._ignoreScroll = true;
+        }
+        this._syncingOuterScroller = false;
+      }
+    });
+  </script>
+</dom-module>

@@ -1,0 +1,232 @@
+<link rel="import" href="vaadin-grid-cell.html">
+
+<dom-module id="vaadin-grid-row"></dom-module>
+<dom-module id="vaadin-grid-header-row"></dom-module>
+
+<script>
+  (function() {
+    var vaadinGridRowBehavior = {
+
+      extends: 'tr',
+
+      properties: {
+        columns: Array,
+        index: Number,
+        cells: {
+          value: []
+        },
+        frozenColumns: Number,
+        target: Object,
+
+        expanded: {
+          value: false
+        },
+
+        _rowDetailsCell: Object,
+
+        rowDetailsTemplate: Object
+      },
+
+      observers: [
+        '_columnsChanged(columns, target)',
+        '_indexChanged(index, cells)',
+        '_frozenColumnsChanged(frozenColumns, cells)',
+        '_rowDetailsChanged(expanded, rowDetailsTemplate, target)',
+        '_rowDetailsCellIndexChanged(_rowDetailsCell, index)',
+        '_rowDetailsCellChanged(_rowDetailsCell, target)'
+      ],
+
+      iterateCells: function(callback) {
+        this.cells.forEach(callback);
+        if (this._rowDetailsCell) {
+          callback(this._rowDetailsCell);
+        }
+      },
+
+      _rowDetailsChanged: function(expanded, rowDetailsTemplate, target) {
+        if (expanded) {
+          // TODO: template instance for each detail cell is pushed to the template.instances
+          // but never cleaned up. Maybe consider just hiding details instead of removing.
+          var rowDetailsCell = document.createElement('td', 'vaadin-grid-cell');
+          rowDetailsCell.setAttribute('detailscell', true);
+          // Using a frozen cell as the details cell works as a handy way of
+          // making it float in place
+          rowDetailsCell.setAttribute('frozen', true);
+          rowDetailsCell.target = target;
+          rowDetailsCell.template = rowDetailsTemplate;
+          Polymer.dom(this.root).appendChild(rowDetailsCell);
+          Polymer.dom.flush();
+          this._rowDetailsCell = rowDetailsCell;
+
+        } else {
+          if (this._rowDetailsCell) {
+            Polymer.dom(this.root).removeChild(this._rowDetailsCell);
+            this.style.paddingBottom = '';
+            this._rowDetailsCell = null;
+          }
+        }
+
+        this.iterateCells(function(cell) {
+          if (cell.instance) {
+            cell.instance.expanded = expanded;
+          }
+        });
+
+        // Row details uses a frozen cell to need to invoke this to update cache
+        this.target.$.scroller._frozenCellsChanged();
+      },
+
+      _rowDetailsCellChanged: function(_rowDetailsCell, target) {
+        // paddingBottom must be set before update() is called!
+        // make sure observers are in the correct order!
+        target.$.scroller._update();
+      },
+
+      _rowDetailsCellIndexChanged: function(_rowDetailsCell, index, target) {
+        if (_rowDetailsCell) {
+          _rowDetailsCell.index = index;
+          this.style.paddingBottom = _rowDetailsCell.style.height = _rowDetailsCell.clientHeight + 'px';
+        }
+      },
+
+      _updateCells: function() {
+        var spanning = 0;
+        this.cells.forEach(function(cell, index) {
+
+          // TODO: reset cell styles to make sure colspan have be changed dynamically.
+          cell.style.display = '';
+          cell.style.flexBasis = this.columns[index].width;
+          cell.style.flexGrow = this.columns[index].flex;
+
+          if (cell.colspan > 1) {
+            spanning = cell.colspan;
+
+            var width = cell.style.flexBasis;
+            var flex = parseInt(cell.style.flexGrow);
+            for (var i = 1; i < spanning; i++) {
+              width += ' + ' + this.columns[index + i].width;
+              flex += this.columns[index + i].flex;
+            }
+
+            cell.style.flexBasis = 'calc(' + width + ')';
+            cell.style.flexGrow = flex;
+          }
+
+          if (!cell.colspan && spanning > 0) {
+            cell.style.display = 'none';
+          }
+
+          spanning = Math.max(0, spanning - 1);
+        }.bind(this));
+      },
+
+      //TODO: implement support for columns.splices
+      _columnsChanged: function(columns, target) {
+        Polymer.dom(this).innerHTML = '';
+
+        var cells = [];
+        var spanning = 0;
+
+        columns.forEach(function(column, columnIndex) {
+          var cell = this._createCell();
+          cell.index = this.index;
+          cell.target = this.target;
+          cell.column = column;
+
+          this.listen(cell, 'colspan-changed', '_updateCells');
+          this.listen(column, 'width-changed', '_updateCells');
+          this.listen(column, 'flex-changed', '_updateCells');
+
+          Polymer.dom(this).appendChild(cell);
+          cells.push(cell);
+
+        }.bind(this));
+
+        this.cells = cells;
+        this._updateCells();
+      },
+
+      _frozenColumnsChanged: function(frozenColumns, cells) {
+        cells.forEach(function(cell, i) {
+          cell.toggleAttribute('frozen', i < frozenColumns);
+          cell.toggleAttribute('last-frozen', i === frozenColumns - 1);
+        });
+      },
+
+      _indexChanged: function(index, cells, _rowDetailsCell) {
+        this.toggleAttribute('odd', index % 2);
+        cells.forEach(function(cell) {
+          cell.index = index;
+        });
+      }
+
+    };
+
+    Polymer({
+      is: 'vaadin-grid-row',
+
+      behaviors: [
+        vaadinGridRowBehavior
+      ],
+
+      _createCell: function () {
+        return document.createElement('td', 'vaadin-grid-cell');
+      }
+    });
+
+    Polymer({
+      is: 'vaadin-grid-header-row',
+
+      behaviors: [
+        vaadinGridRowBehavior
+      ],
+
+      properties: {
+        headerIndex: Object
+      },
+
+      observers: [
+        '_headerIndexChanged(columns, target, headerIndex)'
+      ],
+
+      _headerIndexChanged: function() {
+        this.cells.forEach(function(cell) {
+          cell.headerIndex = this.headerIndex;
+        }, this);
+      },
+
+      _createCell: function () {
+        return document.createElement('th', 'vaadin-grid-header-cell');
+      }
+
+    });
+
+    Polymer({
+      is: 'vaadin-grid-footer-row',
+
+      behaviors: [
+        vaadinGridRowBehavior
+      ],
+
+      properties: {
+        footerIndex: Object
+      },
+
+      observers: [
+        '_footerIndexChanged(columns, target, footerIndex)'
+      ],
+
+      _footerIndexChanged: function() {
+        this.cells.forEach(function(cell) {
+          cell.footerIndex = this.footerIndex;
+        }, this);
+      },
+
+      _createCell: function () {
+        return document.createElement('td', 'vaadin-grid-footer-cell');
+      }
+
+    });
+
+  })();
+</script>
