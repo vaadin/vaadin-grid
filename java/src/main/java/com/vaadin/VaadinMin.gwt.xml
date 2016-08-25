@@ -1,8 +1,0 @@
-<module>
-    <!-- Simplified version of Vaadin to avoid problems in our custom
-         SSO linker -->
-    <inherits name="com.google.gwt.user.User" />
-    <inherits name="com.google.gwt.logging.Logging" />
-    <source path="client" />
-    <source path="shared" />
-</module>
