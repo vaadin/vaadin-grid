@@ -75,9 +75,7 @@
         }
       },
 
-      _columns: {
-        computed: '_getColumns(columns, columns.*, multiSelection)'
-      },
+      _columns: Array,
 
       _frozenColumns: {
         computed: '_getFrozenColumns(frozenColumns, multiSelection)'
@@ -94,11 +92,28 @@
     },
 
     observers: [
+      '_columnsChanged2(columns.*, multiSelection)',
       '_selectedItemsChanged(selectedItems.*)'
     ],
 
     listeners: {
       'template-instance-changed': '_templateInstanceChangedSelection'
+    },
+
+    _columnsChanged2: function(e, multiSelection) {
+      if (e.path === 'columns') {
+        if (multiSelection) {
+          this._columns = [this._multiSelectColumn.$.column].concat(e.value);
+          this._multiSelectColumn.$.column.grid = this;
+        } else {
+          this._columns = e.value;
+        }
+      } else if (e.path.indexOf('columns.#') === 0) {
+        var pathParts = e.path.split('.');
+        var index = parseInt(pathParts[1].substring(1)) + multiSelection ? 1 : 0;
+
+        this.notifyPath('_columns.' + index + '.' + pathParts[2], e.value);
+      }
     },
 
     _templateInstanceChangedSelection: function(e) {

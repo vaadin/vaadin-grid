@@ -453,6 +453,7 @@
         }
 
         [].push.apply(this._physicalItems, this._createPool(delta));
+        this.notifyPath('_physicalItems.length', this._physicalItems.length);
         [].push.apply(this._physicalSizes, new Array(delta));
 
         this._physicalCount = prevPhysicalCount + delta;

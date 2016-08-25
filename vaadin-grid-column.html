@@ -27,7 +27,10 @@
                   t._rootDataHost = this.dataHost._rootDataHost || this.dataHost;
                 }
 
-                return { template: t, colspan: colspan };
+                return {
+                  template: t,
+                  colspan: colspan
+                };
               }.bind(this));
             } else {
               return [];
@@ -48,7 +51,10 @@
                   t._rootDataHost = this.dataHost._rootDataHost || this.dataHost;
                 }
 
-                return { template: t, colspan: colspan };
+                return {
+                  template: t,
+                  colspan: colspan
+                };
               }.bind(this));
             } else {
               return [];
@@ -79,24 +85,51 @@
         },
         width: {
           type: String,
-          notify: true,
           value: '100px'
         },
+
         flex: {
-          value: 1,
-          notify: true
-        }
+          type: Number,
+          value: 1
+        },
+
+        /**
+         * Reference to the parent <vaadin-grid> element
+         */
+        grid: Object
       },
+
+      observers: ['_flexChanged(grid, flex)', '_widthChanged(grid, width)'],
 
       ready: function() {
         // when using Polymer bindings, default values trickle down using observers.
         // we're not using bindings between columns and cells so we need to use
         // and fire notifications manually.
-        this.fire('width-changed', {value: this.width});
-        this.fire('flex-changed', {value: this.flex});
-        this.fire('headers-changed', {value: this.headers});
-        this.fire('footers-changed', {value: this.footers});
+        this.fire('headers-changed', {
+          value: this.headers
+        });
+        this.fire('footers-changed', {
+          value: this.footers
+        });
       },
+
+      _flexChanged: function(grid, flex) {
+        var index = grid.columns.indexOf(this);
+        if (grid.multiSelection && index === -1) {
+          grid.notifyPath('_columns.0.flex', flex);
+        } else {
+          grid.notifyPath('columns.' + index + '.flex', flex);
+        }
+      },
+
+      _widthChanged: function(grid, width) {
+        var index = grid.columns.indexOf(this);
+        if (grid.multiSelection && index === -1) {
+          grid.notifyPath('_columns.0.width', width);
+        } else {
+          grid.notifyPath('columns.' + index + '.width', width);
+        }
+      }
     });
   </script>
 </dom-module>
