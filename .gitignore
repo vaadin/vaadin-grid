@@ -14,4 +14,3 @@ node_modules
 npm-debug.log
 .idea
 *.iml
-directives/typings
