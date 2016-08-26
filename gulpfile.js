@@ -6,6 +6,7 @@ require('web-component-tester').gulp.init(gulp);
 var args = require('yargs').argv;
 var sourcemaps = require('gulp-sourcemaps');
 var ts = require('gulp-typescript');
+var typings = require('gulp-typings');
 
 gulp.task('default', function() {
   console.log('\n  Use:\n    gulp <clean|gwt[ --gwt-pretty]|test[:validation:sauce]>\n');
@@ -36,9 +37,15 @@ gulp.task('test:mobile', function(done) {
     done);
 });
 
-gulp.task('ng2', function() {
-  gulp.src(['test/angular2/*.ts'])
+gulp.task('typings', function() {
+  return gulp.src('test/angular2/typings.json')
+    .pipe(typings());
+});
+
+gulp.task('ng2', ['typings'], function() {
+  gulp.src(['test/angular2/*.ts', 'test/angular2/typings/main/**/*.d.ts'])
     .pipe(sourcemaps.init())
+    .pipe(ts(ts.createProject('test/angular2/tsconfig.json')))
     .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest('test/angular2'));
 });
