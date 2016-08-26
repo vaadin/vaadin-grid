@@ -6,7 +6,6 @@ require('web-component-tester').gulp.init(gulp);
 var args = require('yargs').argv;
 var sourcemaps = require('gulp-sourcemaps');
 var ts = require('gulp-typescript');
-var typings = require('gulp-typings');
 
 gulp.task('default', function() {
   console.log('\n  Use:\n    gulp <clean|gwt[ --gwt-pretty]|test[:validation:sauce]>\n');
@@ -37,22 +36,13 @@ gulp.task('test:mobile', function(done) {
     done);
 });
 
-gulp.task('typings', function() {
-  return gulp.src('directives/typings.json')
-    .pipe(typings());
-});
-
-gulp.task('ng2', ['typings'], function() {
-  ['directives', 'test/angular2'].forEach(function(dir) {
-    gulp.src([dir + '/*.ts', 'directives/typings/main/**/*.d.ts'])
-      .pipe(sourcemaps.init())
-      .pipe(ts(ts.createProject('directives/tsconfig.json')))
-      .pipe(sourcemaps.write('.'))
-      .pipe(gulp.dest(dir));
-  });
+gulp.task('ng2', function() {
+  gulp.src(['test/angular2/*.ts'])
+    .pipe(sourcemaps.init())
+    .pipe(sourcemaps.write('.'))
+    .pipe(gulp.dest('test/angular2'));
 });
 
 gulp.task('ng2:watch', function() {
-  gulp.watch('directives/*.ts', ['ng2']);
   gulp.watch('test/angular2/*.ts', ['ng2']);
 });
