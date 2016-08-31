@@ -14,4 +14,4 @@ node_modules
 npm-debug.log
 .idea
 *.iml
-directives/typings
+test/angular2/typings

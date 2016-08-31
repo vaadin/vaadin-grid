@@ -669,7 +669,8 @@ See the [demo](demo/index.html) for use case examples.
     }
   }
 
-  :host ::content .header-drag-table {
+  :host ::content .header-drag-table,
+  .header-drag-table {
     display: block;
     position: relative;
     width: 100%;
@@ -684,13 +685,15 @@ See the [demo](demo/index.html) for use case examples.
     box-shadow: 0 6px 18px rgba(0,0,0,0.15);
   }
 
-  :host ::content .vaadin-grid-drop-marker {
+  :host ::content .vaadin-grid-drop-marker,
+  .vaadin-grid-drop-marker {
     background-color: var(--primary-color, #03A9F4);
     position: absolute;
     width: 2px;
   }
 
-  :host ::content .vaadin-grid-drop-marker::before {
+  :host ::content .vaadin-grid-drop-marker::before,
+  .vaadin-grid-drop-marker::before {
     content: "";
     display: block;
     width: 1px;
@@ -1103,6 +1106,7 @@ See the [demo](demo/index.html) for use case examples.
       */
       columnReorderingAllowed: {
         type: Boolean,
+        value: false,
         observer: '_columnReorderingAllowedChanged'
       }
     },
@@ -1132,6 +1136,12 @@ See the [demo](demo/index.html) for use case examples.
        * @event selection-mode-changed
        */
       'selection-mode-changed': '_onSelectionModeChange',
+
+      /**
+       * A change in the column order.
+       *
+       * @event column-order-changed
+       */
       'column-order-changed': '_columnOrderChanged'
     },
 
@@ -1142,6 +1152,7 @@ See the [demo](demo/index.html) for use case examples.
 
     _columnOrderChanged: function() {
       this.columns = this._grid.getColumns();
+      this.refreshItems();
     },
 
     _columnsChanged: function() {
@@ -1394,7 +1405,9 @@ See the [demo](demo/index.html) for use case examples.
      * @type {Function}
      */
     refreshItems: function() {
-      this._grid.getDataSource().refreshItems();
+      if (this._grid.getDataSource()) {
+        this._grid.getDataSource().refreshItems();
+      }
     },
 
     /**
