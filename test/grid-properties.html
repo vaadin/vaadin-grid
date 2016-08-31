@@ -6,6 +6,8 @@
   <title></title>
   <script src="../../webcomponentsjs/webcomponents-lite.min.js"></script>
   <script src="../../web-component-tester/browser.js"></script>
+  <script src='../../iron-test-helpers/mock-interactions.js'></script>
+
   <script src="common.js"></script>
   <link rel="import" href="../vaadin-grid.html">
 </head>
@@ -273,6 +275,46 @@ describe.feature('using properties', function() {
     expect(grid.disabled).to.be.true;
     grid.removeAttribute('disabled');
     expect(grid.disabled).to.be.false;
+  });
+
+  describe('detailed events', function() {
+    beforeEach(function() {
+      grid.items = [[1, 2], [3, 4]];
+      grid.detailedEvents = ['click'];
+    });
+
+    it('should come with a detailed JS object', function(done) {
+      var span = Polymer.dom(grid.root).querySelector('table td span');
+      var handler = function(ev) {
+        expect(ev.detail.section).to.be.equal('body');
+        expect(ev.detail.row).to.be.equal(0);
+        expect(ev.detail.column).to.be.equal(0);
+        expect(ev.detail.data[0]).to.be.equal(1);
+        expect(ev.detail.event.target).to.be.equal(span);
+        grid.removeEventListener('detailed-event', handler);
+        done();
+      };
+
+      grid.addEventListener('detailed-event', handler);
+      MockInteractions.tap(span);
+    });
+
+    it('should have the appropriate section', function(done) {
+      var th = Polymer.dom(grid.root).querySelector('table th');
+      var handler = function(ev) {
+        expect(ev.detail.section).to.be.equal('header');
+        expect(ev.detail.row).to.be.equal(0);
+        expect(ev.detail.column).to.be.equal(0);
+        expect(ev.detail.data).to.be.undefined;
+        expect(ev.detail.event.target).to.be.equal(th);
+        grid.removeEventListener('detailed-event', handler);
+        done();
+      };
+
+      grid.addEventListener('detailed-event', handler);
+      MockInteractions.tap(th);
+    });
+
   });
 });
 </script>
