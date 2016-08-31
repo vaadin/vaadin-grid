@@ -711,20 +711,25 @@ See the [demo](demo/index.html) for use case examples.
     position: absolute;
     cursor: ew-resize;
     height: 100%;
-    width: 2px;
+    width: 1px;
     right: 0;
     top: 0;
   }
 
   :host ::content .vaadin-grid-column-resize-handle,
   .vaadin-grid-column-resize-handle {
-    background-color: var(--primary-color, #e3e3e3);
+    background-color: #e3e3e3;
   }
 
   :host ::content .vaadin-grid-column-resize-handle:active,
   .vaadin-grid-column-resize-handle:active {
     background-color: var(--primary-color, #00B4F0);
   }
+
+ :host ::content .header-drag-table .vaadin-grid-header,
+ .header-drag-table .vaadin-grid-header {
+   box-shadow: none;
+ }
 
   </style>
   <template>
@@ -1142,7 +1147,13 @@ See the [demo](demo/index.html) for use case examples.
        *
        * @event column-order-changed
        */
-      'column-order-changed': '_columnOrderChanged'
+      'column-order-changed': '_columnOrderChanged',
+
+      /**
+       * A change in column sizes
+       *
+       * @event column-resized
+       */
     },
 
     observers: [

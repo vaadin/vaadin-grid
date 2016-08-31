@@ -99,7 +99,7 @@ public class GridElement implements SelectionHandler<Object>,
 
     private static final String SELECTION_MODE_CHANGED_EVENT = "selection-mode-changed";
     private static final String COLUMN_ORDER_CHANGED_EVENT = "column-order-changed";
-    private static final String COLUMN_RESIZE_CHANGED_EVENT = "column-resize-changed";
+    private static final String COLUMN_RESIZED_EVENT = "column-resized";
 
     public GridElement() {
         grid = new ViolatedGrid();
@@ -613,7 +613,7 @@ public class GridElement implements SelectionHandler<Object>,
     @JsIgnore
     @Override
     public void onColumnResize(ColumnResizeEvent<Object> event) {
-    	triggerEvent(COLUMN_RESIZE_CHANGED_EVENT);
+        triggerEvent(COLUMN_RESIZED_EVENT);
     }
 
     @JsIgnore
