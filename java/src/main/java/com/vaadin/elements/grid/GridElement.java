@@ -14,17 +14,19 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.TableElement;
 import com.google.gwt.query.client.js.JsUtils;
 import com.google.gwt.query.client.plugins.widgets.WidgetsUtils;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 
+import com.vaadin.client.widget.escalator.RowContainer;
 import com.vaadin.client.widget.grid.DataAvailableEvent;
 import com.vaadin.client.widget.grid.DetailsGenerator;
 import com.vaadin.client.widget.grid.events.ColumnReorderEvent;
+import com.vaadin.client.widget.grid.events.ColumnReorderHandler;
 import com.vaadin.client.widget.grid.events.ColumnResizeEvent;
 import com.vaadin.client.widget.grid.events.ColumnResizeHandler;
-import com.vaadin.client.widget.grid.events.ColumnReorderHandler;
 import com.vaadin.client.widget.grid.events.SelectAllEvent;
 import com.vaadin.client.widget.grid.events.SelectAllHandler;
 import com.vaadin.client.widget.grid.selection.SelectionEvent;
@@ -33,6 +35,7 @@ import com.vaadin.client.widget.grid.selection.SelectionModel;
 import com.vaadin.client.widget.grid.sort.SortEvent;
 import com.vaadin.client.widget.grid.sort.SortHandler;
 import com.vaadin.client.widget.grid.sort.SortOrder;
+import com.vaadin.client.widgets.Escalator;
 import com.vaadin.client.widgets.Grid.Column;
 import com.vaadin.elements.common.js.JS;
 import com.vaadin.elements.common.js.JSArray;
@@ -44,6 +47,7 @@ import com.vaadin.elements.common.js.JSValidate;
 import com.vaadin.elements.grid.config.JSCell;
 import com.vaadin.elements.grid.config.JSColumn;
 import com.vaadin.elements.grid.config.JSDataRequest;
+import com.vaadin.elements.grid.config.JSDetail;
 import com.vaadin.elements.grid.config.JSRow;
 import com.vaadin.elements.grid.config.JSSortOrder;
 import com.vaadin.elements.grid.data.GridDataSource;
@@ -713,5 +717,30 @@ public class GridElement implements SelectionHandler<Object>,
         }
 
         updateHeight();
+    }
+
+    /**
+     * Given an event happened on the grid, it returns a detailed info object
+     * based on the target element in the grid that received the event.
+     */
+    public JSDetail getEventDetails(Event ev) {
+        Escalator s = grid.getEscalator();
+        Element e = ev.getEventTarget().cast();
+        JSDetail detail = new JSDetail();
+        detail.event = ev;
+        detail.row = s.findRowContainer(e).getCell(e).getRow();
+        detail.column = s.findRowContainer(e).getCell(e).getColumn();
+        RowContainer container = s.findRowContainer(e);
+        if (container == s.getHeader()) {
+            detail.section = "header";
+        } else if (container == s.getBody()) {
+            detail.section = "body";
+            getDataSource().getItem(detail.row, (error, data) -> {
+                detail.data = data;
+            }, true);
+        } else {
+            detail.section = "footer";
+        }
+        return detail;
     }
 }
