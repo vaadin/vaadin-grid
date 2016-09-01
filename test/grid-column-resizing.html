@@ -16,10 +16,10 @@
 <div id="gridwrapper"></div>
 
 <script>
-  describe.feature('Column Resizing', function () {
+  describe.feature('Column Resizing', function() {
 
-    beforeEach(function () {
-      return grid.then(function () {
+    beforeEach(function() {
+      return grid.then(function() {
         grid.selection.mode = 'single';
         grid.frozenColumns = 0;
         grid.columns = [{name: 'Name'}, {name: 'Value'}, {name: 'Age'}];
@@ -29,7 +29,7 @@
       });
     });
 
-    it('should resize a column', function () {
+    it('should resize a column', function() {
       grid.columns[0].width = 400;
       grid.columns[0].resizable = false;
       grid.columns[1].width = 400;
@@ -46,7 +46,7 @@
       expect(grid.columns[2].width).to.equal(400);
     });
 
-    it('should resize a frozen column', function () {
+    it('should resize a frozen column', function() {
       grid.frozenColumns = 1;
       grid.columns[0].resizable = true;
       grid.columns[1].width = 400;
