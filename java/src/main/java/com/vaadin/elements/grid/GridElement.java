@@ -119,7 +119,7 @@ public class GridElement implements SelectionHandler<Object>,
     public void setColumnReorderingAllowed(boolean isAllowed){
         grid.setColumnReorderingAllowed(isAllowed);
     }
-    
+
     public Element getGridElement() {
         return grid.getElement();
     }
@@ -603,13 +603,13 @@ public class GridElement implements SelectionHandler<Object>,
         }
     }
 
-    @JsIgnore 
+    @JsIgnore
     @Override
     public void onColumnReorder(ColumnReorderEvent<Object> event) {
         updateOrder();
         triggerEvent(COLUMN_ORDER_CHANGED_EVENT);
     }
-    
+
     @JsIgnore
     @Override
     public void onColumnResize(ColumnResizeEvent<Object> event) {
