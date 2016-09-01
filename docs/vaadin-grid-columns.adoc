@@ -166,7 +166,7 @@ endif::web[]
 [[vaadin-grid.columns.reordering]]
 == Column Reordering
 The end users can reorder non-frozen columns by dragging the header cells.
-By default, column reordering is disabled, but can be enabled by setting the [propertyname]#columnReorderingAllowed# property to true.
+By default, column reordering is disabled, but it can be enabled by setting the [propertyname]#columnReorderingAllowed# property to true.
 
 Column reordering works only when the data source is based on objects bound to the column configuration using the `name` attribute.
 Usage of object values is described in section <<vaadin-grid-assigning-data#vaadin-grid.data.object, "Using Object Values">>.
@@ -206,11 +206,12 @@ endif::web[]
 
 [[vaadin-grid.columns.resizing]]
 == Column Resizing
-Columns can be enabled as resizable by specifying the [propertyname]#column.resizable# property.
-When the [propertyname]#column.resizable# property is set to true, columns can be resized by dragging the separation line in headers.
+Columns can be resized by dragging the separation line in headers. By default it is disabled. Set the [propertyname]#column.resizable# property to a column to make it resizable.
+
+When a column is resized, you will get notified by listening to the `column-resized` event.
 
 [[figure.vaadin-grid.column-resizing]]
-.User can drag the separation line in next to the specified header to resize the entire column
+.User can drag the header separator to resize the column.
 image::img/vaadin-grid-column-resizing.png[]
 
 [source,html]
