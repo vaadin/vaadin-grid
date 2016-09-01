@@ -200,7 +200,7 @@ See the [demo](demo/index.html) for use case examples.
   .vaadin-grid-loading-data .vaadin-grid-tablewrapper:before {
     -webkit-animation: vaadin-grid-spin-360 400ms linear infinite;
     animation: vaadin-grid-spin-360 400ms linear infinite;
-    border: 2px solid #03A9F4;
+    border: 2px solid var(--primary-color, #03A9F4);
     border-radius: 50%;
     border-right-color: transparent;
     border-top-color: transparent;
@@ -337,13 +337,13 @@ See the [demo](demo/index.html) for use case examples.
   }
 
   :focus .vaadin-grid-row-focused {
-    -webkit-animation: v-grid-row-focused 820ms ease-in-out;
-    animation: v-grid-row-focused 820ms ease-in-out;
+    -webkit-animation: vaadin-grid-row-focused 0.3s ease-in-out;
+    animation: vaadin-grid-row-focused 0.3s ease-in-out;
   }
 
   @-webkit-keyframes vaadin-grid-row-focused {
     50% {
-      color: #03A9F4;
+      color: var(--primary-color, #00B4F0);
     } 100% {
       color: inherit;
     }
@@ -351,7 +351,7 @@ See the [demo](demo/index.html) for use case examples.
 
   @keyframes vaadin-grid-row-focused {
     50% {
-      color: #03A9F4;
+      color: var(--primary-color, #00B4F0);
     } 100% {
       color: inherit;
     }
@@ -548,7 +548,6 @@ See the [demo](demo/index.html) for use case examples.
     width: 41px;
     height: 41px;
     border-radius: 50%;
-    background-color: #666;
     opacity: 0;
     -webkit-transform: scale(0.8);
     transform: scale(0.8);
@@ -719,7 +718,7 @@ See the [demo](demo/index.html) for use case examples.
 
   :host ::content .vaadin-grid-column-resize-handle:hover,
   .vaadin-grid-column-resize-handle:hover {
-    border-right: solid 1px #00B4F0;
+    border-right: solid 1px var(--primary-color, #00B4F0);
     background-color: #b9e9ff;
   }
 
