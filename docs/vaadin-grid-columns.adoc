@@ -203,3 +203,37 @@ ifdef::web[]
 See the link:https://cdn.vaadin.com/vaadin-elements/latest/vaadin-grid/demo/columns.html[live example].
 ====
 endif::web[]
+
+[[vaadin-grid.columns.resizing]]
+== Column Resizing
+Columns can be enabled as resizable by specifying the [propertyname]#column.resizable# property.
+When the [propertyname]#column.resizable# property is set to true, columns can be resized by dragging the separation line in headers.
+
+[[figure.vaadin-grid.column-resizing]]
+.User can drag the separation line in next to the specified header to resize the entire column
+image::img/vaadin-grid-column-resizing.png[]
+
+[source,html]
+----
+<vaadin-grid>
+  <table>
+    <colgroup>
+      <col>
+      <col resizable>
+    </colgroup>
+    <!-- ... -->
+  </table>
+</vaadin-grid>
+----
+[source,javascript]
+----
+// Setting the properties with JS API
+grid.columns[0].resizable = false;
+grid.columns[1].resizable = true;
+----
+
+ifdef::web[]
+====
+See the link:https://cdn.vaadin.com/vaadin-elements/latest/vaadin-grid/demo/columns.html[live example].
+====
+endif::web[]
