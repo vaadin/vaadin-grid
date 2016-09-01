@@ -684,21 +684,47 @@ See the [demo](demo/index.html) for use case examples.
     opacity: 0.3;
   }
 
-  :host ::content .vaadin-grid-column-resize-handle,
-  .vaadin-grid-column-resize-handle {
-    position: absolute;
-    cursor: ew-resize;
-    height: 100%;
-    width: 6px;
-    right: 0;
-    top: 0;
-    border-right: solid 1px #e3e3e3;
+  :host ::content th.vaadin-grid-cell,
+  th.vaadin-grid-cell {
+    overflow: visible;
   }
 
-  :host ::content .vaadin-grid-column-resize-handle:hover,
-  .vaadin-grid-column-resize-handle:hover {
-    border-right: solid 1px var(--primary-color, #03A9F4);
-    background-color: var(--light-primary-color, #B9E9FF);
+  :host ::content div.vaadin-grid-column-header-content,
+  div.vaadin-grid-column-header-content {
+    overflow: hidden;
+    width: 100%;
+  }
+
+  :host ::content .vaadin-grid-column-resize-handle,
+  .vaadin-grid-column-resize-handle,
+  :host ::content .vaadin-grid-column-resize-handle:after,
+  .vaadin-grid-column-resize-handle:after {
+    position: absolute;
+    cursor: col-resize;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 7px;
+  }
+
+  :host ::content .vaadin-grid-column-resize-handle:after,
+  .vaadin-grid-column-resize-handle:after {
+    content:"";
+    left: 3px;
+    border-left: solid 1px #e3e3e3;
+  }
+
+  :host ::content .vaadin-grid-column-resize-handle:active:after,
+  .vaadin-grid-column-resize-handle:active:after,
+  :host ::content .vaadin-grid-column-resize-handle:hover:after,
+  .vaadin-grid-column-resize-handle:hover:after {
+    border-left: solid 1px var(--primary-color, #03A9F4);
+  }
+
+  :host ::content .vaadin-grid-column-resize-handle:active,
+  .vaadin-grid-column-resize-handle:active {
+    transition: all 0.9s ease-in-out;
+    height: 3000px;
   }
 
   :host ::content .header-drag-table .vaadin-grid-header,
