@@ -323,15 +323,15 @@ layout: page
   <section>
     <h3>Column Resizing</h3>
     <p>Columns can be resized by dragging the separation line in headers. To enable resizing, add the <code>resizable</code>
-       attribute to each column you want to resize. In this example, all the columns are resizable but the first one.</p>
+       attribute to each column you want to resize. In this example, first and second columns are resizable.</p>
     <code-example source>
       <vaadin-grid demo>
         <table>
           <colgroup>
+            <col resizable>
+            <col resizable>
             <col>
-            <col resizable>
-            <col resizable>
-            <col resizable>
+            <col>
           </colgroup>
         <thead>
           <tr>

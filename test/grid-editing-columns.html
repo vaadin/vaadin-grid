@@ -54,6 +54,7 @@
 
       var c = grid.columns[grid.columns.length - 1];
       expect(c.name).to.equal('foo');
+      expect(c.resizable).to.be.false;
     });
 
     it('add new column before', function() {
