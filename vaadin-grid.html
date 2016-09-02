@@ -696,22 +696,23 @@ See the [demo](demo/index.html) for use case examples.
   }
 
   :host ::content .vaadin-grid-column-resize-handle,
-  .vaadin-grid-column-resize-handle,
-  :host ::content .vaadin-grid-column-resize-handle:after,
-  .vaadin-grid-column-resize-handle:after {
+  .vaadin-grid-column-resize-handle {
     position: absolute;
     cursor: col-resize;
-    right: -3px;
+    right: 0;
     top: 0;
     height: 100%;
-    width: 7px;
+    width: 35px;
+    transform: translateX(50%);
+    text-align: center;
     z-index: 10;
   }
 
   :host ::content .vaadin-grid-column-resize-handle:after,
   .vaadin-grid-column-resize-handle:after {
+    display: inline-block;
+    height: 100%;
     content:"";
-    left: 3px;
     border-left: solid 1px #e3e3e3;
   }
 
@@ -722,6 +723,8 @@ See the [demo](demo/index.html) for use case examples.
     border-left: solid 1px var(--primary-color, #03A9F4);
   }
 
+  :host ::content .vaadin-grid-column-resize-handle-dragged,
+  .vaadin-grid-column-resize-handle-dragged,
   :host ::content .vaadin-grid-column-resize-handle:active,
   .vaadin-grid-column-resize-handle:active {
     transition: all 0.16s ease-in-out;
