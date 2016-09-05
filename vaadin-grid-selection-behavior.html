@@ -84,8 +84,8 @@
     },
 
     _isSelected: function(item) {
-      var selected = this.selectedItems.indexOf(item) > -1;
-      return this.selectedItems.inverted ? !selected : selected;
+      var selected = this.selectedItems && this.selectedItems.indexOf(item) > -1;
+      return (this.selectedItems && this.selectedItems.inverted) ? !selected : selected;
     },
 
     _onSelectAllChanged: function(e) {
@@ -146,8 +146,12 @@
       }
     },
 
-    _selectedItemsChanged: function() {
-      this.$.scroller._update();
+    _selectedItemsChanged: function(e) {
+      if (e.path === 'selectedItems' || e.path === 'selectedItems.splices') {
+        this.$.scroller._physicalItems.forEach(function(row) {
+          row.selected = this._isSelected(row.item);
+        }.bind(this));
+      }
     },
 
     _getFrozenColumns: function () {
