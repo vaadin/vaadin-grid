@@ -134,14 +134,30 @@
     },
 
     _scheduleReorder: function() {
-      var tbody = Polymer.dom(this.$.items);
       this.debounce('reorderrows', function() {
-        this._physicalItems.slice(0)
-          .sort(function(a, b) {
-            return a.index - b.index;
-          }).forEach(function(row) {
-            tbody.appendChild(row);
-          }, this);
+        var tbody = Polymer.dom(this.$.items);
+        var items = tbody.querySelectorAll('tr');
+
+        // Find out the DOM index of the element with the lowest index
+        var physicalIndexOfFirst = 0;
+        for (var p = 1; p < items.length; p++) {
+          if (items[p].index < items[physicalIndexOfFirst].index) {
+            physicalIndexOfFirst = p;
+          }
+        }
+
+        // Reorder the DOM elements
+        if (physicalIndexOfFirst < items.length / 2) {
+          // Append all the preceding elements after the last element
+          for (var i = 0; i < physicalIndexOfFirst; i++) {
+            tbody.appendChild(items[i]);
+          }
+        } else {
+          // Prepend all the trailing elements before the first element
+          for (var j = physicalIndexOfFirst; j < items.length; j++) {
+            tbody.insertBefore(items[j], items[0]);
+          }
+        }
       }, 100);
     },
 
