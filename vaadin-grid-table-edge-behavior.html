@@ -37,6 +37,10 @@
       edge: true
     },
 
+    ready: function() {
+      this._maxVirtualCount = 50000;
+    },
+
     _translateStationaryElements: function() {
       this.$.items.style.transform =
         this._getTranslate3d(-this._scrollLeft || 0, -this._scrollPosition || 0);
@@ -52,6 +56,6 @@
   };
 
   vaadin.elements.grid.TableEdgeBehavior = [
-    vaadin.elements.grid.GridTableScrollBehavior, vaadin.elements.grid.TableEdgeBehaviorImpl
+    vaadin.elements.grid.TableScrollBehavior, vaadin.elements.grid.TableEdgeBehaviorImpl
   ];
 </script>

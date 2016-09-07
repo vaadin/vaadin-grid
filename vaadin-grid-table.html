@@ -174,6 +174,10 @@
         value: /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
       },
 
+      _maxVirtualCount: {
+        value: 100000
+      },
+
       scrollbarWidth: {
         value: function() {
           // Create the measurement node
@@ -197,7 +201,7 @@
 
     observers: [
       '_columnsChanged(columns.*, frozenColumns, _physicalItems)',
-      '_sizeChanged(size, bindData)',
+      '_sizeChanged(size, bindData, _maxVirtualCount)',
       '_rowDetailsTemplateChanged(rowDetailsTemplate, _physicalItems, _physicalCount)',
       '_physicalItemsChanged(_physicalCount, columns, frozenColumns)'
     ],
@@ -270,7 +274,7 @@
       this._physicalTop = 0;
 
       /* TODO: virtual count of 500k will make the sizer.top too large for Firefox */
-      this._virtualCount = Math.min(size, 100000);
+      this._virtualCount = Math.min(size, this._maxVirtualCount);
       this._physicalIndexForKey = {};
       this._firstVisibleIndexVal = null;
       this._lastVisibleIndexVal = null;
