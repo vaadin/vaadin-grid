@@ -14,10 +14,14 @@
         flex-shrink: 0;
         flex-grow: 1;
       }
+
+      [hide] {
+        display: none;
+      }
     </style>
 
     <template is="dom-repeat" items="[[columns]]" as="column">
-      <div class="cell" style$="flex-basis: [[column.width]]; flex-grow: [[column.flex]]">&nbsp;</div>
+      <div class="cell" style$="flex-basis: [[column.width]]; flex-grow: [[column.flex]]" hide$="[[_isFrozenTrailing(column)]]">&nbsp;</div>
     </template>
 
   </template>
@@ -30,15 +34,31 @@
       properties: {
         columns: Array,
 
-        scrollHeight: Number
+        scrollHeight: Number,
+
+        frozenColumnsTrailing: Number,
       },
 
       observers: [
-        '_scrollHeightChanged(scrollHeight)'
+        '_scrollHeightChanged(scrollHeight)',
+        '_frozenColumnsTrailingChanged(columns, columns.*, frozenColumnsTrailing)'
       ],
+
+      _frozenColumnsTrailingChanged: function() {
+        var frozenTrailingCumulativeWidth = '0px';
+        for (var i = this.columns.length - this.frozenColumnsTrailing; i < this.columns.length; i++) {
+          var column = this.columns[i];
+          frozenTrailingCumulativeWidth += ' + ' + (column.width || '100px');
+        }
+        this.style.paddingLeft = 'calc(' + frozenTrailingCumulativeWidth + ')';
+      },
 
       _scrollHeightChanged: function(scrollHeight) {
         this.style.top = scrollHeight + 'px';
+      },
+
+      _isFrozenTrailing: function(column) {
+        return this.columns.indexOf(column) >= this.columns.length - this.frozenColumnsTrailing;
       }
     });
   </script>

@@ -40,7 +40,7 @@
         border-top-style: solid;
         border-bottom-style: solid;
         border-top-color: transparent;
-        border-bottom-color: transparent; 
+        border-bottom-color: transparent;
       }
 
       :host(:not([grid])) #items > ::content > * {
@@ -87,17 +87,27 @@
         padding: 0 !important;
       }
 
+      td[frozen-trailing], th[frozen-trailing] {
+        min-height: 100%;
+      }
+
       tr:hover td {
         /*background-color: lightgrey;*/
       }
 
       tr:not([hidden]) {
+        position: relative;
         display: flex;
         width: 100%;
       }
 
       [frozen] {
         z-index: 1;
+      }
+
+      [frozen-trailing] {
+        position: absolute;
+        right: 0;
       }
 
       caption {
@@ -128,20 +138,24 @@
       [last-frozen] {
         border-right: 1px solid var(--vaadin-grid-border-color);
       }
+
+      [first-frozen-trailing] {
+        border-left: 1px solid var(--vaadin-grid-border-color);
+      }
     </style>
 
     <table id="table" class="table table-striped" overflow-hidden$="[[_hideTableOverflow(scrollbarWidth, safari)]]">
       <caption>
-        <div is="vaadin-grid-sizer" scroll-height="[[_estScrollHeight]]" columns="[[columns]]">
+        <div is="vaadin-grid-sizer" scroll-height="[[_estScrollHeight]]" columns="[[columns]]" frozen-columns-trailing="[[frozenColumnsTrailing]]">
         </div>
       </caption>
-      <thead id="header" is="vaadin-grid-table-header" columns="[[columns]]" frozen-columns="[[frozenColumns]]"></thead>
+      <thead id="header" is="vaadin-grid-table-header" columns="[[columns]]" frozen-columns="[[frozenColumns]]" frozen-columns-trailing="[[frozenColumnsTrailing]]"></thead>
       <tbody id="items"></tbody>
-      <tfoot id="footer" is="vaadin-grid-table-footer" columns="[[columns]]" frozen-columns="[[frozenColumns]]"></tfoot>
+      <tfoot id="footer" is="vaadin-grid-table-footer" columns="[[columns]]" frozen-columns="[[frozenColumns]]" frozen-columns-trailing="[[frozenColumnsTrailing]]"></tfoot>
     </table>
 
     <vaadin-grid-table-outer-scroller id="outerscroller" scroll-target="[[scrollTarget]]" hidden="[[_hideOuterScroller(scrollbarWidth, safari)]]">
-      <div is="vaadin-grid-sizer" scroll-height="[[_estScrollHeight]]" columns="[[columns]]"></div>
+      <div is="vaadin-grid-sizer" scroll-height="[[_estScrollHeight]]" columns="[[columns]]" frozen-columns-trailing="[[frozenColumnsTrailing]]"></div>
     </vaadin-grid-table-outer-scroller>
 
   </template>
@@ -167,6 +181,10 @@
 
       columns: Array,
       frozenColumns: {
+        value: 0
+      },
+
+      frozenColumnsTrailing: {
         value: 0
       },
 
@@ -204,10 +222,10 @@
     },
 
     observers: [
-      '_columnsChanged(columns.*, frozenColumns, _physicalItems)',
+      '_columnsChanged(columns.*, frozenColumns, _physicalItems, frozenColumnsTrailing)',
       '_sizeChanged(size, bindData, _maxVirtualCount)',
       '_rowDetailsTemplateChanged(rowDetailsTemplate, _physicalItems, _physicalCount)',
-      '_physicalItemsChanged(_physicalCount, columns, frozenColumns)'
+      '_physicalItemsChanged(_physicalCount, columns, frozenColumns, frozenColumnsTrailing)'
     ],
 
     // The following values aim at avoiding having 2 overlapping semi-invisible
@@ -229,11 +247,12 @@
       });
     },
 
-    _columnsChanged: function(e, frozenColumns, physicalItems) {
+    _columnsChanged: function(e, frozenColumns, physicalItems, frozenColumnsTrailing) {
       if (e.path === 'columns') {
         physicalItems.forEach(function(row) {
           row.columns = e.value;
           row.frozenColumns = frozenColumns;
+          row.frozenColumnsTrailing = frozenColumnsTrailing;
         });
       } else if (e.path.indexOf('columns.#' === 0)) {
         physicalItems.forEach(function(row) {
@@ -247,12 +266,13 @@
       }.bind(this));
     },
 
-    _physicalItemsChanged: function(count, columns, frozenColumns) {
+    _physicalItemsChanged: function(count, columns, frozenColumns, frozenColumnsTrailing) {
       // observing _physicalCount instead of _physicalItems.length because grid
       // seems to startup somewhat faster without using this.push('_physicalItems')...
       this._physicalItems.forEach(function(row) {
         row.columns = columns;
         row.frozenColumns = frozenColumns;
+        row.frozenColumnsTrailing = frozenColumnsTrailing;
       });
     },
 

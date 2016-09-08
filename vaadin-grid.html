@@ -23,7 +23,7 @@
     }
   </style>
   <template>
-    <vaadin-grid-table loading$=[[loading]] bind-data="[[_bindData]]" size="[[size]]" id="scroller" columns="[[columns]]" frozen-columns=[[_frozenColumns]] content-target=[[_getContentTarget()]] row-details-template=[[rowDetailsTemplate]]>
+    <vaadin-grid-table loading$=[[loading]] bind-data="[[_bindData]]" size="[[size]]" id="scroller" columns="[[columns]]" frozen-columns=[[_frozenColumns]] frozen-columns-trailing="[[frozenColumnsTrailing]]" content-target=[[_getContentTarget()]] row-details-template=[[rowDetailsTemplate]]>
       <content></content>
     </vaadin-grid-table>
   </template>
@@ -43,6 +43,11 @@
       size: Number,
 
       frozenColumns: {
+        type: Number,
+        value: 0
+      },
+
+      frozenColumnsTrailing: {
         type: Number,
         value: 0
       },

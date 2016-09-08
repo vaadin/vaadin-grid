@@ -16,6 +16,7 @@
           value: []
         },
         frozenColumns: Number,
+        frozenColumnsTrailing: Number,
         target: Object,
 
         expanded: {
@@ -38,7 +39,7 @@
         '_indexChanged(index, cells)',
         '_itemChanged(item, cells)',
         '_itemChangedForDetails(item, _rowDetailsCell)',
-        '_frozenColumnsChanged(frozenColumns, cells)',
+        '_frozenColumnsChanged(frozenColumns, cells, frozenColumnsTrailing)',
         '_rowDetailsChanged(expanded, rowDetailsTemplate, target)',
         '_rowDetailsCellIndexChanged(_rowDetailsCell, index)',
         '_rowDetailsCellChanged(_rowDetailsCell, target)',
@@ -71,7 +72,7 @@
         } else {
           if (this._rowDetailsCell) {
             Polymer.dom(this.root).removeChild(this._rowDetailsCell);
-            this.style.paddingBottom = '';
+            this.style.borderBottomWidth = '';
             this._rowDetailsCell = null;
           }
         }
@@ -94,7 +95,7 @@
       _rowDetailsCellIndexChanged: function(_rowDetailsCell, index, target) {
         if (_rowDetailsCell) {
           _rowDetailsCell.index = index;
-          this.style.paddingBottom = _rowDetailsCell.style.height = _rowDetailsCell.clientHeight + 'px';
+          this.style.borderBottomWidth = _rowDetailsCell.style.height = _rowDetailsCell.clientHeight + 'px';
         }
       },
 
@@ -104,7 +105,7 @@
 
           // TODO: reset cell styles to make sure colspan have be changed dynamically.
           cell.style.display = '';
-          cell.style.flexBasis = this.columns[index].width;
+          cell.style.minWidth = cell.style.flexBasis = this.columns[index].width;
           cell.style.flexGrow = this.columns[index].flex;
 
           if (cell.colspan > 1) {
@@ -117,7 +118,7 @@
               flex += this.columns[index + i].flex;
             }
 
-            cell.style.flexBasis = 'calc(' + width + ')';
+            cell.style.minWidth = cell.style.flexBasis = 'calc(' + width + ')';
             cell.style.flexGrow = flex;
           }
 
@@ -127,6 +128,13 @@
 
           spanning = Math.max(0, spanning - 1);
         }.bind(this));
+
+        var trailingRight = '0px';
+        for (var i = this.cells.length - 1; i >= this.cells.length - this.frozenColumnsTrailing - 1; i--) {
+          var cell = this.cells[i];
+          cell.style.right = 'calc(' + trailingRight + ')';
+          trailingRight += ' + ' + this.columns[i].width;
+        }
       },
 
       _columnsChanged: function(e, target) {
@@ -157,10 +165,13 @@
         }
       },
 
-      _frozenColumnsChanged: function(frozenColumns, cells) {
+      _frozenColumnsChanged: function(frozenColumns, cells, frozenColumnsTrailing) {
+        var trailingRight = '0px';
         cells.forEach(function(cell, i) {
-          cell.toggleAttribute('frozen', i < frozenColumns);
+          cell.toggleAttribute('frozen', i < frozenColumns || i > cells.length - frozenColumnsTrailing - 1);
+          cell.toggleAttribute('frozen-trailing', i > cells.length - frozenColumnsTrailing - 1);
           cell.toggleAttribute('last-frozen', i === frozenColumns - 1);
+          cell.toggleAttribute('first-frozen-trailing', i === cells.length - frozenColumnsTrailing);
         });
       },
 

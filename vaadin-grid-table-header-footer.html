@@ -4,10 +4,11 @@
       properties: {
         columns: Array,
         frozenColumns: Number,
+        frozenColumnsTrailing: Number,
         _rows: Array
       },
 
-      observers: ['_columnsChanged(columns.*, frozenColumns)', '_rowsChanged(_rows)'],
+      observers: ['_columnsChanged(columns.*, frozenColumns, frozenColumnsTrailing)', '_rowsChanged(_rows)'],
 
       _columnsChanged: function(e) {
         if (e.path === 'columns') {
@@ -15,6 +16,7 @@
             var row = this._createRow();
             row.rowIndex = index;
             row.frozenColumns = this.frozenColumns;
+            row.frozenColumnsTrailing = this.frozenColumnsTrailing;
             row.target = this.domHost.domHost;
             row.columns = e.value;
 
