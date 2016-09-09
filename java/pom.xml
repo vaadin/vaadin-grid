@@ -5,7 +5,7 @@
   <groupId>com.vaadin.elements</groupId>
   <artifactId>vaadin-grid</artifactId>
   <packaging>war</packaging>
-  <version>1.2.0-alpha1</version>
+  <version>1.2.0-alpha2</version>
   <properties>
     <module.name>com.vaadin.elements.grid.VaadinGrid</module.name>
     <modulePathPrefix></modulePathPrefix>
