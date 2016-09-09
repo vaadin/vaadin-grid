@@ -713,6 +713,9 @@
             this._resetAverage();
             this.scrollToIndex(this.firstVisibleIndex);
           }
+
+          this._postResizeHandler();
+
         }.bind(this), 1));
       },
 

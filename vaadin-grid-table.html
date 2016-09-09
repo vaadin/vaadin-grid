@@ -338,6 +338,18 @@
       }, itemSet);
     },
 
+    _postResizeHandler: function() {
+      // Ensure that right-aligned frozen columns don't stretch the scroll-width
+      if (this._oldWidth) {
+        var widthChange = this.clientWidth - this._oldWidth;
+        this.$.table.scrollLeft -= widthChange * Math.sign(widthChange);
+      }
+      this._oldWidth = this.clientWidth;
+
+      // Invoke scrollHandler to fix any mispositioned elements
+      this._scrollHandler();
+    },
+
     /**
      * Update the models, the position of the
      * items in the viewport and recycle tiles as needed.
