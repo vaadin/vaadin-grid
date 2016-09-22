@@ -1476,29 +1476,27 @@ See the [demo](demo/index.html) for use case examples.
       this._grid.getItem(rowIndex, callback, onlyCached);
     },
 
-    _onDetailed: function(ev) {
-      var evt = this.fire('detailed-' + ev.type, this._grid.getEventDetails(ev));
-      if (evt.defaultPrevented) {
-        ev.stopPropagation();
-        ev.preventDefault();
+    _onDetailed: function(event) {
+      var detailedEvent = this.fire('detailed-' + event.type, this._grid.getEventDetails(event));
+      if (detailedEvent.defaultPrevented) {
+        event.stopPropagation();
+        event.preventDefault();
       }
     },
 
     _detailedChanged: function() {
       var node = this._grid.getGridElement();
-      for (var i = this._currentDetailed.length; i > 0; i--) {
-        var name = this._currentDetailed[i - 1];
+      this._currentDetailed.forEach(function(name) {
         if (this.detailedEvents.indexOf(name) < 0) {
           this.unlisten(node, name, '_onDetailed');
-          this._currentDetailed.pop();
         }
-      }
+      }.bind(this));
       this.detailedEvents.forEach(function(name) {
         if (this._currentDetailed.indexOf(name) < 0) {
           this.listen(node, name, '_onDetailed');
-          this._currentDetailed.push(name);
         }
       }.bind(this));
+      this._currentDetailed = this.detailedEvents.slice(0);
     }
   });
 </script>
