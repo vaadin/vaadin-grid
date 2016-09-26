@@ -720,14 +720,11 @@ public class GridElement implements SelectionHandler<Object>,
     }
 
     /**
-     * Given an event happened on the grid, it returns a detailed info object
-     * based on the target element in the grid that received the event.
+     * Given an element rendered in the grid, it returns a detailed info object.
      */
-    public JSDetail getEventDetails(Event ev) {
+    public JSDetail getElementDetails(Element e) {
         Escalator s = grid.getEscalator();
-        Element e = ev.getEventTarget().cast();
         JSDetail detail = new JSDetail();
-        detail.event = ev;
         detail.row = s.findRowContainer(e).getCell(e).getRow();
         detail.column = s.findRowContainer(e).getCell(e).getColumn();
         RowContainer container = s.findRowContainer(e);

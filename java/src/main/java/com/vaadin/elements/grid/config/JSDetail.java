@@ -1,7 +1,5 @@
 package com.vaadin.elements.grid.config;
 
-import com.google.gwt.dom.client.NativeEvent;
-
 import com.vaadin.elements.common.js.JS;
 
 import jsinterop.annotations.JsProperty;
@@ -18,8 +16,6 @@ public class JSDetail {
     public double column;
     @JsProperty
     public String section;
-    @JsProperty
-    public NativeEvent event;
     @JsProperty
     public Object data;
 }

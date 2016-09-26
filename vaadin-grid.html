@@ -1477,7 +1477,9 @@ See the [demo](demo/index.html) for use case examples.
     },
 
     _onDetailed: function(event) {
-      var detailedEvent = this.fire('detailed-' + event.type, this._grid.getEventDetails(event));
+      var details = this._grid.getElementDetails(Polymer.dom(event).rootTarget);
+      details.sourceEvent = event;
+      var detailedEvent = this.fire('detailed-' + event.type, details);
       if (detailedEvent.defaultPrevented) {
         event.stopPropagation();
         event.preventDefault();
@@ -1485,15 +1487,14 @@ See the [demo](demo/index.html) for use case examples.
     },
 
     _detailedChanged: function() {
-      var node = this._grid.getGridElement();
       this._currentDetailed.forEach(function(name) {
         if (this.detailedEvents.indexOf(name) < 0) {
-          this.unlisten(node, name, '_onDetailed');
+          this.unlisten(this, name, '_onDetailed');
         }
       }.bind(this));
       this.detailedEvents.forEach(function(name) {
         if (this._currentDetailed.indexOf(name) < 0) {
-          this.listen(node, name, '_onDetailed');
+          this.listen(this, name, '_onDetailed');
         }
       }.bind(this));
       this._currentDetailed = this.detailedEvents.slice(0);
