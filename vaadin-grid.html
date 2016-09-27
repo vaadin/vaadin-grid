@@ -1107,18 +1107,39 @@ See the [demo](demo/index.html) for use case examples.
         value: undefined
       },
 
-      /*
-      * Boolean property to set whether column reordering is allowed by the grid.
-      *
-      * @property {boolean} columnReorderingAllowed
-      * @default false
-      * @type {boolean}
-      */
+      /**
+       * Boolean property to set whether column reordering is allowed by the grid.
+       *
+       * @property {boolean} columnReorderingAllowed
+       * @default false
+       * @type {boolean}
+       */
       columnReorderingAllowed: {
         type: Boolean,
         value: false,
         observer: '_columnReorderingAllowedChanged'
-      }
+      },
+
+      _currentDetailed: {
+        value: function() {
+          return [];
+        }
+      },
+
+      /**
+       * List of the events that should be observed in the internal grid implementation.
+       * When any of the observed events is performed, the grid will fire a `detailed-event`
+       * where -event is replaced by the original event type.
+       *
+       * @property {Array<Sting>} detailedEvents
+       * @type {Array<Sting>}
+       */
+      detailedEvents: {
+        type: Array,
+        value: function() {
+          return [];
+        }
+      },
     },
 
     attributeChanged: function(name, type, value) {
@@ -1159,11 +1180,26 @@ See the [demo](demo/index.html) for use case examples.
        *
        * @event column-resized
        */
+
+      /**
+       * Fired when an event registered in the `detailedEvents` array is fired.
+       * The name of the event depends of the original event type, for instance if the
+       * original event is `contextmenu` the event name will be `detailed-contextmenu`.
+       *
+       * @event detailed-event
+       * @param {Object} detail
+       *  @param {Event} detail.event The original event.
+       *  @param {Number} detail.column The column index where the element is located.
+       *  @param {Number} detail.row The row index where the element is located
+       *  @param {String} detail.section The section name in the grid (header|body|footer)
+       *  @param {Object} detail.data The row data if the event was on the body, otherwise undefined
+       */
     },
 
     observers: [
       '_columnsChanged(columns, columns.*)',
       '_itemsChanged(items, items.*)',
+      '_detailedChanged(detailedEvents, detailedEvents.*)'
     ],
 
     _columnOrderChanged: function() {
@@ -1438,6 +1474,30 @@ See the [demo](demo/index.html) for use case examples.
      */
     getItem: function(rowIndex, callback, onlyCached) {
       this._grid.getItem(rowIndex, callback, onlyCached);
+    },
+
+    _onDetailed: function(event) {
+      var details = this._grid.getElementDetails(Polymer.dom(event).rootTarget);
+      details.sourceEvent = event;
+      var detailedEvent = this.fire('detailed-' + event.type, details);
+      if (detailedEvent.defaultPrevented) {
+        event.stopPropagation();
+        event.preventDefault();
+      }
+    },
+
+    _detailedChanged: function() {
+      this._currentDetailed.forEach(function(name) {
+        if (this.detailedEvents.indexOf(name) < 0) {
+          this.unlisten(this, name, '_onDetailed');
+        }
+      }.bind(this));
+      this.detailedEvents.forEach(function(name) {
+        if (this._currentDetailed.indexOf(name) < 0) {
+          this.listen(this, name, '_onDetailed');
+        }
+      }.bind(this));
+      this._currentDetailed = this.detailedEvents.slice(0);
     }
-  }); // End Polymer prototype
+  });
 </script>

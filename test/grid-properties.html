@@ -6,6 +6,8 @@
   <title></title>
   <script src="../../webcomponentsjs/webcomponents-lite.min.js"></script>
   <script src="../../web-component-tester/browser.js"></script>
+  <script src='../../iron-test-helpers/mock-interactions.js'></script>
+
   <script src="common.js"></script>
   <link rel="import" href="../vaadin-grid.html">
 </head>
@@ -273,6 +275,75 @@ describe.feature('using properties', function() {
     expect(grid.disabled).to.be.true;
     grid.removeAttribute('disabled');
     expect(grid.disabled).to.be.false;
+  });
+
+  describe('detailed events', function() {
+    beforeEach(function() {
+      grid.items = [[1, 2], [3, 4]];
+      grid.detailedEvents = ['click'];
+      return grid;
+    });
+
+    it('should come with a detailed JS object', function(done) {
+      var span = Polymer.dom(grid.root).querySelector('table td span');
+      var handler = function(ev) {
+        expect(ev.detail.section).to.be.equal('body');
+        expect(ev.detail.row).to.be.equal(0);
+        expect(ev.detail.column).to.be.equal(0);
+        expect(ev.detail.data[0]).to.be.equal(1);
+        // In shadow dom, event is retargered to the grid
+        var expectedTarget = grid.root.childElementCount ? grid : span;
+        expect(ev.detail.sourceEvent.target).to.be.equal(expectedTarget);
+        grid.removeEventListener('detailed-click', handler);
+        grid.detailedEvents = [];
+        done();
+      };
+
+      grid.addEventListener('detailed-click', handler);
+      MockInteractions.tap(span);
+    });
+
+    it('should have the appropriate section', function(done) {
+      var th = Polymer.dom(grid.root).querySelector('table th');
+      var handler = function(ev) {
+        expect(ev.detail.section).to.be.equal('header');
+        expect(ev.detail.row).to.be.equal(0);
+        expect(ev.detail.column).to.be.equal(0);
+        expect(ev.detail.data).to.be.undefined;
+        var expectedTarget = grid.root.childElementCount ? grid : th;
+        expect(ev.detail.sourceEvent.target).to.be.equal(expectedTarget);
+        grid.removeEventListener('detailed-click', handler);
+        grid.detailedEvents = [];
+        done();
+      };
+
+      grid.addEventListener('detailed-click', handler);
+      MockInteractions.tap(th);
+    });
+
+    it('should handle multiple events', function() {
+      chai.should();
+      var span = Polymer.dom(grid.root).querySelector('table td span');
+      var spy = sinon.spy();
+
+      grid.push('detailedEvents', 'keydown');
+
+      grid.addEventListener('detailed-click', spy);
+      grid.addEventListener('detailed-keydown', spy);
+
+      MockInteractions.tap(span);
+      MockInteractions.keyDownOn(span, 0);
+      spy.should.have.been.calledTwice;
+
+      grid.pop('detailedEvents');
+      MockInteractions.tap(span);
+      MockInteractions.keyDownOn(span, 0);
+      spy.should.have.been.calledThrice;
+
+      grid.removeEventListener('detailed-click', spy);
+      grid.removeEventListener('detailed-keydown', spy);
+      grid.detailedEvents = [];
+    });
   });
 });
 </script>
