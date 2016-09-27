@@ -291,7 +291,9 @@ describe.feature('using properties', function() {
         expect(ev.detail.row).to.be.equal(0);
         expect(ev.detail.column).to.be.equal(0);
         expect(ev.detail.data[0]).to.be.equal(1);
-        expect(ev.detail.event.target).to.be.equal(span);
+        // In shadow dom, event is retargered to the grid
+        var expectedTarget = grid.root.childElementCount ? grid : span;
+        expect(ev.detail.sourceEvent.target).to.be.equal(expectedTarget);
         grid.removeEventListener('detailed-click', handler);
         grid.detailedEvents = [];
         done();
@@ -308,7 +310,8 @@ describe.feature('using properties', function() {
         expect(ev.detail.row).to.be.equal(0);
         expect(ev.detail.column).to.be.equal(0);
         expect(ev.detail.data).to.be.undefined;
-        expect(ev.detail.event.target).to.be.equal(th);
+        var expectedTarget = grid.root.childElementCount ? grid : th;
+        expect(ev.detail.sourceEvent.target).to.be.equal(expectedTarget);
         grid.removeEventListener('detailed-click', handler);
         grid.detailedEvents = [];
         done();
