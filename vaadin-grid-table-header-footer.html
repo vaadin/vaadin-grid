@@ -46,8 +46,8 @@
       },
 
       _rowCount: function(columns) {
-        return Math.max.apply(Math, columns.map(function(column) {
-          return Polymer.dom(column).querySelectorAll('[is="header"]').length;
+        return Math.max.apply(Math, columns.map(function(c) {
+          return c.headerCount();
         }));
       }
     });
@@ -62,8 +62,8 @@
       },
 
       _rowCount: function(columns) {
-        return Math.max.apply(Math, columns.map(function(column) {
-          return Polymer.dom(column).querySelectorAll('[is="footer"]').length;
+        return Math.max.apply(Math, columns.map(function(c) {
+          return c.footerCount();
         }));
       }
     });

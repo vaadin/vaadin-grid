@@ -111,7 +111,26 @@
       _widthChanged: function(grid, width) {
         var index = grid.columns.indexOf(this);
         grid.notifyPath('columns.' + index + '.width', width);
-      }
+      },
+
+      _rowCount: function(type) {
+        var children = Polymer.dom(this).children;
+        var ret = children.filter(function(c) {
+          return c.getAttribute('is') == type;
+        }).length;
+        ret += Math.max.apply(Math, children.map(function(c) {
+          return c.headerCount && c.headerCount() || 0;
+        }));
+        return ret;
+      },
+
+      headerCount: function() {
+        return this._rowCount('header');
+      },
+
+      footerCount: function() {
+        return this._rowCount('footer');
+      },
     });
   </script>
 </dom-module>
