@@ -201,6 +201,9 @@
       '_columnsChanged(columns.*, frozenColumns, _physicalItems)',
       '_sizeChanged(size, bindData)',
       '_rowDetailsTemplateChanged(rowDetailsTemplate, _physicalItems, _physicalCount)',
+
+      // observing _physicalCount instead of _physicalItems.length because grid
+      // seems to startup somewhat faster without using this.push('_physicalItems')...
       '_physicalItemsChanged(_physicalCount, columns, frozenColumns)'
     ],
 
@@ -242,10 +245,13 @@
     },
 
     _physicalItemsChanged: function(count, columns, frozenColumns) {
-      // observing _physicalCount instead of _physicalItems.length because grid
-      // seems to startup somewhat faster without using this.push('_physicalItems')...
+      // We only show in body data columns, not grouping columns
+      var itemColumns = columns.filter(function(col) {
+        return !Polymer.dom(col).querySelectorAll('vaadin-grid-column').length;
+      });
+      var a = [columns[0]];
       this._physicalItems.forEach(function(row) {
-        row.columns = columns;
+        row.columns = itemColumns;
         row.frozenColumns = frozenColumns;
       });
     },
