@@ -99,31 +99,26 @@
       },
 
       _updateCells: function() {
-        // debouncing reduces the call
-        // - from 60 to 4 in a grid with 2 headers with 5 columns.
-        // - from 416 to 30 in the same grid with data and one footer.
-        this.debounce('_updateCells', function() {
-          // columns > cells means that there is an extra col for multiselection
-          var multiSel = this.columns.length > this.cells.length ? 1 : 0;
+        // columns > cells means that there is an extra col for multiselection
+        var multiSel = this.columns.length > this.cells.length ? 1 : 0;
 
-          for (var i = 0, l = this.cells.length, colspan; i < l; i += colspan) {
-            var cell = this.cells[i];
-            colspan = cell.colspan || 1;
-            var width = this.columns[i + multiSel].width;
-            var flex = this.columns[i + multiSel].flex;
+        for (var i = 0, l = this.cells.length, colspan; i < l; i += colspan) {
+          var cell = this.cells[i];
+          colspan = cell.colspan || 1;
+          var width = this.columns[i + multiSel].width;
+          var flex = this.columns[i + multiSel].flex;
 
-            // Visit colspanned cells to hide then and increase width and flex of parent
-            for (var j = 1; j < colspan && i + j < l; j++) {
-              this.cells[i + j].style.display = 'none';
-              width = width + ' + ' + this.columns[i + multiSel + j].width;
-              flex += this.columns[i + multiSel + j].flex;
-            }
-
-            cell.style.flexBasis = 'calc(' + width + ')';
-            cell.style.flexGrow = flex;
-            cell.style.display = '';
+          // Visit colspanned cells to hide then and increase width and flex of parent
+          for (var j = 1; j < colspan && i + j < l; j++) {
+            this.cells[i + j].style.display = 'none';
+            width = width + ' + ' + this.columns[i + multiSel + j].width;
+            flex += this.columns[i + multiSel + j].flex;
           }
-        }.bind(this));
+
+          cell.style.flexBasis = 'calc(' + width + ')';
+          cell.style.flexGrow = flex;
+          cell.style.display = '';
+        }
       },
 
       _columnsChanged: function(e, target) {
