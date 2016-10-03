@@ -11,15 +11,84 @@
 
       _columnsChanged: function(e) {
         if (e.path === 'columns') {
-          this._rows = Array.apply(null, Array(this._rowCount(e.value))).map(function(item, index) {
+          function getParent(groups, column) {
+            for (var i = 0; i < groups.length; i++) {
+              var grp = groups[i];
+              children = Polymer.dom(grp).children;
+              if (children.indexOf(column) >= 0) {
+                grp.childs = children.length;
+                return grp;
+              }
+            }
+          }
+
+          function fillMatrixColumns(groups, matrix, col, idx, row, type) {
+            var tpls = col._templates(type);
+            for (var i = 0; i <= row; i++) {
+              var parent = i && !tpls[i] ? getParent(groups, col) : null;
+              if (parent) {
+                fillMatrixColumns(groups, matrix, parent, idx, row - i , type)
+                return;
+              }
+              matrix[row - i] = matrix[row - i] || [];
+              matrix[row - i][idx] = {
+                column: col
+              }
+            }
+          }
+
+          function fillMatrixTemplates(matrix, idx, rows, type) {
+            var last = null, tpls = [], j = 0;
+            for (var row = 0; row <= rows; row++, j++) {
+              var obj = matrix[row][idx];
+              if (obj.column != last) {
+                tpls = obj.column._templates(type);
+                j = 0;
+              }
+              last = obj.column;
+              obj.template = tpls[j];
+              if (!obj.template && rows - row > 0)  {
+                var next = matrix[row + 1][idx].column;
+                if (next != obj.column) {
+                  obj.column = next;
+                  row --;
+                }
+              }
+            }
+          }
+
+          var groups = e.value.filter(function(col) {
+            return !!Polymer.dom(col).querySelectorAll('vaadin-grid-column').length;
+          });
+          var columns = e.value.filter(function(col) {
+            return !Polymer.dom(col).querySelectorAll('vaadin-grid-column').length;
+          });
+
+          var matrix = [];
+          var nrows = this._rowCount(e.value) - 1;
+          columns.forEach(function(col, idx) {
+            fillMatrixColumns(groups, matrix, col, idx, nrows, this.type);
+          }.bind(this));
+          columns.forEach(function(unused, idx) {
+            fillMatrixTemplates(matrix, idx, nrows, this.type);
+          }.bind(this));
+
+          // LOG
+          // matrix.forEach(function(cols, row) {
+          //   cols.forEach(function(obj, idx){
+          //     console.log(row, obj.column.getAttribute('mcm'), obj.template);
+          //   }.bind(this));
+          // }.bind(this))
+
+          this._rows = matrix.map(function(objects, index) {
             var row = this._createRow();
             row.rowIndex = index;
             row.frozenColumns = this.frozenColumns;
+            row._objectsChanged(objects, index);
             row.target = this.domHost.domHost;
-            row.columns = e.value;
-
             return row;
           }.bind(this));
+
         } else if (e.path.indexOf('columns.#') === 0) {
           this._rows.forEach(function(row) {
             row.notifyPath(e.path, e.value);
@@ -33,6 +102,12 @@
         rows.forEach(function(row) {
           Polymer.dom(this).appendChild(row);
         }.bind(this));
+      },
+
+      _rowCount: function(columns) {
+        return Math.max.apply(Math, columns.map(function(c) {
+          return c._rowCount(this.type);
+        }));
       }
     };
 
@@ -40,15 +115,10 @@
       is: 'vaadin-grid-table-header',
       extends: 'thead',
       behaviors: [vaadinGridTableRowContainerBehavior],
+      type: 'header',
 
       _createRow: function() {
         return document.createElement('tr', 'vaadin-grid-table-header-row');
-      },
-
-      _rowCount: function(columns) {
-        return Math.max.apply(Math, columns.map(function(c) {
-          return c.headerCount();
-        }));
       }
     });
 
@@ -56,15 +126,10 @@
       is: 'vaadin-grid-table-footer',
       extends: 'tfoot',
       behaviors: [vaadinGridTableRowContainerBehavior],
+      type: 'footer',
 
       _createRow: function() {
         return document.createElement('tr', 'vaadin-grid-table-footer-row');
-      },
-
-      _rowCount: function(columns) {
-        return Math.max.apply(Math, columns.map(function(c) {
-          return c.footerCount();
-        }));
       }
     });
   })();

@@ -105,7 +105,12 @@
         instance.notifyPath('selected', selected);
       },
 
+      ready: function() {
+        this._templateChanged();
+      },
+
       _templateChanged: function(template, target) {
+
         this.templatize(template);
 
         // fix _rootDataHost to the context where template has been defined
