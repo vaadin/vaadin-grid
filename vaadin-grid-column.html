@@ -17,7 +17,7 @@
           type: Array,
           notify: true,
           value: function() {
-            var headerTemplates = Polymer.dom(this).querySelectorAll('template[is=header]');
+            var headerTemplates = this._templates('header');
             if (headerTemplates) {
               return headerTemplates.map(function(t) {
                 var colspan = t.hasAttribute('colspan') && parseInt(t.getAttribute('colspan')) || 0;
@@ -38,7 +38,7 @@
           type: Array,
           notify: true,
           value: function() {
-            var headerTemplates = Polymer.dom(this).querySelectorAll('template[is=footer]');
+            var headerTemplates = this._templates('footer');
             if (headerTemplates) {
               return headerTemplates.map(function(t) {
                 var colspan = t.hasAttribute('colspan') && parseInt(t.getAttribute('colspan')) || 0;
@@ -113,24 +113,19 @@
         grid.notifyPath('columns.' + index + '.width', width);
       },
 
-      _rowCount: function(type) {
-        var children = Polymer.dom(this).children;
-        var ret = children.filter(function(c) {
+      _templates: function(type) {
+        return Polymer.dom(this).children.filter(function(c) {
           return c.getAttribute('is') == type;
-        }).length;
-        ret += Math.max.apply(Math, children.map(function(c) {
-          return c.headerCount && c.headerCount() || 0;
+        });
+      },
+
+      _rowCount: function(type) {
+        var ret = this._templates(type).length;
+        ret += Math.max.apply(Math, Polymer.dom(this).children.map(function(c) {
+          return c._rowCount && c._rowCount(type) || 0;
         }));
         return ret;
-      },
-
-      headerCount: function() {
-        return this._rowCount('header');
-      },
-
-      footerCount: function() {
-        return this._rowCount('footer');
-      },
+      }
     });
   </script>
 </dom-module>
