@@ -2,6 +2,7 @@
 
 <dom-module id="vaadin-grid-table-row"></dom-module>
 <dom-module id="vaadin-grid-table-header-row"></dom-module>
+<dom-module id="vaadin-grid-table-footer-row"></dom-module>
 
 <script>
   (function() {
@@ -11,6 +12,7 @@
 
       properties: {
         columns: Array,
+        templates: Array,
         index: Number,
         cells: {
           value: []
@@ -122,26 +124,42 @@
         }
       },
 
+      _objectsChanged: function(objects, level) {
+        this.objects = objects;
+        this.templates = objects.map(function(o){
+          return o.template;
+        });
+        this.columns = objects.map(function(o){
+          return o.column;
+        });
+      },
+
       _columnsChanged: function(e, target) {
         if (e.path === 'columns') {
           Polymer.dom(this).innerHTML = '';
 
           var cells = [];
-          var spanning = 0;
-
           e.value.forEach(function(column, columnIndex) {
             var cell = this._createCell();
             cell.index = this.index;
             cell.target = this.target;
             cell.column = column;
-
-            this.listen(cell, 'colspan-changed', '_updateCells');
-
-            Polymer.dom(this).appendChild(cell);
-            cells.push(cell);
-
+            if (this.objects && this.objects[columnIndex]) {
+              // Header and Footer cells
+              cell.template = this.objects[columnIndex].template;
+              if (cell.template) {
+                // Only attached cells with templates
+                cell.colspan = (this.objects[columnIndex].colspan || 0) + 1;
+                cell.rowspan = (this.objects[columnIndex].rowspan || 0) + 1;
+                this.listen(cell, 'colspan-changed', '_updateCells');
+                Polymer.dom(this).appendChild(cell);
+                cells.push(cell);
+              }
+            } else {
+              Polymer.dom(this).appendChild(cell);
+              cells.push(cell);
+            }
           }.bind(this));
-
           this.cells = cells;
           this._updateCells();
         } else if (e.path.indexOf('columns.#') === 0) {
