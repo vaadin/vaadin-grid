@@ -1457,6 +1457,7 @@ See the [demo](demo/index.html) for use case examples.
      * @type {Function}
      */
     refreshItems: function() {
+      this.selection.clear();
       if (this._grid.getDataSource()) {
         this._grid.getDataSource().refreshItems();
       }
