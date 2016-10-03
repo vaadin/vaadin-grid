@@ -14,7 +14,9 @@
           function getParent(groups, column) {
             for (var i = 0; i < groups.length; i++) {
               var grp = groups[i];
-              children = Polymer.dom(grp).children;
+              children = Polymer.dom(grp).children.filter(function(e) {
+                return e.tagName.toLowerCase() == 'vaadin-grid-column'
+              });
               if (children.indexOf(column) >= 0) {
                 grp.childs = children.length;
                 return grp;
@@ -54,6 +56,30 @@
                   row --;
                 }
               }
+              if (idx > 0 && matrix[row][idx - 1].template == obj.template) {
+                delete obj.template
+              }
+            }
+          }
+
+          function fillMatrixSpans(matrix, idx, rows) {
+            for (var i = 0; i <= rows; i++) {
+              var obj = matrix[i][idx];
+              var col = obj.column;
+              var tpl = obj.template;
+              if (col && tpl) {
+                var colspan = col.hasAttribute('colspan') && parseInt(col.getAttribute('colspan')) || 0;
+                colspan += (col.childs || 0);
+                var rowspan = 0;
+                for (var j = i + 1; j <= rows; j++) {
+                  var next = matrix[j][idx];
+                  if (!next.template && next.column == col) {
+                    rowspan ++;
+                  }
+                }
+                obj.colspan = colspan;
+                obj.rowspan = rowspan;
+              }
             }
           }
 
@@ -67,16 +93,19 @@
           var matrix = [];
           var nrows = this._rowCount(e.value) - 1;
           columns.forEach(function(col, idx) {
-            fillMatrixColumns(groups, matrix, col, idx, nrows, this.type);
+            lastCol = fillMatrixColumns(groups, matrix, col, idx, nrows, this.type);
           }.bind(this));
           columns.forEach(function(unused, idx) {
             fillMatrixTemplates(matrix, idx, nrows, this.type);
+          }.bind(this));
+          columns.forEach(function(unused, idx) {
+            fillMatrixSpans(matrix, idx, nrows);
           }.bind(this));
 
           // LOG
           // matrix.forEach(function(cols, row) {
           //   cols.forEach(function(obj, idx){
-          //     console.log(row, obj.column.getAttribute('mcm'), obj.template);
+          //     console.log(row, obj.column.getAttribute('mcm'), obj.colspan, obj.rowspan, obj.template);
           //   }.bind(this));
           // }.bind(this))
 
