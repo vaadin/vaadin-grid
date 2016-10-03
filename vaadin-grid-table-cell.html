@@ -56,7 +56,6 @@
         selected: Boolean,
         template: Object,
         target: Object,
-
         _forwardedParentProps: Object
       },
 
@@ -105,12 +104,7 @@
         instance.notifyPath('selected', selected);
       },
 
-      ready: function() {
-        this._templateChanged();
-      },
-
       _templateChanged: function(template, target) {
-
         this.templatize(template);
 
         // fix _rootDataHost to the context where template has been defined
@@ -143,16 +137,12 @@
         item.classList.add(itemClass);
 
         if (Polymer.Settings.useShadow) {
-
           Polymer.dom(target).appendChild(item);
-
           var content = document.createElement('content');
           content.setAttribute('select', '.' + itemClass);
           Polymer.dom(this).appendChild(content);
-
         } else {
           // Non-shadow
-
           // Can't use Polymer.dom.appendChild here as using it will "fix"
           // the item later with the style scope of vaadin-grid-table
           this.appendChild(item);
@@ -234,10 +224,17 @@
       properties: {
         colspan: {
           type: Number,
-          notify: true
+          notify: true,
+          reflectToAttribute: true
+        },
+        rowspan: {
+          type: Number,
+          notify: true,
+          reflectToAttribute: true
         },
         rowIndex: Number,
-        _rowContainerObjects: Array
+        _rowContainerObjects: Array,
+        _matrixObject: Object
       },
 
       _rowContainerObjectsChanged: function(e) {
@@ -246,8 +243,9 @@
 
       _rowIndexChanged: function(rowIndex, rowContainerObjects) {
         if (rowContainerObjects[rowIndex]) {
-          this.template = rowContainerObjects[rowIndex].template;
-          this.colspan = rowContainerObjects[rowIndex].colspan;
+          // TODO: mcm remove this logic
+          // this.template = rowContainerObjects[rowIndex].template;
+          // this.colspan = rowContainerObjects[rowIndex].colspan;
         }
       }
 
