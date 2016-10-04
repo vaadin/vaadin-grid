@@ -73,6 +73,7 @@
             </template>
           </vaadin-grid-column>
 
+          <vaadin-grid-column mcm="G2" class="g2">
             <vaadin-grid-column mcm="C3">
               <template>
                 <div>baz-[[index]]</div>
@@ -82,7 +83,7 @@
               </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column mcm="G2" class="g2">
+            <vaadin-grid-column mcm="G3" class="g3">
               <vaadin-grid-column mcm="C4">
                 <template>
                   [[index]]
@@ -100,10 +101,14 @@
                   TC5
                 </template>
               </vaadin-grid-column>
-              <template is="header" class="g2">
-                TG2
+              <template is="header" class="g3">
+                TG3
               </template>
             </vaadin-grid-column>
+            <template is="header" class="g2">
+              TG2
+            </template>
+          </vaadin-grid-column>
         </vaadin-grid>
       </template>
       <script>

@@ -101,26 +101,12 @@
       },
 
       _updateCells: function() {
-        var size = this.cells.length;
-        if (this.columns.length == size) {
-          for (var i = 0, colspan; i < size; i += colspan) {
-            var cell = this.cells[i];
-            colspan = cell.colspan || 1;
-            var width = this.columns[i].width;
-            var flex = this.columns[i].flex;
-
-            // Visit colspanned cells to hide them, and increase parent width and flex.
-            for (var j = i + 1; j < i + colspan; j++) {
-              this.cells[j].style.display = 'none';
-
-              width += ' + ' + this.columns[j].width;
-              flex += this.columns[j].flex;
-            }
-
-            cell.style.flexBasis = 'calc(' + width + ')';
-            cell.style.flexGrow = flex;
-            cell.style.display = '';
-          }
+        for (var i = 0; i < this.cells.length && this.objects && this.objects[i]; i++) {
+          var cell = this.cells[i];
+          var obj = this.objects[i];
+          cell.style.flexBasis = 'calc(' + obj.width + ')';
+          cell.style.flexGrow = obj.colspan;
+          cell.style.display = obj.display || '';
         }
       },
 

@@ -15,22 +15,25 @@
      */
     var vaadinGridMatrixBehavior = {
       properties: {
-        matrix: null,
-        dataColumns: null,
-        nrows: 0
+        matrix: {
+          type: Object
+        },
+        nrows: 0,
+        ncols: 0
       },
 
       _configureMatrix: function(groupsAndColumns) {
         // Remove groups
-        this.dataColumns = groupsAndColumns.filter(function(col) {
+        var dataColumns = groupsAndColumns.filter(function(col) {
           return !Polymer.dom(col).querySelectorAll('vaadin-grid-column').length;
         });
 
+        this.ncols = dataColumns.length;
         this.nrows = this._rowCount(groupsAndColumns) - 1;
-        this.ncols = this.dataColumns.length;
         this.matrix = [];
 
-        this.dataColumns.forEach(function(column, idx) {
+        // Adding dataColumns, parent groups will be computed and added based on them.
+        dataColumns.forEach(function(column, idx) {
           this._addColumnToMatrix(column, idx, this.nrows)
         }.bind(this));
 
