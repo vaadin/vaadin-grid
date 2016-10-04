@@ -147,14 +147,18 @@
             if (this.objects && this.objects[columnIndex]) {
               // Header and Footer cells
               cell.template = this.objects[columnIndex].template;
-              if (cell.template) {
-                // Only attached cells with templates
-                cell.colspan = (this.objects[columnIndex].colspan || 0) + 1;
-                cell.rowspan = (this.objects[columnIndex].rowspan || 0) + 1;
-                this.listen(cell, 'colspan-changed', '_updateCells');
-                Polymer.dom(this).appendChild(cell);
-                cells.push(cell);
+              if (!cell.template) {
+                cell.classList.add('empty');
+              } else {
+                cell.colspan = (this.objects[columnIndex].colspan || 1);
+                cell.rowspan = (this.objects[columnIndex].rowspan || 1);
               }
+              // TODO: Only attached cells with templates should be attached
+              // But we need a way to size row/colspanned cells (not using flex?)
+              // rigth now we attach them until _updateCells implementation changes.
+              this.listen(cell, 'colspan-changed', '_updateCells');
+              Polymer.dom(this).appendChild(cell);
+              cells.push(cell);
             } else {
               Polymer.dom(this).appendChild(cell);
               cells.push(cell);

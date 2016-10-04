@@ -69,7 +69,7 @@
               var tpl = obj.template;
               if (col && tpl) {
                 var colspan = col.hasAttribute('colspan') && parseInt(col.getAttribute('colspan')) || 0;
-                colspan += (col.childs || 0);
+                colspan += (col.childs || 1);
                 var rowspan = 0;
                 for (var j = i + 1; j <= rows; j++) {
                   var next = matrix[j][idx];
