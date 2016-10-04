@@ -119,12 +119,36 @@
         });
       },
 
+      _group: function() {
+        var node = Polymer.dom(this).parentNode;
+        return node.tagName.toLowerCase() == 'vaadin-grid-column' ? node : null;
+      },
+
+      _columns: function() {
+        var r =  Polymer.dom(this).querySelectorAll('vaadin-grid-column').filter(function(col) {
+          return !Polymer.dom(col).querySelectorAll('vaadin-grid-column').length;
+        });
+        return r.length ? r : [this];
+      },
+
       _rowCount: function(type) {
-        var ret = this._templates(type).length;
-        ret += Math.max.apply(Math, Polymer.dom(this).children.map(function(c) {
-          return c._rowCount && c._rowCount(type) || 0;
-        }));
-        return ret;
+        if (type) {
+          var ret = this._templates(type).length;
+          ret += Math.max.apply(Math, Polymer.dom(this).children.map(function(c) {
+            return c._rowCount && c._rowCount(type) || 0;
+          }));
+          return ret;
+        }
+      },
+
+      _colCount: function() {
+        return this._columns().length;
+      },
+
+      _colWidth: function() {
+        return this._columns().map(function(c) {
+          return c.width || '100px';
+        }).join(' + ');
       }
     });
   </script>

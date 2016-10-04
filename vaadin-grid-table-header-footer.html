@@ -1,5 +1,124 @@
 <script>
   (function() {
+
+    /**
+     * Creates a Matrix that represent All headers and footers.
+     * Each element in the matrix reptesents a cell and has the structure:
+     *  {
+     *     column: the original <vaadin-grid-column> element
+     *     template: the template associated with the cell
+     *     colspan: the horizontal size in number of cells that covers.
+     *     rowspan: the vertical size in rows covered.
+     *     width: the value configured in the column (or the sum of all columns covered)
+     *     display: 'none' when the cell is spanned by another one
+     *  }
+     */
+    var vaadinGridMatrixBehavior = {
+      properties: {
+        matrix: null,
+        dataColumns: null,
+        nrows: 0
+      },
+
+      _configureMatrix: function(groupsAndColumns) {
+        // Remove groups
+        this.dataColumns = groupsAndColumns.filter(function(col) {
+          return !Polymer.dom(col).querySelectorAll('vaadin-grid-column').length;
+        });
+
+        this.nrows = this._rowCount(groupsAndColumns) - 1;
+        this.ncols = this.dataColumns.length;
+        this.matrix = [];
+
+        this.dataColumns.forEach(function(column, idx) {
+          this._addColumnToMatrix(column, idx, this.nrows)
+        }.bind(this));
+
+        this._setMatrixTemplates();
+
+        this._computeMatrixSizes();
+      },
+
+      // Adds a column in the matrix.
+      //   idx: is the position of the column
+      //   rows: is the max number of rows. Note that this is called
+      //         recursively so rows is being decreased each interaction.
+      _addColumnToMatrix: function(col, idx, rows) {
+        var tpls = col._templates(this.type);
+        for (var i = 0; i <= rows; i++) {
+          var parent = i && !tpls[i] ? col._group() : null;
+          if (parent) {
+            this._addColumnToMatrix(parent, idx, rows - i);
+            return;
+          }
+          this.matrix[rows - i] = this.matrix[rows - i] || [];
+          this.matrix[rows - i][idx] = {
+            column: col
+          }
+        }
+      },
+
+      // Visit all matrix elements, and sets the appropriate template.
+      //  Supports multiple templates perl column/group (TODO: remove support for that)
+      //  Cells without template means blank cells
+      _setMatrixTemplates: function() {
+        for (var idx = 0; idx < this.ncols; idx++) {
+          var last = null, tpls = [], j = 0;
+          for (var row = 0; row <= this.nrows; row++, j++) {
+            var obj = this.matrix[row][idx];
+            if (obj.column != last) {
+              tpls = obj.column._templates(this.type);
+              j = 0;
+            }
+            last = obj.column;
+            obj.template = tpls[j];
+            if (!obj.template && this.nrows - row > 0)  {
+              var next = this.matrix[row + 1][idx].column;
+              if (next != obj.column) {
+                obj.column = next;
+                row--;
+              }
+            } else {
+              for (var i = idx - 1; i >= 0; i--) {
+                if (this.matrix[row][i].template == obj.template) {
+                  delete obj.template;
+                }
+              }
+            }
+          }
+        }
+      },
+
+      // Visit all matrix elements, and compute colspan, rowspan, width and display
+      _computeMatrixSizes() {
+        for (var idx = 0; idx < this.ncols; idx++) {
+          var rows = this.matrix.length - 1;
+          var cols = this.matrix[0] && this.matrix[0].length || 0;
+          for (var i = 0; i <= rows; i++) {
+            var obj = this.matrix[i][idx];
+            var col = obj.column;
+            var tpl = obj.template;
+            obj.colspan = col.hasAttribute('colspan') && parseInt(col.getAttribute('colspan')) || 0;
+            obj.colspan += col._colCount();
+            obj.width = col._colWidth();
+            if (col && tpl) {
+              var rowspan = 0;
+              for (var j = i + 1; j <= rows; j++) {
+                var next = this.matrix[j][idx];
+                if (!next.template && next.column == col) {
+                  rowspan ++;
+                }
+              }
+              obj.rowspan = rowspan;
+            }
+            for (var j = 1; !obj.display && j < obj.colspan && idx + j < cols; j++) {
+              this.matrix[i][idx + j].display = 'none';
+            }
+          }
+        }
+      }
+    };
+
     var vaadinGridTableRowContainerBehavior = {
       properties: {
         columns: Array,
@@ -11,105 +130,9 @@
 
       _columnsChanged: function(e) {
         if (e.path === 'columns') {
-          function getParent(groups, column) {
-            for (var i = 0; i < groups.length; i++) {
-              var grp = groups[i];
-              children = Polymer.dom(grp).children.filter(function(e) {
-                return e.tagName.toLowerCase() == 'vaadin-grid-column'
-              });
-              if (children.indexOf(column) >= 0) {
-                grp.childs = children.length;
-                return grp;
-              }
-            }
-          }
+          this._configureMatrix(e.value);
 
-          function fillMatrixColumns(groups, matrix, col, idx, row, type) {
-            var tpls = col._templates(type);
-            for (var i = 0; i <= row; i++) {
-              var parent = i && !tpls[i] ? getParent(groups, col) : null;
-              if (parent) {
-                fillMatrixColumns(groups, matrix, parent, idx, row - i , type)
-                return;
-              }
-              matrix[row - i] = matrix[row - i] || [];
-              matrix[row - i][idx] = {
-                column: col
-              }
-            }
-          }
-
-          function fillMatrixTemplates(matrix, idx, rows, type) {
-            var last = null, tpls = [], j = 0;
-            for (var row = 0; row <= rows; row++, j++) {
-              var obj = matrix[row][idx];
-              if (obj.column != last) {
-                tpls = obj.column._templates(type);
-                j = 0;
-              }
-              last = obj.column;
-              obj.template = tpls[j];
-              if (!obj.template && rows - row > 0)  {
-                var next = matrix[row + 1][idx].column;
-                if (next != obj.column) {
-                  obj.column = next;
-                  row --;
-                }
-              }
-              if (idx > 0 && matrix[row][idx - 1].template == obj.template) {
-                delete obj.template
-              }
-            }
-          }
-
-          function fillMatrixSpans(matrix, idx, rows) {
-            for (var i = 0; i <= rows; i++) {
-              var obj = matrix[i][idx];
-              var col = obj.column;
-              var tpl = obj.template;
-              if (col && tpl) {
-                var colspan = col.hasAttribute('colspan') && parseInt(col.getAttribute('colspan')) || 0;
-                colspan += (col.childs || 1);
-                var rowspan = 0;
-                for (var j = i + 1; j <= rows; j++) {
-                  var next = matrix[j][idx];
-                  if (!next.template && next.column == col) {
-                    rowspan ++;
-                  }
-                }
-                obj.colspan = colspan;
-                obj.rowspan = rowspan;
-              }
-            }
-          }
-
-          var groups = e.value.filter(function(col) {
-            return !!Polymer.dom(col).querySelectorAll('vaadin-grid-column').length;
-          });
-          var columns = e.value.filter(function(col) {
-            return !Polymer.dom(col).querySelectorAll('vaadin-grid-column').length;
-          });
-
-          var matrix = [];
-          var nrows = this._rowCount(e.value) - 1;
-          columns.forEach(function(col, idx) {
-            lastCol = fillMatrixColumns(groups, matrix, col, idx, nrows, this.type);
-          }.bind(this));
-          columns.forEach(function(unused, idx) {
-            fillMatrixTemplates(matrix, idx, nrows, this.type);
-          }.bind(this));
-          columns.forEach(function(unused, idx) {
-            fillMatrixSpans(matrix, idx, nrows);
-          }.bind(this));
-
-          // LOG
-          // matrix.forEach(function(cols, row) {
-          //   cols.forEach(function(obj, idx){
-          //     console.log(row, obj.column.getAttribute('mcm'), obj.colspan, obj.rowspan, obj.template);
-          //   }.bind(this));
-          // }.bind(this))
-
-          this._rows = matrix.map(function(objects, index) {
+          this._rows = this.matrix.map(function(objects, index) {
             var row = this._createRow();
             row.rowIndex = index;
             row.frozenColumns = this.frozenColumns;
@@ -136,14 +159,14 @@
       _rowCount: function(columns) {
         return Math.max.apply(Math, columns.map(function(c) {
           return c._rowCount(this.type);
-        }));
+        }.bind(this)));
       }
     };
 
     Polymer({
       is: 'vaadin-grid-table-header',
       extends: 'thead',
-      behaviors: [vaadinGridTableRowContainerBehavior],
+      behaviors: [vaadinGridMatrixBehavior, vaadinGridTableRowContainerBehavior],
       type: 'header',
 
       _createRow: function() {
@@ -154,7 +177,7 @@
     Polymer({
       is: 'vaadin-grid-table-footer',
       extends: 'tfoot',
-      behaviors: [vaadinGridTableRowContainerBehavior],
+      behaviors: [vaadinGridMatrixBehavior, vaadinGridTableRowContainerBehavior],
       type: 'footer',
 
       _createRow: function() {
