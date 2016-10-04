@@ -139,9 +139,8 @@
                 cell.colspan = (this.objects[columnIndex].colspan || 1);
                 cell.rowspan = (this.objects[columnIndex].rowspan || 1);
               }
-              // TODO: Only attached cells with templates should be attached
+              // TODO: Only cells with templates should be attached
               // But we need a way to size row/colspanned cells (not using flex?)
-              // rigth now we attach them until _updateCells implementation changes.
               this.listen(cell, 'colspan-changed', '_updateCells');
               Polymer.dom(this).appendChild(cell);
               cells.push(cell);

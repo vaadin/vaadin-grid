@@ -26,6 +26,10 @@
             height: 800px;
           }
 
+          progress {
+            width: 50px;
+          }
+
           :host ::content th,
           :host ::content tfoot td {
             border-right: 1px solid rgba(0, 0, 0, 0.08);
@@ -84,7 +88,7 @@
             </vaadin-grid-column>
 
             <vaadin-grid-column mcm="G3" class="g3">
-              <vaadin-grid-column mcm="C4">
+              <vaadin-grid-column mcm="C4" colspan="2" width="20px">
                 <template>
                   [[index]]
                 </template>
@@ -92,13 +96,20 @@
                   TC4
                 </template>
               </vaadin-grid-column>
-
-              <vaadin-grid-column mcm="C5">
+              <vaadin-grid-column mcm="C5" width="20px">
+                <template>
+                  <progress value="[[index]]" max="25"></progress>
+                </template>
+                <template is="header">
+                  TC5
+                </template>
+              </vaadin-grid-column>
+              <vaadin-grid-column mcm="C6">
                 <template>
                   <paper-checkbox>Details</paper-checkbox>
                 </template>
                 <template is="header">
-                  TC5
+                  TC6
                 </template>
               </vaadin-grid-column>
               <template is="header" class="g3">

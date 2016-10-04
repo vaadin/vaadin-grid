@@ -2,8 +2,8 @@
   (function() {
 
     /**
-     * Creates a Matrix that represent All headers and footers.
-     * Each element in the matrix reptesents a cell and has the structure:
+     * Creates a Matrix that configures headers or footers.
+     * Each element in the matrix represents a cell with the following structure:
      *  {
      *     column: the original <vaadin-grid-column> element
      *     template: the template associated with the cell
@@ -29,12 +29,12 @@
         });
 
         this.ncols = dataColumns.length;
-        this.nrows = this._rowCount(groupsAndColumns) - 1;
+        this.nrows = this._rowCount(groupsAndColumns);
         this.matrix = [];
 
         // Adding dataColumns, parent groups will be computed and added based on them.
         dataColumns.forEach(function(column, idx) {
-          this._addColumnToMatrix(column, idx, this.nrows)
+          this._addColumnToMatrix(column, idx, this.nrows - 1)
         }.bind(this));
 
         this._setMatrixTemplates();
@@ -48,6 +48,7 @@
       //         recursively so rows is being decreased each interaction.
       _addColumnToMatrix: function(col, idx, rows) {
         var tpls = col._templates(this.type);
+        // Each element of the matrix has a column o a group
         for (var i = 0; i <= rows; i++) {
           var parent = i && !tpls[i] ? col._group() : null;
           if (parent) {
@@ -62,27 +63,32 @@
       },
 
       // Visit all matrix elements, and sets the appropriate template.
-      //  Supports multiple templates perl column/group (TODO: remove support for that)
+      //  Supports multiple templates perl column/group (TODO: remove ?)
       //  Cells without template means blank cells
       _setMatrixTemplates: function() {
         for (var idx = 0; idx < this.ncols; idx++) {
           var last = null, tpls = [], j = 0;
-          for (var row = 0; row <= this.nrows; row++, j++) {
+          for (var row = 0; row < this.nrows; row++, j++) {
             var obj = this.matrix[row][idx];
+
+            // We support multiple templates per group and column (TODO: remove ?)
             if (obj.column != last) {
               tpls = obj.column._templates(this.type);
               j = 0;
             }
             last = obj.column;
             obj.template = tpls[j];
-            if (!obj.template && this.nrows - row > 0)  {
+
+            if (!obj.template && row + 1 < this.nrows)  {
               var next = this.matrix[row + 1][idx].column;
+              // move up one level the column, if column doesn't have a template for this level
               if (next != obj.column) {
                 obj.column = next;
                 row--;
               }
             } else {
               for (var i = idx - 1; i >= 0; i--) {
+                // Remove duplicate templates
                 if (this.matrix[row][i].template == obj.template) {
                   delete obj.template;
                 }
@@ -95,18 +101,28 @@
       // Visit all matrix elements, and compute colspan, rowspan, width and display
       _computeMatrixSizes() {
         for (var idx = 0; idx < this.ncols; idx++) {
-          var rows = this.matrix.length - 1;
-          var cols = this.matrix[0] && this.matrix[0].length || 0;
-          for (var i = 0; i <= rows; i++) {
+          for (var i = 0; i < this.nrows; i++) {
             var obj = this.matrix[i][idx];
             var col = obj.column;
             var tpl = obj.template;
-            obj.colspan = col.hasAttribute('colspan') && parseInt(col.getAttribute('colspan')) || 0;
-            obj.colspan += col._colCount();
+
+            // group/column knows how to compute its width and flex based on children
             obj.width = col._colWidth();
+            obj.colspan = col._colCount();
+
+            // Code supporting user colspan. TODO: remove ?
+            var userColspan = col.hasAttribute('colspan') && parseInt(col.getAttribute('colspan')) || 0;
+            if (userColspan > obj.colspan) {
+              for (var j = 1; j <= (userColspan - obj.colspan) && idx + j < this.ncols; j++) {
+                obj.width += ' + ' + this.matrix[i][idx + j].column._colWidth();
+              }
+              obj.colspan = userColspan;
+            }
+
+            // Compute rowspan. It doesn't do anything so far because we use flex layouts
             if (col && tpl) {
               var rowspan = 0;
-              for (var j = i + 1; j <= rows; j++) {
+              for (var j = i + 1; j < this.nrows; j++) {
                 var next = this.matrix[j][idx];
                 if (!next.template && next.column == col) {
                   rowspan ++;
@@ -114,7 +130,9 @@
               }
               obj.rowspan = rowspan;
             }
-            for (var j = 1; !obj.display && j < obj.colspan && idx + j < cols; j++) {
+
+            // Hide all cells that are covered by colspanned cells
+            for (var j = 1; !obj.display && j < obj.colspan && idx + j < this.ncols; j++) {
               this.matrix[i][idx + j].display = 'none';
             }
           }
@@ -145,6 +163,7 @@
           }.bind(this));
 
         } else if (e.path.indexOf('columns.#') === 0) {
+          // TODO: handle this case, it does not work.
           this._rows.forEach(function(row) {
             row.notifyPath(e.path, e.value);
           });
