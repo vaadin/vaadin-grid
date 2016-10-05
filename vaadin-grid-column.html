@@ -137,7 +137,7 @@
           ret += Math.max.apply(Math, Polymer.dom(this).children.map(function(c) {
             return c._rowCount && c._rowCount(type) || 0;
           }));
-          return ret;
+          return !ret && this.is == 'vaadin-grid-column' ? 1 : ret;
         }
       },
 

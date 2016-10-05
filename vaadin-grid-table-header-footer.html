@@ -67,8 +67,7 @@
       //  Cells without template means blank cells
       _setMatrixTemplates: function() {
         for (var idx = 0; idx < this.ncols; idx++) {
-          var last = null, tpls = [], j = 0;
-          for (var row = 0; row < this.nrows; row++, j++) {
+          for (var row = 0, j = 0, tpls = [], last; row < this.nrows; row++, j++) {
             var obj = this.matrix[row][idx];
 
             // We support multiple templates per group and column (TODO: remove ?)
@@ -96,6 +95,16 @@
             }
           }
         }
+        // Remove empty rows: none of its elements has template.
+        for (var row = this.nrows - 1; row >= 0; row--) {
+          var valid = this.matrix[row].filter(function(o){
+            return !!o.template;
+          })
+          if (valid.length == 0) {
+            this.matrix.splice(row, 1);
+          }
+        }
+        this.nrows = this.matrix.length;
       },
 
       // Visit all matrix elements, and compute colspan, rowspan, width and display
