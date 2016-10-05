@@ -84,7 +84,8 @@
 
         flex: {
           type: Number,
-          value: 1
+          value: 1,
+          reflectToAttribute: true
         },
 
         /**
@@ -114,14 +115,20 @@
       },
 
       _templates: function(type) {
-        return Polymer.dom(this).children.filter(function(c) {
-          return c.getAttribute('is') == type;
-        });
+        return Polymer.dom(this).children.filter(function(t) {
+          return t.getAttribute('is') == type;
+        }).map(function(t) {
+          if (this.dataHost) {
+            // set dataHost to the context where template has been defined
+            t._rootDataHost = this.dataHost._rootDataHost || this.dataHost;
+          }
+          return t;
+        }.bind(this));
       },
 
       _group: function() {
         var node = Polymer.dom(this).parentNode;
-        return node.tagName.toLowerCase() == 'vaadin-grid-column' ? node : null;
+        return node && node.is == 'vaadin-grid-column' ? node : null;
       },
 
       _columns: function() {
@@ -147,8 +154,12 @@
 
       _colWidth: function() {
         return this._columns().map(function(c) {
-          return c.width || '100px';
+          return c.width || c.getAttribute('width') || '100px';
         }).join(' + ');
+      },
+
+      _colFlex: function() {
+        return this.flex || parseInt(this.getAttribute('flex')) || 1;
       }
     });
   </script>

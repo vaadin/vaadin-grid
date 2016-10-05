@@ -22,14 +22,22 @@
         ncols: 0
       },
 
-      _configureMatrix: function(groupsAndColumns) {
+      _configureMatrix: function(columns) {
+        // In tests, when columns property is assigned, column elements are not still
+        // full initialised. Check that all columns are ready for usage
+        if (columns.filter(function(c) {
+          return !!c._rowCount;
+        }).length < columns.length) {
+          return;
+        }
+
         // Remove groups
-        var dataColumns = groupsAndColumns.filter(function(col) {
+        var dataColumns = columns.filter(function(col) {
           return !Polymer.dom(col).querySelectorAll('vaadin-grid-column').length;
         });
 
         this.ncols = dataColumns.length;
-        this.nrows = this._rowCount(groupsAndColumns);
+        this.nrows = this._rowCount(columns);
         this.matrix = [];
 
         // Adding dataColumns, parent groups will be computed and added based on them.
@@ -40,6 +48,8 @@
         this._setMatrixTemplates();
 
         this._computeMatrixSizes();
+
+        this._configureRows();
       },
 
       // Adds a column in the matrix.
@@ -95,7 +105,7 @@
             }
           }
         }
-        // Remove empty rows: none of its elements has template.
+        // Remove empty rows: none of its elements has a template.
         for (var row = this.nrows - 1; row >= 0; row--) {
           var valid = this.matrix[row].filter(function(o){
             return !!o.template;
@@ -117,18 +127,9 @@
 
             // group/column knows how to compute its width and flex based on children
             obj.width = col._colWidth();
+
+            // Compute colspan and rowspan. They don't do anything so far.
             obj.colspan = col._colCount();
-
-            // Code supporting user colspan. TODO: remove ?
-            var userColspan = col.hasAttribute('colspan') && parseInt(col.getAttribute('colspan')) || 0;
-            if (userColspan > obj.colspan) {
-              for (var j = 1; j <= (userColspan - obj.colspan) && idx + j < this.ncols; j++) {
-                obj.width += ' + ' + this.matrix[i][idx + j].column._colWidth();
-              }
-              obj.colspan = userColspan;
-            }
-
-            // Compute rowspan. It doesn't do anything so far because we use flex layouts
             if (col && tpl) {
               var rowspan = 0;
               for (var j = i + 1; j < this.nrows; j++) {
@@ -144,6 +145,9 @@
             for (var j = 1; !obj.display && j < obj.colspan && idx + j < this.ncols; j++) {
               this.matrix[i][idx + j].display = 'none';
             }
+
+            // Set flex dimensions
+            obj.flex =  col._colFlex() - 1 + obj.colspan;
           }
         }
       }
@@ -156,35 +160,31 @@
         _rows: Array
       },
 
-      observers: ['_columnsChanged(columns.*, frozenColumns)', '_rowsChanged(_rows)'],
+      observers: [
+        '_columnsChanged(columns.*, frozenColumns)'
+      ],
 
-      _columnsChanged: function(e) {
-        if (e.path === 'columns') {
-          this._configureMatrix(e.value);
-
-          this._rows = this.matrix.map(function(objects, index) {
-            var row = this._createRow();
-            row.rowIndex = index;
-            row.frozenColumns = this.frozenColumns;
-            row._objectsChanged(objects, index);
-            row.target = this.domHost.domHost;
-            return row;
-          }.bind(this));
-
-        } else if (e.path.indexOf('columns.#') === 0) {
-          // TODO: handle this case, it does not work.
-          this._rows.forEach(function(row) {
-            row.notifyPath(e.path, e.value);
-          });
-        }
+      _configureRows: function() {
+        Polymer.dom(this).innerHTML = '';
+        // _rows is used in tests.
+        this._rows = this.matrix.map(function(objects, index) {
+          var row = this._createRow();
+          row.rowIndex = index;
+          row.frozenColumns = this.frozenColumns;
+          row._objectsChanged(objects, index);
+          // console.log(this.domHost.domHost);
+          row.target = this.domHost.domHost;
+          Polymer.dom(this).appendChild(row);
+          row._objectsChanged(objects, index);
+          return row;
+        }.bind(this));
       },
 
-      _rowsChanged: function(rows) {
-        Polymer.dom(this).innerHTML = '';
-
-        rows.forEach(function(row) {
-          Polymer.dom(this).appendChild(row);
-        }.bind(this));
+      _columnsChanged: function(e) {
+        // When a column is modified, all rows should be updated, so there is no way to
+        // do partial updates.
+        // TODO: This could be debounced but we need to update some synchronous tests.
+        this._configureMatrix(this.columns);
       },
 
       _rowCount: function(columns) {

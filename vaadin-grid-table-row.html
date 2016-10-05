@@ -101,23 +101,18 @@
       },
 
       _updateCells: function() {
-        for (var i = 0; i < this.cells.length && this.objects && this.objects[i]; i++) {
+        for (var i = 0; i < this.cells.length; i++) {
           var cell = this.cells[i];
-          var obj = this.objects[i];
-          cell.style.flexBasis = 'calc(' + obj.width + ')';
-          cell.style.flexGrow = obj.colspan;
-          cell.style.display = obj.display || '';
+          if (this.objects && this.objects[i]) {
+             var obj = this.objects[i];
+             cell.style.flexBasis = 'calc(' + obj.width + ')';
+             cell.style.flexGrow = obj.flex;
+             cell.style.display = obj.display || '';
+          } else {
+            cell.style.flexBasis = this.columns[i].width;
+            cell.style.flexGrow = this.columns[i].flex;
+          }
         }
-      },
-
-      _objectsChanged: function(objects, level) {
-        this.objects = objects;
-        this.templates = objects.map(function(o){
-          return o.template;
-        });
-        this.columns = objects.map(function(o){
-          return o.column;
-        });
       },
 
       _columnsChanged: function(e, target) {
@@ -203,12 +198,22 @@
     var vaadinGridTableRowContainerRowBehavior = {
 
       properties: {
-        rowIndex: Object
+        rowIndex: Number
       },
 
       observers: [
         '_rowIndexChanged(columns, target, rowIndex)'
       ],
+
+      _objectsChanged: function(objects, level) {
+        this.objects = objects;
+        this.templates = objects.map(function(o){
+          return o.template;
+        });
+        this.columns = objects.map(function(o){
+          return o.column;
+        });
+      },
 
       _rowIndexChanged: function() {
         this.cells.forEach(function(cell) {

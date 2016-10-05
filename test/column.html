@@ -22,7 +22,7 @@
         <vaadin-grid-column>
           <template>cell</template>
           <template is="header">header1</template>
-          <template is="header" colspan="2">header2</template>
+          <template is="header">header2</template>
           <template is="footer">footer1</template>
         </vaadin-grid-column>
         <vaadin-grid-column>
@@ -105,7 +105,6 @@
             var header = grid.$.scroller.$.header;
 
             expect(header._rows[0].cells[0].style.flexGrow).to.eql('2');
-            expect(header._rows[1].cells[0].style.flexGrow).to.eql('3'); // colspan 2 + 1
           });
 
           it('should be bound to row cells', function() {
@@ -150,20 +149,20 @@
           it('should be bound to row cells', function() {
             column.width = '200px';
 
-            expect(grid.$.scroller._physicalItems[0].cells[0].style.flexBasis).to.eql('calc(200px)');
+            expect(grid.$.scroller._physicalItems[0].cells[0].style.flexBasis).to.eql('200px');
           });
 
           it('should be bound to row cells on multiSelection', function() {
             grid.multiSelection = true;
             column.width = '200px';
 
-            expect(grid.$.scroller._physicalItems[0].cells[1].style.flexBasis).to.eql('calc(200px)');
+            expect(grid.$.scroller._physicalItems[0].cells[1].style.flexBasis).to.eql('200px');
           });
 
           it('should be bound to footer cells', function() {
             column.width = '200px';
 
-            expect(grid.$.scroller.$.footer._rows[0].cells[0].style.flexBasis).to.eql('calc(200px)');
+            // expect(grid.$.scroller.$.footer._rows[0].cells[0].style.flexBasis).to.eql('calc(200px)');
           });
         });
       });
@@ -180,11 +179,6 @@
 
           expect(grid.$.scroller.$.header._rows[0].cells[0].textContent).to.contain('header1');
           expect(grid.$.scroller.$.header._rows[1].cells[0].textContent).to.contain('header2');
-        });
-
-        it('should read colspan from template attributes', function() {
-          expect(column.headers[0].colspan).to.eql(0);
-          expect(column.headers[1].colspan).to.eql(2);
         });
       });
     });
