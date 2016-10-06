@@ -282,6 +282,14 @@
           expect(qLocal('.vaadin-grid-body .vaadin-grid-cell')).to.exist;
         });
       });
+
+      it('should clear selection', function() {
+        grid.selection.select(0);
+
+        grid.refreshItems();
+
+        expect(grid.selection.selected()).to.be.empty;
+      });
     });
 
     describe('size', function() {
