@@ -13,54 +13,6 @@
       is: 'vaadin-grid-column',
 
       properties: {
-        headers: {
-          type: Array,
-          notify: true,
-          value: function() {
-            var headerTemplates = this._templates('header');
-            if (headerTemplates) {
-              return headerTemplates.map(function(t) {
-                var colspan = t.hasAttribute('colspan') && parseInt(t.getAttribute('colspan')) || 0;
-
-                if (this.dataHost) {
-                  // set dataHost to the context where template has been defined
-                  t._rootDataHost = this.dataHost._rootDataHost || this.dataHost;
-                }
-
-                return { template: t, colspan: colspan };
-              }.bind(this));
-            } else {
-              return [];
-            }
-          }
-        },
-        footers: {
-          type: Array,
-          notify: true,
-          value: function() {
-            var headerTemplates = this._templates('footer');
-            if (headerTemplates) {
-              return headerTemplates.map(function(t) {
-                var colspan = t.hasAttribute('colspan') && parseInt(t.getAttribute('colspan')) || 0;
-
-                if (this.dataHost) {
-                  // set dataHost to the context where template has been defined
-                  t._rootDataHost = this.dataHost._rootDataHost || this.dataHost;
-                }
-
-                return { template: t, colspan: colspan };
-              }.bind(this));
-            } else {
-              return [];
-            }
-          }
-        },
-        instances: {
-          type: Array,
-          value: function() {
-            return [];
-          }
-        },
         name: {
           type: String,
           value: ''
@@ -69,12 +21,7 @@
           type: Object,
           notify: true,
           value: function() {
-            var template = Polymer.dom(this).querySelector('template:not([is=header])');
-            if (this.dataHost) {
-              // set dataHost to the context where template has been defined
-              template._rootDataHost = this.dataHost._rootDataHost || this.dataHost;
-            }
-            return template;
+            return this._templates(null)[0];
           }
         },
         width: {
@@ -94,15 +41,10 @@
         grid: Object
       },
 
-      observers: ['_flexChanged(grid, flex)', '_widthChanged(grid, width)'],
-
-      ready: function() {
-        // when using Polymer bindings, default values trickle down using observers.
-        // we're not using bindings between columns and cells so we need to use
-        // and fire notifications manually.
-        this.fire('headers-changed', {value: this.headers});
-        this.fire('footers-changed', {value: this.footers});
-      },
+      observers: [
+        '_flexChanged(grid, flex)',
+        '_widthChanged(grid, width)'
+      ],
 
       _flexChanged: function(grid, flex) {
         var index = grid._columns.indexOf(this);

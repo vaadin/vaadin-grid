@@ -127,12 +127,13 @@
             cell.column = column;
             if (this.objects && this.objects[columnIndex]) {
               // Header and Footer cells
-              cell.template = this.objects[columnIndex].template;
-              if (!cell.template) {
+              var tpl = this.objects[columnIndex].template;
+              if (!tpl) {
                 cell.classList.add('empty');
               } else {
                 cell.colspan = (this.objects[columnIndex].colspan || 1);
                 cell.rowspan = (this.objects[columnIndex].rowspan || 1);
+                cell.template = tpl;
               }
               // TODO: Only cells with templates should be attached
               // But we need a way to size row/colspanned cells (not using flex?)
