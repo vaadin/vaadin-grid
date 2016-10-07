@@ -209,6 +209,47 @@
         };
       });
 
+      it('should not misalign on resize (wheel)', function(done) {
+        init('default-content');
+        scrollToEnd(grid, function() {
+          // Simulate a wheel event that doesn't cause a scroll event
+          var e = new CustomEvent('wheel', {bubbles: true});
+          e.deltaY = 0;
+          e.deltaX = -100;
+          scroller.$.table.dispatchEvent(e);
+
+          setTimeout(function() {
+            // Simulate a (window) resize
+            grid.style.width = '200px';
+            scroller.fire('iron-resize');
+
+            scroller.async(function() {
+              expect(header.getBoundingClientRect().top).to.be.closeTo(scroller.getBoundingClientRect().top, 1);
+              done();
+            }, 100);
+          }, 20); // Debounce period for 'clear-ignorescroll' is 10
+        });
+      });
+
+      it('should not misalign on resize (outer-scroller)', function(done) {
+        init('default-content');
+        scrollToEnd(grid, function() {
+          // Scroll with the outer-scroller
+          scroller.$.outerscroller.scrollTop = 500;
+
+          setTimeout(function() {
+            // Simulate a (window) resize
+            grid.style.width = '200px';
+            scroller.fire('iron-resize');
+
+            scroller.async(function() {
+              expect(header.getBoundingClientRect().top).to.be.closeTo(scroller.getBoundingClientRect().top, 1);
+              done();
+            }, 100);
+          }, 20); // Debounce period for 'clear-ignorescroll' is 10
+        });
+      });
+
     });
   </script>
 
