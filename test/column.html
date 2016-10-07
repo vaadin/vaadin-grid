@@ -18,7 +18,7 @@
     <template>
       <div id="flex">[[columns.0.flex]]</div>
       <div id="width">[[columns.0.width]]</div>
-      <vaadin-grid id="grid" columns="{{columns}}" size="100">
+      <vaadin-grid id="grid" _columns="{{columns}}" size="100">
         <vaadin-grid-column>
           <template>cell</template>
           <template is="header">header1</template>
@@ -73,13 +73,12 @@
         container = fixture('grid');
         grid = container.$.grid;
         grid.dataSource = infiniteDataSource;
-        column = grid.columns[0];
+        column = grid._columns[0];
         flush(done);
       });
 
       it('should handle splices', function() {
-        grid.splice('columns', 0, 1);
-
+        grid.splice('_columns', 0, 1);
         expect(container.columns.length).to.eql(1);
       });
 

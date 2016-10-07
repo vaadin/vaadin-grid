@@ -105,13 +105,13 @@
       },
 
       _flexChanged: function(grid, flex) {
-        var index = grid.columns.indexOf(this);
-        grid.notifyPath('columns.' + index + '.flex', flex);
+        var index = grid._columns.indexOf(this);
+        grid.notifyPath('_columns.' + index + '.flex', flex);
       },
 
       _widthChanged: function(grid, width) {
-        var index = grid.columns.indexOf(this);
-        grid.notifyPath('columns.' + index + '.width', width);
+        var index = grid._columns.indexOf(this);
+        grid.notifyPath('_columns.' + index + '.width', width);
       },
 
       _templates: function(type) {
