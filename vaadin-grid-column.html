@@ -8,11 +8,27 @@
       }
     </style>
   </template>
-  <script>
-    Polymer({
-      is: 'vaadin-grid-column',
+</dom-module>
+<dom-module id="vaadin-grid-column-group">
+  <template>
+    <style>
+      :host {
+        display: none;
+      }
+    </style>
+  </template>
+</dom-module>
 
+<script>
+  (function() {
+    var vaadinGridColumnBehavior = {
       properties: {
+        instances: {
+          type: Array,
+          value: function() {
+            return [];
+          }
+        },
         name: {
           type: String,
           value: ''
@@ -21,44 +37,15 @@
           type: Object,
           notify: true,
           value: function() {
-            return this._templates(null)[0];
+            return this._templates()[0];
           }
         },
-        width: {
-          type: String,
-          value: '100px'
-        },
-
-        flex: {
-          type: Number,
-          value: 1,
-          reflectToAttribute: true
-        },
-
-        /**
-         * Reference to the parent <vaadin-grid> element
-         */
         grid: Object
-      },
-
-      observers: [
-        '_flexChanged(grid, flex)',
-        '_widthChanged(grid, width)'
-      ],
-
-      _flexChanged: function(grid, flex) {
-        var index = grid._columns.indexOf(this);
-        grid.notifyPath('_columns.' + index + '.flex', flex);
-      },
-
-      _widthChanged: function(grid, width) {
-        var index = grid._columns.indexOf(this);
-        grid.notifyPath('_columns.' + index + '.width', width);
       },
 
       _templates: function(type) {
         return Polymer.dom(this).children.filter(function(t) {
-          return t.getAttribute('is') == type;
+          return t.tagName.toLowerCase() == 'template' && t.getAttribute('is') == type;
         }).map(function(t) {
           if (this.dataHost) {
             // set dataHost to the context where template has been defined
@@ -70,14 +57,7 @@
 
       _group: function() {
         var node = Polymer.dom(this).parentNode;
-        return node && node.is == 'vaadin-grid-column' ? node : null;
-      },
-
-      _columns: function() {
-        var r =  Polymer.dom(this).querySelectorAll('vaadin-grid-column').filter(function(col) {
-          return !Polymer.dom(col).querySelectorAll('vaadin-grid-column').length;
-        });
-        return r.length ? r : [this];
+        return node && node.is == 'vaadin-grid-column-group' ? node : null;
       },
 
       _rowCount: function(type) {
@@ -92,17 +72,76 @@
 
       _colCount: function() {
         return this._columns().length;
+      }
+    };
+
+    Polymer({
+      is: 'vaadin-grid-column',
+
+      behaviors: [vaadinGridColumnBehavior],
+
+      properties: {
+        width: {
+          type: String,
+          value: '100px',
+          notify: true
+        },
+
+        flex: {
+          type: Number,
+          value: 1,
+          notify: true
+        }
+      },
+
+      observers: [
+        '_flexChanged(grid, flex)',
+        '_widthChanged(grid, width)'
+      ],
+
+      _columns: function() {
+        return [this];
+      },
+
+      _flexChanged: function(grid, flex) {
+        var index = grid._columns.indexOf(this);
+        grid.notifyPath('_columns.' + index + '.flex', flex);
+      },
+
+      _widthChanged: function(grid, width) {
+        var index = grid._columns.indexOf(this);
+        grid.notifyPath('_columns.' + index + '.width', width);
+      },
+
+      _colWidth: function() {
+        return this.width || '100px';
+      },
+
+      _colFlex: function() {
+        return this.flex || 1;
+      }
+    });
+
+    Polymer({
+      is: 'vaadin-grid-column-group',
+
+      behaviors: [vaadinGridColumnBehavior],
+
+      _columns: function() {
+        var r = Polymer.dom(this).querySelectorAll('vaadin-grid-column');
+        return r.length ? r : [this];
       },
 
       _colWidth: function() {
         return this._columns().map(function(c) {
           return c.width || c.getAttribute('width') || '100px';
-        }).join(' + ');
+        }).join(' + ') || '0px';
       },
 
       _colFlex: function() {
-        return this.flex || parseInt(this.getAttribute('flex')) || 1;
+        return 1;
       }
+
     });
-  </script>
-</dom-module>
+  })();
+</script>

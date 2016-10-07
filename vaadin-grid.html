@@ -21,9 +21,12 @@
       height: 100%;
       width: 100%;
     }
+    .hidden {
+      display: block !important;
+    }
   </style>
   <template>
-    <vaadin-grid-table loading$=[[loading]] bind-data="[[_bindData]]" size="[[size]]" id="scroller" columns="[[_columns]]" frozen-columns=[[_frozenColumns]] content-target=[[_getContentTarget()]] row-details-template=[[rowDetailsTemplate]]>
+    <vaadin-grid-table loading$=[[loading]] bind-data="[[_bindData]]" size="[[size]]" id="scroller" columns="[[_columns]]" frozen-columns=[[frozenColumns]] content-target=[[_getContentTarget()]] row-details-template=[[rowDetailsTemplate]]>
       <content></content>
     </vaadin-grid-table>
   </template>
@@ -80,7 +83,7 @@
     },
 
     ready: function() {
-      this._columns = Polymer.dom(this).querySelectorAll('vaadin-grid-column');
+      this._columns = Polymer.dom(this).querySelectorAll('vaadin-grid-column, vaadin-grid-column-group');
       this.rowDetailsTemplate = Polymer.dom(this).querySelector('template[is=row-details]');
     },
 

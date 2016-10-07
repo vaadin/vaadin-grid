@@ -50,6 +50,8 @@
         this._computeMatrixSizes();
 
         this._configureRows();
+
+        // this._toString();
       },
 
       // Adds a column in the matrix.
@@ -150,6 +152,16 @@
             obj.flex =  col._colFlex() - 1 + obj.colspan;
           }
         }
+      },
+
+      // TODO: remove this, used for debugging.
+      _toString: function() {
+        this.matrix.forEach(function(line, i) {
+          line.forEach(function(o, j) {
+            if(this.type == 'header')
+            console.log(i, j, o.column.classList[0], o.colspan, o.rowspan, o.width, o.flex, o.template ? o.template.classList[0]: '-');
+          }.bind(this))
+        }.bind(this))
       }
     };
 

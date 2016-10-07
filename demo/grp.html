@@ -42,8 +42,8 @@
         </style>
         <vaadin-grid id="component" data-source="[[dataSource]]" size="20"  on-item-changed="_itemChanged">
 
-          <vaadin-grid-column class="group" mcm="G1">
-            <vaadin-grid-column mcm="C1" class="c1">
+          <vaadin-grid-column-group class="G1">
+            <vaadin-grid-column class="C1">
               <template>
                 <span class="elItem">[[item.name]]</span>
               </template>
@@ -55,7 +55,7 @@
               </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column mcm="C2" class="c2">
+            <vaadin-grid-column class="C2">
               <template>
                 <paper-input value="{{item.name}}"></paper-input>
               </template>
@@ -75,51 +75,51 @@
             <template is="footer" class="gf1" colspan="6">
               TGF1
             </template>
-          </vaadin-grid-column>
+          </vaadin-grid-column-group>
 
-          <vaadin-grid-column mcm="G2" class="g2">
-            <vaadin-grid-column mcm="C3">
+          <vaadin-grid-column-group class="G2">
+            <vaadin-grid-column class="C3">
               <template>
                 <div>baz-[[index]]</div>
               </template>
-              <template is="header">
+              <template is="header" class="g2">
                 TC3
               </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column mcm="G3" class="g3">
-              <vaadin-grid-column mcm="C4" colspan="2" width="20px">
+            <vaadin-grid-column-group class="G3">
+              <vaadin-grid-column class="C4" colspan="2" width="20px">
                 <template>
                   [[index]]
                 </template>
-                <template is="header">
+                <template is="header" class="c4">
                   TC4
                 </template>
               </vaadin-grid-column>
-              <vaadin-grid-column mcm="C5" width="20px">
+              <vaadin-grid-column class="C5" width="20px">
                 <template>
                   <progress value="[[index]]" max="25"></progress>
                 </template>
-                <template is="header">
+                <template is="header" class="c5">
                   TC5
                 </template>
               </vaadin-grid-column>
-              <vaadin-grid-column mcm="C6">
+              <vaadin-grid-column class="C6">
                 <template>
                   <paper-checkbox>Details</paper-checkbox>
                 </template>
-                <template is="header">
+                <template is="header" class="c6">
                   TC6
                 </template>
               </vaadin-grid-column>
               <template is="header" class="g3">
                 TG3
               </template>
-            </vaadin-grid-column>
+            </vaadin-grid-column-group>
             <template is="header" class="g2">
               TG2
             </template>
-          </vaadin-grid-column>
+          </vaadin-grid-column-group>
         </vaadin-grid>
       </template>
       <script>

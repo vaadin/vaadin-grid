@@ -252,7 +252,8 @@
     _physicalItemsChanged: function(count, columns, frozenColumns) {
       // We only show in body data columns, not grouping columns
       var itemColumns = columns.filter(function(col) {
-        return !Polymer.dom(col).querySelectorAll('vaadin-grid-column').length;
+        // Not using is because at this point columns are not registered in tests
+        return col.tagName.toLowerCase() == 'vaadin-grid-column';
       });
       var a = [columns[0]];
       this._physicalItems.forEach(function(row) {
