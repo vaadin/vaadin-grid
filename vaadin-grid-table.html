@@ -209,7 +209,7 @@
 
       // observing _physicalCount instead of _physicalItems.length because grid
       // seems to startup somewhat faster without using this.push('_physicalItems')...
-      '_physicalItemsChanged(_physicalCount, columns, frozenColumns)'
+      '_configureItems(_physicalCount, columns, frozenColumns)'
     ],
 
     // The following values aim at avoiding having 2 overlapping semi-invisible
@@ -233,10 +233,7 @@
 
     _columnsChanged: function(e, frozenColumns, physicalItems) {
       if (e.path === 'columns') {
-        physicalItems.forEach(function(row) {
-          row.columns = e.value;
-          row.frozenColumns = frozenColumns;
-        });
+        this._configureItems(this._physicalCount, e.value, frozenColumns);
       } else if (e.path.indexOf('columns.#' === 0)) {
         physicalItems.forEach(function(row) {
           row.notifyPath(e.path, e.value);
@@ -249,13 +246,12 @@
       }.bind(this));
     },
 
-    _physicalItemsChanged: function(count, columns, frozenColumns) {
-      // We only show in body data columns, not grouping columns
+    _configureItems: function(count, columns, frozenColumns) {
+      // Body shows only columns, not groups
       var itemColumns = columns.filter(function(col) {
-        // Not using is because at this point columns are not registered in tests
+        // Not using `is` because at this point columns might not be registered.
         return col.tagName.toLowerCase() == 'vaadin-grid-column';
       });
-      var a = [columns[0]];
       this._physicalItems.forEach(function(row) {
         row.columns = itemColumns;
         row.frozenColumns = frozenColumns;

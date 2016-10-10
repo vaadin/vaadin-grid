@@ -53,7 +53,7 @@
         this._configureRows();
       },
 
-      // Adds a column in the matrix.
+      // Adds a column to the header/footer object matrix.
       //   idx: is the position of the column
       //   rows: is the max number of rows. Note that this is called
       //         recursively so rows is being decreased each interaction.
@@ -74,8 +74,7 @@
       },
 
       // Visit all matrix elements, and sets the appropriate template.
-      //  Supports multiple templates perl column/group (TODO: remove ?)
-      //  Cells without template means blank cells
+      //  Cells without template mean blank cells
       _setMatrixTemplates: function() {
         for (var idx = 0; idx < this.ncols; idx++) {
           for (var row = 0, j = 0, tpls = [], last; row < this.nrows; row++, j++) {
@@ -83,13 +82,13 @@
 
             if (row + 1 < this.nrows)  {
               var next = this.matrix[row + 1][idx];
-              // move up one level the column, if this doesn't have a template.
+              // move up one level the next column, if current one doesn't have a template.
               if (!obj.template) {
                 obj.column = next.column;
                 obj.template = next.template;
               }
               // Remove duplicate templates in the same column
-              if (next.column == obj.column){
+              if (next.column == obj.column) {
                 delete next.template;
               }
             }
@@ -181,6 +180,7 @@
       },
 
       _rowCount: function(columns) {
+        // Returns the max number of rows that header or footer should have
         return Math.max.apply(Math, columns.map(function(c) {
           return c._rowCount(this.type);
         }.bind(this)));

@@ -12,7 +12,6 @@
 
       properties: {
         columns: Array,
-        templates: Array,
         index: Number,
         cells: {
           value: []
@@ -101,18 +100,19 @@
       },
 
       _updateCells: function() {
-        for (var i = 0; i < this.cells.length; i++) {
-          var cell = this.cells[i];
-          if (this.objects && this.objects[i]) {
-             var obj = this.objects[i];
-             cell.style.flexBasis = 'calc(' + obj.width + ')';
-             cell.style.flexGrow = obj.flex;
-             cell.style.display = obj.display || '';
+        this.cells.forEach(function(cell, idx) {
+          if (this.objects && this.objects[idx]) {
+            // headers and footers
+            var obj = this.objects[idx];
+            cell.style.flexBasis = 'calc(' + obj.width + ')';
+            cell.style.flexGrow = obj.flex;
+            cell.style.display = obj.display || '';
           } else {
-            cell.style.flexBasis = this.columns[i].width;
-            cell.style.flexGrow = this.columns[i].flex;
+            // body cells
+            cell.style.flexBasis = this.columns[i].width || this.columns[i].getAttribute('width') || '100px';
+            cell.style.flexGrow = this.columns[i].flex || this.columns[i].getAttribute('flex') || 1;
           }
-        }
+        }.bind(this))
       },
 
       _columnsChanged: function(e, target) {
@@ -135,15 +135,11 @@
               } else {
                 cell.template = tpl;
               }
-              // TODO: Only cells with templates should be attached
-              // But we need a way to size row/colspanned cells (not using flex?)
-              this.listen(cell, 'colspan-changed', '_updateCells');
-              Polymer.dom(this).appendChild(cell);
-              cells.push(cell);
-            } else {
-              Polymer.dom(this).appendChild(cell);
-              cells.push(cell);
             }
+            // TODO: Only cells with templates should be attached
+            // But we need a way to size row/colspanned cells using flex layout.
+            Polymer.dom(this).appendChild(cell);
+            cells.push(cell);
           }.bind(this));
           this.cells = cells;
           this._updateCells();
@@ -208,9 +204,6 @@
 
       _objectsChanged: function(objects, level) {
         this.objects = objects;
-        this.templates = objects.map(function(o){
-          return o.template;
-        });
         this.columns = objects.map(function(o){
           return o.column;
         });
