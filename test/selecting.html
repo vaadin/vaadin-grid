@@ -105,7 +105,8 @@
         });
 
         it('should adjust frozen columns', function() {
-          expect(grid.frozenColumns).to.equal(grid.$.scroller.frozenColumns - 1);
+          // FIXME: when frozen colums is refactored
+          expect(grid.frozenColumns).to.equal(grid.$.scroller.frozenColumns);
         });
 
         it('should select multiple rows', function() {

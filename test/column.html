@@ -168,16 +168,16 @@
 
       describe('cell template', function() {
         it('should read template from light DOM', function() {
-          expect(column._templates().length).to.eql(1);
           expect(grid.$.scroller._physicalItems[0].cells[0].textContent).to.contain('cell');
         });
       });
 
       describe('header templates', function() {
         it('should read templates from light DOM', function() {
-          expect(column._templates('header').length).to.eql(2);
+          window.r = grid.$.scroller.$.header;
           expect(grid.$.scroller.$.header._rows[0].cells[0].textContent).to.contain('header1');
-          expect(grid.$.scroller.$.header._rows[1].cells[0].textContent).to.contain('header2');
+          // Only support one header/footer per column/group
+          expect(grid.$.scroller.$.header._rows[1]).to.be.undefined;
         });
       });
     });

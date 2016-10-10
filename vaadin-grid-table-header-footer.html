@@ -58,17 +58,17 @@
       //   rows: is the max number of rows. Note that this is called
       //         recursively so rows is being decreased each interaction.
       _addColumnToMatrix: function(col, idx, rows) {
-        var tpls = col._templates(this.type);
         // Each element of the matrix has a column o a group
         for (var i = 0; i <= rows; i++) {
-          var parent = i && !tpls[i] ? col._group() : null;
+          var parent = i ? col._group() : null;
           if (parent) {
             this._addColumnToMatrix(parent, idx, rows - i);
             return;
           }
           this.matrix[rows - i] = this.matrix[rows - i] || [];
           this.matrix[rows - i][idx] = {
-            column: col
+            column: col,
+            template: col._colTemplate(this.type)
           }
         }
       },
@@ -81,27 +81,22 @@
           for (var row = 0, j = 0, tpls = [], last; row < this.nrows; row++, j++) {
             var obj = this.matrix[row][idx];
 
-            // We support multiple templates per group and column (TODO: remove ?)
-            if (obj.column != last) {
-              tpls = obj.column._templates(this.type);
-              j = 0;
-            }
-            last = obj.column;
-            obj.template = tpls[j];
-
-            if (!obj.template && row + 1 < this.nrows)  {
-              var next = this.matrix[row + 1][idx].column;
-              // move up one level the column, if column doesn't have a template for this level
-              if (next != obj.column) {
-                obj.column = next;
-                row--;
+            if (row + 1 < this.nrows)  {
+              var next = this.matrix[row + 1][idx];
+              // move up one level the column, if this doesn't have a template.
+              if (!obj.template) {
+                obj.column = next.column;
+                obj.template = next.template;
               }
-            } else {
-              for (var i = idx - 1; i >= 0; i--) {
-                // Remove duplicate templates
-                if (this.matrix[row][i].template == obj.template) {
-                  delete obj.template;
-                }
+              // Remove duplicate templates in the same column
+              if (next.column == obj.column){
+                delete next.template;
+              }
+            }
+            // Remove duplicate templates in the same row
+            for (var i = idx - 1; i >= 0; i--) {
+              if (this.matrix[row][i].template == obj.template) {
+                delete obj.template;
               }
             }
           }

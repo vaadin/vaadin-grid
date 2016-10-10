@@ -49,8 +49,11 @@
 
         <vaadin-grid-column-group>
           <template is="header">group-0</template>
+          <template is="header">group-0-1</template>
+
           <vaadin-grid-column>
             <template is="header">header-1</template>
+            <template is="header">header-1-1</template>
             <template>body-1</template>
           </vaadin-grid-column>
           <vaadin-grid-column>
@@ -158,7 +161,6 @@
         bodyRows = getRows(body);
         grid.dataSource = infiniteDataSource;
       }
-
 
       describe('No templates', function() {
         beforeEach(function() {
@@ -280,7 +282,6 @@
       });
 
       describe('dynamic changes', function() {
-
         // beforeEach(function() {
         //   init('1column1group');
         // });
@@ -294,7 +295,6 @@
         //   // groupColumn.parentNode.removeChild(groupColumn.node);
         //
         // });
-
       });
 
     });

@@ -37,13 +37,13 @@
           type: Object,
           notify: true,
           value: function() {
-            return this._templates()[0];
+            return this._colTemplate();
           }
         },
         grid: Object
       },
 
-      _templates: function(type) {
+      _colTemplate: function(type) {
         return Polymer.dom(this).children.filter(function(t) {
           return t.tagName.toLowerCase() == 'template' && t.getAttribute('is') == type;
         }).map(function(t) {
@@ -52,22 +52,12 @@
             t._rootDataHost = this.dataHost._rootDataHost || this.dataHost;
           }
           return t;
-        }.bind(this));
+        }.bind(this))[0];
       },
 
       _group: function() {
         var node = Polymer.dom(this).parentNode;
         return node && node.is == 'vaadin-grid-column-group' ? node : null;
-      },
-
-      _rowCount: function(type) {
-        if (type) {
-          var ret = this._templates(type).length;
-          ret += Math.max.apply(Math, Polymer.dom(this).children.map(function(c) {
-            return c._rowCount && c._rowCount(type) || 0;
-          }));
-          return !ret && this.is == 'vaadin-grid-column' ? 1 : ret;
-        }
       },
 
       _colCount: function() {
@@ -99,6 +89,10 @@
         '_widthChanged(grid, width)'
       ],
 
+      _rowCount: function() {
+        return 1;
+      },
+
       _columns: function() {
         return [this];
       },
@@ -127,9 +121,14 @@
 
       behaviors: [vaadinGridColumnBehavior],
 
+      _rowCount: function() {
+        return 1 +  Math.max.apply(Math, Polymer.dom(this).children.map(function(c) {
+          return c._rowCount && c._rowCount() || 0;
+        }));
+      },
+
       _columns: function() {
-        var r = Polymer.dom(this).querySelectorAll('vaadin-grid-column');
-        return r.length ? r : [this];
+        return Polymer.dom(this).querySelectorAll('vaadin-grid-column');
       },
 
       _colWidth: function() {
@@ -141,7 +140,6 @@
       _colFlex: function() {
         return 1;
       }
-
     });
   })();
 </script>

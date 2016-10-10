@@ -18,18 +18,22 @@
   <test-fixture id="default">
     <template>
       <vaadin-grid style="height: 400px;" size="1000">
-        <vaadin-grid-column>
-          <template>[[index]]</template>
+        <vaadin-grid-column-group>
           <template is="header">header-1-1</template>
-          <template is="header">header-2-1</template>
-          <template is="footer">footer-1-1</template>
-        </vaadin-grid-column>
-        <vaadin-grid-column>
-          <template>[[index]]</template>
+          <vaadin-grid-column>
+            <template>[[index]]</template>
+            <template is="header">header-2-1</template>
+            <template is="footer">footer-1-1</template>
+          </vaadin-grid-column>
+        </vaadin-grid-column-group>
+        <vaadin-grid-column-group>
           <template is="header">header-1-2</template>
-          <template is="header">header-2-2</template>
-          <template is="footer">footer-1-2</template>
-        </vaadin-grid-column>
+          <vaadin-grid-column>
+            <template>[[index]]</template>
+            <template is="header">header-2-2</template>
+            <template is="footer">footer-1-2</template>
+          </vaadin-grid-column>
+        </vaadin-grid-column-group>
       </vaadin-grid>
     </template>
   </test-fixture>
