@@ -219,8 +219,6 @@
     };
 
     var vaadinGridRowContainerCellBehavior = {
-      observers: ['_rowIndexChanged(rowIndex, _rowContainerObjects)'],
-
       properties: {
         colspan: {
           type: Number,
@@ -232,23 +230,8 @@
           notify: true,
           reflectToAttribute: true
         },
-        rowIndex: Number,
-        _rowContainerObjects: Array,
-        _matrixObject: Object
-      },
-
-      _rowContainerObjectsChanged: function(e) {
-        this._rowContainerObjects = e.detail.value;
-      },
-
-      _rowIndexChanged: function(rowIndex, rowContainerObjects) {
-        if (rowContainerObjects[rowIndex]) {
-          // TODO: mcm remove this logic
-          // this.template = rowContainerObjects[rowIndex].template;
-          // this.colspan = rowContainerObjects[rowIndex].colspan;
-        }
+        rowIndex: Number
       }
-
     };
 
     Polymer({
@@ -303,11 +286,9 @@
         vaadinGridRowContainerCellBehavior
       ],
 
-      _columnChanged: function(column) {
-        this._rowContainerObjects = column.headers;
-        this.listen(column, 'headers-changed', '_rowContainerObjectsChanged');
+      _columnChanged: function() {
+        // Do nothing
       }
-
     });
 
     Polymer({
@@ -321,11 +302,9 @@
         vaadinGridRowContainerCellBehavior
       ],
 
-      _columnChanged: function(column) {
-        this._rowContainerObjects = column.footers;
-        this.listen(column, 'footers-changed', '_rowContainerObjectsChanged');
+      _columnChanged: function() {
+        // Do nothing
       }
-
     });
   })();
 </script>
