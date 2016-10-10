@@ -31,6 +31,7 @@
           return;
         }
 
+
         // Remove groups
         var dataColumns = columns.filter(function(col) {
           return !Polymer.dom(col).querySelectorAll('vaadin-grid-column').length;
@@ -50,8 +51,6 @@
         this._computeMatrixSizes();
 
         this._configureRows();
-
-        // this._toString();
       },
 
       // Adds a column in the matrix.
@@ -132,16 +131,14 @@
 
             // Compute colspan and rowspan. They don't do anything so far.
             obj.colspan = col._colCount();
-            if (col && tpl) {
-              var rowspan = 0;
-              for (var j = i + 1; j < this.nrows; j++) {
-                var next = this.matrix[j][idx];
-                if (!next.template && next.column == col) {
-                  rowspan ++;
-                }
+            var rowspan = 1;
+            for (var j = i + 1; j < this.nrows; j++) {
+              var next = this.matrix[j][idx];
+              if (!next.template && next.column == col) {
+                rowspan ++;
               }
-              obj.rowspan = rowspan;
             }
+            obj.rowspan = rowspan;
 
             // Hide all cells that are covered by colspanned cells
             for (var j = 1; !obj.display && j < obj.colspan && idx + j < this.ncols; j++) {
@@ -152,16 +149,6 @@
             obj.flex =  col._colFlex() - 1 + obj.colspan;
           }
         }
-      },
-
-      // TODO: remove this, used for debugging.
-      _toString: function() {
-        this.matrix.forEach(function(line, i) {
-          line.forEach(function(o, j) {
-            if(this.type == 'header')
-            console.log(i, j, o.column.classList[0], o.colspan, o.rowspan, o.width, o.flex, o.template ? o.template.classList[0]: '-');
-          }.bind(this))
-        }.bind(this))
       }
     };
 
@@ -184,7 +171,6 @@
           row.rowIndex = index;
           row.frozenColumns = this.frozenColumns;
           row._objectsChanged(objects, index);
-          // console.log(this.domHost.domHost);
           row.target = this.domHost.domHost;
           Polymer.dom(this).appendChild(row);
           row._objectsChanged(objects, index);
