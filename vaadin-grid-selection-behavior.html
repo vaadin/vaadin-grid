@@ -47,7 +47,7 @@
 
     observers: [
       '_multiSelectionChanged(multiSelection, columns)',
-      '_selectedItemsChanged(selectedItems.*)'
+      '_selectedItemsChanged(selectedItems.*, size)'
     ],
 
     listeners: {
@@ -146,7 +146,7 @@
       }
     },
 
-    _selectedItemsChanged: function(e) {
+    _selectedItemsChanged: function(e, size) {
       if (e.path === 'selectedItems' || e.path === 'selectedItems.splices') {
         this.$.scroller._physicalItems.forEach(function(row) {
           row.selected = this._isSelected(row.item);

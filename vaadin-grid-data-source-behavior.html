@@ -79,7 +79,12 @@
        *
        * `params.pageSize` Current page size
        */
-      dataSource: Function,
+      dataSource: {
+        type: Function,
+        value: function() {
+          return this._arrayDataSource;
+        }
+      },
 
       /**
        * `true` while data is being requested from the data source.

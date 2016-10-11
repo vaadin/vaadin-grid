@@ -36,10 +36,10 @@
     },
 
     observers: [
-      '_expandedItemsChanged(expandedItems.*, dataSource)'
+      '_expandedItemsChanged(expandedItems.*, dataSource, size)'
     ],
 
-    _expandedItemsChanged: function(expandedItems, dataSource) {
+    _expandedItemsChanged: function(expandedItems, dataSource, size) {
       this._flushItemsDebouncer();
       this.$.scroller._physicalItems.forEach(function(row) {
         row.expanded = this._isExpanded(row.item);
