@@ -40,10 +40,19 @@
           :host ::content tfoot td:last-child {
           }
         </style>
-        <vaadin-grid id="component" data-source="[[dataSource]]" size="20"  on-item-changed="_itemChanged">
+        <vaadin-grid id="component" data-source="[[dataSource]]" size="20"  on-item-changed="_itemChanged" multi-selection>
+
+          <vaadin-grid-column class="C0" width="45px" flex="0">
+            <template>
+              [[index]]
+            </template>
+            <template is="header" class="c0">
+              TC0
+            </template>
+          </vaadin-grid-column>
 
           <vaadin-grid-column-group class="G1">
-            <vaadin-grid-column class="C1" pepe="AAA">
+            <vaadin-grid-column class="C1">
               <template>
                 <span class="elItem">[[item.name]]</span>
               </template>
@@ -60,10 +69,7 @@
                 <paper-input value="{{item.name}}"></paper-input>
               </template>
               <template is="header" class="c2-h1">
-                TC2.H1
-              </template>
-              <template is="header" class="c2-h2">
-                TC2.H2
+                TC2
               </template>
               <template is="footer" class="c2">
                 TCF2
@@ -72,7 +78,7 @@
             <template is="header" class="g1">
               TG1
             </template>
-            <template is="footer" class="gf1" colspan="6">
+            <template is="footer" class="gf1">
               TGF1
             </template>
           </vaadin-grid-column-group>
@@ -88,7 +94,7 @@
             </vaadin-grid-column>
 
             <vaadin-grid-column-group class="G3">
-              <vaadin-grid-column class="C4" colspan="2" width="20px">
+              <vaadin-grid-column class="C4" width="20px">
                 <template>
                   [[index]]
                 </template>

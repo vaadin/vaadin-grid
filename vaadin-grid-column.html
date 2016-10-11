@@ -108,11 +108,11 @@
       },
 
       _colWidth: function() {
-        return this.width || '100px';
+        return this.width || this.getAttribute('width') || '100px';
       },
 
       _colFlex: function() {
-        return this.flex || 1;
+        return this.flex || this.getAttribute('flex') || 1;
       }
     });
 

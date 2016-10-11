@@ -7,8 +7,7 @@
      *  {
      *     column: the original <vaadin-grid-column> or <vaadin-grid-column-group> element.
      *     template: the template associated with the cell.
-     *     colspan: the horizontal size in number of cells that covers.
-     *     rowspan: the vertical size in rows covered.
+     *     flex: the horizontal size in number of cells that covers.
      *     width: the value configured in the column, or the sum of all columns covered if a group.
      *     display: 'none' when the cell is spanned by another one.
      *  }
@@ -31,7 +30,6 @@
           return;
         }
 
-
         // Remove groups
         var dataColumns = columns.filter(function(col) {
           return !Polymer.dom(col).querySelectorAll('vaadin-grid-column').length;
@@ -49,6 +47,8 @@
         this._setMatrixTemplates();
 
         this._computeMatrixSizes();
+
+        this._sortMatrix();
 
         this._configureRows();
       },
@@ -77,9 +77,8 @@
       //  Cells without template mean blank cells
       _setMatrixTemplates: function() {
         for (var idx = 0; idx < this.ncols; idx++) {
-          for (var row = 0, j = 0, tpls = [], last; row < this.nrows; row++, j++) {
+          for (var row = 0; row < this.nrows; row++) {
             var obj = this.matrix[row][idx];
-
             if (row + 1 < this.nrows)  {
               var next = this.matrix[row + 1][idx];
               // move up one level the next column, if current one doesn't have a template.
@@ -87,9 +86,16 @@
                 obj.column = next.column;
                 obj.template = next.template;
               }
-              // Remove duplicate templates in the same column
-              if (next.column == obj.column) {
+              // Remove next template if equals to this, but leave the last one.
+              if (next.column == obj.column && row + 1 < this.nrows - 1) {
                 delete next.template;
+              }
+            }
+            // Remove duplicate templates in the same column
+            for (var i = row - 1; i >= 0; i--) {
+              var prev = this.matrix[i][idx];
+              if (prev.template == obj.template) {
+                delete prev.template;
               }
             }
             // Remove duplicate templates in the same row
@@ -112,8 +118,8 @@
         this.nrows = this.matrix.length;
       },
 
-      // Visit all matrix elements, and compute colspan, rowspan, width and display
-      _computeMatrixSizes() {
+      // Visit all matrix elements, width, flex and display
+      _computeMatrixSizes: function() {
         for (var idx = 0; idx < this.ncols; idx++) {
           for (var i = 0; i < this.nrows; i++) {
             var obj = this.matrix[i][idx];
@@ -123,24 +129,14 @@
             // group/column knows how to compute its width and flex based on children
             obj.width = col._colWidth();
 
-            // Compute colspan and rowspan. They don't do anything so far.
-            obj.colspan = col._colCount();
-            var rowspan = 1;
-            for (var j = i + 1; j < this.nrows; j++) {
-              var next = this.matrix[j][idx];
-              if (!next.template && next.column == col) {
-                rowspan ++;
-              }
-            }
-            obj.rowspan = rowspan;
-
             // Hide all cells that are covered by colspanned cells
-            for (var j = 1; !obj.display && j < obj.colspan && idx + j < this.ncols; j++) {
+            var colspan = col._colCount();
+            for (var j = 1; !obj.display && j < colspan && idx + j < this.ncols; j++) {
               this.matrix[i][idx + j].display = 'none';
             }
 
             // Set flex dimensions
-            obj.flex =  col._colFlex() - 1 + obj.colspan;
+            obj.flex =  col._colFlex() - 1 + colspan;
           }
         }
       }
@@ -195,6 +191,9 @@
 
       _createRow: function() {
         return document.createElement('tr', 'vaadin-grid-table-header-row');
+      },
+
+      _sortMatrix: function() {
       }
     });
 
@@ -206,6 +205,10 @@
 
       _createRow: function() {
         return document.createElement('tr', 'vaadin-grid-table-footer-row');
+      },
+
+      _sortMatrix: function() {
+        this.matrix = this.matrix.reverse();
       }
     });
   })();

@@ -104,6 +104,13 @@
           expect(grid._columns.length).to.equal(3);
         });
 
+        it('selection column should have correct flex styles in body and headers', function() {
+          expect(grid.$.scroller._physicalItems[0].cells[0].style.flexBasis).to.eql('52px');
+          expect(grid.$.scroller.$.header._rows[0].cells[0].style.flexBasis).to.eql('calc(52px)');
+          expect(grid.$.scroller._physicalItems[0].cells[0].style.flexGrow).to.eql('0');
+          expect(grid.$.scroller.$.header._rows[0].cells[0].style.flexGrow).to.eql('0');
+        });
+
         it('should adjust frozen columns', function() {
           // FIXME: when frozen colums is refactored
           expect(grid.frozenColumns).to.equal(grid.$.scroller.frozenColumns);

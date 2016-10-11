@@ -126,8 +126,6 @@
             cell.target = this.target;
             cell.column = column;
             if (this.objects && this.objects[columnIndex]) {
-              cell.colspan = (this.objects[columnIndex].colspan || 1);
-              cell.rowspan = (this.objects[columnIndex].rowspan || 1);
               // Header and Footer cells
               var tpl = this.objects[columnIndex].template;
               if (!tpl) {
@@ -136,8 +134,6 @@
                 cell.template = tpl;
               }
             }
-            // TODO: Only cells with templates should be attached
-            // But we need a way to size row/colspanned cells using flex layout.
             Polymer.dom(this).appendChild(cell);
             cells.push(cell);
           }.bind(this));
