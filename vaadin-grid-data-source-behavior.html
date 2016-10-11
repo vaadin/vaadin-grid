@@ -100,13 +100,13 @@
     },
 
     observers: [
-      'clearCache(pageSize)'
+      'clearCache(pageSize, dataSource)'
     ],
 
     _getCachedItem: function(index) {
       var page = this._getPageForIndex(index);
 
-      var p = this._cache[page];
+      var p = this._cache && this._cache[page];
 
       if (p) {
         return p[index - page * this.pageSize];
@@ -139,7 +139,7 @@
 
     _uncachedPagesForPhysicalItems: function() {
       return this._pagesForPhysicalItems().filter(function(page) {
-        return this._cache === undefined || this._cache[page] === undefined;
+        return this._cache !== undefined && this._cache[page] === undefined;
       }.bind(this));
     },
 
@@ -231,7 +231,7 @@
     /**
      * Clears the cached pages and reloads data from datasource when needed.
      */
-    clearCache: function() {
+    clearCache: function(pageSize, dataSource) {
       this._cache = {};
       this._pendingRequests = {};
       this.$.scroller._update();
