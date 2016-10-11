@@ -8,53 +8,21 @@
       }
     </style>
   </template>
-  <script>
-    Polymer({
-      is: 'vaadin-grid-column',
+</dom-module>
+<dom-module id="vaadin-grid-column-group">
+  <template>
+    <style>
+      :host {
+        display: none;
+      }
+    </style>
+  </template>
+</dom-module>
 
+<script>
+  (function() {
+    var vaadinGridColumnBehavior = {
       properties: {
-        headers: {
-          type: Array,
-          notify: true,
-          value: function() {
-            var headerTemplates = Polymer.dom(this).querySelectorAll('template[is=header]');
-            if (headerTemplates) {
-              return headerTemplates.map(function(t) {
-                var colspan = t.hasAttribute('colspan') && parseInt(t.getAttribute('colspan')) || 0;
-
-                if (this.dataHost) {
-                  // set dataHost to the context where template has been defined
-                  t._rootDataHost = this.dataHost._rootDataHost || this.dataHost;
-                }
-
-                return { template: t, colspan: colspan };
-              }.bind(this));
-            } else {
-              return [];
-            }
-          }
-        },
-        footers: {
-          type: Array,
-          notify: true,
-          value: function() {
-            var headerTemplates = Polymer.dom(this).querySelectorAll('template[is=footer]');
-            if (headerTemplates) {
-              return headerTemplates.map(function(t) {
-                var colspan = t.hasAttribute('colspan') && parseInt(t.getAttribute('colspan')) || 0;
-
-                if (this.dataHost) {
-                  // set dataHost to the context where template has been defined
-                  t._rootDataHost = this.dataHost._rootDataHost || this.dataHost;
-                }
-
-                return { template: t, colspan: colspan };
-              }.bind(this));
-            } else {
-              return [];
-            }
-          }
-        },
         instances: {
           type: Array,
           value: function() {
@@ -69,49 +37,109 @@
           type: Object,
           notify: true,
           value: function() {
-            var template = Polymer.dom(this).querySelector('template:not([is=header])');
-            if (this.dataHost) {
-              // set dataHost to the context where template has been defined
-              template._rootDataHost = this.dataHost._rootDataHost || this.dataHost;
-            }
-            return template;
+            return this._colTemplate();
           }
         },
+        grid: Object
+      },
+
+      _colTemplate: function(type) {
+        return Polymer.dom(this).children.filter(function(t) {
+          return t.tagName.toLowerCase() == 'template' && t.getAttribute('is') == type;
+        }).map(function(t) {
+          if (this.dataHost) {
+            // set dataHost to the context where template has been defined
+            t._rootDataHost = this.dataHost._rootDataHost || this.dataHost;
+          }
+          return t;
+        }.bind(this))[0];
+      },
+
+      _group: function() {
+        var node = Polymer.dom(this).parentNode;
+        return node && node.is == 'vaadin-grid-column-group' ? node : null;
+      },
+
+      _colCount: function() {
+        return this._columns().length;
+      }
+    };
+
+    Polymer({
+      is: 'vaadin-grid-column',
+
+      behaviors: [vaadinGridColumnBehavior],
+
+      properties: {
         width: {
           type: String,
-          value: '100px'
+          value: '100px',
+          notify: true
         },
 
         flex: {
           type: Number,
-          value: 1
-        },
-
-        /**
-         * Reference to the parent <vaadin-grid> element
-         */
-        grid: Object
+          value: 1,
+          notify: true
+        }
       },
 
-      observers: ['_flexChanged(grid, flex)', '_widthChanged(grid, width)'],
+      observers: [
+        '_flexChanged(grid, flex)',
+        '_widthChanged(grid, width)'
+      ],
 
-      ready: function() {
-        // when using Polymer bindings, default values trickle down using observers.
-        // we're not using bindings between columns and cells so we need to use
-        // and fire notifications manually.
-        this.fire('headers-changed', {value: this.headers});
-        this.fire('footers-changed', {value: this.footers});
+      _rowCount: function() {
+        return 1;
+      },
+
+      _columns: function() {
+        return [this];
       },
 
       _flexChanged: function(grid, flex) {
-        var index = grid.columns.indexOf(this);
-        grid.notifyPath('columns.' + index + '.flex', flex);
+        var index = grid._columns.indexOf(this);
+        grid.notifyPath('_columns.' + index + '.flex', flex);
       },
 
       _widthChanged: function(grid, width) {
-        var index = grid.columns.indexOf(this);
-        grid.notifyPath('columns.' + index + '.width', width);
+        var index = grid._columns.indexOf(this);
+        grid.notifyPath('_columns.' + index + '.width', width);
+      },
+
+      _colWidth: function() {
+        return this.width || '100px';
+      },
+
+      _colFlex: function() {
+        return this.flex || 1;
       }
     });
-  </script>
-</dom-module>
+
+    Polymer({
+      is: 'vaadin-grid-column-group',
+
+      behaviors: [vaadinGridColumnBehavior],
+
+      _rowCount: function() {
+        return 1 +  Math.max.apply(Math, Polymer.dom(this).children.map(function(c) {
+          return c._rowCount && c._rowCount() || 0;
+        }));
+      },
+
+      _columns: function() {
+        return Polymer.dom(this).querySelectorAll('vaadin-grid-column');
+      },
+
+      _colWidth: function() {
+        return this._columns().map(function(c) {
+          return c.width || c.getAttribute('width') || '100px';
+        }).join(' + ') || '0px';
+      },
+
+      _colFlex: function() {
+        return 1;
+      }
+    });
+  })();
+</script>

@@ -18,11 +18,11 @@
     <template>
       <div id="flex">[[columns.0.flex]]</div>
       <div id="width">[[columns.0.width]]</div>
-      <vaadin-grid id="grid" columns="{{columns}}" size="100">
+      <vaadin-grid id="grid" _columns="{{columns}}" size="100">
         <vaadin-grid-column>
           <template>cell</template>
           <template is="header">header1</template>
-          <template is="header" colspan="2">header2</template>
+          <template is="header">header2</template>
           <template is="footer">footer1</template>
         </vaadin-grid-column>
         <vaadin-grid-column>
@@ -73,13 +73,12 @@
         container = fixture('grid');
         grid = container.$.grid;
         grid.dataSource = infiniteDataSource;
-        column = grid.columns[0];
+        column = grid._columns[0];
         flush(done);
       });
 
       it('should handle splices', function() {
-        grid.splice('columns', 0, 1);
-
+        grid.splice('_columns', 0, 1);
         expect(container.columns.length).to.eql(1);
       });
 
@@ -105,7 +104,6 @@
             var header = grid.$.scroller.$.header;
 
             expect(header._rows[0].cells[0].style.flexGrow).to.eql('2');
-            expect(header._rows[1].cells[0].style.flexGrow).to.eql('3'); // colspan 2 + 1
           });
 
           it('should be bound to row cells', function() {
@@ -150,14 +148,14 @@
           it('should be bound to row cells', function() {
             column.width = '200px';
 
-            expect(grid.$.scroller._physicalItems[0].cells[0].style.flexBasis).to.eql('calc(200px)');
+            expect(grid.$.scroller._physicalItems[0].cells[0].style.flexBasis).to.eql('200px');
           });
 
           it('should be bound to row cells on multiSelection', function() {
             grid.multiSelection = true;
             column.width = '200px';
 
-            expect(grid.$.scroller._physicalItems[0].cells[1].style.flexBasis).to.eql('calc(200px)');
+            expect(grid.$.scroller._physicalItems[0].cells[1].style.flexBasis).to.eql('200px');
           });
 
           it('should be bound to footer cells', function() {
@@ -176,15 +174,10 @@
 
       describe('header templates', function() {
         it('should read templates from light DOM', function() {
-          expect(column.headers.length).to.eql(2);
-
+          window.r = grid.$.scroller.$.header;
           expect(grid.$.scroller.$.header._rows[0].cells[0].textContent).to.contain('header1');
-          expect(grid.$.scroller.$.header._rows[1].cells[0].textContent).to.contain('header2');
-        });
-
-        it('should read colspan from template attributes', function() {
-          expect(column.headers[0].colspan).to.eql(0);
-          expect(column.headers[1].colspan).to.eql(2);
+          // Only support one header/footer per column/group
+          expect(grid.$.scroller.$.header._rows[1]).to.be.undefined;
         });
       });
     });

@@ -123,6 +123,11 @@
         /*background-color: #f9f9f9;*/
       }
 
+      .empty {
+        /*height: 0px;*/
+        border: none;
+      }
+
       [last-frozen] {
         border-right: 1px solid var(--vaadin-grid-border-color);
       }
@@ -201,7 +206,10 @@
       '_columnsChanged(columns.*, frozenColumns, _physicalItems)',
       '_sizeChanged(size, bindData)',
       '_rowDetailsTemplateChanged(rowDetailsTemplate, _physicalItems, _physicalCount)',
-      '_physicalItemsChanged(_physicalCount, columns, frozenColumns)'
+
+      // observing _physicalCount instead of _physicalItems.length because grid
+      // seems to startup somewhat faster without using this.push('_physicalItems')...
+      '_configureItems(_physicalCount, columns, frozenColumns)'
     ],
 
     // The following values aim at avoiding having 2 overlapping semi-invisible
@@ -225,10 +233,7 @@
 
     _columnsChanged: function(e, frozenColumns, physicalItems) {
       if (e.path === 'columns') {
-        physicalItems.forEach(function(row) {
-          row.columns = e.value;
-          row.frozenColumns = frozenColumns;
-        });
+        this._configureItems(this._physicalCount, e.value, frozenColumns);
       } else if (e.path.indexOf('columns.#' === 0)) {
         physicalItems.forEach(function(row) {
           row.notifyPath(e.path, e.value);
@@ -241,11 +246,14 @@
       }.bind(this));
     },
 
-    _physicalItemsChanged: function(count, columns, frozenColumns) {
-      // observing _physicalCount instead of _physicalItems.length because grid
-      // seems to startup somewhat faster without using this.push('_physicalItems')...
+    _configureItems: function(count, columns, frozenColumns) {
+      // Body shows only columns, not groups
+      var itemColumns = columns.filter(function(col) {
+        // Not using `is` because at this point columns might not be registered.
+        return col.tagName.toLowerCase() == 'vaadin-grid-column';
+      });
       this._physicalItems.forEach(function(row) {
-        row.columns = columns;
+        row.columns = itemColumns;
         row.frozenColumns = frozenColumns;
       });
     },

@@ -21,9 +21,12 @@
       height: 100%;
       width: 100%;
     }
+    .hidden {
+      display: block !important;
+    }
   </style>
   <template>
-    <vaadin-grid-table loading$=[[loading]] bind-data="[[_bindData]]" size="[[size]]" id="scroller" columns="[[columns]]" frozen-columns=[[_frozenColumns]] content-target=[[_getContentTarget()]] row-details-template=[[rowDetailsTemplate]]>
+    <vaadin-grid-table loading$=[[loading]] bind-data="[[_bindData]]" size="[[size]]" id="scroller" columns="[[_columns]]" frozen-columns=[[frozenColumns]] content-target=[[_getContentTarget()]] row-details-template=[[rowDetailsTemplate]]>
       <content></content>
     </vaadin-grid-table>
   </template>
@@ -35,7 +38,7 @@
 
     properties: {
 
-      columns: {
+      _columns: {
         type: Array,
         notify: true
       },
@@ -62,7 +65,7 @@
       vaadin.elements.grid.SelectionBehavior
     ],
 
-    observers: ['_columnsChanged(columns.*)'],
+    observers: ['_columnsChanged(_columns.*)'],
 
     _updateItem: function(row, item) {
       row.style.minHeight = item ? '' : this.$.scroller._physicalAverage + 'px';
@@ -76,24 +79,24 @@
     },
 
     _isFrozenColumn: function(column) {
-      return this.columns.indexOf(column) < this.frozenColumns;
+      return this._columns.indexOf(column) < this.frozenColumns;
     },
 
     ready: function() {
-      this.columns = Polymer.dom(this).querySelectorAll('vaadin-grid-column');
+      this._columns = Polymer.dom(this).querySelectorAll('vaadin-grid-column, vaadin-grid-column-group');
       this.rowDetailsTemplate = Polymer.dom(this).querySelector('template[is=row-details]');
     },
 
     _columnsChanged: function(e) {
-      if (e.path === 'columns') { //new array is set
+      if (e.path === '_columns') { //new array is set
         e.value.forEach(function(col) {
           col.grid = this;
         }.bind(this));
-      } else if (e.path === 'columns.splices' || //array is spliced
-        (e.path.indexOf('columns.#') === 0 && e.path.split('.').length === 2)) { //column is replaced with set
+      } else if (e.path === '_columns.splices' || //array is spliced
+        (e.path.indexOf('_columns.#') === 0 && e.path.split('.').length === 2)) { //column is replaced with set
         // TODO: implement splice support that will add and remove only affected cells.
         // meanwhile, deal with splices as the whole array would change.
-        this.columns = this.columns.slice(0);
+        this._columns = this._columns.slice(0);
       }
     }
   });

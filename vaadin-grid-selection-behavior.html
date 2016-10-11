@@ -46,7 +46,7 @@
     },
 
     observers: [
-      '_multiSelectionChanged(multiSelection, columns)',
+      '_multiSelectionChanged(multiSelection, _columns)',
       '_selectedItemsChanged(selectedItems.*)'
     ],
 
@@ -60,13 +60,13 @@
         this._multiSelectionColumn.grid = this;
         this.listen(this._multiSelectionColumn, 'select-all-changed', '_onSelectAllChanged');
 
-        this.unshift('columns', this._multiSelectionColumn.$.column);
+        this.unshift('_columns', this._multiSelectionColumn.$.column);
       } else if(!multiSelection && this._multiSelectionColumn) {
         this.unlisten(this._multiSelectionColumn, 'select-all-changed', '_onSelectAllChanged');
 
         var index = columns.indexOf(this._multiSelectionColumn.$.column);
         if (index > -1) {
-          this.splice('columns', index, 1);
+          this.splice('_columns', index, 1);
         }
 
         this._multiSelectionColumn = undefined;

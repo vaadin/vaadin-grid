@@ -1,0 +1,305 @@
+<!doctype html>
+
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../../web-component-tester/browser.js"></script>
+
+  <link rel="import" href="helpers.html">
+  <link rel="import" href="../vaadin-grid.html">
+  <style>
+    vaadin-grid {
+      height: 400px;
+      width: 800px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <test-fixture id="no-headers">
+    <template>
+      <vaadin-grid size="1000">
+        <vaadin-grid-column>
+          <template>body-0</template>
+        </vaadin-grid-column>
+        <vaadin-grid-column-group>
+          <vaadin-grid-column>
+            <template>body-1</template>
+          </vaadin-grid-column>
+          <vaadin-grid-column>
+            <template>body-2</template>
+          </vaadin-grid-column>
+        </vaadin-grid-column-group>
+      </vaadin-grid>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="1column1group">
+    <template>
+      <vaadin-grid size="1000">
+        <vaadin-grid-column frozen>
+          <template is="header">header-0</template>
+          <template>body-0</template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column-group>
+          <template is="header">group-0</template>
+          <template is="header">group-0-1</template>
+
+          <vaadin-grid-column>
+            <template is="header">header-1</template>
+            <template is="header">header-1-1</template>
+            <template>body-1</template>
+          </vaadin-grid-column>
+          <vaadin-grid-column>
+            <template is="header">header-2</template>
+            <template>body-2</template>
+          </vaadin-grid-column>
+        </vaadin-grid-column-group>
+      </vaadin-grid>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="nested">
+    <template>
+      <vaadin-grid size="1000">
+        <vaadin-grid-column-group>
+          <template is="header">group-0</template>
+          <template is="footer">group-0</template>
+          <vaadin-grid-column>
+            <template>body-0</template>
+          </vaadin-grid-column>
+          <vaadin-grid-column>
+            <template>body-1</template>
+          </vaadin-grid-column>
+        </vaadin-grid-column-group>
+
+        <vaadin-grid-column-group>
+          <template is="header">group-1</template>
+          <template is="footer">group-1</template>
+          <vaadin-grid-column-group>
+            <template is="header">group-2</template>
+            <template is="footer">group-2</template>
+            <vaadin-grid-column>
+              <template>body-2</template>
+            </vaadin-grid-column>
+            <vaadin-grid-column>
+              <template>body-3</template>
+            </vaadin-grid-column>
+          </vaadin-grid-column-group>
+
+          <vaadin-grid-column-group>
+            <template is="header">group-3</template>
+            <template is="footer">group-3</template>
+            <vaadin-grid-column>
+              <template>body-4</template>
+              <template is="header">header-4</template>
+              <template is="footer">header-4</template>
+            </vaadin-grid-column>
+            <vaadin-grid-column>
+              <template>body-5</template>
+              <template is="header">header-5</template>
+              <template is="footer">footer-5</template>
+            </vaadin-grid-column>
+          </vaadin-grid-column-group>
+        </vaadin-grid>
+      </template>
+    </test-fixture>
+
+  <test-fixture id="repeat">
+    <template>
+      <vaadin-grid style="height: 400px; width: 400px;" size="1000">
+        <template is="dom-repeat">
+          <vaadin-grid-column-group>
+            <template is="header">group</template>
+            <vaadin-grid-column>
+              <template is="header">header-1</template>
+              <template>body-1</template>
+            </vaadin-grid-column>
+            <vaadin-grid-column>
+              <template is="header">header-2</template>
+              <template>body-2</template>
+            </vaadin-grid-column>
+          </vaadin-grid-column-group>
+        </template>
+      </vaadin-grid>
+    </template>
+  </test-fixture>
+
+  <script>
+    describe('column groups', function() {
+      var grid, scroller, header, body, footer, headerRows, footerRows;
+      function getFooterCellContent(row, col) {
+        return getCellContent(getFooterCell(row, col)).innerHTML.trim();
+      }
+      function getHeaderCellContent(row, col) {
+        return getCellContent(getHeaderCell(row, col)).innerHTML.trim();
+      }
+      function getHeaderCell(row, col) {
+        return getRowCells(headerRows[row])[col];
+      }
+      function getFooterCell(row, col) {
+        return getRowCells(footerRows[row])[col];
+      }
+      function getBodyCellContent(row, col) {
+        return getCellContent(getRowCells(bodyRows[row])[col]).innerHTML.trim();
+      }
+
+      function init(fixure) {
+        grid = fixture(fixure);
+        scroller = grid.$.scroller;
+        header = scroller.$.header;
+        body = scroller.$.items;
+        footer = scroller.$.footer;
+        headerRows = getRows(header);
+        footerRows = getRows(footer);
+        bodyRows = getRows(body);
+        grid.dataSource = infiniteDataSource;
+      }
+
+      describe('No templates', function() {
+        beforeEach(function() {
+          init('no-headers');
+        });
+
+        it('should have empty header', function() {
+          expect(header.children.length).to.equal(0);
+        });
+
+        it('should have empty footer', function() {
+          expect(footer.children.length).to.equal(0);
+        });
+      });
+
+      describe('1 column 1 group', function() {
+
+        beforeEach(function() {
+          //  | header-0 | group-0             |
+          //  |          | header-1 | header-2 |
+          init('1column1group');
+        });
+
+        it('should have right amount of rows', function() {
+          expect(headerRows).to.have.length(2);
+        });
+
+        it('should have right amount of columns', function() {
+          expect(getRowCells(headerRows[0])).to.have.length(3);
+        });
+
+        it('should have the right content', function() {
+          [1, 2].forEach(function(index) {
+            expect(getHeaderCellContent(1, index)).to.equal('header-' + index);
+          });
+          expect(getHeaderCellContent(0, 0)).to.equal('header-0');
+          expect(getHeaderCellContent(0, 1)).to.equal('group-0');
+        });
+
+        it('should have the right span', function() {
+          expect(getHeaderCell(0, 1).getAttribute('colspan')).to.equal('2');
+          expect(getHeaderCell(0, 2).style.display).to.equal('none');
+          expect(getHeaderCell(0, 1).clientWidth).to.equal(getHeaderCell(1, 1).clientWidth + getHeaderCell(1, 2).clientWidth);
+        });
+
+        it('should have the right rowspan', function() {
+          expect(getHeaderCell(0, 0).getAttribute('rowspan')).to.equal('2');
+        });
+
+        it('should have the right body template', function() {
+          [0, 1, 2].forEach(function(index) {
+            expect(getBodyCellContent(0, index)).to.equal('body-' + index);
+          });
+        });
+
+        // Disabled until we implement frozen in columns
+        // it('should have a frozen column', function() {
+        //   expect(getHeaderCell(0, 0).getAttribute('frozen')).to.equal('');
+        // });
+      });
+
+
+      describe('Nested groups', function() {
+        beforeEach(function() {
+          //  | group-0             | group-1                                   |
+          //  |           |         | group-2             | group-2             |
+          //  |           |         |           |         | header-4 | header-5 |
+          init('nested');
+        });
+
+        it('should have right content', function() {
+          expect(getHeaderCellContent(0, 0)).to.equal('group-0');
+          expect(getHeaderCellContent(0, 2)).to.equal('group-1');
+          expect(getHeaderCellContent(1, 2)).to.equal('group-2');
+          expect(getHeaderCellContent(1, 4)).to.equal('group-3');
+          expect(getHeaderCellContent(2, 4)).to.equal('header-4');
+          expect(getHeaderCellContent(2, 5)).to.equal('header-5');
+        });
+
+        it('should have right colspan', function() {
+          expect(getHeaderCell(0, 0).getAttribute('colspan')).to.equal('2');
+          expect(getHeaderCell(0, 2).getAttribute('colspan')).to.equal('4');
+          expect(getHeaderCell(1, 2).getAttribute('colspan')).to.equal('2');
+          expect(getHeaderCell(1, 4).getAttribute('colspan')).to.equal('2');
+          expect(getHeaderCell(2, 4).getAttribute('colspan')).to.equal('1');
+          expect(getHeaderCell(2, 5).getAttribute('colspan')).to.equal('1');
+        });
+
+        it('should have rigth rowspan', function() {
+          expect(getHeaderCell(0, 0).getAttribute('rowspan')).to.equal('1');
+          expect(getHeaderCell(1, 0).getAttribute('rowspan')).to.equal('2');
+          expect(getHeaderCell(1, 1).getAttribute('rowspan')).to.equal('2');
+        });
+
+        it('should contain empty cells', function() {
+          expect(getHeaderCell(0,1).children.length).to.equal(0);
+          expect(getHeaderCell(0,1).classList[0]).to.equal('empty');
+          expect(getHeaderCell(0,3).children.length).to.equal(0);
+          expect(getHeaderCell(0,3).classList[0]).to.equal('empty');
+          expect(getHeaderCell(0,4).children.length).to.equal(0);
+          expect(getHeaderCell(0,4).classList[0]).to.equal('empty');
+          expect(getHeaderCell(1,0).children.length).to.equal(0);
+          expect(getHeaderCell(1,0).classList[0]).to.equal('empty');
+          expect(getHeaderCell(1,1).children.length).to.equal(0);
+          expect(getHeaderCell(1,1).classList[0]).to.equal('empty');
+          expect(getHeaderCell(1,3).children.length).to.equal(0);
+          expect(getHeaderCell(1,3).classList[0]).to.equal('empty');
+          expect(getHeaderCell(1,5).children.length).to.equal(0);
+          expect(getHeaderCell(1,5).classList[0]).to.equal('empty');
+          expect(getHeaderCell(2,0).children.length).to.equal(0);
+          expect(getHeaderCell(2,0).classList[0]).to.equal('empty');
+          expect(getHeaderCell(2,1).children.length).to.equal(0);
+          expect(getHeaderCell(2,1).classList[0]).to.equal('empty');
+          expect(getHeaderCell(2,2).children.length).to.equal(0);
+          expect(getHeaderCell(2,2).classList[0]).to.equal('empty');
+          expect(getHeaderCell(2,3).children.length).to.equal(0);
+          expect(getHeaderCell(2,3).classList[0]).to.equal('empty');
+        });
+      });
+
+      describe('dynamic changes', function() {
+        // beforeEach(function() {
+        //   init('1column1group');
+        // });
+
+        // it('should have the right body template', function() {
+        //   var group = Polymer.dom(grid).querySelector('vaadin-grid-column-group');
+        //
+        //   // var columns = Polymer.dom(grid).querySelectorAll('vaadin-grid-column');
+        //   // var groupColumn = Polymer.dom(columns[1]);
+        //   // console.log(groupColumn);
+        //   // groupColumn.parentNode.removeChild(groupColumn.node);
+        //
+        // });
+      });
+
+    });
+  </script>
+
+</body>
+
+</html>

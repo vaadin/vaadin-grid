@@ -56,7 +56,6 @@
         selected: Boolean,
         template: Object,
         target: Object,
-
         _forwardedParentProps: Object
       },
 
@@ -138,16 +137,12 @@
         item.classList.add(itemClass);
 
         if (Polymer.Settings.useShadow) {
-
           Polymer.dom(target).appendChild(item);
-
           var content = document.createElement('content');
           content.setAttribute('select', '.' + itemClass);
           Polymer.dom(this).appendChild(content);
-
         } else {
           // Non-shadow
-
           // Can't use Polymer.dom.appendChild here as using it will "fix"
           // the item later with the style scope of vaadin-grid-table
           this.appendChild(item);
@@ -224,28 +219,19 @@
     };
 
     var vaadinGridRowContainerCellBehavior = {
-      observers: ['_rowIndexChanged(rowIndex, _rowContainerObjects)'],
-
       properties: {
         colspan: {
           type: Number,
-          notify: true
+          notify: true,
+          reflectToAttribute: true
         },
-        rowIndex: Number,
-        _rowContainerObjects: Array
-      },
-
-      _rowContainerObjectsChanged: function(e) {
-        this._rowContainerObjects = e.detail.value;
-      },
-
-      _rowIndexChanged: function(rowIndex, rowContainerObjects) {
-        if (rowContainerObjects[rowIndex]) {
-          this.template = rowContainerObjects[rowIndex].template;
-          this.colspan = rowContainerObjects[rowIndex].colspan;
-        }
+        rowspan: {
+          type: Number,
+          notify: true,
+          reflectToAttribute: true
+        },
+        rowIndex: Number
       }
-
     };
 
     Polymer({
@@ -300,11 +286,9 @@
         vaadinGridRowContainerCellBehavior
       ],
 
-      _columnChanged: function(column) {
-        this._rowContainerObjects = column.headers;
-        this.listen(column, 'headers-changed', '_rowContainerObjectsChanged');
+      _columnChanged: function() {
+        // Do nothing
       }
-
     });
 
     Polymer({
@@ -318,11 +302,9 @@
         vaadinGridRowContainerCellBehavior
       ],
 
-      _columnChanged: function(column) {
-        this._rowContainerObjects = column.footers;
-        this.listen(column, 'footers-changed', '_rowContainerObjectsChanged');
+      _columnChanged: function() {
+        // Do nothing
       }
-
     });
   })();
 </script>

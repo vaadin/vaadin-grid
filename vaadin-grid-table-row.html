@@ -2,6 +2,7 @@
 
 <dom-module id="vaadin-grid-table-row"></dom-module>
 <dom-module id="vaadin-grid-table-header-row"></dom-module>
+<dom-module id="vaadin-grid-table-footer-row"></dom-module>
 
 <script>
   (function() {
@@ -99,27 +100,19 @@
       },
 
       _updateCells: function() {
-        var size = this.cells.length;
-        if (this.columns.length == size) {
-          for (var i = 0, colspan; i < size; i += colspan) {
-            var cell = this.cells[i];
-            colspan = cell.colspan || 1;
-            var width = this.columns[i].width;
-            var flex = this.columns[i].flex;
-
-            // Visit colspanned cells to hide them, and increase parent width and flex.
-            for (var j = i + 1; j < i + colspan; j++) {
-              this.cells[j].style.display = 'none';
-
-              width += ' + ' + this.columns[j].width;
-              flex += this.columns[j].flex;
-            }
-
-            cell.style.flexBasis = 'calc(' + width + ')';
-            cell.style.flexGrow = flex;
-            cell.style.display = '';
+        this.cells.forEach(function(cell, i) {
+          if (this.objects && this.objects[i]) {
+            // headers and footers
+            var obj = this.objects[i];
+            cell.style.flexBasis = 'calc(' + obj.width + ')';
+            cell.style.flexGrow = obj.flex;
+            cell.style.display = obj.display || '';
+          } else {
+            // body cells
+            cell.style.flexBasis = this.columns[i].width || this.columns[i].getAttribute('width') || '100px';
+            cell.style.flexGrow = this.columns[i].flex || this.columns[i].getAttribute('flex') || 1;
           }
-        }
+        }.bind(this))
       },
 
       _columnsChanged: function(e, target) {
@@ -127,21 +120,27 @@
           Polymer.dom(this).innerHTML = '';
 
           var cells = [];
-          var spanning = 0;
-
           e.value.forEach(function(column, columnIndex) {
             var cell = this._createCell();
             cell.index = this.index;
             cell.target = this.target;
             cell.column = column;
-
-            this.listen(cell, 'colspan-changed', '_updateCells');
-
+            if (this.objects && this.objects[columnIndex]) {
+              cell.colspan = (this.objects[columnIndex].colspan || 1);
+              cell.rowspan = (this.objects[columnIndex].rowspan || 1);
+              // Header and Footer cells
+              var tpl = this.objects[columnIndex].template;
+              if (!tpl) {
+                cell.classList.add('empty');
+              } else {
+                cell.template = tpl;
+              }
+            }
+            // TODO: Only cells with templates should be attached
+            // But we need a way to size row/colspanned cells using flex layout.
             Polymer.dom(this).appendChild(cell);
             cells.push(cell);
-
           }.bind(this));
-
           this.cells = cells;
           this._updateCells();
         } else if (e.path.indexOf('columns.#') === 0) {
@@ -196,12 +195,19 @@
     var vaadinGridTableRowContainerRowBehavior = {
 
       properties: {
-        rowIndex: Object
+        rowIndex: Number
       },
 
       observers: [
         '_rowIndexChanged(columns, target, rowIndex)'
       ],
+
+      _objectsChanged: function(objects, level) {
+        this.objects = objects;
+        this.columns = objects.map(function(o){
+          return o.column;
+        });
+      },
 
       _rowIndexChanged: function() {
         this.cells.forEach(function(cell) {
