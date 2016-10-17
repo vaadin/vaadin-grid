@@ -12,7 +12,7 @@ var rl = require('readline');
 var watch = require('gulp-watch');
 
 var gwtproject = 'java';
-var version = '1.2.0-beta1';
+var version = '1.2.0';
 var major = version.replace(/(\d+\.\d+\.).*$/, '$1');
 
 var gwtNocacheJs = 'java/target/vaadin-grid-' + version + '/VaadinGridImport/VaadinGridImport.nocache.js';
