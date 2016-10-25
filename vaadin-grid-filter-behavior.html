@@ -1,54 +1,29 @@
-<script>
-  window.vaadin = window.vaadin || {};
-  vaadin.elements = vaadin.elements || {};
-  vaadin.elements.grid = vaadin.elements.grid || {};
-
-  vaadin.elements.grid.FilterBehavior = {
-    properties: {
-      filters: {
-        value: function() {
-          return [];
-        }
-      }
-    },
-
-    listeners: {
-      'filter-changed': '_filterChanged'
-    },
-
-    _filterChanged: function(e) {
-      if (this.filters.indexOf(e.target) === -1) {
-        this.push('filters', e.target);
-      }
-
-      this.clearCache();
-    },
-
-    _filters: function() {
-      return this.filters.map(function(el) {
-        return {path: el.path, value: el.value};
-      });
-    },
-  };
-</script>
-
 <dom-module id="vaadin-grid-filter">
   <template>
     <style>
       :host {
-        display: block;
+        display: inline-flex;
+      }
+
+      #filter {
+        width: 100%;
+        box-sizing: border-box;
       }
     </style>
+
     <content>
       <input id="filter">
     </content>
+
   </template>
   <script>
     Polymer({
       is: 'vaadin-grid-filter',
 
       properties: {
+
         path: String,
+
         value: String
       },
 
@@ -56,15 +31,13 @@
         'input': '_onInput'
       },
 
-      observers: ['_filterChanged(isAttached, path, value)'],
+      observers: ['_filterChanged(path, value, isAttached)'],
 
       _onInput: function(e) {
-        this.debounce('input', function() {
-          this.value = e.target.value;
-        }, 200);
+        this.value = e.target.value;
       },
 
-      _filterChanged: function(isAttached, path, value) {
+      _filterChanged: function(path, value, isAttached) {
         if (isAttached) {
           this.fire('filter-changed');
         }
@@ -72,3 +45,50 @@
     });
   </script>
 </dom-module>
+
+<script>
+  window.vaadin = window.vaadin || {};
+  vaadin.elements = vaadin.elements || {};
+  vaadin.elements.grid = vaadin.elements.grid || {};
+
+  vaadin.elements.grid.FilterBehavior = {
+    properties: {
+
+      _filters: {
+        value: function() {
+          return [];
+        }
+      }
+
+    },
+
+    listeners: {
+      'filter-changed': '_filterChanged'
+    },
+
+    _filterChanged: function(e) {
+      if (this._filters.indexOf(e.target) === -1) {
+        this._filters.push(e.target);
+      }
+
+      e.stopPropagation();
+
+      this.debounce('filters-changed', function () {
+        this.fire('filters-changed', {
+          filters: this._mapFilters()
+        });
+
+        this.clearCache();
+      }, 200);
+    },
+
+    _mapFilters: function() {
+      return this._filters.map(function(filter) {
+        return {
+          path: filter.path,
+          value: filter.value
+        };
+      });
+    },
+  };
+</script>
