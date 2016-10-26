@@ -19,6 +19,11 @@
             return this._findTemplate('footer');
           }
         },
+        frozen: {
+          type: Boolean,
+          value: false,
+          notify: true
+        },
         headerTemplate: {
           type: Object,
           value: function() {
@@ -31,6 +36,7 @@
 
       observers: [
         '_flexChanged(_flex)',
+        '_frozenChanged(_childColumns, frozen)',
         '_footerTemplateChanged(footerTemplate)',
         '_headerTemplateChanged(headerTemplate)',
         '_widthChanged(_width)'
@@ -59,7 +65,7 @@
       },
 
       _columnPropChanged: function(e) {
-        if (e.detail.path.match(/flex|width/)) {
+        if (/flex|width/.test(e.detail.path)) {
           if (e.target !== this) {
             // stop width/flex changes from child columns/groups from bubbling
             // to the cell of this group.
@@ -71,6 +77,10 @@
           }
 
           this._updateFlexAndWidth();
+        }
+
+        if (/frozen/.test(e.detail.path)) {
+          this.frozen = e.detail.value;
         }
       },
 
@@ -102,6 +112,12 @@
         this.fire('property-changed', {
           path: 'flex',
           value: flex
+        });
+      },
+
+      _frozenChanged: function(childColumns, frozen) {
+        childColumns.forEach(function(col) {
+          col.frozen = frozen;
         });
       },
 

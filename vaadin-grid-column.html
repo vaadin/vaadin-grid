@@ -49,12 +49,25 @@
         flex: {
           type: Number,
           value: 1
+        },
+
+        frozen: {
+          type: Boolean,
+          value: false,
+          notify: true
+        },
+
+        lastFrozen: {
+          type: Boolean,
+          value: false,
+          notify: true
         }
       },
 
       observers: ['_headerTemplateChanged(headerTemplate)', '_flexChanged(flex)',
                   '_footerTemplateChanged(footerTemplate)', '_widthChanged(width)',
-                  '_templateChanged(template)'],
+                  '_templateChanged(template)', '_frozenChanged(frozen)',
+                  '_lastFrozenChanged(lastFrozen)'],
 
       _findTemplate: function(type) {
         var template = Polymer.dom(this).children.filter(function(el) {
@@ -77,6 +90,17 @@
 
       _flexChanged: function(flex) {
         this.fire('property-changed', {path: 'flex', value: flex});
+      },
+
+      _frozenChanged: function(frozen) {
+        this.fire('property-changed', {path: 'frozen', value: frozen});
+      },
+
+      _lastFrozenChanged: function(lastFrozen) {
+        // Note that this property gets bubbled through column-groups and
+        // all the way up the header cells of group columns. So that's the
+        // reason why column-groups don't have this property at all.
+        this.fire('property-changed', {path: 'lastFrozen', value: lastFrozen});
       },
 
       _footerTemplateChanged: function(footerTemplate) {

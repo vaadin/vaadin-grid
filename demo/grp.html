@@ -41,8 +41,7 @@
           }
         </style>
         <vaadin-grid id="component" data-source="[[dataSource]]" size="20"  on-item-changed="_itemChanged" multi-selection>
-
-          <vaadin-grid-column class="C0" width="45px" flex="0">
+          <vaadin-grid-column class="C0" width="445px" flex="0">
             <template>
               [[index]]
             </template>
@@ -51,7 +50,7 @@
             </template>
           </vaadin-grid-column>
 
-          <vaadin-grid-column-group class="G1">
+          <vaadin-grid-column-group class="G1" frozen>
             <vaadin-grid-column class="C1">
               <template>
                 <span class="elItem">[[item.name]]</span>
