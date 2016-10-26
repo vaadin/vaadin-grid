@@ -1,5 +1,3 @@
-<link rel="import" href="vaadin-grid-table-cell.html">
-
 <dom-module id="vaadin-grid-sizer">
   <template>
     <style>
@@ -18,8 +16,8 @@
       }
     </style>
 
-    <template is="dom-repeat" items="[[_columns]]" as="column">
-      <vaadin-grid-sizer-cell column="[[column]]">&nbsp;</vaadin-grid-sizer-cell>
+    <template is="dom-repeat" items="[[columns]]" as="column">
+      <div class="cell" style$="flex-basis: [[column.width]]; flex-grow: [[column.flex]]">&nbsp;</div>
     </template>
 
   </template>
@@ -32,19 +30,12 @@
       properties: {
         columns: Array,
 
-        scrollHeight: Number,
-
-        _columns: Array
+        scrollHeight: Number
       },
 
       observers: [
-        '_columnsChanged(columns)',
         '_scrollHeightChanged(scrollHeight)'
       ],
-
-      _columnsChanged: function(columns) {
-        this._columns = columns[columns.length - 1];
-      },
 
       _scrollHeightChanged: function(scrollHeight) {
         this.style.top = scrollHeight + 'px';
