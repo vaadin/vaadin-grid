@@ -151,7 +151,7 @@
 
       _columnPropChanged: function(e) {
         if (e.target !== this && !/frozen/.test(e.detail.path)) {
-          // Only `frozen` should bubble up so as groups freeze themselves and children
+          // Only `frozen` should bubble up so as groups freeze  themselves and children
           e.stopPropagation();
           e.stopImmediatePropagation();
         }
