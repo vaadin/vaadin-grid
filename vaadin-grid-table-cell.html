@@ -31,6 +31,7 @@
         template: Object,
         target: Object,
         width: String,
+        hidden: Boolean,
 
         _forwardedParentProps: Object
       },
@@ -43,7 +44,8 @@
         '_forwardedParentPropsChanged(_forwardedParentProps.*, instance)',
         '_selectedChanged(selected, instance)',
         '_toggleContent(isAttached, _cellContent)',
-        '_widthChanged(width)'
+        '_widthChanged(width)',
+        '_hiddenChanged(hidden)'
       ],
 
       created: function() {
@@ -63,11 +65,12 @@
         this.footerTemplate = column.footerTemplate;
         this.template = column.template;
         this.width = column.width;
+        this.hidden = column.hidden;
 
         if (column._childColumns) {
           this.colSpan = column._childColumns.length;
         }
-
+        
         this.listen(column, 'property-changed', '_columnPropChanged');
       },
 
@@ -111,6 +114,10 @@
 
       _widthChanged: function(width) {
         this.style.flexBasis = width;
+      },
+
+      _hiddenChanged: function(hidden) {
+        this.style.display = hidden ? 'none' : '';
       },
 
       _templateChanged: function(template, target) {

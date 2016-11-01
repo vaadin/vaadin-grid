@@ -131,6 +131,23 @@
             scroller.$.table.scrollLeft = defaultCellWidth;
 
           });
+
+          it('should have the correct last-frozen cell in a row with hidden columns', function() {
+            scroller.columnTree[0][1].frozen = scroller.columnTree[0][2].frozen = true;
+
+            containerRows = getRows(containerElement);
+            var cells = getRowCells(containerRows[0]);
+
+            expect(cells[0].hasAttribute('last-frozen')).not.to.be.true;
+            expect(cells[1].hasAttribute('last-frozen')).not.to.be.true;
+            expect(cells[2].hasAttribute('last-frozen')).to.be.trues;
+
+            scroller.columnTree[0][2].hidden = true;
+
+            expect(cells[0].hasAttribute('last-frozen')).not.to.be.true;
+            expect(cells[1].hasAttribute('last-frozen')).to.be.true;
+            expect(cells[2].hasAttribute('last-frozen')).not.to.be.true;
+          });
         });
       });
 

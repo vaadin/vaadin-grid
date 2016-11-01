@@ -114,6 +114,52 @@
         expect(columns[0].frozen).to.be.true;
         expect(columns[1].frozen).to.be.true;
       });
+
+      it('should default column groups hidden property to undefined', function() {
+        expect(group.hidden).to.eql(undefined);
+      });
+
+      it('should hide child columns', function() {
+        group.hidden = true;
+
+        expect(columns[0].hidden).to.be.true;
+        expect(columns[1].hidden).to.be.true;
+      });
+
+      it('should not change hidden property when child columns are hidden', function() {
+        group.hidden = true;
+
+        columns[0].hidden = false;
+
+        expect(group.hidden).to.be.true;
+      });
+
+      it('should notify header cell for hidden', function(done) {
+        group.hidden = true;
+
+        group.addEventListener('property-changed', function(e) {
+          if (e.detail.path === 'hidden' && e.target.is === 'vaadin-grid-column-group') {
+            expect(e.detail.value).to.eql(false);
+            done();
+          }
+        });
+
+        columns[0].hidden = false;
+
+        expect(group.hidden).to.be.true;
+      });
+
+      it('should calculate column group width after hiding a column', function() {
+        columns[0].hidden = true;
+
+        expect(group._width).to.eql('calc(200px)');
+      });
+
+      it('should calculate column group flex after hiding a column', function() {
+        columns[0].hidden = true;
+
+        expect(group._flex).to.eql(2);
+      });
     });
   </script>
 

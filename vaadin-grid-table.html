@@ -243,15 +243,19 @@
         this.toggleAttribute('has-templates', true, this.$.footer);
       }
 
-      if ('frozen' === e.detail.path) {
+      if (/frozen|hidden/.test(e.detail.path)) {
         this._frozenCellsChanged();
 
         var columnsRow = this.columnTree[this.columnTree.length - 1];
         var lastFrozen = columnsRow.reduce(function(prev, col, index) {
           col._lastFrozen = false;
-          return col.frozen ? index : prev;
+          return col.frozen && !col.hidden ? index : prev;
         }, 0);
         columnsRow[lastFrozen]._lastFrozen = true;
+      }
+
+      if ('hidden' === e.detail.path) {
+        this.notifyResize();
       }
 
       e.stopPropagation();

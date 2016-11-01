@@ -258,6 +258,19 @@
           expect(getHeaderCell(1, 1).hasAttribute('frozen')).to.be.true;
           expect(getHeaderCell(1, 2).hasAttribute('frozen')).to.be.true;
         });
+
+        it('should hide column group cells on hide', function() {
+          Polymer.dom(grid).querySelector('vaadin-grid-column-group').hidden = true;
+
+          expect(getHeaderCell(0, 1).style.display).to.eql('none');
+        });
+
+        it('should hide column cells on column group hide', function() {
+          Polymer.dom(grid).querySelector('vaadin-grid-column-group').hidden = true;
+
+          expect(getHeaderCell(1, 1).style.display).to.eql('none');
+          expect(getHeaderCell(1, 2).style.display).to.eql('none');
+        });
       });
 
 
