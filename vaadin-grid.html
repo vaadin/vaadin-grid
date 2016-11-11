@@ -765,8 +765,8 @@ See the [demo](demo/index.html) for use case examples.
        *    }
        *  };
        * ```
-       * @property {function} cellClassGenerator
-       * @type {function}
+       * @property {Function} cellClassGenerator
+       * @type {Function}
        */
       cellClassGenerator: {
         type: Function,
@@ -782,7 +782,7 @@ See the [demo](demo/index.html) for use case examples.
        * ```
        *
        * @default false
-       * @type {boolean}
+       * @type {Boolean}
        */
       disabled: {
         type: Boolean,
@@ -796,8 +796,8 @@ See the [demo](demo/index.html) for use case examples.
        *
        * See the API documentation for “header” for more details.
        *
-       * @property {header} footer
-       * @type {header}
+       * @property {Header} footer
+       * @type {Header}
        */
       header: {
         type: Object,
@@ -841,8 +841,8 @@ See the [demo](demo/index.html) for use case examples.
        *
        * See the API documentation for “footer” for more details.
        *
-       * @property {footer} footer
-       * @type {footer}
+       * @property {Footer} footer
+       * @type {Footer}
        */
       footer: {
         type: Object,
@@ -891,7 +891,7 @@ See the [demo](demo/index.html) for use case examples.
        * ```
        *
        * @default 0
-       * @type {number}
+       * @type {Number}
        */
       frozenColumns: {
         type: Number,
@@ -936,8 +936,8 @@ See the [demo](demo/index.html) for use case examples.
        *  };
        *  ```
        *
-       * @property {(Array<Object>|function)} items
-       * @type {(Array<Object>|function)}
+       * @property {(Array<Object>|Function)} items
+       * @type {(Array<Object>|Function)}
        */
       items: {
         type: Object
@@ -949,8 +949,8 @@ See the [demo](demo/index.html) for use case examples.
        * See the API documentation for “column” for more details about the
        * column objects.
        *
-       * @property {Array<object>} columns
-       * @type {Array<object>}
+       * @property {Array<Object>} columns
+       * @type {Array<Object>}
        */
       columns: {
         type: Array,
@@ -971,8 +971,8 @@ See the [demo](demo/index.html) for use case examples.
        * };
        *```
        *
-       * @property {function} rowClassGenerator
-       * @type {function}
+       * @property {Function} rowClassGenerator
+       * @type {Function}
        */
       rowClassGenerator: {
         type: Function,
@@ -992,8 +992,8 @@ See the [demo](demo/index.html) for use case examples.
        * };
        *```
        *
-       * @property {function} rowDetailsGenerator
-       * @type {function}
+       * @property {Function} rowDetailsGenerator
+       * @type {Function}
        */
       rowDetailsGenerator: {
         type: Function,
@@ -1005,8 +1005,8 @@ See the [demo](demo/index.html) for use case examples.
        *
        * See the API documentation for the “selection” object for more details.
        *
-       * @property {selection} selection
-       * @type {selection}
+       * @property {Selection} selection
+       * @type {Selection}
        * @default {}
        */
       selection: {
@@ -1061,8 +1061,8 @@ See the [demo](demo/index.html) for use case examples.
        *
        * See the API documentation for the “sort-order” object for more details.
        *
-       * @property {Array<sort-order>}
-       * @type {Array<sort-order>}
+       * @property {Array<SortOrder>}
+       * @type {Array<SortOrder>}
        */
       sortOrder: {
         type: Array,
@@ -1093,9 +1093,9 @@ See the [demo](demo/index.html) for use case examples.
        * <vaadin-grid visible-rows="5">...</vaadin-grid>
        * ```
        *
-       * @property {number} visibleRows
+       * @property {Number} visibleRows
        * @default 10
-       * @type {number}
+       * @type {Number}
        */
       visibleRows: {
         type: Number,
@@ -1110,9 +1110,9 @@ See the [demo](demo/index.html) for use case examples.
       /**
        * Boolean property to set whether column reordering is allowed by the grid.
        *
-       * @property {boolean} columnReorderingAllowed
+       * @property {Boolean} columnReorderingAllowed
        * @default false
-       * @type {boolean}
+       * @type {Boolean}
        */
       columnReorderingAllowed: {
         type: Boolean,
