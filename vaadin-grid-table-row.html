@@ -93,19 +93,19 @@
         target.$.scroller._update();
       },
 
-      _rowDetailsCellIndexChanged: function(_rowDetailsCell, index, target) {
+      _rowDetailsCellIndexChanged: function(_rowDetailsCell, index) {
         if (_rowDetailsCell) {
           _rowDetailsCell.index = index;
           this.style.paddingBottom = _rowDetailsCell.style.height = _rowDetailsCell.clientHeight + 'px';
         }
       },
 
-      _columnsChanged: function(columns, target) {
+      _columnsChanged: function(columns) {
         Polymer.dom(this).innerHTML = '';
 
         var cells = [];
 
-        columns.forEach(function(column, columnIndex) {
+        columns.forEach(function(column) {
           var cell = this._createCell();
           cell.index = this.index;
           cell.target = this.target;
@@ -120,7 +120,7 @@
         this.cells = cells;
       },
 
-      _indexChanged: function(index, cells, _rowDetailsCell) {
+      _indexChanged: function(index, cells) {
         this.toggleAttribute('odd', index % 2);
         cells.forEach(function(cell) {
           cell.index = index;

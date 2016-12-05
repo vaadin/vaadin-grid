@@ -279,7 +279,7 @@
       });
     },
 
-    _columnTreeChanged: function(columnTree, physicalItems, count) {
+    _columnTreeChanged: function(columnTree, physicalItems) {
       this._frozenCellsChanged();
       this._hasTemplatesChanged(columnTree);
 
@@ -378,11 +378,11 @@
      * Update the models, the position of the
      * items in the viewport and recycle tiles as needed.
      */
-    _scrollHandler: function(e) {
+    _scrollHandler: function() {
       // clamp the `scrollTop` value
       var scrollTop = Math.max(0, Math.min(this._maxScrollTop, this._scrollTop));
       var delta = scrollTop - this._scrollPosition;
-      var tileHeight, tileTop, kth, recycledTileSet, scrollBottom, physicalBottom;
+      var tileHeight, kth, recycledTileSet, scrollBottom, physicalBottom;
       var ratio = this._ratio;
       var recycledTiles = 0;
       var hiddenContentSize = this._hiddenContentSize;

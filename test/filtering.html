@@ -52,7 +52,7 @@
       });
 
       it('should fire `filter-changed` on value change', function(done) {
-        filter.addEventListener('filter-changed', function(e) {
+        filter.addEventListener('filter-changed', function() {
           done();
         });
 
@@ -60,7 +60,7 @@
       });
 
       it('should fire `filter-changed` on path change', function(done) {
-        filter.addEventListener('filter-changed', function(e) {
+        filter.addEventListener('filter-changed', function() {
           done();
         });
 
@@ -68,7 +68,7 @@
       });
 
       it('should update value after `input` event from a child', function(done) {
-        filter.addEventListener('filter-changed', function(e) {
+        filter.addEventListener('filter-changed', function() {
           expect(filter.value).to.eql('foo');
           done();
         });

@@ -47,7 +47,7 @@
 
 <script>
 (function() {
-  window.getJSON = function(url, callback) {
+  window.getJSON = function(url) {
     if (url.indexOf('randomuser.me') > -1) {
       var index = parseInt(getParameterByName(url, 'index') || 0);
       return JSON.parse(JSON.stringify(users.results[index % users.results.length])); //clone object
@@ -61,7 +61,7 @@
     return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
   }
 
-  window.users = {
+  var users = {
     "results": [{
       "user": {
         "gender": "female",
