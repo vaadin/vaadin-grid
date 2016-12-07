@@ -104,7 +104,7 @@
   <script>
     describe('rows', function() {
 
-      var grid, scroller, rows, defaultHeight, wrappers;
+      var grid, scroller, header, rows, defaultHeight, wrappers;
       var dataSourceDelay = 200;
 
       function init(fixtureName) {
@@ -119,8 +119,9 @@
         grid.addEventListener('items-assigned', listener);
 
         scroller = grid.$.scroller;
+        header = grid.$.scroller.$.header;
         rows = getRows(scroller.$.items);
-        defaultHeight = getRowCells(getRows(grid.$.scroller.$.header)[0])[0].clientHeight + 1;
+        defaultHeight = getRowCells(getRows(header)[0])[0].clientHeight + 1;
         grid.dataSource = function(info, callback) {
           setTimeout(function() {
             var startIndex = info.pageSize * info.page;

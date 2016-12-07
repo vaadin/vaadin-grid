@@ -51,7 +51,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           list.scrollTop = 0;
 
           var lastItem = list._physicalItems[list.lastVisibleIndex];
-          var lastItemHeight = lastItem.offsetHeight;
           var expectedFinalItem = Math.round(container.listHeight/list._physicalAverage) - 1;
 
           assert.equal(list.offsetHeight, container.listHeight);

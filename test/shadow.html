@@ -1,0 +1,52 @@
+<!doctype html>
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE
+The complete set of authors may be found at http://polymer.github.io/AUTHORS
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS
+-->
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>Tests Shadow DOM</title>
+  <script src="../../web-component-tester/browser.js"></script>
+</head>
+<body>
+  <script>
+    WCT._config.environmentScripts.push('webcomponentsjs/webcomponents.js');
+
+    WCT.loadSuites([
+      'basic.html?dom=shadow',
+      'column.html?dom=shadow',
+      'column-group.html?dom=shadow',
+      'column-groups.html?dom=shadow',
+      'data-source.html?dom=shadow',
+      'filtering.html?dom=shadow',
+      // 'focus.html?dom=shadow',
+      // 'mutations.html?dom=shadow',
+      'physical-count.html?dom=shadow',
+      'hidden-list.html?dom=shadow',
+      'million-dollar-scrolling.html?dom=shadow',
+      // 'selection.html?dom=shadow',
+      'dynamic-item-size.html?dom=shadow',
+      // 'different-heights.html?dom=shadow',
+      // 'grid.html?dom=shadow',
+      'frozen-columns.html?dom=shadow',
+      'outer-scroller.html?dom=shadow',
+      'templates.html?dom=shadow',
+      'scrolling-mode.html?dom=shadow',
+      'row-height.html?dom=shadow',
+      'row-details.html?dom=shadow',
+      'selecting.html?dom=shadow',
+      'style-scope.html?dom=shadow',
+      'array-data-source.html?dom=shadow',
+      'sorting.html?dom=shadow',
+      'light-dom-observing.html?dom=shadow'
+    ]);
+  </script>
+</body>
+</html>

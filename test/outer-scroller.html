@@ -61,7 +61,7 @@
 
       it('should invoke onScroll synchronously', function() {
         var spy = sinon.spy(scroller, '_translateStationaryElements');
-        outerscroller._syncScrollTarget();
+        outerScroller._syncScrollTarget();
         expect(spy.called).to.be.true;
       });
 
@@ -117,7 +117,9 @@
           var has = false;
           try {
             has = Boolean(new MouseEvent('x'));
-          } catch (_) {}
+          } catch (_) {
+            // continue regardless of error
+          }
           return has;
         })();
 

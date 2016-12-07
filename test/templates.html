@@ -131,7 +131,7 @@
       });
 
       it('should not fire an event when a focusable element is clicked', function(done) {
-        grid.addEventListener('cell-click', function(e) {
+        grid.addEventListener('cell-click', function() {
           done('Should not come here!');
         });
 

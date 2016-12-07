@@ -62,15 +62,6 @@
       return getCell(0);
     }
 
-    function getHeaderCell(index) {
-      return grid.$.scroller.$.header.querySelectorAll('th')[index];
-    }
-
-    function getFirstHeaderCell() {
-      return getHeaderCell(0);
-    }
-
-
     function simulateScrollToStart(done) {
       // make sure not over scroll more than the delta threshold limit of 10k.
       var table = grid.$.scroller.$.table;
@@ -103,10 +94,6 @@
 
       table.addEventListener('scroll', handler);
       table.scrollTop += 2500;
-    }
-
-    function scrollToEnd() {
-      grid.$.scroller.$.table.scrollTop = grid.$.scroller.$.table.scrollHeight;
     }
 
     describe('data-source', function() {
@@ -222,7 +209,7 @@
       });
 
       it('should apply `loading` attribute to scroller', function(done) {
-        container.dataSource = function(opts, callback) {
+        container.dataSource = function() {
           expect(grid.$.scroller.hasAttribute('loading')).to.be.true;
 
           // prevent done from being multiple times.

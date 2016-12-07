@@ -22,7 +22,7 @@
       '_itemsChanged(items, items.*)'
     ],
 
-    _itemsChanged: function(items, splices) {
+    _itemsChanged: function(items) {
       this.size = (items || []).length;
       this.dataSource = this.dataSource || this._arrayDataSource;
       this.clearCache();
@@ -68,7 +68,7 @@
     },
 
     _filter: function(items) {
-      return items.filter(function(item, index) {
+      return items.filter(function(item) {
         return this._filters.filter(function(filter) {
           var value = Polymer.Base.get(filter.path, item) || '';
           return value.toString().toLowerCase().indexOf(filter.value.toString().toLowerCase()) === -1;

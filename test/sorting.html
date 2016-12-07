@@ -51,7 +51,7 @@
     describe('sorting', function() {
 
       describe('sorter', function() {
-        var sorter, title, button, indicators, directionIndicator, orderIndicator;
+        var sorter, title, button, indicators, orderIndicator;
 
         function click(element) {
           Polymer.Base.fire('click', {}, {
@@ -65,7 +65,6 @@
           title = Polymer.dom(sorter).querySelector('.title');
           button = Polymer.dom(sorter).querySelector('button');
           indicators = Polymer.dom(sorter.root).querySelector('#indicators');
-          directionIndicator = Polymer.dom(sorter.root).querySelector('#direction');
           orderIndicator = Polymer.dom(sorter.root).querySelector('#order');
         });
 

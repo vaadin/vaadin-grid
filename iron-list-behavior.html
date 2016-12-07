@@ -11,7 +11,6 @@
     var IOS = navigator.userAgent.match(/iP(?:hone|ad;(?: U;)? CPU) OS (\d+)/);
     var IOS_TOUCH_SCROLLING = IOS && IOS[1] >= 8;
     var DEFAULT_PHYSICAL_COUNT = 25;
-    var SECRET_TABINDEX = -100;
 
     return ({
 
@@ -543,7 +542,7 @@
         var prevAvgCount = this._physicalAverageCount;
         var prevPhysicalAvg = this._physicalAverage;
 
-        this._iterateItems(function(pidx, vidx) {
+        this._iterateItems(function(pidx) {
 
           oldPhysicalSize += this._physicalSizes[pidx] || 0;
           this._physicalSizes[pidx] = this._physicalItems[pidx].offsetHeight;
@@ -571,7 +570,7 @@
 
         var y = this._physicalTop;
 
-        this._iterateItems(function(pidx, vidx) {
+        this._iterateItems(function(pidx) {
 
           this.translate3d(0, y + 'px', 0, this._physicalItems[pidx]);
           y += this._physicalSizes[pidx];
