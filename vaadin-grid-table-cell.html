@@ -147,9 +147,15 @@
       _toggleContent: function(isAttached, cellContent) {
         if (Polymer.Settings.useShadow) {
           if (isAttached) {
-            Polymer.dom(this.target).appendChild(cellContent);
-          } else if (cellContent.parentNode) {
-            Polymer.dom(this.target).removeChild(cellContent);
+            if (!cellContent.parentNode) {
+              this.target.appendChild(cellContent);
+            }
+          } else {
+            this.debounce('remove-content', function() {
+              if (!this.isAttached && cellContent.parentNode) {
+                this.target.removeChild(cellContent);
+              }
+            }, 1);
           }
         }
       },
