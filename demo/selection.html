@@ -10,8 +10,9 @@
 
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
 
-  <link rel="import" href="../../paper-checkbox/paper-checkbox.html">
   <link rel="import" href="../../paper-button/paper-button.html">
+  <link rel="import" href="../vaadin-grid-selection-column.html">
+
 
   <link rel="import" href="common.html">
 </head>
@@ -31,8 +32,10 @@
     <demo-snippet>
       <template>
         <template is="dom-bind">
-          <x-data-source data-source="{{dataSource}}"></x-data-source>
-          <vaadin-grid data-source="[[dataSource]]" size="200" multi-selection>
+          <x-array-data-source items="{{items}}"></x-array-data-source>
+          <vaadin-grid items="[[items]]">
+            <vaadin-grid-selection-column>
+            </vaadin-grid-selection-column>
             <vaadin-grid-column width="50px">
               <template class="header">#</template>
               <template>[[index]]</template>
