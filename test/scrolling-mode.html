@@ -82,24 +82,32 @@
         expect(wheel(0, 1).defaultPrevented).to.be.true;
 
         scrollToEnd(grid, function() {
-          expect(wheel(0, 1).defaultPrevented).to.be.false;
-          expect(wheel(0, -1).defaultPrevented).to.be.true;
-          done();
+          Polymer.Base.async(function() {
+            expect(wheel(0, 1).defaultPrevented).to.be.false;
+            expect(wheel(0, -1).defaultPrevented).to.be.true;
+            done();
+          }, 500); // Wait until wheel cancel period finishes
         }.bind(this));
-
       });
 
-
-      it('should only cancel wheel events when scrolling is possible - horizontal', function() {
+      it('should only cancel wheel events when scrolling is possible - horizontal', function(done) {
         expect(wheel(-1, 0).defaultPrevented).to.be.false;
         expect(wheel(1, 0).defaultPrevented).to.be.true;
 
         var table = scroller.$.table;
         table.scrollLeft = table.scrollWidth - table.offsetWidth;
 
-        expect(wheel(1, 0).defaultPrevented).to.be.false;
-        expect(wheel(-1, 0).defaultPrevented).to.be.true;
+        Polymer.Base.async(function() {
+          expect(wheel(1, 0).defaultPrevented).to.be.false;
+          expect(wheel(-1, 0).defaultPrevented).to.be.true;
+          done();
+        }, 500); // Wait until wheel cancel period finishes
+      });
 
+      it('should prevent default during cancel period', function() {
+        wheel(1, 0);
+        wheel(-1, 0);
+        expect(wheel(-100, 0).defaultPrevented).to.be.true;
       });
 
     });

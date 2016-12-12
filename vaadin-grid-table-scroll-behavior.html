@@ -124,6 +124,23 @@
         table.scrollTop += e.deltaY;
         table.scrollLeft += e.deltaX;
         this._scrollHandler();
+
+        this._ignoreNewWheel = this.debounce('ignore-new-wheel', function() {
+          this._ignoreNewWheel = null;
+        }, 500);
+      } else if (this._cancelWheel || this._ignoreNewWheel) {
+
+        e.preventDefault();
+
+        this._cancelWheel = this.debounce('cancel-wheel', function() {
+          this._cancelWheel = null;
+        }, 100);
+
+        var wheelTotal = Math.abs(e.deltaX) + Math.abs(e.deltaY);
+        if (!this._ignoreNewWheel && wheelTotal > this._lastWheelTotal) {
+          this._cancelWheel = null;
+        }
+        this._lastWheelTotal = wheelTotal;
       }
     },
 
