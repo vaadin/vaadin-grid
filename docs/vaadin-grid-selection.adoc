@@ -4,22 +4,32 @@ order: 3
 layout: page
 ---
 
-[[vaadin-grid.selection]]
-= Selection
+[[vaadin-grid.selection.binding]]
+== Binding to the Selection State.
 
-Grid allows item based selection of data rows either through UI interaction or using the JavaScript API.
-The selection behavior depends on the currently active selection mode.
+The [vaadinelement]#vaadin-grid# implements multi selection behavior by default.
+But you need a mechanisim to allow the user to select rows. It can be done by adding a column that provides an element to bind the `selected` property of the row.
 
-[[vaadin-grid.selection.mode]]
-== Selection Mode
+[source,html]
+----
+<link rel="import" href="../vaadin-grid-selection-column.html">
 
-The [vaadinelement]#vaadin-grid# implements multi selection behavior by default. But you need a mechanisim to allow the user to select rows. The easier way is to use the [vaadinelement]#vaadin-grid-selection-column# helper element.
+<vaadin-grid items='["One", "Two", "Tree"]'>
+  <vaadin-grid-column>
+    <input type="checkbox" checked="{{selected::change}}" />
+  </vaadin-grid-column>
+  <vaadin-grid-column width="50px">
+    <template class="header">Number</template>
+  </vaadin-grid-column>
+</vaadin-grid>
+----
 
 [[vaadin-grid.selection.column]]
 == The Selection Column Helper element.
 
-The [vaadinelement]#vaadin-grid-selection-column# provides a selection model that helps the user to select rows using checkboxes displayed in a specific column.
-In the case that the grid use an array of items as the data source, it provides the ability of selecting all the items by clicking on the checkbox at the header.
+You can use the [vaadinelement]#vaadin-grid-selection-column# helper element to get default templates and functionality for the selection. With it the user can select rows using checkboxes displayed in a column.
+
+In the case that the grid is configured with an array of items as the data source, the [vaadinelement]#vaadin-grid-selection-column# provides the feature of selecting all the items by clicking on the checkbox at the header.
 
 [source,html]
 ----
@@ -30,6 +40,7 @@ In the case that the grid use an array of items as the data source, it provides 
   </vaadin-grid-selection-column>
   <vaadin-grid-column width="50px">
     <template class="header">Number</template>
+    <template>[[item]]</template>
   </vaadin-grid-column>
 </vaadin-grid>
 ----
@@ -39,7 +50,7 @@ NOTE: that you have to explicitly import the element in your component in order 
 [[figure.vaadin-grid.selection.column]]
 image::img/vaadin-grid-selection-column.png[]
 
-Eventually, you can customize the selection column by displaying it at any position in the grid, changing it size, or even providing a different template for checkboxes.
+In addition, you can customize the selection column, changing it size, displaying it at any position in the grid, or providing your own template for checkboxes.
 
 [source,html]
 ----
@@ -49,6 +60,7 @@ Eventually, you can customize the selection column by displaying it at any posit
 <vaadin-grid items='["One", "Two", "Tree"]'>
   <vaadin-grid-column width="50px">
     <template class="header">Number</template>
+    <template>[[item]]</template>
   </vaadin-grid-column>
 
   <vaadin-grid-selection-column width="40px" flex="0" select-all="[[selectAll]]">
@@ -67,20 +79,21 @@ Eventually, you can customize the selection column by displaying it at any posit
 image::img/vaadin-grid-selection-column-custom.png[]
 
 [[vaadin-grid.selection.api]]
-== Selection API
+== Using the Selection API
 
 This section explains the basic operations available through the selection API.
 
 [methodname]#grid.selectItem(item)#::
-  Selects the row with the given item. If the selection mode is `single`, the method deselects the previously selected row.
+  Selects the row with the given item. It sets the property `selected` to true, adds the attribute to the row, and updates appropriately the `selectedItems` array.
 
 [methodname]#grid.deselectItem(item)#::
-  Deselects the row with the given item.
+  Deselects the row with the given item. It sets the property `selected` to false, removes the attribute from the row, and updates appropriately the `selectedItems` array.
 
-[[vaadin-grid.selection.selected]]
-== Accessing the Selected Rows
+[propertyname]#selectedItems#::
+  It's the property that represents the list of selected items. You can either use `selectItem` or `deselectItem` to modify the list, or modify the array directly by using Polymer API.
 
-The [vaadinelement]#vaadin-grid# defines a property [propertyname]#selectedItems# that represents the list of selected items. It also notifies changes to it by firing a 'selected-items-changed' -event.
+[propertyname]#selected-items-changed::
+  Is the event fired when the list of the `selectedItems` is modified.
 
 [source,javascript]
 ----
@@ -89,4 +102,45 @@ The [vaadinelement]#vaadin-grid# defines a property [propertyname]#selectedItems
 grid.addEventListener('selected-items-changed', function() {
   console.log('Selected: ' + grid.selectedItems);
 });
+----
+
+[[vaadin-grid.selection.model]]
+== Customize the Selection Model
+
+By default, the selection behavior of the grid uses a multiselection mode stored in the `selectedItems` array.
+If you wanted to modify the behavior you need to use the selection API to deselect the previo.
+
+For instance in the next example, we enable a single selection mode by setting the `selectedItems` array with only the last modified item.
+
+[source,javascript]
+----
+// Log the selections to console on select event.
+// Example output: "Selected: 3,5,6"
+<dom-module id="grid-single-selection">
+  <template>
+    <vaadin-grid items='["One", "Two", "Tree"]'>
+      <vaadin-grid-column width="50px">
+        <template class="header">Number</template>
+        <template>[[item]]</template>
+      </vaadin-grid-column>
+
+      <vaadin-grid-column width="40px" flex="0">
+        <template>
+          <input type="checkbox" on-change="_onSelectionChange" checked="{{selected}}"></input>
+        </template>
+      </vaadin-grid-column>
+    </vaadin-grid>
+  </template>
+  <script>
+  document.addEventListener('WebComponentsReady', function() {
+    Polymer({
+      is: 'grid-single-selection',
+
+      _onSelectionChange: function(e) {
+        this.$.grid.selectedItems = e.target.checked ? [e.model.item] : [];
+      }
+    });
+  });
+  </script>
+</dom-module>
 ----
