@@ -344,6 +344,22 @@ describe.feature('using properties', function() {
       grid.removeEventListener('detailed-keydown', spy);
       grid.detailedEvents = [];
     });
+
+    it('should cancel the source event', function() {
+      grid.detailedEvents = ['foo'];
+      var listener = function(e) {
+        e.preventDefault();
+      };
+      grid.addEventListener('detailed-foo', listener);
+      var sourceEvent = Polymer.Base.fire('foo', {}, {
+        node: Polymer.dom(grid.root).querySelector('table td span'),
+        cancelable: true
+      });
+      grid.removeEventListener('detailed-foo', listener);
+      grid.detailedEvents = [];
+
+      expect(sourceEvent.defaultPrevented).to.be.true;
+    });
   });
 });
 </script>

@@ -1480,7 +1480,9 @@ See the [demo](demo/index.html) for use case examples.
     _onDetailed: function(event) {
       var details = this._grid.getElementDetails(Polymer.dom(event).rootTarget);
       details.sourceEvent = event;
-      var detailedEvent = this.fire('detailed-' + event.type, details);
+      var detailedEvent = this.fire('detailed-' + event.type, details, {
+        cancelable: true
+      });
       if (detailedEvent.defaultPrevented) {
         event.stopPropagation();
         event.preventDefault();
