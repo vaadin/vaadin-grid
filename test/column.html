@@ -98,19 +98,19 @@
 
             var header = grid.$.scroller.$.header;
 
-            expect(header._rows[0].cells[0].style.flexBasis).to.eql('calc(20% + 100px)');
+            expect(header._rows[0].cells[0].style.width).to.eql('calc(20% + 100px)');
           });
 
           it('should be bound to row cells', function() {
             column.width = '200px';
 
-            expect(grid.$.scroller._physicalItems[0].cells[0].style.flexBasis).to.eql('200px');
+            expect(grid.$.scroller._physicalItems[0].cells[0].style.width).to.eql('200px');
           });
 
           it('should be bound to footer cells', function() {
             column.width = '200px';
 
-            expect(grid.$.scroller.$.footer._rows[0].cells[0].style.flexBasis).to.eql('200px');
+            expect(grid.$.scroller.$.footer._rows[0].cells[0].style.width).to.eql('200px');
           });
         });
 
