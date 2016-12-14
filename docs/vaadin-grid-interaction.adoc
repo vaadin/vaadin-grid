@@ -1,0 +1,31 @@
+---
+title: Cell Interaction
+order: 2
+layout: page
+---
+
+[[vaadin-grid.interaction]]
+= User Interaction
+
+Grid allows the user to interact with rows.
+
+The `vaadin-grid-active-item-behavior` keeps track of the last user action, updating conveniently the `activeItem` property of the grid.
+
+[[vaadin-grid.interaction.events]]
+== Interaction API
+
+The API is managed by one property and its corresponding `changed` event.
+
+[propertyname]#activeItem#::
+  It is the grid property that reflects the last item activated by the user, or null if there was no item activated.
+
+[propertyname]#active-item-changed#::
+  It is the event fired when an activation action happens.
+
+[source,javascript]
+----
+// Log the active item to console
+grid.addEventListener('active-item-changed', function(e) {
+  console.log("Active-Item", grid.activeItem ? grid.activeItem : 'none');
+});
+----
