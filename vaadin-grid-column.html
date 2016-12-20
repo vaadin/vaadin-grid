@@ -82,10 +82,6 @@
       this.fire('property-changed', {path: 'flexGrow', value: flexGrow});
     },
 
-    _flexShrinkChanged: function(flexShrink) {
-      this.fire('property-changed', {path: 'flexShrink', value: flexShrink});
-    },
-
     _widthChanged: function(width) {
       this.fire('property-changed', {path: 'width', value: width});
     },
@@ -110,11 +106,6 @@
         value: 1
       },
 
-      flexShrink: {
-        type: Number,
-        value: 0
-      },
-
       template: {
         type: Object,
         value: function() {
@@ -128,7 +119,6 @@
     },
 
     observers: ['_flexGrowChanged(flexGrow)',
-    '_flexShrinkChanged(flexShrink)',
     '_widthChanged(width)',
     '_templateChanged(template)',
     '_frozenChanged(frozen)',
@@ -179,16 +169,6 @@
         readOnly: true
       },
 
-      minWidth: {
-        type: String,
-        readOnly: true
-      },
-
-      flexShrink: {
-        type: Number,
-        readOnly: true
-      },
-
       width: {
         type: String,
         readOnly: true
@@ -212,13 +192,11 @@
     observers: ['_updateVisibleChildColumns(_childColumns)',
     '_childColumnsChanged(_childColumns)',
     '_flexGrowChanged(flexGrow)',
-    '_flexShrinkChanged(flexShrink)',
     '_widthChanged(width)',
     '_frozenChanged(_childColumns, frozen)',
     '_hiddenChanged(hidden)',
     '_visibleChildColumnsChanged(_visibleChildColumns)',
-    '_colSpanChanged(colSpan)',
-    '_minWidthChanged(minWidth)'],
+    '_colSpanChanged(colSpan)'],
 
     listeners: {
       'property-changed': '_columnPropChanged'
@@ -231,10 +209,6 @@
 
     detached: function() {
       Polymer.dom(this).unobserveNodes(this._observer);
-    },
-
-    _minWidthChanged: function(minWidth) {
-      this.fire('property-changed', {path: 'minWidth', value: minWidth});
     },
 
     _columnPropChanged: function(e) {
@@ -273,16 +247,6 @@
       this._setFlexGrow(visibleChildColumns.reduce(function(prev, curr) {
         return prev + curr.flexGrow;
       }, 0));
-      this._setFlexShrink(visibleChildColumns.reduce(function(prev, curr) {
-        return prev + curr.flexShrink;
-      }, 0));
-
-      this._setMinWidth('calc(' + visibleChildColumns.filter(function(column) {
-        return column.flexShrink === 0;
-      }).reduce(function(prev, curr) {
-        return prev += ' + ' + (curr.width || '0').replace('calc', '');
-      },'').substring(3) + ')');
-
     },
 
     _frozenChanged: function(childColumns, frozen) {

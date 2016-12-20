@@ -20,8 +20,6 @@
         column: Object,
         expanded: Boolean,
         flexGrow: Number,
-        flexShrink: Number,
-        minWidth: String,
         frozen: {
           type: Boolean,
           reflectToAttribute: true
@@ -53,7 +51,6 @@
         '_cellAttached(column, isAttached)',
         '_expandedChanged(expanded, instance)',
         '_flexGrowChanged(flexGrow)',
-        '_flexShrinkChanged(flexShrink)',
         '_indexChanged(index, instance)',
         '_itemChanged(item, instance)',
         '_forwardedParentPropsChanged(_forwardedParentProps.*, instance)',
@@ -61,8 +58,7 @@
         '_toggleContent(isAttached, _cellContent, _insertionPoint)',
         '_widthChanged(width)',
         '_visibleChildColumnsChanged(_visibleChildColumns)',
-        '_childColumnsChanged(_childColumns)',
-        '_minWidthChanged(minWidth)'
+        '_childColumnsChanged(_childColumns)'
       ],
 
       created: function() {
@@ -76,7 +72,6 @@
 
       _columnChanged: function(column) {
         this.flexGrow = column.flexGrow;
-        this.flexShrink = column.flexShrink;
         this.frozen = column.frozen;
         this.lastFrozen = column._lastFrozen;
         this.headerTemplate = column.headerTemplate;
@@ -110,20 +105,12 @@
         }
       },
 
-      _minWidthChanged: function(minWidth) {
-        this.style.minWidth = minWidth;
-      },
-
       _expandedChanged: function(expanded, instance) {
         instance.notifyPath('expanded', expanded);
       },
 
       _flexGrowChanged: function(flexGrow) {
         this.style.flexGrow = flexGrow;
-      },
-
-      _flexShrinkChanged: function(flexShrink) {
-        this.style.flexShrink = flexShrink;
       },
 
       _indexChanged: function(index, instance) {
