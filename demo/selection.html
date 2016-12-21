@@ -134,7 +134,7 @@
             <vaadin-grid id="grid" data-source="[[dataSource]]" size="200">
               <vaadin-grid-column width="40px" flex="0" >
                 <template class="header">
-                  <input type="checkbox" checked="{{inverted::change}}" />
+                  <input type="checkbox" checked="{{inverted::change}}" indeterminate="[[indeterminate]]"/>
                 </template>
                 <template>
                   <input type="checkbox" on-change="_selectItem" checked="[[_isSelected(inverted, selected)]]"/>
@@ -159,6 +159,10 @@
                 inverted: {
                   type: Boolean,
                   value: false
+                },
+                indeterminate: {
+                  type: Boolean,
+                  value: false
                 }
               },
 
@@ -174,6 +178,7 @@
                 } else {
                   this.$.grid.selectItem(e.model.item);
                 }
+                this.indeterminate = this.$.grid.selectedItems.length > 0;
               },
 
               _isSelected: function(inverted, selected) {
