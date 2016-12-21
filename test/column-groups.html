@@ -236,13 +236,13 @@
         });
 
         it('the group header cell should ignore changes from child columns', function() {
-          var cell_group0 = getHeaderCell(0, 1);
-          var cell_header1 = getHeaderCell(1, 1);
+          var cellGroup0 = getHeaderCell(0, 1);
+          var cellHeader1 = getHeaderCell(1, 1);
 
-          cell_group0._flexChanged = sinon.spy();
-          cell_header1.column.flex = 3;
+          cellGroup0._flexChanged = sinon.spy();
+          cellHeader1.column.flex = 3;
 
-          expect(cell_group0._flexChanged.callCount).to.eql(1);
+          expect(cellGroup0._flexChanged.callCount).to.eql(1);
         });
 
         it('should set colSpan to spanned header cells', function() {
@@ -324,7 +324,7 @@
           //  | group-0             | group-1                                  |          |
           //  |           |         | group-2            | group-3             |          |
           //  |           |         |          |         | header-4 | header-5 | header-6 |
-          ///////////////////////////////////////////////////////////////////////////////////
+          //  -----------------------------------------------------------------------------
           //  |           |         |          |         | footer-4 | footer-5 | footer-6 |
           //  |           |         | group-2            | group-3             |          |
           //  | group-0             | group-1                                  |          |
@@ -387,7 +387,7 @@
             [2, 2], [2, 3], [2, 4], [2, 5]
           ].forEach(function(a) {
             expect(getHeaderCell(a[0], a[1]).hasAttribute('frozen')).to.be.true;
-          })
+          });
         });
 
         it('frozen in a group should propagate frozen attribute up and down in footers', function() {
@@ -397,7 +397,7 @@
             [2, 1]
           ].forEach(function(a) {
             expect(getFooterCell(a[0], a[1]).hasAttribute('frozen')).to.be.true;
-          })
+          });
         });
 
         it('should have last row fully visible when scrolled to end', function(done) {

@@ -56,7 +56,7 @@
     _selectFirstTemplate: function(selector) {
       return Polymer.dom(this).querySelectorAll(selector).filter(function(el) {
         return el.parentElement === this;
-      }.bind(this))[0]
+      }.bind(this))[0];
     },
 
     _findTemplate: function(selector) {
@@ -118,7 +118,13 @@
       }
     },
 
-    observers: ['_flexChanged(flex)', '_widthChanged(width)', '_templateChanged(template)', '_frozenChanged(frozen)', '_hiddenChanged(hidden)'],
+    observers: [
+      '_flexChanged(flex)',
+      '_widthChanged(width)',
+      '_templateChanged(template)',
+      '_frozenChanged(frozen)',
+      '_hiddenChanged(hidden)'
+    ],
 
     _frozenChanged: function(frozen) {
       this.fire('property-changed', {path: 'frozen', value: frozen});
@@ -132,7 +138,7 @@
     _hiddenChanged: function(hidden) {
       this.fire('property-changed', {path: 'hidden', value: hidden});
     }
-  }
+  };
 
   /**
    * @polymerBehavior vaadin.elements.grid.ColumnBehavior
@@ -185,14 +191,16 @@
       }
     },
 
-    observers: ['_updateVisibleChildColumns(_childColumns)',
-    '_childColumnsChanged(_childColumns)',
-    '_flexChanged(flex)',
-    '_widthChanged(width)',
-    '_frozenChanged(_childColumns, frozen)',
-    '_hiddenChanged(hidden)',
-    '_visibleChildColumnsChanged(_visibleChildColumns)',
-    '_colSpanChanged(colSpan)'],
+    observers: [
+      '_updateVisibleChildColumns(_childColumns)',
+      '_childColumnsChanged(_childColumns)',
+      '_flexChanged(flex)',
+      '_widthChanged(width)',
+      '_frozenChanged(_childColumns, frozen)',
+      '_hiddenChanged(hidden)',
+      '_visibleChildColumnsChanged(_visibleChildColumns)',
+      '_colSpanChanged(colSpan)'
+    ],
 
     listeners: {
       'property-changed': '_columnPropChanged'
