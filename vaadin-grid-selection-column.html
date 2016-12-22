@@ -37,7 +37,16 @@
 
       _grid: Object,
 
-      _indeterminate: Boolean
+      _indeterminate: Boolean,
+
+      _indeterminateDisabled: {
+        value: function() {
+          // in IE when clicking on indeterminated checkbox it does not switch checked, it
+          // just removes indeterminate flag without emiting any notification.
+          // https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/944049/
+          return /Trident|Edge/i.test(navigator.userAgent);
+        }
+      }
     },
 
     observers: [
@@ -90,6 +99,9 @@
     },
 
     _onSelectedItemsChanged: function(e) {
+      if (this._indeterminateDisabled) {
+        return;
+      }
       if (!this._grid.selectedItems.length) {
         // Unselect-all and remove indeterminate when user manually deselects all checkboxes
         this._indeterminate = false;
