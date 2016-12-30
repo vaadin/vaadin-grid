@@ -59,6 +59,14 @@ When the grid is configured with an array of items as the data source, it provid
         notify: true
       },
 
+      /**
+       * When true it adds ab active item to selectedItem.
+       */
+      selectActiveItem: {
+        type: Boolean,
+        value: false,
+      },
+
       _grid: Object,
 
       _indeterminate: Boolean,
@@ -72,6 +80,7 @@ When the grid is configured with an array of items as the data source, it provid
 
     detached: function() {
       if (this._grid) {
+        this.unlisten(this._grid, 'active-item-changed', '_onActiveItemChanged');
         this.unlisten(this._grid, 'data-source-changed', '_onDataSourceChanged');
         this.unlisten(this._grid, 'filter-changed', '_onSelectedItemsChanged');
         this.unlisten(this._grid, 'selected-items-changed', '_onSelectedItemsChanged');
@@ -81,6 +90,7 @@ When the grid is configured with an array of items as the data source, it provid
     attached: function() {
       this._grid = this._findGrid(this);
       if (this._grid) {
+        this.listen(this._grid, 'active-item-changed', '_onActiveItemChanged');
         this.listen(this._grid, 'data-source-changed', '_onDataSourceChanged');
         this.listen(this._grid, 'filter-changed', '_onSelectedItemsChanged');
         this.listen(this._grid, 'selected-items-changed', '_onSelectedItemsChanged');
@@ -130,6 +140,13 @@ When the grid is configured with an array of items as the data source, it provid
     // iOS needs indeterminated + checked at the same time
     _isChecked: function(selectAll, indeterminate) {
       return indeterminate || selectAll;
+    },
+
+    _onActiveItemChanged: function(e) {
+      if (this.selectActiveItem) {
+        var item = e.detail.value || this._grid.previousActiveItem;
+        this._grid.toggleItem(item);
+      }
     },
 
     _onSelectedItemsChanged: function(e) {
