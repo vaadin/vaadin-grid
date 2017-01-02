@@ -10,19 +10,21 @@
         _rows: Array
       },
 
-      observers: ['_columnTreeChanged(columnTree)', '_rowsChanged(_rows)'],
+      observers: ['_columnTreeChanged(columnTree, isAttached)', '_rowsChanged(_rows)'],
 
-      _columnTreeChanged: function(columnTree) {
-        var rows = [];
-        for(var i = 0; i < columnTree.length; i++) {
-          var row = this._createRow();
-          row.target = this.domHost.domHost;
-          row._isColumnRow = i == columnTree.length - 1;
-          row.columns = columnTree[i];
-          rows.push(row);
+      _columnTreeChanged: function(columnTree, isAttached) {
+        if (isAttached) {
+          var rows = [];
+          for(var i = 0; i < columnTree.length; i++) {
+            var row = this._createRow();
+            row.target = this.domHost.domHost;
+            row._isColumnRow = i == columnTree.length - 1;
+            row.columns = columnTree[i];
+            rows.push(row);
+          }
+
+          this._rows = this.localName === 'thead' ? rows : rows.reverse();
         }
-
-        this._rows = this.localName === 'thead' ? rows : rows.reverse();
       },
 
       _rowsChanged: function(rows) {
