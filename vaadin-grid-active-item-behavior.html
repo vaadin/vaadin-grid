@@ -26,13 +26,7 @@
       activeItem: {
         type: Object,
         notify: true
-      },
-
-      /*
-       * The previous state of activeItem. When activeItem turns to `null`,
-       * previousActiveItem will have an Object with just unselected activeItem
-       */
-      previousActiveItem: Object
+      }
     },
 
     listeners: {
@@ -46,7 +40,6 @@
     _activateItem: function(e) {
       var clickedItem = e.detail.model.item;
 
-      this.previousActiveItem = this.activeItem;
       this.activeItem = this.activeItem !== clickedItem ? clickedItem : null;
     },
 

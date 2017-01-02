@@ -71,6 +71,12 @@ When the grid is configured with an array of items as the data source, it provid
 
       _indeterminate: Boolean,
 
+      /*
+       * The previous state of activeItem. When activeItem turns to `null`,
+       * previousActiveItem will have an Object with just unselected activeItem
+       */
+      _previousActiveItem: Object,
+
       _selectAllHidden: Boolean
     },
 
@@ -143,10 +149,12 @@ When the grid is configured with an array of items as the data source, it provid
     },
 
     _onActiveItemChanged: function(e) {
+      var activeItem = e.detail.value;
       if (this.selectActiveItem) {
-        var item = e.detail.value || this._grid.previousActiveItem;
+        var item = activeItem || this._previousActiveItem;
         this._grid.toggleItem(item);
       }
+      this._previousActiveItem = activeItem;
     },
 
     _onSelectedItemsChanged: function(e) {
