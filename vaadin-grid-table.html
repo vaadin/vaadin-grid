@@ -136,6 +136,25 @@
   <template>
     <style>
 
+      /* Scrollbars
+       *  @note Scrollbar styling is here at the top-most level so it properly
+       *        applies to the computed `scrollbarWidth` as well as the
+       *        functional scrollbar that will appear on the raw table element.
+       */
+
+      ::-webkit-scrollbar {
+        @apply(--scrollbar-common);
+      }
+
+      ::-webkit-scrollbar-thumb {
+        @apply(--scrollbar-thumb);
+      }
+
+      /* stylelint-disable selector-pseudo-class-no-unknown */
+      ::-webkit-scrollbar-thumb:window-inactive {
+        @apply(--scrollbar-thumb-inactive);
+      }
+
       /* Default borders */
 
       thead tr:last-child th ::content > .cell-content {
