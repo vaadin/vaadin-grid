@@ -3,10 +3,6 @@
 <dom-module id="vaadin-grid-navigation-themability-styles">
   <template>
     <style>
-      :host(:focus) {
-        outline: none;
-      }
-
       :host([navigating]) [focused] > tr[focused] > [focused] ::content > .cell-content {
         box-shadow: inset 0 0 0 3px rgba(0, 0, 0, 0.3);
 
@@ -22,9 +18,9 @@
   vaadin.elements.grid = vaadin.elements.grid || {};
 
   /**
-   * @polymerBehavior vaadin.elements.grid.TableKeyboardBehaviorImpl
+   * @polymerBehavior vaadin.elements.grid.KeyboardNavigationBehaviorImpl
    */
-  vaadin.elements.grid.TableKeyboardBehaviorImpl = {
+  vaadin.elements.grid.KeyboardNavigationBehaviorImpl = {
 
     properties: {
       _virtualFocus: {
@@ -32,9 +28,8 @@
         observer: '_virtualFocusChanged'
       },
 
-      navigating: {
+      _navigating: {
         type: Boolean,
-        reflectToAttribute: true,
         value: false
       }
     },
@@ -49,6 +44,8 @@
       'cell-content-focus': '_onCellContentFocus'
     },
 
+    observers: ['_navigatingChanged(_navigating)'],
+
     keyBindings: {
       'tab': '_focusNext',
       'shift+tab': '_focusPrev',
@@ -59,20 +56,24 @@
       'space': '_space'
     },
 
+    _navigatingChanged: function(navigating) {
+      this.$.scroller.toggleAttribute('navigating', navigating);
+    },
+
     _isFooterVisible: function() {
-      return this.$.footer._rows.filter(function(row) {
+      return this.$.scroller.$.footer._rows.filter(function(row) {
         return !row.hidden;
       }).length > 0;
     },
 
     _onHeaderFocus: function(e) {
-      this.navigating = true;
-      this._virtualFocus = this.$.header;
+      this._navigating = true;
+      this._virtualFocus = this.$.scroller.$.header;
     },
 
     _onFooterFocus: function(e) {
-      this.navigating = true;
-      this._virtualFocus = this._isFooterVisible() ? this.$.footer : this.$.items;
+      this._navigating = true;
+      this._virtualFocus = this._isFooterVisible() ? this.$.scroller.$.footer : this.$.scroller.$.items;
     },
 
     _virtualFocusChanged: function(virtualFocus, oldVirtualFocus) {
@@ -87,39 +88,39 @@
     },
 
     _focusNext: function(e) {
-      if (this.navigating) {
+      if (this._navigating) {
         switch (this._virtualFocus) {
-          case this.$.header:
-            this._virtualFocus = this.$.items;
+          case this.$.scroller.$.header:
+            this._virtualFocus = this.$.scroller.$.items;
             e.preventDefault();
             break;
 
-          case this.$.items:
+          case this.$.scroller.$.items:
             this.$.footerFocusTrap.focus();
             if (this._isFooterVisible()) {
-              this._virtualFocus = this.$.footer;
+              this._virtualFocus = this.$.scroller.$.footer;
               e.preventDefault();
             } else {
               this._virtualFocus = null;
             }
             break;
 
-          case this.$.footer:
+          case this.$.scroller.$.footer:
             this._virtualFocus = null;
             break;
         }
       } else {
         switch (this._virtualFocus) {
-          case this.$.header:
+          case this.$.scroller.$.header:
             this.$.headerFocusTrap.focus();
             break;
 
-          case this.$.items:
+          case this.$.scroller.$.items:
             this.$.headerFocusTrap.focus();
-            this._virtualFocus = this.$.items;
+            this._virtualFocus = this.$.scroller.$.items;
             break;
 
-          case this.$.footer:
+          case this.$.scroller.$.footer:
             this.$.footerFocusTrap.focus();
             break;
         }
@@ -128,31 +129,31 @@
     },
 
     _focusPrev: function(e) {
-      if (this.navigating) {
+      if (this._navigating) {
         switch (this._virtualFocus) {
-          case this.$.footer:
-            this._virtualFocus = this.$.items;
+          case this.$.scroller.$.footer:
+            this._virtualFocus = this.$.scroller.$.items;
             e.preventDefault();
             break;
-          case this.$.items:
+          case this.$.scroller.$.items:
             this.$.headerFocusTrap.focus();
-            this._virtualFocus = this.$.header;
+            this._virtualFocus = this.$.scroller.$.header;
             e.preventDefault();
             break;
-          case this.$.header:
+          case this.$.scroller.$.header:
             this._virtualFocus = null;
             break;
         }
       } else {
         switch (this._virtualFocus) {
-          case this.$.footer:
+          case this.$.scroller.$.footer:
             this.$.footerFocusTrap.focus();
             break;
-          case this.$.items:
+          case this.$.scroller.$.items:
             this.$.headerFocusTrap.focus();
-            this._virtualFocus = this.$.items;
+            this._virtualFocus = this.$.scroller.$.items;
             break;
-          case this.$.header:
+          case this.$.scroller.$.header:
             this.$.headerFocusTrap.focus();
             break;
         }
@@ -168,10 +169,10 @@
       e.preventDefault();
 
       this._virtualFocus.focusDown();
-      this.navigating = true;
+      this._navigating = true;
 
-      if (this._virtualFocus === this.$.items) {
-        this._ensureVirtualFocusInViewport();
+      if (this._virtualFocus === this.$.scroller.$.items) {
+        this.$.scroller._ensureVirtualFocusInViewport(this._virtualFocus);
       }
     },
 
@@ -179,10 +180,10 @@
       e.preventDefault();
 
       this._virtualFocus.focusUp();
-      this.navigating = true;
+      this._navigating = true;
 
-      if (this._virtualFocus === this.$.items) {
-        this._ensureVirtualFocusInViewport();
+      if (this._virtualFocus === this.$.scroller.$.items) {
+        this.$.scroller._ensureVirtualFocusInViewport(this._virtualFocus);
       }
     },
 
@@ -190,22 +191,22 @@
       e.preventDefault();
 
       this._virtualFocus.focusRight();
-      this.navigating = true;
+      this._navigating = true;
 
-      this._ensureVirtualFocusInViewport();
+      this.$.scroller._ensureVirtualFocusInViewport(this._virtualFocus);
     },
 
     _focusLeft: function(e) {
       e.preventDefault();
 
       this._virtualFocus.focusLeft();
-      this.navigating = true;
+      this._navigating = true;
 
-      this._ensureVirtualFocusInViewport();
+      this.$.scroller._ensureVirtualFocusInViewport(this._virtualFocus);
     },
 
     _space: function(e) {
-      if (this.navigating && this._virtualFocus === this.$.items) {
+      if (this._navigating && this._virtualFocus === this.$.scroller.$.items) {
         e.preventDefault();
 
         this.fire('cell-activate', {model: this._virtualFocus._focusedCell.instance});
@@ -213,7 +214,7 @@
     },
 
     _onCellContentFocus: function(e) {
-      this.navigating = false; // TODO: go to "interaction" mode.
+      this._navigating = false; // TODO: go to "interaction" mode.
     },
 
     _onCellFocus: function(e) {
@@ -223,7 +224,7 @@
       this._virtualFocus = container;
 
       var rowIndex = Polymer.dom(container).children.indexOf(row);
-      if (container === this.$.items) {
+      if (container === this.$.scroller.$.items) {
         rowIndex = row.index;
       }
 
@@ -233,7 +234,7 @@
   };
 
   /**
-   * @polymerBehavior vaadin.elements.grid.TableKeyboardBehavior
+   * @polymerBehavior vaadin.elements.grid.KeyboardNavigationBehavior
    */
-  vaadin.elements.grid.TableKeyboardBehavior = [vaadin.elements.grid.TableKeyboardBehaviorImpl, Polymer.IronA11yKeysBehavior];
+  vaadin.elements.grid.KeyboardNavigationBehavior = [vaadin.elements.grid.KeyboardNavigationBehaviorImpl, Polymer.IronA11yKeysBehavior];
 </script>
