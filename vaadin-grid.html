@@ -87,6 +87,7 @@ Key | Action
 <link rel="import" href="vaadin-grid-sort-behavior.html">
 <link rel="import" href="vaadin-grid-filter-behavior.html">
 <link rel="import" href="vaadin-grid-keyboard-navigation-behavior.html">
+<link rel="import" href="vaadin-grid-column-reordering-behavior.html">
 
 <dom-module id="vaadin-grid">
   <style>
@@ -157,7 +158,8 @@ Key | Action
       vaadin.elements.grid.SelectionBehavior,
       vaadin.elements.grid.SortBehavior,
       vaadin.elements.grid.FilterBehavior,
-      vaadin.elements.grid.KeyboardNavigationBehavior
+      vaadin.elements.grid.KeyboardNavigationBehavior,
+      vaadin.elements.grid.ColumnReorderingBehavior
     ],
 
     listeners: {
