@@ -117,6 +117,38 @@
       </template>
     </demo-snippet>
 
+    <h3>Reordering Columns</h3>
+    <demo-snippet>
+      <template>
+        <template is="dom-bind">
+          <x-data-source data-source="{{dataSource}}"></x-data-source>
+          <vaadin-grid data-source="[[dataSource]]" size="200" column-reordering-allowed>
+            <vaadin-grid-column width="50px">
+              <template class="header">#</template>
+              <template>[[index]]</template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="50px">
+              <template>
+                <iron-image src="[[item.user.picture.thumbnail]]"></iron-image>
+              </template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="33%">
+              <template class="header">First Name</template>
+              <template>[[item.user.name.first]]</template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="33%">
+              <template class="header">Last Name</template>
+              <template>[[item.user.name.last]]</template>
+            </vaadin-grid-column>
+            <vaadin-grid-column width="33%">
+              <template class="header">Email</template>
+              <template>[[item.user.email]]</template>
+            </vaadin-grid-column>
+          </vaadin-grid>
+        </template>
+      </template>
+    </demo-snippet>
+
     <h3>Resizing Columns</h3>
     <demo-snippet>
       <template>
