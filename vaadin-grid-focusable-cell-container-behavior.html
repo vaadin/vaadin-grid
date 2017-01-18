@@ -44,6 +44,14 @@
       this._focusedRowIndex = Math.min(this._focusedRowIndex + 1, this.children.length - 1);
     },
 
+    focusPageDown: function() {
+      this._focusedRowIndex = Math.min(this._focusedRowIndex + 10, this.children.length - 1);
+    },
+
+    focusPageUp: function() {
+      this._focusedRowIndex = Math.max(0, this._focusedRowIndex - 10);
+    },
+
     focusRight: function() {
       if (this._focusedRow) {
         this._focusedCellIndex = Math.min(this._focusedCellIndex + 1, this._focusedRow.children.length - 1);
@@ -52,6 +60,26 @@
 
     focusUp: function() {
       this._focusedRowIndex = Math.max(0, this._focusedRowIndex - 1);
+    },
+
+    focusHome: function() {
+      this._focusedCellIndex = 0;
+    },
+
+    focusEnd: function() {
+      if (this._focusedRow) {
+        this._focusedCellIndex = this._focusedRow.children.length - 1;
+      }
+    },
+
+    focusFirst: function(e) {
+      this._focusedRowIndex = 0;
+      this.focusHome();
+    },
+
+    focusLast: function(e) {
+      this._focusedRowIndex = this.children.length - 1;
+      this.focusEnd();
     }
   };
 </script>
