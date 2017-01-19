@@ -416,6 +416,7 @@
       if (this.interacting) {
         e.preventDefault();
         this.interacting = false;
+        this.domHost.focus();
       }
     },
 
@@ -424,6 +425,8 @@
       this.interacting = !this.interacting;
       if (this.interacting) {
         this._focusOnFocusTarget();
+      } else {
+        this.domHost.focus();
       }
     },
 
