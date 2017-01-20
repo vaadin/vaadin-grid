@@ -293,9 +293,9 @@
     },
 
     observers: [
-      '_columnTreeChanged(columnTree, _physicalItems, _physicalCount)',
+      '_columnTreeChanged(columnTree, _physicalItems, _physicalCountVal)',
       '_sizeChanged(size, bindData)',
-      '_rowDetailsTemplateChanged(rowDetailsTemplate, _physicalItems, _physicalCount)'
+      '_rowDetailsTemplateChanged(rowDetailsTemplate, _physicalItems, _physicalCountVal)'
     ],
 
     listeners: {
@@ -378,6 +378,9 @@
           element.style.borderTopWidth = headerHeight;
           element.style.borderBottomWidth = footerHeight;
         });
+        if (this._pendingScrollToScaledIndex) {
+          this.scrollToScaledIndex(this._pendingScrollToScaledIndex);
+        }
       }.bind(this));
     },
 
