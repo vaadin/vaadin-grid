@@ -194,6 +194,14 @@ The `class` attribute is used to differentiate header and footer templates.
        */
       hidden: {
         type: Boolean
+      },
+
+      /**
+       * When set to true, the column is user-resizable.
+       */
+      resizable: {
+        type: Boolean,
+        value: false
       }
     },
 
@@ -202,7 +210,8 @@ The `class` attribute is used to differentiate header and footer templates.
       '_widthChanged(width)',
       '_templateChanged(template)',
       '_frozenChanged(frozen, isAttached)',
-      '_hiddenChanged(hidden)'
+      '_hiddenChanged(hidden)',
+      '_resizableChanged(resizable)',
     ],
 
     _frozenChanged: function(frozen, isAttached) {
@@ -229,6 +238,10 @@ The `class` attribute is used to differentiate header and footer templates.
 
     _hiddenChanged: function(hidden) {
       this.fire('property-changed', {path: 'hidden', value: hidden});
+    },
+
+    _resizableChanged: function(resizable) {
+      this.fire('property-changed', {path: 'resizable', value: resizable});
     }
   };
 

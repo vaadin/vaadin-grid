@@ -80,8 +80,7 @@
         top: 0;
       }
 
-      td,
-      th {
+      .vaadin-grid-cell {
         padding: 0;
         flex-shrink: 0;
         flex-grow: 1;
@@ -89,8 +88,11 @@
         display: flex;
       }
 
-      td ::content > .cell-content,
-      th ::content > .cell-content {
+      .vaadin-grid-cell:not([detailscell]) {
+        position: relative;
+      }
+
+      .vaadin-grid-cell ::content > .cell-content {
          width: 100%;
          display: inline-flex;
          justify-content: center;
@@ -99,13 +101,46 @@
          overflow: hidden;
       }
 
+      .vaadin-grid-column-resize-handle {
+        position: absolute;
+        right: 0;
+        height: 100%;
+        cursor: col-resize;
+        z-index: 1;
+      }
+
+      .vaadin-grid-column-resize-handle::before {
+        position: absolute;
+        content: "";
+        height: 100%;
+        width: 35px;
+        transform: translateX(-50%);
+      }
+
+      [last-frozen] .vaadin-grid-column-resize-handle::before {
+        width: 18px;
+        transform: translateX(-100%);
+      }
+
+      :host([column-resizing]) {
+        -ms-user-select: none;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        user-select: none;
+        cursor: col-resize;
+      }
+
+      :host([ios][column-resizing]) #outerscroller {
+        overflow: hidden;
+      }
+
       tr:not([hidden]) {
         display: flex;
         width: 100%;
       }
 
       [frozen] {
-        z-index: 1;
+        z-index: 2;
       }
 
       [hidden] {
@@ -133,8 +168,7 @@
         display: table-row !important;
       }
 
-      :host([copying]) td,
-      :host([copying]) th {
+      :host([copying]) .vaadin-grid-cell {
         display: table-cell !important;
       }
     </style>
@@ -161,6 +195,18 @@
 
       [last-frozen] ::content > .cell-content {
         border-right: 1px solid var(--divider-color, rgba(0, 0, 0, 0.08));
+      }
+
+      /* Column resize handle */
+
+      .vaadin-grid-column-resize-handle {
+        border-right: 1px solid var(--divider-color, rgba(0, 0, 0, 0.08));
+        @apply(--vaadin-grid-column-resize-handle);
+      }
+
+      .vaadin-grid-column-resize-handle:hover {
+        border-color: var(--primary-color, #000);
+        @apply(--vaadin-grid-column-resize-handle-hover);
       }
 
       /* Cells */
@@ -314,7 +360,12 @@
     listeners: {
       'property-changed': '_columnPropChanged',
       'copy': '_onCopy',
-      'animationend': '_onAnimationEnd'
+      'animationend': '_onAnimationEnd',
+      'track': '_onTrack'
+    },
+
+    _onTrack: function() {
+      this.toggleAttribute('column-resizing', this.$.header.querySelector('[column-resizing]'));
     },
 
     _onAnimationEnd: function(e) {

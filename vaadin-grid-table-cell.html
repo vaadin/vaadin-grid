@@ -79,6 +79,7 @@
         this.template = column.template;
         this.width = column.width;
         this.hidden = column.hidden;
+        this.resizable = column.resizable;
         this._childColumns = column._childColumns;
 
         // Assigning undefined to element.colSpan will set colSpan attribute to 0
@@ -202,7 +203,14 @@
       extends: 'th',
 
       properties: {
-        headerTemplate: Object
+        headerTemplate: Object,
+
+        resizable: Boolean,
+
+        columnResizing: {
+          type: Boolean,
+          reflectToAttribute: true
+        }
       },
 
       behaviors: [
@@ -210,7 +218,37 @@
         vaadin.elements.grid.CellClickBehavior
       ],
 
-      observers: ['_headerTemplateChanged(headerTemplate, isAttached)'],
+      observers: [
+        '_headerTemplateChanged(headerTemplate, isAttached)',
+        '_resizableChanged(resizable)'
+      ],
+
+      listeners: {
+        'track': 'onTrack'
+      },
+
+      _resizableChanged: function(resizable) {
+        if (resizable && this._isColumnRow) {
+          this._resizeHandle = document.createElement('div');
+          this._resizeHandle.classList.add('vaadin-grid-column-resize-handle');
+          Polymer.dom(this).appendChild(this._resizeHandle);
+        } else if (this._resizeHandle) {
+          Polymer.dom(this).removeChild(this._resizeHandle);
+        }
+      },
+
+      onTrack: function(e) {
+        if (e.target === this._resizeHandle) {
+          this.columnResizing = true;
+          this.column.width = Math.max(0, this.offsetWidth + e.detail.x - this.getBoundingClientRect().right) + 'px';
+          this.column.flexGrow = 0;
+        }
+
+        if (this.columnResizing && e.detail.state === 'end') {
+          this.columnResizing = false;
+          this.column.fire('resized');
+        }
+      },
 
       _headerTemplateChanged: function(headerTemplate, isAttached) {
         if (headerTemplate !== null && (this._isColumnRow || this.column.localName === 'vaadin-grid-column-group')) {
