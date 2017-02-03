@@ -512,6 +512,11 @@
       container._focusedRowIndex = rowIndex;
       container._focusedCellIndex = Polymer.dom(row).children.indexOf(cell);
       this._virtualFocus = container;
+
+      if (cell.hasAttribute('detailscell')) {
+        container._focusedCellIndex = 0;
+        container._moveFocusToDetailsCell();
+      }
     },
 
 
