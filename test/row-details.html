@@ -58,6 +58,7 @@
           grid = fixture('default');
           grid.dataProvider = infiniteDataProvider;
           bodyRows = getRows(grid.$.scroller.$.items);
+          Polymer.dom.flush();
         });
 
         function collapseRow(index) {
@@ -172,6 +173,8 @@
           grid.dataProvider = function(params, callback) {
             setTimeout(function() {
               callback(items);
+              Polymer.dom.flush();
+
               grid.fire('items-assigned');
             }, 10);
           };
@@ -184,6 +187,7 @@
           grid.expandItem(items[0]);
 
           listenOnce(grid, 'items-assigned', function() {
+            bodyRows = getRows(grid.$.scroller.$.items);
             var row = bodyRows[0];
             expect(row.offsetHeight).to.be.above(70);
             done();
