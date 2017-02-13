@@ -4,6 +4,7 @@
 
 [&lt;vaadin-grid&gt;](https://vaadin.com/elements/-/element/vaadin-grid) is a free, high quality data grid / data table [Polymer](http://polymer-project.org) element, part of the [Vaadin Core Elements](https://vaadin.com/elements).
 
+> :rocket: The upcoming [vaadin-grid v2](https://github.com/vaadin/vaadin-grid/tree/2.0-dev) release with a lot of exciting improvements is almost ready! Please see the [Migration Guide](https://github.com/vaadin/vaadin-grid/wiki/Migration-from-1.*-to-2.0) to find out what's changing.
 
 <!---
 ```
