@@ -184,7 +184,10 @@
           callback(items);
 
           expect(getCellContent(getFirstCell(grid)).textContent).to.contain('foo0');
-          done();
+          if (!done._called) {
+            done._called = true;
+            done();
+          }
         };
       });
 
