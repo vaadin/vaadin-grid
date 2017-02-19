@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title>Perf-Test 0</title>
+
+  <script src="../../../webcomponentsjs/webcomponents-lite.min.js"></script>
+
+  <link rel="import" href="../../vaadin-grid.html">
+  <link rel="import" href="../../vaadin-grid-selection-column.html">
+  <style>
+    html, body {
+      margin: 0;
+      height: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <h3>Performance Test: few inline items</h3>
+
+  <style is="custom-style">
+    vaadin-grid {
+    }
+  </style>
+
+  <vaadin-grid items='[1,2,3,4,5,6,7,8,9,10]'>
+    <vaadin-grid-selection-column auto-select>
+    </vaadin-grid-selection-column>
+
+    <vaadin-grid-column-group>
+      <template class="header">Index column</template>
+
+      <vaadin-grid-column>
+        <template class="header">Index column</template>
+        <template>[[index]]</template>
+        <template class="footer">Index column</template>
+      </vaadin-grid-column>
+
+      <vaadin-grid-column>
+        <template class="header">Foo column</template>
+        <template>[[item]]</template>
+        <template class="footer">Foo column</template>
+      </vaadin-grid-column>
+    </vaadin-grid-column-group>
+  </vaadin-grid>
+</body>
+
+</html>

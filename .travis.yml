@@ -4,8 +4,9 @@ language: node_js
 node_js: stable
 
 cache:
-  directories:
-    - node_modules
+   directories:
+     - node_modules
+     - chrome-linux
 
 addons:
   firefox: latest
@@ -13,16 +14,17 @@ addons:
 
 install:
   - npm install
-  - npm install -g bower
-  - bower install
+  - node_modules/.bin/bower install
 
 before_script:
-  - gulp lint
-  - ([ "$TRAVIS_EVENT_TYPE" = "pull_request" ] || TRAVIS_BRANCH=quick/${TRAVIS_BUILD_ID} xvfb-run -s '-screen 0 1024x768x24' wct -l chrome -l firefox)
+  - export LIGHTHOUSE_CHROMIUM_PATH="$(pwd)/chrome-linux/chrome"
+  - node_modules/lighthouse/lighthouse-core/scripts/download-chrome.sh && $LIGHTHOUSE_CHROMIUM_PATH --version
+  - xvfb-run -s '-screen 0 1024x768x24' gulp perf:run
+  #- ([ "$TRAVIS_EVENT_TYPE" = "pull_request" ] || TRAVIS_BRANCH=quick/${TRAVIS_BUILD_ID} xvfb-run -s '-screen 0 1024x768x24' wct -l chrome -l firefox)
 
 script:
-  - ([ "$TRAVIS_EVENT_TYPE" = "pull_request" ] || gemini test test/visual)
-  - xvfb-run -s '-screen 0 1024x768x24' wct -l chrome -l firefox
+  #- ([ "$TRAVIS_EVENT_TYPE" = "pull_request" ] || gemini test test/visual)
+  #- xvfb-run -s '-screen 0 1024x768x24' wct -l chrome -l firefox
 
 after_success:
   - "cat ${TRAVIS_BUILD_DIR}/coverage/lcov.info | coveralls"
