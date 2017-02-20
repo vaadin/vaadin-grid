@@ -110,6 +110,29 @@
           expect(sorter.getAttribute('direction')).to.equal('desc');
         });
 
+        it('should have sortable, direction, and order in ARIA label', function() {
+          expect(indicators.getAttribute('aria-label')).to.have.string('Sortable');
+          expect(indicators.getAttribute('aria-label')).to.not.have.string('ascending');
+          expect(indicators.getAttribute('aria-label')).to.not.have.string('descending');
+          expect(indicators.getAttribute('aria-label')).to.not.have.string('Order');
+
+          sorter.direction = 'asc';
+          expect(indicators.getAttribute('aria-label')).to.have.string('ascending');
+          expect(indicators.getAttribute('aria-label')).to.not.have.string('descending');
+          expect(indicators.getAttribute('aria-label')).to.not.have.string('Order');
+
+          sorter.direction = 'desc';
+          expect(indicators.getAttribute('aria-label')).to.have.string('descending');
+          expect(indicators.getAttribute('aria-label')).to.not.have.string('ascending');
+          expect(indicators.getAttribute('aria-label')).to.not.have.string('Order');
+
+          sorter._order = 0;
+          expect(indicators.getAttribute('aria-label')).to.have.string('Order 1');
+
+          sorter._order = 4;
+          expect(indicators.getAttribute('aria-label')).to.have.string('Order 5');
+        });
+
       });
 
       describe('grid', function() {
@@ -163,6 +186,58 @@
           sorterLast.direction = null;
           expect(sorterFirst._order).to.equal(null);
           expect(sorterLast._order).to.equal(null);
+        });
+
+        describe('reannounce', function() {
+
+          var reannounceSpy, focusTrap;
+
+          beforeEach(function() {
+            focusTrap = grid.$.scroller.$.headerFocusTrap;
+            reannounceSpy = sinon.spy(focusTrap, '_reannounce');
+            sorterFirst.click(); // sets initial focus
+          });
+
+          function space() {
+            MockInteractions.keyDownOn(grid, 32);
+          }
+
+          it('should reannounce on second and subsequent clicks', function() {
+            sorterFirst.click();
+            expect(reannounceSpy.callCount).to.equal(1);
+
+            sorterFirst.click();
+            expect(reannounceSpy.callCount).to.equal(2);
+          });
+
+          it('should reannounce on second and subsequent space hits', function() {
+            space();
+            expect(reannounceSpy.callCount).to.equal(1);
+
+            space();
+            expect(reannounceSpy.callCount).to.equal(2);
+          });
+
+          it('should focus baits on reannounce', function() {
+            // native focus is required to trigger assistive announce
+            var primaryFocusSpy = sinon.spy(focusTrap._primary, 'focus');
+            var secondaryFocusSpy = sinon.spy(focusTrap._secondary, 'focus');
+            sorterFirst.click();
+            expect(primaryFocusSpy.called || secondaryFocusSpy.called).to.be.true;
+          });
+
+          it('should not propagate focusin and focusout events on reannounce', function() {
+            // reannounce is not a real focus, therefore related focus events
+            // should not propagate out focusTrap. Otherwise keyboard focus
+            // would be mistakenly displayed after mouse clicks.
+            var focusinSpy = sinon.spy(), focusoutSpy = sinon.spy();
+            focusTrap.addEventListener('focusin', focusinSpy);
+            focusTrap.addEventListener('focusout', focusoutSpy);
+            sorterFirst.click();
+            expect(focusinSpy.called).to.be.false;
+            expect(focusoutSpy.called).to.be.false;
+          });
+
         });
 
         describe('array data provider', function() {
