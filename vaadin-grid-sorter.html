@@ -63,7 +63,7 @@ Custom property | Description | Default
     </style>
 
     <content></content>
-    <div id="indicators">
+    <div id="indicators" aria-label$="[[_getAriaLabel(direction, _order)]]">
       <div id="order">[[_getDisplayOrder(_order)]]</div>
     </div>
 
@@ -91,7 +91,10 @@ Custom property | Description | Default
           value: null
         },
 
-        _order: Number
+        _order: {
+          type: Number,
+          value: null
+        }
 
       },
 
@@ -121,6 +124,17 @@ Custom property | Description | Default
         } else {
           this.direction = 'asc';
         }
+      },
+
+      _getAriaLabel: function(direction, order) {
+        var label = 'Sortable. ';
+        if (direction) {
+          label += 'Sorted ';
+          label += direction === 'asc' ? 'ascending' : 'descending';
+          label += order === null ? '. ' : (', Order ' + (order + 1) + '. ');
+        }
+        label += 'To change the sort order, press space.';
+        return label;
       }
 
     });

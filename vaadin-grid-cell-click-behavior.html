@@ -36,7 +36,21 @@
     _onClick: function(e) {
       // this event is only supposed to be fired from cells.
       if (this.localName !== 'vaadin-grid-sorter') {
+        var container = this.parentElement.parentElement;
+        // if sorter element is used, ensure announcement on every click
+        var hasSorter = Array.prototype.some.call(Polymer.dom(e).path, function(element) {
+          return element.localName === 'vaadin-grid-sorter';
+        });
+
+        if (hasSorter) {
+          container.prepareAnnouncement();
+        }
+
         this.fire('cell-focus', {cell: this});
+
+        if (hasSorter) {
+          container.ensureAnnounced();
+        }
       }
 
       // Prevent item action if cell itself is not focused.
