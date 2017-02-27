@@ -134,6 +134,14 @@
           expect(indicators.getAttribute('aria-label')).to.have.string('Order 5');
         });
 
+        it('should prevent default on click', function() {
+          var clickEvent = new CustomEvent('click', {cancelable: true});
+
+          sorter.dispatchEvent(clickEvent);
+
+          expect(clickEvent.defaultPrevented).to.be.true;
+        });
+
       });
 
       describe('grid', function() {
