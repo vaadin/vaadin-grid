@@ -1,6 +1,3 @@
 [
-  {"name": "few-inline-items.html", "threshold": 0.55},
-  {"name": "large-inline-items.html", "threshold": 0.45},
-  {"name": "scrolling.html", "threshold": 0.10},
-  {"name": "large-array-items.html", "threshold": 0.05}
+  {"name": "few-inline-items.html", "threshold": 0.5}
 ]
