@@ -83,9 +83,9 @@ function runTest(test, threshold, cb) {
 
       var results = JSON.parse(stdout);
       if (results && results.aggregations) {
-        var aggregation = results.aggregations.filter(a => a.name == 'Perf metrics')[0];
+        var aggregation = results.aggregations.filter(a => /Perf.*metrics/.test(a.name))[0];
         if (aggregation) {
-          var score = aggregation.score.filter(s => s.name == 'Page load performance is fast')[0];
+          var score = aggregation.score.filter(s => s.name == 'Page load performance is fast')[0] || aggregation.score[0];
           if (score) {
             total = score.overall;
           }
@@ -94,9 +94,7 @@ function runTest(test, threshold, cb) {
 
       if (total == null || total == 'null') {
         var msg = results && results.aggregations ? JSON.stringify(results.aggregations, null, 1) : `${stderr}\n${stdout}`;
-        log(`Error: lighthouse has not produced a valid JSON output, ignoring this test \n${msg}`);
-      } else if (total == 1) {
-        error = `Error: lighthouse reported score=1. It might be server not running or bad url: ${url}`;
+        log(`Error: lighthouse has not produced a valid JSON output, ignoring it.\n${msg}`);
       } else if (total < threshold) {
         error = `Error: low performance scored ${total}`;
       } else {
@@ -123,7 +121,7 @@ gulp.task('perf:env', function(cb) {
 });
 
 gulp.task('perf:run:tests', ['perf:run:server', 'perf:env'], function(cb) {
-  perf.tests.reduce((prev, test) => () => runTest(test.name, test.threshold, prev), cb)();
+  perf.tests.reverse().filter(test => !test.disabled).reduce((prev, test) => () => runTest(test.name, test.threshold, prev), cb)();
 });
 
 gulp.task('perf:run', ['perf:run:tests'], function() {
