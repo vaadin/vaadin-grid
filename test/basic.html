@@ -158,6 +158,46 @@
         });
       });
 
+      it('sould warn about missing imports', function() {
+        var _warn = window.console.warn;
+        var spy = window.console.warn = sinon.spy();
+
+        Polymer.dom(grid).appendChild(document.createElement('vaadin-grid-sorter'));
+        Polymer.dom(grid).appendChild(document.createElement('vaadin-grid-sorter'));
+
+        grid.flushDebouncer('check-imports');
+        window.console.warn = _warn;
+
+        expect(spy.callCount).to.equal(1);
+      });
+
+      it('sould warn about missing imports after adding new content', function() {
+        var _warn = window.console.warn;
+        var spy = window.console.warn = sinon.spy();
+        grid.flushDebouncer('check-imports');
+
+        Polymer.dom(grid).appendChild(document.createElement('vaadin-grid-sorter'));
+        Polymer.dom.flush();
+        grid.flushDebouncer('check-imports');
+        window.console.warn = _warn;
+
+        expect(spy.called).to.be.true;
+      });
+
+      it('sould not warn about missing imports', function(done) {
+        var _warn = window.console.warn;
+        var spy = window.console.warn = sinon.spy();
+
+        Polymer.dom(grid).appendChild(document.createElement('vaadin-grid-sorter'));
+        Polymer.Base.importHref('../vaadin-grid-sorter.html', function() {
+          grid.flushDebouncer('check-imports');
+          window.console.warn = _warn;
+
+          expect(spy.called).to.be.false;
+          done();
+        });
+      });
+
     });
   </script>
 
