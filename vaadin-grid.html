@@ -197,6 +197,10 @@ first element in the cell will be focused. You can override the behavior by appl
       'iron-resize': '_gridResizeHandler'
     },
 
+    attached: function() {
+      this.debounce('check-imports', this._checkImports, 2000);
+    },
+
     _updateItem: function(row, item) {
       row.style.minHeight = item ? '' : this.$.scroller._physicalAverage + 'px';
       row.item = item;
@@ -226,6 +230,20 @@ first element in the cell will be focused. You can override the behavior by appl
 
     _gridResizeHandler: function() {
       this.$.scroller._gridResizeHandler();
+    },
+
+    _checkImports: function() {
+      [
+        'vaadin-grid-column-group',
+        'vaadin-grid-sorter',
+        'vaadin-grid-filter',
+        'vaadin-grid-selection-column'
+      ].forEach(function(elementName) {
+        var element = this.querySelector(elementName);
+        if (element && !Polymer.isInstance(element)) {
+          window.console.warn('Make sure you have imported the required module for <' + elementName + '> element.');
+        }
+      }, this);
     }
   });
 </script>
