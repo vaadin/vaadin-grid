@@ -31,10 +31,12 @@
     _arrayDataProvider: function(opts, cb) {
       var items = (this.items || []).slice(0);
 
-      items = this._filter(items);
+      if (this._checkPaths(this._filters, items)) {
+        items = this._filter(items);
+      }
       this.size = items.length;
 
-      if (opts.sortOrder.length) {
+      if (this.size && opts.sortOrder.length && this._checkPaths(this._sorters, items)) {
         items = items.sort(this._multiSort.bind(this));
       }
 
@@ -42,6 +44,31 @@
       var end = start + opts.pageSize;
       var slice = items.slice(start, end);
       cb(slice, items.length);
+    },
+
+    /**
+     * Check array of filters/sorters for paths validity, console.warn invalid items
+     * @param {Array} arrayToCheck The array of filters/sorters to check
+     * @param {Array} items
+     */
+    _checkPaths: function(arrayToCheck, items) {
+      var result = true;
+
+      for (var i in arrayToCheck) {
+        var path = arrayToCheck[i].path;
+
+        // skip simple paths
+        if (path.indexOf('.') === -1) {
+          continue;
+        }
+
+        if (typeof Polymer.Base.get(path, items[0]) === 'undefined') {
+          console.warn('Path "' + path + '" seems to be invalid, skipping it');
+          result = false;
+        }
+      }
+
+      return result;
     },
 
     _multiSort: function(a, b) {

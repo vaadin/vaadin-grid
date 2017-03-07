@@ -12,6 +12,8 @@
 
   <link rel="import" href="helpers.html">
   <link rel="import" href="../vaadin-grid.html">
+  <link rel="import" href="../vaadin-grid-filter.html">
+  <link rel="import" href="../vaadin-grid-sorter.html">
 </head>
 
 <body>
@@ -19,14 +21,55 @@
   <test-fixture id="default">
     <template>
       <vaadin-grid>
+
         <vaadin-grid-column>
           <template class="header">First</template>
           <template>[[item.name.first]]</template>
         </vaadin-grid-column>
+
         <vaadin-grid-column>
           <template class="header">Last</template>
           <template>[[item.name.last]]</template>
         </vaadin-grid-column>
+
+        <vaadin-grid-column>
+          <template class="header">
+            <vaadin-grid-sorter path="invalid.path.with.dots">
+              Invalid sorter path with dots
+            </vaadin-grid-sorter>
+          </template>
+          <template>[[item.name.last]]</template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column>
+          <template class="header">
+            <vaadin-grid-sorter path="invalid_path_without_dots">
+              Invalid sorter path without dots
+            </vaadin-grid-sorter>
+          </template>
+          <template>[[item.name.last]]</template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column>
+          <template class="header">
+            <vaadin-grid-filter path="invalid.path.with.dots">
+              <input placeholder="Invalid filter path with dots">
+            </vaadin-grid-filter>
+          </template>
+          <template>[[item.name.first]]</template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column>
+          <template class="header">
+            <vaadin-grid-filter path="invalid_path_without_dots">
+              <input placeholder="Invalid filter path without dots">
+            </vaadin-grid-filter>
+          </template>
+          <template>[[item.name.last]]</template>
+        </vaadin-grid-column>
+
+      </vaadin-grid>
+
       </vaadin-grid>
     </template>
   </test-fixture>
@@ -112,6 +155,90 @@
           }
         }];
         expect(getContent(0, 0)).to.equal('a');
+      });
+
+      describe('invalid sorter paths', function() {
+        var invalidPaths;
+
+        beforeEach(function() {
+          var sorters = Polymer.dom(grid).querySelectorAll('vaadin-grid-sorter');
+          invalidPaths = {
+            withDots: sorters[0],
+            withoutDots: sorters[1]
+          };
+        });
+
+        it('should warn about invalid path with one or more dots', function(done) {
+          var _warn = console.warn;
+          var spy = console.warn = sinon.spy();
+
+          invalidPaths.withDots.addEventListener('sorter-changed', function() {
+            Polymer.Base.async(function() {
+              expect(spy.called).to.be.true;
+              console.warn = _warn;
+              done();
+            });
+          });
+
+          click(invalidPaths.withDots);
+        });
+
+        it('should not warn about invalid path without dots', function(done) {
+          var _warn = console.warn;
+          var spy = console.warn = sinon.spy();
+
+          invalidPaths.withoutDots.addEventListener('sorter-changed', function() {
+            Polymer.Base.async(function() {
+              expect(spy.called).to.be.false;
+              console.warn = _warn;
+              done();
+            });
+          });
+
+          click(invalidPaths.withoutDots);
+        });
+      });
+
+      describe('invalid filter paths', function() {
+        var invalidPaths;
+
+        beforeEach(function() {
+          var sorters = Polymer.dom(grid).querySelectorAll('vaadin-grid-filter');
+          invalidPaths = {
+            withDots: sorters[0],
+            withoutDots: sorters[1]
+          };
+        });
+
+        it('should warn about invalid path with one or more dots', function(done) {
+          var _warn = console.warn;
+          var spy = console.warn = sinon.spy();
+
+          invalidPaths.withDots.addEventListener('filter-changed', function() {
+            Polymer.Base.async(function() {
+              expect(spy.called).to.be.true;
+              console.warn = _warn;
+              done();
+            });
+          });
+
+          invalidPaths.withDots.value = 'foo';
+        });
+
+        it('should not warn about invalid path without dots', function(done) {
+          var _warn = console.warn;
+          var spy = console.warn = sinon.spy();
+
+          invalidPaths.withoutDots.addEventListener('filter-changed', function() {
+            Polymer.Base.async(function() {
+              expect(spy.called).to.be.false;
+              console.warn = _warn;
+              done();
+            });
+          });
+
+          invalidPaths.withoutDots.value = 'foo';
+        });
       });
 
     });
