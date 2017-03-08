@@ -59,4 +59,9 @@ The CSS properties allow adjusting heights of different row types, while the mix
 |`--vaadin-grid-row-stripe-cell`
 |Mixin applied on the cells of the striped rows.
 |-
+|
+
+|`--vaadin-grid-row-focus`
+|Mixin applied on the after psuedo element of the rows for focus styling
+|-
 |===

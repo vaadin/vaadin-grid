@@ -119,6 +119,7 @@ Custom property | Description | Default
 `--vaadin-grid-selected-row-cell` | Mixin which applies to the cell elements of a selected row | {}
 `--vaadin-grid-row-cell` | Mixin which applies to the cell elements of the table | {}
 `--vaadin-grid-row-stripe-cell` | Mixin applied on the cells of the striped rows | {}
+`--vaadin-grid-row-focus` | Mixin applied on the after psuedo element of the rows for focus styling| {}
 
 See the [demo](demo/index.html) for use case examples.
 
@@ -329,6 +330,7 @@ See the [demo](demo/index.html) for use case examples.
     -webkit-transform: scaleX(0.0);
     transform: scaleX(0.0);
     z-index: 1;
+    @apply(--vaadin-grid-row-focus);
   }
 
   :focus .vaadin-grid-row-focused:after {
