@@ -233,7 +233,10 @@ first element in the cell will be focused. You can override the behavior by appl
     <vaadin-grid-table id="scroller" loading$=[[_loading]] bind-data="[[_bindData]]" size="[[size]]"
         column-tree="[[_columnTree]]" content-target="[[_getContentTarget()]]"
         row-details-template="[[_rowDetailsTemplate]]" column-reordering-allowed="[[columnReorderingAllowed]]">
-      <content></content>
+      <slot name="headerFocusTrap" slot="headerFocusTrap"></slot>
+      <slot name="bodyFocusTrap" slot="bodyFocusTrap"></slot>
+      <slot name="footerFocusTrap" slot="footerFocusTrap"></slot>
+      <slot></slot>
     </vaadin-grid-table>
   </template>
 </dom-module>
