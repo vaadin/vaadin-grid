@@ -359,7 +359,7 @@
 
     _reorderRows: function() {
       var tbody = Polymer.dom(this.$.items);
-      var items = tbody.querySelectorAll('tr');
+      var items = tbody.querySelectorAll('.vaadin-grid-row');
       var _adjustedVirtualStart = this._virtualStart + this._vidxOffset;
 
       // DOM index of the element with the lowest index

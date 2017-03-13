@@ -48,7 +48,7 @@
         border-bottom: 0 solid transparent;
       }
 
-      #items > tr {
+      #items > .vaadin-grid-row {
         box-sizing: border-box;
         margin: 0;
         position: absolute;
@@ -135,7 +135,7 @@
         overflow: hidden;
       }
 
-      tr:not([hidden]) {
+      .vaadin-grid-row:not([hidden]) {
         display: flex;
         width: 100%;
       }
@@ -181,15 +181,15 @@
     <style>
 
       /* Default borders */
-      thead tr:last-child .vaadin-grid-cell ::slotted(.cell-content) {
+      thead .vaadin-grid-row:last-child .vaadin-grid-cell ::slotted(.cell-content) {
         border-bottom: 1px solid var(--divider-color, rgba(0, 0, 0, 0.08));
       }
 
-      tfoot tr:first-child .vaadin-grid-cell ::slotted(.cell-content) {
+      tfoot .vaadin-grid-row:first-child .vaadin-grid-cell ::slotted(.cell-content) {
         border-top: 1px solid var(--divider-color, rgba(0, 0, 0, 0.08));
       }
 
-      tbody tr:not([lastrow]) .vaadin-grid-cell ::slotted(.cell-content) {
+      tbody .vaadin-grid-row:not([lastrow]) .vaadin-grid-cell ::slotted(.cell-content) {
         border-bottom: 1px solid var(--divider-color, rgba(0, 0, 0, 0.08));
       }
 
@@ -206,7 +206,7 @@
 
       /* Cells */
 
-      table tr .vaadin-grid-cell:not([detailscell]) ::slotted(.cell-content) {
+      table .vaadin-grid-row .vaadin-grid-cell:not([detailscell]) ::slotted(.cell-content) {
         background: #fff;
         text-align: left;
         padding: 8px;
@@ -214,17 +214,17 @@
         @apply(--vaadin-grid-cell);
       }
 
-      table thead .vaadin-grid-cell:not([detailscell]) ::slotted(.cell-content) {
+      thead .vaadin-grid-row .vaadin-grid-cell:not([detailscell]) ::slotted(.cell-content) {
         font-weight: 500;
         @apply(--vaadin-grid-header-cell);
       }
 
-      table tfoot .vaadin-grid-cell:not([detailscell]) ::slotted(.cell-content) {
+      tfoot .vaadin-grid-row .vaadin-grid-cell:not([detailscell]) ::slotted(.cell-content) {
         font-weight: 500;
         @apply(--vaadin-grid-footer-cell);
       }
 
-      table tbody .vaadin-grid-cell:not([detailscell]) ::slotted(.cell-content) {
+      tbody .vaadin-grid-row .vaadin-grid-cell:not([detailscell]) ::slotted(.cell-content) {
         @apply(--vaadin-grid-body-cell);
       }
 
@@ -232,15 +232,15 @@
         @apply(--vaadin-grid-body-row-odd-cell);
       }
 
-      table tr .vaadin-grid-cell:not([detailscell])[last-frozen] ::slotted(.cell-content) {
+      table .vaadin-grid-row .vaadin-grid-cell:not([detailscell])[last-frozen] ::slotted(.cell-content) {
         @apply(--vaadin-grid-cell-last-frozen);
       }
 
-      :host(:not([scrolling])) tbody tr:hover .vaadin-grid-cell ::slotted(.cell-content) {
+      :host(:not([scrolling])) tbody .vaadin-grid-row:hover .vaadin-grid-cell ::slotted(.cell-content) {
         @apply(--vaadin-grid-body-row-hover-cell);
       }
 
-      table tr .vaadin-grid-cell.vaadin-grid-cell[lastcolumn] ::slotted(.cell-content) {
+      table .vaadin-grid-row .vaadin-grid-cell.vaadin-grid-cell[lastcolumn] ::slotted(.cell-content) {
         border-right: none;
       }
 
@@ -448,7 +448,7 @@
     },
 
     _updateLastColumn: function() {
-      Polymer.dom(this.$.table).querySelectorAll('tr').forEach(function(row) {
+      Polymer.dom(this.$.table).querySelectorAll('.vaadin-grid-row').forEach(function(row) {
         row.updateLastColumn();
       });
     },
@@ -498,7 +498,7 @@
       var physicalItems = new Array(size);
 
       for (var i = 0; i < size; i++) {
-        var row = document.createElement('tr', 'vaadin-grid-table-row');
+        var row = document.createElement('vaadin-grid-table-row');
         row.target = this.domHost;
         physicalItems[i] = row;
         row.setAttribute('hidden', ''); // hidden by default, removed when data is bound.

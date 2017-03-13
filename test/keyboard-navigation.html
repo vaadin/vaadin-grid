@@ -197,11 +197,11 @@
         }
 
         function getFirstHeaderCell() {
-          return grid.$.scroller.$.header.rows[0].children[0];
+          return grid.$.scroller.$.header._rows[0].children[0];
         }
 
         function focusHeaderInput() {
-          var cell = grid.$.scroller.$.header.rows[0].children[1];
+          var cell = grid.$.scroller.$.header._rows[0].children[1];
           var contents = getCellContent(cell);
 
           contents.children[0].click();
@@ -212,7 +212,7 @@
         }
 
         function focusFooterInput() {
-          var cell = grid.$.scroller.$.footer.rows[0].children[1];
+          var cell = grid.$.scroller.$.footer._rows[0].children[1];
           var contents = getCellContent(cell);
 
           contents.children[0].click();
@@ -227,7 +227,7 @@
         }
 
         function clickFirstFooterCell() {
-          grid.$.scroller.$.footer.rows[0].children[0].click();
+          grid.$.scroller.$.footer._rows[0].children[0].click();
         }
 
         describe('navigation mode', function() {
@@ -1071,12 +1071,12 @@
           describe('space click shortcut', function() {
             beforeEach(function() {
               // navigate to first column
-              header.rows[0].children[1].click();
+              header._rows[0].children[1].click();
               right();
             });
 
             it('should click first cell child on space', function() {
-              var firstChild = getCellContent(header.rows[0].children[2]).children[0];
+              var firstChild = getCellContent(header._rows[0].children[2]).children[0];
               var clickStub = sinon.stub(firstChild, 'click');
 
               space();
@@ -1085,7 +1085,7 @@
             });
 
             it('should not click other cell children on space', function() {
-              var secondChild = getCellContent(header.rows[0].children[2]).children[1];
+              var secondChild = getCellContent(header._rows[0].children[2]).children[1];
               var clickStub = sinon.stub(secondChild, 'click');
 
               space();
@@ -1105,7 +1105,7 @@
             });
 
             it('should not activate if synthetic click has default prevented', function() {
-              var firstBodyRowFirstChild = getCellContent(body.rows[0].children[2]).children[0];
+              var firstBodyRowFirstChild = getCellContent(getRows(body)[0].children[2]).children[0];
 
               var spy = sinon.spy();
               listenOnce(firstBodyRowFirstChild, 'click', function(e) {

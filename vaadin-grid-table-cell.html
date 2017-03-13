@@ -233,13 +233,13 @@
 
           this._insertionPoint = document.createElement('slot');
           this._insertionPoint.setAttribute('name', 'cell-content-id-' + contentId);
-  
+
         } else {
           this._cellContent.setAttribute('data-cell-content-id', contentId);
 
           this._scrollerInsertionPoint = document.createElement('content');
           this._scrollerInsertionPoint.setAttribute('select', '[data-cell-content-id="' + contentId + '"]');
-  
+
           this._insertionPoint = document.createElement('content');
           this._insertionPoint.setAttribute('select', '[data-cell-content-id="' + contentId + '"]');
         }
@@ -449,7 +449,7 @@
 
         // Fix width and flex-grow for all preceding columns
         var thead = this.parentElement.parentElement;
-        Polymer.dom(thead).querySelectorAll('tr:last-child .vaadin-grid-cell')
+        Polymer.dom(thead).querySelectorAll('.vaadin-grid-row:last-child .vaadin-grid-cell')
         .sort(function(a, b) {
           return a.column._order - b.column._order;
         })
@@ -469,7 +469,7 @@
 
       _getHeaderCellByColumn: function(column) {
         var thead = this.parentElement.parentElement;
-        return Polymer.dom(thead).querySelectorAll('tr:last-child .vaadin-grid-cell').filter(function(cell) {
+        return Polymer.dom(thead).querySelectorAll('.vaadin-grid-row:last-child .vaadin-grid-cell').filter(function(cell) {
           return cell.column === column;
         })[0];
       },
