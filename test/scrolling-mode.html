@@ -71,7 +71,7 @@
       });
 
       it('should not have the table transformed with fixed containers', function() {
-        // This is to ensure that a fixed tbody/thead/tfoot are not positioned
+        // This is to ensure that a fixed body/header/footer are not positioned
         // in relation to the table element but it's parent
         if (fixedContainers) {
           expect(window.getComputedStyle(scroller.$.table).transform).to.equal('none');

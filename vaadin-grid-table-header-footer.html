@@ -35,7 +35,7 @@
           rows.push(row);
         }
 
-        this._rows = this.localName === 'thead' ? rows : rows.reverse();
+        this._rows = this.localName === 'vaadin-grid-table-header' ? rows : rows.reverse();
       },
 
       _rowsChanged: function(rows) {
@@ -49,7 +49,6 @@
 
     Polymer({
       is: 'vaadin-grid-table-header',
-      extends: 'thead',
       behaviors: [vaadinGridTableRowContainerBehavior,
         vaadin.elements.grid.FocusableCellContainerBehavior],
 
@@ -60,7 +59,6 @@
 
     Polymer({
       is: 'vaadin-grid-table-body',
-      extends: 'tbody',
       behaviors: [vaadin.elements.grid.FocusableCellContainerBehavior],
 
       observers: ['_announceFocusedRow(_focusedRow)'],
@@ -127,7 +125,6 @@
 
     Polymer({
       is: 'vaadin-grid-table-footer',
-      extends: 'tfoot',
       behaviors: [vaadinGridTableRowContainerBehavior,
         vaadin.elements.grid.FocusableCellContainerBehavior],
 

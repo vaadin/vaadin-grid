@@ -47,7 +47,7 @@
       it('check visible item count', function() {
         scroller.size = 10;
         Polymer.dom.flush();
-        expect(Polymer.dom(scroller.root).querySelectorAll('tbody .vaadin-grid-row:not([hidden])').length).to.eql(10);
+        expect(Polymer.dom(scroller.root).querySelectorAll('vaadin-grid-table-body .vaadin-grid-row:not([hidden])').length).to.eql(10);
       });
 
       it('first visible index', function() {

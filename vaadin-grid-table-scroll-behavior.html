@@ -7,30 +7,30 @@
         transform: translateZ(0);
       }
 
-      thead {
+      vaadin-grid-table-header {
         position: absolute;
         top: 0;
         width: 100%;
       }
 
-      tfoot {
+      vaadin-grid-table-footer {
         position: absolute;
         bottom: 0;
         width: 100%;
       }
 
-      tbody {
+      vaadin-grid-table-body {
         z-index: -1;
       }
 
-      table {
+      vaadin-grid-table-table {
         position: relative;
         overflow: auto;
         -webkit-overflow-scrolling: touch;
         z-index: -2;
       }
 
-      :host([ios]) table {
+      :host([ios]) vaadin-grid-table-table {
         transform: none;
       }
 
@@ -41,18 +41,18 @@
         overflow: hidden;
       }
 
-      :host([fixed-sections]) thead,
-      :host([fixed-sections]) tfoot {
+      :host([fixed-sections]) vaadin-grid-table-header,
+      :host([fixed-sections]) vaadin-grid-table-footer {
         position: fixed;
       }
 
-      :host([fixed-sections]) tbody#items {
+      :host([fixed-sections]) vaadin-grid-table-body#items {
         position: fixed;
         width: 100%;
         will-change: transform;
       }
 
-      :host([fixed-sections]) table {
+      :host([fixed-sections]) vaadin-grid-table-table {
         transform: none;
       }
 
@@ -358,8 +358,8 @@
     },
 
     _reorderRows: function() {
-      var tbody = Polymer.dom(this.$.items);
-      var items = tbody.querySelectorAll('.vaadin-grid-row');
+      var body = Polymer.dom(this.$.items);
+      var items = body.querySelectorAll('.vaadin-grid-row');
       var _adjustedVirtualStart = this._virtualStart + this._vidxOffset;
 
       // DOM index of the element with the lowest index
@@ -369,12 +369,12 @@
       if (physicalIndexOfFirst < items.length / 2) {
         // Append all the preceding elements after the last element
         for (var i = 0; i < physicalIndexOfFirst; i++) {
-          tbody.appendChild(items[i]);
+          body.appendChild(items[i]);
         }
       } else {
         // Prepend all the trailing elements before the first element
         for (var j = physicalIndexOfFirst; j < items.length; j++) {
-          tbody.insertBefore(items[j], items[0]);
+          body.insertBefore(items[j], items[0]);
         }
       }
     },

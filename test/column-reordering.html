@@ -94,7 +94,7 @@
   <script>
     function getVisualCellContent(section, row, col) {
       var cell = Polymer.dom(section).querySelectorAll('.vaadin-grid-cell').pop();
-      if (section.tagName === 'TFOOT') {
+      if (section.tagName === 'VAADIN-GRID-TABLE-FOOTER') {
         cell = Polymer.dom(section).querySelector('.vaadin-grid-cell');
       }
       var sectionRect = section.getBoundingClientRect();

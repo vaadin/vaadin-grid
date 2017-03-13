@@ -448,8 +448,8 @@
         }
 
         // Fix width and flex-grow for all preceding columns
-        var thead = this.parentElement.parentElement;
-        Polymer.dom(thead).querySelectorAll('.vaadin-grid-row:last-child .vaadin-grid-cell')
+        var header = this.parentElement.parentElement;
+        Polymer.dom(header).querySelectorAll('.vaadin-grid-row:last-child .vaadin-grid-cell')
         .sort(function(a, b) {
           return a.column._order - b.column._order;
         })
@@ -468,8 +468,8 @@
       },
 
       _getHeaderCellByColumn: function(column) {
-        var thead = this.parentElement.parentElement;
-        return Polymer.dom(thead).querySelectorAll('.vaadin-grid-row:last-child .vaadin-grid-cell').filter(function(cell) {
+        var header = this.parentElement.parentElement;
+        return Polymer.dom(header).querySelectorAll('.vaadin-grid-row:last-child .vaadin-grid-cell').filter(function(cell) {
           return cell.column === column;
         })[0];
       },
