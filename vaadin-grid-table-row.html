@@ -73,7 +73,7 @@
         if (expanded) {
           // TODO: template instance for each detail cell is pushed to the template.instances
           // but never cleaned up. Maybe consider just hiding details instead of removing.
-          var rowDetailsCell = document.createElement('td', 'vaadin-grid-table-cell');
+          var rowDetailsCell = document.createElement('vaadin-grid-table-cell');
           rowDetailsCell.setAttribute('detailscell', true);
           // Using a frozen cell as the details cell works as a handy way of
           // making it float in place
@@ -243,7 +243,7 @@
       ],
 
       _createCell: function() {
-        return document.createElement('td', 'vaadin-grid-table-cell');
+        return document.createElement('vaadin-grid-table-cell');
       }
     });
 
@@ -263,7 +263,7 @@
       },
 
       _createCell: function() {
-        return document.createElement('th', 'vaadin-grid-table-header-cell');
+        return document.createElement('vaadin-grid-table-header-cell');
       }
 
     });
@@ -284,7 +284,7 @@
       },
 
       _createCell: function() {
-        return document.createElement('td', 'vaadin-grid-table-footer-cell');
+        return document.createElement('vaadin-grid-table-footer-cell');
       }
 
     });

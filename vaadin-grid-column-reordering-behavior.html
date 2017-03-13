@@ -162,7 +162,7 @@
     },
 
     _isSwappableByPosition: function(targetColumn, clientX) {
-      var targetCell = Polymer.dom(this.$.header).querySelectorAll('th').filter(function(cell) {
+      var targetCell = Polymer.dom(this.$.header).querySelectorAll('.vaadin-grid-cell').filter(function(cell) {
         return cell.column === targetColumn;
       })[0];
       var sourceCellRect = this.$.header.querySelector('[reorder-status=dragging]').getBoundingClientRect();

@@ -381,7 +381,7 @@
 
     _frozenCellsChanged: function() {
       this.debounce('cache-elements', function() {
-        Polymer.dom(this.root).querySelectorAll('td, th').forEach(function(cell) {
+        Polymer.dom(this.root).querySelectorAll('.vaadin-grid-cell').forEach(function(cell) {
           cell.style.transform = '';
         });
         this._frozenCells = Polymer.dom(this.root).querySelectorAll('[frozen]');

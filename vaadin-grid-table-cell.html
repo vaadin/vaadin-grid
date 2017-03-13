@@ -20,6 +20,7 @@
         column: Object,
         expanded: Boolean,
         flexGrow: Number,
+        colSpan: Number,
         focused: {
           type: Boolean,
           reflectToAttribute: true
@@ -92,7 +93,7 @@
 
         // Assigning undefined to element.colSpan will set colSpan attribute to 0
         if (column.colSpan) {
-          this.setAttribute('colspan', column.colSpan);
+          this.colSpan = column.colSpan;
         }
 
         this.listen(column, 'property-changed', '_columnPropChanged');
@@ -114,11 +115,7 @@
 
       _columnPropChanged: function(e) {
         if (e.target == this.column) {
-          if (e.detail.path === 'colSpan') {
-            this.setAttribute('colspan', e.detail.value);
-          } else {
-            this[e.detail.path] = e.detail.value;
-          }
+          this[e.detail.path] = e.detail.value;
         }
       },
 
@@ -161,7 +158,7 @@
       },
 
       _childColumnsChanged: function(childColumns) {
-        this.setAttribute('colspan', childColumns.length);
+        this.colSpan = childColumns.length;
       },
 
       _toggleContent: function(isAttached, cellContent, insertionPoint, scrollerInsertionPoint) {
@@ -252,8 +249,6 @@
     Polymer({
       is: 'vaadin-grid-table-cell',
 
-      extends: 'td',
-
       behaviors: [
         vaadinGridTableCellBehavior,
         vaadin.elements.grid.CellClickBehavior
@@ -272,8 +267,6 @@
 
     Polymer({
       is: 'vaadin-grid-table-header-cell',
-
-      extends: 'th',
 
       properties: {
         headerTemplate: Object,
@@ -456,7 +449,7 @@
 
         // Fix width and flex-grow for all preceding columns
         var thead = this.parentElement.parentElement;
-        Polymer.dom(thead).querySelectorAll('tr:last-child th')
+        Polymer.dom(thead).querySelectorAll('tr:last-child .vaadin-grid-cell')
         .sort(function(a, b) {
           return a.column._order - b.column._order;
         })
@@ -476,7 +469,7 @@
 
       _getHeaderCellByColumn: function(column) {
         var thead = this.parentElement.parentElement;
-        return Polymer.dom(thead).querySelectorAll('tr:last-child th').filter(function(cell) {
+        return Polymer.dom(thead).querySelectorAll('tr:last-child .vaadin-grid-cell').filter(function(cell) {
           return cell.column === column;
         })[0];
       },
@@ -500,8 +493,6 @@
 
     Polymer({
       is: 'vaadin-grid-table-footer-cell',
-
-      extends: 'td',
 
       properties: {
         footerTemplate: Object

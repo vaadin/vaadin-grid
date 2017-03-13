@@ -70,8 +70,8 @@
         display: block;
       }
 
-      thead th,
-      tfoot td {
+      thead .vaadin-grid-cell,
+      tfoot .vaadin-grid-cell {
         top: 0;
       }
 
@@ -172,17 +172,6 @@
         opacity: 0.5;
         pointer-events: none;
       }
-
-      /* Style overrides required to make copying the selection to clipboard work properly (on Safari) */
-      :host([copying]) tr {
-        opacity: 0 !important;
-        position: static !important;
-        display: table-row !important;
-      }
-
-      :host([copying]) .vaadin-grid-cell {
-        display: table-cell !important;
-      }
     </style>
   </template>
 </dom-module>
@@ -192,16 +181,15 @@
     <style>
 
       /* Default borders */
-
-      thead tr:last-child th ::slotted(.cell-content) {
+      thead tr:last-child .vaadin-grid-cell ::slotted(.cell-content) {
         border-bottom: 1px solid var(--divider-color, rgba(0, 0, 0, 0.08));
       }
 
-      tfoot tr:first-child td ::slotted(.cell-content) {
+      tfoot tr:first-child .vaadin-grid-cell ::slotted(.cell-content) {
         border-top: 1px solid var(--divider-color, rgba(0, 0, 0, 0.08));
       }
 
-      tbody tr:not([lastrow]) td ::slotted(.cell-content) {
+      tbody tr:not([lastrow]) .vaadin-grid-cell ::slotted(.cell-content) {
         border-bottom: 1px solid var(--divider-color, rgba(0, 0, 0, 0.08));
       }
 
@@ -385,7 +373,6 @@
 
     listeners: {
       'property-changed': '_columnPropChanged',
-      'copy': '_onCopy',
       'animationend': '_onAnimationEnd',
       'header.column-resizing': '_onColumnResize'
     },
@@ -418,15 +405,6 @@
 
       if (e.detail.path === 'hidden') {
         this._gridResizeHandler();
-      }
-    },
-
-    _onCopy: function() {
-      if (this.safari) {
-        this.toggleAttribute('copying', true);
-        this.async(function() {
-          this.toggleAttribute('copying', false);
-        }, 1);
       }
     },
 
