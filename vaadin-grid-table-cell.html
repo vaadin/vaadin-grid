@@ -99,6 +99,10 @@
       },
 
       _cellAttached: function(column, isAttached) {
+        if (column === undefined || isAttached === undefined) {
+          return;
+        }
+
         // Cells get detached when the column tree changes and new cells are created.
         // Also, cells get detached and attached during row reordering after scrolling.
         if (isAttached) {
@@ -119,6 +123,10 @@
       },
 
       _expandedChanged: function(expanded, instance) {
+        if (expanded === undefined || instance === undefined) {
+          return;
+        }
+
         instance.__expanded__ = expanded;
         instance.expanded = expanded;
       },
@@ -128,14 +136,26 @@
       },
 
       _indexChanged: function(index, instance) {
+        if (index === undefined || instance === undefined) {
+          return;
+        }
+
         instance.index = index;
       },
 
       _itemChanged: function(item, instance) {
+        if (item === undefined || instance === undefined) {
+          return;
+        }
+
         instance.item = item;
       },
 
       _selectedChanged: function(selected, instance) {
+        if (selected === undefined || instance === undefined) {
+          return;
+        }
+
         instance.__selected__ = selected;
         instance.selected = selected;
       },
@@ -145,7 +165,7 @@
       },
 
       _toggleContent: function(isAttached, cellContent, insertionPoint, scrollerInsertionPoint) {
-        if (!cellContent || !insertionPoint || !scrollerInsertionPoint) {
+        if (isAttached === undefined || cellContent === undefined || insertionPoint === undefined || scrollerInsertionPoint === undefined) {
           return;
         }
 
@@ -166,6 +186,10 @@
       },
 
       _toggleInstance: function(isAttached, templatizer, instance) {
+        if (isAttached === undefined || templatizer === undefined || instance === undefined) {
+          return;
+        }
+
         if (isAttached) {
           templatizer.addInstance(instance);
         } else {
@@ -187,6 +211,10 @@
       },
 
       _instanceChanged: function(instance, target) {
+        if (instance === undefined || target === undefined) {
+          return;
+        }
+
         this.style.height = '';
 
         this._cellContent = document.createElement('div');

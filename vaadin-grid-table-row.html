@@ -66,6 +66,10 @@
       },
 
       _rowDetailsChanged: function(expanded, rowDetailsTemplate, target) {
+        if (expanded === undefined || rowDetailsTemplate === undefined || target === undefined) {
+          return;
+        }
+
         if (expanded) {
           // TODO: template instance for each detail cell is pushed to the template.instances
           // but never cleaned up. Maybe consider just hiding details instead of removing.
@@ -103,12 +107,20 @@
       },
 
       _rowDetailsCellChanged: function(_rowDetailsCell, target) {
+        if (_rowDetailsCell === undefined || target === undefined) {
+          return;
+        }
+
         // paddingBottom must be set before update() is called!
         // make sure observers are in the correct order!
         target.$.scroller._update();
       },
 
-      _rowDetailsCellIndexChanged: function(_rowDetailsCell, index, target) {
+      _rowDetailsCellIndexChanged: function(_rowDetailsCell, index) {
+        if (_rowDetailsCell === undefined || index === undefined) {
+          return;
+        }
+
         if (_rowDetailsCell) {
           _rowDetailsCell.index = index;
 
@@ -128,6 +140,10 @@
 
 
       _columnsChanged: function(columns, target) {
+        if (columns === undefined || target === undefined) {
+          return;
+        }
+
         Polymer.dom(this).innerHTML = '';
 
         var cells = [];
@@ -157,13 +173,21 @@
         this.cells = cells;
       },
 
-      _indexChanged: function(index, cells, _rowDetailsCell) {
+      _indexChanged: function(index, cells) {
+        if (index === undefined || cells === undefined) {
+          return;
+        }
+
         cells.forEach(function(cell) {
           cell.index = index;
         });
       },
 
       _itemChanged: function(item, cells) {
+        if (item === undefined || cells === undefined) {
+          return;
+        }
+
         cells.forEach(function(cell) {
           // use assignment here instead of notifyPath to avoid triggering
           // forwardInstancePath for path "item" on cells unnecessarily.
@@ -172,18 +196,30 @@
       },
 
       _itemChangedForDetails: function(item, rowDetails) {
+        if (item === undefined || rowDetails === undefined) {
+          return;
+        }
+
         if (rowDetails) {
           rowDetails.item = item;
         }
       },
 
       _selectedChanged: function(selected, cells) {
+        if (selected === undefined || cells === undefined) {
+          return;
+        }
+
         cells.forEach(function(cell) {
           cell.selected = selected;
         });
       },
 
       _selectedChangedForDetails: function(selected, rowDetails) {
+        if (selected === undefined || rowDetails === undefined) {
+          return;
+        }
+
         if (rowDetails) {
           rowDetails.selected = selected;
         }

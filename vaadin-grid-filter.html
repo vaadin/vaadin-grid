@@ -54,6 +54,10 @@ and handlers for filtering the grid data.
       observers: ['_filterChanged(path, value, isAttached)'],
 
       _filterChanged: function(path, value, isAttached) {
+        if (path === undefined || value === undefined || isAttached === undefined) {
+          return;
+        }
+        
         if (isAttached) {
           this.debounce('filter-changed', function() {
             this.fire('filter-changed');

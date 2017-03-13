@@ -443,13 +443,21 @@
       return scrollbarWidth === 0 && safari;
     },
 
-    _rowDetailsTemplateChanged: function(rowDetailsTemplate, physicalItems) {
+    _rowDetailsTemplateChanged: function(rowDetailsTemplate, physicalItems, count) {
+      if (rowDetailsTemplate === undefined || physicalItems === undefined || count === undefined) {
+        return;
+      }
+
       physicalItems.forEach(function(row) {
         row.rowDetailsTemplate = rowDetailsTemplate;
       });
     },
 
     _columnTreeChanged: function(columnTree, physicalItems, count) {
+      if (columnTree === undefined || physicalItems === undefined || count === undefined) {
+        return;
+      }
+
       this._frozenCellsChanged();
       this._hasTemplatesChanged(columnTree);
 
@@ -523,6 +531,10 @@
     },
 
     _sizeChanged: function(size, bindData, hasData) {
+      if (size === undefined || bindData === undefined || hasData === undefined) {
+        return;
+      } 
+
       var scrollTop = this._scrollTop;
       var firstVisibleIndex = this.firstVisibleIndex + this._vidxOffset;
 

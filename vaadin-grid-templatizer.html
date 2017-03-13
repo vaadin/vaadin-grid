@@ -98,6 +98,10 @@
     },
 
     _forwardedParentPropsChanged: function(e, templateInstances) {
+      if (e === undefined || templateInstances === undefined) {
+        return;
+      }
+
       if (e.path !== '_forwardedParentProps') {
         var prop = e.path.substring(e.path.indexOf('.') + 1);
         var value = e.value;
