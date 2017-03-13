@@ -53,6 +53,7 @@
 
         _cellContent: Object,
         _insertionPoint: Object,
+        _scrollerInsertionPoint: Object,
         _templatizer: Object
       },
 
@@ -64,7 +65,7 @@
         '_itemChanged(item, instance)',
         '_instanceChanged(instance, target)',
         '_selectedChanged(selected, instance)',
-        '_toggleContent(isAttached, _cellContent, _insertionPoint)',
+        '_toggleContent(isAttached, _cellContent, _insertionPoint, _scrollerInsertionPoint)',
         '_toggleInstance(isAttached, _templatizer, instance)',
         '_widthChanged(width)',
         '_orderChanged(order)',
@@ -143,15 +144,21 @@
         this.setAttribute('colspan', childColumns.length);
       },
 
-      _toggleContent: function(isAttached, cellContent, insertionPoint) {
+      _toggleContent: function(isAttached, cellContent, insertionPoint, scrollerInsertionPoint) {
+        if (!cellContent || !insertionPoint || !scrollerInsertionPoint) {
+          return;
+        }
+
         if (isAttached) {
           if (Polymer.dom(cellContent).parentNode !== this.target) {
             Polymer.dom(this.target).appendChild(cellContent);
           }
           Polymer.dom(this).appendChild(insertionPoint);
+          Polymer.dom(this.target.$.scroller).insertBefore(scrollerInsertionPoint, Polymer.dom(this.target.$.scroller).firstElementChild);
         } else {
           this.async(function() {
             if (!this.isAttached && Polymer.dom(cellContent).parentNode === this.target) {
+              Polymer.dom(this.target.$.scroller).removeChild(scrollerInsertionPoint);
               Polymer.dom(this.target).removeChild(cellContent);
             }
           });
@@ -186,14 +193,31 @@
 
         this._cellContent.setAttribute('class', 'cell-content');
         var contentId = vaadin.elements.grid._contentIndex = vaadin.elements.grid._contentIndex + 1 || 0;
-        this._cellContent.setAttribute('data-cell-content-id', contentId);
         // TODO: maybe change data-cell-content-id attribute to ID with a prefix?
         this._cellContent.setAttribute('id', 'vaadin-grid-cell-content-' + contentId);
 
         Polymer.dom(this._cellContent).appendChild(this.instance.root);
 
-        this._insertionPoint = document.createElement('content');
-        this._insertionPoint.setAttribute('select', '[data-cell-content-id="' + contentId + '"]');
+        // Polymer 2.0
+        if (Polymer.Element) {
+          this._cellContent.setAttribute('slot', 'cell-content-id-' + contentId);
+
+          this._scrollerInsertionPoint = document.createElement('slot');
+          this._scrollerInsertionPoint.setAttribute('name', 'cell-content-id-' + contentId);
+          this._scrollerInsertionPoint.setAttribute('slot', 'cell-content-id-' + contentId);
+
+          this._insertionPoint = document.createElement('slot');
+          this._insertionPoint.setAttribute('name', 'cell-content-id-' + contentId);
+  
+        } else {
+          this._cellContent.setAttribute('data-cell-content-id', contentId);
+
+          this._scrollerInsertionPoint = document.createElement('content');
+          this._scrollerInsertionPoint.setAttribute('select', '[data-cell-content-id="' + contentId + '"]');
+  
+          this._insertionPoint = document.createElement('content');
+          this._insertionPoint.setAttribute('select', '[data-cell-content-id="' + contentId + '"]');
+        }
       },
     };
 

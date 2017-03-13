@@ -5,13 +5,13 @@
         background: #000;
       }
 
-      :host([reordering]) .vaadin-grid-cell:not([detailscell]) ::content > .cell-content {
+      :host([reordering]) .vaadin-grid-cell:not([detailscell]) ::slotted(.cell-content) {
         transition: opacity 300ms;
         transform: translateZ(0);
         opacity: 0.8;
       }
 
-      .vaadin-grid-cell[reorder-status="allowed"] ::content > .cell-content.cell-content {
+      .vaadin-grid-cell[reorder-status="allowed"] ::slotted(.cell-content.cell-content) {
         opacity: 1;
       }
 
@@ -19,7 +19,7 @@
         background: var(--primary-color, #000);
       }
 
-      .vaadin-grid-cell[reorder-status="dragging"] ::content > .cell-content.cell-content {
+      .vaadin-grid-cell[reorder-status="dragging"] ::slotted(.cell-content.cell-content) {
         opacity: 0.95;
       }
     </style>
