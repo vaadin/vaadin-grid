@@ -198,6 +198,10 @@ The `class` attribute is used to differentiate header and footer templates from 
     ],
 
     _frozenChanged: function(frozen, isAttached) {
+      if (frozen === undefined || isAttached === undefined) {
+        return;
+      }
+
       // since `frozen` is defined in ColumnBaseBehavior, this observer is triggered
       // normally before the column is actually attached to the DOM.
       // For events to bubble in Safari 9, element needs to be attached.

@@ -16,6 +16,10 @@
       observers: ['_columnTreeChanged(columnTree, target)', '_rowsChanged(_rows)'],
 
       _columnTreeChanged: function(columnTree, target) {
+        if (columnTree === undefined || target === undefined) {
+          return;
+        }
+
         if (this._rows) {
           this._rows.forEach(function(row) {
             Polymer.dom(row).innerHTML = '';

@@ -75,6 +75,10 @@
     ],
 
     _updateOrders: function(columnTree, splices) {
+      if (columnTree === undefined || splices === undefined) {
+        return;
+      }
+
       // Set order numbers to top-level columns
       columnTree[0].forEach(function(column, index) {
         column._order = (index + 1) * this._orderBaseScope;
@@ -82,6 +86,7 @@
     },
 
     _onDragStart: function(e) {
+      
       var cell = this._getCellByCellContent(e.target);
       if (cell) {
         this.toggleAttribute('reordering', true);

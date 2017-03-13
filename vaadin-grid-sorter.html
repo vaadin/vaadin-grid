@@ -199,6 +199,10 @@ Custom property | Description | Default
       },
 
       _propertiesChanged: function(path, direction, isAttached) {
+        if (path === undefined || direction === undefined || isAttached === undefined) {
+          return;
+        }
+
         if (isAttached) {
           this.fire('sorter-changed');
         }
@@ -231,6 +235,10 @@ Custom property | Description | Default
       },
 
       _directionOrOrderChanged: function(direction, order) {
+        if (direction === undefined || order === undefined) {
+          return;
+        }
+
         this.debounce('direction-announce', function() {
           this.fire('iron-announce', {text: this._getAriaLabel(direction, order)});
         }, 1);
