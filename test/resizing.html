@@ -119,6 +119,17 @@
             .to.be.closeTo(bodyRows[1].getBoundingClientRect().top, 1);
         });
 
+        it('should align height with number of rows', function(done) {
+          grid.style.height = 'auto';
+          Polymer.RenderStatus.afterNextRender(grid, function() {
+            var headerHeight = scroller.$.header.clientHeight;
+            var bodyHeight = scroller.$.items.clientHeight;
+            var footerHeight = scroller.$.footer.clientHeight;
+            expect(grid.clientHeight).to.equal(headerHeight + bodyHeight + footerHeight);
+            done();
+          });
+        });
+
       });
 
 

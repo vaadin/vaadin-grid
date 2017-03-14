@@ -38,9 +38,7 @@
       }
 
       #items {
-        position: absolute;
-        top: 0;
-        width: 100%;
+        position: relative;
       }
 
       #items,
@@ -150,11 +148,15 @@
         display: none;
       }
 
-      vaadin-grid-sizer {
-        position: relative;
-        padding: 0;
+      #sizerwrapper {
+        position: absolute;
         width: 100%;
         z-index: -100;
+      }
+
+      vaadin-grid-sizer {
+        position: relative;
+        width: 100%;
       }
 
       ::slotted(vaadin-grid-column),
@@ -276,7 +278,9 @@
 
     <div id="spinner"></div>
     <vaadin-grid-table-table id="table" overflow-hidden$="[[_hideTableOverflow(scrollbarWidth, safari)]]">
-      <vaadin-grid-sizer id="fixedsizer" top="[[_estScrollHeight]]" column-tree="[[columnTree]]"></vaadin-grid-sizer>
+      <div id="sizerwrapper">
+        <vaadin-grid-sizer id="fixedsizer" top="[[_estScrollHeight]]" column-tree="[[columnTree]]"></vaadin-grid-sizer>
+      </div>
       <vaadin-grid-table-header id="header" target="[[target]]" column-tree="[[columnTree]]"></vaadin-grid-table-header>
       <vaadin-grid-table-body id="items"></vaadin-grid-table-body>
       <vaadin-grid-table-footer id="footer" target="[[target]]" column-tree="[[columnTree]]"></vaadin-grid-table-footer>
@@ -509,7 +513,7 @@
     _sizeChanged: function(size, bindData, hasData) {
       if (size === undefined || bindData === undefined || hasData === undefined) {
         return;
-      } 
+      }
 
       var scrollTop = this._scrollTop;
       var firstVisibleIndex = this.firstVisibleIndex + this._vidxOffset;
