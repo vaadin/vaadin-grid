@@ -216,7 +216,7 @@
         });
 
         it('should have empty header', function() {
-          var cells = Polymer.dom(header).querySelectorAll('th');
+          var cells = Polymer.dom(header).querySelectorAll('.vaadin-grid-cell');
           expect(cells).not.to.be.empty;
 
           cells.forEach(function(cell) {
@@ -225,7 +225,7 @@
         });
 
         it('should have empty footer', function() {
-          var cells = Polymer.dom(footer).querySelectorAll('td');
+          var cells = Polymer.dom(footer).querySelectorAll('.vaadin-grid-cell');
           expect(cells).not.to.be.empty;
 
           cells.forEach(function(cell) {
@@ -350,14 +350,14 @@
         });
 
         it('should have a border below the header', function() {
-          var cells = Polymer.dom(header).querySelectorAll('th');
+          var cells = Polymer.dom(header).querySelectorAll('.vaadin-grid-cell');
           var cellOnLastRow = getCellContent(cells[cells.length - 1]);
 
           expect(window.getComputedStyle(cellOnLastRow).borderBottomStyle).to.eql('solid');
         });
 
         it('should have a border above the footer', function() {
-          var cells = Polymer.dom(footer).querySelectorAll('td');
+          var cells = Polymer.dom(footer).querySelectorAll('.vaadin-grid-cell');
           var cellOnFirstRow = getCellContent(cells[0]);
 
           expect(window.getComputedStyle(cellOnFirstRow).borderTopStyle).to.eql('solid');
@@ -384,14 +384,14 @@
         });
 
         it('should have cell content wrappers in all header cells', function() {
-          Polymer.dom(header).querySelectorAll('th').forEach(function(a) {
+          Polymer.dom(header).querySelectorAll('.vaadin-grid-cell').forEach(function(a) {
             var content = getCellContent(a);
             expect(content.classList.contains('cell-content')).to.be.true;
           });
         });
 
         it('should have cell content wrappers in all footer cells', function() {
-          Polymer.dom(footer).querySelectorAll('td').forEach(function(a) {
+          Polymer.dom(footer).querySelectorAll('.vaadin-grid-cell').forEach(function(a) {
             var content = getCellContent(a);
             expect(content.classList.contains('cell-content')).to.be.true;
           });
@@ -444,14 +444,15 @@
           });
         });
 
-        it('should hide self', function() {
+        it('should hide self', function(done) {
           init('hidden-column');
 
           flush(function() {
-            expect(grid.querySelector('vaadin-grid-column-group').hidden).to.be.false;
+            expect(grid.querySelector('vaadin-grid-column-group').hidden).not.to.be.true;
             var columns = grid.querySelectorAll('vaadin-grid-column');
             expect(columns[0].hidden).to.be.true;
-            expect(columns[1].hidden).to.be.false;
+            expect(columns[1].hidden).not.to.be.true;
+            done();
           });
         });
 

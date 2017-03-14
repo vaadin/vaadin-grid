@@ -13,7 +13,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   var defaultCellWidth = 100;
 
   function getCell(grid, index) {
-    return grid.$.scroller.$.items.querySelectorAll('td')[index];
+    return grid.$.scroller.$.items.querySelectorAll('.vaadin-grid-cell')[index];
   }
 
   function getFirstCell(grid) {
@@ -223,11 +223,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   }
 
   function getRows(container) {
-    return Polymer.dom(container).querySelectorAll('tr');
+    return Polymer.dom(container).querySelectorAll('.vaadin-grid-row');
   }
 
   function getRowCells(row) {
-    return Polymer.dom(row).querySelectorAll('td, th');
+    return Polymer.dom(row).querySelectorAll('.vaadin-grid-cell');
   }
 
   function getCellContent(cell) {
