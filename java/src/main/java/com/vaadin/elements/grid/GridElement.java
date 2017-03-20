@@ -725,16 +725,18 @@ public class GridElement implements SelectionHandler<Object>,
     public JSDetail getElementDetails(Element e) {
         Escalator s = grid.getEscalator();
         JSDetail detail = new JSDetail();
-        detail.row = s.findRowContainer(e).getCell(e).getRow();
-        detail.column = s.findRowContainer(e).getCell(e).getColumn();
         RowContainer container = s.findRowContainer(e);
         if (container == s.getHeader()) {
             detail.section = "header";
         } else if (container == s.getBody()) {
             detail.section = "body";
-            getDataSource().getItem(detail.row, (error, data) -> {
-                detail.data = data;
-            }, true);
+            if (container.getCell(e) != null) {
+                detail.row = container.getCell(e).getRow();
+                detail.column = container.getCell(e).getColumn();
+                getDataSource().getItem(detail.row, (error, data) -> {
+                    detail.data = data;
+                }, true);
+            }
         } else {
             detail.section = "footer";
         }
