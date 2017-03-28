@@ -4,8 +4,6 @@
 
 [&lt;vaadin-grid&gt;](https://vaadin.com/elements/-/element/vaadin-grid) is a free, high quality data grid / data table [Polymer](http://polymer-project.org) element, part of the [Vaadin Core Elements](https://vaadin.com/elements).
 
-> :rocket: The upcoming [&lt;vaadin-grid&gt; v2](https://github.com/vaadin/vaadin-grid/tree/2.0-dev) release with a lot of exciting improvements is almost ready! Please see the [Migration Guide](https://github.com/vaadin/vaadin-grid/wiki/Migration-from-1.*-to-2.0) to find out what's changing.
-
 <!---
 ```
 <custom-element-demo height="500">
@@ -44,7 +42,7 @@
 <my-grid></my-grid>
 ```
 
-[<img src="https://github.com/vaadin/vaadin-grid/raw/master/screenshot.png" width="481" alt="Screenshot of vaadin-grid" />](https://vaadin.com/elements/-/element/vaadin-grid)
+<img src="https://github.com/vaadin/vaadin-grid/raw/1.x/screenshot.png" width="481" alt="Screenshot of vaadin-grid v1">
 
 ## Getting started
 
