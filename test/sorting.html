@@ -370,6 +370,21 @@
             expect(getBodyCellContent(grid, 1, 0).innerText).to.equal('foo');
             expect(getBodyCellContent(grid, 2, 0).innerText).to.equal('NaN');
           });
+
+          it('should sort numbers correctly', function() {
+            grid.items = [{
+              first: 1
+            }, {
+              first: 2
+            }, {
+              first: 11
+            }];
+
+            expect(getBodyCellContent(grid, 0, 0).innerText).to.equal('1');
+            expect(getBodyCellContent(grid, 1, 0).innerText).to.equal('2');
+            expect(getBodyCellContent(grid, 2, 0).innerText).to.equal('11');
+          });
+
         });
 
         describe('data provider', function() {
