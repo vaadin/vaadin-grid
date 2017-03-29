@@ -184,7 +184,7 @@ Custom property | Description | Default
         }
 
         var thisCell = grid.$.scroller._getCellByCellContent(this);
-        if (thisCell.is === 'vaadin-grid-table-footer-cell') {
+        if (thisCell && thisCell.is === 'vaadin-grid-table-footer-cell') {
           grid.$.scroller.$.footerFocusTrap.focus();
         } else {
           grid.$.scroller.$.headerFocusTrap.focus();
