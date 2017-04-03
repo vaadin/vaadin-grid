@@ -235,6 +235,10 @@
             expect(scroller.navigating).to.be.false;
           });
 
+          it('should have null active item', function() {
+            expect(grid.activeItem).to.equal(null);
+          });
+
           it('should not enable navigation mode when cell is clicked', function() {
             clickFirstHeaderCell();
 
