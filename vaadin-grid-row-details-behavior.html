@@ -81,7 +81,7 @@
     },
 
     _isExpanded: function(item) {
-      return this.expandedItems && this.expandedItems.indexOf(item) !== -1;
+      return !!item && this.expandedItems && this.expandedItems.indexOf(item) !== -1;
     },
 
     /**
