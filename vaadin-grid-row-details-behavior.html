@@ -15,7 +15,7 @@
 <dom-module id="vaadin-grid-row-details-themability-styles">
   <template>
     <style>
-      td[detailscell] ::content > vaadin-grid-cell-content {
+      td[detailscell] ::content>vaadin-grid-cell-content {
         background: #fff;
         @apply(--vaadin-grid-body-row-details-cell);
       }
@@ -40,7 +40,7 @@
        * An array containing references to expanded items.
        */
       expandedItems: {
-        value: function() {
+        value: function () {
           return [];
         }
       }
@@ -55,16 +55,16 @@
       '_rowDetailsTemplateChanged(_rowDetailsTemplate)'
     ],
 
-    _expandedItemsChanged: function(expandedItems, dataProvider) {
+    _expandedItemsChanged: function (expandedItems, dataProvider) {
       this._flushItemsDebouncer();
       if (this.$.scroller._physicalItems) {
-        this.$.scroller._physicalItems.forEach(function(row) {
+        this.$.scroller._physicalItems.forEach(function (row) {
           row.expanded = this._isExpanded(row.item);
         }.bind(this));
       }
     },
 
-    _rowDetailsTemplateChanged: function(rowDetailsTemplate) {
+    _rowDetailsTemplateChanged: function (rowDetailsTemplate) {
       var templatizer = new vaadin.elements.grid.Templatizer(this.dataHost);
       templatizer._instanceProps = {
         expanded: true,
@@ -80,14 +80,14 @@
       templatizer.template = rowDetailsTemplate;
     },
 
-    _isExpanded: function(item) {
-      return this.expandedItems && this.expandedItems.indexOf(item) !== -1;
+    _isExpanded: function (item) {
+      return !!item && this.expandedItems && this.expandedItems.indexOf(item) !== -1;
     },
 
     /**
      * Expand the details row of a given item.
      */
-    expandItem: function(item) {
+    expandItem: function (item) {
       if (!this._isExpanded(item)) {
         this.push('expandedItems', item);
       }
@@ -96,13 +96,13 @@
     /**
      * Collapse the details row of a given item.
      */
-    collapseItem: function(item) {
+    collapseItem: function (item) {
       if (this._isExpanded(item)) {
         this.splice('expandedItems', this.expandedItems.indexOf(item), 1);
       }
     },
 
-    _templateInstanceChangedExpanded: function(e) {
+    _templateInstanceChangedExpanded: function (e) {
       if (e.detail.prop === 'expanded') {
         if (e.detail.value) {
           this.expandItem(e.detail.inst.item);
