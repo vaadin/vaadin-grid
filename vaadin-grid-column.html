@@ -25,14 +25,17 @@ The `class` attribute is used to differentiate header and footer templates from 
 <link rel="import" href="vaadin-grid-templatizer.html">
 
 <script>
+  /** @const */
   window.vaadin = window.vaadin || {};
-  vaadin.elements = vaadin.elements || {};
-  vaadin.elements.grid = vaadin.elements.grid || {};
+  /** @const */
+  window.vaadin.elements = window.vaadin.elements || {};
+  /** @const */
+  window.vaadin.elements.grid = window.vaadin.elements.grid || {};
 
   /**
    * @polymerBehavior vaadin.elements.grid.ColumnBaseBehavior
    */
-  vaadin.elements.grid.ColumnBaseBehavior = {
+  window.vaadin.elements.grid.ColumnBaseBehavior = {
     properties: {
 
       /**
@@ -129,7 +132,7 @@ The `class` attribute is used to differentiate header and footer templates from 
 
     _headerTemplateChanged: function(headerTemplate) {
       if (headerTemplate) {
-        var templatizer = new vaadin.elements.grid.Templatizer(this.dataHost);
+        var templatizer = new window.vaadin.elements.grid.Templatizer(this.dataHost);
         templatizer._instanceProps = {};
         templatizer.template = headerTemplate;
       }
@@ -139,7 +142,7 @@ The `class` attribute is used to differentiate header and footer templates from 
 
     _footerTemplateChanged: function(footerTemplate) {
       if (footerTemplate) {
-        var templatizer = new vaadin.elements.grid.Templatizer(this.dataHost);
+        var templatizer = new window.vaadin.elements.grid.Templatizer(this.dataHost);
         templatizer._instanceProps = {};
         templatizer.template = footerTemplate;
       }
@@ -163,7 +166,7 @@ The `class` attribute is used to differentiate header and footer templates from 
   /**
    * @polymerBehavior vaadin.elements.grid.ColumnBehaviorImpl
    */
-  vaadin.elements.grid.ColumnBehaviorImpl = {
+  window.vaadin.elements.grid.ColumnBehaviorImpl = {
     properties: {
       /**
        * Width of the cells for this column.
@@ -214,7 +217,7 @@ The `class` attribute is used to differentiate header and footer templates from 
     },
 
     _templateChanged: function(template) {
-      var templatizer = new vaadin.elements.grid.Templatizer(this.dataHost);
+      var templatizer = new window.vaadin.elements.grid.Templatizer(this.dataHost);
 
       // body cell templatizer needs to be attached so that `item-changed` and
       // `template-instance-changed` events propagate to grid.
@@ -246,9 +249,9 @@ The `class` attribute is used to differentiate header and footer templates from 
   /**
    * @polymerBehavior vaadin.elements.grid.ColumnBehavior
    */
-  vaadin.elements.grid.ColumnBehavior = [
-    vaadin.elements.grid.ColumnBaseBehavior,
-    vaadin.elements.grid.ColumnBehaviorImpl
+  window.vaadin.elements.grid.ColumnBehavior = [
+    window.vaadin.elements.grid.ColumnBaseBehavior,
+    window.vaadin.elements.grid.ColumnBehaviorImpl
   ];
 </script>
 
@@ -257,7 +260,7 @@ The `class` attribute is used to differentiate header and footer templates from 
     Polymer({
       is: 'vaadin-grid-column',
 
-      behaviors: [vaadin.elements.grid.ColumnBehavior]
+      behaviors: [window.vaadin.elements.grid.ColumnBehavior]
     });
   </script>
 </dom-module>

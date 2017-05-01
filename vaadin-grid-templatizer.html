@@ -1,11 +1,14 @@
 <link rel="import" href="../polymer/polymer.html">
 
 <script>
+  /** @const */
   window.vaadin = window.vaadin || {};
-  vaadin.elements = vaadin.elements || {};
-  vaadin.elements.grid = vaadin.elements.grid || {};
+  /** @const */
+  window.vaadin.elements = window.vaadin.elements || {};
+  /** @const */
+  window.vaadin.elements.grid = window.vaadin.elements.grid || {};
 
-  vaadin.elements.grid.Templatizer = Polymer({
+  window.vaadin.elements.grid.Templatizer = Polymer({
     is: 'vaadin-grid-templatizer',
 
     factoryImpl: function(dataHost) {

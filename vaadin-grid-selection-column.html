@@ -31,7 +31,7 @@ When the grid is configured with an array of items as the data provider, it prov
   Polymer({
     is: 'vaadin-grid-selection-column',
 
-    behaviors: [vaadin.elements.grid.ColumnBehavior],
+    behaviors: [window.vaadin.elements.grid.ColumnBehavior],
 
     properties: {
       /**
@@ -105,7 +105,7 @@ When the grid is configured with an array of items as the data provider, it prov
 
     _headerTemplateChanged: function(headerTemplate) {
       // needed to override the dataHost correctly in case internal template is used.
-      var templatizer = new vaadin.elements.grid.Templatizer(headerTemplate === this.$.defaultHeaderTemplate ? this : this.dataHost);
+      var templatizer = new window.vaadin.elements.grid.Templatizer(headerTemplate === this.$.defaultHeaderTemplate ? this : this.dataHost);
       templatizer._instanceProps = {};
       templatizer.template = headerTemplate;
 

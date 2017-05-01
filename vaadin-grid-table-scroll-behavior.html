@@ -61,14 +61,17 @@
 </dom-module>
 
 <script>
+  /** @const */
   window.vaadin = window.vaadin || {};
-  vaadin.elements = vaadin.elements || {};
-  vaadin.elements.grid = vaadin.elements.grid || {};
+  /** @const */
+  window.vaadin.elements = window.vaadin.elements || {};
+  /** @const */
+  window.vaadin.elements.grid = window.vaadin.elements.grid || {};
 
   /**
    * @polymerBehavior vaadin.elements.grid.TableScrollBehaviorImpl
    */
-  vaadin.elements.grid.TableScrollBehaviorImpl = {
+  window.vaadin.elements.grid.TableScrollBehaviorImpl = {
 
     properties: {
 
@@ -432,9 +435,9 @@
   /**
    * @polymerBehavior vaadin.elements.grid.TableScrollBehavior
    */
-  vaadin.elements.grid.TableScrollBehavior = [
+  window.vaadin.elements.grid.TableScrollBehavior = [
     Polymer.IronScrollTargetBehavior,
-    vaadin.elements.grid.TableScrollBehaviorImpl
+    window.vaadin.elements.grid.TableScrollBehaviorImpl
   ];
 
 </script>
