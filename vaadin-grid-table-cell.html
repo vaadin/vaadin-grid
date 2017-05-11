@@ -184,7 +184,7 @@
 
         this._cellContent = document.createElement('vaadin-grid-cell-content');
 
-        var contentId = vaadin.elements.grid._contentIndex = vaadin.elements.grid._contentIndex + 1 || 0;
+        var contentId = window.vaadin.elements.grid._contentIndex = window.vaadin.elements.grid._contentIndex + 1 || 0;
         var id = 'vaadin-grid-cell-content-' + contentId;
         this._cellContent.setAttribute('id', id);
 
@@ -202,7 +202,7 @@
 
       behaviors: [
         vaadinGridTableCellBehavior,
-        vaadin.elements.grid.CellClickBehavior
+        window.vaadin.elements.grid.CellClickBehavior
       ],
 
       observers: ['_templateChanged(template)'],
@@ -234,7 +234,7 @@
 
       behaviors: [
         vaadinGridTableCellBehavior,
-        vaadin.elements.grid.CellClickBehavior
+        window.vaadin.elements.grid.CellClickBehavior
       ],
 
       observers: [
@@ -455,7 +455,7 @@
 
       behaviors: [
         vaadinGridTableCellBehavior,
-        vaadin.elements.grid.CellClickBehavior
+        window.vaadin.elements.grid.CellClickBehavior
       ],
 
       observers: ['_footerTemplateChanged(footerTemplate, isAttached)'],

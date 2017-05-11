@@ -27,14 +27,17 @@
 </dom-module>
 
 <script>
+  /** @const */
   window.vaadin = window.vaadin || {};
-  vaadin.elements = vaadin.elements || {};
-  vaadin.elements.grid = vaadin.elements.grid || {};
+  /** @const */
+  window.vaadin.elements = window.vaadin.elements || {};
+  /** @const */
+  window.vaadin.elements.grid = window.vaadin.elements.grid || {};
 
   /**
    * @polymerBehavior vaadin.elements.grid.ColumnReorderingBehavior
    */
-  vaadin.elements.grid.ColumnReorderingBehavior = {
+  window.vaadin.elements.grid.ColumnReorderingBehavior = {
 
     properties: {
 
@@ -53,7 +56,7 @@
   /**
    * @polymerBehavior vaadin.elements.grid.TableColumnReorderingBehavior
    */
-  vaadin.elements.grid.TableColumnReorderingBehavior = {
+  window.vaadin.elements.grid.TableColumnReorderingBehavior = {
 
     properties: {
 

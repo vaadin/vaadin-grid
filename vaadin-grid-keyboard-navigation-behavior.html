@@ -17,14 +17,17 @@
 </dom-module>
 
 <script>
+  /** @const */
   window.vaadin = window.vaadin || {};
-  vaadin.elements = vaadin.elements || {};
-  vaadin.elements.grid = vaadin.elements.grid || {};
+  /** @const */
+  window.vaadin.elements = window.vaadin.elements || {};
+  /** @const */
+  window.vaadin.elements.grid = window.vaadin.elements.grid || {};
 
   /**
    * @polymerBehavior vaadin.elements.grid.KeyboardNavigationBehaviorImpl
    */
-  vaadin.elements.grid.KeyboardNavigationBehaviorImpl = {
+  window.vaadin.elements.grid.KeyboardNavigationBehaviorImpl = {
     hostAttributes: {
       // keys can be listened only when vaadin-grid is focusable
       'tabindex': -1,
@@ -122,13 +125,16 @@
   /**
    * @polymerBehavior vaadin.elements.grid.KeyboardNavigationBehavior
    */
-  vaadin.elements.grid.KeyboardNavigationBehavior = [vaadin.elements.grid.KeyboardNavigationBehaviorImpl, Polymer.IronA11yKeysBehavior];
+  window.vaadin.elements.grid.KeyboardNavigationBehavior = [
+    window.vaadin.elements.grid.KeyboardNavigationBehaviorImpl, 
+    Polymer.IronA11yKeysBehavior
+  ];
 
 
   /**
    * @polymerBehavior vaadin.elements.grid.TableKeyboardBehavior
    */
-  vaadin.elements.grid.TableKeyboardBehavior = {
+  window.vaadin.elements.grid.TableKeyboardBehavior = {
 
     properties: {
       _virtualFocus: {
