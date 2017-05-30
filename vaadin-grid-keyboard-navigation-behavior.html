@@ -18,14 +18,17 @@
 </dom-module>
 
 <script>
+  /** @const */
   window.vaadin = window.vaadin || {};
-  vaadin.elements = vaadin.elements || {};
-  vaadin.elements.grid = vaadin.elements.grid || {};
+  /** @const */
+  window.vaadin.elements = window.vaadin.elements || {};
+  /** @const */
+  window.vaadin.elements.grid = window.vaadin.elements.grid || {};
 
   /**
-   * @polymerBehavior vaadin.elements.grid.TableKeyboardBehaviorImpl
+   * @polymerBehavior window.vaadin.elements.grid.TableKeyboardBehaviorImpl
    */
-  vaadin.elements.grid.TableKeyboardBehaviorImpl = {
+  window.vaadin.elements.grid.TableKeyboardBehaviorImpl = {
 
     hostAttributes: {
       'role': 'application',
@@ -493,7 +496,10 @@
   };
 
     /**
-   * @polymerBehavior vaadin.elements.grid.TableKeyboardBehavior
+   * @polymerBehavior window.vaadin.elements.grid.TableKeyboardBehavior
    */
-  vaadin.elements.grid.TableKeyboardBehavior = [vaadin.elements.grid.TableKeyboardBehaviorImpl, Polymer.IronA11yKeysBehavior];
+  window.vaadin.elements.grid.TableKeyboardBehavior = [
+    window.vaadin.elements.grid.TableKeyboardBehaviorImpl,
+    Polymer.IronA11yKeysBehavior
+  ];
 </script>
