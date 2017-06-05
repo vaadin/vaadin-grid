@@ -58,5 +58,11 @@
     "iron-scroll-target-behavior": "PolymerElements/iron-scroll-target-behavior#^1.1.0",
     "iron-a11y-keys-behavior": "^1.1.9",
     "iron-a11y-announcer": "^1.0.5"
+  },
+  "resolutions": {
+    "iron-ajax": "^1.4.3",
+    "iron-demo-helpers": "^1.2.5",
+    "iron-location": "^0.8.0",
+    "iron-doc-viewer": "^1.0.1"
   }
 }
