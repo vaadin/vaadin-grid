@@ -13,10 +13,12 @@ visual feedback, and handlers for sorting the grid data.
 ### Styling
 The following custom properties and mixins are available for styling:
 
-Custom property | Description | Default
-----------------|-------------|----------
-`--vaadin-grid-sorter-arrow` | Mixin applied to the arrow | `{}`
-`--vaadin-grid-sorter-order` | Mixin applied to the order | `{}`
+Custom property | Description  | Default
+----------------|--------------|----------
+`--vaadin-grid-sorter`         | Mixin applied to the sorter | `{}`
+`--vaadin-grid-sorter-content` | Mixin applied to the sorter content (excluding arrow) | `{}`
+`--vaadin-grid-sorter-arrow`   | Mixin applied to the arrow | `{}`
+`--vaadin-grid-sorter-order`   | Mixin applied to the order | `{}`
 
 -->
 
@@ -41,6 +43,7 @@ Custom property | Description | Default
         justify-content: space-between;
         align-items: center;
         cursor: pointer;
+        @apply(--vaadin-grid-sorter);
       }
 
       #indicators {
@@ -87,6 +90,7 @@ Custom property | Description | Default
         overflow: hidden;
         text-overflow: ellipsis;
         flex: 1;
+        @apply(--vaadin-grid-sorter-content);
       }
     </style>
 
