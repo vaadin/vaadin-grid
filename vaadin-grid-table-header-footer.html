@@ -50,7 +50,7 @@
     Polymer({
       is: 'vaadin-grid-table-header',
       behaviors: [vaadinGridTableRowContainerBehavior,
-        vaadin.elements.grid.FocusableCellContainerBehavior],
+        window.vaadin.elements.grid.FocusableCellContainerBehavior],
 
       _createRow: function() {
         return document.createElement('vaadin-grid-table-header-row');
@@ -59,7 +59,7 @@
 
     Polymer({
       is: 'vaadin-grid-table-body',
-      behaviors: [vaadin.elements.grid.FocusableCellContainerBehavior],
+      behaviors: [window.vaadin.elements.grid.FocusableCellContainerBehavior],
 
       observers: ['_announceFocusedRow(_focusedRow)'],
 
@@ -130,7 +130,7 @@
     Polymer({
       is: 'vaadin-grid-table-footer',
       behaviors: [vaadinGridTableRowContainerBehavior,
-        vaadin.elements.grid.FocusableCellContainerBehavior],
+        window.vaadin.elements.grid.FocusableCellContainerBehavior],
 
       _createRow: function() {
         return document.createElement('vaadin-grid-table-footer-row');
