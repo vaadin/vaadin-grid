@@ -4,9 +4,9 @@
 [![Coverage Status](https://coveralls.io/repos/github/vaadin/vaadin-grid/badge.svg?branch=master)](https://coveralls.io/github/vaadin/vaadin-grid?branch=master)
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/vaadin/vaadin-core-elements?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
-# &lt;vaadin-grid&gt; v2
+# &lt;vaadin-grid&gt; v3
 
-[Live Demo ↗](https://cdn.vaadin.com/vaadin-grid/2.0.2/demo/)
+[Live Demo ↗](https://cdn.vaadin.com/vaadin-grid/3.0.1/demo/)
 
 > :eyes: Looking for &lt;vaadin-grid&gt; v1.x? Please see the [the v1 branch](https://github.com/vaadin/vaadin-grid/tree/1.x)
 
