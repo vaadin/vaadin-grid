@@ -141,15 +141,20 @@ This program is available under Apache License Version 2.0, available at https:/
        * @param {!Array<number>=} itemSet
        */
       _assignModels(itemSet) {
-        this._iterateItems(function(pidx, vidx) {
-          var el = this._physicalItems[pidx];
-          if (vidx < this.size) {
-            el.removeAttribute('hidden');
-          } else {
-            el.setAttribute('hidden', '');
-          }
-          this._updateScrollerItem(el, vidx + (this._vidxOffset || 0));
-        }, itemSet);
+        // Don't iterate items if we don't have data so as we don't create
+        // empty rows, or random rows with and without content depending
+        // on when we are assigning asynchronously models, and data is comming.
+        if (this.hasData) {
+          this._iterateItems(function(pidx, vidx) {
+            var el = this._physicalItems[pidx];
+            if (vidx < this.size) {
+              el.removeAttribute('hidden');
+            } else {
+              el.setAttribute('hidden', '');
+            }
+            this._updateScrollerItem(el, vidx + (this._vidxOffset || 0));
+          }, itemSet);
+        }
       }
 
       _scrollHandler() {
