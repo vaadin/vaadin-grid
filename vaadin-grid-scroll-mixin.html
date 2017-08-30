@@ -205,6 +205,9 @@ This program is available under Apache License Version 2.0, available at https:/
           body.insertBefore(items[j], items[0]);
         }
       }
+
+      // After scrolling, reordering causes that the grid disappears on Safari.
+      this.translate3d(0, 0, 0);
     }
 
     _frozenCellsChanged() {
