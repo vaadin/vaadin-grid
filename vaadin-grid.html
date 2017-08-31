@@ -282,6 +282,8 @@ This program is available under Apache License Version 2.0, available at https:/
       }
 
       _updateScrollerItem(row, index) {
+        super._updateScrollerItem(row, index);
+
         if (!this._columnTree) {
           return;
         }
