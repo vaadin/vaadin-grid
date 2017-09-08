@@ -156,11 +156,17 @@
       }
 
       var table = this.$.table;
-      var momentum = Math.abs(e.deltaX) + Math.abs(e.deltaY);
+      var deltaY = e.deltaY;
+      if (e.deltaMode === 1) {
+        // Mode 1 == scrolling by lines instead of pixels
+        deltaY *= grid.$.scroller._physicalAverage;
+      }
 
-      if (this._canScroll(table, e.deltaX, e.deltaY)) {
+      var momentum = Math.abs(e.deltaX) + Math.abs(deltaY);
+
+      if (this._canScroll(table, e.deltaX, deltaY)) {
         e.preventDefault();
-        table.scrollTop += e.deltaY;
+        table.scrollTop += deltaY;
         table.scrollLeft += e.deltaX;
         this._scrollHandler();
         this._hasResidualMomentum = true;
