@@ -47,6 +47,20 @@
     </script>
   </dom-module>
 
+  <dom-module id="x-boolean-toggle">
+    <template>[[value]]</template>
+    <script>
+      HTMLImports.whenReady(function() {
+        Polymer({
+          is: 'x-boolean-toggle',
+          properties: {
+            value: {type: Boolean, notify: true}
+          },
+        });
+      });
+    </script>
+  </dom-module>
+
   <test-fixture id="column">
     <template>
       <vaadin-grid-column>
@@ -245,6 +259,26 @@
             </template>
           </dom-repeat>
         </vaadin-grid-column-group>
+      </vaadin-grid>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="dom-repeat-columns-expandable">
+    <template>
+      <vaadin-grid id="grid" size="10">
+        <template class="row-details"><div class="details">grid repeats column with detail detail [[item.value]]</div></template>
+        <vaadin-grid-column frozen width="20px">
+          <template><x-boolean-toggle value={{expanded}}></x-boolean-toggle></template>
+          <template class="header">expander</template>
+        </vaadin-grid-column>
+        <dom-repeat as="column">
+          <template is="dom-repeat" as="column">
+            <vaadin-grid-column>
+              <template class="header">grid repeats column with detail [[column]] header</template>
+              <template>grid repeats column with detail [[column]] body [[item.value]]</template>
+            </vaadin-grid-column>
+          </template>
+        </dom-repeat>
       </vaadin-grid>
     </template>
   </test-fixture>
@@ -676,6 +710,30 @@
           });
 
           shouldSupportDomRepeat('group repeats group', 2);
+        });
+
+        describe('with row detail', function() {
+          beforeEach(function() {
+            // The before each block times out in CI with Firefox on Polymer 2
+            this.timeout(30000);
+
+            init('dom-repeat-columns-expandable', {columns: columns});
+          });
+
+          it('should obey the "expanded" template property', function(done) {
+            repeater.render();
+            flush(function() {
+              var row = getRows(grid.$.items)[0];
+              var cell = getRowCells(row)[0];
+              var toggle = getCellContent(cell).children[0];
+              // expand row details
+              toggle.value = true;
+
+              expect(row.expanded).to.be.true;
+              done();
+            });
+
+          });
         });
       });
 
