@@ -60,6 +60,9 @@
 
     removeInstance: function(instance) {
       var index = this._templateInstances.indexOf(instance);
+      if (index === -1) {
+        return;
+      }
       this.splice('_templateInstances', index, 1);
     },
 
