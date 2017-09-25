@@ -48,7 +48,7 @@
     "vaadin-demo-helpers": "vaadin/vaadin-demo-helpers"
   },
   "dependencies": {
-    "polymer": "^2.0.0",
+    "polymer": "1.9 - 2",
     "iron-resizable-behavior": "PolymerElements/iron-resizable-behavior#^v2.0.0",
     "iron-scroll-target-behavior": "PolymerElements/iron-scroll-target-behavior#^v2.0.0",
     "iron-a11y-keys-behavior": "^v2.0.0",
