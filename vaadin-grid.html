@@ -300,14 +300,18 @@ This program is available under Apache License Version 2.0, available at https:/
 
         // With native Shadow DOM, mousedown on slotted element does not focus
         // focusable slot wrapper, that is why cells are not focused with
-        // mousedown. Workaround: make cellContent focusable and delegate
-        // focus to assigned cell.
-        cellContent.setAttribute('tabindex', '-1');
-        cellContent.addEventListener('focusin', (e) => {
-          if (e.composedPath()[0] === cellContent) {
-            e.stopPropagation();
-          }
-          this._onMouseCellFocus(e);
+        // mousedown. Workaround: listen for mousedown and focus manually.
+        // Chrome bug: focusing before mouseup prevents text selection, see http://crbug.com/771903
+        cellContent.addEventListener('mousedown', () => {
+          const mouseUpListener = () => {
+            // If focus is in the cell content — respect it, do not change.
+            if (!cellContent.contains(this.getRootNode().activeElement)) {
+              cell.focus();
+            }
+            document.removeEventListener('mouseup', mouseUpListener, true);
+          };
+
+          document.addEventListener('mouseup', mouseUpListener, true);
         });
 
         return cell;
