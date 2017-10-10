@@ -55,6 +55,8 @@
           <vaadin-grid-selection-column auto-select frozen>
           </vaadin-grid-selection-column>
 
+          <vaadin-grid-hierarchy-column frozen></vaadin-grid-hierarchy-column>
+
           <vaadin-grid-column width="145px" flex-grow="0" frozen resizable>
             <template>
               [[index]] <button hidden="[[!item.hasChildren]]" on-click="_toggle" item="[[item]]" index="[[index]]">Toggle</button>

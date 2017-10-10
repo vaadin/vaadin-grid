@@ -4,6 +4,10 @@ Copyright (c) 2017 Vaadin Ltd.
 This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
 -->
 
+<link rel="import" href="../polymer/lib/utils/flattened-nodes-observer.html">
+<link rel="import" href="vaadin-grid-column.html">
+<link rel="import" href="vaadin-grid-column-group.html">
+
 <script>
   window.Vaadin = window.Vaadin || {};
   window.Vaadin.Grid = window.Vaadin.Grid || {};
@@ -29,10 +33,13 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     _getChildColumns(el) {
-      // TODO: Drop legacy api
-      return Polymer.dom(el).queryDistributedElements(
-          'vaadin-grid-column, vaadin-grid-column-group, vaadin-grid-selection-column'
-      );
+      return Polymer.FlattenedNodesObserver.getFlattenedNodes(el)
+        .filter(node =>
+          node.nodeType === Node.ELEMENT_NODE && (
+            node instanceof Vaadin.GridColumnElement ||
+            node instanceof Vaadin.GridColumnGroupElement
+          )
+        );
     }
 
     _flattenColumnGroups(columns) {
@@ -48,8 +55,7 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     _getColumnTree() {
-      var rootColumns = this.queryAllEffectiveChildren(
-        'vaadin-grid-column, vaadin-grid-column-group, vaadin-grid-selection-column');
+      var rootColumns = this._getChildColumns(this);
 
       var _columnTree = [];
 

@@ -238,6 +238,16 @@ This program is available under Apache License Version 2.0, available at https:/
       return Boolean(subCache && !subCache.collapsed);
     }
 
+    _getIndexHierarchyLevel(index) {
+      let {cache} = this._cache.getCacheAndIndex(index);
+      let level = 0;
+      while (cache.parentCache) {
+        cache = cache.parentCache;
+        level++;
+      }
+      return level;
+    }
+
     _canPopulate() {
       return true;
     }
