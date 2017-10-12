@@ -75,7 +75,7 @@
       describe('simple', () => {
 
         function expandRow(index) {
-          grid.expandItem(grid._cache[0][index]);
+          grid.expandItem(grid._cache.map[index]);
         }
 
         beforeEach(done => {
@@ -88,7 +88,7 @@
         });
 
         function collapseRow(index) {
-          grid.collapseItem(grid._cache[0][index]);
+          grid.collapseItem(grid._cache.map[index]);
         }
 
         it('should expand a row', () => {
