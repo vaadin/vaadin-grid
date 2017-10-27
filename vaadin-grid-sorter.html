@@ -216,12 +216,12 @@ Custom property | Description | Default
       },
 
       _pathOrDirectionChanged: function(path, direction, isAttached) {
-        if (path === undefined || direction === undefined || isAttached === undefined) {
+        if (!path  || !direction || !isAttached ) { //changed the condition to trap even NULL values, causing this observer to fire the sorter-changed event 2x
           return;
         }
 
         if (isAttached) {
-          this.fire('sorter-changed');
+          this.fire('sorter-changed',{"path":path,"direction":direction});
         }
       },
 
