@@ -17,7 +17,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 </head>
 <body>
   <script>
-    WCT.loadSuites([
+      let suites = [
       'basic.html',
       'app-localize-behavior.html',
       'column.html',
@@ -48,7 +48,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       'resizing.html',
       'doctype.html',
       'lazy-import.html'
-    ]);
+    ];
+    suites = [].concat(suites.map((d)=>d+'?dom=shady'))
+               .concat(suites.map((d)=>d+'?dom=shadow'));
+    WCT.loadSuites(suites);
   </script>
 </body>
 </html>
