@@ -23,8 +23,10 @@
     },
 
     _filterChanged: function(e) {
-      if (this._filters.indexOf(e.target) === -1) {
-        this._filters.push(e.target);
+      var filter = e.path && e.path[0] || e.target;
+
+      if (this._filters.indexOf(filter) === -1) {
+        this._filters.push(filter);
       }
 
       e.stopPropagation();
