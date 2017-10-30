@@ -22,7 +22,8 @@ This program is available under Apache License Version 2.0, available at https:/
           type: Object,
           notify: true,
           value: () => []
-        }
+        },
+        itemIdPath: String,
       };
     }
 
@@ -33,7 +34,11 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     _isSelected(item) {
-      return this.selectedItems && this._getItemIndexInArray(item, this.selectedItems) > -1;
+      const precondition = this.selectedItems && this.selecteItems.length > 0 && Boolean(item);
+      
+      return precondition && (
+        (this.itemIdPath && this.selectedItems.some((i) => i[this.itemIdPath] === item[this.itemIdPath])) ||
+        this._getItemIndexInArray(item, this.selectedItems) > -1);
     }
 
     /**
