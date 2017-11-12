@@ -41,7 +41,7 @@
                 _dataProvider: function(params, callback) {
                   // If the data request concerns a hierarchy sub-level, `params` has an additional
                   // `parentItem` property that refers to the sub-level's parent item
-                  const parentUuid = params.parentItem ? params.parentItem.uuid : null;
+                  var parentUuid = params.parentItem ? params.parentItem.uuid : null;
 
                   // Demo helper API that fetches filesystem data
                   Vaadin.GridDemo._fetchFilesystem(parentUuid, function(fsItems) {
@@ -58,10 +58,10 @@
                     // the template above.
 
                     // Slice out only the requested items
-                    const startIndex = params.page * params.pageSize;
-                    const pageItems = fsItems.slice(startIndex, startIndex + params.pageSize);
+                    var startIndex = params.page * params.pageSize;
+                    var pageItems = fsItems.slice(startIndex, startIndex + params.pageSize);
                     // Inform grid of the requested hierarchy level's full size
-                    const hierarchyLevelSize = fsItems.length;
+                    var hierarchyLevelSize = fsItems.length;
                     callback(pageItems, hierarchyLevelSize);
                   });
                 }
