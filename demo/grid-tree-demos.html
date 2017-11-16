@@ -7,6 +7,11 @@
     </style>
 
     <h3>Assigning Tree Data Using Data Provider</h3>
+    <p>
+      When using the &lt;vaadin-grid-tree-toggle&gt;, you provide the data it'll use in rendering using the
+      <code>data-provider</code> attribute. This attribute accepts a function as parameter and,
+      it calls the data provider each time a tree node is expanded, to fetch more data to be displayed.
+    </p>
     <vaadin-demo-snippet id="grid-tree-demos-data-provider">
       <template preserve-content>
         <x-tree-data-provider-example></x-tree-data-provider-example>
