@@ -1244,6 +1244,19 @@ See the [demo](demo/index.html) for use case examples.
       var evt = this.fire('sort-order-changed', {value: sortOrder}, {cancelable: true});
 
       function _compare(a, b) {
+        var isANull = typeof a === 'undefined' || a === null;
+        var isBNull = typeof b === 'undefined' || b === null;
+
+        if (isANull && !isBNull) {
+          return 1;
+        }
+        if (!isANull && isBNull) {
+          return -1;
+        }
+        if (isANull && isBNull) {
+          return 0;
+        }
+
         return (a < b ? -1 : a > b ? 1 : 0);
       }
 
