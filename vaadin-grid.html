@@ -119,7 +119,7 @@ This program is available under Apache License Version 2.0, available at https:/
      * and the “Assigning Data” page in the demos.
      *
      * __Note that expanding the tree grid's item will trigger a call to the `dataProvider`.__
-     * 
+     *
      * __Also, note that when using function data providers, the total number of items
      * needs to be set manually. The total number of items can be returned
      * in the second argument of the data provider callback:__
@@ -318,12 +318,13 @@ This program is available under Apache License Version 2.0, available at https:/
         return this.$.items;
       }
 
-      _createCell(tagName) {
+      _createCell(tagName, section) {
         const contentId = this._contentIndex = this._contentIndex + 1 || 0;
         const slotName = 'vaadin-grid-cell-content-' + contentId;
 
         const cellContent = document.createElement('vaadin-grid-cell-content');
         cellContent.setAttribute('slot', slotName);
+        cellContent.classList.add(`vaadin-grid-${section}-cell-content`);
 
         const cell = document.createElement(tagName);
         cell.id = slotName.replace('-content-', '-');
@@ -383,7 +384,7 @@ This program is available under Apache License Version 2.0, available at https:/
             column._cells = column._cells || [];
             cell = column._cells.filter(cell => cell._vacant)[0];
             if (!cell) {
-              cell = this._createCell('td');
+              cell = this._createCell('td', section);
               column._cells.push(cell);
             }
             cell.setAttribute('part', 'cell body-cell');
@@ -392,7 +393,7 @@ This program is available under Apache License Version 2.0, available at https:/
             if (index === columns.length - 1 && this._rowDetailsTemplate) {
               // Add details cell as last cell to body rows
               this._detailsCells = this._detailsCells || [];
-              const detailsCell = this._detailsCells.filter(cell => cell._vacant)[0] || this._createCell('td');
+              const detailsCell = this._detailsCells.filter(cell => cell._vacant)[0] || this._createCell('td', 'details');
               if (this._detailsCells.indexOf(detailsCell) === -1) {
                 this._detailsCells.push(detailsCell);
               }
@@ -412,7 +413,7 @@ This program is available under Apache License Version 2.0, available at https:/
             // Header & footer
             const tagName = section === 'header' ? 'th' : 'td';
             if (isColumnRow || column.localName === 'vaadin-grid-column-group') {
-              cell = column[`_${section}Cell`] || this._createCell(tagName);
+              cell = column[`_${section}Cell`] || this._createCell(tagName, section);
               row.appendChild(cell);
               if (cell._instance) {
                 row.hidden = false;
