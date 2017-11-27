@@ -244,11 +244,6 @@ This program is available under Apache License Version 2.0, available at https:/
       static get properties() {
         return {
 
-          _safari: {
-            type: Boolean,
-            value: /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
-          },
-
           _this: {
             type: Object,
             value: function() {
@@ -256,32 +251,34 @@ This program is available under Apache License Version 2.0, available at https:/
             }
           },
 
+          _safari: {
+            type: Boolean,
+            value: /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
+          },
+
           _ios: {
             type: Boolean,
-            value: function() {
-              return navigator.userAgent.match(/iP(?:hone|ad;(?: U;)? CPU) OS (\d+)/);
-            }
+            value: navigator.userAgent.match(/iP(?:hone|ad;(?: U;)? CPU) OS (\d+)/)
           },
 
           _edge: {
             type: Boolean,
-            value: function() {
-              return typeof CSS !== 'undefined' && CSS.supports('(-ms-ime-align:auto)');
-            }
+            value: typeof CSS !== 'undefined' && CSS.supports('(-ms-ime-align:auto)')
           },
 
           _ie: {
             type: Boolean,
-            value: function() {
-              return !!(navigator.userAgent.match(/Trident/) && !navigator.userAgent.match(/MSIE/));
-            }
+            value: !!(navigator.userAgent.match(/Trident/) && !navigator.userAgent.match(/MSIE/))
           },
 
           _firefox: {
             type: Boolean,
-            value: function() {
-              return navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
-            }
+            value: navigator.userAgent.toLowerCase().indexOf('firefox') > -1
+          },
+
+          _android: {
+            type: Boolean,
+            value: /android/i.test(navigator.userAgent)
           }
         };
       }
