@@ -159,7 +159,7 @@
       var deltaY = e.deltaY;
       if (e.deltaMode === 1) {
         // Mode 1 == scrolling by lines instead of pixels
-        deltaY *= grid.$.scroller._physicalAverage;
+        deltaY *= this._physicalAverage;
       }
 
       var momentum = Math.abs(e.deltaX) + Math.abs(deltaY);
