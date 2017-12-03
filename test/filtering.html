@@ -154,6 +154,12 @@
         grid._filters[0].value = '';
       });
 
+      it('should not keep empty filters', function() {
+        const filter = grid._filters[0];
+        filter.value = '';
+        flushFilters(grid);
+        expect(grid._filters).to.not.include(filter);
+      });
     });
 
     describe('array data provider', () => {
