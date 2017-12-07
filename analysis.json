@@ -21482,9 +21482,6 @@
               "name": "items"
             },
             {
-              "name": "splices"
-            },
-            {
               "name": "isAttached"
             }
           ]
