@@ -423,6 +423,7 @@
     _onCellFocus: function(e) {
       var cell = e.detail.cell;
       var row = cell.parentElement;
+      if (!row) return;
       var container = row.parentElement;
 
       var rowIndex = Array.prototype.indexOf.call(Polymer.dom(container).children, row);
