@@ -6,22 +6,22 @@
       }
     </style>
 
-    <h3>Assigning Tree Data Using Data Provider</h3>
+    <h3>Tree Toggle Helper and Hierarchical Data</h3>
     <p>
       Use <code>&lt;vaadin-grid-tree-toggle&gt;</code> in the cell content
       to make a tree UI inside a grid. You need to update the <code>expanded</code>,
       <code>level</code>, and <code>leaf</code> properties in your renderer.
     </p>
     <p>
-      <strong>NOTE: You must explicitly import the <code>vaadin-grid-tree-toggle.html</code>
-      file in order to use <code>&lt;vaadin-grid-tree-toggle&gt;</code>.</strong>
+      <strong>NOTE: You must explicitly import <code>vaadin-grid-tree-toggle</code> in order to use it.</strong>
     </p>
     <vaadin-demo-snippet id="grid-tree-demos-renderer-data-provider">
       <template preserve-content>
           <vaadin-grid aria-label="Tree Data Grid Example" data-provider="[[_dataProvider]]">
             <vaadin-grid-column></vaadin-grid-column>
-            <vaadin-grid-column width="8em" flex-grow="0"></vaadin-grid-column>
+            <vaadin-grid-simple-column path="size" width="8em" flex-grow="0"></vaadin-grid-simple-column>
           </vaadin-grid>
+
           <script>
             window.addDemoReadyListener('#grid-tree-demos-renderer-data-provider', function(document) {
               const grid = document.querySelector('vaadin-grid');
@@ -45,13 +45,6 @@
                 toggler.expanded = model.expanded;
                 toggler.level = model.level;
                 toggler.textContent = model.item.name;
-              };
-
-              columns[1].headerRenderer = function(root, col) {
-                root.textContent = 'Size';
-              };
-              columns[1].renderer = function(root, col, model) {
-                root.textContent = model.item.size;
               };
 
               grid.dataProvider = function(params, callback) {
@@ -87,7 +80,51 @@
       </template>
     </vaadin-demo-snippet>
 
-    <h3>Rendering Tree Using Templates</h3>
+    <h3>Tree Using Simple Column</h3>
+    <p>
+      Declare <code>&lt;vaadin-grid-simple-Column&gt;</code> as <code>expandable</code>
+      to render tree toggles inside the column cells.
+    </p>
+    <vaadin-demo-snippet id="grid-tree-demos-simple-column">
+      <template preserve-content>
+          <vaadin-grid aria-label="Tree Data Grid Example" data-provider="[[_dataProvider]]">
+            <vaadin-grid-simple-column path="name" expandable></vaadin-grid-simple-column>
+            <vaadin-grid-simple-column path="size" width="8em" flex-grow="0"></vaadin-grid-simple-column>
+          </vaadin-grid>
+
+          <script>
+            window.addDemoReadyListener('#grid-tree-demos-simple-column', function(document) {
+              const grid = document.querySelector('vaadin-grid');
+
+              grid.dataProvider = function(params, callback) {
+                // If the data request concerns a tree sub-level, `params` has an additional
+                // `parentItem` property that refers to the sub-level's parent item
+                const parentUuid = params.parentItem ? params.parentItem.uuid : null;
+
+                // Demo helper API that fetches filesystem data
+                Vaadin.GridDemo._fetchFilesystem(parentUuid, function(fsItems) {
+                  // Slice out only the requested items
+                  const startIndex = params.page * params.pageSize;
+                  const pageItems = fsItems.slice(startIndex, startIndex + params.pageSize);
+
+                  // Simple column tree toggle assumes an item with truthy "children" property to be expandable
+                  // so we'll map the "hasChildren" property to "children" in the data provider.
+                  pageItems.forEach(function(item) {
+                    item.children = item.hasChildren;
+                  });
+
+                  // Inform grid of the requested tree level's full size
+                  const treeLevelSize = fsItems.length;
+                  callback(pageItems, treeLevelSize);
+                });
+              };
+            });
+          </script>
+        </dom-module>
+      </template>
+    </vaadin-demo-snippet>
+
+    <h3>Tree Using Templates and Polymer Binding</h3>
     <p>
       Use <code>&lt;vaadin-grid-tree-toggle&gt;</code> in the column body
       template to make a tree UI inside a grid. Make sure you have bindings
@@ -115,6 +152,7 @@
             </vaadin-grid-column>
 
           </vaadin-grid>
+
           <script>
             window.addDemoReadyListener('#grid-tree-demos-data-provider', function(document) {
               const grid = document.querySelector('vaadin-grid');

@@ -1,0 +1,191 @@
+<!--
+@license
+Copyright (c) 2018 Vaadin Ltd.
+This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
+-->
+
+<link rel="import" href="../../polymer/lib/utils/case-map.html">
+<link rel="import" href="../../polymer/lib/elements/dom-if.html">
+<link rel="import" href="../../vaadin-text-field/vaadin-text-field.html">
+<link rel="import" href="vaadin-grid-column.html">
+<link rel="import" href="vaadin-grid-sorter.html">
+<link rel="import" href="vaadin-grid-filter.html">
+<link rel="import" href="vaadin-grid-tree-toggle.html">
+
+<dom-module id="vaadin-grid-simple-column">
+  <template>
+    <template class="header" id="defaultHeaderTemplate">
+
+      <template is="dom-if" if="[[_sortableFilterable(sortable, filterable, 'sortable')]]">
+        <vaadin-grid-sorter path="[[path]]">[[_getLabel(label, path)]]</vaadin-grid-sorter>
+      </template>
+
+      <template is="dom-if" if="[[_sortableFilterable(sortable, filterable, 'filterable')]]">
+        <vaadin-grid-filter path="[[path]]" value="[[_filterValue]]">
+          <vaadin-text-field id="filter" slot="filter" value="{{_filterValue}}" placeholder="[[_getLabel(label, path)]]"></vaadin-text-field>
+        </vaadin-grid-filter>
+      </template>
+
+      <template is="dom-if" if="[[_sortableFilterable(sortable, filterable, 'both')]]">
+        <vaadin-grid-sorter path="[[path]]">
+          <vaadin-grid-filter path="[[path]]" value="[[_filterValue]]">
+            <vaadin-text-field id="filter" slot="filter" value="{{_filterValue}}" placeholder="[[_getLabel(label, path)]]"></vaadin-text-field>
+          </vaadin-grid-filter>
+        </vaadin-grid-sorter>
+      </template>
+
+      <template is="dom-if" if="[[_sortableFilterable(sortable, filterable, 'neither')]]">[[_getLabel(label, path)]]</template>
+
+    </template>
+
+    <template id="defaultBodyTemplate">
+
+      <template is="dom-if" if="[[expandable]]">
+        <vaadin-grid-tree-toggle leaf="[[!item.children]]" expanded="{{expanded}}" level="[[level]]">
+          [[get(path, item)]]
+        </vaadin-grid-tree-toggle>
+      </template>
+
+      <template is="dom-if" if="[[!expandable]]">[[get(path, item)]]</template>
+    </template>
+  </template>
+
+  <script>
+  (function() {
+    /**
+     * `<vaadin-grid-simple-column>` is a helper element that comes with shorthands
+     * for configuring column headers and body cell content as well as features like sorting, filtering
+     * and expandability without having to provide renderers or `<template>` elements.
+     *
+     * #### Example:
+     * ```html
+     * <vaadin-grid items="[[users]]">
+     *   <vaadin-grid-simple-column path="firstName"></vaadin-grid-simple-column>
+     *   <vaadin-grid-simple-column path="lastName" sortable></vaadin-grid-simple-column>
+     *   <vaadin-grid-simple-column path="address.city" filterable></vaadin-grid-simple-column>
+     * </vaadin-grid>
+     * ```
+     *
+     * @memberof Vaadin
+     * @mixes Vaadin.GridColumnElement
+     */
+    class GridSimpleColumnElement extends Vaadin.GridColumnElement {
+
+      static get is() {
+        return 'vaadin-grid-simple-column';
+      }
+
+      static get properties() {
+        return {
+          /**
+           * Shown in the header cell of the column.
+           */
+          label: {
+            type: String,
+            value: ''
+          },
+
+          /**
+           * Path to an item sub-property whose value gets displayed in the column body cells.
+           * It also defines the property that's used for item comparison in sortable columns
+           * and filtering in filterable columns.
+           * The property name is also shown in the column header if an explicit label isn't defined.
+           */
+          path: {
+            type: String,
+            value: ''
+          },
+
+          /**
+           * If true, the column is sortable. Define the property used for item comparison with path.
+           */
+          sortable: {
+            type: Boolean,
+            value: false
+          },
+
+          /**
+           * If true, the column is filterable. Define the property used for item filtering with path.
+           */
+          filterable: {
+            type: Boolean,
+            value: false
+          },
+
+          /**
+           * If true, the column is expandable. Items with truthy "children" property can be expanded with the generated toggle.
+           */
+          expandable: {
+            type: Boolean,
+            value: false
+          }
+        };
+      }
+
+      _setBodyTemplateOrRenderer(template, renderer, cells, splices) {
+        if (renderer && this._bodyTemplate === this.$.defaultBodyTemplate) {
+          delete this._bodyTemplate;
+          template = undefined;
+        }
+        super._setBodyTemplateOrRenderer(template, renderer, cells, splices);
+      }
+
+      _setHeaderTemplateOrRenderer(headerTemplate, headerRenderer, headerCell) {
+        if (headerRenderer && this._headerTemplate === this.$.defaultHeaderTemplate) {
+          delete this._headerTemplate;
+          headerTemplate = undefined;
+        }
+        super._setHeaderTemplateOrRenderer(headerTemplate, headerRenderer, headerCell);
+      }
+
+      _prepareHeaderTemplate() {
+        const headerTemplate = this._prepareTemplatizer(this._findTemplate(true) || this.$.defaultHeaderTemplate);
+        // needed to override the dataHost correctly in case internal template is used.
+        headerTemplate.templatizer.dataHost = headerTemplate === this.$.defaultHeaderTemplate ? this : this.dataHost;
+
+        return headerTemplate;
+      }
+
+      _prepareBodyTemplate() {
+        const template = this._prepareTemplatizer(this._findTemplate() || this.$.defaultBodyTemplate);
+        // needed to override the dataHost correctly in case internal template is used.
+        template.templatizer.dataHost = template === this.$.defaultBodyTemplate ? this : this.dataHost;
+
+        return template;
+      }
+
+      _getLabel(label, path) {
+        if (label) {
+          return label;
+        } else if (path) {
+          const propertyName = path.substr(path.lastIndexOf('.') + 1);
+          return Polymer.CaseMap.camelToDashCase(propertyName)
+            .replace(/-/, ' ')
+            .replace(/\w\S*/g, str => str.charAt(0).toUpperCase() + str.substr(1));
+        }
+      }
+
+      _sortableFilterable(sortable, filterable, condition) {
+        if (condition === 'sortable') {
+          return sortable && !filterable;
+        } else if (condition === 'filterable') {
+          return !sortable && filterable;
+        } else if (condition === 'both') {
+          return sortable && filterable;
+        } else if (condition === 'neither') {
+          return !sortable && !filterable;
+        }
+      }
+
+    }
+
+    customElements.define(GridSimpleColumnElement.is, GridSimpleColumnElement);
+
+    /**
+     * @namespace Vaadin
+     */
+    window.Vaadin = window.Vaadin || {};
+    Vaadin.GridSimpleColumnElement = GridSimpleColumnElement;
+  })();
+  </script>
+</dom-module>

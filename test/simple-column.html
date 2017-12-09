@@ -1,0 +1,197 @@
+<!doctype html>
+
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../../web-component-tester/browser.js"></script>
+  <script src="../../iron-test-helpers/mock-interactions.js"></script>
+
+  <link rel="import" href="helpers.html">
+  <link rel="import" href="../vaadin-grid.html">
+  <link rel="import" href="../vaadin-grid-simple-column.html">
+</head>
+
+<body>
+
+  <test-fixture id="simple-columns">
+    <template>
+      <vaadin-grid size="1">
+        <vaadin-grid-simple-column path="value"></vaadin-grid-simple-column>
+      </vaadin-grid>
+    </template>
+  </test-fixture>
+
+  <script>
+    describe('Simple column', () => {
+      let grid, column, headerCellContent, bodyCellContent;
+
+      beforeEach(() => {
+        grid = fixture('simple-columns');
+        column = grid.querySelector('vaadin-grid-simple-column');
+        grid.dataProvider = infiniteDataProvider;
+        flushGrid(grid);
+        headerCellContent = getHeaderCellContent(grid, 0, 0);
+        bodyCellContent = getBodyCellContent(grid, 0, 0);
+      });
+
+      function getChildElement(cellContent) {
+        Polymer.flush();
+        return cellContent.querySelector('*:not(dom-if):not(template)');
+      }
+
+      function getHeaderContentElement() {
+        return getChildElement(headerCellContent);
+      }
+
+      function getBodyContentElement() {
+        return getChildElement(bodyCellContent);
+      }
+
+      it('should use path as the label', () => {
+        expect(headerCellContent.textContent.trim()).to.equal('Value');
+        expect(getHeaderContentElement()).not.to.be.ok;
+      });
+
+      it('should have a label', () => {
+        column.label = 'foo';
+        expect(headerCellContent.textContent.trim()).to.equal('foo');
+        expect(getHeaderContentElement()).not.to.be.ok;
+      });
+
+      it('should use path as the content cell identifier', () => {
+        expect(bodyCellContent.textContent.trim()).to.equal('foo0');
+        expect(getBodyContentElement()).not.to.be.ok;
+      });
+
+      describe('Sortable', () => {
+        let sorter;
+
+        beforeEach(() => {
+          column.sortable = true;
+          sorter = getHeaderContentElement();
+        });
+
+        it('should have a sorter in header', () => {
+          expect(sorter.localName).to.equal('vaadin-grid-sorter');
+        });
+
+        it('should use the path', () => {
+          expect(sorter.path).to.equal('value');
+        });
+
+        it('should use path as the label', () => {
+          expect(sorter.textContent.trim()).to.equal('Value');
+        });
+
+        it('should have a label', () => {
+          column.label = 'foo';
+          expect(sorter.textContent.trim()).to.equal('foo');
+        });
+
+      });
+
+      [false, true].forEach(sortable => {
+
+        describe(`Filterable - ${sortable ? 'Sortable' : 'Not Sortable'}`, () => {
+          let filter, textField, sorter;
+
+          beforeEach(() => {
+            column.filterable = true;
+            column.sortable = sortable;
+            if (sortable) {
+              sorter = getHeaderContentElement();
+              filter = sorter.firstElementChild;
+            } else {
+              filter = getHeaderContentElement();
+            }
+            textField = filter.firstElementChild;
+          });
+
+          it('should have a filter in header', () => {
+            expect(filter.localName).to.equal('vaadin-grid-filter');
+          });
+
+          it('should use the path', () => {
+            expect(filter.path).to.equal('value');
+          });
+
+          it('should have a filter field', () => {
+            expect(textField.localName).to.equal('vaadin-text-field');
+          });
+
+          it('should slot the filter field', () => {
+            expect(textField.getAttribute('slot')).to.equal('filter');
+          });
+
+          it('should use path as the placeholder', () => {
+            expect(textField.placeholder).to.equal('Value');
+          });
+
+          it('should use label as the placeholder', () => {
+            column.label = 'foo';
+            expect(textField.placeholder).to.equal('foo');
+          });
+
+          it('should bind the values', () => {
+            textField.value = 'foo';
+            expect(filter.value).to.equal('foo');
+          });
+
+          if (sortable) {
+            it('should have a sorter in header', () => {
+              expect(sorter.localName).to.equal('vaadin-grid-sorter');
+            });
+
+            it('should use the path', () => {
+              expect(sorter.path).to.equal('value');
+            });
+          }
+
+        });
+      });
+
+      describe('Expandable', () => {
+        let toggle;
+
+        beforeEach(() => {
+          column.expandable = true;
+          toggle = getBodyContentElement();
+        });
+
+        it('should use path as the content cell identifier', () => {
+          expect(toggle.textContent.trim()).to.equal('foo0');
+        });
+
+        it('should have a toggle in body cell', () => {
+          expect(toggle.localName).to.equal('vaadin-grid-tree-toggle');
+        });
+
+        it('should bind level', () => {
+          expect(toggle.level).to.equal(0);
+        });
+
+        it('should bind expanded', () => {
+          expect(toggle.expanded).to.equal(false);
+          grid.expandedItems = [grid._cache.items['0']];
+          expect(toggle.expanded).to.equal(true);
+        });
+
+        it('should bind leaf', () => {
+          expect(toggle.leaf).to.equal(true);
+          grid._cache.items['0'].children = [{value: 'bar'}];
+          grid._render();
+          expect(toggle.leaf).to.equal(false);
+        });
+
+      });
+
+    });
+  </script>
+
+</body>
+
+</html>

@@ -154,6 +154,7 @@ This program is available under Apache License Version 2.0, available at https:/
      * ```
      *
      * The following helper elements can be used for further customization:
+     * - [`<vaadin-grid-simple-column>`](#/elements/vaadin-grid-simple-column)
      * - [`<vaadin-grid-column-group>`](#/elements/vaadin-grid-column-group)
      * - [`<vaadin-grid-filter>`](#/elements/vaadin-grid-filter)
      * - [`<vaadin-grid-sorter>`](#/elements/vaadin-grid-sorter)
@@ -169,12 +170,12 @@ This program is available under Apache License Version 2.0, available at https:/
      * - `row-details`: Marks a row details template
      *
      * The following built-in template variables can be bound to inside the column templates:
-     * - `[[index]]`: Number representing the row index
-     * - `[[item]]` and it's sub-properties: Data object (provided by a data provider / items array)
-     * - `{{selected}}`: True if the item is selected (can be two-way bound)
-     * - `{{detailsOpened}}`: True if the item has row details opened (can be two-way bound)
-     * - `{{expanded}}`: True if the item has tree sublevel expanded (can be two-way bound)
-     * - `[[level]]`: Number of the tree sublevel of the item, first level-items have 0
+     * - `index`: Number representing the row index
+     * - `item` and it's sub-properties: Data object (provided by a data provider / items array)
+     * - `selected`: True if the item is selected (can be two-way bound)
+     * - `detailsOpened`: True if the item has row details opened (can be two-way bound)
+     * - `expanded`: True if the item has tree sublevel expanded (can be two-way bound)
+     * - `level`: Number of the tree sublevel of the item, first level-items have 0
      *
      * ### Lazy Loading with Function Data Provider
      *
