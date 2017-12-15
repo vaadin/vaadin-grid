@@ -93,18 +93,20 @@
       [100, 10000, 100000, 1000000].forEach((size) => {
         describe(size + ' items', () => {
           beforeEach(done => {
-            container = fixture('table');
-            grid = container.$.grid;
-            grid.dataProvider = infiniteDataProvider;
-            grid.size = size;
-            flushGrid(grid);
-            grid.$.table.scrollTop = grid.$.table.scrollHeight;
-            grid._scrollHandler();
-            setTimeout(() => {
-              grid.$.table.scrollTop = 0;
+            HTMLImports.whenReady(() => {
+              container = fixture('table');
+              grid = container.$.grid;
+              grid.dataProvider = infiniteDataProvider;
+              grid.size = size;
+              flushGrid(grid);
+              grid.$.table.scrollTop = grid.$.table.scrollHeight;
               grid._scrollHandler();
-              done();
-            }, 50);
+              setTimeout(() => {
+                grid.$.table.scrollTop = 0;
+                grid._scrollHandler();
+                done();
+              }, 50);
+            });
           });
 
           it('should be able to scroll to half-way', () => {

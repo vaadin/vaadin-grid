@@ -64,11 +64,13 @@
         let grid, scroller;
 
         beforeEach(done => {
-          grid = fixture('default').$.grid;
-          grid.dataProvider = infiniteDataProvider;
-          listenOnce(grid, 'animationend', () => {
-            flushGrid(grid);
-            done();
+          HTMLImports.whenReady(() => {
+            grid = fixture('default').$.grid;
+            grid.dataProvider = infiniteDataProvider;
+            listenOnce(grid, 'animationend', () => {
+              flushGrid(grid);
+              done();
+            });
           });
         });
 

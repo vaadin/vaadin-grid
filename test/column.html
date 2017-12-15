@@ -53,12 +53,15 @@
     describe('column', () => {
       let container, column, grid;
 
-      beforeEach(() => {
-        container = fixture('grid');
-        grid = container.$.grid;
-        grid.dataProvider = infiniteDataProvider;
-        column = grid.querySelector('vaadin-grid-column');
-        flushGrid(grid);
+      beforeEach(done => {
+        HTMLImports.whenReady(() => {
+          container = fixture('grid');
+          grid = container.$.grid;
+          grid.dataProvider = infiniteDataProvider;
+          column = grid.querySelector('vaadin-grid-column');
+          flushGrid(grid);
+          done();
+        });
       });
 
       describe('properties', () => {

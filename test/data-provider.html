@@ -113,13 +113,15 @@
       let container, grid;
       const loadDebounceTime = 100;
 
-      beforeEach(() => {
+      beforeEach(done => {
+        HTMLImports.whenReady(() => {
+          container = fixture('table');
+          grid = container.$.grid;
 
-        container = fixture('table');
-        grid = container.$.grid;
-
-        container.dataProvider = sinon.spy(infiniteDataProvider);
-        flushGrid(grid);
+          container.dataProvider = sinon.spy(infiniteDataProvider);
+          flushGrid(grid);
+          done();
+        });
       });
 
       it('should call dataprovider for first page', done => {
