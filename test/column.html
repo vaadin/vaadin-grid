@@ -53,12 +53,15 @@
     describe('column', () => {
       let container, column, grid;
 
-      beforeEach(() => {
-        container = fixture('grid');
-        grid = container.$.grid;
-        grid.dataProvider = infiniteDataProvider;
-        column = grid.querySelector('vaadin-grid-column');
-        flushGrid(grid);
+      beforeEach(done => {
+        HTMLImports.whenReady(() => {
+          container = fixture('grid');
+          grid = container.$.grid;
+          grid.dataProvider = infiniteDataProvider;
+          column = grid.querySelector('vaadin-grid-column');
+          flushGrid(grid);
+          done();
+        });
       });
 
       describe('properties', () => {
@@ -175,7 +178,7 @@
           Polymer.dom(column).appendChild(template);
           column._templateObserver.flush();
 
-          expect(column.headerTemplate).to.eql(template);
+          expect(column._headerTemplate).to.eql(template);
         });
 
         it('should pickup footer template', () => {
@@ -186,7 +189,7 @@
           Polymer.dom(column).appendChild(template);
           column._templateObserver.flush();
 
-          expect(column.footerTemplate).to.eql(template);
+          expect(column._footerTemplate).to.eql(template);
         });
 
         it('should pickup body template', () => {
@@ -196,7 +199,7 @@
           Polymer.dom(column).appendChild(template);
           column._templateObserver.flush();
 
-          expect(column.template).to.eql(template);
+          expect(column._bodyTemplate).to.eql(template);
         });
 
         it('should re-pickup header template', () => {
@@ -211,7 +214,7 @@
           Polymer.dom(column).removeChild(template);
           Polymer.dom(column).appendChild(template2);
           column._templateObserver.flush();
-          expect(column.headerTemplate).to.eql(template2);
+          expect(column._headerTemplate).to.eql(template2);
         });
 
         it('should pickup new body template', () => {
@@ -225,7 +228,7 @@
           Polymer.dom(column).appendChild(template2);
           column._templateObserver.flush();
 
-          expect(column.template).to.eql(template2);
+          expect(column._bodyTemplate).to.eql(template2);
         });
 
         it('should prepare template when added lazily', () => {
@@ -239,7 +242,7 @@
           grid._observer.flush();
 
           expect(template.templatizer.template).to.eql(template);
-          expect(column.template).to.eql(template);
+          expect(column._bodyTemplate).to.eql(template);
         });
 
         it('should prepare a new template when added lazily', () => {
@@ -258,7 +261,7 @@
           column._templateObserver.flush();
 
           expect(template2.templatizer.template).to.eql(template2);
-          expect(column.template).to.eql(template2);
+          expect(column._bodyTemplate).to.eql(template2);
         });
       });
     });

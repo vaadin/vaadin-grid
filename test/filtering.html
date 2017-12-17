@@ -72,10 +72,12 @@
       let filter;
       let filterWrapper;
 
-      beforeEach(() => {
-
-        filterWrapper = fixture('filter');
-        filter = filterWrapper.$.filter;
+      beforeEach(done => {
+        HTMLImports.whenReady(() => {
+          filterWrapper = fixture('filter');
+          filter = filterWrapper.$.filter;
+          done();
+        });
       });
 
       it('should fire `filter-changed` on value change', done => {
