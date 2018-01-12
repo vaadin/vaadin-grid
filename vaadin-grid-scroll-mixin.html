@@ -57,7 +57,22 @@ This program is available under Apache License Version 2.0, available at https:/
     ready() {
       super.ready();
       this.scrollTarget = this.$.table;
-      this.addEventListener('wheel', this._onWheel.bind(this));
+      
+      this.addEventListener('wheel', e => {
+        this._wheelScrolling = true;
+        this._debouncerWheelScrolling = Polymer.Debouncer.debounce(
+          this._debouncerWheelScrolling,
+          Polymer.Async.timeOut.after(200),
+          () => this._wheelScrolling = false
+        );
+        this._onWheel(e);
+      });
+
+      this.$.table.addEventListener('scroll', e => {
+        if (this._wheelScrolling || this.$.outerscroller.outerScrolling) {
+          e.stopImmediatePropagation();
+        }
+      }, true);
 
       this.$.items.addEventListener('focusin', (e) => {
         const itemsIndex = e.composedPath().indexOf(this.$.items);
@@ -164,7 +179,9 @@ This program is available under Apache License Version 2.0, available at https:/
         this._scheduleScrolling();
       }
 
-      this.$.outerscroller.syncOuterScroller();
+      if (this._wheelScrolling || this.$.outerscroller.passthrough) { 
+        this.$.outerscroller.syncOuterScroller();
+      }
     }
 
     // correct order needed for preserving correct tab order between cell contents.
