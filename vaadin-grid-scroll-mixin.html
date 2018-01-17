@@ -13,6 +13,15 @@ This program is available under Apache License Version 2.0, available at https:/
    */
   Vaadin.Grid.ScrollMixin = superClass => class ScrollMixin extends superClass {
 
+    get _timeouts() {
+      return {
+        SCROLL_PERIOD: 1000,
+        WHEEL_SCROLLING: 200,
+        SCROLLING: 100,
+        IGNORE_WHEEL: 500
+      };
+    }
+
     static get properties() {
       return {
 
@@ -57,7 +66,22 @@ This program is available under Apache License Version 2.0, available at https:/
     ready() {
       super.ready();
       this.scrollTarget = this.$.table;
-      this.addEventListener('wheel', this._onWheel.bind(this));
+
+      this.addEventListener('wheel', e => {
+        this._wheelScrolling = true;
+        this._debouncerWheelScrolling = Polymer.Debouncer.debounce(
+          this._debouncerWheelScrolling,
+          Polymer.Async.timeOut.after(this._timeouts.WHEEL_SCROLLING),
+          () => this._wheelScrolling = false
+        );
+        this._onWheel(e);
+      });
+
+      this.$.table.addEventListener('scroll', e => {
+        if (this._wheelScrolling || this.$.outerscroller.outerScrolling) {
+          e.stopImmediatePropagation();
+        }
+      }, true);
 
       this.$.items.addEventListener('focusin', (e) => {
         const itemsIndex = e.composedPath().indexOf(this.$.items);
@@ -91,7 +115,7 @@ This program is available under Apache License Version 2.0, available at https:/
         this._ignoreNewWheel = true;
         this._debouncerIgnoreNewWheel = Polymer.Debouncer.debounce(
           this._debouncerIgnoreNewWheel,
-          Polymer.Async.timeOut.after(500),
+          Polymer.Async.timeOut.after(this._timeouts.IGNORE_WHEEL),
           () => this._ignoreNewWheel = false
         );
       } else if (this._hasResidualMomentum && momentum <= this._previousMomentum || this._ignoreNewWheel) {
@@ -125,24 +149,17 @@ This program is available under Apache License Version 2.0, available at https:/
       (deltaX < 0 && el.scrollLeft > 0);
     }
 
-    /**
-     * Update the models, the position of the
-     * items in the viewport and recycle tiles as needed.
-     */
-    _afterScroll(e) {
-      // this._adjustVirtualIndexOffset(delta);
-
-      this._translateStationaryElements();
-
-      if (!this.hasAttribute('reordering')) {
-        this._toggleAttribute('scrolling', true, this.$.scroller);
-        this._toggleAttribute('scroll-period', true, this.$.scroller);
+    _scheduleScrolling() {
+      if (!this._scrollingFrame) {
+        // Defer setting state attributes to avoid Edge hiccups
+        this._scrollingFrame = requestAnimationFrame(() => this._toggleAttribute('scrolling', true, this.$.scroller));
       }
-
       this._debounceScrolling = Polymer.Debouncer.debounce(
         this._debounceScrolling,
-        Polymer.Async.timeOut.after(100),
+        Polymer.Async.timeOut.after(this._timeouts.SCROLLING),
         () => {
+          cancelAnimationFrame(this._scrollingFrame);
+          delete this._scrollingFrame;
           this._toggleAttribute('scrolling', false, this.$.scroller);
           if (!this.$.outerscroller.outerScrolling) {
             this._reorderRows();
@@ -150,15 +167,30 @@ This program is available under Apache License Version 2.0, available at https:/
         }
       );
 
+      if (!this._scrollPeriodFrame) {
+        this._scrollPeriodFrame = requestAnimationFrame(() => this._toggleAttribute('scroll-period', true, this.$.scroller));
+      }
       this._debounceScrollPeriod = Polymer.Debouncer.debounce(
         this._debounceScrollPeriod,
-        Polymer.Async.timeOut.after(1000),
+        Polymer.Async.timeOut.after(this._timeouts.SCROLL_PERIOD),
         () => {
+          cancelAnimationFrame(this._scrollPeriodFrame);
+          delete this._scrollPeriodFrame;
           this._toggleAttribute('scroll-period', false, this.$.scroller);
         }
       );
+    }
 
-      this.$.outerscroller.syncOuterScroller();
+    _afterScroll() {
+      this._translateStationaryElements();
+
+      if (!this.hasAttribute('reordering')) {
+        this._scheduleScrolling();
+      }
+
+      if (this._wheelScrolling || this.$.outerscroller.passthrough) {
+        this.$.outerscroller.syncOuterScroller();
+      }
     }
 
     // correct order needed for preserving correct tab order between cell contents.
