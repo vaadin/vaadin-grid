@@ -188,9 +188,19 @@ This program is available under Apache License Version 2.0, available at https:/
         this._scheduleScrolling();
       }
 
-      if (!this._ios && (this._wheelScrolling || this.$.outerscroller.passthrough)) {
-        this.$.outerscroller.syncOuterScroller();
+      const os = this.$.outerscroller;
+      if (!this._ios && (this._wheelScrolling || os.passthrough)) {
+        os.syncOuterScroller();
       }
+
+      // Enable vertical rubberband feedback
+      let overScroll = 0;
+      if (os.scrollTop < 0) {
+        overScroll = -os.scrollTop;
+      } else if (os.scrollTop > os.scrollHeight - os.offsetHeight) {
+        overScroll = os.scrollHeight - os.scrollTop - os.offsetHeight;
+      }
+      this.$.items.style.transform = `translateY(${overScroll}px)`;
     }
 
     // correct order needed for preserving correct tab order between cell contents.
@@ -230,7 +240,7 @@ This program is available under Apache License Version 2.0, available at https:/
           Array.from(this.root.querySelectorAll('[part~="cell"]')).forEach(function(cell) {
             cell.style.transform = '';
           });
-          this._frozenCells = Array.prototype.slice.call(this.root.querySelectorAll('[frozen]'));
+          this._frozenCells = Array.prototype.slice.call(this.$.table.querySelectorAll('[frozen]'));
           this._translateStationaryElements();
         }
       );
