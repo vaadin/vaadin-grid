@@ -138,7 +138,7 @@ This program is available under Apache License Version 2.0, available at https:/
         return;
       }
 
-      this.setAttribute('reordering', '');
+      this._toggleAttribute('reordering', true, this);
       this._draggedColumn = headerCell._column;
       this._setSiblingsReorderStatus(this._draggedColumn, 'allowed');
       this._draggedColumn._reorderStatus = 'dragging';
@@ -176,7 +176,7 @@ This program is available under Apache License Version 2.0, available at https:/
         return;
       }
 
-      this.removeAttribute('reordering');
+      this._toggleAttribute('reordering', false, this);
       this._draggedColumn._reorderStatus = '';
       this._setSiblingsReorderStatus(this._draggedColumn, '');
       this._draggedColumn = null;
@@ -188,7 +188,7 @@ This program is available under Apache License Version 2.0, available at https:/
       x = x || 0;
       y = y || 0;
       if (!this._draggedColumn) {
-        this.$.scroller.setAttribute('no-content-pointer-events', '');
+        this._toggleAttribute('no-content-pointer-events', true, this.$.scroller);
       }
       let cell;
       if (Polymer.Settings.useShadow) {
@@ -202,7 +202,7 @@ This program is available under Apache License Version 2.0, available at https:/
         }
 
       }
-      this.$.scroller.removeAttribute('no-content-pointer-events');
+      this._toggleAttribute('no-content-pointer-events', false, this.$.scroller);
 
       // Make sure the element is actually a cell
       if (cell && cell._column) {
