@@ -23,14 +23,21 @@
           display: block;
         }
       </style>
-      <vaadin-grid-filter path="foo" value="[[_filterValue]]" id="filter">
-        <input value="{{_filterValue::input}}">
+      <vaadin-grid-filter
+        path="foo"
+        value="[[filterValue]]"
+        id="filter"
+      >
+        <input value="{{filterValue::input}}">
       </vaadin-grid-filter>
     </template>
     <script>
       HTMLImports.whenReady(function() {
         Polymer({
-          is: 'filter-wrapper'
+          is: 'filter-wrapper',
+          properties: {
+            filterValue: String
+          }
         });
       });
     </script>
@@ -64,7 +71,45 @@
     </template>
   </test-fixture>
 
+  <test-fixture id="event-retargeting">
+    <template>
+      <vaadin-grid>
+        <vaadin-grid-column>
+          <template class="header">
+            <filter-wrapper id=filterWrapper filter-value='foo'>
+            </filter-wrapper>
+          </template>
+          <template>[[item.first]]</template>
+        </vaadin-grid-column>
+      </vaadin-grid>
+    </template>
+  </test-fixture>
+
   <script>
+
+    describe('event retargeting', function(){
+      var grid;
+
+      beforeEach(function(done) {
+        // The before each block times out in CI with Firefox on Polymer 2
+        this.timeout(30000);
+
+        grid = fixture('event-retargeting');
+        Polymer.dom.flush();
+        grid.async(function(){
+          var filter = Polymer.dom(grid)
+            .querySelector('filter-wrapper')
+            .$$('vaadin-grid-filter');
+          filter.flushDebouncer('filter-changed');
+          done();
+        });
+      });
+
+      it('should get the real target', function(){
+        expect(grid._filters[0]).to.exist;
+        expect(grid._filters[0].is).to.equal('vaadin-grid-filter');
+      });
+    });
 
     describe('filter', function() {
       var filter;

@@ -57,7 +57,7 @@
     },
 
     _onSorterChanged: function(e) {
-      var sorter = e.target;
+      var sorter = e.path && e.path[0] || e.target;
 
       this._removeArrayItem(this._sorters, sorter);
       sorter._order = null;
