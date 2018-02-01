@@ -98,6 +98,21 @@
     </template>
   </test-fixture>
 
+  <test-fixture id="items">
+    <template>
+      <dom-bind>
+        <template>
+          <div id="div">[[items.0.foo]]</div>
+          <vaadin-grid id="grid" items="{{items}}">
+            <vaadin-grid-column>
+              <template>[[index]]</template>
+            </vaadin-grid-column>
+          </vaadin-grid>
+        </template>
+      </template>
+    </dom-bind>
+  </test-fixture>
+
   <script>
     function getHeaderCell(grid, index) {
       return grid.$.header.querySelectorAll('[part~="cell"]')[index];
@@ -283,6 +298,23 @@
 
           expect(getCellContent(getCell(grid, 4)).textContent).to.contain('bar0');
         });
+      });
+    });
+
+    describe('using items array', () => {
+      let grid, div;
+
+      beforeEach(() => {
+        const bind = fixture('items');
+        bind.set('items', [{foo: 'bar'}]);
+        grid = bind.$.grid;
+        div = bind.$.div;
+        flushGrid(grid);
+      });
+
+      it('should notify items array path', () => {
+        getFirstCell(grid)._instance.set('item.foo', 'baz');
+        expect(div.textContent).to.equal('baz');
       });
     });
   </script>
