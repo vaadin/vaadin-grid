@@ -1066,6 +1066,7 @@
             grid.items = undefined;
             grid.size = 200;
             grid.dataProvider = infiniteDataProvider;
+            grid._scrollToIndex(0);
             flushGrid(grid);
             animationFrameFlush(done);
           });
@@ -1159,6 +1160,14 @@
 
             grid.size *= 2;
             expect(grid.shadowRoot.activeElement).to.equal(getContainerCell(grid.$.header, 0, 0));
+          });
+
+          it('should not scroll if the new focused item in viewport', () => {
+            focusItem(0);
+            ctrlEnd();
+            const scrollTop = grid.$.table.scrollTop;
+            up();
+            expect(grid.$.table.scrollTop).to.equal(scrollTop);
           });
 
           describe('rotating focus indicator prevention', () => {
