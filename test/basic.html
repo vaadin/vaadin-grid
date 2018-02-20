@@ -27,6 +27,10 @@
     describe('basic features', () => {
       let grid;
 
+      function isSafari9() {
+        return !!navigator.userAgent.match(' Safari/') && !navigator.userAgent.match(' Chrome') && !!navigator.userAgent.match(' Version/9.');
+      }
+
       beforeEach(() => {
         grid = fixture('default');
         grid.dataProvider = infiniteDataProvider;
@@ -192,7 +196,8 @@
             }
           });
 
-          expect(document.activeElement).to.equal(grid);
+          // Safari 9 sets vaadin-grid-cell to `document.activeElement`
+          expect(document.activeElement).to.equal(isSafari9() ? activeElement : grid);
           expect(grid.shadowRoot.activeElement).to.equal(activeElement);
         });
       });
