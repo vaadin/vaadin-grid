@@ -86,11 +86,14 @@
     },
 
     _multiSort: function(a, b) {
+        var sa = a.toString().toLowerCase();
+        var sb = b.toString().toLowerCase();
+
       return this._sorters.map(function(sort) {
         if (sort.direction === 'asc') {
-          return this._compare(Polymer.Base.get(sort.path, a), Polymer.Base.get(sort.path, b));
+          return this._compare(Polymer.Base.get(sort.path, sa), Polymer.Base.get(sort.path, sb));
         } else if (sort.direction === 'desc') {
-          return this._compare(Polymer.Base.get(sort.path, b), Polymer.Base.get(sort.path, a));
+          return this._compare(Polymer.Base.get(sort.path, sb), Polymer.Base.get(sort.path, sa));
         }
         return 0;
       }, this).reduce(function firstNonZeroValue(p, n) {
