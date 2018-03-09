@@ -9,7 +9,7 @@ module.exports = {
     ];
 
     const saucelabsPlatformsPolyfilled = [
-      'Windows 10/microsoftedge@15',
+      'Windows 10/microsoftedge@16',
       'Windows 10/internet explorer@11'
     ];
 

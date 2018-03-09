@@ -177,18 +177,26 @@
 
       describe('overflow attribute', () => {
 
+        beforeEach(done => {
+          animationFrameFlush(done);
+        });
+
         it('bottom right', () => {
           grid._scrollToIndex(0);
           flushGrid(grid);
           expect(grid.getAttribute('overflow')).to.equal('bottom right');
         });
 
-        it('bottom left', () => {
+        it('bottom left', done => {
           grid._scrollToIndex(0);
-          grid.$.table.scrollLeft = grid.$.table.scrollWidth;
           grid._scrollHandler();
-          flushGrid(grid);
-          expect(grid.getAttribute('overflow')).to.equal('bottom left');
+          grid.$.table.addEventListener('scroll', () => {
+            flushGrid(grid);
+            expect(grid.getAttribute('overflow')).to.equal('bottom left');
+            done();
+          });
+          grid.$.table.scrollLeft = grid.$.table.scrollWidth;
+          
         });
 
         it('bottom top', () => {
