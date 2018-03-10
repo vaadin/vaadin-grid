@@ -671,6 +671,9 @@ To update:
         // Initial render
         this.updateViewportBoundaries();
         this._increasePoolIfNeeded(DEFAULT_PHYSICAL_COUNT);
+      } else {
+        // List is empty, update the scroller size
+        this._updateScrollerSize();
       }
     },
 
