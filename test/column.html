@@ -172,6 +172,12 @@
         it('should read template from light DOM', () => {
           expect(getCellContent(getContainerCell(grid.$.items, 0, 0)).textContent).to.contain('cell');
         });
+
+        it('should properly find header, footer, body templates with _findTemplate()', () => {
+          ['template.header', 'template.footer', 'template:not(.header):not(.footer)'].forEach(selector => {
+            expect(column._findTemplate(selector)).to.equal(column.querySelector(selector));
+          });
+        });
       });
 
       describe('header templates', () => {
