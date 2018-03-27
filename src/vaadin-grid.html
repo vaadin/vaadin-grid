@@ -415,6 +415,7 @@ This program is available under Apache License Version 2.0, available at https:/
               row.appendChild(detailsCell);
               this._a11ySetRowDetailsCell(row, detailsCell);
               detailsCell._vacant = false;
+              detailsCell.addEventListener('click', e => e.stopPropagation()); // #797
             }
 
             if (column.notifyPath && !noNotify) {
