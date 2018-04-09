@@ -289,12 +289,13 @@ This program is available under Apache License Version 2.0, available at https:/
 
       _accessIronListAPI(cb) {
         this._warnPrivateAPIAccessAsyncEnabled = false;
+        const returnValue = cb.apply(this);
         this._debouncerWarnPrivateAPIAccess = Polymer.Debouncer.debounce(
           this._debouncerWarnPrivateAPIAccess,
           Polymer.Async.animationFrame,
           () => this._warnPrivateAPIAccessAsyncEnabled = true
         );
-        return cb.apply(this);
+        return returnValue;
       }
 
       /* Allow iron-list to access its APIs from debounced callbacks without warns */

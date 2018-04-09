@@ -41,6 +41,19 @@
         flushGrid(grid);
       });
 
+      it('should not warn on init', done => {
+        const warn = sinon.stub(console, 'warn');
+        const func = grid._warnPrivateAPIAccess;
+        sinon.stub(grid, '_warnPrivateAPIAccess', (a) => {
+          func.bind(grid)(a);
+          Polymer.RenderStatus.afterNextRender(grid, () => {
+            console.warn.restore();
+            expect(warn.called).to.be.false;
+            done();
+          });
+        });
+      });
+
       it('check physical item heights', () => {
         const rowHeight = grid._physicalItems[0].offsetHeight;
 
@@ -266,7 +279,7 @@
               done();
             }
           });
-          
+
         });
       };
 
