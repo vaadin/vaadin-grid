@@ -133,6 +133,16 @@
           expect(cells[1].hidden).to.be.false;
         });
 
+        it('should stop `click` events propagation', () => {
+          const cells = getRowCells(bodyRows[1]);
+          grid.addEventListener('click', function(e) {
+            throw new Error('Should not be here!');
+          });
+          cells[0].click();
+          openRowDetails(1);
+          cells[1].click();
+        });
+
         it('should close details row', () => {
           openRowDetails(1);
           closeRowDetails(1);

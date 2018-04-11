@@ -394,6 +394,8 @@ This program is available under Apache License Version 2.0, available at https:/
       if (!cellContentHasFocus && !this._isFocusable(e.target)) {
         this.dispatchEvent(new CustomEvent('cell-activate', {detail: {model: cell._instance}}));
       }
+
+      e.stopPropagation();
     }
 
     _isFocusable(target) {
