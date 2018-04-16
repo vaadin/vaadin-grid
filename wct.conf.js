@@ -17,8 +17,8 @@ module.exports = {
     ];
 
     const cronPlatforms = [
-      'Windows 10/chrome@55',
-      'Windows 10/firefox@54'
+      'Windows 10/chrome@65',
+      'Windows 10/firefox@59'
     ];
 
     if (argv.env === 'saucelabs:mobile') {
