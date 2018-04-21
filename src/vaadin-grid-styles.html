@@ -65,6 +65,7 @@ This program is available under Apache License Version 2.0, available at https:/
         z-index: -2;
         position: relative;
         outline: none;
+        -webkit-overflow-scrolling: touch;
       }
 
       #header {
@@ -98,7 +99,6 @@ This program is available under Apache License Version 2.0, available at https:/
       }
 
       #items,
-      #outersizer,
       #fixedsizer {
         border-top: 0 solid transparent;
         border-bottom: 0 solid transparent;
@@ -160,25 +160,9 @@ This program is available under Apache License Version 2.0, available at https:/
         will-change: transform;
       }
 
-      #outerscroller {
-        /* Needed (at least) for Android Chrome */
-        z-index: 0;
-      }
-
-      #scroller:not([safari]) #outerscroller {
-        /* Needed for Android Chrome (#1020). Can't be applied to Safari
-        since it would re-introduce the sub-pixel overflow bug (#853) */
-        will-change: transform;
-      }
-
-      [no-scrollbars]:not([safari]):not([firefox]) #outerscroller,
       [no-scrollbars][safari] #table,
       [no-scrollbars][firefox] #table {
         overflow: hidden;
-      }
-
-      [no-scrollbars]:not([safari]):not([firefox]) #outerscroller {
-        pointer-events: none;
       }
 
       /* Reordering styles */
@@ -207,10 +191,6 @@ This program is available under Apache License Version 2.0, available at https:/
 
       #scroller[ie][column-reordering-allowed] [part~="header-cell"] {
         -ms-user-select: none;
-      }
-
-      :host([reordering]) #outerscroller {
-        -webkit-overflow-scrolling: auto !important;
       }
 
       /* Resizing styles */
@@ -278,33 +258,6 @@ This program is available under Apache License Version 2.0, available at https:/
 
       .sizer [part~="cell"] ::slotted(vaadin-grid-cell-content) {
         display: none !important;
-      }
-
-      /* Fixed mode (Tablet Edge) */
-      #fixedsizer {
-        position: absolute;
-      }
-
-      :not([edge][no-scrollbars]) #fixedsizer {
-        display: none;
-      }
-
-      [edge][no-scrollbars] {
-        /* Any value other than ‘none’ for the transform results in the creation of both a stacking context and
-        a containing block. The object acts as a containing block for fixed positioned descendants. */
-        transform: translateZ(0);
-        overflow: hidden;
-      }
-
-      [edge][no-scrollbars] #header,
-      [edge][no-scrollbars] #footer {
-        position: fixed;
-      }
-
-      [edge][no-scrollbars] #items {
-        position: fixed;
-        width: 100%;
-        will-change: transform;
       }
 
       /* RTL specific styles */

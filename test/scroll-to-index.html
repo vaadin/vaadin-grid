@@ -144,7 +144,6 @@
           grid.scrollToIndex(targetIndex);
 
           const rect = grid.$.header.getBoundingClientRect();
-          grid.$.outerscroller.hidden = true;
           const cell = (Polymer.Settings.useShadow ? grid.shadowRoot : document).elementFromPoint(rect.left + 1, rect.bottom + 2);
           expect(cell.parentElement.index).to.equal(targetIndex);
         });
