@@ -15,8 +15,6 @@ This program is available under Apache License Version 2.0, available at https:/
     /** @private */
     get _timeouts() {
       return {
-        SCROLL_PERIOD: 1000,
-        WHEEL_SCROLLING: 200,
         SCROLLING: 100,
         IGNORE_WHEEL: 500
       };
@@ -30,32 +28,7 @@ This program is available under Apache License Version 2.0, available at https:/
          */
         _frozenCells: {
           type: Array,
-          value: function() {
-            return [];
-          },
-        },
-
-        /**
-         * @type {number}
-         * @protected
-         */
-        _scrollbarWidth: {
-          type: Number,
-          value: function() {
-            // Create the measurement node
-            var scrollDiv = document.createElement('div');
-            scrollDiv.style.width = '100px';
-            scrollDiv.style.height = '100px';
-            scrollDiv.style.overflow = 'scroll';
-            scrollDiv.style.position = 'absolute';
-            scrollDiv.style.top = '-9999px';
-            document.body.appendChild(scrollDiv);
-            // Get the scrollbar width
-            var scrollbarWidth = scrollDiv.offsetWidth - scrollDiv.clientWidth;
-            // Delete the DIV
-            document.body.removeChild(scrollDiv);
-            return scrollbarWidth;
-          }
+          value: () => [],
         },
 
         /** @private */
@@ -72,7 +45,6 @@ This program is available under Apache License Version 2.0, available at https:/
 
     static get observers() {
       return [
-        '_scrollHeightUpdated(_estScrollHeight)',
         '_scrollViewportHeightUpdated(_viewportHeight)'
       ];
     }
@@ -119,15 +91,7 @@ This program is available under Apache License Version 2.0, available at https:/
       super.ready();
       this.scrollTarget = this.$.table;
 
-      this.addEventListener('wheel', e => {
-        this._wheelScrolling = true;
-        this._debouncerWheelScrolling = Polymer.Debouncer.debounce(
-          this._debouncerWheelScrolling,
-          Polymer.Async.timeOut.after(this._timeouts.WHEEL_SCROLLING),
-          () => this._wheelScrolling = false
-        );
-        this._onWheel(e);
-      });
+      this.addEventListener('wheel', this._onWheel);
 
       this.$.items.addEventListener('focusin', (e) => {
         const itemsIndex = e.composedPath().indexOf(this.$.items);
@@ -248,19 +212,6 @@ This program is available under Apache License Version 2.0, available at https:/
           this._reorderRows();
         }
       );
-
-      if (!this._scrollPeriodFrame) {
-        this._scrollPeriodFrame = requestAnimationFrame(() => this._toggleAttribute('scroll-period', true, this.$.scroller));
-      }
-      this._debounceScrollPeriod = Polymer.Debouncer.debounce(
-        this._debounceScrollPeriod,
-        Polymer.Async.timeOut.after(this._timeouts.SCROLL_PERIOD),
-        () => {
-          cancelAnimationFrame(this._scrollPeriodFrame);
-          delete this._scrollPeriodFrame;
-          this._toggleAttribute('scroll-period', false, this.$.scroller);
-        }
-      );
     }
 
     /** @private */
@@ -269,14 +220,6 @@ This program is available under Apache License Version 2.0, available at https:/
 
       if (!this.hasAttribute('reordering')) {
         this._scheduleScrolling();
-      }
-
-      const table = this.$.table;
-      if (this._ios) {
-        // Enable vertical rubberband feedback
-        const overScroll = Math.max(-table.scrollTop, 0) ||
-          Math.min(0, table.scrollHeight - table.scrollTop - table.offsetHeight);
-        this.$.items.style.transform = `translateY(${overScroll}px)`;
       }
 
       this._updateOverflow();
@@ -401,37 +344,35 @@ This program is available under Apache License Version 2.0, available at https:/
 
     /** @private */
     _translateStationaryElements() {
-      if (this._edge && !this._scrollbarWidth) {
-        // Fixed mode (Tablet Edge)
-        this.$.items.style.transform =
-        this._getTranslate(-this._scrollLeft || 0, -this._scrollTop || 0);
+      const scrollLeft = Math.max(0, this._scrollLeft); // TODO: Min
+      const scrollTop = Math.max(0, this._scrollTop);
 
-        this.$.footer.style.transform = this.$.header.style.transform =
-        this._getTranslate(-this._scrollLeft || 0, 0);
-      } else {
-        this.$.footer.style.transform = this.$.header.style.transform = this._getTranslate(0, this._scrollTop);
+      let leftOffset = 0;
+      let topOffset = 0;
+      let footerOffset = 0;
+      if (!this._useSticky) {
+        leftOffset = scrollLeft;
+        topOffset = scrollTop;
+        footerOffset = this.$.table.clientHeight - this.$.footer.offsetHeight - this.$.footer.offsetTop;
       }
 
-      if (this._frozenCells.length > 0) {
-        const x = this.__isRTL ?
-          this.__getNormalizedScrollLeft(this.$.table) + this.__scrollerMetrics.clientWidth -
-          this.__scrollerMetrics.scrollWidth
-          : this._scrollLeft;
-        var frozenCellTransform = this._getTranslate(x, 0);
-        for (var i = 0; i < this._frozenCells.length; i++) {
-          this._frozenCells[i].style.transform = frozenCellTransform;
-        }
-      }
+      this.$.header.style.transform = this._getTranslate(-scrollLeft + leftOffset, topOffset);
+      this.$.footer.style.transform = this._getTranslate(-scrollLeft + leftOffset, topOffset + footerOffset);
+      this.$.items.style.transform = this._getTranslate(-scrollLeft + leftOffset, 0);
+
+      const frozenCellsTranslate = this._getTranslate(scrollLeft, 0);
+      this._frozenCells.forEach(cell => cell.style.transform = frozenCellsTranslate);
     }
 
-    /** @private */
+    get _useSticky() {
+      // if (this._nativeStickyValue === undefined) {
+        this._nativeStickyValue = getComputedStyle(this.$.items).position.indexOf('sticky') !== -1;
+      // }
+      return this._nativeStickyValue;
+    }
+
     _getTranslate(x, y) {
-      return 'translate(' + x + 'px,' + y + 'px)';
-    }
-
-    /** @private */
-    _scrollHeightUpdated(_estScrollHeight) {
-      this.$.fixedsizer.style.top = _estScrollHeight + 'px';
+      return `translate(${x}px, ${y}px)`;
     }
 
   };

@@ -32,17 +32,11 @@ This program is available under Apache License Version 2.0, available at https:/
     <style include="vaadin-grid-styles"></style>
 
     <div id="scroller"
-      wheel-scrolling$="[[_wheelScrolling]]"
-      safari$="[[_safari]]"
-      ios$="[[_ios]]"
       loading$=[[loading]]
-      edge$="[[_edge]]"
-      firefox$="[[_firefox]]"
-      ie$="[[_ie]]"
       column-reordering-allowed$="[[columnReorderingAllowed]]">
 
       <table id="table" role="grid" aria-multiselectable="true" tabindex="0">
-        <caption id="fixedsizer" class="sizer" part="row"></caption>
+        <caption id="sizer" part="row"></caption>
         <thead id="header" role="rowgroup"></thead>
         <tbody id="items" role="rowgroup"></tbody>
         <tfoot id="footer" role="rowgroup"></tfoot>
@@ -342,21 +336,6 @@ This program is available under Apache License Version 2.0, available at https:/
 
       static get properties() {
         return {
-          /** @private */
-          _this: {
-            type: Object,
-            value: function() {
-              return this;
-            }
-          },
-
-          /** @private */
-          _safari: {
-            type: Boolean,
-            value: /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
-          },
-
-          /** @private */
           _ios: {
             type: Boolean,
             value: (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream)
@@ -375,13 +354,6 @@ This program is available under Apache License Version 2.0, available at https:/
             value: !!(navigator.userAgent.match(/Trident/) && !navigator.userAgent.match(/MSIE/))
           },
 
-          /** @private */
-          _firefox: {
-            type: Boolean,
-            value: navigator.userAgent.toLowerCase().indexOf('firefox') > -1
-          },
-
-          /** @private */
           _android: {
             type: Boolean,
             value: /android/i.test(navigator.userAgent)
@@ -597,7 +569,7 @@ This program is available under Apache License Version 2.0, available at https:/
 
         Array.from(row.children).forEach(cell => cell._vacant = true);
         row.innerHTML = '';
-        if (row.id !== 'fixedsizer') {
+        if (row.id !== 'sizer') {
           row.hidden = true;
         }
         columns
@@ -765,7 +737,7 @@ This program is available under Apache License Version 2.0, available at https:/
           .forEach((footerRow, index) => this._updateRow(footerRow, columnTree[columnTree.length - 1 - index], 'footer', index === 0));
 
         // Sizer rows
-        this._updateRow(this.$.fixedsizer, columnTree[columnTree.length - 1], null, false, true);
+        this._updateRow(this.$.sizer, columnTree[columnTree.length - 1], null, false, true);
 
         this._resizeHandler();
         this._frozenCellsChanged();
@@ -821,23 +793,6 @@ This program is available under Apache License Version 2.0, available at https:/
         this._updateDetailsCellHeights();
         this._accessIronListAPI(super._resizeHandler, true);
         this._updateScrollerMeasurements();
-        this._updateHeaderFooterMetrics();
-      }
-
-      /** @protected */
-      _updateHeaderFooterMetrics() {
-        const headerHeight = this.$.header.clientHeight + 'px';
-        const footerHeight = this.$.footer.clientHeight + 'px';
-        [this.$.fixedsizer, this.$.items].forEach(element => {
-          element.style.borderTopWidth = headerHeight;
-          element.style.borderBottomWidth = footerHeight;
-        });
-
-        Polymer.RenderStatus.afterNextRender(this.$.header, () => {
-          if (this._pendingScrollToIndex) {
-            this._scrollToIndex(this._pendingScrollToIndex);
-          }
-        });
       }
 
       /** @private */
@@ -845,7 +800,6 @@ This program is available under Apache License Version 2.0, available at https:/
         // ShadyCSS applies scoping suffixes to animation names
         if (e.animationName.indexOf('vaadin-grid-appear') === 0) {
           this._render();
-          this._updateHeaderFooterMetrics();
           e.stopPropagation();
           this.notifyResize();
           this.__itemsReceived();

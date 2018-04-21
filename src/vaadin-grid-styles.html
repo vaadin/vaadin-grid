@@ -68,11 +68,19 @@ This program is available under Apache License Version 2.0, available at https:/
         -webkit-overflow-scrolling: touch;
       }
 
-      #header {
+      #header,
+      #footer {
         display: block;
-        position: absolute;
-        top: 0;
+        position: relative;
+        position: -webkit-sticky;
+        position: sticky;
+        left: 0;
+        overflow: visible;
         width: 100%;
+      }
+
+      #header {
+        top: 0;
       }
 
       th {
@@ -85,23 +93,18 @@ This program is available under Apache License Version 2.0, available at https:/
       }
 
       #footer {
-        display: block;
-        position: absolute;
         bottom: 0;
-        width: 100%;
       }
 
       #items {
         display: block;
-        width: 100%;
         position: relative;
+        position: -webkit-sticky;
+        position: sticky;
+        width: 100%;
+        left: 0;
+        overflow: visible;
         z-index: -1;
-      }
-
-      #items,
-      #fixedsizer {
-        border-top: 0 solid transparent;
-        border-bottom: 0 solid transparent;
       }
 
       [part~="row"] {
@@ -226,37 +229,36 @@ This program is available under Apache License Version 2.0, available at https:/
       }
 
       /* Sizer styles */
-      .sizer {
+      #sizer {
         display: flex;
-        position: relative;
-        width: 100%;
+        position: absolute;
         visibility: hidden;
       }
 
-      .sizer [part~="details-cell"] {
+      #sizer [part~="details-cell"] {
         display: none !important;
       }
 
-      .sizer [part~="cell"][hidden] {
+      #sizer [part~="cell"][hidden] {
         display: none !important;
       }
 
-      .sizer [part~="cell"] {
+      #sizer [part~="cell"] {
         display: block;
         flex-shrink: 0;
         line-height: 0;
-        margin-top: -1em;
         height: 0 !important;
         min-height: 0 !important;
         max-height: 0 !important;
         padding: 0 !important;
+        border: none !important;
       }
 
-      .sizer [part~="cell"]::before {
+      #sizer [part~="cell"]::before {
         content: "-";
       }
 
-      .sizer [part~="cell"] ::slotted(vaadin-grid-cell-content) {
+      #sizer [part~="cell"] ::slotted(vaadin-grid-cell-content) {
         display: none !important;
       }
 
