@@ -438,9 +438,7 @@
         this.$.footer.style.transform = this.$.header.style.transform =
         this._getTranslate(-this._scrollLeft || 0, 0);
       } else {
-        /*Comment this line to prevent header moving when scroll in table*/
-        // this.$.footer.style.transform = this.$.header.style.transform = this._getTranslate(0, this._scrollTop);
-        this.$.footer.style.transform = this._getTranslate(0, this._scrollTop);
+        this.$.footer.style.transform = this.$.header.style.transform = this._getTranslate(0, this._scrollTop);
       }
 
       var frozenCellTransform = this._getTranslate(this._scrollLeft, 0);
