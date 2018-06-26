@@ -78,7 +78,9 @@ This program is available under Apache License Version 2.0, available at https:/
 
         _footerCell: Object,
 
-        _grid: Object
+        _grid: Object,
+
+        bodyRenderer: Function
       };
     }
 
@@ -94,8 +96,29 @@ This program is available under Apache License Version 2.0, available at https:/
         '_stampFooterTemplate(_footerTemplate, _footerCell)',
         '_resizableChanged(resizable, _headerCell)',
         '_reorderStatusChanged(_reorderStatus, _headerCell, _footerCell, _cells.*)',
-        '_hiddenChanged(hidden, _headerCell, _footerCell, _cells.*)'
+        '_hiddenChanged(hidden, _headerCell, _footerCell, _cells.*)',
+        '_bodyRendererChanged(bodyRenderer)'
       ];
+    }
+
+    _bodyRendererChanged(bodyRenderer) {
+      if (bodyRenderer) {
+        this._cells.forEach(cell => {
+          cell._content.innerHTML = '';
+          this.__renderBodyCell(cell, {
+            item: cell.parentElement._item,
+            index: cell.parentElement.index
+          });
+        });
+      }
+    }
+
+    __renderBodyCell(cell, data) {
+      const content = this.bodyRenderer(cell._content.firstChild, data);
+      if (content && cell._content.firstChild !== content) {
+        cell._content.innerHTML = '';
+        cell._content.appendChild(content);
+      }
     }
 
     /** @protected */

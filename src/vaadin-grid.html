@@ -513,6 +513,11 @@ This program is available under Apache License Version 2.0, available at https:/
               item,
               index: row.index
             });
+          } else if (cell._column) {
+            cell._column.__renderBodyCell(cell, {
+              item,
+              index: row.index
+            });
           }
         });
         this._toggleRowSelected(row, this._isSelected(item));
