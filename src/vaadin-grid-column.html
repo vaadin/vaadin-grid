@@ -12,6 +12,26 @@ This program is available under Apache License Version 2.0, available at https:/
   window.Vaadin = window.Vaadin || {};
   window.Vaadin.Grid = window.Vaadin.Grid || {};
 
+  class BodyCellModel {
+    constructor(grid) {
+      this.__grid = grid;
+    }
+
+    get detailsOpened() {
+      return this.__detailsOpened;
+    }
+    set detailsOpened(detailsOpened) {
+      if (this.__detailsOpened !== detailsOpened) {
+        this.__detailsOpened = detailsOpened;
+        if (detailsOpened) {
+          this.__grid.openItemDetails(this.item);
+        } else {
+          this.__grid.closeItemDetails(this.item);
+        }
+      }
+    }
+  }
+
   /**
    * @polymerMixin
    * @memberof Vaadin.Grid
@@ -103,22 +123,22 @@ This program is available under Apache License Version 2.0, available at https:/
 
     _bodyRendererChanged(bodyRenderer) {
       if (bodyRenderer) {
-        this._cells.forEach(cell => {
+        this._cells && this._cells.forEach(cell => {
           cell._content.innerHTML = '';
-          this.__renderBodyCell(cell, {
-            item: cell.parentElement._item,
-            index: cell.parentElement.index
-          });
+          const model = new BodyCellModel(this._grid);
+          model.item = cell.parentElement._item;
+          model.index = cell.parentElement.index;
+          this.__renderBodyCell(cell, model);
         });
       }
     }
 
     __renderBodyCell(cell, data) {
-      const content = this.bodyRenderer(cell._content.firstChild, data);
-      if (content && cell._content.firstChild !== content) {
-        cell._content.innerHTML = '';
-        cell._content.appendChild(content);
-      }
+      const model = new BodyCellModel(this._grid);
+      model.item = data.item;
+      model.index = data.index;
+      model.detailsOpened = this._grid._isDetailsOpened(data.item);
+      this.bodyRenderer(cell._content, model);
     }
 
     /** @protected */

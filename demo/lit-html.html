@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+  <style>
+    html {
+      height: 100%;
+    }
+
+    body {
+      min-height: 100%;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+    }
+  </style>
+  <script src="https://rawgit.com/Marak/faker.js/master/build/build/locales/en_GB/faker.en_GB.min.js"></script>
+  <script src="../../webcomponentsjs/webcomponents-loader.js"></script>
+  <link rel="import" href="../all-imports.html"></script>
+</head>
+<body></body>
+<script type="module">
+
+  faker.seed(123);
+  const data = [...new Array(1000)].map(() => {
+    return {
+      firstName: faker.name.firstName(),
+      lastName: faker.name.lastName(),
+      avatar: faker.internet.avatar(),
+      email: faker.internet.email(),
+      about: faker.lorem.paragraph()
+    };
+  });
+
+  import {html} from 'https://dev.jspm.io/lit-html/lib/lit-extended.js';
+  import {render} from 'https://dev.jspm.io/lit-html';
+
+  const firstNameTemplate = (props) => html`${props.item.firstName}`;
+  const lastNameTemplate = (props) => html`${props.item.lastName}`;
+  const firstNameRenderer = (cell, props) => render(firstNameTemplate(props), cell);
+
+  const appTemplate = () => html`
+    <vaadin-grid style="flex: auto;" items=${data}>
+      <vaadin-grid-column
+          bodyRenderer=${(cell, model) => render(html`${model.item.firstName}`, cell)}>
+        <template class="header">First Name</template>
+      </vaadin-grid-column>
+      <vaadin-grid-column
+          bodyRenderer=${(cell, model) => render(html`${model.item.lastName}`, cell)}>
+        <template class="header">Last Name</template>
+      </vaadin-grid-column>
+      <vaadin-grid-column width="13em" flex-grow="0"
+          bodyRenderer=${(cell, model) => render(html`
+            <input type="checkbox"
+              checked=${model.detailsOpened}
+              on-input=${e => { model.detailsOpened = e.target.checked}}>
+          `, cell)}>
+      </vaadin-grid-column>
+      <template class="row-details">
+        <img src="[[item.avatar]]" alt="" height="100" style="float: right; margin: 0 0 1em 1em;">
+        <p>[[item.about]]</p>
+      </template>
+    </vaadin-grid>
+  `;
+
+  const appRender = () => render(appTemplate(), document.body);
+
+  appRender();
+
+</script>
+</html>
