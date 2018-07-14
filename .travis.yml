@@ -1,70 +1,36 @@
 sudo: false
 dist: trusty
 language: node_js
-node_js: 8.0
-
+node_js: 8
 cache:
   directories:
-    - node_modules
-
+  - node_modules
 addons:
   firefox: latest
   google-chrome: latest
-
 install:
-  - npm install
-  - polymer install --variants
-
+- npm install
+- polymer install --variants
 before_script:
-  - gulp lint
-  - polymer lint --rules polymer-2-hybrid --input *.html
-  # - xvfb-run -s '-screen 0 1024x768x24' polymer test -l chrome
-  # - xvfb-run -s '-screen 0 1024x768x24' polymer test -l firefox
-
+- gulp lint
+- polymer lint --rules polymer-2-hybrid --input *.html
 script:
-  - xvfb-run -s '-screen 0 1024x768x24' polymer test
-    test/basic.html
-    test/app-localize-behavior.html
-    test/column.html
-    test/column-group.html
-    test/column-groups.html
-    test/column-resizing.html
-    test/column-reordering.html
-    test/data-provider.html
-    test/filtering.html
-    --env saucelabs
-  - xvfb-run -s '-screen 0 1024x768x24' polymer test
-    test/keyboard-navigation.html
-    test/physical-count.html
-    test/hidden-grid.html
-    test/million-dollar-scrolling.html
-    test/dynamic-item-size.html
-    test/frozen-columns.html
-    test/outer-scroller.html
-    test/templates.html
-    test/scrolling-mode.html
-    test/row-height.html
-    --env saucelabs
-  - xvfb-run -s '-screen 0 1024x768x24' polymer test
-    test/row-details.html
-    test/selecting.html
-    test/style-scope.html
-    test/array-data-provider.html
-    test/sorting.html
-    test/themability.html
-    test/scroll-to-index.html
-    test/resizing.html
-    test/light-dom-observing.html
-    test/doctype.html
-    test/lazy-import.html
-    --env saucelabs
-  - if [[ "$TRAVIS_EVENT_TYPE" != "pull_request" && "$TRAVIS_BRANCH" != quick/* ]]; then
-      npm i gemini@^4.0.0 gemini-sauce gemini-polyserve;
-      gemini test test/visual;
-    fi
-  # - if [ "$TRAVIS_EVENT_TYPE" = "cron" ]; then
-  #     xvfb-run -s '-screen 0 1024x768x24' polymer test --env saucelabs-cron;
-  #   fi
-
+- xvfb-run -s '-screen 0 1024x768x24' polymer test test/basic.html test/app-localize-behavior.html
+  test/column.html test/column-group.html test/column-groups.html test/column-resizing.html
+  test/column-reordering.html test/data-provider.html test/filtering.html --env saucelabs
+- xvfb-run -s '-screen 0 1024x768x24' polymer test test/keyboard-navigation.html test/physical-count.html
+  test/hidden-grid.html test/million-dollar-scrolling.html test/dynamic-item-size.html
+  test/frozen-columns.html test/outer-scroller.html test/templates.html test/scrolling-mode.html
+  test/row-height.html --env saucelabs
+- xvfb-run -s '-screen 0 1024x768x24' polymer test test/row-details.html test/selecting.html
+  test/style-scope.html test/array-data-provider.html test/sorting.html test/themability.html
+  test/scroll-to-index.html test/resizing.html test/light-dom-observing.html test/doctype.html
+  test/lazy-import.html --env saucelabs
+- if [[ "$TRAVIS_EVENT_TYPE" != "pull_request" && "$TRAVIS_BRANCH" != quick/* ]];
+  then npm i gemini@^4.0.0 gemini-sauce gemini-polyserve; gemini test test/visual;
+  fi
 after_success:
-  - "cat ${TRAVIS_BUILD_DIR}/coverage/lcov.info | coveralls"
+- cat ${TRAVIS_BUILD_DIR}/coverage/lcov.info | coveralls
+notifications:
+  slack:
+    secure: DHun+sj+LbUVFN/d40GfGsf9Qy2Uciv9UZurUrUmoIsQ+XQvS1LhZpWJw/x2SAc2CtI2xyMcL6SF3urE/UUEd/kiIvk91LycFqCyDRHJs4hRK64mSuMrbbKr3rqFJRgrRYLZVVM2UpBsmdt/CBukOxePNT6uP7ekqxnm5B3Vh/b0D4qgCFMgMvYsMSOpzGKic6hzQU/C+aRJshbHLWImH/fmbJQoLW11SD500SR09+cMzYNQpXF8ZpcEhoIQz0hmQZlSrDvk3JGAFAW9J/9azmG2MTwQMZ2dM0Gj7hZvQOKLwVy2WyphiNCgHjD0didCdKdNiCUI8P/0078hjBKkdZfq3VAcmolj3swdO3yoHcaVOPIlcmML8+d7v49NhKmjY5LHM9GfOjTDkvgKeI5EWEFg4a5uDzwSK0TJj5qlygwxtUh+fRB7yh1QuQXwawOcS0Bj7KVEm+o7XyT9d6KO4/stQlL82ECPKwwkZRVfrwPO9zeR8nxZz/nFmYd8n1P8gRa45oGV5AORVEesFkCci939rOQO1DNmF0tFPQvH3h+XCnDnQHK4t9LJjkvoQsM9Lvj06QkMZDUaJ6FJ/RUeWA8j7uGtPZ2RYsYriNBWolbul7426YC3R8pOluYBG8VcTQzOmnMJjgLjU5PkE3kuZM3G4bR69lQ9VYBfEA09zQ8=
