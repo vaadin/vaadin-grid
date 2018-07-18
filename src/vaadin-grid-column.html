@@ -217,11 +217,15 @@ This program is available under Apache License Version 2.0, available at https:/
 
         if (renderer) {
           cell._renderer = renderer;
+          cell._template = undefined;
+
           if (model.item) {
             renderer.call(this, cell._content, this, model);
           }
         } else if (cell._template !== template) {
           cell._template = template;
+          cell._renderer = undefined;
+
           cell._content.innerHTML = '';
           const inst = template.templatizer.createInstance();
           cell._content.appendChild(inst.root);

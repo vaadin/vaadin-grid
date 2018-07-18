@@ -67,6 +67,14 @@
           };
         });
 
+        it('should delete cell _template or _renderer when the other is set', () => {
+          expect(getCell(grid, 0)._renderer).to.be.ok;
+          expect(getCell(grid, 0)._template).to.be.undefined;
+
+          column.renderer = undefined;
+          expect(getCell(grid, 0)._template).to.be.ok;
+          expect(getCell(grid, 0)._renderer).to.be.undefined;
+        });
       });
     });
   </script>
