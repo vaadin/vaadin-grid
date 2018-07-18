@@ -31,7 +31,8 @@ window.VaadinGridSuites = [
   'selecting.html',
   'sorting.html',
   'style-scope.html',
-  'templates.html'
+  'templates.html',
+  'renderers.html'
 ];
 
 if (isPolymer2) {
