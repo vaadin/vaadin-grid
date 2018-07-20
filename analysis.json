@@ -4044,11 +4044,11 @@
                   "privacy": "protected",
                   "sourceRange": {
                     "start": {
-                      "line": 162,
+                      "line": 182,
                       "column": 4
                     },
                     "end": {
-                      "line": 167,
+                      "line": 187,
                       "column": 5
                     }
                   },
@@ -4065,11 +4065,11 @@
                   "privacy": "protected",
                   "sourceRange": {
                     "start": {
-                      "line": 169,
+                      "line": 189,
                       "column": 4
                     },
                     "end": {
-                      "line": 176,
+                      "line": 196,
                       "column": 5
                     }
                   },
@@ -4315,7 +4315,7 @@
                 {
                   "name": "renderer",
                   "type": "Function | null | undefined",
-                  "description": "Custom function for rendering the content of the cell content.\nReceives arguments `root`, `column`, `model`\n\n`root` The cell content element.\n\n`column` The column element.\n\n`model` An object with the structure `{index: index, item: item}`\n\n**NOTE:** The renderer callback can be called multiple times.",
+                  "description": "Custom function for rendering the cell content.\nReceives arguments `root`, `column`, `model`\n\n`root` The cell content element.\n\n`column` The column element.\n\n`model` An object with the structure `{index: index, item: item}`\n\n**NOTE:** The renderer callback can be called multiple times.",
                   "privacy": "public",
                   "sourceRange": {
                     "start": {
@@ -4332,6 +4332,48 @@
                       "attributeType": "Function"
                     }
                   }
+                },
+                {
+                  "name": "headerRenderer",
+                  "type": "Function | null | undefined",
+                  "description": "Custom function for rendering the header content.\nReceives arguments `root`, `column`, `model`\n\n`root` The cell content element.\n\n`column` The column element.",
+                  "privacy": "public",
+                  "sourceRange": {
+                    "start": {
+                      "line": 104,
+                      "column": 8
+                    },
+                    "end": {
+                      "line": 104,
+                      "column": 32
+                    }
+                  },
+                  "metadata": {
+                    "polymer": {
+                      "attributeType": "Function"
+                    }
+                  }
+                },
+                {
+                  "name": "footerRenderer",
+                  "type": "Function | null | undefined",
+                  "description": "Custom function for rendering the footer content.\nReceives arguments `root`, `column`\n\n`root` The cell content element.\n\n`column` The column element.",
+                  "privacy": "public",
+                  "sourceRange": {
+                    "start": {
+                      "line": 114,
+                      "column": 8
+                    },
+                    "end": {
+                      "line": 114,
+                      "column": 32
+                    }
+                  },
+                  "metadata": {
+                    "polymer": {
+                      "attributeType": "Function"
+                    }
+                  }
                 }
               ],
               "methods": [
@@ -4341,11 +4383,11 @@
                   "privacy": "protected",
                   "sourceRange": {
                     "start": {
-                      "line": 115,
+                      "line": 135,
                       "column": 4
                     },
                     "end": {
-                      "line": 135,
+                      "line": 155,
                       "column": 5
                     }
                   },
@@ -4361,11 +4403,11 @@
                   "privacy": "protected",
                   "sourceRange": {
                     "start": {
-                      "line": 138,
+                      "line": 158,
                       "column": 4
                     },
                     "end": {
-                      "line": 152,
+                      "line": 172,
                       "column": 5
                     }
                   },
@@ -4381,11 +4423,11 @@
                   "privacy": "protected",
                   "sourceRange": {
                     "start": {
-                      "line": 154,
+                      "line": 174,
                       "column": 4
                     },
                     "end": {
-                      "line": 160,
+                      "line": 180,
                       "column": 5
                     }
                   },
@@ -4398,11 +4440,11 @@
                   "privacy": "protected",
                   "sourceRange": {
                     "start": {
-                      "line": 188,
+                      "line": 208,
                       "column": 4
                     },
                     "end": {
-                      "line": 190,
+                      "line": 210,
                       "column": 5
                     }
                   },
@@ -4415,11 +4457,11 @@
                   "privacy": "protected",
                   "sourceRange": {
                     "start": {
-                      "line": 192,
+                      "line": 212,
                       "column": 4
                     },
                     "end": {
-                      "line": 194,
+                      "line": 214,
                       "column": 5
                     }
                   },
@@ -4432,11 +4474,11 @@
                   "privacy": "protected",
                   "sourceRange": {
                     "start": {
-                      "line": 196,
+                      "line": 216,
                       "column": 4
                     },
                     "end": {
-                      "line": 198,
+                      "line": 218,
                       "column": 5
                     }
                   },
@@ -4449,11 +4491,11 @@
                   "privacy": "protected",
                   "sourceRange": {
                     "start": {
-                      "line": 200,
+                      "line": 220,
                       "column": 4
                     },
                     "end": {
-                      "line": 211,
+                      "line": 231,
                       "column": 5
                     }
                   },
@@ -4473,11 +4515,11 @@
                   "privacy": "private",
                   "sourceRange": {
                     "start": {
-                      "line": 213,
+                      "line": 233,
                       "column": 4
                     },
                     "end": {
-                      "line": 238,
+                      "line": 259,
                       "column": 5
                     }
                   },
@@ -4503,11 +4545,11 @@
                   "privacy": "protected",
                   "sourceRange": {
                     "start": {
-                      "line": 240,
+                      "line": 261,
                       "column": 4
                     },
                     "end": {
-                      "line": 244,
+                      "line": 265,
                       "column": 5
                     }
                   },
@@ -4531,16 +4573,16 @@
                   }
                 },
                 {
-                  "name": "_stampHeaderTemplate",
+                  "name": "_setHeaderTemplateOrRenderer",
                   "description": "",
                   "privacy": "protected",
                   "sourceRange": {
                     "start": {
-                      "line": 246,
+                      "line": 267,
                       "column": 4
                     },
                     "end": {
-                      "line": 251,
+                      "line": 272,
                       "column": 5
                     }
                   },
@@ -4548,6 +4590,9 @@
                   "params": [
                     {
                       "name": "headerTemplate"
+                    },
+                    {
+                      "name": "headerRenderer"
                     },
                     {
                       "name": "headerCell"
@@ -4558,16 +4603,16 @@
                   }
                 },
                 {
-                  "name": "_stampFooterTemplate",
+                  "name": "_setFooterTemplateOrRenderer",
                   "description": "",
                   "privacy": "protected",
                   "sourceRange": {
                     "start": {
-                      "line": 253,
+                      "line": 274,
                       "column": 4
                     },
                     "end": {
-                      "line": 258,
+                      "line": 279,
                       "column": 5
                     }
                   },
@@ -4575,6 +4620,9 @@
                   "params": [
                     {
                       "name": "footerTemplate"
+                    },
+                    {
+                      "name": "footerRenderer"
                     },
                     {
                       "name": "footerCell"
@@ -4590,11 +4638,11 @@
                   "privacy": "protected",
                   "sourceRange": {
                     "start": {
-                      "line": 260,
+                      "line": 281,
                       "column": 4
                     },
                     "end": {
-                      "line": 267,
+                      "line": 288,
                       "column": 5
                     }
                   },
@@ -4616,11 +4664,11 @@
                   "privacy": "protected",
                   "sourceRange": {
                     "start": {
-                      "line": 269,
+                      "line": 290,
                       "column": 4
                     },
                     "end": {
-                      "line": 278,
+                      "line": 299,
                       "column": 5
                     }
                   },
@@ -4640,11 +4688,11 @@
                   "privacy": "protected",
                   "sourceRange": {
                     "start": {
-                      "line": 280,
+                      "line": 301,
                       "column": 4
                     },
                     "end": {
-                      "line": 286,
+                      "line": 307,
                       "column": 5
                     }
                   },
@@ -4673,11 +4721,11 @@
                   "privacy": "protected",
                   "sourceRange": {
                     "start": {
-                      "line": 288,
+                      "line": 309,
                       "column": 4
                     },
                     "end": {
-                      "line": 290,
+                      "line": 311,
                       "column": 5
                     }
                   },
@@ -4706,11 +4754,11 @@
                   "privacy": "protected",
                   "sourceRange": {
                     "start": {
-                      "line": 292,
+                      "line": 313,
                       "column": 4
                     },
                     "end": {
-                      "line": 298,
+                      "line": 319,
                       "column": 5
                     }
                   },
@@ -4739,11 +4787,11 @@
                   "privacy": "protected",
                   "sourceRange": {
                     "start": {
-                      "line": 300,
+                      "line": 321,
                       "column": 4
                     },
                     "end": {
-                      "line": 308,
+                      "line": 329,
                       "column": 5
                     }
                   },
@@ -4772,11 +4820,11 @@
                   "privacy": "protected",
                   "sourceRange": {
                     "start": {
-                      "line": 310,
+                      "line": 331,
                       "column": 4
                     },
                     "end": {
-                      "line": 316,
+                      "line": 337,
                       "column": 5
                     }
                   },
@@ -4796,11 +4844,11 @@
                   "privacy": "protected",
                   "sourceRange": {
                     "start": {
-                      "line": 318,
+                      "line": 339,
                       "column": 4
                     },
                     "end": {
-                      "line": 326,
+                      "line": 347,
                       "column": 5
                     }
                   },
@@ -4826,11 +4874,11 @@
                   "privacy": "protected",
                   "sourceRange": {
                     "start": {
-                      "line": 328,
+                      "line": 349,
                       "column": 4
                     },
                     "end": {
-                      "line": 330,
+                      "line": 351,
                       "column": 5
                     }
                   },
@@ -4859,11 +4907,11 @@
                   "privacy": "protected",
                   "sourceRange": {
                     "start": {
-                      "line": 332,
+                      "line": 353,
                       "column": 4
                     },
                     "end": {
-                      "line": 353,
+                      "line": 374,
                       "column": 5
                     }
                   },
@@ -4886,11 +4934,11 @@
                   "privacy": "protected",
                   "sourceRange": {
                     "start": {
-                      "line": 355,
+                      "line": 376,
                       "column": 4
                     },
                     "end": {
-                      "line": 367,
+                      "line": 388,
                       "column": 5
                     }
                   },
@@ -4923,7 +4971,7 @@
                   "column": 2
                 },
                 "end": {
-                  "line": 369,
+                  "line": 390,
                   "column": 3
                 }
               },
@@ -4980,7 +5028,7 @@
                 },
                 {
                   "name": "renderer",
-                  "description": "Custom function for rendering the content of the cell content.\nReceives arguments `root`, `column`, `model`\n\n`root` The cell content element.\n\n`column` The column element.\n\n`model` An object with the structure `{index: index, item: item}`\n\n**NOTE:** The renderer callback can be called multiple times.",
+                  "description": "Custom function for rendering the cell content.\nReceives arguments `root`, `column`, `model`\n\n`root` The cell content element.\n\n`column` The column element.\n\n`model` An object with the structure `{index: index, item: item}`\n\n**NOTE:** The renderer callback can be called multiple times.",
                   "sourceRange": {
                     "start": {
                       "line": 94,
@@ -4989,6 +5037,38 @@
                     "end": {
                       "line": 94,
                       "column": 26
+                    }
+                  },
+                  "metadata": {},
+                  "type": "Function | null | undefined"
+                },
+                {
+                  "name": "header-renderer",
+                  "description": "Custom function for rendering the header content.\nReceives arguments `root`, `column`, `model`\n\n`root` The cell content element.\n\n`column` The column element.",
+                  "sourceRange": {
+                    "start": {
+                      "line": 104,
+                      "column": 8
+                    },
+                    "end": {
+                      "line": 104,
+                      "column": 32
+                    }
+                  },
+                  "metadata": {},
+                  "type": "Function | null | undefined"
+                },
+                {
+                  "name": "footer-renderer",
+                  "description": "Custom function for rendering the footer content.\nReceives arguments `root`, `column`\n\n`root` The cell content element.\n\n`column` The column element.",
+                  "sourceRange": {
+                    "start": {
+                      "line": 114,
+                      "column": 8
+                    },
+                    "end": {
+                      "line": 114,
+                      "column": 32
                     }
                   },
                   "metadata": {},
@@ -5441,6 +5521,101 @@
             {
               "description": "",
               "summary": "",
+              "path": "src/vaadin-grid-cell-click-mixin.html",
+              "properties": [],
+              "methods": [
+                {
+                  "name": "ready",
+                  "description": "",
+                  "privacy": "protected",
+                  "sourceRange": {
+                    "start": {
+                      "line": 15,
+                      "column": 4
+                    },
+                    "end": {
+                      "line": 18,
+                      "column": 5
+                    }
+                  },
+                  "metadata": {},
+                  "params": [],
+                  "return": {
+                    "type": "void"
+                  }
+                },
+                {
+                  "name": "_onClick",
+                  "description": "yet at the point when tap event is being executed.",
+                  "privacy": "protected",
+                  "sourceRange": {
+                    "start": {
+                      "line": 23,
+                      "column": 4
+                    },
+                    "end": {
+                      "line": 43,
+                      "column": 5
+                    }
+                  },
+                  "metadata": {},
+                  "params": [
+                    {
+                      "name": "e"
+                    }
+                  ],
+                  "return": {
+                    "type": "void"
+                  }
+                },
+                {
+                  "name": "_isFocusable",
+                  "description": "",
+                  "privacy": "protected",
+                  "sourceRange": {
+                    "start": {
+                      "line": 45,
+                      "column": 4
+                    },
+                    "end": {
+                      "line": 55,
+                      "column": 5
+                    }
+                  },
+                  "metadata": {},
+                  "params": [
+                    {
+                      "name": "target"
+                    }
+                  ]
+                }
+              ],
+              "staticMethods": [],
+              "demos": [],
+              "metadata": {},
+              "sourceRange": {
+                "start": {
+                  "line": 13,
+                  "column": 2
+                },
+                "end": {
+                  "line": 56,
+                  "column": 3
+                }
+              },
+              "privacy": "public",
+              "name": "Vaadin.Grid.CellClickMixin",
+              "attributes": [],
+              "events": [],
+              "styling": {
+                "cssVariables": [],
+                "selectors": []
+              },
+              "slots": []
+            },
+            {
+              "description": "",
+              "summary": "",
               "path": "src/vaadin-grid-array-data-provider-mixin.html",
               "properties": [
                 {
@@ -5679,101 +5854,6 @@
                   "type": "Array | null | undefined"
                 }
               ],
-              "events": [],
-              "styling": {
-                "cssVariables": [],
-                "selectors": []
-              },
-              "slots": []
-            },
-            {
-              "description": "",
-              "summary": "",
-              "path": "src/vaadin-grid-cell-click-mixin.html",
-              "properties": [],
-              "methods": [
-                {
-                  "name": "ready",
-                  "description": "",
-                  "privacy": "protected",
-                  "sourceRange": {
-                    "start": {
-                      "line": 15,
-                      "column": 4
-                    },
-                    "end": {
-                      "line": 18,
-                      "column": 5
-                    }
-                  },
-                  "metadata": {},
-                  "params": [],
-                  "return": {
-                    "type": "void"
-                  }
-                },
-                {
-                  "name": "_onClick",
-                  "description": "yet at the point when tap event is being executed.",
-                  "privacy": "protected",
-                  "sourceRange": {
-                    "start": {
-                      "line": 23,
-                      "column": 4
-                    },
-                    "end": {
-                      "line": 43,
-                      "column": 5
-                    }
-                  },
-                  "metadata": {},
-                  "params": [
-                    {
-                      "name": "e"
-                    }
-                  ],
-                  "return": {
-                    "type": "void"
-                  }
-                },
-                {
-                  "name": "_isFocusable",
-                  "description": "",
-                  "privacy": "protected",
-                  "sourceRange": {
-                    "start": {
-                      "line": 45,
-                      "column": 4
-                    },
-                    "end": {
-                      "line": 55,
-                      "column": 5
-                    }
-                  },
-                  "metadata": {},
-                  "params": [
-                    {
-                      "name": "target"
-                    }
-                  ]
-                }
-              ],
-              "staticMethods": [],
-              "demos": [],
-              "metadata": {},
-              "sourceRange": {
-                "start": {
-                  "line": 13,
-                  "column": 2
-                },
-                "end": {
-                  "line": 56,
-                  "column": 3
-                }
-              },
-              "privacy": "public",
-              "name": "Vaadin.Grid.CellClickMixin",
-              "attributes": [],
               "events": [],
               "styling": {
                 "cssVariables": [],
@@ -7437,11 +7517,11 @@
               "privacy": "protected",
               "sourceRange": {
                 "start": {
-                  "line": 162,
+                  "line": 182,
                   "column": 4
                 },
                 "end": {
-                  "line": 167,
+                  "line": 187,
                   "column": 5
                 }
               },
@@ -7459,11 +7539,11 @@
               "privacy": "protected",
               "sourceRange": {
                 "start": {
-                  "line": 169,
+                  "line": 189,
                   "column": 4
                 },
                 "end": {
-                  "line": 176,
+                  "line": 196,
                   "column": 5
                 }
               },
@@ -7721,7 +7801,7 @@
             {
               "name": "renderer",
               "type": "Function | null | undefined",
-              "description": "Custom function for rendering the content of the cell content.\nReceives arguments `root`, `column`, `model`\n\n`root` The cell content element.\n\n`column` The column element.\n\n`model` An object with the structure `{index: index, item: item}`\n\n**NOTE:** The renderer callback can be called multiple times.",
+              "description": "Custom function for rendering the cell content.\nReceives arguments `root`, `column`, `model`\n\n`root` The cell content element.\n\n`column` The column element.\n\n`model` An object with the structure `{index: index, item: item}`\n\n**NOTE:** The renderer callback can be called multiple times.",
               "privacy": "public",
               "sourceRange": {
                 "start": {
@@ -7741,17 +7821,61 @@
               "inheritedFrom": "Vaadin.Grid.ColumnBaseMixin"
             },
             {
+              "name": "headerRenderer",
+              "type": "Function | null | undefined",
+              "description": "Custom function for rendering the header content.\nReceives arguments `root`, `column`, `model`\n\n`root` The cell content element.\n\n`column` The column element.",
+              "privacy": "public",
+              "sourceRange": {
+                "start": {
+                  "line": 104,
+                  "column": 8
+                },
+                "end": {
+                  "line": 104,
+                  "column": 32
+                }
+              },
+              "metadata": {
+                "polymer": {
+                  "attributeType": "Function"
+                }
+              },
+              "inheritedFrom": "Vaadin.Grid.ColumnBaseMixin"
+            },
+            {
+              "name": "footerRenderer",
+              "type": "Function | null | undefined",
+              "description": "Custom function for rendering the footer content.\nReceives arguments `root`, `column`\n\n`root` The cell content element.\n\n`column` The column element.",
+              "privacy": "public",
+              "sourceRange": {
+                "start": {
+                  "line": 114,
+                  "column": 8
+                },
+                "end": {
+                  "line": 114,
+                  "column": 32
+                }
+              },
+              "metadata": {
+                "polymer": {
+                  "attributeType": "Function"
+                }
+              },
+              "inheritedFrom": "Vaadin.Grid.ColumnBaseMixin"
+            },
+            {
               "name": "width",
               "type": "string | null | undefined",
               "description": "Width of the cells for this column.",
               "privacy": "public",
               "sourceRange": {
                 "start": {
-                  "line": 404,
+                  "line": 425,
                   "column": 10
                 },
                 "end": {
-                  "line": 407,
+                  "line": 428,
                   "column": 11
                 }
               },
@@ -7769,11 +7893,11 @@
               "privacy": "public",
               "sourceRange": {
                 "start": {
-                  "line": 412,
+                  "line": 433,
                   "column": 10
                 },
                 "end": {
-                  "line": 415,
+                  "line": 436,
                   "column": 11
                 }
               },
@@ -7791,11 +7915,11 @@
               "privacy": "protected",
               "sourceRange": {
                 "start": {
-                  "line": 417,
+                  "line": 438,
                   "column": 10
                 },
                 "end": {
-                  "line": 419,
+                  "line": 440,
                   "column": 11
                 }
               },
@@ -7812,11 +7936,11 @@
               "privacy": "protected",
               "sourceRange": {
                 "start": {
-                  "line": 421,
+                  "line": 442,
                   "column": 10
                 },
                 "end": {
-                  "line": 421,
+                  "line": 442,
                   "column": 23
                 }
               },
@@ -7834,11 +7958,11 @@
               "privacy": "protected",
               "sourceRange": {
                 "start": {
-                  "line": 115,
+                  "line": 135,
                   "column": 4
                 },
                 "end": {
-                  "line": 135,
+                  "line": 155,
                   "column": 5
                 }
               },
@@ -7855,11 +7979,11 @@
               "privacy": "protected",
               "sourceRange": {
                 "start": {
-                  "line": 138,
+                  "line": 158,
                   "column": 4
                 },
                 "end": {
-                  "line": 152,
+                  "line": 172,
                   "column": 5
                 }
               },
@@ -7876,11 +8000,11 @@
               "privacy": "protected",
               "sourceRange": {
                 "start": {
-                  "line": 154,
+                  "line": 174,
                   "column": 4
                 },
                 "end": {
-                  "line": 160,
+                  "line": 180,
                   "column": 5
                 }
               },
@@ -7894,11 +8018,11 @@
               "privacy": "protected",
               "sourceRange": {
                 "start": {
-                  "line": 188,
+                  "line": 208,
                   "column": 4
                 },
                 "end": {
-                  "line": 190,
+                  "line": 210,
                   "column": 5
                 }
               },
@@ -7912,11 +8036,11 @@
               "privacy": "protected",
               "sourceRange": {
                 "start": {
-                  "line": 192,
+                  "line": 212,
                   "column": 4
                 },
                 "end": {
-                  "line": 194,
+                  "line": 214,
                   "column": 5
                 }
               },
@@ -7930,11 +8054,11 @@
               "privacy": "protected",
               "sourceRange": {
                 "start": {
-                  "line": 196,
+                  "line": 216,
                   "column": 4
                 },
                 "end": {
-                  "line": 198,
+                  "line": 218,
                   "column": 5
                 }
               },
@@ -7948,11 +8072,11 @@
               "privacy": "protected",
               "sourceRange": {
                 "start": {
-                  "line": 200,
+                  "line": 220,
                   "column": 4
                 },
                 "end": {
-                  "line": 211,
+                  "line": 231,
                   "column": 5
                 }
               },
@@ -7973,11 +8097,11 @@
               "privacy": "private",
               "sourceRange": {
                 "start": {
-                  "line": 213,
+                  "line": 233,
                   "column": 4
                 },
                 "end": {
-                  "line": 238,
+                  "line": 259,
                   "column": 5
                 }
               },
@@ -8004,11 +8128,11 @@
               "privacy": "protected",
               "sourceRange": {
                 "start": {
-                  "line": 240,
+                  "line": 261,
                   "column": 4
                 },
                 "end": {
-                  "line": 244,
+                  "line": 265,
                   "column": 5
                 }
               },
@@ -8033,16 +8157,16 @@
               "inheritedFrom": "Vaadin.Grid.ColumnBaseMixin"
             },
             {
-              "name": "_stampHeaderTemplate",
+              "name": "_setHeaderTemplateOrRenderer",
               "description": "",
               "privacy": "protected",
               "sourceRange": {
                 "start": {
-                  "line": 246,
+                  "line": 267,
                   "column": 4
                 },
                 "end": {
-                  "line": 251,
+                  "line": 272,
                   "column": 5
                 }
               },
@@ -8050,6 +8174,9 @@
               "params": [
                 {
                   "name": "headerTemplate"
+                },
+                {
+                  "name": "headerRenderer"
                 },
                 {
                   "name": "headerCell"
@@ -8061,16 +8188,16 @@
               "inheritedFrom": "Vaadin.Grid.ColumnBaseMixin"
             },
             {
-              "name": "_stampFooterTemplate",
+              "name": "_setFooterTemplateOrRenderer",
               "description": "",
               "privacy": "protected",
               "sourceRange": {
                 "start": {
-                  "line": 253,
+                  "line": 274,
                   "column": 4
                 },
                 "end": {
-                  "line": 258,
+                  "line": 279,
                   "column": 5
                 }
               },
@@ -8078,6 +8205,9 @@
               "params": [
                 {
                   "name": "footerTemplate"
+                },
+                {
+                  "name": "footerRenderer"
                 },
                 {
                   "name": "footerCell"
@@ -8094,11 +8224,11 @@
               "privacy": "protected",
               "sourceRange": {
                 "start": {
-                  "line": 260,
+                  "line": 281,
                   "column": 4
                 },
                 "end": {
-                  "line": 267,
+                  "line": 288,
                   "column": 5
                 }
               },
@@ -8121,11 +8251,11 @@
               "privacy": "protected",
               "sourceRange": {
                 "start": {
-                  "line": 269,
+                  "line": 290,
                   "column": 4
                 },
                 "end": {
-                  "line": 278,
+                  "line": 299,
                   "column": 5
                 }
               },
@@ -8146,11 +8276,11 @@
               "privacy": "protected",
               "sourceRange": {
                 "start": {
-                  "line": 280,
+                  "line": 301,
                   "column": 4
                 },
                 "end": {
-                  "line": 286,
+                  "line": 307,
                   "column": 5
                 }
               },
@@ -8180,11 +8310,11 @@
               "privacy": "protected",
               "sourceRange": {
                 "start": {
-                  "line": 288,
+                  "line": 309,
                   "column": 4
                 },
                 "end": {
-                  "line": 290,
+                  "line": 311,
                   "column": 5
                 }
               },
@@ -8214,11 +8344,11 @@
               "privacy": "protected",
               "sourceRange": {
                 "start": {
-                  "line": 292,
+                  "line": 313,
                   "column": 4
                 },
                 "end": {
-                  "line": 298,
+                  "line": 319,
                   "column": 5
                 }
               },
@@ -8248,11 +8378,11 @@
               "privacy": "protected",
               "sourceRange": {
                 "start": {
-                  "line": 300,
+                  "line": 321,
                   "column": 4
                 },
                 "end": {
-                  "line": 308,
+                  "line": 329,
                   "column": 5
                 }
               },
@@ -8282,11 +8412,11 @@
               "privacy": "protected",
               "sourceRange": {
                 "start": {
-                  "line": 310,
+                  "line": 331,
                   "column": 4
                 },
                 "end": {
-                  "line": 316,
+                  "line": 337,
                   "column": 5
                 }
               },
@@ -8307,11 +8437,11 @@
               "privacy": "protected",
               "sourceRange": {
                 "start": {
-                  "line": 318,
+                  "line": 339,
                   "column": 4
                 },
                 "end": {
-                  "line": 326,
+                  "line": 347,
                   "column": 5
                 }
               },
@@ -8338,11 +8468,11 @@
               "privacy": "protected",
               "sourceRange": {
                 "start": {
-                  "line": 328,
+                  "line": 349,
                   "column": 4
                 },
                 "end": {
-                  "line": 330,
+                  "line": 351,
                   "column": 5
                 }
               },
@@ -8372,11 +8502,11 @@
               "privacy": "protected",
               "sourceRange": {
                 "start": {
-                  "line": 332,
+                  "line": 353,
                   "column": 4
                 },
                 "end": {
-                  "line": 353,
+                  "line": 374,
                   "column": 5
                 }
               },
@@ -8400,11 +8530,11 @@
               "privacy": "protected",
               "sourceRange": {
                 "start": {
-                  "line": 355,
+                  "line": 376,
                   "column": 4
                 },
                 "end": {
-                  "line": 367,
+                  "line": 388,
                   "column": 5
                 }
               },
@@ -8434,11 +8564,11 @@
           "metadata": {},
           "sourceRange": {
             "start": {
-              "line": 394,
+              "line": 415,
               "column": 4
             },
             "end": {
-              "line": 426,
+              "line": 447,
               "column": 5
             }
           },
@@ -8499,7 +8629,7 @@
             },
             {
               "name": "renderer",
-              "description": "Custom function for rendering the content of the cell content.\nReceives arguments `root`, `column`, `model`\n\n`root` The cell content element.\n\n`column` The column element.\n\n`model` An object with the structure `{index: index, item: item}`\n\n**NOTE:** The renderer callback can be called multiple times.",
+              "description": "Custom function for rendering the cell content.\nReceives arguments `root`, `column`, `model`\n\n`root` The cell content element.\n\n`column` The column element.\n\n`model` An object with the structure `{index: index, item: item}`\n\n**NOTE:** The renderer callback can be called multiple times.",
               "sourceRange": {
                 "start": {
                   "line": 94,
@@ -8515,15 +8645,49 @@
               "inheritedFrom": "Vaadin.Grid.ColumnBaseMixin"
             },
             {
+              "name": "header-renderer",
+              "description": "Custom function for rendering the header content.\nReceives arguments `root`, `column`, `model`\n\n`root` The cell content element.\n\n`column` The column element.",
+              "sourceRange": {
+                "start": {
+                  "line": 104,
+                  "column": 8
+                },
+                "end": {
+                  "line": 104,
+                  "column": 32
+                }
+              },
+              "metadata": {},
+              "type": "Function | null | undefined",
+              "inheritedFrom": "Vaadin.Grid.ColumnBaseMixin"
+            },
+            {
+              "name": "footer-renderer",
+              "description": "Custom function for rendering the footer content.\nReceives arguments `root`, `column`\n\n`root` The cell content element.\n\n`column` The column element.",
+              "sourceRange": {
+                "start": {
+                  "line": 114,
+                  "column": 8
+                },
+                "end": {
+                  "line": 114,
+                  "column": 32
+                }
+              },
+              "metadata": {},
+              "type": "Function | null | undefined",
+              "inheritedFrom": "Vaadin.Grid.ColumnBaseMixin"
+            },
+            {
               "name": "width",
               "description": "Width of the cells for this column.",
               "sourceRange": {
                 "start": {
-                  "line": 404,
+                  "line": 425,
                   "column": 10
                 },
                 "end": {
-                  "line": 407,
+                  "line": 428,
                   "column": 11
                 }
               },
@@ -8535,11 +8699,11 @@
               "description": "Flex grow ratio for the cell widths. When set to 0, cell width is fixed.",
               "sourceRange": {
                 "start": {
-                  "line": 412,
+                  "line": 433,
                   "column": 10
                 },
                 "end": {
-                  "line": 415,
+                  "line": 436,
                   "column": 11
                 }
               },
@@ -13391,11 +13555,11 @@
               "sourceRange": {
                 "file": "vaadin-grid-column.html",
                 "start": {
-                  "line": 162,
+                  "line": 182,
                   "column": 4
                 },
                 "end": {
-                  "line": 167,
+                  "line": 187,
                   "column": 5
                 }
               },
@@ -13414,11 +13578,11 @@
               "sourceRange": {
                 "file": "vaadin-grid-column.html",
                 "start": {
-                  "line": 169,
+                  "line": 189,
                   "column": 4
                 },
                 "end": {
-                  "line": 176,
+                  "line": 196,
                   "column": 5
                 }
               },
@@ -13687,7 +13851,7 @@
             {
               "name": "renderer",
               "type": "Function | null | undefined",
-              "description": "Custom function for rendering the content of the cell content.\nReceives arguments `root`, `column`, `model`\n\n`root` The cell content element.\n\n`column` The column element.\n\n`model` An object with the structure `{index: index, item: item}`\n\n**NOTE:** The renderer callback can be called multiple times.",
+              "description": "Custom function for rendering the cell content.\nReceives arguments `root`, `column`, `model`\n\n`root` The cell content element.\n\n`column` The column element.\n\n`model` An object with the structure `{index: index, item: item}`\n\n**NOTE:** The renderer callback can be called multiple times.",
               "privacy": "public",
               "sourceRange": {
                 "file": "vaadin-grid-column.html",
@@ -13698,6 +13862,52 @@
                 "end": {
                   "line": 94,
                   "column": 26
+                }
+              },
+              "metadata": {
+                "polymer": {
+                  "attributeType": "Function"
+                }
+              },
+              "inheritedFrom": "Vaadin.Grid.ColumnBaseMixin"
+            },
+            {
+              "name": "headerRenderer",
+              "type": "Function | null | undefined",
+              "description": "Custom function for rendering the header content.\nReceives arguments `root`, `column`, `model`\n\n`root` The cell content element.\n\n`column` The column element.",
+              "privacy": "public",
+              "sourceRange": {
+                "file": "vaadin-grid-column.html",
+                "start": {
+                  "line": 104,
+                  "column": 8
+                },
+                "end": {
+                  "line": 104,
+                  "column": 32
+                }
+              },
+              "metadata": {
+                "polymer": {
+                  "attributeType": "Function"
+                }
+              },
+              "inheritedFrom": "Vaadin.Grid.ColumnBaseMixin"
+            },
+            {
+              "name": "footerRenderer",
+              "type": "Function | null | undefined",
+              "description": "Custom function for rendering the footer content.\nReceives arguments `root`, `column`\n\n`root` The cell content element.\n\n`column` The column element.",
+              "privacy": "public",
+              "sourceRange": {
+                "file": "vaadin-grid-column.html",
+                "start": {
+                  "line": 114,
+                  "column": 8
+                },
+                "end": {
+                  "line": 114,
+                  "column": 32
                 }
               },
               "metadata": {
@@ -13882,11 +14092,11 @@
               "sourceRange": {
                 "file": "vaadin-grid-column.html",
                 "start": {
-                  "line": 154,
+                  "line": 174,
                   "column": 4
                 },
                 "end": {
-                  "line": 160,
+                  "line": 180,
                   "column": 5
                 }
               },
@@ -13901,11 +14111,11 @@
               "sourceRange": {
                 "file": "vaadin-grid-column.html",
                 "start": {
-                  "line": 188,
+                  "line": 208,
                   "column": 4
                 },
                 "end": {
-                  "line": 190,
+                  "line": 210,
                   "column": 5
                 }
               },
@@ -13920,11 +14130,11 @@
               "sourceRange": {
                 "file": "vaadin-grid-column.html",
                 "start": {
-                  "line": 192,
+                  "line": 212,
                   "column": 4
                 },
                 "end": {
-                  "line": 194,
+                  "line": 214,
                   "column": 5
                 }
               },
@@ -13939,11 +14149,11 @@
               "sourceRange": {
                 "file": "vaadin-grid-column.html",
                 "start": {
-                  "line": 196,
+                  "line": 216,
                   "column": 4
                 },
                 "end": {
-                  "line": 198,
+                  "line": 218,
                   "column": 5
                 }
               },
@@ -13958,11 +14168,11 @@
               "sourceRange": {
                 "file": "vaadin-grid-column.html",
                 "start": {
-                  "line": 200,
+                  "line": 220,
                   "column": 4
                 },
                 "end": {
-                  "line": 211,
+                  "line": 231,
                   "column": 5
                 }
               },
@@ -13984,11 +14194,11 @@
               "sourceRange": {
                 "file": "vaadin-grid-column.html",
                 "start": {
-                  "line": 213,
+                  "line": 233,
                   "column": 4
                 },
                 "end": {
-                  "line": 238,
+                  "line": 259,
                   "column": 5
                 }
               },
@@ -14016,11 +14226,11 @@
               "sourceRange": {
                 "file": "vaadin-grid-column.html",
                 "start": {
-                  "line": 240,
+                  "line": 261,
                   "column": 4
                 },
                 "end": {
-                  "line": 244,
+                  "line": 265,
                   "column": 5
                 }
               },
@@ -14045,17 +14255,17 @@
               "inheritedFrom": "Vaadin.Grid.ColumnBaseMixin"
             },
             {
-              "name": "_stampHeaderTemplate",
+              "name": "_setHeaderTemplateOrRenderer",
               "description": "",
               "privacy": "protected",
               "sourceRange": {
                 "file": "vaadin-grid-column.html",
                 "start": {
-                  "line": 246,
+                  "line": 267,
                   "column": 4
                 },
                 "end": {
-                  "line": 251,
+                  "line": 272,
                   "column": 5
                 }
               },
@@ -14063,6 +14273,9 @@
               "params": [
                 {
                   "name": "headerTemplate"
+                },
+                {
+                  "name": "headerRenderer"
                 },
                 {
                   "name": "headerCell"
@@ -14074,17 +14287,17 @@
               "inheritedFrom": "Vaadin.Grid.ColumnBaseMixin"
             },
             {
-              "name": "_stampFooterTemplate",
+              "name": "_setFooterTemplateOrRenderer",
               "description": "",
               "privacy": "protected",
               "sourceRange": {
                 "file": "vaadin-grid-column.html",
                 "start": {
-                  "line": 253,
+                  "line": 274,
                   "column": 4
                 },
                 "end": {
-                  "line": 258,
+                  "line": 279,
                   "column": 5
                 }
               },
@@ -14092,6 +14305,9 @@
               "params": [
                 {
                   "name": "footerTemplate"
+                },
+                {
+                  "name": "footerRenderer"
                 },
                 {
                   "name": "footerCell"
@@ -14109,11 +14325,11 @@
               "sourceRange": {
                 "file": "vaadin-grid-column.html",
                 "start": {
-                  "line": 260,
+                  "line": 281,
                   "column": 4
                 },
                 "end": {
-                  "line": 267,
+                  "line": 288,
                   "column": 5
                 }
               },
@@ -14137,11 +14353,11 @@
               "sourceRange": {
                 "file": "vaadin-grid-column.html",
                 "start": {
-                  "line": 269,
+                  "line": 290,
                   "column": 4
                 },
                 "end": {
-                  "line": 278,
+                  "line": 299,
                   "column": 5
                 }
               },
@@ -14163,11 +14379,11 @@
               "sourceRange": {
                 "file": "vaadin-grid-column.html",
                 "start": {
-                  "line": 280,
+                  "line": 301,
                   "column": 4
                 },
                 "end": {
-                  "line": 286,
+                  "line": 307,
                   "column": 5
                 }
               },
@@ -14198,11 +14414,11 @@
               "sourceRange": {
                 "file": "vaadin-grid-column.html",
                 "start": {
-                  "line": 288,
+                  "line": 309,
                   "column": 4
                 },
                 "end": {
-                  "line": 290,
+                  "line": 311,
                   "column": 5
                 }
               },
@@ -14233,11 +14449,11 @@
               "sourceRange": {
                 "file": "vaadin-grid-column.html",
                 "start": {
-                  "line": 292,
+                  "line": 313,
                   "column": 4
                 },
                 "end": {
-                  "line": 298,
+                  "line": 319,
                   "column": 5
                 }
               },
@@ -14268,11 +14484,11 @@
               "sourceRange": {
                 "file": "vaadin-grid-column.html",
                 "start": {
-                  "line": 300,
+                  "line": 321,
                   "column": 4
                 },
                 "end": {
-                  "line": 308,
+                  "line": 329,
                   "column": 5
                 }
               },
@@ -14303,11 +14519,11 @@
               "sourceRange": {
                 "file": "vaadin-grid-column.html",
                 "start": {
-                  "line": 310,
+                  "line": 331,
                   "column": 4
                 },
                 "end": {
-                  "line": 316,
+                  "line": 337,
                   "column": 5
                 }
               },
@@ -14329,11 +14545,11 @@
               "sourceRange": {
                 "file": "vaadin-grid-column.html",
                 "start": {
-                  "line": 318,
+                  "line": 339,
                   "column": 4
                 },
                 "end": {
-                  "line": 326,
+                  "line": 347,
                   "column": 5
                 }
               },
@@ -14361,11 +14577,11 @@
               "sourceRange": {
                 "file": "vaadin-grid-column.html",
                 "start": {
-                  "line": 328,
+                  "line": 349,
                   "column": 4
                 },
                 "end": {
-                  "line": 330,
+                  "line": 351,
                   "column": 5
                 }
               },
@@ -14396,11 +14612,11 @@
               "sourceRange": {
                 "file": "vaadin-grid-column.html",
                 "start": {
-                  "line": 332,
+                  "line": 353,
                   "column": 4
                 },
                 "end": {
-                  "line": 353,
+                  "line": 374,
                   "column": 5
                 }
               },
@@ -14425,11 +14641,11 @@
               "sourceRange": {
                 "file": "vaadin-grid-column.html",
                 "start": {
-                  "line": 355,
+                  "line": 376,
                   "column": 4
                 },
                 "end": {
-                  "line": 367,
+                  "line": 388,
                   "column": 5
                 }
               },
@@ -14873,7 +15089,7 @@
             },
             {
               "name": "renderer",
-              "description": "Custom function for rendering the content of the cell content.\nReceives arguments `root`, `column`, `model`\n\n`root` The cell content element.\n\n`column` The column element.\n\n`model` An object with the structure `{index: index, item: item}`\n\n**NOTE:** The renderer callback can be called multiple times.",
+              "description": "Custom function for rendering the cell content.\nReceives arguments `root`, `column`, `model`\n\n`root` The cell content element.\n\n`column` The column element.\n\n`model` An object with the structure `{index: index, item: item}`\n\n**NOTE:** The renderer callback can be called multiple times.",
               "sourceRange": {
                 "file": "vaadin-grid-column.html",
                 "start": {
@@ -14883,6 +15099,42 @@
                 "end": {
                   "line": 94,
                   "column": 26
+                }
+              },
+              "metadata": {},
+              "type": "Function | null | undefined",
+              "inheritedFrom": "Vaadin.Grid.ColumnBaseMixin"
+            },
+            {
+              "name": "header-renderer",
+              "description": "Custom function for rendering the header content.\nReceives arguments `root`, `column`, `model`\n\n`root` The cell content element.\n\n`column` The column element.",
+              "sourceRange": {
+                "file": "vaadin-grid-column.html",
+                "start": {
+                  "line": 104,
+                  "column": 8
+                },
+                "end": {
+                  "line": 104,
+                  "column": 32
+                }
+              },
+              "metadata": {},
+              "type": "Function | null | undefined",
+              "inheritedFrom": "Vaadin.Grid.ColumnBaseMixin"
+            },
+            {
+              "name": "footer-renderer",
+              "description": "Custom function for rendering the footer content.\nReceives arguments `root`, `column`\n\n`root` The cell content element.\n\n`column` The column element.",
+              "sourceRange": {
+                "file": "vaadin-grid-column.html",
+                "start": {
+                  "line": 114,
+                  "column": 8
+                },
+                "end": {
+                  "line": 114,
+                  "column": 32
                 }
               },
               "metadata": {},
@@ -15526,11 +15778,11 @@
               "sourceRange": {
                 "file": "vaadin-grid-column.html",
                 "start": {
-                  "line": 162,
+                  "line": 182,
                   "column": 4
                 },
                 "end": {
-                  "line": 167,
+                  "line": 187,
                   "column": 5
                 }
               },
@@ -15549,11 +15801,11 @@
               "sourceRange": {
                 "file": "vaadin-grid-column.html",
                 "start": {
-                  "line": 169,
+                  "line": 189,
                   "column": 4
                 },
                 "end": {
-                  "line": 176,
+                  "line": 196,
                   "column": 5
                 }
               },
@@ -15822,7 +16074,7 @@
             {
               "name": "renderer",
               "type": "Function | null | undefined",
-              "description": "Custom function for rendering the content of the cell content.\nReceives arguments `root`, `column`, `model`\n\n`root` The cell content element.\n\n`column` The column element.\n\n`model` An object with the structure `{index: index, item: item}`\n\n**NOTE:** The renderer callback can be called multiple times.",
+              "description": "Custom function for rendering the cell content.\nReceives arguments `root`, `column`, `model`\n\n`root` The cell content element.\n\n`column` The column element.\n\n`model` An object with the structure `{index: index, item: item}`\n\n**NOTE:** The renderer callback can be called multiple times.",
               "privacy": "public",
               "sourceRange": {
                 "file": "vaadin-grid-column.html",
@@ -15833,6 +16085,52 @@
                 "end": {
                   "line": 94,
                   "column": 26
+                }
+              },
+              "metadata": {
+                "polymer": {
+                  "attributeType": "Function"
+                }
+              },
+              "inheritedFrom": "Vaadin.Grid.ColumnBaseMixin"
+            },
+            {
+              "name": "headerRenderer",
+              "type": "Function | null | undefined",
+              "description": "Custom function for rendering the header content.\nReceives arguments `root`, `column`, `model`\n\n`root` The cell content element.\n\n`column` The column element.",
+              "privacy": "public",
+              "sourceRange": {
+                "file": "vaadin-grid-column.html",
+                "start": {
+                  "line": 104,
+                  "column": 8
+                },
+                "end": {
+                  "line": 104,
+                  "column": 32
+                }
+              },
+              "metadata": {
+                "polymer": {
+                  "attributeType": "Function"
+                }
+              },
+              "inheritedFrom": "Vaadin.Grid.ColumnBaseMixin"
+            },
+            {
+              "name": "footerRenderer",
+              "type": "Function | null | undefined",
+              "description": "Custom function for rendering the footer content.\nReceives arguments `root`, `column`\n\n`root` The cell content element.\n\n`column` The column element.",
+              "privacy": "public",
+              "sourceRange": {
+                "file": "vaadin-grid-column.html",
+                "start": {
+                  "line": 114,
+                  "column": 8
+                },
+                "end": {
+                  "line": 114,
+                  "column": 32
                 }
               },
               "metadata": {
@@ -15894,11 +16192,11 @@
               "sourceRange": {
                 "file": "vaadin-grid-column.html",
                 "start": {
-                  "line": 417,
+                  "line": 438,
                   "column": 10
                 },
                 "end": {
-                  "line": 419,
+                  "line": 440,
                   "column": 11
                 }
               },
@@ -15917,11 +16215,11 @@
               "sourceRange": {
                 "file": "vaadin-grid-column.html",
                 "start": {
-                  "line": 421,
+                  "line": 442,
                   "column": 10
                 },
                 "end": {
-                  "line": 421,
+                  "line": 442,
                   "column": 23
                 }
               },
@@ -16089,11 +16387,11 @@
               "sourceRange": {
                 "file": "vaadin-grid-column.html",
                 "start": {
-                  "line": 154,
+                  "line": 174,
                   "column": 4
                 },
                 "end": {
-                  "line": 160,
+                  "line": 180,
                   "column": 5
                 }
               },
@@ -16125,11 +16423,11 @@
               "sourceRange": {
                 "file": "vaadin-grid-column.html",
                 "start": {
-                  "line": 192,
+                  "line": 212,
                   "column": 4
                 },
                 "end": {
-                  "line": 194,
+                  "line": 214,
                   "column": 5
                 }
               },
@@ -16161,11 +16459,11 @@
               "sourceRange": {
                 "file": "vaadin-grid-column.html",
                 "start": {
-                  "line": 200,
+                  "line": 220,
                   "column": 4
                 },
                 "end": {
-                  "line": 211,
+                  "line": 231,
                   "column": 5
                 }
               },
@@ -16187,11 +16485,11 @@
               "sourceRange": {
                 "file": "vaadin-grid-column.html",
                 "start": {
-                  "line": 213,
+                  "line": 233,
                   "column": 4
                 },
                 "end": {
-                  "line": 238,
+                  "line": 259,
                   "column": 5
                 }
               },
@@ -16219,11 +16517,11 @@
               "sourceRange": {
                 "file": "vaadin-grid-column.html",
                 "start": {
-                  "line": 240,
+                  "line": 261,
                   "column": 4
                 },
                 "end": {
-                  "line": 244,
+                  "line": 265,
                   "column": 5
                 }
               },
@@ -16248,17 +16546,17 @@
               "inheritedFrom": "Vaadin.Grid.ColumnBaseMixin"
             },
             {
-              "name": "_stampHeaderTemplate",
+              "name": "_setHeaderTemplateOrRenderer",
               "description": "",
               "privacy": "protected",
               "sourceRange": {
                 "file": "vaadin-grid-column.html",
                 "start": {
-                  "line": 246,
+                  "line": 267,
                   "column": 4
                 },
                 "end": {
-                  "line": 251,
+                  "line": 272,
                   "column": 5
                 }
               },
@@ -16266,6 +16564,9 @@
               "params": [
                 {
                   "name": "headerTemplate"
+                },
+                {
+                  "name": "headerRenderer"
                 },
                 {
                   "name": "headerCell"
@@ -16277,17 +16578,17 @@
               "inheritedFrom": "Vaadin.Grid.ColumnBaseMixin"
             },
             {
-              "name": "_stampFooterTemplate",
+              "name": "_setFooterTemplateOrRenderer",
               "description": "",
               "privacy": "protected",
               "sourceRange": {
                 "file": "vaadin-grid-column.html",
                 "start": {
-                  "line": 253,
+                  "line": 274,
                   "column": 4
                 },
                 "end": {
-                  "line": 258,
+                  "line": 279,
                   "column": 5
                 }
               },
@@ -16295,6 +16596,9 @@
               "params": [
                 {
                   "name": "footerTemplate"
+                },
+                {
+                  "name": "footerRenderer"
                 },
                 {
                   "name": "footerCell"
@@ -16312,11 +16616,11 @@
               "sourceRange": {
                 "file": "vaadin-grid-column.html",
                 "start": {
-                  "line": 260,
+                  "line": 281,
                   "column": 4
                 },
                 "end": {
-                  "line": 267,
+                  "line": 288,
                   "column": 5
                 }
               },
@@ -16340,11 +16644,11 @@
               "sourceRange": {
                 "file": "vaadin-grid-column.html",
                 "start": {
-                  "line": 269,
+                  "line": 290,
                   "column": 4
                 },
                 "end": {
-                  "line": 278,
+                  "line": 299,
                   "column": 5
                 }
               },
@@ -16366,11 +16670,11 @@
               "sourceRange": {
                 "file": "vaadin-grid-column.html",
                 "start": {
-                  "line": 280,
+                  "line": 301,
                   "column": 4
                 },
                 "end": {
-                  "line": 286,
+                  "line": 307,
                   "column": 5
                 }
               },
@@ -16401,11 +16705,11 @@
               "sourceRange": {
                 "file": "vaadin-grid-column.html",
                 "start": {
-                  "line": 288,
+                  "line": 309,
                   "column": 4
                 },
                 "end": {
-                  "line": 290,
+                  "line": 311,
                   "column": 5
                 }
               },
@@ -16436,11 +16740,11 @@
               "sourceRange": {
                 "file": "vaadin-grid-column.html",
                 "start": {
-                  "line": 292,
+                  "line": 313,
                   "column": 4
                 },
                 "end": {
-                  "line": 298,
+                  "line": 319,
                   "column": 5
                 }
               },
@@ -16471,11 +16775,11 @@
               "sourceRange": {
                 "file": "vaadin-grid-column.html",
                 "start": {
-                  "line": 300,
+                  "line": 321,
                   "column": 4
                 },
                 "end": {
-                  "line": 308,
+                  "line": 329,
                   "column": 5
                 }
               },
@@ -16506,11 +16810,11 @@
               "sourceRange": {
                 "file": "vaadin-grid-column.html",
                 "start": {
-                  "line": 310,
+                  "line": 331,
                   "column": 4
                 },
                 "end": {
-                  "line": 316,
+                  "line": 337,
                   "column": 5
                 }
               },
@@ -16532,11 +16836,11 @@
               "sourceRange": {
                 "file": "vaadin-grid-column.html",
                 "start": {
-                  "line": 318,
+                  "line": 339,
                   "column": 4
                 },
                 "end": {
-                  "line": 326,
+                  "line": 347,
                   "column": 5
                 }
               },
@@ -16564,11 +16868,11 @@
               "sourceRange": {
                 "file": "vaadin-grid-column.html",
                 "start": {
-                  "line": 328,
+                  "line": 349,
                   "column": 4
                 },
                 "end": {
-                  "line": 330,
+                  "line": 351,
                   "column": 5
                 }
               },
@@ -16599,11 +16903,11 @@
               "sourceRange": {
                 "file": "vaadin-grid-column.html",
                 "start": {
-                  "line": 332,
+                  "line": 353,
                   "column": 4
                 },
                 "end": {
-                  "line": 353,
+                  "line": 374,
                   "column": 5
                 }
               },
@@ -16628,11 +16932,11 @@
               "sourceRange": {
                 "file": "vaadin-grid-column.html",
                 "start": {
-                  "line": 355,
+                  "line": 376,
                   "column": 4
                 },
                 "end": {
-                  "line": 367,
+                  "line": 388,
                   "column": 5
                 }
               },
@@ -16898,7 +17202,7 @@
             },
             {
               "name": "renderer",
-              "description": "Custom function for rendering the content of the cell content.\nReceives arguments `root`, `column`, `model`\n\n`root` The cell content element.\n\n`column` The column element.\n\n`model` An object with the structure `{index: index, item: item}`\n\n**NOTE:** The renderer callback can be called multiple times.",
+              "description": "Custom function for rendering the cell content.\nReceives arguments `root`, `column`, `model`\n\n`root` The cell content element.\n\n`column` The column element.\n\n`model` An object with the structure `{index: index, item: item}`\n\n**NOTE:** The renderer callback can be called multiple times.",
               "sourceRange": {
                 "file": "vaadin-grid-column.html",
                 "start": {
@@ -16908,6 +17212,42 @@
                 "end": {
                   "line": 94,
                   "column": 26
+                }
+              },
+              "metadata": {},
+              "type": "Function | null | undefined",
+              "inheritedFrom": "Vaadin.Grid.ColumnBaseMixin"
+            },
+            {
+              "name": "header-renderer",
+              "description": "Custom function for rendering the header content.\nReceives arguments `root`, `column`, `model`\n\n`root` The cell content element.\n\n`column` The column element.",
+              "sourceRange": {
+                "file": "vaadin-grid-column.html",
+                "start": {
+                  "line": 104,
+                  "column": 8
+                },
+                "end": {
+                  "line": 104,
+                  "column": 32
+                }
+              },
+              "metadata": {},
+              "type": "Function | null | undefined",
+              "inheritedFrom": "Vaadin.Grid.ColumnBaseMixin"
+            },
+            {
+              "name": "footer-renderer",
+              "description": "Custom function for rendering the footer content.\nReceives arguments `root`, `column`\n\n`root` The cell content element.\n\n`column` The column element.",
+              "sourceRange": {
+                "file": "vaadin-grid-column.html",
+                "start": {
+                  "line": 114,
+                  "column": 8
+                },
+                "end": {
+                  "line": 114,
+                  "column": 32
                 }
               },
               "metadata": {},
