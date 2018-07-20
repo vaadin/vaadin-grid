@@ -630,6 +630,10 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     _detailsOpenedItemsChanged(changeRecord, dataProvider, physicalCount, rowDetailsTemplate, rowDetailsRenderer) {
+      if (rowDetailsTemplate && rowDetailsRenderer) {
+        throw new Error('You should only use either a renderer or a template for row details');
+      }
+
       if (dataProvider === undefined || !rowDetailsTemplate && !rowDetailsRenderer) {
         return;
       }
