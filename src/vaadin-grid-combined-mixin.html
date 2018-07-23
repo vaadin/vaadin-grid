@@ -52,6 +52,18 @@ This program is available under Apache License Version 2.0, available at https:/
 
         _rowDetailsTemplate: Object,
 
+        /**
+         * Custom function for rendering the content of the row details.
+         * Receives arguments `root`, `grid`, `model`
+         *
+         * `root` The cell content element.
+         *
+         * `grid` The grid element.
+         *
+         * `model` An object with the structure `{index: index, item: item}`
+         */
+        rowDetailsRenderer: Function,
+
         _detailsCells: {
           type: Array,
         },
@@ -85,19 +97,7 @@ This program is available under Apache License Version 2.0, available at https:/
           type: Object,
           notify: true,
           value: () => []
-        },
-
-        /**
-         * Custom function for rendering the content of the row details.
-         * Receives arguments `root`, `grid`, `model`
-         *
-         * `root` The cell content element.
-         *
-         * `grid` The grid element.
-         *
-         * `model` An object with the structure `{index: index, item: item}`
-         */
-        rowDetailsRenderer: Function
+        }
       };
     }
 
