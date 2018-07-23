@@ -9,8 +9,8 @@
     "url": "https://github.com/vaadin/vaadin-grid/issues"
   },
   "homepage": "https://vaadin.com/elements",
-  "devDependencies": {
-    "bower": "^1.8.0",
+  "dependencies": {
+    "bower": "^1.8.4",
     "coveralls": "2.11.3",
     "eslint": "^3.19.0",
     "eslint-config-vaadin": "latest",
