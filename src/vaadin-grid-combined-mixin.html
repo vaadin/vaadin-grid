@@ -106,7 +106,7 @@ This program is available under Apache License Version 2.0, available at https:/
         '_a11yUpdateGridSize(size, _columnTree, _columnTree.*)',
         '_detailsOpenedItemsChanged(detailsOpenedItems.*, dataProvider, _physicalCountVal, _rowDetailsTemplate, rowDetailsRenderer)',
         '_itemsChanged(items, items.*, isAttached)',
-        '_rowDetailsTemplateChanged(_rowDetailsTemplate, rowDetailsRenderer)',
+        '_rowDetailsTemplateOrRendererChanged(_rowDetailsTemplate, rowDetailsRenderer)',
         '_selectedItemsChanged(selectedItems.*)'
       ];
     }
@@ -604,7 +604,11 @@ This program is available under Apache License Version 2.0, available at https:/
       });
     }
 
-    _rowDetailsTemplateChanged(rowDetailsTemplate, rowDetailsRenderer) {
+    _rowDetailsTemplateOrRendererChanged(rowDetailsTemplate, rowDetailsRenderer) {
+      if (rowDetailsTemplate && rowDetailsRenderer) {
+        throw new Error('You should only use either a renderer or a template for row details');
+      }
+
       if (rowDetailsTemplate || rowDetailsRenderer) {
         if (rowDetailsTemplate) {
           var templatizer = new Vaadin.Grid.Templatizer();
@@ -630,10 +634,6 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     _detailsOpenedItemsChanged(changeRecord, dataProvider, physicalCount, rowDetailsTemplate, rowDetailsRenderer) {
-      if (rowDetailsTemplate && rowDetailsRenderer) {
-        throw new Error('You should only use either a renderer or a template for row details');
-      }
-
       if (dataProvider === undefined || !rowDetailsTemplate && !rowDetailsRenderer) {
         return;
       }
