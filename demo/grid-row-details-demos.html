@@ -74,80 +74,67 @@
     </vaadin-demo-snippet>
 
 
-    <h3>Toggling Details Without Data Binding</h3>
+    <h3>Toggling and Rendering Details Using JavaScrtipt</h3>
     <p>
       In this example the grid's <code>activeItem</code> property is bound to <code>detailsOpenedItems</code> property.
     </p>
     <p>
       <b>Hint: </b>Click a row to toggle the active item.
     </p>
-    <vaadin-demo-snippet id='grid-row-details-demos-toggling-details-without-data-binding'>
+    <vaadin-demo-snippet id='grid-row-details-demos-javascript-toggling-renderer'>
       <template preserve-content>
-        <bind-details-opened-items></bind-details-opened-items>
-        <dom-module id="bind-details-opened-items">
-          <template preserve-content>
-            <style>
-              :host {
-                display: block;
-              }
+        <style>
+          .details {
+            padding: 10px 30px;
+          }
+        </style>
 
-              .details {
-                display: flex;
-                font-size: 20px;
-              }
+        <iron-ajax auto url="https://demo.vaadin.com/demo-data/1.0/people?count=200"></iron-ajax>
 
-              img {
-                width: 80px;
-                height: 80px;
-                margin: 20px;
-              }
-            </style>
+        <vaadin-grid aria-label="Toggling and Rendering Details Using JavaScrtipt Example" size="200">
+          <vaadin-grid-column width="60px" flex-grow="0"></vaadin-grid-column>
+          <vaadin-grid-column></vaadin-grid-column>
+          <vaadin-grid-column></vaadin-grid-column>
+        </vaadin-grid>
 
-            <x-data-provider data-provider="{{dataProvider}}"></x-data-provider>
+        <script>
+          window.addDemoReadyListener('#grid-row-details-demos-javascript-toggling-renderer', function(document) {
+            const ajax = document.querySelector('iron-ajax');
+            const grid = document.querySelector('vaadin-grid');
+            const columns = grid.querySelectorAll('vaadin-grid-column');
 
-            <vaadin-grid on-active-item-changed="_onActiveItemChanged" id="grid" aria-label="Details Opened Items Example" data-provider="[[dataProvider]]" size="200">
-
-              <template class="row-details">
-                <div class="details">
-                  <img src="[[item.picture.large]]"></img>
-                  <p>
-                    Hi! My name is [[item.name.first]]!<br>
-                    <small>[[item.email]]</small>
-                  </p>
-                </div>
-              </template>
-
-              <vaadin-grid-column width="60px" flex-grow="0">
-                <template class="header">#</template>
-                <template>[[index]]</template>
-              </vaadin-grid-column>
-
-              <vaadin-grid-column>
-                <template class="header">First Name</template>
-                <template>[[item.name.first]]</template>
-              </vaadin-grid-column>
-
-              <vaadin-grid-column>
-                <template class="header">Last Name</template>
-                <template>[[item.name.last]]</template>
-              </vaadin-grid-column>
-
-            </vaadin-grid>
-
-          </template>
-          <script>
-            window.addDemoReadyListener('#grid-row-details-demos-toggling-details-without-data-binding', function(document) {
-              Polymer({
-                is: 'bind-details-opened-items',
-
-                _onActiveItemChanged: function(e) {
-                  this.$.grid.detailsOpenedItems = [e.detail.value];
-                }
-              });
+            ajax.addEventListener('last-response-changed', function(e) {
+              grid.items = e.target.lastResponse.result;
             });
-          </script>
-        </dom-module>
+            grid.addEventListener('active-item-changed', function(e) {
+              grid.detailsOpenedItems = [e.detail.value];
+            });
 
+            grid.rowDetailsRenderer = function(root, grid, model) {
+              root.innerHTML =
+              '<div class="details">' +
+              model.item.email + '<br>' + model.item.address.street + '<br>' +
+              model.item.address.zip + ' ' + model.item.address.city +
+              '</div>';
+            };
+
+            columns[0].renderer = function(root, column, model) {
+              root.innerHTML = model.index;
+            };
+            columns[1].headerRenderer = function(root, column) {
+              root.innerHTML = 'First Name';
+            };
+            columns[1].renderer = function(root, column, model) {
+              root.innerHTML = model.item.firstName;
+            };
+            columns[2].headerRenderer = function(root, column) {
+              root.innerHTML = 'Last Name';
+            };
+            columns[2].renderer = function(root, column, model) {
+              root.innerHTML = model.item.lastName;
+            };
+          });
+        </script>
       </template>
     </vaadin-demo-snippet>
 
