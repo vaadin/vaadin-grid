@@ -31,7 +31,7 @@
       </vaadin-grid-filter>
     </template>
     <script>
-      customElements.whenDefined('vaadin-grid-filter').then(() => {
+      ensureDefined('vaadin-grid-filter', () => {
         Polymer({
           is: 'filter-wrapper'
         });
@@ -73,10 +73,9 @@
       let filter;
       let filterWrapper;
 
-      window.HTMLImports && HTMLImports.whenReady && before(done => HTMLImports.whenReady(done));
+      before(done => ensureDefined('filter-wrapper', done));
 
       beforeEach(() => {
-
         filterWrapper = fixture('filter');
         filter = filterWrapper.$.filter;
       });

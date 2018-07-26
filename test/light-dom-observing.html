@@ -43,14 +43,14 @@
       </vaadin-grid>
     </template>
     <script>
-      customElements.whenDefined('vaadin-grid').then(() => Polymer({is: 'grid-wrapper'}));
+      ensureDefined('vaadin-grid', () => Polymer({is: 'grid-wrapper'}));
     </script>
   </dom-module>
 
   <dom-module id="x-boolean-toggle">
     <template>[[value]]</template>
     <script>
-      customElements.whenDefined('vaadin-grid').then(() => {
+      ensureDefined('vaadin-grid', () => {
         class XBooleanToggle extends Polymer.Element {
           static get is() {
             return 'x-boolean-toggle';
@@ -689,6 +689,8 @@
         });
 
         describe('with row detail', function() {
+          before(done => ensureDefined('x-boolean-toggle', done));
+
           beforeEach(function() {
             init('dom-repeat-columns-detailed', {columns: columns});
           });
@@ -714,6 +716,8 @@
         function shouldSupportEffectiveChildren(inGroup) {
           describe('children mutations', () => {
             describe('with columns', () => {
+              before(done => ensureDefined('grid-wrapper', done));
+
               beforeEach(() => {
 
                 init('effective-children-columns', {inGroup: inGroup});
@@ -799,6 +803,8 @@
 
           describe('nested group mutations', () => {
             let firstGroup;
+
+            before(done => ensureDefined('grid-wrapper', done));
 
             beforeEach(() => {
 
