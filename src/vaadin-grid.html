@@ -469,6 +469,10 @@ This program is available under Apache License Version 2.0, available at https:/
       }
 
       _columnTreeChanged(columnTree, splices) {
+        if (!columnTree) {
+          return;
+        }
+        console.log("ADSFADSAFAfdsafaad");
         Array.from(this.$.items.children).forEach(row => this._updateRow(row, columnTree[columnTree.length - 1]));
 
         while (this.$.header.children.length < columnTree.length) {
