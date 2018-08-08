@@ -1,4 +1,5 @@
-[![npm version](https://badge.fury.io/js/%40vaadin%2Fvaadin-grid.svg)](https://badge.fury.io/js/%40vaadin%2Fvaadin-grid)
+[![npm version](https://badgen.net/npm/v/@vaadin/vaadin-grid)](https://www.npmjs.com/package/@vaadin/vaadin-grid)
+[![Bower version](https://badgen.net/github/release/vaadin/vaadin-grid)](https://github.com/vaadin/vaadin-grid/releases)
 [![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/vaadin/vaadin-grid)
 [![Build Status](https://travis-ci.org/vaadin/vaadin-grid.svg?branch=master)](https://travis-ci.org/vaadin/vaadin-grid)
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/vaadin/web-components?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
