@@ -71,7 +71,7 @@
             columns[0].renderer = function(root, column, model) {
               let textField = root.firstElementChild;
               if (!textField) {
-                textField = new Vaadin.TextFieldElement();
+                textField = window.document.createElement('vaadin-text-field');
                 root.appendChild(textField);
               }
               textField.value = model.item.name.first;
@@ -85,7 +85,7 @@
             columns[1].renderer = function(root, column, model) {
               let textField = root.firstElementChild;
               if (!textField) {
-                textField = new Vaadin.TextFieldElement();
+                textField = window.document.createElement('vaadin-text-field');
                 root.appendChild(textField);
               }
               textField.value = model.item.name.last;
