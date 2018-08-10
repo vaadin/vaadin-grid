@@ -531,20 +531,22 @@ This program is available under Apache License Version 2.0, available at https:/
 
       _updateItem(row, item) {
         row._item = item;
+        const model = this.__getRowModel(row);
+
+        this._toggleRowSelected(row, model.selected);
+        this._toggleRowDetailsOpened(row, this._rowDetailsTemplate && this._isDetailsOpened(item));
+        this._toggleRowExpanded(row, model.expanded);
+        this._updateRowLevel(row, model.level);
+
         Array.from(row.children).forEach(cell => {
-          const model = {item, index: row.index};
           if (cell._renderer) {
             const owner = cell._column || this;
             cell._renderer.call(owner, cell._content, owner, model);
-            cell._model = model;
           } else if (cell._instance) {
             cell._instance.setProperties(model);
           }
         });
-        this._toggleRowSelected(row, this._isSelected(item));
-        this._toggleRowDetailsOpened(row, this._rowDetailsTemplate && this._isDetailsOpened(item));
-        this._toggleRowExpanded(row, this._isExpanded(item));
-        this._updateRowLevel(row, this._getIndexLevel(row.index));
+
         if (this._rowDetailsTemplate || this.rowDetailsRenderer) {
           this._toggleDetailsCell(row, item);
         }
@@ -650,6 +652,15 @@ This program is available under Apache License Version 2.0, available at https:/
         }
       }
 
+      __getRowModel(row) {
+        return {
+          index: row.index,
+          item: row._item,
+          level: this._getIndexLevel(row.index),
+          expanded: this._isExpanded(row._item),
+          selected: this._isSelected(row._item)
+        };
+      }
     }
 
     customElements.define(GridElement.is, GridElement);
