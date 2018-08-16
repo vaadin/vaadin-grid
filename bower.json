@@ -71,6 +71,11 @@
     "vaadin-text-field": "vaadin/vaadin-text-field#^2.1.0-beta2",
     "vaadin-lumo-styles": "vaadin/vaadin-lumo-styles#^1.1.0-beta1",
     "vaadin-material-styles": "vaadin/vaadin-material-styles#^1.1.0-beta1",
-    "vaadin-element-mixin": "vaadin/vaadin-element-mixin#^1.1.2"
+    "vaadin-element-mixin": "vaadin/vaadin-element-mixin#^2.1.1"
+  },
+  "resolutions": {
+    "vaadin-element-mixin": "^2.1.1",
+    "vaadin-development-mode-detector": "^2.0.0",
+    "vaadin-usage-statistics": "^2.0.1"
   }
 }
