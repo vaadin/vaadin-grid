@@ -403,6 +403,16 @@ This program is available under Apache License Version 2.0, available at https:/
         return this.$.items;
       }
 
+      render() {
+        const columnsAndGroups = this.querySelectorAll('vaadin-grid-column, vaadin-grid-colum-group');
+        columnsAndGroups.forEach(column => column._allCells.forEach(cell => column.__renderCell(cell)));
+
+        const openedDetailsCells = Array.from(this.$.scroller.querySelectorAll('[part~="details-cell"]'))
+                                        .filter(cell => this._isDetailsOpened(cell.parentElement._item));
+
+        openedDetailsCells.forEach(cell => this.__renderDetailsCell(cell, cell.parentElement, cell.parentElement._item));
+      }
+
       _createCell(tagName) {
         const contentId = this._contentIndex = this._contentIndex + 1 || 0;
         const slotName = 'vaadin-grid-cell-content-' + contentId;

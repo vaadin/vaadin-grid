@@ -113,6 +113,12 @@ This program is available under Apache License Version 2.0, available at https:/
       this._toggleAttribute('frozen', true, cell);
     }
 
+    __renderDetailsCell(cell, row, item) {
+      if (cell._renderer) {
+        cell._renderer.call(this, cell._content, this, {index: row.index, item: item});
+      }
+    }
+
     _toggleDetailsCell(row, item) {
       const cell = row.querySelector('[part~="details-cell"]');
       const detailsHidden = !this._isDetailsOpened(item);
@@ -123,7 +129,7 @@ This program is available under Apache License Version 2.0, available at https:/
         } else {
           if (this.rowDetailsRenderer) {
             cell._renderer = this.rowDetailsRenderer;
-            cell._renderer.call(this, cell._content, this, {index: row.index, item: item});
+            this.__renderDetailsCell(cell, row, item);
             this._updateItem(row, item);
           } else if (!cell._instance) {
             // Stamp the template
