@@ -118,8 +118,50 @@ This program is available under Apache License Version 2.0, available at https:/
           expandable: {
             type: Boolean,
             value: false
+          },
+
+          /**
+           * Aligns the columns cell content horizontally to either start, center or end
+           */
+          textAlign: {
+            type: String
           }
         };
+      }
+
+      static get observers() {
+        return [
+          '__textAlignChanged(textAlign, _cells.*, _headerCell, _footerCell)'
+        ];
+      }
+
+      __textAlignChanged(textAlign, _cells, _headerCell, _footerCell) {
+        if (textAlign === undefined) {
+          return;
+        }
+        const direction = getComputedStyle(this._grid).direction;
+        let textAlignValue;
+        if (textAlign === 'center') {
+          textAlignValue = 'center';
+        } else {
+          if (direction === 'ltr') {
+            if (textAlign === 'start') {
+              textAlignValue = 'left';
+            } else if (textAlign === 'end') {
+              textAlignValue = 'right';
+            }
+          } else {
+            if (textAlign === 'start') {
+              textAlignValue = 'right';
+            } else if (textAlign === 'end') {
+              textAlignValue = 'left';
+            }
+          }
+        }
+
+        this._allCells.forEach(cell => {
+          cell._content.style.textAlign = textAlignValue;
+        });
       }
 
       _setBodyTemplateOrRenderer(template, renderer, cells, splices) {

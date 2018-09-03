@@ -24,8 +24,9 @@
       <template preserve-content>
         <vaadin-grid>
           <vaadin-grid-simple-column path="name.first" label="First Name"></vaadin-grid-simple-column>
-          <vaadin-grid-simple-column path="name.last" label="Last Name" sortable></vaadin-grid-simple-column>
-          <vaadin-grid-simple-column path="location.city" sortable></vaadin-grid-simple-column>
+          <vaadin-grid-simple-column path="name.last" label="Last Name"></vaadin-grid-simple-column>
+          <vaadin-grid-simple-column path="location.city"></vaadin-grid-simple-column>
+          <vaadin-grid-simple-column path="visitCount" text-align="end" width="100px" flex-grow="0"></vaadin-grid-simple-column>
         </vaadin-grid>
 
         <script>

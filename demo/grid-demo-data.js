@@ -4212,6 +4212,7 @@
     user.name.last = capitalize(user.name.last);
     user.location.city = capitalize(user.location.city);
     user.location.state = capitalize(user.location.state);
+    user.visitCount = ~~(Math.random() * Math.pow(10, ~~(Math.random() * 6)));
   });
 
 })();

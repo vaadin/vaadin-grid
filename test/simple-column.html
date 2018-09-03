@@ -189,6 +189,25 @@
 
       });
 
+      describe('Text align', () => {
+
+        beforeEach(() => {
+          grid.size = 100;
+          flushGrid(grid);
+          bodyCellContent = getBodyCellContent(grid, 1, 0);
+          columnFooterRenderer = root => root.textContent = 'footer';
+          footerCellContent = getContainerCellContent(grid.$.footer, 0, 0);
+        });
+
+        it('should align to right', () => {
+          column.textAlign = 'right';
+          expect(getComputedStyle(headerCellContent).textAlign).to.equal('right');
+          expect(getComputedStyle(bodyCellContent).textAlign).to.equal('right');
+          expect(getComputedStyle(footerCellContent).textAlign).to.equal('right');
+        });
+
+      });
+
     });
   </script>
 
