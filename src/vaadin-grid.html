@@ -665,6 +665,14 @@ This program is available under Apache License Version 2.0, available at https:/
             (this._rowDetailsTemplate || this.rowDetailsRenderer) && this._isDetailsOpened(row._item)
         };
       }
+
+      render() {
+        // header and footer renderers
+        const columns = Array.from(this.querySelectorAll('vaadin-grid-column'));
+        columns.forEach(column => column._renderHeaderAndFooter());
+        // body and row details renderers
+        this._update();
+      }
     }
 
     customElements.define(GridElement.is, GridElement);
