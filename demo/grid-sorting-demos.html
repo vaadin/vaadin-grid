@@ -12,7 +12,6 @@
       }
     </style>
 
-
     <h3>Sorting</h3>
     <p>
       <code>&lt;vaadin-grid-sorter&gt;</code> can be used to define sorting for a column.
@@ -22,39 +21,61 @@
       <b>NOTE: You must explicitly import the <code>vaadin-grid-sorter.html</code> in order to use <code>&lt;vaadin-grid-sorter&gt;</code>.</b>
     </p>
 
-    <vaadin-demo-snippet id='grid-sorting-demos-sorting'>
+    <vaadin-demo-snippet id='grid-sorting-filtering-demos-sorting'>
       <template preserve-content>
-        <dom-bind>
-          <template>
+        <x-array-data-provider></x-array-data-provider>
+        <vaadin-checkbox>Enable Multi-Sorting</vaadin-checkbox>
+        <vaadin-grid aria-label="Sorting Example">
+          <vaadin-grid-column width="60px" flex-grow="0"></vaadin-grid-column>
+          <vaadin-grid-column></vaadin-grid-column>
+          <vaadin-grid-column></vaadin-grid-column>
+        </vaadin-grid>
+        <script>
+          window.addDemoReadyListener('#grid-sorting-filtering-demos-sorting', function(document) {
+            const grid = document.querySelector('vaadin-grid');
+            const checkBox = document.querySelector('vaadin-checkbox');
 
-            <x-array-data-provider items="{{items}}"></x-array-data-provider>
+            checkBox.addEventListener('checked-changed', function(event) {
+              grid.multiSort = event.detail.value;
+            });
 
-            <vaadin-checkbox checked="{{multiSort}}">Enable Multi-Sorting</vaadin-checkbox>
+            const dataProvider = document.querySelector('x-array-data-provider');
+            grid.items = dataProvider.items;
 
-            <vaadin-grid aria-label="Sorting Example" items="[[items]]" multi-sort="[[multiSort]]">
+            const columns = document.querySelectorAll('vaadin-grid-column');
 
-              <vaadin-grid-column width="60px" flex-grow="0">
-                <template class="header">#</template>
-                <template>[[index]]</template>
-              </vaadin-grid-column>
+            columns[0].renderer = function(root, column, model) {
+              root.textContent = model.index;
+            };
 
-              <vaadin-grid-column>
-                <template class="header">
-                  <vaadin-grid-sorter path="name.first">First Name</vaadin-grid-sorter>
-                </template>
-                <template>[[item.name.first]]</template>
-              </vaadin-grid-column>
+            columns[1].renderer = function(root, column, model) {
+              root.textContent = model.item.name.first;
+            };
 
-              <vaadin-grid-column>
-                <template class="header">
-                  <vaadin-grid-sorter path="name.last" direction="asc">Last Name</vaadin-grid-sorter>
-                </template>
-                <template>[[item.name.last]]</template>
-              </vaadin-grid-column>
+            columns[2].renderer = function(root, column, model) {
+              root.textContent = model.item.name.last;
+            };
 
-            </vaadin-grid>
-          </template>
-        </dom-bind>
+            columns[0].headerRenderer = function(root) {
+              root.textContent = '#';
+            };
+
+            columns[1].headerRenderer = function(root) {
+              const sorter = window.document.createElement('vaadin-grid-sorter');
+              sorter.setAttribute('path', 'name.first');
+              sorter.textContent = 'First Name';
+              root.appendChild(sorter);
+            };
+
+            columns[2].headerRenderer = function(root) {
+              const sorter = window.document.createElement('vaadin-grid-sorter');
+              sorter.setAttribute('path', 'name.last');
+              sorter.setAttribute('direction', 'asc');
+              sorter.textContent = 'Last Name';
+              root.appendChild(sorter);
+            };
+          });
+        </script>
       </template>
     </vaadin-demo-snippet>
 
@@ -76,71 +97,76 @@
       instead of a property on the item object.
     </p>
 
-    <vaadin-demo-snippet id='grid-sorting-demos-sorting-with-data-provider'>
+    <vaadin-demo-snippet id='grid-sorting-filtering-demos-sorting-with-data-provider'>
       <template preserve-content>
-        <x-remote-sorting-example></x-remote-sorting-example>
-        <dom-module id="x-remote-sorting-example">
-          <template preserve-content>
-            <vaadin-checkbox checked="{{multiSort}}">Enable Multi-Sorting</vaadin-checkbox>
+        <vaadin-checkbox>Enable Multi-Sorting</vaadin-checkbox>
+        <vaadin-grid aria-label="Sorting Example">
+          <vaadin-grid-column width="60px" flex-grow="0"></vaadin-grid-column>
+          <vaadin-grid-column></vaadin-grid-column>
+          <vaadin-grid-column></vaadin-grid-column>
+        </vaadin-grid>
+        <script>
+          window.addDemoReadyListener('#grid-sorting-filtering-demos-sorting-with-data-provider', function(document) {
+            const grid = document.querySelector('vaadin-grid');
+            const checkBox = document.querySelector('vaadin-checkbox');
 
-            <vaadin-grid aria-label="Sorting with Data Provider Example" id="grid" multi-sort="[[multiSort]]">
-
-              <vaadin-grid-column width="60px" flex-grow="0">
-                <template class="header">#</template>
-                <template>[[index]]</template>
-              </vaadin-grid-column>
-
-              <vaadin-grid-column>
-                <template class="header">
-                  <vaadin-grid-sorter path="firstName">First Name</vaadin-grid-sorter>
-                </template>
-                <template>[[item.firstName]]</template>
-              </vaadin-grid-column>
-
-              <vaadin-grid-column>
-                <template class="header">
-                  <vaadin-grid-sorter path="lastName">Last Name</vaadin-grid-sorter>
-                </template>
-                <template>[[item.lastName]]</template>
-              </vaadin-grid-column>
-
-            </vaadin-grid>
-          </template>
-          <script>
-            window.addDemoReadyListener('#grid-sorting-demos-sorting-with-data-provider', function(document) {
-              Polymer({
-                is: 'x-remote-sorting-example',
-
-                ready: function() {
-                  var grid = this.$.grid;
-
-                  grid.size = 200;
-
-                  grid.dataProvider = function(params, callback) {
-                    var xhr = new XMLHttpRequest();
-                    xhr.onload = function() {
-                      callback(JSON.parse(xhr.responseText).result);
-                    };
-
-                    var index = params.page * params.pageSize;
-                    var url = 'https://demo.vaadin.com/demo-data/1.0/people?index=' + index + '&count=' + params.pageSize;
-
-                    // `params.sortOrders` format: [{path: 'lastName', direction: 'asc'}, ...];
-                    params.sortOrders.forEach(function(sort) {
-                      url += '&orders[]=' + sort.path + ' ' + sort.direction;
-                    });
-
-                    xhr.open('GET', url, true);
-                    xhr.send();
-                  };
-                }
-              });
+            checkBox.addEventListener('checked-changed', function(event) {
+              grid.multiSort = event.detail.value;
             });
-          </script>
-        </dom-module>
+            grid.size = 200;
+            grid.dataProvider = function(params, callback) {
+              var xhr = new XMLHttpRequest();
+              xhr.onload = function() {
+                callback(JSON.parse(xhr.responseText).result);
+              };
+
+              var index = params.page * params.pageSize;
+              var url = 'https://demo.vaadin.com/demo-data/1.0/people?index=' + index + '&count=' + params.pageSize;
+
+              // `params.sortOrders` format: [{path: 'lastName', direction: 'asc'}, ...];
+              params.sortOrders.forEach(function(sort) {
+                url += '&orders[]=' + sort.path + ' ' + sort.direction;
+              });
+
+              xhr.open('GET', url, true);
+              xhr.send();
+            };
+
+            const columns = document.querySelectorAll('vaadin-grid-column');
+
+            columns[0].renderer = function(root, column, model) {
+              root.textContent = model.index;
+            };
+
+            columns[1].renderer = function(root, column, model) {
+              root.textContent = model.item.firstName;
+            };
+
+            columns[2].renderer = function(root, column, model) {
+              root.textContent = model.item.lastName;
+            };
+
+            columns[0].headerRenderer = function(root) {
+              root.textContent = '#';
+            };
+
+            columns[1].headerRenderer = function(root) {
+              const sorter = window.document.createElement('vaadin-grid-sorter');
+              sorter.setAttribute('path', 'firstName');
+              sorter.textContent = 'First Name';
+              root.appendChild(sorter);
+            };
+
+            columns[2].headerRenderer = function(root) {
+              const sorter = window.document.createElement('vaadin-grid-sorter');
+              sorter.setAttribute('path', 'lastName');
+              sorter.textContent = 'Last Name';
+              root.appendChild(sorter);
+            };
+          });
+        </script>
       </template>
     </vaadin-demo-snippet>
-
 
   </template>
   <script>
