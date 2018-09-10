@@ -15,19 +15,15 @@
 
     <h3>Sorting</h3>
     <p>
-      <code>&lt;vaadin-grid-sort-column&gt;</code> helper element can be used to define sorting for a column
-      in the most simple case, where the header cell should render a text label and a sorting indicator,
-      while the body cells are only expected to render values of a sorting property.
+      <code>&lt;vaadin-grid-sort-header&gt;</code> helper element can be used to define sorting for a column
+      in the most simple case, where the header cell should render a text label and a sorting indicator.
+      To make sorting work, the <code>path</code> property must be defined on the column element.
     </p>
     <p>
-      Only the <code>path</code> property is mandatory to make the sorting work. The <code>label</code> property is
-      optional and can be omitted, in that case the header text will be generated based on the <code>path</code> value.
-    </p>
-    <p>
-      <b>NOTE: You must explicitly import the <code>vaadin-grid-sort-column.html</code> in order to use <code>&lt;vaadin-grid-sort-column&gt;</code>.</b>
+      <b>NOTE: You must explicitly import the <code>vaadin-grid-sort-header.html</code> in order to use <code>&lt;vaadin-grid-sort-header&gt;</code>.</b>
     </p>
 
-    <vaadin-demo-snippet id="grid-sorting-demos-sort-column">
+    <vaadin-demo-snippet id="grid-sorting-demos-sort-header">
       <template preserve-content>
         <dom-bind>
           <template>
@@ -43,14 +39,17 @@
                 <template>[[index]]</template>
               </vaadin-grid-column>
 
-              <vaadin-grid-sort-column path="name.first" label="First Name">
-              </vaadin-grid-sort-column>
+              <vaadin-grid-column path="name.first" label="First Name">
+                <vaadin-grid-sort-header></vaadin-grid-sort-header>
+              </vaadin-grid-column>
 
-              <vaadin-grid-sort-column path="name.last" label="Last Name">
-              </vaadin-grid-sort-column>
+              <vaadin-grid-column path="name.last" label="Last Name">
+                <vaadin-grid-sort-header></vaadin-grid-sort-header>
+              </vaadin-grid-column>
 
-              <vaadin-grid-sort-column path="email">
-              </vaadin-grid-sort-column>
+              <vaadin-grid-column path="email">
+                <vaadin-grid-sort-header direction="asc"></vaadin-grid-sort-header>
+              </vaadin-grid-column>
 
             </vaadin-grid>
           </template>

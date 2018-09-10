@@ -14,7 +14,7 @@
   <link rel="import" href="helpers.html">
   <link rel="import" href="../vaadin-grid.html">
   <link rel="import" href="../vaadin-grid-sorter.html">
-  <link rel="import" href="../vaadin-grid-sort-column.html">
+  <link rel="import" href="../vaadin-grid-sort-header.html">
 </head>
 
 <body>
@@ -54,7 +54,9 @@
           </template>
           <template>[[item.last]]</template>
         </vaadin-grid-column>
-        <vaadin-grid-sort-column></vaadin-grid-sort-column>
+        <vaadin-grid-column>
+          <vaadin-grid-sort-header></vaadin-grid-sort-header>
+        </vaadin-grid-column>
       </vaadin-grid>
     </template>
   </test-fixture>
@@ -409,11 +411,12 @@
           });
         });
 
-        describe('sort-column', () => {
-          let sortColumn, sorter;
+        describe('sort-header', () => {
+          let sortHeader, sortColumn, sorter;
 
           beforeEach(() => {
-            sortColumn = grid.querySelector('vaadin-grid-sort-column');
+            sortHeader = grid.querySelector('vaadin-grid-sort-header');
+            sortColumn = sortHeader.parentElement;
             sorter = getHeaderCellContent(grid, 0, 2).querySelector('vaadin-grid-sorter');
           });
 
@@ -428,7 +431,7 @@
           });
 
           it('should notify direction property change from the internal vaadin-grid-sorter', done => {
-            sortColumn.addEventListener('direction-changed', e => {
+            sortHeader.addEventListener('direction-changed', e => {
               expect(e.detail.value).to.equal('desc');
               done();
             });
