@@ -23,7 +23,7 @@
     "vaadin-grid-filter.html",
     "vaadin-grid-selection-column.html",
     "vaadin-grid-sorter.html",
-    "vaadin-grid-sort-column.html",
+    "vaadin-grid-sort-header.html",
     "vaadin-grid-tree-toggle.html",
     "all-imports.html",
     "theme/material/vaadin-grid.html",
@@ -32,7 +32,7 @@
     "theme/material/vaadin-grid-filter.html",
     "theme/material/vaadin-grid-selection-column.html",
     "theme/material/vaadin-grid-sorter.html",
-    "theme/material/vaadin-grid-sort-column.html",
+    "theme/material/vaadin-grid-sort-header.html",
     "theme/material/vaadin-grid-tree-toggle.html",
     "theme/material/all-imports.html"
   ],

@@ -231,10 +231,13 @@ This program is available under Apache License Version 2.0, available at https:/
       return template;
     }
 
-    _renderHeaderAndFooter() {
+    _renderHeader() {
       if (this.headerRenderer) {
         this.__runRenderer(this.headerRenderer, this._headerCell);
       }
+    }
+
+    _renderFooter() {
       if (this.footerRenderer) {
         this.__runRenderer(this.footerRenderer, this._footerCell);
       }

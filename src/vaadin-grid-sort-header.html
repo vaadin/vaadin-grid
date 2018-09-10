@@ -1,0 +1,152 @@
+<!--
+@license
+Copyright (c) 2018 Vaadin Ltd.
+This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
+-->
+
+<link rel="import" href="../../polymer/polymer-element.html">
+<link rel="import" href="vaadin-grid-column.html">
+<link rel="import" href="vaadin-grid-sorter.html">
+
+<dom-module id="vaadin-grid-sort-header">
+  <script>
+    (function() {
+      /**
+       * `<vaadin-grid-sort-header>` is a helper element for the `<vaadin-grid>`
+       * that provides default header renderer and functionality for column sorting.
+       *
+       * #### Example:
+       * ```html
+       * <vaadin-grid items="[[items]]">
+       *  <vaadin-grid-column path="name.first" label="First Name"></vaadin-grid-column>
+       *    <vaadin-grid-sort-header direction="asc"></vaadin-grid-sort-header>
+       *  <vaadin-grid-column>
+       *    ...
+       * ```
+       *
+       * @memberof Vaadin
+       */
+      class GridSortHeaderElement extends Polymer.Element {
+
+        static get is() {
+          return 'vaadin-grid-sort-header';
+        }
+
+        static get properties() {
+          return {
+            /**
+             * How to sort the data.
+             * Possible values are `asc` to use an ascending algorithm, `desc` to sort the data in
+             * descending direction, or `null` for not sorting the data.
+             */
+            direction: {
+              type: String,
+              notify: true
+            },
+
+            _headerRenderer: {
+              value: function() {
+                return function(root, column) {
+                  if (!this._sorter) {
+                    const sorter = document.createElement('vaadin-grid-sorter');
+                    sorter.addEventListener('direction-changed', this.__boundDirectionChanged);
+                    this._sorter = sorter;
+                    root.appendChild(sorter);
+                  }
+                  this._sorter.path = column.path;
+                  if (column.label || column.path) {
+                    this._sorter.textContent = column.label || column._generateLabel(column.path);
+                  }
+                }.bind(this);
+              }
+            }
+          };
+        }
+
+        static get observers() {
+          return [
+            '_directionChanged(direction, _sorter)'
+          ]
+        }
+
+        constructor() {
+          super();
+          this.__boundDirectionChanged = this.__sorterDirectionChanged.bind(this);
+        }
+
+        connectedCallback() {
+          super.connectedCallback();
+
+          const column = this.parentElement;
+
+          if (column instanceof Vaadin.GridColumnElement) {
+            if (column._sortHeader) {
+              console.warn('Only one instance of the sort header can be used by the same column.');
+              column.removeChild(this);
+              return;
+            }
+
+            this._column = column;
+            column._sortHeader = this;
+
+            if (!column._pathChanged) {
+              column._sortHeaderPathChanged = this.constructor._pathChanged.bind(column);
+              column._createPropertyObserver('path', '_sortHeaderPathChanged');
+            }
+
+            if (!column._labelChanged) {
+              column._sortHeaderLabelChanged = this.constructor._labelChanged.bind(column);
+              column._createPropertyObserver('label', '_sortHeaderLabelChanged');
+            }
+
+            column.headerRenderer = this._headerRenderer;
+          } else {
+            console.warn('Expected <vaadin-grid-sort-header> to be child of <vaadin-grid-column>');
+          }
+        }
+
+        /**
+         * Used to create a path property observer on a column element.
+         * Note: observer is bound to the column, adn `this` points to it.
+         */
+        static _pathChanged(path) {
+          if (path !== undefined && this._sortHeader) {
+            this._sortHeader._sorter.path = path;
+            this._renderHeader();
+          }
+        }
+
+        /**
+         * Used to create a label property observer on a column element.
+         * Note: observer is bound to the column, adn `this` points to it.*
+         */
+        static _labelChanged(label) {
+          if (label !== undefined) {
+            this._renderHeader();
+          }
+        }
+
+        _directionChanged(direction, sorter) {
+          if (direction !== undefined && sorter && sorter.direction !== direction) {
+            sorter.direction = direction;
+          }
+        }
+
+        __sorterDirectionChanged(e) {
+          const direction = e.detail.value;
+          if (direction !== this.direction) {
+            this.direction = direction;
+          }
+        }
+      }
+
+      customElements.define(GridSortHeaderElement.is, GridSortHeaderElement);
+
+      /**
+       * @namespace Vaadin
+       */
+      window.Vaadin = window.Vaadin || {};
+      Vaadin.GridSortHeaderElement = GridSortHeaderElement;
+    })();
+  </script>
+</dom-module>

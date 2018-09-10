@@ -673,7 +673,10 @@ This program is available under Apache License Version 2.0, available at https:/
         if (this._columnTree) {
           // header and footer renderers
           this._columnTree.forEach(level => {
-            level.forEach(column => column._renderHeaderAndFooter());
+            level.forEach(column => {
+              column._renderHeader();
+              column._renderFooter();
+            });
           });
 
           // body and row details renderers
