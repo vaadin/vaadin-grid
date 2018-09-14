@@ -110,6 +110,7 @@ This program is available under Apache License Version 2.0, available at https:/
     _toggleDetailsCell(row, item) {
       const cell = row.querySelector('[part~="details-cell"]');
       const detailsHidden = !this._isDetailsOpened(item);
+      const hiddenChanged = cell && !!cell.hidden !== detailsHidden;
       if (cell && (!cell._instance && !cell._renderer || cell.hidden !== detailsHidden)) {
         cell.hidden = detailsHidden;
         if (detailsHidden) {
@@ -130,8 +131,10 @@ This program is available under Apache License Version 2.0, available at https:/
           row.style.setProperty('padding-bottom', `${cell.offsetHeight}px`);
         }
       }
-      this._updateMetrics();
-      this._positionItems();
+      if (hiddenChanged) {
+        this._updateMetrics();
+        this._positionItems();
+      }
     }
 
     _updateDetailsCellHeights() {
