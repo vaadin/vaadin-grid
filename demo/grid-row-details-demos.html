@@ -41,6 +41,7 @@
             grid.items = Vaadin.GridDemo.users;
 
             grid.rowDetailsRenderer = function(root, grid, rowData) {
+              // Check if there is DOM generated with the previous renderer call to update its content instead of recreation
               if (!root.firstElementChild) {
                 root.innerHTML =
                 '<div class="details">' +
@@ -55,6 +56,7 @@
 
             const detailsToggleColumn = document.querySelector('#details');
             detailsToggleColumn.renderer = function(root, column, rowData) {
+              // Check if there is checkbox generated with the previous renderer call to update its content instead of recreation
               if (!root.firstElementChild) {
                 root.innerHTML = '<vaadin-checkbox>Show Details</vaadin-checkbox>';
                 root.firstElementChild.addEventListener('checked-changed', function(e) {
