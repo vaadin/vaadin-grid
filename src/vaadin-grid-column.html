@@ -174,11 +174,13 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     _findHostGrid() {
-      let el = this;
-      while (el && el.localName !== 'vaadin-grid') {
-        el = el.assignedSlot ? el.assignedSlot.parentNode : el.parentNode;
+      if (Vaadin.GridElement) {
+        let el = this;
+        while (el && !(el instanceof Vaadin.GridElement)) {
+          el = el.assignedSlot ? el.assignedSlot.parentNode : el.parentNode;
+        }
+        return el;
       }
-      return el || undefined;
     }
 
     get _grid() {
