@@ -17,6 +17,7 @@ This program is available under Apache License Version 2.0, available at https:/
 <link rel="import" href="vaadin-grid-row-details-mixin.html">
 <link rel="import" href="vaadin-grid-scroll-mixin.html">
 <link rel="import" href="vaadin-grid-selection-mixin.html">
+<link rel="import" href="vaadin-grid-styling-mixin.html">
 <link rel="import" href="vaadin-grid-sort-mixin.html">
 <link rel="import" href="vaadin-grid-keyboard-navigation-mixin.html">
 <link rel="import" href="vaadin-grid-column-reordering-mixin.html">
@@ -316,7 +317,8 @@ This program is available under Apache License Version 2.0, available at https:/
                               Vaadin.Grid.FilterMixin(
                                 Vaadin.Grid.ColumnReorderingMixin(
                                   Vaadin.Grid.ColumnResizingMixin(
-                                    Vaadin.Grid.ScrollerElement))))))))))))))) {
+                                    Vaadin.Grid.StylingMixin(
+                                      Vaadin.Grid.ScrollerElement)))))))))))))))) {
 
       static get is() {
         return 'vaadin-grid';
@@ -598,6 +600,12 @@ This program is available under Apache License Version 2.0, available at https:/
       _updateItem(row, item) {
         row._item = item;
         const model = this.__getRowModel(row);
+
+        row.classList.remove(row.__generatedClass);
+        if (this.rowClassGenerator) {
+          row.__generatedClass = this.rowClassGenerator(model);
+          row.classList.add(row.__generatedClass);
+        }
 
         this._toggleAttribute('selected', model.selected, row);
         this._a11yUpdateRowSelected(row, model.selected);

@@ -111,7 +111,9 @@ This program is available under Apache License Version 2.0, available at https:/
          * - `root` The footer cell content DOM element. Append your content to it.
          * - `column` The `<vaadin-grid-column>` element.
          */
-        footerRenderer: Function
+        footerRenderer: Function,
+
+        cellClass: String
       };
     }
 
@@ -129,8 +131,19 @@ This program is available under Apache License Version 2.0, available at https:/
         '_setFooterTemplateOrRenderer(_footerTemplate, footerRenderer, _footerCell)',
         '_resizableChanged(resizable, _headerCell)',
         '_reorderStatusChanged(_reorderStatus, _headerCell, _footerCell, _cells.*)',
-        '_hiddenChanged(hidden, _headerCell, _footerCell, _cells.*)'
+        '_hiddenChanged(hidden, _headerCell, _footerCell, _cells.*)',
+        '_cellClassChanged(cellClass, _cells.*)'
       ];
+    }
+
+    _cellClassChanged(cellClass, cells) {
+      this._allCells.forEach(cell => {
+        cell.classList.remove(this.__oldCellClass);
+        if (cellClass) {
+          cell.classList.add(cellClass);
+        }
+      });
+      this.__oldCellClass = cellClass;
     }
 
     /** @protected */

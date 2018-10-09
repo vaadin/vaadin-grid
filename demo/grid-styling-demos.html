@@ -1,0 +1,43 @@
+<dom-module id="grid-styling-demos">
+  <template>
+    <style include="vaadin-component-demo-shared-styles">
+      :host {
+        display: block;
+      }
+    </style>
+
+    <h3>Styling</h3>
+
+    <vaadin-demo-snippet id='grid-selection-demos-selection-using-active-item'>
+      <template preserve-content>
+
+        <vaadin-grid aria-label="Selection using Active Item Example" id="grid" size="200">
+          <vaadin-grid-column path="name.first" header="First name"></vaadin-grid-column>
+          <vaadin-grid-column path="name.last" header="Last name"></vaadin-grid-column>
+          <vaadin-grid-column path="email"></vaadin-grid-column>
+        </vaadin-grid>
+        <script>
+          window.addDemoReadyListener('#grid-selection-demos-selection-using-active-item', function(document) {
+            const grid = document.querySelector('vaadin-grid');
+            grid.items = Vaadin.GridDemo.users;
+
+            grid.rowClassGenerator = function(rowData) {
+              return 'row-' + rowData.index;
+            };
+
+            document.querySelector('vaadin-grid-column').cellClass = 'first';
+          });
+        </script>
+      </template>
+    </vaadin-demo-snippet>
+
+  </template>
+  <script>
+    class GridStylingDemos extends DemoReadyEventEmitter(GridDemo(Polymer.Element)) {
+      static get is() {
+        return 'grid-styling-demos';
+      }
+    }
+    customElements.define(GridStylingDemos.is, GridStylingDemos);
+  </script>
+</dom-module>
