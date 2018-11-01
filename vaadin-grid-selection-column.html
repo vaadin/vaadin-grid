@@ -54,7 +54,6 @@ When the grid is configured with an array of items as the data provider, it prov
          */
         selectAll: {
           type: Boolean,
-          value: false,
           notify: true
         },
 
@@ -161,6 +160,8 @@ When the grid is configured with an array of items as the data provider, it prov
 
         if (selectAll && grid.items)
           grid.selectedItems = grid._filter(grid.items);
+        else
+          grid.selectedItems = []
       },
 
       // Return true if array `a` contains all the items in `b`
