@@ -66,5 +66,8 @@
         "webcomponentsjs": "^0.7.24"
       }
     }
+  },
+  "resolutions": {
+    "iron-doc-viewer": "^2.0.0"
   }
 }

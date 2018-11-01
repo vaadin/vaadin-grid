@@ -159,7 +159,8 @@ When the grid is configured with an array of items as the data provider, it prov
           return;
         }
 
-        grid.selectedItems = selectAll && grid.items ? grid._filter(grid.items) : [];
+        if (selectAll && grid.items)
+          grid.selectedItems = grid._filter(grid.items);
       },
 
       // Return true if array `a` contains all the items in `b`
