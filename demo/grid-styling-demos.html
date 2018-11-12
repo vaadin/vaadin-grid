@@ -32,8 +32,6 @@
               let classes = rowData.item.gender;
               if (column.path === 'email') {
                 classes += ' email';
-              } else if (column.path === 'name.first' && rowData.item.name.title === 'mrs') {
-                classes += ' mrs';
               }
               return classes;
             };
@@ -46,19 +44,15 @@
               <style>
                 /* Background needs a stronger selector to not be overridden */
                 [part~="cell"].female {
-                  background: var(--lumo-primary-color-10pct);
+                  background: rgb(255, 240, 240);
                 }
 
                 [part~="cell"].male {
-                  background: var(--lumo-contrast-5pct);
+                  background: rgb(245, 245, 255);
                 }
 
                 .email {
                   font-style: italic;
-                }
-
-                .mrs {
-                  font-weight: bold;
                 }
               </style>
           </template>
@@ -71,9 +65,8 @@
     <vaadin-demo-snippet id='grid-styling-demos-regenerate-classes'>
       <template preserve-content>
 
-        <vaadin-button style="margin-bottom: 20px" id="change-title-btn">Change Title</vaadin-button>
-
-        <vaadin-grid aria-label="Styling Grid With Cell Class Generator Example" id="grid" size="200">
+        <vaadin-grid aria-label="Updating Cell Class Generator Example" id="grid" size="200">
+          <vaadin-grid-column id="check" flex-grow="0" width="60px"></vaadin-grid-column>
           <vaadin-grid-column path="name.first" header="First name"></vaadin-grid-column>
           <vaadin-grid-column path="name.last" header="Last name"></vaadin-grid-column>
           <vaadin-grid-column path="email"></vaadin-grid-column>
@@ -84,26 +77,57 @@
             const grid = document.querySelector('vaadin-grid');
             grid.items = Vaadin.GridDemo.users;
 
-            const changeTitleBtn = document.querySelector('#change-title-btn');
-            changeTitleBtn.addEventListener('click', function() {
-              grid.items[0].name.title = grid.items[0].name.title === 'ms' ? 'mrs' : 'ms';
+            const checkColumn = document.querySelector('#check');
+            checkColumn.renderer = function(root, column, rowData) {
+              if (!root.firstElementChild) {
+                root.innerHTML = '<vaadin-checkbox></vaadin-checkbox>';
+                root.firstElementChild.addEventListener('checked-changed', function(e) {
+                  root.item.checked = e.detail.value;
 
-              // Classes are re-generated also by clearCache() and render(),
-              // but this function is lighter as it doesn't do anything extra.
-              grid.generateClassNames();
-            });
+                  // Classes are re-generated also by clearCache() and render(),
+                  // but this function is lighter as it doesn't do anything extra.
+                  grid.generateClassNames();
+                });
+              }
+              root.item = rowData.item;
+              root.firstElementChild.checked = rowData.item.checked;
+            };
 
             grid.cellClassNameGenerator = function(rowData, column) {
               let classes = rowData.item.gender;
               if (column.path === 'email') {
                 classes += ' email';
-              } else if (column.path === 'name.first' && rowData.item.name.title === 'mrs') {
-                classes += ' mrs';
+              } else if (column.path === 'name.first' && rowData.item.checked) {
+                classes += ' checked';
               }
               return classes;
             };
           });
         </script>
+
+        <!-- Place in index.html or in a separate HTML import -->
+        <dom-module id="my-grid-styles" theme-for="vaadin-grid">
+          <template>
+              <style>
+                /* Background needs a stronger selector to not be overridden */
+                [part~="cell"].female {
+                  background: rgb(255, 240, 240);
+                }
+
+                [part~="cell"].male {
+                  background: rgb(245, 245, 255);
+                }
+
+                .email {
+                  font-style: italic;
+                }
+
+                .checked {
+                  font-weight: bold;
+                }
+              </style>
+          </template>
+        </dom-module>
       </template>
     </vaadin-demo-snippet>
 
