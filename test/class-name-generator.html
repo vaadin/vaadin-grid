@@ -104,6 +104,15 @@
           assertClassList(firstCell, ['foo']);
         });
       });
+
+      it('should not run generator for hidden rows', () => {
+        grid.items = [];
+        expect(grid.$.items.firstElementChild).to.have.property('hidden', true);
+
+        const spy = sinon.spy();
+        grid.cellClassNameGenerator = spy;
+        expect(spy).to.not.be.called;
+      });
     });
   </script>
 
