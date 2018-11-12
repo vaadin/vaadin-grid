@@ -16,33 +16,28 @@
 
 <body>
 
+  <test-fixture id="grid">
+    <template>
+      <vaadin-grid size="200">
+        <vaadin-grid-column path="value" header="col0"></vaadin-grid-column>
+        <vaadin-grid-column path="value" header="col1"></vaadin-grid-column>
+      </vaadin-grid>
+    </template>
+  </test-fixture>
+
   <script>
     describe('class name generator', () => {
       let grid, firstCell, initialCellClasses;
 
       beforeEach(() => {
-
-        grid = document.createElement('vaadin-grid');
-        grid.size = 200;
+        grid = fixture('grid');
         grid.dataProvider = infiniteDataProvider;
-
-        [0, 1].forEach(i => {
-          const column = document.createElement('vaadin-grid-column');
-          grid.appendChild(column);
-          column.path = 'value';
-          column.header = 'col' + i;
-        });
-        document.body.appendChild(grid);
         flushGrid(grid);
 
         firstCell = getContainerCell(grid.$.items, 0, 0);
 
         // Polyfills may add some extra classes to cells
         initialCellClasses = Array.from(firstCell.classList);
-      });
-
-      afterEach(() => {
-        document.body.removeChild(grid);
       });
 
       const assertClassList = (cell, expectedClasses) =>
