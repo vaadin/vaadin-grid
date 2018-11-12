@@ -57,11 +57,15 @@ This program is available under Apache License Version 2.0, available at https:/
 
     _generateClassNames(row, rowData) {
       Array.from(row.children).forEach(cell => {
-        cell.__generatedClasses && cell.classList.remove(...cell.__generatedClasses);
+        if (cell.__generatedClasses) {
+          cell.__generatedClasses.forEach(className => cell.classList.remove(className));
+        }
         if (this.cellClassNameGenerator) {
           const result = this.cellClassNameGenerator(rowData, cell._column);
           cell.__generatedClasses = result && result.split(' ');
-          cell.__generatedClasses && cell.classList.add(...cell.__generatedClasses);
+          if (cell.__generatedClasses) {
+            cell.__generatedClasses.forEach(className => cell.classList.add(className));
+          }
         }
       });
     }
