@@ -119,6 +119,11 @@
         grid.cellClassNameGenerator = spy;
         expect(spy).to.not.be.called;
       });
+
+      it('should not throw with extra whitespace in the result', () => {
+        expect(() => grid.cellClassNameGenerator = (rowData, column) => ' foo  bar ').not.to.throw(Error);
+        assertClassList(firstCell, ['foo', 'bar']);
+      });
     });
   </script>
 

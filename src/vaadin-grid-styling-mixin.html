@@ -59,7 +59,7 @@ This program is available under Apache License Version 2.0, available at https:/
         }
         if (this.cellClassNameGenerator) {
           const result = this.cellClassNameGenerator(rowData, cell._column);
-          cell.__generatedClasses = result && result.split(' ');
+          cell.__generatedClasses = result && result.split(' ').filter(className => className.length > 0);
           if (cell.__generatedClasses) {
             cell.__generatedClasses.forEach(className => cell.classList.add(className));
           }
