@@ -77,12 +77,19 @@
             const grid = document.querySelector('vaadin-grid');
             grid.items = Vaadin.GridDemo.users;
 
+            const checkedItems = [];
+
             const checkColumn = document.querySelector('#check');
             checkColumn.renderer = function(root, column, rowData) {
               if (!root.firstElementChild) {
                 root.innerHTML = '<vaadin-checkbox></vaadin-checkbox>';
                 root.firstElementChild.addEventListener('checked-changed', function(e) {
-                  root.item.checked = e.detail.value;
+                  const index = checkedItems.indexOf(root.item);
+                  if (e.detail.value && index === -1) {
+                    checkedItems.push(root.item);
+                  } else if (!e.detail.value && index > -1) {
+                    checkedItems.splice(index, 1);
+                  }
 
                   // Classes are re-generated also by clearCache() and render(),
                   // but this function is lighter as it doesn't do anything extra.
@@ -90,14 +97,14 @@
                 });
               }
               root.item = rowData.item;
-              root.firstElementChild.checked = rowData.item.checked;
+              root.firstElementChild.checked = checkedItems.indexOf(rowData.item) > -1;
             };
 
             grid.cellClassNameGenerator = function(rowData, column) {
               let classes = rowData.item.gender;
               if (column.path === 'email') {
                 classes += ' email';
-              } else if (column.path === 'name.first' && rowData.item.checked) {
+              } else if (column.path === 'name.first' && checkedItems.indexOf(rowData.item) > -1) {
                 classes += ' checked';
               }
               return classes;
