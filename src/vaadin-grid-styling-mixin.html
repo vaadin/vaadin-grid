@@ -30,15 +30,18 @@ This program is available under Apache License Version 2.0, available at https:/
          *   - `rowData.selected` Selected state.
          * - `column` The `<vaadin-grid-column>` element.
          */
-        cellClassNameGenerator: {
-          type: Function,
-          observer(newValue, oldValue) {
-            if (newValue || oldValue) {
-              this.generateClassNames();
-            }
-          }
-        }
+        cellClassNameGenerator: Function
       };
+    }
+
+    static get observers() {
+      return [
+        '__cellClassNameGeneratorChanged(cellClassNameGenerator)'
+      ];
+    }
+
+    __cellClassNameGeneratorChanged(cellClassGenerator) {
+      this.generateClassNames();
     }
 
     /**
