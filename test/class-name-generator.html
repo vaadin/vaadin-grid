@@ -94,6 +94,12 @@
         assertClassList(firstCell, []);
       });
 
+      it('should clear generated classes with falsy property value', () => {
+        grid.cellClassNameGenerator = (rowData, column) => 'foo';
+        grid.cellClassNameGenerator = undefined;
+        assertClassList(firstCell, []);
+      });
+
       ['generateClassNames', 'clearCache', 'render'].forEach(funcName => {
         it(`should update classes on ${funcName}`, () => {
           let condition = false;
