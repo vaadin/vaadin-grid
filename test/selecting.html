@@ -152,7 +152,7 @@
 
         if (Polymer.Element) {
           Array.prototype
-            .forEach.call(grid.querySelectorAll('vaadin-grid-column, vaadin-grid-selection-column'),
+            .forEach.call(grid.querySelectorAll('vaadin-grid-column, vaadin-grid-selection-column, emerson-grid-selection-column'),
             function(col) {
               col._templateObserver.flush();
             });

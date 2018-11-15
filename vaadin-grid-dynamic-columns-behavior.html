@@ -23,7 +23,7 @@
 
     _getChildColumns: function(el) {
       return Polymer.dom(el).queryDistributedElements(
-          'vaadin-grid-column, vaadin-grid-column-group, vaadin-grid-selection-column'
+          'vaadin-grid-column, vaadin-grid-column-group, vaadin-grid-selection-column, emerson-grid-selection-column'
       );
     },
 
@@ -41,7 +41,7 @@
 
     _getColumnTree: function() {
       var rootColumns = this.queryAllEffectiveChildren(
-        'vaadin-grid-column, vaadin-grid-column-group, vaadin-grid-selection-column');
+        'vaadin-grid-column, vaadin-grid-column-group, vaadin-grid-selection-column, emerson-grid-selection-column');
 
       var _columnTree = [];
 
