@@ -14,8 +14,8 @@
 
     <h3>Detailed Events</h3>
     <p>
-      Set <code>detailedEvents</code> array to fire events with useful information about the event target,
-      like the targeted item, column and section (body, header, footer or row details).
+      Set <code>detailedEvents</code> array to fire events with useful information about the target cell,
+      like the item, column and section (body, header, footer or row details).
     </p>
     <p>
       This feature can be useful to execute item-specific actions, like selection or opening row details
@@ -23,6 +23,9 @@
     </p>
     <p>
       The detailed event will be fired with <code>detailed-</code> prefix.
+    </p>
+    <p>
+      <b>NOTE: You must add the original event type into <code>grid.detailedEvents</code> array or grid won't fire the detailed event.</b>
     </p>
     <vaadin-demo-snippet id='grid-detailed-event-demos-detailed-event'>
       <template preserve-content>
