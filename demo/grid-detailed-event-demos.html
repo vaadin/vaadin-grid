@@ -39,6 +39,10 @@
             const grid = document.querySelector('vaadin-grid');
             grid.items = Vaadin.GridDemo.users;
 
+            const toggleSelection = function(item) {
+              grid.selectedItems = grid.selectedItems[0] === item ? [] : [item];
+            };
+
             grid.detailedEvents = ['dblclick', 'keydown'];
 
             grid.addEventListener('detailed-dblclick', function(e) {
@@ -52,10 +56,6 @@
                 toggleSelection(e.detail.rowData.item);
               }
             });
-
-            const toggleSelection = function(item) {
-              grid.selectedItems = grid.selectedItems[0] === item ? [] : [item];
-            };
           });
         </script>
       </template>
