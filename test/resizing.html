@@ -132,6 +132,18 @@
           });
         });
 
+        it('should align height with number of rows inside a column flexbox with a bigger height', done => {
+          const containerHeight = 10000;
+          component.style.display = 'flex';
+          component.style.flexDirection = 'column';
+          component.style.height = containerHeight + 'px';
+
+          grid.heightByRows = true;
+          animationFrameFlush(() => {
+            expect(grid.clientHeight).to.be.lessThan(containerHeight - 2); // 2px for borders
+            done();
+          });
+        });
       });
 
 
