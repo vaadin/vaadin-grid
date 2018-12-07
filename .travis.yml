@@ -2,25 +2,20 @@ sudo: false
 dist: trusty
 language: node_js
 node_js: 8.11
-
 before_install:
-  - "export DISPLAY=:99.0"
-  - "sh -e /etc/init.d/xvfb start"
-  - "sudo apt-get -qq update"
-  - "sudo apt-get install -y matchbox-window-manager"
-
+  - 'export DISPLAY=:99.0'
+  - sh -e /etc/init.d/xvfb start
+  - sudo apt-get -qq update
+  - sudo apt-get install -y matchbox-window-manager
 install:
   - matchbox-window-manager&
   - sleep 5
-
 cache:
   directories:
     - node_modules
-
 addons:
   firefox: latest
   chrome: stable
-
 jobs:
   include:
     - if: type = push
@@ -39,36 +34,9 @@ jobs:
       env: POLYMER=3
     - if: type = cron
       env: TEST_SUITE=unit_tests POLYMER=2
-
 script:
-  - if [[ "$POLYMER" = "2" ]]; then
-      npm -q i && npm i -q --no-save bower polymer-cli && bower -q i &&
-      gulp lint version:check &&
-      if [[ "$TRAVIS_EVENT_TYPE" != "pull_request" && "$TRAVIS_BRANCH" != quick/* ]]; then
-        if [[ "$TEST_SUITE" = "visual_tests" ]]; then
-          npm i -q --no-save gemini@^4.0.0 gemini-sauce gemini-polyserve &&
-          gemini test test/visual;
-        else
-          wct --env saucelabs:$TEST_SUITE;
-        fi;
-      else
-        wct;
-      fi &&
-      if [[ "$TRAVIS_EVENT_TYPE" = "cron" && "$TEST_SUITE" = "unit_tests" ]]; then
-        wct --env saucelabs-cron;
-      fi;
-    fi
-  - if [[ "$POLYMER" = "3" ]]; then
-      npm --no-save -q install -g yarn bower magi-cli web-component-tester polymer-modulizer &&
-      rm -rf node_modules &&
-      magi p3-convert --out . --import-style=name &&
-      yarn install --flat &&
-      if [[ "$TRAVIS_EVENT_TYPE" != "pull_request" && "$TRAVIS_BRANCH" != quick/* ]]; then
-        wct --npm --env saucelabs:$TEST_SUITE;
-      else
-        wct --npm;
-      fi;
-    fi
-
+  - 'if [[ "$POLYMER" = "2" ]]; then npm -q i && npm i -q --no-save polymer-cli && -q i && gulp lint version:check && if [[ "$TRAVIS_EVENT_TYPE" != "pull_request" && "$TRAVIS_BRANCH" != quick/* ]]; then if [[ "$TEST_SUITE" = "visual_tests" ]]; then npm i -q --no-save gemini@^4.0.0 gemini-sauce gemini-polyserve && gemini test test/visual; else wct --module-resolution=node --npm --env saucelabs:$TEST_SUITE; fi; else wct; fi && if [[ "$TRAVIS_EVENT_TYPE" = "cron" && "$TEST_SUITE" = "unit_tests" ]]; then wct --env saucelabs-cron; fi; fi'
+  - 'if [[ "$POLYMER" = "3" ]]; then npm --no-save -q install -g yarn bower magi-cli web-component-tester polymer-modulizer && rm -rf node_modules && magi p3-convert --out . --import-style=name && yarn install --flat && if [[ "$TRAVIS_EVENT_TYPE" != "pull_request" && "$TRAVIS_BRANCH" != quick/* ]]; then wct --module-resolution=node --npm --env saucelabs:$TEST_SUITE; else wct --npm; fi; fi'
 after_success:
-  - "cat ${TRAVIS_BUILD_DIR}/coverage/lcov.info | coveralls"
+  - 'cat ${TRAVIS_BUILD_DIR}/coverage/lcov.info | coveralls'
+

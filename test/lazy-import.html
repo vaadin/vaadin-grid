@@ -5,12 +5,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-  <script src="../../web-component-tester/browser.js"></script>
-  <link rel="import" href="../../test-fixture/test-fixture.html">
+  <script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+  <script src="../../../wct-browser-legacy/browser.js"></script>
+  <script type="module" src="../../../@polymer/test-fixture/test-fixture.js"></script>
 
-  <link rel="import" href="../../polymer/polymer.html">
-  <link rel="import" href="helpers.html">
+  <script type="module" src="../../../@polymer/polymer/polymer-legacy.js"></script>
+  <script type="module" src="./helpers.js"></script>
 </head>
 
 <body>
@@ -25,33 +25,34 @@
     </template>
   </test-fixture>
 
-  <script>
-    window.addEventListener('WebComponentsReady', function() {
-      if (window.isV2()) {
-        describe('basic features', () => {
-          let scroller, grid;
+  <script type="module">
+import '@polymer/test-fixture/test-fixture.js';
+import { Base } from '@polymer/polymer/polymer-legacy.js';
+import './helpers.js';
+if (window.isV2()) {
+  describe('basic features', () => {
+    let scroller, grid;
 
-          beforeEach(() => {
-            grid = fixture('default');
-            grid.dataProvider = infiniteDataProvider;
-          });
-
-          it('check physical item heights', done => {
-            const _error = console.error;
-            const spy = console.error = sinon.spy();
-            Polymer.Base.importHref('../vaadin-grid.html', () => {
-              animationFrameFlush(() => {
-                console.error = _error;
-                expect(spy.called).to.be.false;
-                done();
-              });
-            });
-          });
-
-        });
-      }
+    beforeEach(() => {
+      grid = fixture('default');
+      grid.dataProvider = infiniteDataProvider;
     });
-  </script>
+
+    it('check physical item heights', done => {
+      const _error = console.error;
+      const spy = console.error = sinon.spy();
+      Base.importHref('../vaadin-grid.html', () => {
+        animationFrameFlush(() => {
+          console.error = _error;
+          expect(spy.called).to.be.false;
+          done();
+        });
+      });
+    });
+
+  });
+}
+</script>
 
 </body>
 

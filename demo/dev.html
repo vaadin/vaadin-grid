@@ -7,12 +7,12 @@
 
     <title>vaadin-grid</title>
 
-    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
 
-    <link rel="import" href="../all-imports.html">
-    <link rel="import" href="../../paper-checkbox/paper-checkbox.html">
-    <link rel="import" href="../../paper-input/paper-input.html">
-    <link rel="import" href="../demo/x-data-provider.html">
+    <script type="module" src="../all-imports.js"></script>
+    <script type="module" src="../../../@polymer/paper-checkbox/paper-checkbox.js"></script>
+    <script type="module" src="../../../@polymer/paper-input/paper-input.js"></script>
+    <script type="module" src="./x-data-provider.js"></script>
 
     <style>
       body,
@@ -172,82 +172,85 @@
         </vaadin-grid>
         <input>
       </template>
-      <script>
-        window.addEventListener('WebComponentsReady', () => {
+      <script type="module">
+import '../all-imports.js';
+import '@polymer/paper-checkbox/paper-checkbox.js';
+import '@polymer/paper-input/paper-input.js';
+import './x-data-provider.js';
+import { PolymerElement } from '@polymer/polymer/polymer-element.js';
 
-          // const dataBase = [
-          //   {name: {first: 'foo-0', last: 'bar-0'}},
-          //   {name: {first: 'foo-1', last: 'bar-1'}, hasChildren: true, children: [
-          //     {name: {first: 'foo-1-0', last: 'bar-1-0'}},
-          //     {name: {first: 'foo-1-1', last: 'bar-1-1'}},
-          //     {name: {first: 'foo-1-2', last: 'bar-1-2'}},
-          //   ]},
-          //   {name: {first: 'foo-2', last: 'bar-2'}},
-          //   {name: {first: 'foo-3', last: 'bar-3'}},
-          // ];
+// const dataBase = [
+//   {name: {first: 'foo-0', last: 'bar-0'}},
+//   {name: {first: 'foo-1', last: 'bar-1'}, hasChildren: true, children: [
+//     {name: {first: 'foo-1-0', last: 'bar-1-0'}},
+//     {name: {first: 'foo-1-1', last: 'bar-1-1'}},
+//     {name: {first: 'foo-1-2', last: 'bar-1-2'}},
+//   ]},
+//   {name: {first: 'foo-2', last: 'bar-2'}},
+//   {name: {first: 'foo-3', last: 'bar-3'}},
+// ];
 
-          function generateItem(parentLevels, index) {
-            const levelPrefix = Array(...new Array(parentLevels.length)).map(() => '🔳 ').join('');
-            const levels = parentLevels.concat(index);
+function generateItem(parentLevels, index) {
+  const levelPrefix = Array(...new Array(parentLevels.length)).map(() => '🔳 ').join('');
+  const levels = parentLevels.concat(index);
 
-            const item = {
-              name: {
-                first: `${levelPrefix}foo-${levels.join('-')}`,
-                last: `${levelPrefix}bar-${levels.join('-')}`
-              }
-            };
+  const item = {
+    name: {
+      first: `${levelPrefix}foo-${levels.join('-')}`,
+      last: `${levelPrefix}bar-${levels.join('-')}`
+    }
+  };
 
-            item.hasChildren = parentLevels.length < 3 && index % 3 === 2;
+  item.hasChildren = parentLevels.length < 3 && index % 3 === 2;
 
-            if (item.hasChildren) {
-              const childrenCount = 5;
-              item.children = Array(...new Array(childrenCount))
-                .map((v, i) => generateItem(levels, i));
-            }
+  if (item.hasChildren) {
+    const childrenCount = 5;
+    item.children = Array(...new Array(childrenCount))
+      .map((v, i) => generateItem(levels, i));
+  }
 
-            return item;
-          }
+  return item;
+}
 
-          const dataBase = Array(...new Array(1000)).map((v, i) => generateItem([], i));
-          window.dataBase = dataBase;
+const dataBase = Array(...new Array(1000)).map((v, i) => generateItem([], i));
+window.dataBase = dataBase;
 
-          class XApp extends Polymer.Element {
-            static get is() {
-              return 'x-app';
-            }
+class XApp extends PolymerElement {
+  static get is() {
+    return 'x-app';
+  }
 
-            static get properties() {
-              return {
+  static get properties() {
+    return {
 
-                treeDataProvider: {
-                  value: function() {
-                    return this.treeDataProvider.bind(this);
-                  }
-                }
-              };
-            }
+      treeDataProvider: {
+        value: function() {
+          return this.treeDataProvider.bind(this);
+        }
+      }
+    };
+  }
 
-            treeDataProvider(params, cb) {
-              const parentItem = params.parentItem;
-              const array = parentItem ? parentItem.children : dataBase;
-              const pageOffset = params.page * params.pageSize;
-              cb(
-                array.slice(
-                  pageOffset, // start
-                  pageOffset + params.pageSize // end
-                ),
-                array.length
-              );
-            }
+  treeDataProvider(params, cb) {
+    const parentItem = params.parentItem;
+    const array = parentItem ? parentItem.children : dataBase;
+    const pageOffset = params.page * params.pageSize;
+    cb(
+      array.slice(
+        pageOffset, // start
+        pageOffset + params.pageSize // end
+      ),
+      array.length
+    );
+  }
 
-            ready() {
-              super.ready();
-              this.$.component.size = dataBase.length;
-            }
-          }
-          window.customElements.define(XApp.is, XApp);
-        });
-    </script>
+  ready() {
+    super.ready();
+    this.$.component.size = dataBase.length;
+  }
+}
+window.customElements.define(XApp.is, XApp);
+</script>
     </dom-module>
 
     <x-app></x-app>
