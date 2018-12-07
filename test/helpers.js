@@ -32,6 +32,7 @@ window.flushGrid = (grid) => {
     grid._debounceIncreasePool = null;
     flush$0();
   }
+  grid._scrollHandler();
 };
 
 window.getCell = (grid, index) => {

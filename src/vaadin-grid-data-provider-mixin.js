@@ -173,7 +173,6 @@ export const DataProviderMixin = superClass => class DataProviderMixin extends s
     if (index >= this._effectiveSize) {
       return;
     }
-
     el.index = index;
     const {cache, scaledIndex} = this._cache.getCacheAndIndex(index);
     const item = cache.items[scaledIndex];
@@ -322,7 +321,7 @@ export const DataProviderMixin = superClass => class DataProviderMixin extends s
               }
             });
 
-          this._increasePoolIfNeeded(0);
+          // this._increasePoolIfNeeded(0);
         }
       });
     }
@@ -379,11 +378,6 @@ export const DataProviderMixin = superClass => class DataProviderMixin extends s
   _dataProviderChanged(dataProvider, oldDataProvider) {
     if (oldDataProvider !== undefined) {
       this.clearCache();
-    }
-
-    if (dataProvider && this.items && this.items.length) {
-      // Fixes possibly invalid cached lastVisibleIndex value in <iron-list>
-      this._scrollToIndex(this._firstVisibleIndex);
     }
 
     this._ensureFirstPageLoaded();

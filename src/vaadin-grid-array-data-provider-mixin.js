@@ -29,8 +29,9 @@ export const ArrayDataProviderMixin = superClass => class ArrayDataProviderMixin
   }
 
   _itemsChanged(items, splices, isAttached) {
+
     if (!isAttached) {
-      return;
+      // return;
     }
     if (!Array.isArray(items)) {
       if (items === undefined || items === null) {

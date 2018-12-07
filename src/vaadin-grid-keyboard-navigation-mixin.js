@@ -514,14 +514,14 @@ export const KeyboardNavigationMixin = superClass => class KeyboardNavigationMix
     }
 
     if (this.$.items.firstElementChild) {
-      const firstVisibleIndexRow = this._iterateItems((pidx, vidx) => {
-        if (this._firstVisibleIndex === vidx) {
-          return this.$.items.children[pidx];
-        }
-      });
-      if (firstVisibleIndexRow) {
-        this._itemsFocusable = firstVisibleIndexRow.firstElementChild;
-      }
+      // const firstVisibleIndexRow = this._iterateItems((pidx, vidx) => {
+      //   if (this._firstVisibleIndex === vidx) {
+      //     return this.$.items.children[pidx];
+      //   }
+      // });
+      // if (firstVisibleIndexRow) {
+      //   this._itemsFocusable = firstVisibleIndexRow.firstElementChild;
+      // }
     }
 
     if (this.$.footer.firstElementChild) {

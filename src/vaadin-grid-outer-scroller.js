@@ -91,8 +91,10 @@ class GridOuterScrollerElement extends (class extends PolymerElement {}) {
   }
 
   syncOuterScroller() {
-    this.scrollTop = this.scrollTarget.scrollTop;
-    this.scrollLeft = this.scrollTarget.scrollLeft;
+    if (this.scrollTarget) {
+      this.scrollTop = this.scrollTarget.scrollTop;
+      this.scrollLeft = this.scrollTarget.scrollLeft;
+    }
   }
 
   _syncScrollTarget() {

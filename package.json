@@ -39,7 +39,8 @@
     "@vaadin/vaadin-lumo-styles": "^1.1.1",
     "@vaadin/vaadin-material-styles": "^1.1.1",
     "@vaadin/vaadin-text-field": "^2.1.1",
-    "@vaadin/vaadin-themable-mixin": "^1.2.1"
+    "@vaadin/vaadin-themable-mixin": "^1.2.1",
+    "virtual-scroller": "git+https://git@github.com/valdrinkoshi/virtual-scroller.git"
   },
   "resolutions": {
     "@webcomponents/webcomponentsjs": "2.0.0",

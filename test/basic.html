@@ -65,6 +65,11 @@ import { Base } from '@polymer/polymer/polymer-legacy.js';
 describe('basic features', () => {
   let grid;
 
+  const firstVisibleIndex = grid => grid.__scroller._first;
+  const physicalAverage = grid => grid.__scroller.layout.itemSize.height;
+  const scroll = (grid, x, y) => grid.$.table.scroll(x, y);
+  const scrollToIndex = (grid, index) => grid.__scroller.layout.scrollToIndex(index);
+
   beforeEach(() => {
     grid = fixture('default');
     grid.dataProvider = infiniteDataProvider;
@@ -119,47 +124,32 @@ describe('basic features', () => {
     grid.size = 10;
   });
 
-  it('should not warn on init', done => {
-    const warn = sinon.stub(console, 'warn');
-    const func = grid._warnPrivateAPIAccess;
-    sinon.stub(grid, '_warnPrivateAPIAccess', (a) => {
-      func.bind(grid)(a);
-      afterNextRender(grid, () => {
-        if (!done._called) {
-          done._called = true;
-          warn.restore();
-          expect(warn.called).to.be.false;
-          done();
-        }
-      });
-    });
-  });
-
   it('check physical item heights', () => {
-    const rowHeight = grid._physicalItems[0].offsetHeight;
+    const physicalItems = Array.from(grid.$.items.children);
+    const rowHeight = physicalItems[0].offsetHeight;
 
-    grid._physicalItems.forEach(item => expect(item.offsetHeight).to.be.closeTo(rowHeight, 1));
+    physicalItems.forEach(item => expect(item.offsetHeight).to.be.closeTo(rowHeight, 1));
   });
 
   it('check visible item count', () => {
     grid.size = 10;
     flushGrid(grid);
-    expect(dom(grid.root).querySelectorAll('tbody tr:not([hidden])').length).to.eql(10);
+    expect(Array.from(grid.$.items.children).filter(tr => tr.style.display !== 'none').length).to.eql(10);
   });
 
   it('first visible index', () => {
-    expect(grid.firstVisibleIndex).to.equal(0);
-    grid.scroll(0, grid._physicalAverage * 50);
+    expect(firstVisibleIndex(grid)).to.equal(0);
+    scroll(grid, 0, physicalAverage(grid) * 50);
     grid._scrollHandler();
-    expect(grid.firstVisibleIndex).to.equal(50);
-    grid._scrollToIndex(0);
+    expect(firstVisibleIndex(grid)).to.equal(50);
+    scrollToIndex(grid, 0);
     grid._scrollHandler();
-    expect(grid.firstVisibleIndex);
+    expect(firstVisibleIndex(grid));
   });
 
   it('last visible index', () => {
     const actualHeight = grid._physicalAverage;
-    grid._scrollToIndex(2);
+    scrollToIndex(grid, 2);
     expect(grid.lastVisibleIndex, Math.ceil(((grid._scrollTop + grid.offsetHeight) / actualHeight) - 1));
   });
 
@@ -182,42 +172,42 @@ describe('basic features', () => {
   it('scroll to index', () => {
     grid.size = 100;
 
-    grid._scrollToIndex(30);
+    scrollToIndex(grid, 30);
     expect(grid.firstVisibleIndex).to.equal(30);
 
-    grid._scrollToIndex(0);
+    scrollToIndex(grid, 0);
     expect(grid.firstVisibleIndex).to.equal(0);
 
-    grid._scrollToIndex(99);
+    scrollToIndex(grid, 99);
 
     const rowHeight = getFirstVisibleItem(grid).offsetHeight;
     const viewportHeight = grid.offsetHeight;
     const itemsPerViewport = viewportHeight / rowHeight;
 
     expect(grid.firstVisibleIndex, Math.floor(grid.size - itemsPerViewport));
-    grid._scrollToIndex(0);
+    scrollToIndex(grid, 0);
     // make the height of the viewport same as the height of the row
     // and scroll to the last item
     grid.style.height = (grid._physicalItems[0].offsetHeight - 2) + 'px';
     grid.notifyResize();
-    grid._scrollToIndex(99);
+    scrollToIndex(grid, 99);
     expect(grid.firstVisibleIndex).to.equal(99);
   });
 
   it('scroll to top', () => {
-    grid._scrollToIndex(99);
+    scrollToIndex(grid, 99);
     grid.scroll(0, 0);
     expect(grid._scrollTop).to.equal(0);
   });
 
   it('scroll to a given scrollTop', () => {
-    grid._scrollToIndex(99);
+    scrollToIndex(grid, 99);
     grid.scroll(0, 500);
     expect(grid.$.table.scrollTop).to.equal(500);
   });
 
   it('should not scroll when size changes', () => {
-    grid._scrollToIndex(99);
+    scrollToIndex(grid, 99);
     const top = grid.$.table.scrollTop;
 
     grid.size += 1;

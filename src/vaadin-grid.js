@@ -468,7 +468,7 @@ class GridElement extends
     Array.from(row.children).forEach(cell => cell._vacant = true);
     row.innerHTML = '';
     if (row.id !== 'outersizer' && row.id !== 'fixedsizer') {
-      row.hidden = true;
+      // row.hidden = true;
     }
     columns.forEach((column, index) => {
       let cell;
@@ -509,9 +509,7 @@ class GridElement extends
         if (isColumnRow || column.localName === 'vaadin-grid-column-group') {
           cell = column[`_${section}Cell`] || this._createCell(tagName);
           row.appendChild(cell);
-          if (cell._instance) {
-            row.hidden = false;
-          }
+          row.hidden = !cell._instance;
           column[`_${section}Cell`] = cell;
         } else {
           column._emptyCells = column._emptyCells || [];
@@ -548,6 +546,7 @@ class GridElement extends
     this._toggleAttribute('first', index === 0, row);
     this._toggleAttribute('odd', index % 2, row);
     this._a11yUpdateRowRowindex(row, index);
+
     this._getItem(index, row);
   }
 
@@ -613,19 +612,10 @@ class GridElement extends
         cell._instance.setProperties(model);
       }
     });
-
-    this._debouncerUpdateHeights = Debouncer.debounce(this._debouncerUpdateHeights,
-      timeOut.after(1), () => {
-        this._updateMetrics();
-        this._positionItems();
-        this._updateScrollerSize();
-      }
-    );
   }
 
   _resizeHandler() {
     this._updateDetailsCellHeights();
-    this._accessIronListAPI(super._resizeHandler, true);
     this._updateHeaderFooterMetrics();
   }
 

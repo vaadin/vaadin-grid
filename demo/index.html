@@ -7,7 +7,6 @@
   <script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
 
   <script type="module" src="../all-imports.js"></script>
-
 </head>
 
 <body>
@@ -20,9 +19,9 @@
 
   <script>
     const grid = document.querySelector('vaadin-grid');
-      fetch('https://demo.vaadin.com/demo-data/1.0/people?count=200')
-        .then(res => res.json())
-        .then(json => grid.items = json.result);
+    fetch('https://demo.vaadin.com/demo-data/1.0/people?count=200')
+      .then(res => res.json())
+      .then(json => grid.items = json.result);
   </script>
 </body>
 </html>
