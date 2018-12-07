@@ -16,13 +16,6 @@
     "src",
     "theme"
   ],
-  "devDependencies": {
-    "@vaadin/vaadin-component-dev-dependencies": "^1.0.0"
-  },
-  "scripts": {
-    "test": "wct",
-    "preversion": "gulp version:update"
-  },
   "keywords": [
     "vaadin",
     "elements",

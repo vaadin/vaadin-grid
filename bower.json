@@ -38,7 +38,20 @@
     "theme/material/vaadin-grid-sort-column.html",
     "theme/material/vaadin-grid-tree-toggle.html",
     "theme/material/vaadin-grid-tree-column.html",
-    "theme/material/all-imports.html"
+    "theme/material/all-imports.html",
+    "demo/grid-basic-demos.html",
+    "demo/grid-data-demos.html",
+    "demo/grid-selection-demos.html",
+    "demo/grid-columns-demos.html",
+    "demo/grid-sorting-demos.html",
+    "demo/grid-filtering-demos.html",
+    "demo/grid-row-details-demos.html",
+    "demo/grid-event-context-demos.html",
+    "demo/grid-tree-demos.html",
+    "demo/grid-styling-demos.html",
+    "demo/grid-theme-demos.html",
+    "demo/grid-crud-demos.html",
+    "demo/grid-pagination-demos.html"
   ],
   "ignore": [
     "**/.*",
@@ -67,7 +80,7 @@
     "vaadin-button": "vaadin/vaadin-button#^2.1.0"
   },
   "dependencies": {
-    "polymer": "^2.0.0",
+    "polymer": "Polymer/polymer#5f5d2c2",
     "iron-resizable-behavior": "PolymerElements/iron-resizable-behavior#^v2.0.0",
     "iron-scroll-target-behavior": "PolymerElements/iron-scroll-target-behavior#^v2.0.0",
     "iron-a11y-keys-behavior": "^v2.0.0",
@@ -78,5 +91,8 @@
     "vaadin-lumo-styles": "vaadin/vaadin-lumo-styles#^1.1.1",
     "vaadin-material-styles": "vaadin/vaadin-material-styles#^1.1.1",
     "vaadin-element-mixin": "vaadin/vaadin-element-mixin#^2.1.1"
+  },
+  "resolutions": {
+    "polymer": "5f5d2c2"
   }
 }
