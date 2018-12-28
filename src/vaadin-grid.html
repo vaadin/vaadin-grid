@@ -491,7 +491,7 @@ This program is available under Apache License Version 2.0, available at https:/
         return this.$.items;
       }
 
-      _createCell(tagName) {
+      _createCell(tagName, skipContent) {
         const contentId = this._contentIndex = this._contentIndex + 1 || 0;
         const slotName = 'vaadin-grid-cell-content-' + contentId;
 
@@ -508,32 +508,34 @@ This program is available under Apache License Version 2.0, available at https:/
 
         cell.appendChild(slot);
 
-        cell._content = cellContent;
+        if (!skipContent) {
+          cell._content = cellContent;
 
-        // With native Shadow DOM, mousedown on slotted element does not focus
-        // focusable slot wrapper, that is why cells are not focused with
-        // mousedown. Workaround: listen for mousedown and focus manually.
-        cellContent.addEventListener('mousedown', () => {
-          if (window.chrome) {
-            // Chrome bug: focusing before mouseup prevents text selection, see http://crbug.com/771903
-            const mouseUpListener = () => {
-              if (!cellContent.contains(this.getRootNode().activeElement)) {
-                cell.focus();
-              }
-              // If focus is in the cell content — respect it, do not change.
-              document.removeEventListener('mouseup', mouseUpListener, true);
-            };
-            document.addEventListener('mouseup', mouseUpListener, true);
-          } else {
-            // Focus on mouseup, on the other hand, removes selection on Safari.
-            // Watch out sync focus removal issue, only async focus works here.
-            setTimeout(() => {
-              if (!cellContent.contains(this.getRootNode().activeElement)) {
-                cell.focus();
-              }
-            });
-          }
-        });
+          // With native Shadow DOM, mousedown on slotted element does not focus
+          // focusable slot wrapper, that is why cells are not focused with
+          // mousedown. Workaround: listen for mousedown and focus manually.
+          cellContent.addEventListener('mousedown', () => {
+            if (window.chrome) {
+              // Chrome bug: focusing before mouseup prevents text selection, see http://crbug.com/771903
+              const mouseUpListener = () => {
+                if (!cellContent.contains(this.getRootNode().activeElement)) {
+                  cell.focus();
+                }
+                // If focus is in the cell content — respect it, do not change.
+                document.removeEventListener('mouseup', mouseUpListener, true);
+              };
+              document.addEventListener('mouseup', mouseUpListener, true);
+            } else {
+              // Focus on mouseup, on the other hand, removes selection on Safari.
+              // Watch out sync focus removal issue, only async focus works here.
+              setTimeout(() => {
+                if (!cellContent.contains(this.getRootNode().activeElement)) {
+                  cell.focus();
+                }
+              });
+            }
+          });
+        }
 
         return cell;
       }
@@ -553,13 +555,24 @@ This program is available under Apache License Version 2.0, available at https:/
 
           if (section === 'body') {
             // Body
+            const bodyCell = row.localName === 'tr';
+            if (column.virtual && bodyCell) {
+              return;
+            }
             column._cells = column._cells || [];
+            column._sizerCells = column._sizerCells || [];
             cell = column._cells.filter(cell => cell._vacant)[0];
             if (!cell) {
-              cell = this._createCell('td');
-              column._cells.push(cell);
+              if (bodyCell) {
+                cell = this._createCell('td');
+                column._cells.push(cell);
+              } else {
+                cell = this._createCell('td', true);
+                column._sizerCells.push(cell);
+              }
             }
             cell.setAttribute('part', 'cell body-cell');
+
             row.appendChild(cell);
 
             if (index === columns.length - 1 && (this._rowDetailsTemplate || this.rowDetailsRenderer)) {
@@ -585,6 +598,9 @@ This program is available under Apache License Version 2.0, available at https:/
             // Header & footer
             const tagName = section === 'header' ? 'th' : 'td';
             if (isColumnRow || column.localName === 'vaadin-grid-column-group') {
+              if (column.virtual && isColumnRow) {
+                return;
+              }
               cell = column[`_${section}Cell`] || this._createCell(tagName);
               cell._column = column;
               row.appendChild(cell);
@@ -602,7 +618,7 @@ This program is available under Apache License Version 2.0, available at https:/
             this.__updateHeaderFooterRowVisibility(row);
           }
 
-          if (!cell._content.parentElement) {
+          if (cell._content && !cell._content.parentElement) {
             contentsFragment.appendChild(cell._content);
           }
           cell._vacant = false;
@@ -614,6 +630,8 @@ This program is available under Apache License Version 2.0, available at https:/
 
         this._frozenCellsChanged();
         this._updateFirstAndLastColumnForRow(row);
+        this.__cacheEffectiveColumnMetrics();
+        this._updateVirtualColumns();
       }
 
       __updateHeaderFooterRowVisibility(row) {
@@ -671,6 +689,10 @@ This program is available under Apache License Version 2.0, available at https:/
       }
 
       _columnTreeChanged(columnTree, splices) {
+        // Sizer rows
+        this._updateRow(this.$.outersizer, columnTree[columnTree.length - 1]);
+        this._updateRow(this.$.fixedsizer, columnTree[columnTree.length - 1]);
+
         Array.from(this.$.items.children).forEach(row => this._updateRow(row, columnTree[columnTree.length - 1]));
 
         while (this.$.header.children.length < columnTree.length) {
@@ -694,10 +716,6 @@ This program is available under Apache License Version 2.0, available at https:/
 
         Array.from(this.$.footer.children)
           .forEach((footerRow, index) => this._updateRow(footerRow, columnTree[columnTree.length - 1 - index], 'footer', index === 0));
-
-        // Sizer rows
-        this._updateRow(this.$.outersizer, columnTree[columnTree.length - 1]);
-        this._updateRow(this.$.fixedsizer, columnTree[columnTree.length - 1]);
 
         this._resizeHandler();
         this._frozenCellsChanged();

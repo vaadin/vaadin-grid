@@ -167,7 +167,6 @@ This program is available under Apache License Version 2.0, available at https:/
       }
 
       const activeCell = e.composedPath()[0];
-      const columnIndex = indexOfChildElement(activeCell);
       const isRowDetails = this._elementMatches(activeCell, '[part~="details-cell"]');
 
       const activeRow = activeCell.parentNode;
@@ -179,6 +178,9 @@ This program is available under Apache License Version 2.0, available at https:/
       const rowIndex = (activeRowGroup === this.$.items) ?
         (this._focusedItemIndex !== undefined ? this._focusedItemIndex : activeRow.index) :
         indexOfChildElement(activeRow);
+
+      const columns = this._getColumns(activeRowGroup, rowIndex);
+      const columnIndex = columns.indexOf(activeCell._column);
 
       // Index of the destination row
       let dstRowIndex = Math.max(0, Math.min(rowIndex + dy, maxRowIndex));
@@ -229,7 +231,7 @@ This program is available under Apache License Version 2.0, available at https:/
         if (isRowDetails) {
           this._focusedColumnOrder = 0;
         } else {
-          this._focusedColumnOrder = this._getColumns(activeRowGroup, rowIndex)[columnIndex]._order;
+          this._focusedColumnOrder = columns[columnIndex]._order;
         }
       }
 
@@ -237,8 +239,7 @@ This program is available under Apache License Version 2.0, available at https:/
       // original _focusedColumnOrder in the sorted array of orders
       // of the visible columns on the destination row.
       const dstColumns = this._getColumns(activeRowGroup, dstRowIndex);
-      const dstSortedColumnOrders = dstColumns.filter(c => !c.hidden).map(c => c._order)
-        .sort((b, a) => (b - a));
+      const dstSortedColumnOrders = dstColumns.map(c => c._order);
       const maxOrderedColumnIndex = dstSortedColumnOrders.length - 1;
       const orderedColumnIndex = dstSortedColumnOrders.indexOf(
         dstSortedColumnOrders.slice(0).sort((b, a) =>
@@ -265,7 +266,7 @@ This program is available under Apache License Version 2.0, available at https:/
       this._toggleAttribute('navigating', true, this);
 
       const columnIndexByOrder = dstColumns.reduce((acc, col, i) => (acc[col._order] = i, acc), {});
-      const dstColumnIndex = columnIndexByOrder[dstSortedColumnOrders[dstOrderedColumnIndex]];
+      const dstColumnOrder = dstSortedColumnOrders[dstOrderedColumnIndex];
 
       // For body rows, use index property to find destination row, otherwise use DOM child index
       const dstRow = activeRowGroup === this.$.items ?
@@ -276,10 +277,10 @@ This program is available under Apache License Version 2.0, available at https:/
       }
 
       // Here we go!
+      const dstRowCells = Array.from(dstRow.children);
       const dstCell = dstIsRowDetails ?
-        Array.from(dstRow.children)
-          .filter(el => this._elementMatches(el, '[part~="details-cell"]'))[0] :
-        dstRow.children[dstColumnIndex];
+        dstRowCells.filter(cell => this._elementMatches(cell, '[part~="details-cell"]'))[0] :
+        dstRowCells.filter(cell => cell._column._order === dstColumnOrder)[0];
       this._scrollHorizontallyToCell(dstCell);
       if (activeRowGroup === this.$.items) {
         // When scrolling with repeated keydown, sometimes FocusEvent listeners
@@ -510,7 +511,9 @@ This program is available under Apache License Version 2.0, available at https:/
       } else if (rowGroup === this.$.footer) {
         columnTreeLevel = this._columnTree.length - 1 - rowIndex;
       }
-      return this._columnTree[columnTreeLevel];
+      return this._columnTree[columnTreeLevel]
+        .filter(c => !c.hidden)
+        .sort((a, b) => a._order - b._order);
     }
 
     _resetKeyboardNavigation() {

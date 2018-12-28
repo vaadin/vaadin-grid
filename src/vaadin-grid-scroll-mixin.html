@@ -223,6 +223,7 @@ This program is available under Apache License Version 2.0, available at https:/
           this._toggleAttribute('scrolling', false, this.$.scroller);
           if (!this.$.outerscroller.outerScrolling) {
             this._reorderRows();
+            this.__cacheEffectiveColumnMetrics();
           }
         }
       );
@@ -242,7 +243,7 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     _afterScroll() {
-      this._translateStationaryElements();
+
 
       if (!this.hasAttribute('reordering')) {
         this._scheduleScrolling();
@@ -261,6 +262,85 @@ This program is available under Apache License Version 2.0, available at https:/
       }
 
       this._updateOverflow();
+      this._updateVirtualColumns();
+      this._translateStationaryElements();
+    }
+
+    _updateVirtualColumns() {
+      if (!this._columnTree) {
+        return;
+      }
+
+      const scrollLeft = this.$.table.scrollLeft;
+
+      const columns = this._columnTree[this._columnTree.length - 1]
+        .slice(0).sort((a, b) => a._order - b._order);
+
+      let nonVirtualCount = columns.filter(c => !c.virtual && !c.frozen).length;
+      let inViewport;
+      let virtualChanged = false;
+      columns.forEach(column => {
+        const columnLeft = column.__effectiveLeft - scrollLeft;
+        const columnRight = columnLeft + column.__effectiveWidth;
+        const columnInViewport = columnRight > -column.__effectiveWidth && columnLeft < this.__effectiveWidth + column.__effectiveWidth;
+        if (columnInViewport && !column.frozen) {
+          inViewport = true;
+        }
+
+        if (inViewport && nonVirtualCount-- > 0) {
+          column._virtual = false;
+        } else {
+          column._virtual = !(columnInViewport || column.frozen);
+        }
+
+        if (column.virtual === column._virtual) {
+          virtualChanged = true;
+        }
+      });
+
+      // Need to assign virtual columns before non-virtual ones so extra columns won't get rendered unnecessarily
+      columns.filter(column => column._virtual).forEach(column => column.virtual = true);
+      columns.filter(column => !column._virtual).forEach(column => column.virtual = false);
+
+      (this.__columnCellPool || []).forEach(pooledCells => {
+        [...pooledCells._cells, pooledCells._headerCell, pooledCells._footerCell].forEach(cell => cell.hidden = true);
+      });
+
+      if (virtualChanged) {
+        const firstNonVirtual = columns.filter(column => !column.virtual && !column.frozen)[0];
+
+        if (firstNonVirtual) {
+          this.__virtualColumnsTranslate = firstNonVirtual.__effectiveLeft;
+          const lastFrozen = columns.filter(column => column._lastFrozen)[0];
+          if (lastFrozen) {
+            this.__virtualColumnsTranslate -= lastFrozen.__effectiveLeft + lastFrozen.__effectiveWidth;
+          }
+        }
+      }
+    }
+
+    _resizeHandler() {
+      super._resizeHandler();
+
+      this.__effectiveWidth = this.offsetWidth;
+      this._updateVirtualColumns();
+      this.__cacheEffectiveColumnMetrics();
+    }
+
+    __cacheEffectiveColumnMetrics() {
+      this.__debounceCacheMetrics = Polymer.Debouncer.debounce(
+        this.__debounceCacheMetrics,
+        Polymer.Async.animationFrame,
+        () => {
+          Array.from(this.$.outersizer.children)
+          .forEach(cell => {
+            if (cell._column) {
+              cell._column.__effectiveWidth = cell.offsetWidth;
+              cell._column.__effectiveLeft = cell.offsetLeft;
+            }
+          });
+        }
+      );
     }
 
     _updateOverflow() {
@@ -372,10 +452,12 @@ This program is available under Apache License Version 2.0, available at https:/
         this.$.footer.style.transform = this.$.header.style.transform =
         this._getTranslate(-this._scrollLeft || 0, 0);
       } else {
-        this.$.footer.style.transform = this.$.header.style.transform = this._getTranslate(0, this._scrollTop);
+        this.$.footer.style.transform = this.$.header.style.transform = this._getTranslate(this.__virtualColumnsTranslate, this._scrollTop);
       }
+      this.$.items.style.transform = `translateX(${this.__virtualColumnsTranslate}px)`;
 
-      var frozenCellTransform = this._getTranslate(this._scrollLeft, 0);
+      const frozenCellTransform = this._getTranslate(this._scrollLeft - this.__virtualColumnsTranslate, 0);
+
       for (var i = 0; i < this._frozenCells.length; i++) {
         this._frozenCells[i].style.transform = frozenCellTransform;
       }

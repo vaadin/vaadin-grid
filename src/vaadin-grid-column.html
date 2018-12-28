@@ -111,7 +111,9 @@ This program is available under Apache License Version 2.0, available at https:/
          * - `root` The footer cell content DOM element. Append your content to it.
          * - `column` The `<vaadin-grid-column>` element.
          */
-        footerRenderer: Function
+        footerRenderer: Function,
+
+        virtual: Boolean
       };
     }
 
@@ -129,7 +131,8 @@ This program is available under Apache License Version 2.0, available at https:/
         '_setFooterTemplateOrRenderer(_footerTemplate, footerRenderer, _footerCell)',
         '_resizableChanged(resizable, _headerCell)',
         '_reorderStatusChanged(_reorderStatus, _headerCell, _footerCell, _cells.*)',
-        '_hiddenChanged(hidden, _headerCell, _footerCell, _cells.*)'
+        '_hiddenChanged(hidden, _headerCell, _footerCell, _cells.*)',
+        '_virtualChanged(virtual, cells.*)'
       ];
     }
 
@@ -149,7 +152,7 @@ This program is available under Apache License Version 2.0, available at https:/
 
       requestAnimationFrame(() => {
         this._allCells.forEach(cell => {
-          if (!cell._content.parentNode) {
+          if (cell._content && !cell._content.parentNode) {
             this._grid && this._grid.appendChild(cell._content);
           }
         });
@@ -163,7 +166,7 @@ This program is available under Apache License Version 2.0, available at https:/
       requestAnimationFrame(() => {
         if (!this._findHostGrid()) {
           this._allCells.forEach(cell => {
-            if (cell._content.parentNode) {
+            if (cell._content && cell._content.parentNode) {
               cell._content.parentNode.removeChild(cell._content);
             }
           });
@@ -192,6 +195,7 @@ This program is available under Apache License Version 2.0, available at https:/
     get _allCells() {
       return []
         .concat(this._cells || [])
+        .concat(this._sizerCells || [])
         .concat(this._emptyCells || [])
         .concat(this._headerCell)
         .concat(this._footerCell)
@@ -243,6 +247,10 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     __runRenderer(renderer, cell, rowData) {
+      if (!cell.parentElement || !cell._content) {
+        return;
+      }
+
       const args = [cell._content, this];
       if (rowData && rowData.item) {
         args.push(rowData);
@@ -256,12 +264,13 @@ This program is available under Apache License Version 2.0, available at https:/
       }
 
       cells.forEach(cell => {
-        const model = this._grid.__getRowModel(cell.parentElement);
+        const model = cell.parentElement && this._grid.__getRowModel(cell.parentElement);
 
         if (renderer) {
           cell._renderer = renderer;
 
-          if (model.item || renderer === this.headerRenderer || renderer === this.footerRenderer) {
+          cell._content.innerHTML = ''; // TODO: Reconsider!
+          if (model && (model.item || renderer === this.headerRenderer || renderer === this.footerRenderer)) {
             this.__runRenderer(renderer, cell, model);
           }
         } else if (cell._template !== template) {
@@ -272,7 +281,7 @@ This program is available under Apache License Version 2.0, available at https:/
           const inst = template.templatizer.createInstance();
           cell._content.appendChild(inst.root);
           cell._instance = inst;
-          if (model.item) {
+          if (model && model.item) {
             cell._instance.setProperties(model);
           }
         }
@@ -327,7 +336,11 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     _orderChanged(order, headerCell, footerCell, cells) {
+      const updateEffectiveMetrics = this._sizerCells && this._sizerCells[0].style.order && this._sizerCells[0].style.order !== String(order);
+
       this._allCells.forEach(cell => cell.style.order = order);
+
+      updateEffectiveMetrics && this._grid.__cacheEffectiveColumnMetrics && this._grid.__cacheEffectiveColumnMetrics();
     }
 
     _widthChanged(width, headerCell, footerCell, cells) {
@@ -335,7 +348,11 @@ This program is available under Apache License Version 2.0, available at https:/
         this.parentElement._columnPropChanged('width');
       }
 
+      const updateEffectiveMetrics = this._sizerCells && this._sizerCells[0].style.width && this._sizerCells[0].style.width !== width;
+
       this._allCells.forEach(cell => cell.style.width = width);
+
+      updateEffectiveMetrics && this._grid.__cacheEffectiveColumnMetrics && this._grid.__cacheEffectiveColumnMetrics();
 
       // Force a reflow to workaround browser issues causing double scrollbars to grid
       // https://github.com/vaadin/vaadin-grid/issues/1586
@@ -345,6 +362,9 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     _frozenChanged(frozen, headerCell, footerCell, cells) {
+      if (this.__updatingVirtual) {
+        return;
+      }
       if (this.parentElement && this.parentElement._columnPropChanged) {
         this.parentElement._columnPropChanged('frozen', frozen);
       }
@@ -458,9 +478,11 @@ This program is available under Apache License Version 2.0, available at https:/
       }
 
       this._allCells.forEach(cell => {
-        cell._content.style.textAlign = textAlign;
-        if (getComputedStyle(cell._content).textAlign !== textAlign) {
-          cell._content.style.textAlign = textAlignFallback;
+        if (cell._content) {
+          cell._content.style.textAlign = textAlign;
+          if (getComputedStyle(cell._content).textAlign !== textAlign) {
+            cell._content.style.textAlign = textAlignFallback;
+          }
         }
       });
     }
@@ -478,6 +500,73 @@ This program is available under Apache License Version 2.0, available at https:/
         this._grid._resetKeyboardNavigation && this._grid._resetKeyboardNavigation();
       }
       this._previousHidden = hidden;
+    }
+
+    _virtualChanged(virtual, cells) {
+      if (virtual === undefined) {
+        return
+      }
+      if (this.__updatingVirtual) {
+        return;
+      }
+      this.__updatingVirtual = true;
+      this._grid.__columnCellPool = this._grid.__columnCellPool || [];
+
+      if (virtual && this._cells && this._cells.length) {
+        this._grid.__columnCellPool.push({
+          _cells: this._cells,
+          _headerCell: this._headerCell,
+          _footerCell: this._footerCell,
+        });
+        Object.assign(this, {
+          _cells: [],
+          _headerCell: undefined,
+          _footerCell: undefined
+        });
+      } else if (!virtual && !this._cells.length) {
+        const pooledCells = this._grid.__columnCellPool.pop() || {_cells: []};
+
+        [...pooledCells._cells, pooledCells._headerCell, pooledCells._footerCell].forEach(cell => {
+          if (cell) {
+            cell.hidden = false;
+            cell._column = this;
+          }
+        });
+
+        Array.from(this._grid.$.items.children).forEach(row => {
+          if (!Array.from(row.children).filter(cell => cell._column === this)[0]) {
+            const cell = this._grid._createCell('td');
+            cell.setAttribute('part', 'cell body-cell');
+            cell._column = this;
+            row.appendChild(cell);
+            this._grid.appendChild(cell._content);
+            pooledCells._cells.push(cell);
+          }
+        });
+
+        if (!pooledCells._headerCell && this._grid.$.header.children.length) {
+          const cell = this._grid._createCell('th');
+          cell.setAttribute('part', 'cell header-cell');
+          cell._column = this;
+          Array.from(this._grid.$.header.children).pop().appendChild(cell);
+          this._grid.appendChild(cell._content);
+          pooledCells._headerCell = cell;
+        }
+
+        // TODO: Dry
+        if (!pooledCells._footerCell && this._grid.$.header.children.length) {
+          const cell = this._grid._createCell('td');
+          cell.setAttribute('part', 'cell footer-cell');
+          cell._column = this;
+          Array.from(this._grid.$.footer.children)[0].appendChild(cell);
+          this._grid.appendChild(cell._content);
+          pooledCells._footerCell = cell;
+        }
+
+        Object.assign(this, pooledCells);
+      }
+
+      this.__updatingVirtual = false;
     }
 
   };
@@ -568,7 +657,9 @@ This program is available under Apache License Version 2.0, available at https:/
             type: Object
           },
 
-          _cells: Array
+          _cells: Array,
+
+          _sizerCells: Array
 
         };
       }
