@@ -281,7 +281,10 @@ first element in the cell will be focused. You can override the behavior by appl
        * Estimated size of the grid data (number of items).
        * When using function data providers, it always needs to be set manually.
        */
-      size: Number,
+      size: {
+        type: Number,
+        notify: true
+      },
 
       _rowDetailsTemplate: Object,
 
