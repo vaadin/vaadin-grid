@@ -1,3 +1,4 @@
+
 <!--
 @license
 Copyright (c) 2017 Vaadin Ltd.
@@ -12,22 +13,46 @@ and handlers for filtering the grid data.
 -->
 
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
 
 <dom-module id="vaadin-grid-filter">
   <template>
     <style>
       :host {
+        position: relative;
         display: inline-flex;
+        flex-direction: row;
+        align-items: center;
       }
 
       #filter {
         width: 100%;
         box-sizing: border-box;
       }
+
+      [icon] {
+        /* position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0; */
+      }
+
+      .container {
+        position: relative;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+      }
     </style>
-    <slot name="filter">
-      <input id="filter" value="{{value::input}}">
-    </slot>
+
+    <div class=container>
+      <slot name="filter">
+        <input id="filter" value="{{value::input}}">
+      </slot>
+
+      <paper-icon-button on-tap="clear" icon="cancel"></paper-icon-button>
+    </div>
+
 
   </template>
   <script>
@@ -64,12 +89,16 @@ and handlers for filtering the grid data.
         if (path === undefined || value === undefined || isAttached === undefined) {
           return;
         }
-        
+
         if (isAttached) {
           this.debounce('filter-changed', function() {
             this.fire('filter-changed');
           }, 200);
         }
+      },
+
+      clear: function() {
+        this.value = '';
       }
     });
   </script>
