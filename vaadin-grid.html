@@ -212,6 +212,7 @@ first element in the cell will be focused. You can override the behavior by appl
     <style>
       :host {
         display: block;
+        position: relative;
         height: 400px;
         background: var(--primary-background-color, #fff);
         box-sizing: border-box;
@@ -230,6 +231,26 @@ first element in the cell will be focused. You can override the behavior by appl
         height: 100%;
         width: 100%;
       }
+
+      .empty-msg-container {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+      }
+
+      .empty-msg-text {
+        color: var(--disabled-text-color);
+        font-size: 15px;
+      }
+
     </style>
 
     <style include="vaadin-grid-table-scroll-styles"></style>
@@ -262,6 +283,13 @@ first element in the cell will be focused. You can override the behavior by appl
       <vaadin-grid-table-focus-trap id="footerFocusTrap" slot="footerFocusTrap" on-focus-gained="_onFooterFocus" on-focus-lost="_onFocusout">
       </vaadin-grid-table-focus-trap>
     </vaadin-grid-table>
+
+    <template is="dom-if" if="[[!size]]">
+      <div class="empty-msg-container">
+        <span class="empty-msg-text">No data to display.</span>
+      </div>
+    </template>
+
   </template>
 </dom-module>
 
