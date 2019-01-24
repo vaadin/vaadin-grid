@@ -97,7 +97,7 @@ and handlers for filtering the grid data.
           return;
         }
 
-        this._updateShowClear();
+        this._updateShowClear(value);
 
         if (isAttached) {
           this.debounce('filter-changed', function() {
@@ -110,8 +110,8 @@ and handlers for filtering the grid data.
         this.value = '';
       },
 
-      _updateShowClear: function() {
-        this._showClear = !this.queryEffectiveChildren('[slot=filter]').querySelector('select');
+      _updateShowClear: function(value) {
+        this._showClear = value && !this.queryEffectiveChildren('[slot=filter]').querySelector('select');
       }
     });
   </script>
