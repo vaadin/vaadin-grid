@@ -110,7 +110,7 @@ and handlers for filtering the grid data.
         this.value = '';
         var input = this.queryEffectiveChildren('[slot=filter]');
         input.focus();
-        input.select();
+        input.select && input.select();
       },
 
       _updateShowClear: function(value) {
