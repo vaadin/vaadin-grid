@@ -120,13 +120,13 @@
           </vaadin-button>
         </vaadin-context-menu>
         <vaadin-grid aria-label="Hiding Columns Example">
-          <vaadin-grid-column width="60px" flex-grow="0" text-align="end" header="#"></vaadin-grid-column>
-          <vaadin-grid-column width="60px" flex-grow="0" text-align="center"></vaadin-grid-column>
-          <vaadin-grid-column path="name.first" width="20%" flex-grow="0"></vaadin-grid-column>
-          <vaadin-grid-column path="name.last" width="20%" flex-grow="0"></vaadin-grid-column>
-          <vaadin-grid-column path="location.city" width="33%"></vaadin-grid-column>
-          <vaadin-grid-column path="location.state" width="33%"></vaadin-grid-column>
-          <vaadin-grid-column path="location.street" width="33%"></vaadin-grid-column>
+          <vaadin-grid-column width="60px" flex-grow="0" text-align="end" header="#" name="Index"></vaadin-grid-column>
+          <vaadin-grid-column width="60px" flex-grow="0" text-align="center" name="Picture"></vaadin-grid-column>
+          <vaadin-grid-column path="name.first" width="20%" flex-grow="0" name="First Name"></vaadin-grid-column>
+          <vaadin-grid-column path="name.last" width="20%" flex-grow="0" name="Last Name"></vaadin-grid-column>
+          <vaadin-grid-column path="location.city" width="33%" name="City"></vaadin-grid-column>
+          <vaadin-grid-column path="location.state" width="33%" name="State"></vaadin-grid-column>
+          <vaadin-grid-column path="location.street" width="33%" name="Street"></vaadin-grid-column>
         </vaadin-grid>
 
         <script>
@@ -150,28 +150,15 @@
             contextMenu.listenOn = document.querySelector('vaadin-button');
             contextMenu.openOn = 'click';
             contextMenu.renderer = function(root) {
-              let listBox = root.firstElementChild;
-              // Check if there is a list-box generated with the previous renderer call to update its content instead of recreation
-              if (listBox) {
-                listBox.innerHTML = '';
-              } else {
-                listBox = window.document.createElement('vaadin-list-box');
-                root.appendChild(listBox);
-              }
+              root.innerHTML  = '<div style="display: flex; flex-direction: column;"></div>';
               columns.forEach((column, i) => {
-                const item = window.document.createElement('vaadin-item');
                 const checkbox = window.document.createElement('vaadin-checkbox');
-                const text = window.document.createTextNode(` column ${i}`);
+                checkbox.textContent = column.getAttribute('name');
                 checkbox.checked = column.hidden;
                 checkbox.onchange = () => column.hidden = checkbox.checked;
+                // Prevent the context menu from closing when clicking a checkbox
                 checkbox.onclick = e => e.stopPropagation();
-                item.onclick = e => {
-                  e.stopPropagation();
-                  checkbox.click();
-                }
-                item.appendChild(checkbox);
-                item.appendChild(text);
-                listBox.appendChild(item);
+                root.firstElementChild.appendChild(checkbox);
               });
             };
           });
