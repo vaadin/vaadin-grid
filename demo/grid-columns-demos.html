@@ -145,12 +145,12 @@
               root.firstElementChild.alt = rowData.item.name.first + ' ' + rowData.item.name.last;
               root.firstElementChild.src = rowData.item.picture.thumbnail;
             };
-            
+
             const contextMenu = document.querySelector('vaadin-context-menu');
             contextMenu.listenOn = document.querySelector('vaadin-button');
             contextMenu.openOn = 'click';
             contextMenu.renderer = function(root) {
-              root.innerHTML  = '<div style="display: flex; flex-direction: column;"></div>';
+              root.innerHTML = '<div style="display: flex; flex-direction: column;"></div>';
               columns.forEach((column, i) => {
                 const checkbox = window.document.createElement('vaadin-checkbox');
                 checkbox.textContent = column.getAttribute('name');
