@@ -125,7 +125,7 @@
           <vaadin-grid-column path="name.first" width="20%" flex-grow="0" name="First Name"></vaadin-grid-column>
           <vaadin-grid-column path="name.last" width="20%" flex-grow="0" name="Last Name"></vaadin-grid-column>
           <vaadin-grid-column path="location.city" width="33%" name="City"></vaadin-grid-column>
-          <vaadin-grid-column path="location.state" width="33%" name="State"></vaadin-grid-column>
+          <vaadin-grid-column path="location.state" width="33%" name="State" hidden></vaadin-grid-column>
           <vaadin-grid-column path="location.street" width="33%" name="Street"></vaadin-grid-column>
         </vaadin-grid>
 
@@ -154,8 +154,8 @@
               columns.forEach((column, i) => {
                 const checkbox = window.document.createElement('vaadin-checkbox');
                 checkbox.textContent = column.getAttribute('name');
-                checkbox.checked = column.hidden;
-                checkbox.onchange = () => column.hidden = checkbox.checked;
+                checkbox.checked = !column.hidden;
+                checkbox.onchange = () => column.hidden = !checkbox.checked;
                 // Prevent the context menu from closing when clicking a checkbox
                 checkbox.onclick = e => e.stopPropagation();
                 root.firstElementChild.appendChild(checkbox);
