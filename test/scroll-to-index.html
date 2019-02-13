@@ -12,10 +12,19 @@
   <link rel="import" href="../../test-fixture/test-fixture.html">
 
   <link rel="import" href="helpers.html">
-  <link rel="import" href="../vaadin-grid.html">
+  <link rel="import" href="../src/vaadin-grid.html">
 </head>
 
 <body>
+  <custom-style>
+    <style>
+      vaadin-grid-cell-content {
+        /* Cell height in Lumo default */
+        height: 36px;
+      }
+    </style>
+  </custom-style>
+
 
   <test-fixture id="small">
     <template>
@@ -145,7 +154,10 @@
 
           const rect = grid.$.header.getBoundingClientRect();
           grid.$.outerscroller.hidden = true;
-          const cell = (Polymer.Settings.useShadow ? grid.shadowRoot : document).elementFromPoint(rect.left + 1, rect.bottom + 2);
+          let cell = (Polymer.Settings.useShadow ? grid.shadowRoot : document).elementFromPoint(rect.left + 1, rect.bottom + 2);
+          if (cell.localName === 'vaadin-grid-cell-content') {
+            cell = cell.assignedSlot.parentElement;
+          }
           expect(cell.parentElement.index).to.equal(targetIndex);
         });
 

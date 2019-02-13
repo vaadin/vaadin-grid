@@ -11,7 +11,7 @@
   <link rel="import" href="../../test-fixture/test-fixture.html">
 
   <link rel="import" href="helpers.html">
-  <link rel="import" href="../vaadin-grid.html">
+  <link rel="import" href="../src/vaadin-grid.html">
 </head>
 
 <body>
@@ -333,12 +333,12 @@
         describe('in horizontal layout', () => {
           it('should stretch width', () => {
             expect(grid.getBoundingClientRect().width).to.be.closeTo(200, 1);
-            expect(grid.$.scroller.getBoundingClientRect().width).to.be.closeTo(200 - 2, 1);
+            expect(grid.$.scroller.getBoundingClientRect().width).to.be.closeTo(200, 1);
           });
 
           it('should not stretch height', () => {
             expect(grid.getBoundingClientRect().height).to.be.closeTo(400, 1);
-            expect(grid.$.scroller.getBoundingClientRect().height).to.be.closeTo(400 - 2, 1);
+            expect(grid.$.scroller.getBoundingClientRect().height).to.be.closeTo(400, 1);
           });
         });
 
@@ -349,12 +349,12 @@
 
           it('should stretch width', () => {
             expect(grid.getBoundingClientRect().width).to.be.closeTo(300, 1);
-            expect(grid.$.scroller.getBoundingClientRect().width).to.be.closeTo(300 - 2, 1);
+            expect(grid.$.scroller.getBoundingClientRect().width).to.be.closeTo(300, 1);
           });
 
           it('should stretch height', () => {
             expect(grid.getBoundingClientRect().height).to.be.closeTo(200, 1);
-            expect(grid.$.scroller.getBoundingClientRect().height).to.be.closeTo(200 - 2, 1);
+            expect(grid.$.scroller.getBoundingClientRect().height).to.be.closeTo(200, 1);
           });
         });
       });

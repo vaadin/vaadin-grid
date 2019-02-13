@@ -11,7 +11,7 @@
   <link rel="import" href="../../test-fixture/test-fixture.html">
 
   <link rel="import" href="helpers.html">
-  <link rel="import" href="../vaadin-grid.html">
+  <link rel="import" href="../src/vaadin-grid.html">
 
   <custom-style>
     <style>
@@ -21,8 +21,8 @@
       }
 
       vaadin-grid-cell-content {
-        /* Override Lumo theme */
-        padding: 0 !important;
+        /* Cell height in Lumo default */
+        height: 36px;
       }
     </style>
   </custom-style>
@@ -79,9 +79,7 @@
 
       it('increase pool size after resizing the scroller', () => {
         grid.classList.add('small');
-        // Workaround for FF58 rendering issue
-        grid.size = 0;
-        grid.size = 200;
+        grid.style.height = '1000px';
 
         grid.style.display = 'none';
 

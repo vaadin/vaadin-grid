@@ -12,10 +12,10 @@
   <link rel="import" href="../../test-fixture/test-fixture.html">
 
   <link rel="import" href="helpers.html">
-  <link rel="import" href="../vaadin-grid.html">
-  <link rel="import" href="../vaadin-grid-filter.html">
-  <link rel="import" href="../vaadin-grid-sorter.html">
-  <link rel="import" href="../vaadin-grid-filter-column.html">
+  <link rel="import" href="../src/vaadin-grid.html">
+  <link rel="import" href="../src/vaadin-grid-filter.html">
+  <link rel="import" href="../src/vaadin-grid-sorter.html">
+  <link rel="import" href="../src/vaadin-grid-filter-column.html">
 </head>
 
 <body>
@@ -185,7 +185,7 @@
         grid.style.width = '200px';
         const filterWidth = grid._filters[0].parentElement.offsetWidth;
         const textFieldWidth = grid._filters[0].shadowRoot.querySelector('vaadin-text-field').offsetWidth;
-        expect(filterWidth).to.be.greaterThan(textFieldWidth);
+        expect(filterWidth).not.to.be.below(textFieldWidth);
       });
 
       describe('filter-column', () => {
