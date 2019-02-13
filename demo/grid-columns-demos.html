@@ -115,7 +115,7 @@
     <vaadin-demo-snippet id='grid-columns-demos-hiding-columns'>
       <template preserve-content>
         <vaadin-context-menu>
-          <vaadin-button aria-label="Hide column menu">
+          <vaadin-button theme="icon" aria-label="Hide column menu">
             <iron-icon icon="lumo:menu"></iron-icon>
           </vaadin-button>
         </vaadin-context-menu>
@@ -150,15 +150,20 @@
             contextMenu.listenOn = document.querySelector('vaadin-button');
             contextMenu.openOn = 'click';
             contextMenu.renderer = function(root) {
-              root.innerHTML = '<div style="display: flex; flex-direction: column;"></div>';
-              columns.forEach((column, i) => {
+              root.innerHTML = '';
+              columns.forEach(function(column, i) {
                 const checkbox = window.document.createElement('vaadin-checkbox');
+                checkbox.style.display = 'block';
                 checkbox.textContent = column.getAttribute('name');
                 checkbox.checked = !column.hidden;
-                checkbox.onchange = () => column.hidden = !checkbox.checked;
+                checkbox.addEventListener('change', function() {
+                  column.hidden = !checkbox.checked;
+                });
                 // Prevent the context menu from closing when clicking a checkbox
-                checkbox.onclick = e => e.stopPropagation();
-                root.firstElementChild.appendChild(checkbox);
+                checkbox.addEventListener('click', function(e) {
+                  e.stopPropagation();
+                });
+                root.appendChild(checkbox);
               });
             };
           });
