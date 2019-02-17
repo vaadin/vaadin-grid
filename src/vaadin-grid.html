@@ -445,6 +445,17 @@ This program is available under Apache License Version 2.0, available at https:/
         cell.appendChild(slot);
 
         cell._content = cellContent;
+        
+        cell.addEventListener('focus', () => {
+          this.dispatchEvent(new CustomEvent('cell-focus-changed', {
+            bubbles: true,
+            composed: true,
+            detail: {
+              cell: cell,
+              content: cell._content.innerText
+            }
+          }));
+        });
 
         // With native Shadow DOM, mousedown on slotted element does not focus
         // focusable slot wrapper, that is why cells are not focused with

@@ -4,6 +4,7 @@ window.VaadinGridSuites = [
   'accessibility.html',
   'array-data-provider.html',
   'basic.html',
+  'cell-selection.html',
   'class-name-generator.html',
   'column-group.html',
   'column-groups.html',
