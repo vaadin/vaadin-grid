@@ -1,0 +1,76 @@
+<!doctype html>
+
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../../web-component-tester/browser.js"></script>
+  <script src="../../iron-test-helpers/mock-interactions.js"></script>
+  <link rel="import" href="../../test-fixture/test-fixture.html">
+
+  <link rel="import" href="helpers.html">
+  <link rel="import" href="../vaadin-grid.html">
+</head>
+
+<body>
+
+  <test-fixture id="test">
+    <template>
+      <vaadin-grid style="width: 200px; height: 200px;" size="100">
+        <vaadin-grid-column>
+          <template class="header">foo</template>
+          <template>[[index]]</template>
+        </vaadin-grid-column>
+      </vaadin-grid>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="output">
+    <template>
+      <div>Unset</div>
+    </template>
+  </test-fixture>
+
+  <script>
+    describe('Cell selection', () => {
+      let grid;
+      let output;
+
+      beforeEach(done => {
+        grid = fixture('test');
+        output = fixture('output');
+        grid.dataProvider = infiniteDataProvider;
+        flushGrid(grid);
+        grid.addEventListener('cell-focus-changed', (event) => {
+          output.innerText = event.detail.cell._content.innerText;
+        });
+        animationFrameFlush(done);
+      });
+
+      function focusWithMouse(element, mouseTarget) {
+        mouseTarget = mouseTarget || element;
+        MockInteractions.down(mouseTarget);
+        element.focus();
+        MockInteractions.up(mouseTarget);
+      }
+
+      function down(target) {
+        MockInteractions.keyDownOn(target || grid.shadowRoot.activeElement, 40, [], 'ArrowDown');
+      }
+
+      it('should give event on click', (done) => {
+        console.log('here we go');
+        const element = getFirstCell(grid);
+        click(element);
+        const content = getCellContent(element).innerText;
+        expect(output.innerText).to.equal('0');
+      });
+    });
+  </script>
+
+</body>
+
+</html>
