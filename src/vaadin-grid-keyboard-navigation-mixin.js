@@ -507,7 +507,7 @@ export const KeyboardNavigationMixin = (superClass) =>
 
         // Fire a public event for cell focus.
         const context = this.getEventContext(e);
-        context.content = e.composedPath()[0]._content.innerText;
+        context.content = Polymer.Base.get(context.column.path, context.item);
         this.dispatchEvent(
           new CustomEvent('cell-focus', {
             composed: true,
