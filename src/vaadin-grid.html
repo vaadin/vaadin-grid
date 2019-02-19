@@ -445,17 +445,6 @@ This program is available under Apache License Version 2.0, available at https:/
         cell.appendChild(slot);
 
         cell._content = cellContent;
-        
-        cell.addEventListener('focus', () => {
-          this.dispatchEvent(new CustomEvent('cell-focus-changed', {
-            bubbles: true,
-            composed: true,
-            detail: {
-              cell: cell,
-              content: cell._content.innerText
-            }
-          }));
-        });
 
         // With native Shadow DOM, mousedown on slotted element does not focus
         // focusable slot wrapper, that is why cells are not focused with
@@ -775,6 +764,19 @@ This program is available under Apache License Version 2.0, available at https:/
       }
     }
 
+    /**
+    * Fired when a cell in the grid gets focus, either by mouse click, keyboard navigation or
+    * programmatically.
+    *
+    * @event cell-focus
+    * @param {Object} detail
+    * @param {Object} detail.item the item for the cell clicked on
+    * @param {Object} detail.column the column definition of the cell clicked on
+    * @param {Object} detail.content the text content of the cell clicked on
+    * @param {Object} detail.section events are fired for header and footer as well, and target can be
+    * checked from here. Valid values are `header`, `body` and `footer`
+    */
+  
     customElements.define(GridElement.is, GridElement);
     /**
      * @namespace Vaadin

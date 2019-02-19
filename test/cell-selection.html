@@ -44,8 +44,8 @@
         output = fixture('output');
         grid.dataProvider = infiniteDataProvider;
         flushGrid(grid);
-        grid.addEventListener('cell-focus-changed', (event) => {
-          output.innerText = event.detail.cell._content.innerText;
+        grid.addEventListener('cell-focus', (event) => {
+          output.innerText = event.detail.content;
         });
         animationFrameFlush(done);
       });
@@ -61,10 +61,12 @@
         MockInteractions.keyDownOn(target || grid.shadowRoot.activeElement, 40, [], 'ArrowDown');
       }
 
-      it('should give event on click', (done) => {
-        console.log('here we go');
+      it('should give event on focus', () => {
+        expect(output.innerText).to.equal('Unset');
         const element = getFirstCell(grid);
-        click(element);
+        const event = new CustomEvent('focus', {bubbles: true, cancelable: true, composed: true});
+        element.dispatchEvent(event);
+
         const content = getCellContent(element).innerText;
         expect(output.innerText).to.equal('0');
       });

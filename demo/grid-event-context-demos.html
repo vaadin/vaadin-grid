@@ -50,6 +50,41 @@
       </template>
     </vaadin-demo-snippet>
 
+    <h3>Cell focus</h3>
+    <p>
+      You can listen to <code>cell-focus</code> events to react when a user clicks on a cell or navigates from one cell
+      to another with the keyboard. You can get the same information from <code>event.detail</code> as you get from the 
+      <code>getEventContext</code> function. The clicked item is available at <code>event.detail.item</code> and the 
+      column definition at <code>event.detail.column</code>. Additionally, the text content of the focused cell is available
+      from  <code>event.detail.content</code>.
+    </p>
+
+    <p>
+      Header and footer also fires <code>cell-focus</code> events. The target can be checked from 
+      <code>event.detail.section</code>. Valid values for <code>section</code> are <code>'header'</code>, 
+      <code>'body'</code> and <code>'footer'</code>. 
+    </p>
+    <vaadin-demo-snippet id='grid-event-context-demos-cell-focus'>
+      <template preserve-content>
+        <vaadin-grid aria-label="Event Context Example">
+          <vaadin-grid-column path="name.first" header="First name"></vaadin-grid-column>
+          <vaadin-grid-column path="name.last" header="Last name"></vaadin-grid-column>
+          <vaadin-grid-column path="email"></vaadin-grid-column>
+        </vaadin-grid>
+        <div>Clicked cell: <span id="output">None</span></div>
+        <script>
+          window.addDemoReadyListener('#grid-event-context-demos-cell-focus', function(document) {
+            const grid = document.querySelector('vaadin-grid');
+            grid.items = Vaadin.GridDemo.users;
+            const output = document.querySelector('#output');
+            grid.addEventListener('cell-focus', (event) => {
+              output.innerText = event.detail.content;
+            });
+          });
+        </script>
+      </template>
+    </vaadin-demo-snippet>
+
   </template>
   <script>
     class GridEventContextDemos extends DemoReadyEventEmitter(GridDemo(Polymer.Element)) {
