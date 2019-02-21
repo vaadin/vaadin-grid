@@ -17,60 +17,62 @@
 
 <body>
 
-  <test-fixture id="test">
+  <test-fixture id="grid">
     <template>
-      <vaadin-grid style="width: 200px; height: 200px;" size="100">
-        <vaadin-grid-column>
-          <template class="header">foo</template>
-          <template>[[index]]</template>
-        </vaadin-grid-column>
+      <vaadin-grid items='[{"foo": "bar"}]'>
+          <vaadin-grid-column path="foo" header="column header">
+          </vaadin-grid-column>
       </vaadin-grid>
     </template>
   </test-fixture>
 
   <test-fixture id="output">
-    <template>
-      <div>Unset</div>
-    </template>
-  </test-fixture>
+      <template>
+        <div>Unset</div>
+      </template>
+    </test-fixture>
 
   <script>
-    describe('Cell selection', () => {
-      let grid;
-      let output;
+    describe('Cell selection event', () => {
+      let grid, output;
 
-      beforeEach(done => {
-        grid = fixture('test');
+      beforeEach(() => {
+        grid = fixture('grid');
         output = fixture('output');
-        grid.dataProvider = infiniteDataProvider;
         flushGrid(grid);
-        grid.addEventListener('cell-focus', (event) => {
-          output.innerText = event.detail.content;
-        });
-        animationFrameFlush(done);
       });
 
-      function focusWithMouse(element, mouseTarget) {
-        mouseTarget = mouseTarget || element;
-        MockInteractions.down(mouseTarget);
-        element.focus();
-        MockInteractions.up(mouseTarget);
-      }
-
-      function down(target) {
-        MockInteractions.keyDownOn(target || grid.shadowRoot.activeElement, 40, [], 'ArrowDown');
-      }
-
-      it('should give event on focus', () => {
+      it('should fire cell-focus when cells are focused', done => {
         expect(output.innerText).to.equal('Unset');
-        const element = getFirstCell(grid);
-        const event = new CustomEvent('focus', {bubbles: true, cancelable: true, composed: true});
-        element.dispatchEvent(event);
+        const cell = getContainerCell(grid.$.items, 0, 0);
+        grid.addEventListener('click', e => {
+          const context = grid.getEventContext(e);
+          console.log(event);
+          console.log("click listener is firing correctly, but not focus :(");
 
-        const content = getCellContent(element).innerText;
+        });
+        grid.addEventListener('cell-focus', event => {
+          console.log(event);
+          console.log(event.detail.item);
+          console.log(event.detail.column.path);
+          output.innerText = event.detail.content;
+          expect(output.innerText).to.equal('0');
+          done();
+        });
+
+        // Try ALL THE THINGS to emulate focus
+        click(cell);
+        cell.focus();
+        fire('focus', {}, {
+          node: cell,
+          bubbles: true
+        });
         expect(output.innerText).to.equal('0');
+        MockInteractions.keyDownOn(cell || grid.shadowRoot.activeElement, 40, [], 'ArrowDown');
+        expect(output.innerText).to.equal('1');
       });
     });
+
   </script>
 
 </body>
