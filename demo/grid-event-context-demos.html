@@ -77,7 +77,7 @@
             const grid = document.querySelector('vaadin-grid');
             grid.items = Vaadin.GridDemo.users;
             const output = document.querySelector('#output');
-            grid.addEventListener('cell-focus', (event) => {
+            grid.addEventListener('cell-focus', function(event) {
               output.innerText = event.detail.content;
             });
           });
