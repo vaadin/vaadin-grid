@@ -1,0 +1,54 @@
+<dom-module id="grid-drag-and-drop-demos">
+  <template>
+    <style include="vaadin-component-demo-shared-styles">
+      :host {
+        display: block;
+      }
+    </style>
+
+    <h3>Row reordering</h3>
+
+    <vaadin-demo-snippet id='grid-drag-and-drop-demos-row-reordering'>
+      <template preserve-content>
+        <vaadin-grid drop-between-rows drag-single-rows>
+          <vaadin-grid-column path="name.first" header="First name"></vaadin-grid-column>
+          <vaadin-grid-column path="name.last" header="Last name"></vaadin-grid-column>
+          <vaadin-grid-column path="location.city"></vaadin-grid-column>
+          <vaadin-grid-column path="visitCount" text-align="end" width="120px" flex-grow="0"></vaadin-grid-column>
+        </vaadin-grid>
+
+        <script>
+          window.addDemoReadyListener('#grid-drag-and-drop-demos-row-reordering', function(document) {
+            // Assign an array of user objects as the grid's items
+            const grid = document.querySelector('vaadin-grid');
+            grid.items = Vaadin.GridDemo.users.slice(0);
+
+            grid.formatDragData = items => items[0].email;
+
+            grid.addEventListener('data-drop', e => {
+              const draggedItem = grid.items.find(item => item.email === e.detail.data);
+              const dropOverItem = e.detail.item;
+              if (draggedItem !== dropOverItem) {
+                // Reorder the items
+                const items = grid.items.filter(i => i !== draggedItem);
+                const dropIndex = items.indexOf(dropOverItem) + (e.detail.position === 'below' ? 1 : 0);
+                items.splice(dropIndex, 0, draggedItem);
+                grid.items = items;
+              }
+            });
+
+          });
+        </script>
+      </template>
+    </vaadin-demo-snippet>
+
+  </template>
+  <script>
+    class GridDragAndDropDemos extends DemoReadyEventEmitter(GridDemo(Polymer.Element)) {
+      static get is() {
+        return 'grid-drag-and-drop-demos';
+      }
+    }
+    customElements.define(GridDragAndDropDemos.is, GridDragAndDropDemos);
+  </script>
+</dom-module>

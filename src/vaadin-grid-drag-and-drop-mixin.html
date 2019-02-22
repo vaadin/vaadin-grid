@@ -1,0 +1,129 @@
+<!--
+@license
+Copyright (c) 2019 Vaadin Ltd.
+This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
+-->
+
+<script>
+  window.Vaadin = window.Vaadin || {};
+  window.Vaadin.Grid = window.Vaadin.Grid || {};
+
+  /**
+   * @polymerMixin
+   */
+  Vaadin.Grid.DragAndDropMixin = superClass => class DragAndDropMixin extends superClass {
+
+    static get properties() {
+      // TODO: Consider string props with options instead of boolean values
+      return {
+        dragSingleRows: Boolean,
+
+        dropBetweenRows: Boolean,
+
+        _dragImage: {
+          value: () => {
+            // TODO: Generate whenever the number of selected items changes
+            const img = new Image();
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.font = '20px Arial';
+            ctx.fillText('1', 10, 50);
+            img.src = canvas.toDataURL();
+            return img;
+          }
+        }
+
+      };
+    }
+
+    ready() {
+      super.ready();
+      this.$.table.addEventListener('dragstart', this._onDragStart.bind(this));
+      this.$.table.addEventListener('dragover', this._onDragOver.bind(this));
+      this.$.table.addEventListener('drop', this._onDrop.bind(this));
+    }
+
+    _onDragStart(e) {
+      const row = e.target;
+      const item = row._item;
+
+      let items = [item];
+      if (this.dragSelectedRows && this._isSelected(item)) {
+        items = this.selectedItems;
+      }
+      e.dataTransfer.setData('text/plain', this.formatDragData(items));
+      e.dataTransfer.setDragImage(this._dragImage, 10, 10);
+    }
+
+    _onDragOver(e) {
+      if (this.dropBetweenRows) {
+        let row = e.target;
+        while (row.localName !== 'tr') {
+          row = row.parentNode;
+        }
+
+        if (row.parentNode !== this.$.items) {
+          return;
+        }
+
+        this._dragOverItem = row._item;
+
+
+        e.preventDefault();
+        const rowRect = row.getBoundingClientRect();
+        const dropAbove = e.clientY - rowRect.top < rowRect.bottom - e.clientY;
+        this._dragOverPosition = dropAbove ? 'above' : 'below';
+        if (!row.hasAttribute('row-drag-above') && !row.hasAttribute('row-drag-above')) {
+          this._clearDragStyles();
+        }
+        this._toggleAttribute('row-drag-above', dropAbove, row);
+        this._toggleAttribute('row-drag-below', !dropAbove, row);
+      }
+    }
+
+    _clearDragStyles() {
+      Array.from(this.$.items.children).forEach(row => {
+        this._toggleAttribute('row-drag-above', false, row);
+        this._toggleAttribute('row-drag-below', false, row);
+      });
+    }
+
+    _onDrop(e) {
+
+      const data = e.dataTransfer.getData("text/plain");
+      this._clearDragStyles();
+
+      const dropEvent = new CustomEvent('data-drop', {
+        bubbles: e.bubbles,
+        cancelable: e.cancelable,
+        detail: {
+          item: this._dragOverItem,
+          position: this._dragOverPosition,
+          data
+        }
+      });
+      this.dispatchEvent(dropEvent);
+    }
+
+    formatDragData(items) {
+      return items.map(item => {
+        return this._columnTree.slice(0).pop()
+          .sort((a, b) => a._order > b._order ? 1 : -1)
+          .filter(col => col.path)
+          .map(col => this.get(col.path, item))
+          .join('\t');
+      }).join('\n');
+    }
+
+    _updateItem(row, item) {
+      super._updateItem && super._updateItem(row, item);
+
+      if (this.dragSingleRows) {
+        row.setAttribute('draggable', 'true');
+      } else {
+        row.removeAttribute('draggable');
+      }
+    }
+
+  };
+</script>
