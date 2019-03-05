@@ -51,7 +51,7 @@ This program is available under Apache License Version 2.0, available at https:/
       if (this.dragSelectedRows && this._isSelected(item)) {
         items = this.selectedItems;
       }
-      e.dataTransfer.setData('text/plain', this.formatDragData(items));
+      e.dataTransfer.setData('text', this.formatDragData(items));
       e.dataTransfer.setDragImage(this._dragImage, 10, 10);
     }
 
@@ -89,8 +89,7 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     _onDrop(e) {
-
-      const data = e.dataTransfer.getData("text/plain");
+      const data = e.dataTransfer.getData('text');
       this._clearDragStyles();
 
       const dropEvent = new CustomEvent('data-drop', {
