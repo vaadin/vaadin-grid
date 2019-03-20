@@ -161,6 +161,7 @@ This program is available under Apache License Version 2.0, available at https:/
 
       this._updateGhostPosition(e.detail.x, this._touchDevice ? e.detail.y - 50 : e.detail.y);
       this._lastDragClientX = e.detail.x;
+      this._lastDragClientY = e.detail.y;
     }
 
     _onTrackEnd() {
@@ -273,6 +274,19 @@ This program is available under Apache License Version 2.0, available at https:/
           this.$.table.scrollLeft += rightDiff / 10;
         } else if (leftDiff > 0) {
           this.$.table.scrollLeft -= leftDiff / 10;
+        }
+        this._scrollHandler();
+      }
+
+      if (this._lastDragClientY) {
+
+        const bottomDiff = this._lastDragClientY - this.$.footer.getBoundingClientRect().top + 50;
+        const topDiff = this.$.header.getBoundingClientRect().bottom - this._lastDragClientY + 50;
+
+        if (bottomDiff > 0) {
+          this.$.table.scrollTop += bottomDiff / 10;
+        } else if (topDiff > 0) {
+          this.$.table.scrollTop -= topDiff / 10;
         }
         this._scrollHandler();
       }
