@@ -21,25 +21,31 @@ This program is available under Apache License Version 2.0, available at https:/
         dropBetweenRows: Boolean,
 
         _dragImage: {
-          value: () => {
-            // TODO: Generate whenever the number of selected items changes
-            const img = new Image();
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            ctx.font = '20px Arial';
-            ctx.fillText('1', 10, 50);
-            img.src = canvas.toDataURL();
-            return img;
-          }
+          value: () => new Image()
         }
 
       };
+    }
+
+    static get observers() {
+      return [
+        '_generateDragImage(selectedItems)'
+      ]
+    }
+
+    _generateDragImage(selectedItems) {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      ctx.font = '20px Arial';
+      ctx.fillText(selectedItems.length || 1, 10, 50);
+      this._dragImage.src = canvas.toDataURL();
     }
 
     ready() {
       super.ready();
       this.$.table.addEventListener('dragstart', this._onDragStart.bind(this));
       this.$.table.addEventListener('dragover', this._onDragOver.bind(this));
+      this.$.table.addEventListener('dragleave', this._clearDragStyles.bind(this));
       this.$.table.addEventListener('drop', this._onDrop.bind(this));
     }
 
@@ -47,22 +53,28 @@ This program is available under Apache License Version 2.0, available at https:/
       const row = e.target;
       const item = row._item;
 
-      let items = [item];
-      if (this.dragSelectedRows && this._isSelected(item)) {
-        items = this.selectedItems;
-      }
+      const items = this._isSelected(item) ? this.selectedItems.slice(0) : [item];
       e.dataTransfer.setData('text', this.formatDragData(items));
       e.dataTransfer.setDragImage(this._dragImage, 10, 10);
+
+      const dropEvent = new CustomEvent('grid-dragstart', {
+        bubbles: e.bubbles,
+        cancelable: e.cancelable,
+        detail: {
+          items
+        }
+      });
+      this.dispatchEvent(dropEvent);
     }
 
     _onDragOver(e) {
       if (this.dropBetweenRows) {
         let row = e.target;
-        while (row.localName !== 'tr') {
+        while (row && row.localName !== 'tr') {
           row = row.parentNode;
         }
 
-        if (row.parentNode !== this.$.items) {
+        if (!row || row.parentNode !== this.$.items) {
           return;
         }
 
@@ -92,7 +104,7 @@ This program is available under Apache License Version 2.0, available at https:/
       const data = e.dataTransfer.getData('text');
       this._clearDragStyles();
 
-      const dropEvent = new CustomEvent('data-drop', {
+      const dropEvent = new CustomEvent('grid-drop', {
         bubbles: e.bubbles,
         cancelable: e.cancelable,
         detail: {
