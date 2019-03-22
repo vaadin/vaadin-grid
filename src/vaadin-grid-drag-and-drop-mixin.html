@@ -44,18 +44,25 @@ This program is available under Apache License Version 2.0, available at https:/
     ready() {
       super.ready();
       this.$.table.addEventListener('dragstart', this._onDragStart.bind(this));
-      this.$.table.addEventListener('dragover', this._onDragOver.bind(this));
+      this.addEventListener('dragover', this._onDragOver.bind(this));
       this.$.table.addEventListener('dragleave', this._clearDragStyles.bind(this));
       this.$.table.addEventListener('drop', this._onDrop.bind(this));
     }
 
     _onDragStart(e) {
+      e.stopPropagation();
       const row = e.target;
       const item = row._item;
 
       const items = this._isSelected(item) ? this.selectedItems.slice(0) : [item];
       e.dataTransfer.setData('text', this.formatDragData(items));
-      e.dataTransfer.setDragImage(this._dragImage, 10, 10);
+      // this.$.items.style.height = '100px';
+      // this.$.items.style.overflow = 'hidden';
+      // e.dataTransfer.setDragImage(this.$.items, 10, 10);
+      // setTimeout(() => {
+      //   this.$.items.style.height = '';
+      // this.$.items.style.overflow = '';
+      // })
 
       const dropEvent = new CustomEvent('grid-dragstart', {
         bubbles: e.bubbles,
@@ -69,11 +76,7 @@ This program is available under Apache License Version 2.0, available at https:/
 
     _onDragOver(e) {
       if (this.dropBetweenRows) {
-        let row = e.target;
-        while (row && row.localName !== 'tr') {
-          row = row.parentNode;
-        }
-
+        let row = e.composedPath().find(node => node.localName === 'tr');
         if (!row || row.parentNode !== this.$.items) {
           return;
         }
@@ -101,6 +104,7 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     _onDrop(e) {
+      e.stopPropagation();
       const data = e.dataTransfer.getData('text');
       this._clearDragStyles();
 

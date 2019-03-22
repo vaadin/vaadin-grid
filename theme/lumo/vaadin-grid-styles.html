@@ -75,6 +75,35 @@
         box-shadow: inset 0 0 0 2px var(--lumo-primary-color-50pct);
       }
 
+      /* Drag and Drop styles */
+      [part~="row"][row-drag-above],
+      [part~="row"][row-drag-below] {
+        z-index: 100;
+      }
+      [part~="row"][row-drag-below] [part~="cell"],
+      [part~="row"][row-drag-above] [part~="cell"] {
+        overflow: visible;
+      }
+
+      [part~="row"][row-drag-below] [part~="cell"]::before,
+      [part~="row"][row-drag-above] [part~="cell"]::before {
+        content: "";
+        position: absolute;
+        top: 1px;
+        right: 0;
+        bottom: 1px;
+        left: 0;
+        pointer-events: none;
+      }
+
+      [part~="row"][row-drag-below] [part~="cell"]::before {
+        box-shadow: 0 3px 0 0 var(--lumo-primary-color-50pct);
+      }
+
+      [part~="row"][row-drag-above] [part~="cell"]::before {
+        box-shadow: 0 -3px 0 0 var(--lumo-primary-color-50pct);
+      }
+
       /* Headers and footers */
 
       [part~="header-cell"] ::slotted(vaadin-grid-cell-content),
