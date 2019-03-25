@@ -51,14 +51,15 @@ This program is available under Apache License Version 2.0, available at https:/
 
     _onDragStart(e) {
       e.stopPropagation();
-      const row = e.target;
-      const item = row._item;
+      e.dataTransfer.setDragImage(this._dragImage, 10, 10);
+      const item = this.getEventContext(e).item;
 
       const items = this._isSelected(item) ? this.selectedItems.slice(0) : [item];
+
       e.dataTransfer.setData('text', this.formatDragData(items));
       // this.$.items.style.height = '100px';
       // this.$.items.style.overflow = 'hidden';
-      // e.dataTransfer.setDragImage(this.$.items, 10, 10);
+
       // setTimeout(() => {
       //   this.$.items.style.height = '';
       // this.$.items.style.overflow = '';
@@ -134,9 +135,14 @@ This program is available under Apache License Version 2.0, available at https:/
       super._updateItem && super._updateItem(row, item);
 
       if (this.dragSingleRows) {
-        row.setAttribute('draggable', 'true');
+        Array.from(row.children).forEach(cell => {
+          cell._content.setAttribute('draggable', 'true');
+        })
+
       } else {
-        row.removeAttribute('draggable');
+        Array.from(row.children).forEach(cell => {
+          cell._content.removeAttribute('draggable');
+        })
       }
     }
 

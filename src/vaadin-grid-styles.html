@@ -151,16 +151,6 @@ This program is available under Apache License Version 2.0, available at https:/
         text-overflow: ellipsis;
       }
 
-      [part~=row][draggable] [part~="cell"] {
-        cursor: grab;
-      }
-
-      /* Temporarily use frozen columns to enable accessing cell content on draggable grids */
-      [part~=row][draggable] [part~="cell"]:not([frozen]) ::slotted(vaadin-grid-cell-content) {
-        pointer-events: none;
-      }
-
-
       [hidden] {
         display: none !important;
       }

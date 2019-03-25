@@ -23,10 +23,13 @@
             const grid = document.querySelector('vaadin-grid');
             grid.items = Vaadin.GridDemo.users.slice(0);
 
-            grid.formatDragData = function(items) { return items[0].email };
+            let draggedItem;
+
+            grid.addEventListener('grid-dragstart', function(e) {
+              draggedItem = e.detail.items[0];
+            });
 
             grid.addEventListener('grid-drop', function(e) {
-              const draggedItem = grid.items.filter(function(item) {return item.email === e.detail.data})[0];
               const dropOverItem = e.detail.item;
               if (draggedItem !== dropOverItem) {
                 // Reorder the items
