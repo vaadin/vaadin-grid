@@ -56,21 +56,28 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     _onDragStart(e) {
-      this._toggleAttribute('dragging-rows', true, this);
       e.stopPropagation();
-      e.dataTransfer.setDragImage(this._rowDragGhost, 0, 0);
+      this._toggleAttribute('dragging-rows', true, this);
+
       const item = this.getEventContext(e).item;
+      const row = Array.from(this.$.items.children).find(row => row._item === item);
 
+      // Safari doesn't get proper drag images from transformed
+      // elements so we need to switch to top temporarily
+      const transform = row.style.transform;
+      row.style.top = /translateY\((.*)\)/.exec(transform)[1];
+      row.style.transform = 'none';
+
+      e.dataTransfer.setDragImage(row, 0, 0);
+
+      requestAnimationFrame(() => {
+        row.style.top = '';
+        row.style.transform = transform;
+      });
+
+      // Get dataTransfer text data
       const items = this._isSelected(item) ? this.selectedItems.slice(0) : [item];
-
       e.dataTransfer.setData('text', this.formatDragData(items));
-      // this.$.items.style.height = '100px';
-      // this.$.items.style.overflow = 'hidden';
-
-      // setTimeout(() => {
-      //   this.$.items.style.height = '';
-      // this.$.items.style.overflow = '';
-      // })
 
       const dropEvent = new CustomEvent('grid-dragstart', {
         bubbles: e.bubbles,
