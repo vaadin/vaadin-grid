@@ -39,17 +39,51 @@ This program is available under Apache License Version 2.0, available at https:/
       ctx.font = '20px Arial';
       ctx.fillText(selectedItems.length || 1, 10, 50);
       this._dragImage.src = canvas.toDataURL();
+      this._rowDragGhost.textContent = selectedItems.length || 1;
+    }
+
+    get _rowDragGhost() {
+      return this.shadowRoot.querySelector('[part~="row-drag-ghost"]');
     }
 
     ready() {
       super.ready();
       this.$.table.addEventListener('dragstart', this._onDragStart.bind(this));
+      this.$.table.addEventListener('dragend', this._onDragEnd.bind(this));
       this.addEventListener('dragover', this._onDragOver.bind(this));
       this.$.table.addEventListener('dragleave', this._clearDragStyles.bind(this));
       this.$.table.addEventListener('drop', this._onDrop.bind(this));
     }
 
     _onDragStart(e) {
+      this._toggleAttribute('dragging-rows', true, this);
+      e.stopPropagation();
+      e.dataTransfer.setDragImage(this._rowDragGhost, 0, 0);
+      const item = this.getEventContext(e).item;
+
+      const items = this._isSelected(item) ? this.selectedItems.slice(0) : [item];
+
+      e.dataTransfer.setData('text', this.formatDragData(items));
+      // this.$.items.style.height = '100px';
+      // this.$.items.style.overflow = 'hidden';
+
+      // setTimeout(() => {
+      //   this.$.items.style.height = '';
+      // this.$.items.style.overflow = '';
+      // })
+
+      const dropEvent = new CustomEvent('grid-dragstart', {
+        bubbles: e.bubbles,
+        cancelable: e.cancelable,
+        detail: {
+          items
+        }
+      });
+      this.dispatchEvent(dropEvent);
+    }
+
+    _onDragEnd(e) {
+      this._toggleAttribute('dragging-rows', false, this);
       e.stopPropagation();
       e.dataTransfer.setDragImage(this._dragImage, 10, 10);
       const item = this.getEventContext(e).item;
