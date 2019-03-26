@@ -59,21 +59,23 @@ This program is available under Apache License Version 2.0, available at https:/
       e.stopPropagation();
       this._toggleAttribute('dragging-rows', true, this);
 
-      const item = this.getEventContext(e).item;
-      const row = Array.from(this.$.items.children).find(row => row._item === item);
+      const item = this.getEventContext(e).item || this.__getRowModel(e.target).item;
 
-      // Safari doesn't get proper drag images from transformed
-      // elements so we need to switch to top temporarily
-      const transform = row.style.transform;
-      row.style.top = /translateY\((.*)\)/.exec(transform)[1];
-      row.style.transform = 'none';
+      if (!window.ShadyDOM) {
+        const row = Array.from(this.$.items.children).find(row => row._item === item);
+        // Safari doesn't get proper drag images from transformed
+        // elements so we need to switch to top temporarily
+        const transform = row.style.transform;
+        row.style.top = /translateY\((.*)\)/.exec(transform)[1];
+        row.style.transform = 'none';
 
-      e.dataTransfer.setDragImage(row, 0, 0);
+        e.dataTransfer.setDragImage(row, 0, 0);
 
-      requestAnimationFrame(() => {
-        row.style.top = '';
-        row.style.transform = transform;
-      });
+        requestAnimationFrame(() => {
+          row.style.top = '';
+          row.style.transform = transform;
+        });
+      }
 
       // Get dataTransfer text data
       const items = this._isSelected(item) ? this.selectedItems.slice(0) : [item];
@@ -118,23 +120,26 @@ This program is available under Apache License Version 2.0, available at https:/
 
     _onDragOver(e) {
       if (this.dropBetweenRows) {
-        let row = e.composedPath().find(node => node.localName === 'tr');
+
+        let row = e.composedPath().filter(node => node.localName === 'tr')[0];
         if (!row || row.parentNode !== this.$.items) {
           return;
         }
 
         this._dragOverItem = row._item;
 
-
         e.preventDefault();
+
         const rowRect = row.getBoundingClientRect();
         const dropAbove = e.clientY - rowRect.top < rowRect.bottom - e.clientY;
         this._dragOverPosition = dropAbove ? 'above' : 'below';
+
         if (!row.hasAttribute('row-drag-above') && !row.hasAttribute('row-drag-above')) {
           this._clearDragStyles();
         }
         this._toggleAttribute('row-drag-above', dropAbove, row);
         this._toggleAttribute('row-drag-below', !dropAbove, row);
+
       }
     }
 
@@ -175,16 +180,17 @@ This program is available under Apache License Version 2.0, available at https:/
     _updateItem(row, item) {
       super._updateItem && super._updateItem(row, item);
 
-      if (this.dragSingleRows) {
-        Array.from(row.children).forEach(cell => {
-          cell._content.setAttribute('draggable', 'true');
-        })
+      const draggableElements = window.ShadyDOM
+        ? [row]
+        : Array.from(row.children).map(cell => cell._content);
 
-      } else {
-        Array.from(row.children).forEach(cell => {
-          cell._content.removeAttribute('draggable');
-        })
-      }
+      draggableElements.forEach(e => {
+        if (this.dragSingleRows) {
+          e.setAttribute('draggable', true);
+        } else {
+          e.removeAttribute('draggable');
+        }
+      });
     }
 
   };
