@@ -6,15 +6,14 @@
       }
     </style>
 
-    <h3>Row reordering</h3>
+    <h3>Row Reordering</h3>
 
     <vaadin-demo-snippet id='grid-drag-and-drop-demos-row-reordering'>
       <template preserve-content>
-        <vaadin-grid drop-between-rows drag-single-rows>
+        <vaadin-grid drop-mode="between" rows-draggable>
           <vaadin-grid-column path="name.first" header="First name"></vaadin-grid-column>
           <vaadin-grid-column path="name.last" header="Last name"></vaadin-grid-column>
-          <vaadin-grid-column path="location.city"></vaadin-grid-column>
-          <vaadin-grid-column path="visitCount" text-align="end" width="120px" flex-grow="0"></vaadin-grid-column>
+          <vaadin-grid-column path="email"></vaadin-grid-column>
         </vaadin-grid>
 
         <script>

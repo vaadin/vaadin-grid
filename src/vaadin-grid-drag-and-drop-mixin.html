@@ -16,34 +16,11 @@ This program is available under Apache License Version 2.0, available at https:/
     static get properties() {
       // TODO: Consider string props with options instead of boolean values
       return {
-        dragSingleRows: Boolean,
+        dropMode: String,
 
-        dropBetweenRows: Boolean,
-
-        _dragImage: {
-          value: () => new Image()
-        }
+        rowsDraggable: Boolean
 
       };
-    }
-
-    static get observers() {
-      return [
-        '_generateDragImage(selectedItems)'
-      ]
-    }
-
-    _generateDragImage(selectedItems) {
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      ctx.font = '20px Arial';
-      ctx.fillText(selectedItems.length || 1, 10, 50);
-      this._dragImage.src = canvas.toDataURL();
-      this._rowDragGhost.textContent = selectedItems.length || 1;
-    }
-
-    get _rowDragGhost() {
-      return this.shadowRoot.querySelector('[part~="row-drag-ghost"]');
     }
 
     ready() {
@@ -94,32 +71,10 @@ This program is available under Apache License Version 2.0, available at https:/
     _onDragEnd(e) {
       this._toggleAttribute('dragging-rows', false, this);
       e.stopPropagation();
-      e.dataTransfer.setDragImage(this._dragImage, 10, 10);
-      const item = this.getEventContext(e).item;
-
-      const items = this._isSelected(item) ? this.selectedItems.slice(0) : [item];
-
-      e.dataTransfer.setData('text', this.formatDragData(items));
-      // this.$.items.style.height = '100px';
-      // this.$.items.style.overflow = 'hidden';
-
-      // setTimeout(() => {
-      //   this.$.items.style.height = '';
-      // this.$.items.style.overflow = '';
-      // })
-
-      const dropEvent = new CustomEvent('grid-dragstart', {
-        bubbles: e.bubbles,
-        cancelable: e.cancelable,
-        detail: {
-          items
-        }
-      });
-      this.dispatchEvent(dropEvent);
     }
 
     _onDragOver(e) {
-      if (this.dropBetweenRows) {
+      if (this.dropMode) {
 
         let row = e.composedPath().filter(node => node.localName === 'tr')[0];
         if (!row || row.parentNode !== this.$.items) {
@@ -131,15 +86,17 @@ This program is available under Apache License Version 2.0, available at https:/
         e.preventDefault();
 
         const rowRect = row.getBoundingClientRect();
-        const dropAbove = e.clientY - rowRect.top < rowRect.bottom - e.clientY;
-        this._dragOverPosition = dropAbove ? 'above' : 'below';
 
-        if (!row.hasAttribute('row-drag-above') && !row.hasAttribute('row-drag-above')) {
-          this._clearDragStyles();
+        if (this.dropMode === 'between') {
+          const dropAbove = e.clientY - rowRect.top < rowRect.bottom - e.clientY;
+          this._dragOverPosition = dropAbove ? 'above' : 'below';
+
+          if (!row.hasAttribute('row-drag-above') && !row.hasAttribute('row-drag-above')) {
+            this._clearDragStyles();
+          }
+          this._toggleAttribute('row-drag-above', dropAbove, row);
+          this._toggleAttribute('row-drag-below', !dropAbove, row);
         }
-        this._toggleAttribute('row-drag-above', dropAbove, row);
-        this._toggleAttribute('row-drag-below', !dropAbove, row);
-
       }
     }
 
@@ -185,7 +142,7 @@ This program is available under Apache License Version 2.0, available at https:/
         : Array.from(row.children).map(cell => cell._content);
 
       draggableElements.forEach(e => {
-        if (this.dragSingleRows) {
+        if (this.rowsDraggable) {
           e.setAttribute('draggable', true);
         } else {
           e.removeAttribute('draggable');

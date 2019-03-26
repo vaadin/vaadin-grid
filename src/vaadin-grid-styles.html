@@ -213,21 +213,6 @@ This program is available under Apache License Version 2.0, available at https:/
         -webkit-overflow-scrolling: auto !important;
       }
 
-      /* DnD styles */
-
-      [part~="row-drag-ghost"] {
-        position: absolute;
-        display: none;
-        top: 0;
-        left: 0;
-        pointer-events: none;
-        z-index: -100;
-      }
-
-      :host([dragging-rows]) [part~="row-drag-ghost"] {
-        display: block;
-      }
-
       /* Resizing styles */
       [part~="resize-handle"] {
         position: absolute;
