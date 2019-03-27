@@ -74,7 +74,13 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     _onDragOver(e) {
+
       if (this.dropMode) {
+        e.preventDefault();
+
+        if (!this._effectiveSize || this.dropMode === 'on_grid') {
+          this._toggleAttribute('row-drag', true, this);
+        }
 
         let row = e.composedPath().filter(node => node.localName === 'tr')[0];
         if (!row || row.parentNode !== this.$.items) {
@@ -83,27 +89,37 @@ This program is available under Apache License Version 2.0, available at https:/
 
         this._dragOverItem = row._item;
 
-        e.preventDefault();
-
         const rowRect = row.getBoundingClientRect();
 
+        this._clearDragStyles();
         if (this.dropMode === 'between') {
           const dropAbove = e.clientY - rowRect.top < rowRect.bottom - e.clientY;
           this._dragOverPosition = dropAbove ? 'above' : 'below';
 
-          if (!row.hasAttribute('row-drag-above') && !row.hasAttribute('row-drag-above')) {
-            this._clearDragStyles();
-          }
           this._toggleAttribute('row-drag-above', dropAbove, row);
           this._toggleAttribute('row-drag-below', !dropAbove, row);
+        } else if (this.dropMode === "on_top_or_between") {
+          const dropAbove = e.clientY - rowRect.top < rowRect.height / 3;
+          const dropBelow = e.clientY - rowRect.top > (rowRect.height / 3) * 2;
+          const dropOver = !dropAbove && !dropBelow;
+          this._dragOverPosition = dropAbove ? 'above' : 'below';
+          if (dropOver) {
+            this._dragOverPosition = 'over';
+          }
+
+          this._toggleAttribute('row-drag-above', dropAbove, row);
+          this._toggleAttribute('row-drag-below', dropBelow, row);
+          this._toggleAttribute('row-drag-over', dropOver, row);
         }
       }
     }
 
     _clearDragStyles() {
+      this._toggleAttribute('row-drag', false, this);
       Array.from(this.$.items.children).forEach(row => {
         this._toggleAttribute('row-drag-above', false, row);
         this._toggleAttribute('row-drag-below', false, row);
+        this._toggleAttribute('row-drag-over', false, row);
       });
     }
 
