@@ -28,9 +28,13 @@
               draggedItem = e.detail.items[0];
             });
 
+            grid.addEventListener('grid-dragend', function(e) {
+              draggedItem = null;
+            });
+
             grid.addEventListener('grid-drop', function(e) {
               const dropOverItem = e.detail.item;
-              if (draggedItem !== dropOverItem) {
+              if (draggedItem && draggedItem !== dropOverItem) {
                 // Reorder the items
                 const items = grid.items.filter(function(i) { return i !== draggedItem });
                 const dropIndex = items.indexOf(dropOverItem) + (e.detail.position === 'below' ? 1 : 0);
@@ -75,6 +79,11 @@
               sourceGrid = e.target;
             };
 
+            const dragEndListener = function(e) {
+              draggedItems = null;
+              sourceGrid = null;
+            };
+
             const dropListener = function(e) {
               if (sourceGrid && draggedItems) {
                 // Remove the items from the source grid
@@ -94,14 +103,13 @@
                   .concat(draggedItems)
                   .concat(targetGrid.items.slice(index));
               }
-              draggedItems = null;
-              sourceGrid = null;
             }
 
             Array.from(document.querySelectorAll('vaadin-grid'))
               .forEach(function(grid, index) {
                 grid.items = index === 0 ? Vaadin.GridDemo.users.slice(0, 5) : Vaadin.GridDemo.users.slice(6, 7);
                 grid.addEventListener('grid-dragstart', dragStartListener);
+                grid.addEventListener('grid-dragend', dragEndListener);
                 grid.addEventListener('grid-drop', dropListener);
               });
 
@@ -151,7 +159,6 @@
             targetGrid.addEventListener('grid-drop', function(e) {
               sourceGrid.items = sourceGrid.items.filter(i => i !== draggedItem);
 
-
               const dropOverItem = e.detail.item;
               const array = dropOverItem.array || targetGridItems;
               if (e.detail.position === 'over') {
@@ -165,6 +172,83 @@
               targetGrid.clearCache();
             });
 
+          });
+        </script>
+      </template>
+    </vaadin-demo-snippet>
+
+    <h3>Custom Drag Data</h3>
+    <p>
+      Customizing the drag data enables you to drag items between grids in different
+      browser windows.
+    </p>
+
+    <vaadin-demo-snippet id='grid-drag-and-drop-demos-drag-data'>
+      <template preserve-content>
+        <div style="display: flex">
+          <vaadin-grid drop-mode="between" rows-draggable>
+            <vaadin-grid-selection-column auto-select></vaadin-grid-selection-column>
+            <vaadin-grid-column path="name.first" header="First name"></vaadin-grid-column>
+            <vaadin-grid-column path="name.last" header="Last name"></vaadin-grid-column>
+            <vaadin-grid-column path="email"></vaadin-grid-column>
+          </vaadin-grid>
+
+          &nbsp;
+
+          <vaadin-text-area label="Drag items here" style="height: 300px"></vaadin-text-area>
+        </div>
+
+        <script>
+          window.addDemoReadyListener('#grid-drag-and-drop-demos-drag-data', function(document) {
+            // Assign an array of user objects as the grid's items
+            const grid = document.querySelector('vaadin-grid');
+            grid.items = Vaadin.GridDemo.users.slice(0);
+
+            grid.formatDragData = items => items.map(function(item) {
+              return item.email;
+            }).join(',');
+
+            let draggedItems;
+            grid.addEventListener('grid-dragstart', function(e) {
+              draggedItems = e.detail.items;
+            });
+
+            grid.addEventListener('grid-dragend', function(e) {
+              // Remove the items from the source grid
+              grid.items = grid.items.filter(function(item) {
+                return draggedItems.indexOf(item) === -1;
+              });
+            });
+
+            grid.addEventListener('grid-drop', function(e) {
+              const data = e.detail.data;
+              const emails = data.split(',');
+              const draggedItems = Vaadin.GridDemo.users.filter(function(user) {
+                return emails.indexOf(user.email) > -1;
+              }).map(function(user) {
+                // Create new instances so we don't get duplicate selections
+                return {
+                  name: {
+                    first: user.name.first,
+                    last: user.name.last
+                  },
+                  email: user.email
+                }
+              });
+
+              const targetGrid = e.target;
+                let index = targetGrid.items.length;
+                const dropOverItem = e.detail.item
+                if (dropOverItem) {
+                  index = targetGrid.items.indexOf(dropOverItem)
+                    + (e.detail.position === 'below' ? 1 : 0);
+                }
+                targetGrid.items = []
+                  .concat(targetGrid.items.slice(0, index))
+                  .concat(draggedItems)
+                  .concat(targetGrid.items.slice(index));
+
+            });
           });
         </script>
       </template>
