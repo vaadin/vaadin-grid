@@ -46,7 +46,8 @@ This program is available under Apache License Version 2.0, available at https:/
         row.style.top = /translateY\((.*)\)/.exec(transform)[1];
         row.style.transform = 'none';
 
-        e.dataTransfer.setDragImage(row, 0, 0);
+        const rect = row.getBoundingClientRect();
+        e.dataTransfer.setDragImage(row, e.clientX - rect.left, e.clientY - rect.top);
 
         requestAnimationFrame(() => {
           row.style.top = '';
