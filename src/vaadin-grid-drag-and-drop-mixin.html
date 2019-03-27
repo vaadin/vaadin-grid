@@ -110,7 +110,7 @@ This program is available under Apache License Version 2.0, available at https:/
           const dropOver = !dropAbove && !dropBelow;
           this._dragOverPosition = dropAbove ? 'above' : 'below';
           if (dropOver) {
-            this._dragOverPosition = 'over';
+            this._dragOverPosition = 'on_top';
           }
 
           this._toggleAttribute('row-drag-above', dropAbove, row);
@@ -147,6 +147,9 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     formatDragData(items) {
+      // TODO: Change this to either get the the default data from
+      // the physical cell content OR document properly that column "path"
+      // is needed to genrate the default payload
       return items.map(item => {
         return this._columnTree.slice(0).pop()
           .sort((a, b) => a._order > b._order ? 1 : -1)

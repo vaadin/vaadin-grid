@@ -161,7 +161,7 @@
 
               const dropOverItem = e.detail.item;
               const array = dropOverItem.array || targetGridItems;
-              if (e.detail.position === 'over') {
+              if (e.detail.position === 'on_top') {
                 dropOverItem.children = (dropOverItem.children || []).concat(draggedItem);
                 draggedItem.array = dropOverItem.children;
               } else  {
@@ -218,6 +218,7 @@
               grid.items = grid.items.filter(function(item) {
                 return draggedItems.indexOf(item) === -1;
               });
+              grid.selectedItems = [];
             });
 
             grid.addEventListener('grid-drop', function(e) {
