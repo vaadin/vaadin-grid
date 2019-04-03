@@ -10,21 +10,20 @@
 
     <h3>Compact</h3>
     <p><code>&lt;vaadin-grid <b>theme="compact"</b>&gt;</code></p>
-       <p>The following styles changes are applied by setting <code>&lt;<b>theme="compact"</b>&gt;</code>
+    <p>The following styles changes are applied by setting <code>&lt;<b>theme="compact"</b>&gt;</code></p>
     <ul>
-    <li>
-      header cells:
+      <li>
+        header cells:
+        <ul>
+          <li><code>min-height</code> is decreased from <code><b>--lumo-size-xl</b></code> to <code><b>--lumo-size-m</b></code></li>
+        </ul>
+      </li>
+      <li>body and row details cells:</li>
       <ul>
-        <li><code>min-height</code> is decreased from <code><b>--lumo-size-xl</b></code> to <code><b>--lumo-size-m</b></code></li>
+        <li><code>min-height</code> is decreased from <code><b>--lumo-size-m</b></code> to <code> <b>--lumo-size-s</b></code></li>
+        <li>vertical padding is decreased from <code><b>----lumo-space-m</b></code> to <code><b>--lumo-space-s</b></code></li>
       </ul>
-    </li>
-    <li>body and row details cells:</li>
-    <ul>
-      <li><code>min-height</code> is decreased from <code><b>--lumo-size-m</b></code> to <code> <b>--lumo-size-s</b></code></li>
-      <li>vertical padding is decreased from <code><b>----lumo-space-m</b></code> to <code><b>--lumo-space-s</b></code></li>
     </ul>
-    <ul>
-    </p>
 
     <vaadin-demo-snippet id='grid-theme-demos-compact'>
       <template preserve-content>
