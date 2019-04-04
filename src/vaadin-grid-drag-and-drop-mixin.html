@@ -38,8 +38,8 @@ This program is available under Apache License Version 2.0, available at https:/
 
       const item = this.getEventContext(e).item || this.__getRowModel(e.target).item;
 
+      const row = Array.from(this.$.items.children).find(row => row._item === item);
       if (!window.ShadyDOM) {
-        const row = Array.from(this.$.items.children).find(row => row._item === item);
         // Safari doesn't get proper drag images from transformed
         // elements so we need to switch to top temporarily
         const transform = row.style.transform;
@@ -58,6 +58,9 @@ This program is available under Apache License Version 2.0, available at https:/
       // Get dataTransfer text data
       const items = this._isSelected(item) ? this.selectedItems.slice(0) : [item];
       e.dataTransfer.setData('text', this.formatDragData(items));
+
+      row.setAttribute('dragged-row-count', items.length);
+      requestAnimationFrame(() => row.removeAttribute('dragged-row-count'));
 
       const event = new CustomEvent('grid-dragstart', {
         bubbles: e.bubbles,

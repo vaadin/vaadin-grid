@@ -121,7 +121,13 @@
         background: var(--lumo-primary-color-50pct);
       }
 
-      [part~="row-drag-ghost"] {
+      [part~="row"][dragged-row-count]::before {
+        display: block;
+        position: absolute;
+        bottom: 0;
+        left: 30%;
+        z-index: 100;
+        content: attr(dragged-row-count);
         align-items: center;
         justify-content: center;
         box-sizing: border-box;
@@ -130,7 +136,7 @@
         background-color: var(--lumo-primary-color);
         border-radius: var(--lumo-border-radius-s);
         font-family: var(--lumo-font-family);
-        font-size: var(--lumo-font-size-s);
+        font-size: var(--lumo-font-size-xxs);
         line-height: 1;
         font-weight: 500;
         text-transform: initial;
