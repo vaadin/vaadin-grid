@@ -60,9 +60,13 @@ describe('drag and drop', () => {
       });
       event.dataTransfer = {
         setDragImage: () => {},
-        setData: () => {}
+        setData: (type, data) => {
+          event.__dataType = type;
+          event.__data = data;
+        }
       };
       draggable.dispatchEvent(event);
+      return event;
     };
 
     const fireDragEnd = () => {
@@ -70,6 +74,25 @@ describe('drag and drop', () => {
         bubbles: true,
         cancelable: true
       });
+      draggable.dispatchEvent(event);
+    };
+
+    const fireDragLeave = () => {
+      const event = new Event('dragleave', {
+        bubbles: true,
+        cancelable: true
+      });
+      draggable.dispatchEvent(event);
+    };
+
+    const fireDrop = () => {
+      const event = new Event('drop', {
+        bubbles: true,
+        cancelable: true
+      });
+      event.dataTransfer = {
+        getData: () => 'foo'
+      }
       draggable.dispatchEvent(event);
     };
 
@@ -190,6 +213,21 @@ describe('drag and drop', () => {
         fireDragStart();
         const event = dragStartSpy.getCall(0).args[0];
         expect(event.detail.items).to.eql(grid.items);
+      });
+
+      it('should auto generate data transfer text data', () => {
+        grid.selectedItems = grid.items;
+        const e = fireDragStart();
+        expect(e.__data).to.eql('foo\tbar\nbaz\tqux');
+      });
+
+      it('should generate custom data transfer text data', () => {
+        grid.selectedItems = grid.items;
+        grid.formatDragData = items => {
+          return items.map(item => item.last).join(',');
+        };
+        const e = fireDragStart();
+        expect(e.__data).to.eql('bar,qux');
       });
 
     });
@@ -328,6 +366,97 @@ describe('drag and drop', () => {
         fireDragOver(row, 'under');
         expect(row.getAttribute('row-drag')).to.equal('below');
       });
+
+    });
+
+    describe('dragleave', () => {
+
+      it('should stop the native event', () => {
+        const spy = sinon.spy();
+        grid.addEventListener('dragleave', spy);
+        fireDragLeave();
+        expect(spy.called).to.be.false;
+      });
+
+      it('should clear the grid drag styles', () => {
+        grid.dropMode = 'on-grid';
+        fireDragOver();
+        expect(grid.hasAttribute('row-drag')).to.be.true;
+        fireDragLeave();
+        expect(grid.hasAttribute('row-drag')).to.be.false;
+      });
+
+      it('should clear the row drag styles', () => {
+        grid.dropMode = 'on-top';
+        fireDragOver();
+        const row = grid.$.items.children[0];
+        expect(row.hasAttribute('row-drag')).to.be.true;
+        fireDragLeave();
+        expect(row.hasAttribute('row-drag')).to.be.false;
+      });
+
+    });
+
+    describe('drop', () => {
+      let dropSpy;
+
+      beforeEach(() => {
+        dropSpy = sinon.spy();
+        grid.addEventListener('grid-drop', dropSpy);
+      });
+
+      it('should stop the native event', () => {
+        const spy = sinon.spy();
+        grid.addEventListener('drop', spy);
+        fireDrop();
+        expect(spy.called).to.be.false;
+      });
+
+      it('should clear the grid drag styles', () => {
+        grid.dropMode = 'on-grid';
+        fireDragOver();
+        expect(grid.hasAttribute('row-drag')).to.be.true;
+        fireDrop();
+        expect(grid.hasAttribute('row-drag')).to.be.false;
+      });
+
+      it('should dispatch a grid specific event', () => {
+        fireDrop();
+        expect(dropSpy.calledOnce).to.be.true;
+      });
+
+      it('should bubble and be cancelable', () => {
+        fireDrop();
+        const event = dropSpy.getCall(0).args[0];
+        expect(event.bubbles).to.be.true;
+        expect(event.cancelable).to.be.true;
+      });
+
+      it('should reference the drop target item', () => {
+        grid.dropMode = 'on-top';
+        fireDragOver();
+        fireDrop();
+        const event = dropSpy.getCall(0).args[0];
+        expect(event.detail.item).to.eql(grid.items[0]);
+      });
+
+      it('should have the drop location', () => {
+        grid.dropMode = 'between';
+        const row = grid.$.items.children[0];
+        fireDragOver(row, 'above');
+        fireDrop();
+        const event = dropSpy.getCall(0).args[0];
+        expect(event.detail.dropLocation).to.eql('above');
+      });
+
+      it('should have the payload data', () => {
+        grid.dropMode = 'on-top';
+        fireDragOver();
+        fireDrop();
+        const event = dropSpy.getCall(0).args[0];
+        expect(event.detail.data).to.eql('foo');
+      });
+
 
     });
 

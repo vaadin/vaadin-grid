@@ -48,7 +48,7 @@ This program is available under Apache License Version 2.0, available at https:/
         this.$.table.addEventListener('dragstart', this._onDragStart.bind(this));
         this.$.table.addEventListener('dragend', this._onDragEnd.bind(this));
         this.$.table.addEventListener('dragover', this._onDragOver.bind(this));
-        this.$.table.addEventListener('dragleave', this._clearDragStyles.bind(this));
+        this.$.table.addEventListener('dragleave', this._onDragLeave.bind(this));
         this.$.table.addEventListener('drop', this._onDrop.bind(this));
       }
 
@@ -106,6 +106,11 @@ This program is available under Apache License Version 2.0, available at https:/
         this.dispatchEvent(event);
       }
 
+      _onDragLeave(e) {
+        e.stopPropagation();
+        this._clearDragStyles();
+      }
+
       _onDragOver(e) {
 
         if (this.dropMode) {
@@ -119,15 +124,19 @@ This program is available under Apache License Version 2.0, available at https:/
           let row = e.composedPath().filter(node => node.localName === 'tr')[0];
 
           if (!this._effectiveSize || this.dropMode === DropMode.ON_GRID) {
+            // The grid is empty or "on-grid" drop mode was used, always default to "empty"
             this._dropLocation = DropLocation.EMPTY;
           } else if (!row || row.parentNode !== this.$.items) {
+            // The dragover didn't occur on a body row, default to "empty"...
+            this._dropLocation = DropLocation.EMPTY;
+
             if (this.dropMode === DropMode.BETWEEN || this.dropMode === DropMode.ON_TOP_OR_BETWEEN) {
+              // ...unless if the drop mode allows setting the last row as the drag over item
               row = Array.from(this.$.items.children).filter(row => !row.hidden).pop();
               this._dropLocation = DropLocation.BELOW;
-            } else {
-              this._dropLocation = DropLocation.EMPTY;
             }
           } else {
+            // The dragover occurred on a body row, determine the drop location from coordinates
             const rowRect = row.getBoundingClientRect();
 
             this._dropLocation = DropLocation.ON_TOP;
@@ -169,7 +178,7 @@ This program is available under Apache License Version 2.0, available at https:/
           cancelable: e.cancelable,
           detail: {
             item: this._dragOverItem,
-            position: this._dropLocation,
+            dropLocation: this._dropLocation,
             data
           }
         });

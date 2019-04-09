@@ -161,12 +161,13 @@
 
               const dropOverItem = e.detail.item;
               const array = dropOverItem.array || targetGridItems;
-              if (e.detail.position === 'on-top') {
+
+              if (e.detail.dropLocation === 'on-top') {
                 dropOverItem.children = (dropOverItem.children || []).concat(draggedItem);
                 draggedItem.array = dropOverItem.children;
               } else  {
                 draggedItem.array = array;
-                const dropIndex = array.indexOf(dropOverItem) + (e.detail.position === 'below' ? 1 : 0);
+                const dropIndex = array.indexOf(dropOverItem) + (e.detail.dropLocation === 'below' ? 1 : 0);
                 array.splice(dropIndex, 0, draggedItem);
               }
               targetGrid.clearCache();
