@@ -7,7 +7,27 @@
     </style>
 
     <h3>Row Reordering</h3>
-
+    <p>
+      To enable dragging of the grid's rows, switch on the <code>rowsDraggable</code> flag.
+    </p>
+    <p>
+      Specifying <code>dropMode</code> enables dropping on top of the grid or grid rows.
+      Supported values for the <code>dropMode</code> are
+      <ul>
+        <li><b>on-grid</b> <i>allows dropping on top of the grid</i></li>
+        <li><b>on-top</b> <i>allows dropping on top of the grid rows</i></li>
+        <li><b>between</b> <i>allows dropping between the grid rows</i></li>
+        <li><b>on-top-or-between</b> <i>allows dropping on top of or between the grid rows</i></li>
+      </ul>
+    </p>
+    <p>
+      Grid fires events during the different phases of drag and drop.
+      <ul>
+        <li><b>grid-dragstart</b> <i>fired when starting to drag grid rows</i></li>
+        <li><b>grid-dragend</b> <i>fired when the dragging of the rows ends</i></li>
+        <li><b>grid-drop</b> <i>fired when a drop occurs on top of the grid</i></li>
+      </ul>
+    </p>
     <vaadin-demo-snippet id='grid-drag-and-drop-demos-row-reordering'>
       <template preserve-content>
         <vaadin-grid drop-mode="between" rows-draggable>
@@ -37,7 +57,8 @@
               if (draggedItem && draggedItem !== dropOverItem) {
                 // Reorder the items
                 const items = grid.items.filter(function(i) { return i !== draggedItem });
-                const dropIndex = items.indexOf(dropOverItem) + (e.detail.position === 'below' ? 1 : 0);
+                const dropLocation = e.detail.dropLocation;
+                const dropIndex = items.indexOf(dropOverItem) + (dropLocation === 'below' ? 1 : 0);
                 items.splice(dropIndex, 0, draggedItem);
                 grid.items = items;
               }
@@ -49,6 +70,18 @@
     </vaadin-demo-snippet>
 
     <h3>Drag Rows Between Grids</h3>
+    <p>
+      By default, one row is dragged at once. Make the grid rows selectable to enable dragging
+      multiple rows at the same time.
+    </p>
+    <p>
+      The <code>event.detail.items</code> property of the <code>grid-dragstart</code> event
+      is an array containing all the dragged items.
+    </p>
+    <p>
+      The <code>event.detail.item</code> property of the <code>grid-drop</code> event
+      refers to the item of the grid row on which the drop occurred.
+    </p>
 
     <vaadin-demo-snippet id='grid-drag-and-drop-demos-drag-between-grids'>
       <template preserve-content>
@@ -98,7 +131,7 @@
                 const dropOverItem = e.detail.item
                 if (dropOverItem) {
                   index = targetGrid.items.indexOf(dropOverItem)
-                    + (e.detail.position === 'below' ? 1 : 0);
+                    + (e.detail.dropLocation === 'below' ? 1 : 0);
                 }
                 targetGrid.items = []
                   .concat(targetGrid.items.slice(0, index))
@@ -249,7 +282,7 @@
                 const dropOverItem = e.detail.item
                 if (dropOverItem) {
                   index = targetGrid.items.indexOf(dropOverItem)
-                    + (e.detail.position === 'below' ? 1 : 0);
+                    + (e.detail.dropLocation === 'below' ? 1 : 0);
                 }
                 targetGrid.items = []
                   .concat(targetGrid.items.slice(0, index))
