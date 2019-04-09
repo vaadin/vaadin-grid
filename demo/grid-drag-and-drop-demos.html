@@ -87,7 +87,9 @@
             const dropListener = function(e) {
               if (sourceGrid && draggedItems) {
                 // Remove the items from the source grid
-                sourceGrid.items = sourceGrid.items.filter(i => draggedItems.indexOf(i) === -1);
+                sourceGrid.items = sourceGrid.items.filter(function(i) {
+                  return draggedItems.indexOf(i) === -1;
+                });
                 sourceGrid.selectedItems = [];
 
                 // Add dragged items to the target Grid
@@ -144,7 +146,7 @@
 
             sourceGrid.items = Vaadin.GridDemo.users.slice(2);
             const targetGridItems = Vaadin.GridDemo.users.slice(0, 2);
-            targetGrid.dataProvider = (params, cb) => {
+            targetGrid.dataProvider = function(params, cb) {
               const items = params.parentItem ? params.parentItem.children : targetGridItems;
               const start = params.pageSize * params.page;
               cb(items.slice(start, start + params.pageSize), items.length);
@@ -157,7 +159,9 @@
             });
 
             targetGrid.addEventListener('grid-drop', function(e) {
-              sourceGrid.items = sourceGrid.items.filter(i => i !== draggedItem);
+              sourceGrid.items = sourceGrid.items.filter(function(i) {
+                return i !== draggedItem;
+              });
 
               const dropOverItem = e.detail.item;
               const array = dropOverItem.array || targetGridItems;
@@ -205,9 +209,11 @@
             const grid = document.querySelector('vaadin-grid');
             grid.items = Vaadin.GridDemo.users.slice(0);
 
-            grid.formatDragData = items => items.map(function(item) {
-              return item.email;
-            }).join(',');
+            grid.formatDragData = function(items) {
+              return items.map(function(item) {
+                return item.email;
+              }).join(',')
+            };
 
             let draggedItems;
             grid.addEventListener('grid-dragstart', function(e) {
