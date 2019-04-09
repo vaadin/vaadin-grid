@@ -116,16 +116,16 @@ This program is available under Apache License Version 2.0, available at https:/
           this._dropLocation = undefined;
           this._dragOverItem = undefined;
 
-          if (!this._effectiveSize || this.dropMode === DropMode.ON_GRID) {
-            this.setAttribute('row-drag', '');
-            return;
-          }
-
           let row = e.composedPath().filter(node => node.localName === 'tr')[0];
-          if (!row || row.parentNode !== this.$.items) {
+
+          if (!this._effectiveSize || this.dropMode === DropMode.ON_GRID) {
+            this._dropLocation = DropLocation.EMPTY;
+          } else if (!row || row.parentNode !== this.$.items) {
             if (this.dropMode === DropMode.BETWEEN || this.dropMode === DropMode.ON_TOP_OR_BETWEEN) {
               row = Array.from(this.$.items.children).filter(row => !row.hidden).pop();
               this._dropLocation = DropLocation.BELOW;
+            } else {
+              this._dropLocation = DropLocation.EMPTY;
             }
           } else {
             const rowRect = row.getBoundingClientRect();
@@ -145,7 +145,9 @@ This program is available under Apache License Version 2.0, available at https:/
             }
           }
 
-          if (row) {
+          if (this._dropLocation === DropLocation.EMPTY) {
+            this.setAttribute('row-drag', '');
+          } else if (row) {
             this._dragOverItem = row._item;
             row.setAttribute('row-drag', this._dropLocation);
           }
