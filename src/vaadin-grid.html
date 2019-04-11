@@ -398,6 +398,56 @@ This program is available under Apache License Version 2.0, available at https:/
       constructor() {
         super();
         this.addEventListener('animationend', this._onAnimationEnd);
+
+        this._dataProviderDone = () => {
+          delete this._dataProviderDone;
+          requestAnimationFrame(() => {
+            this.recalculateColumnWidths();
+          });
+        };
+      }
+
+      /**
+       * @param {Array<Vaadin.GridColumnElement>} cols the columns to auto size based on their content width
+       */
+      _recalculateColumnWidths(cols) {
+        // Note: The `cols.forEach()` loops below could be implemented as a single loop but this has been
+        // split for performance reasons to batch these similar actions [write/read] together to avoid
+        // unnecessary layout trashing.
+
+        // [write] Set automatic width for all cells (breaks column alignment)
+        cols.forEach(col => {
+          col.width = 'auto';
+          col._origFlexGrow = col.flexGrow;
+          col.flexGrow = 0;
+        });
+        // [read] Measure max cell width in each column
+        cols.forEach(col => {
+          col._currentWidth = 0;
+          // Note: _allCells only contains cells which are currently rendered in DOM
+          col._allCells.forEach(c => {
+            const cellWidth = Math.ceil(c.getBoundingClientRect().width);
+            col._currentWidth = Math.max(col._currentWidth, cellWidth);
+          });
+        });
+        // [write] Set column widths to fit widest measured content
+        cols.forEach(col => {
+          col.width = `${col._currentWidth}px`;
+          col.flexGrow = col._origFlexGrow;
+          col._currentWidth = undefined;
+          col._origFlexGrow = undefined;
+        });
+      }
+
+      /**
+       * Updates the `width` of all columns which have `autoWidth` set to `true`.
+       */
+      recalculateColumnWidths() {
+        if (!this._columnTree) {
+          return; // No columns
+        }
+        const cols = this._getColumns().filter(col => !col.hidden && col.autoWidth);
+        this._recalculateColumnWidths(cols);
       }
 
       _createScrollerRows(count) {
