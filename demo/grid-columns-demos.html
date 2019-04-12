@@ -23,33 +23,32 @@
       if the grid is wider than what is needed to fit all the columns. You probably want to leave at least one column
       without <code>flex-grow="0"</code> so that column will take all the remaining space that is left.
     </p>
+    <p>
+      <b>Note:</b> When using column renderer functions, those should be set before setting the grid <code>items</code> or
+      <code>dataProvider</code>. Otherwise the initial column widths may be calculated before the renderers have been run and
+      the widths of the renderer columns might be wrong initially.
+    </p>
     <vaadin-demo-snippet id='grid-columns-demos-auto-width'>
       <template preserve-content>
         <vaadin-button>Recalculate column widths</vaadin-button>
         <vaadin-grid theme="compact column-borders" aria-label="Automatic Column Width Example">
-          <vaadin-grid-column auto-width flex-grow="0" text-align="end" header="#"></vaadin-grid-column>
+          <vaadin-grid-column width="50px" flex-grow="0" text-align="end" header="#"></vaadin-grid-column>
           <vaadin-grid-column auto-width flex-grow="0" text-align="center"></vaadin-grid-column>
-          <vaadin-grid-column auto-width flex-grow="0" path="name.first"></vaadin-grid-column>
-          <vaadin-grid-column auto-width flex-grow="0" path="name.last"></vaadin-grid-column>
-          <vaadin-grid-column auto-width flex-grow="0" path="location.city"></vaadin-grid-column>
-          <vaadin-grid-column auto-width flex-grow="0" path="location.state"></vaadin-grid-column>
+          <vaadin-grid-column auto-width path="name.first"></vaadin-grid-column>
+          <vaadin-grid-column auto-width path="name.last"></vaadin-grid-column>
+          <vaadin-grid-column auto-width path="location.city"></vaadin-grid-column>
+          <vaadin-grid-column auto-width path="location.state"></vaadin-grid-column>
           <vaadin-grid-column auto-width path="location.street"></vaadin-grid-column>
         </vaadin-grid>
 
         <script>
           window.addDemoReadyListener('#grid-columns-demos-auto-width', function(document) {
             const grid = document.querySelector('vaadin-grid');
-            const button = document.querySelector('vaadin-button');
-            grid.items = Vaadin.GridDemo.users;
-            button.addEventListener('click', e => {
-              grid.recalculateColumnWidths();
-            });
 
             const columns = document.querySelectorAll('vaadin-grid-column');
             columns[0].renderer = function(root, column, rowData) {
               root.textContent = rowData.index;
             };
-
             columns[1].renderer = function(root, column, rowData) {
               if (!root.firstElementChild) {
                 root.innerHTML = '<iron-image width="25" height="25" sizing="cover"></iron-image>';
@@ -57,6 +56,13 @@
               root.firstElementChild.alt = rowData.item.name.first + ' ' + rowData.item.name.last;
               root.firstElementChild.src = rowData.item.picture.thumbnail;
             };
+
+            grid.items = Vaadin.GridDemo.users;
+
+            const button = document.querySelector('vaadin-button');
+            button.addEventListener('click', e => {
+              grid.recalculateColumnWidths();
+            });
           });
         </script>
       </template>

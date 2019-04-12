@@ -398,13 +398,17 @@ This program is available under Apache License Version 2.0, available at https:/
       constructor() {
         super();
         this.addEventListener('animationend', this._onAnimationEnd);
+      }
 
-        this._dataProviderDone = () => {
-          delete this._dataProviderDone;
-          requestAnimationFrame(() => {
-            this.recalculateColumnWidths();
-          });
-        };
+      __hasRowsWithClientHeight() {
+        return !!Array.from(this.$.items.children).filter(row => row.clientHeight).length;
+      }
+
+      __setInitialColumnWidths() {
+        if (!this._initialColumnWidthsSet && this.__hasRowsWithClientHeight()) {
+          this._initialColumnWidthsSet = true;
+          this.recalculateColumnWidths();
+        }
       }
 
       /**
@@ -756,6 +760,7 @@ This program is available under Apache License Version 2.0, available at https:/
           this._updateHeaderFooterMetrics();
           e.stopPropagation();
           this.notifyResize();
+          this.__setInitialColumnWidths();
         }
       }
 
