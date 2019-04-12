@@ -34,10 +34,10 @@ This program is available under Apache License Version 2.0, available at https:/
            * Defines the locations within the Grid row where an element can be dropped.
            *
            * Possible values are:
-           * `between`: The drop event can happen between Grid rows.
-           * `on-top`: The drop event can happen on top of Grid rows.
-           * `on-top-or-between`: The drop event can happen either on top of or between Grid rows.
-           * `on-grid`: The drop event will not happen on any specific row, it will show the drop target outline around the whole grid.
+           * - `between`: The drop event can happen between Grid rows.
+           * - `on-top`: The drop event can happen on top of Grid rows.
+           * - `on-top-or-between`: The drop event can happen either on top of or between Grid rows.
+           * - `on-grid`: The drop event will not happen on any specific row, it will show the drop target outline around the whole grid.
            */
           dropMode: String,
 
@@ -257,10 +257,10 @@ This program is available under Apache License Version 2.0, available at https:/
        * @param {Object} detail.item The item of the grid row on which the drop occurred.
        * @param {string} detail.dropLocation The position at which the drop event took place relative to a row.
        * Depending on the dropMode value, the drop location can be one of the following
-       * on-top: when the drop occurred on top of the row
-       * above: when the drop occurred above the row
-       * below: when the drop occurred below the row
-       * empty: when the drop occurred over the grid, not relative to any specific row
+       * - `on-top`: when the drop occurred on top of the row
+       * - `above`: when the drop occurred above the row
+       * - `below`: when the drop occurred below the row
+       * - `empty`: when the drop occurred over the grid, not relative to any specific row
        * @param {string} detail.data The payload of the drag and drop operation.
        */
     };
