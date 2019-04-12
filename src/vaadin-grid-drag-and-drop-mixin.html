@@ -254,8 +254,13 @@ This program is available under Apache License Version 2.0, available at https:/
        *
        * @event grid-drop
        * @param {Object} detail
-       * @param {Object} detail.item tTe item of the grid row on which the drop occurred.
+       * @param {Object} detail.item The item of the grid row on which the drop occurred.
        * @param {string} detail.dropLocation The position at which the drop event took place relative to a row.
+       * Depending on the dropMode value, the drop location can be one of the following
+       * on-top: when the drop occurred on top of the row
+       * above: when the drop occurred above the row
+       * below: when the drop occurred below the row
+       * empty: when the drop occurred over the grid, not relative to any specific row
        * @param {string} detail.data The payload of the drag and drop operation.
        */
     };
