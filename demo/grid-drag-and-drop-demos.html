@@ -121,7 +121,8 @@
             };
 
             const dropListener = function(e) {
-              if (sourceGrid && draggedItems) {
+              const dropOverItem = e.detail.item;
+              if (sourceGrid && draggedItems && draggedItems.indexOf(dropOverItem) === -1) {
                 // Remove the items from the source grid
                 sourceGrid.items = sourceGrid.items.filter(function(i) {
                   return draggedItems.indexOf(i) === -1;
@@ -131,7 +132,6 @@
                 // Add dragged items to the target Grid
                 const targetGrid = e.target;
                 let index = targetGrid.items.length;
-                const dropOverItem = e.detail.item;
                 if (dropOverItem) {
                   index = targetGrid.items.indexOf(dropOverItem)
                     + (e.detail.dropLocation === 'below' ? 1 : 0);
@@ -233,7 +233,7 @@
     <h3>Custom Drag Data</h3>
     <p>
       Operating with the drag event text data enables you to process drag and drop between different application windows.
-      The default payload the drag event is generated from the visible grid columns and items as a line break
+      The default payload of the drag event is generated from the visible grid columns and items as a line break
       separated list of tab-separated values.
     </p>
     <p>
@@ -241,7 +241,7 @@
       is the payload of the drag and drop operation.
     </p>
     <p>
-      To customize the drag event data, override the grid's `formatDragData` function. It receives the list of dragged
+      To customize the drag event data, override the grid's <code>formatDragData</code> function. It receives the list of dragged
       items as arguments and returns the payload as a string representation.
     </p>
     <p>
