@@ -295,13 +295,6 @@ describe('drag and drop', () => {
 
     describe('dragover', () => {
 
-      let dragOverSpy;
-
-      beforeEach(() => {
-        dragOverSpy = sinon.spy();
-        grid.addEventListener('grid-dragend', dragOverSpy);
-      });
-
       it('should not stop the native event', () => {
         const spy = sinon.spy();
         grid.addEventListener('dragover', spy);
@@ -341,6 +334,13 @@ describe('drag and drop', () => {
         grid.dropMode = 'on-top-or-between';
         fireDragOver();
         expect(grid.hasAttribute('row-drag')).to.be.true;
+      });
+
+      it('should not set row-drag attribute to the grid', () => {
+        grid.dropMode = 'on-top';
+        const row = grid.$.items.children[0];
+        fireDragOver(row, 'above');
+        expect(grid.hasAttribute('row-drag')).to.be.false;
       });
 
       it('should set row-drag=on-top attribute to the row', () => {
@@ -443,6 +443,15 @@ describe('drag and drop', () => {
         expect(grid.hasAttribute('row-drag')).to.be.true;
         fireDrop();
         expect(grid.hasAttribute('row-drag')).to.be.false;
+      });
+
+      it('should clear the row drag styles', () => {
+        grid.dropMode = 'on-top';
+        fireDragOver();
+        const row = grid.$.items.children[0];
+        expect(row.hasAttribute('row-drag')).to.be.true;
+        fireDrop();
+        expect(row.hasAttribute('row-drag')).to.be.false;
       });
 
       it('should dispatch a grid specific event', () => {
