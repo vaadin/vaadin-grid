@@ -69,43 +69,50 @@ This program is available under Apache License Version 2.0, available at https:/
       }
 
       _onDragStart(e) {
-
-        e.stopPropagation();
-        this._toggleAttribute('dragging-rows', true, this);
-
-        const item = this.getEventContext(e).item || this.__getRowModel(e.target).item;
-
-        const row = Array.from(this.$.items.children).filter(row => row._item === item)[0];
-        if (!window.ShadyDOM) {
-          // Safari doesn't get proper drag images from transformed
-          // elements so we need to switch to top temporarily
-          const transform = row.style.transform;
-          row.style.top = /translateY\((.*)\)/.exec(transform)[1];
-          row.style.transform = 'none';
-
-          const rect = row.getBoundingClientRect();
-          e.dataTransfer.setDragImage(row, e.clientX - rect.left, e.clientY - rect.top);
-
-          requestAnimationFrame(() => {
-            row.style.top = '';
-            row.style.transform = transform;
-          });
-        }
-
-        const items = this._isSelected(item) ? this.selectedItems.slice(0) : [item];
-        e.dataTransfer.setData('text', this.formatDragData(items));
-
-        row.setAttribute('dragged-row-count', items.length);
-        requestAnimationFrame(() => row.removeAttribute('dragged-row-count'));
-
-        const event = new CustomEvent('grid-dragstart', {
-          bubbles: e.bubbles,
-          cancelable: e.cancelable,
-          detail: {
-            items
+        if (this.rowsDraggable) {
+          let row = e.target;
+          if (row.localName === 'vaadin-grid-cell-content') {
+            // In browsers that support shadow, the draggable node is the cell content element
+            row = row.assignedSlot.parentNode.parentNode;
           }
-        });
-        this.dispatchEvent(event);
+          if (row.localName !== 'tr') {
+            return;
+          }
+
+          e.stopPropagation();
+          this._toggleAttribute('dragging-rows', true, this);
+
+          if (!window.ShadyDOM) {
+            // Safari doesn't get proper drag images from transformed
+            // elements so we need to switch to top temporarily
+            const transform = row.style.transform;
+            row.style.top = /translateY\((.*)\)/.exec(transform)[1];
+            row.style.transform = 'none';
+
+            const rect = row.getBoundingClientRect();
+            e.dataTransfer.setDragImage(row, e.clientX - rect.left, e.clientY - rect.top);
+
+            requestAnimationFrame(() => {
+              row.style.top = '';
+              row.style.transform = transform;
+            });
+          }
+
+          const items = this._isSelected(row._item) ? this.selectedItems.slice(0) : [row._item];
+          e.dataTransfer.setData('text', this.formatDragData(items));
+
+          row.setAttribute('dragged-row-count', items.length);
+          requestAnimationFrame(() => row.removeAttribute('dragged-row-count'));
+
+          const event = new CustomEvent('grid-dragstart', {
+            bubbles: e.bubbles,
+            cancelable: e.cancelable,
+            detail: {
+              items
+            }
+          });
+          this.dispatchEvent(event);
+        }
       }
 
       _onDragEnd(e) {

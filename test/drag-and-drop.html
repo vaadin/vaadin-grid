@@ -57,10 +57,11 @@ describe('drag and drop', () => {
   describe('draggable', () => {
     let draggable;
 
-    const fireDragStart = () => {
+    const fireDragStart = node => {
       const event = new Event('dragstart', {
         bubbles: true,
-        cancelable: true
+        cancelable: true,
+        composed: true
       });
       event.dataTransfer = {
         setDragImage: () => {},
@@ -69,7 +70,7 @@ describe('drag and drop', () => {
           event.__data = data;
         }
       };
-      draggable.dispatchEvent(event);
+      (node || draggable).dispatchEvent(event);
       return event;
     };
 
@@ -147,6 +148,7 @@ describe('drag and drop', () => {
       let dragStartSpy;
 
       beforeEach(() => {
+        grid.rowsDraggable = true;
         dragStartSpy = sinon.spy();
         grid.addEventListener('grid-dragstart', dragStartSpy);
       });
@@ -156,6 +158,21 @@ describe('drag and drop', () => {
         grid.addEventListener('dragstart', spy);
         fireDragStart();
         expect(spy.called).to.be.false;
+      });
+
+      it('should not stop the native event', () => {
+        const spy = sinon.spy();
+        grid.addEventListener('dragstart', spy);
+        fireDragStart(getFirstCell(grid));
+        expect(spy.called).to.be.true;
+      });
+
+      it('should not stop the native event when not draggable', () => {
+        const spy = sinon.spy();
+        grid.addEventListener('dragstart', spy);
+        grid.rowsDraggable = false;
+        fireDragStart();
+        expect(spy.called).to.be.true;
       });
 
       it('should add dragging state attribute', () => {
