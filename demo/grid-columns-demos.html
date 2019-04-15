@@ -60,7 +60,7 @@
             grid.items = Vaadin.GridDemo.users;
 
             const button = document.querySelector('vaadin-button');
-            button.addEventListener('click', e => {
+            button.addEventListener('click', function() {
               grid.recalculateColumnWidths();
             });
           });
