@@ -128,7 +128,12 @@ This program is available under Apache License Version 2.0, available at https:/
 
           const rowRect = row.getBoundingClientRect();
           if (!window.ShadyDOM) {
-            e.dataTransfer.setDragImage(row, e.clientX - rowRect.left, e.clientY - rowRect.top);
+            if (this._ios) {
+              e.dataTransfer.setDragImage(row);
+            } else {
+              e.dataTransfer.setDragImage(row, e.clientX - rowRect.left, e.clientY - rowRect.top);
+            }
+
           }
 
           const items = this._isSelected(row._item) ? this.selectedItems.slice(0) : [row._item];
