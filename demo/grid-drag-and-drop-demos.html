@@ -7,28 +7,7 @@
     </style>
 
     <h3>Row Reordering</h3>
-    <p>
-      Switch on the <code>rowsDraggable</code> flag to make the grid's rows draggable with mouse (or touch).
-    </p>
-    <p>
-      Specifying <code>dropMode</code> enables dropping on top of the grid or grid rows.
-      Supported values for the <code>dropMode</code> are
-      <ul>
-        <li><b>on-grid</b> <i>allows dropping on top of the grid</i></li>
-        <li><b>on-top</b> <i>allows dropping on top of the grid rows</i></li>
-        <li><b>between</b> <i>allows dropping between the grid rows</i></li>
-        <li><b>on-top-or-between</b> <i>allows dropping on top of or between the grid rows</i></li>
-      </ul>
-    </p>
-    <p>
-      Depending on <code>rowsDraggable</code> and <code>dropMode</code> configuration,
-      grid fires events during the different phases of drag and drop sequence.
-      <ul>
-        <li><b>grid-dragstart</b> <i>fired when starting to drag grid rows</i></li>
-        <li><b>grid-dragend</b> <i>fired when the dragging of the rows ends</i></li>
-        <li><b>grid-drop</b> <i>fired when a drop occurs on top of the grid</i></li>
-      </ul>
-    </p>
+
     <vaadin-demo-snippet id='grid-drag-and-drop-demos-row-reordering'>
       <template preserve-content>
         <vaadin-grid drop-mode="between" rows-draggable>
