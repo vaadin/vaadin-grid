@@ -26,6 +26,52 @@
   <link rel="import" href="../../vaadin-lumo-styles/icons.html">
   <link rel="import" href="../../vaadin-context-menu/vaadin-context-menu.html">
 
+  <link rel="stylesheet" href="../../mobile-drag-drop/release/default.css">
+  <script src="../../mobile-drag-drop/release/index.js"></script>
+
+  <script>
+    function tryFindDraggableTarget(event) {
+        var cp = event.composedPath();
+        for (let o of cp) {
+            var el = o;
+            do {
+                if (el.draggable === false) {
+                    continue;
+                }
+                if (el.getAttribute && el.getAttribute("draggable") === "true") {
+                    return el;
+                }
+            } while ((el = el.parentNode) && el !== document.body);
+        }
+    }
+
+    function elementFromPoint(x, y) {
+        for (let o of this._path ) {
+            if (o.elementFromPoint) {
+                let el = o.elementFromPoint(x, y);
+                if (el) {
+                    while (el.shadowRoot) {
+                        const fromPoint = el.shadowRoot.elementFromPoint(x, y);
+                        if (el === fromPoint) {
+                          return el;
+                        } else {
+                          el = el.shadowRoot.elementFromPoint(x, y);
+                        }
+                    }
+                    return el;
+                }
+            }
+        }
+    }
+
+    function dragStartConditionOverride(event) {
+        this._path = event.composedPath();
+        return true;
+    }
+
+    MobileDragDrop.polyfill({ tryFindDraggableTarget: tryFindDraggableTarget, elementFromPoint: elementFromPoint, dragStartConditionOverride: dragStartConditionOverride});
+</script>
+
   <!-- Used in the styling examples, keep in sync -->
   <dom-module id="grid-styling-demo-theme" theme-for="vaadin-grid">
     <template>
