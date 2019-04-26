@@ -222,6 +222,17 @@ describe('drag and drop', () => {
         expect(row.getAttribute('dragstart')).to.equal('');
       });
 
+      it('should override row count state attribute', () => {
+        grid.style.height = '80px';
+        grid.addEventListener('grid-dragstart', e => {
+          e.detail.setDraggedItemsCount(2);
+        });
+        grid.selectedItems = grid.items;
+        fireDragStart();
+        const row = getRows(grid.$.items)[0];
+        expect(row.getAttribute('dragstart')).to.equal('2');
+      });
+
       it('should not add count to dragstart attribute on single row drag', () => {
         fireDragStart();
         const row = getRows(grid.$.items)[0];
