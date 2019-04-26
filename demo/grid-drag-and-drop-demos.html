@@ -281,7 +281,10 @@
 
             let draggedItems;
             grid.addEventListener('grid-dragstart', function(e) {
-              draggedItems = e.detail.items;
+              // We'll use grid.selectedItems since e.detail.items only contains the visible dragged items
+              draggedItems = grid.selectedItems;
+              e.detail.setDraggedItemsCount(grid.selectedItems.length);
+
               const data = '[' + draggedItems.map(function(item) {
                 return JSON.stringify(item);
               }).join(',') + ']';
