@@ -273,21 +273,21 @@ describe('drag and drop', () => {
       it('should reference the dragged item', () => {
         fireDragStart();
         const event = dragStartSpy.getCall(0).args[0];
-        expect(event.detail.items).to.eql([grid.items[0]]);
+        expect(event.detail.draggedItems).to.eql([grid.items[0]]);
       });
 
       it('should reference the dragged item only', () => {
         grid.selectItem(grid.items[1]);
         fireDragStart();
         const event = dragStartSpy.getCall(0).args[0];
-        expect(event.detail.items).to.eql([grid.items[0]]);
+        expect(event.detail.draggedItems).to.eql([grid.items[0]]);
       });
 
       it('should reference all the selected items', () => {
         grid.selectedItems = grid.items;
         fireDragStart();
         const event = dragStartSpy.getCall(0).args[0];
-        expect(event.detail.items).to.eql(grid.items);
+        expect(event.detail.draggedItems).to.eql(grid.items);
       });
 
       it('should only include visible rows in the event items', () => {
@@ -295,7 +295,7 @@ describe('drag and drop', () => {
         grid.selectedItems = grid.items;
         fireDragStart();
         const event = dragStartSpy.getCall(0).args[0];
-        expect(event.detail.items).to.eql([grid.items[0]]);
+        expect(event.detail.draggedItems).to.eql([grid.items[0]]);
       });
 
       it('should auto generate data transfer text data', () => {
@@ -331,7 +331,7 @@ describe('drag and drop', () => {
       it('should generate custom data transfer text data', () => {
         grid.selectedItems = grid.items;
         grid.addEventListener('grid-dragstart', e => {
-          e.detail.setDragData('text/plain', e.detail.items.map(item => item.last).join(','));
+          e.detail.setDragData('text/plain', e.detail.draggedItems.map(item => item.last).join(','));
         });
         fireDragStart();
         fireDrop();
@@ -591,7 +591,7 @@ describe('drag and drop', () => {
         fireDragOver();
         fireDrop();
         const event = dropSpy.getCall(0).args[0];
-        expect(event.detail.item).to.eql(grid.items[0]);
+        expect(event.detail.dropTargetItem).to.eql(grid.items[0]);
       });
 
       it('should have the drop location', () => {
@@ -662,7 +662,7 @@ describe('drag and drop', () => {
       grid.addEventListener('grid-dragstart', dragStartSpy);
       fireDragStart();
       const event = dragStartSpy.getCall(0).args[0];
-      expect(event.detail.items).to.eql([grid.items[0]]);
+      expect(event.detail.draggedItems).to.eql([grid.items[0]]);
     });
 
     it('should exclude non-draggable items from dragged row count', () => {

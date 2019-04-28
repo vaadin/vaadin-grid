@@ -163,7 +163,7 @@ This program is available under Apache License Version 2.0, available at https:/
 
           const event = new CustomEvent('grid-dragstart', {
             detail: {
-              items: rows.map(row => row._item),
+              draggedItems: rows.map(row => row._item),
               setDragData: (type, data) => e.dataTransfer.setData(type, data),
               setDraggedItemsCount: count => row.setAttribute('dragstart', count)
             }
@@ -317,7 +317,7 @@ This program is available under Apache License Version 2.0, available at https:/
             bubbles: e.bubbles,
             cancelable: e.cancelable,
             detail: {
-              item: this._dragOverItem,
+              dropTargetItem: this._dragOverItem,
               dropLocation: this._dropLocation,
               dragData
             }
@@ -386,12 +386,10 @@ This program is available under Apache License Version 2.0, available at https:/
        * @event grid-dragstart
        * @param {Object} originalEvent The native dragstart event
        * @param {Object} detail
-       * @param {Object} detail.items the items being dragged
+       * @param {Object} detail.draggedItems the items in the visible viewport that are dragged
        * @param {Function} detail.setDraggedItemsCount Overrides the default number shown in the drag image on multi row drag.
        * Parameter is of type number.
        * @param {Function} detail.setDragData Sets dataTransfer data for the drag operation.
-       * Note that on multi selection, only the items in the viewport are included
-       * in the items property.
        * Note that "text" is the only data type supported by all the browsers the grid currently supports (including IE11).
        * The function takes two parameters:
        * - type:string The type of the data
@@ -411,7 +409,7 @@ This program is available under Apache License Version 2.0, available at https:/
        * @event grid-drop
        * @param {Object} originalEvent The native drop event
        * @param {Object} detail
-       * @param {Object} detail.item The item of the grid row on which the drop occurred.
+       * @param {Object} detail.dropTargetItem The item of the grid row on which the drop occurred.
        * @param {string} detail.dropLocation The position at which the drop event took place relative to a row.
        * Depending on the dropMode value, the drop location can be one of the following
        * - `on-top`: when the drop occurred on top of the row
