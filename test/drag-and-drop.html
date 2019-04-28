@@ -732,6 +732,42 @@ describe('drag and drop', () => {
     });
 
   });
+
+  describe('auto scroll', () => {
+
+    beforeEach(() => {
+      grid.dropMode = 'between';
+      grid.items = Array(...new Array(100)).map(() => {});
+      flushGrid(grid);
+    });
+
+    it('should auto scroll down', () => {
+      const scrollTop = grid.$.table.scrollTop;
+      fireDragOver(grid.__getViewportRows().pop(), 'above');
+      expect(grid.$.table.scrollTop).to.be.within(scrollTop + 20, scrollTop + 100);
+    });
+
+    it('should auto scroll down fast', () => {
+      const scrollTop = grid.$.table.scrollTop;
+      fireDragOver(grid.__getViewportRows().pop(), 'below');
+      expect(grid.$.table.scrollTop).to.be.within(scrollTop + 100, scrollTop + 200);
+    });
+
+    it('should auto scroll up', () => {
+      grid._scrollToIndex(50);
+      const scrollTop = grid.$.table.scrollTop;
+      fireDragOver(grid.__getViewportRows()[0], 'below');
+      expect(grid.$.table.scrollTop).to.be.within(scrollTop - 100, scrollTop - 20);
+    });
+
+    it('should auto scroll up fast', () => {
+      grid._scrollToIndex(50);
+      const scrollTop = grid.$.table.scrollTop;
+      fireDragOver(grid.__getViewportRows()[0], 'above');
+      expect(grid.$.table.scrollTop).to.be.within(scrollTop - 200, scrollTop - 100);
+    });
+
+  });
 });
 
 

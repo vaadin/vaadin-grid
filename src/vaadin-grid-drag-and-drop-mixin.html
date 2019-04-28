@@ -192,6 +192,11 @@ This program is available under Apache License Version 2.0, available at https:/
           this._dropLocation = undefined;
           this._dragOverItem = undefined;
 
+          if (this.__dndAutoScroll(e.clientY)) {
+            this._clearDragStyles();
+            return;
+          }
+
           let row = e.composedPath().filter(node => node.localName === 'tr')[0];
 
           if (!this._effectiveSize || this.dropMode === DropMode.ON_GRID) {
@@ -244,6 +249,37 @@ This program is available under Apache License Version 2.0, available at https:/
             }
           } else {
             this._clearDragStyles();
+          }
+        }
+      }
+
+      __dndAutoScroll(clientY) {
+        if (this.__dndAutoScrolling) {
+          return true;
+        }
+
+        const headerBotton = this.$.header.getBoundingClientRect().bottom;
+        const footerTop = this.$.footer.getBoundingClientRect().top;
+        const topDiff = headerBotton - clientY + 50;
+        const bottomDiff = clientY - footerTop + 50;
+        let scrollTopDelta = 0;
+
+        if (bottomDiff > 0) {
+          scrollTopDelta = bottomDiff * 2;
+        } else if (topDiff > 0) {
+          scrollTopDelta = -topDiff * 2;
+        }
+
+        if (scrollTopDelta) {
+          const scrollTop = this.$.table.scrollTop;
+          this.$.table.scrollTop += scrollTopDelta;
+          const scrollTopChanged = scrollTop !== this.$.table.scrollTop;
+          if (scrollTopChanged) {
+            this.__dndAutoScrolling = true;
+            // Disallow more auto-scrolls within 20ms
+            setTimeout(() => this.__dndAutoScrolling = false, 20);
+            this._scrollHandler();
+            return true;
           }
         }
       }
