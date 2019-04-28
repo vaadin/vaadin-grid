@@ -148,11 +148,11 @@ This program is available under Apache License Version 2.0, available at https:/
           e.dataTransfer.setData('text', this.__formatDefaultTransferData(rows));
 
           row.setAttribute('dragstart', '');
+          this.updateStyles({
+            '--_grid-drag-start-x': `${e.clientX - rowRect.left + 20}px`,
+            '--_grid-drag-start-y': `${e.clientY - rowRect.top + 10}px`
+          });
           if (rows.length > 1) {
-            this.updateStyles({
-              '--_grid-drag-start-x': `${e.clientX - rowRect.left + 20}px`,
-              '--_grid-drag-start-y': `${e.clientY - rowRect.top + 10}px`
-            });
             row.setAttribute('dragstart', rows.length);
           }
 
