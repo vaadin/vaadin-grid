@@ -234,13 +234,13 @@
               const dropTargetItem = e.detail.dropTargetItem;
 
               if (e.detail.dropLocation === 'on-top') {
-                draggedItem.siblings = dropTargetItem.children = dropTargetItem.children || [];
-                dropTargetItem.children.push(draggedItem);
+                draggedItem.parentItem = dropTargetItem;
+                dropTargetItem.children = (dropTargetItem.children || []).concat(draggedItem);
               } else {
-                draggedItem.siblings = dropTargetItem.siblings || targetGridItems;
-                const dropIndex = draggedItem.siblings.indexOf(dropTargetItem)
+                const siblings = dropTargetItem.parentItem ? dropTargetItem.parentItem.children : targetGridItems;
+                const dropIndex = siblings.indexOf(dropTargetItem)
                   + (e.detail.dropLocation === 'below' ? 1 : 0);
-                draggedItem.siblings.splice(dropIndex, 0, draggedItem);
+                siblings.splice(dropIndex, 0, draggedItem);
               }
               targetGrid.clearCache();
             });
