@@ -67,7 +67,8 @@
     "iron-list": "^v2.0.4",
     "vaadin-demo-helpers": "vaadin/vaadin-demo-helpers#^2.0.2",
     "vaadin-button": "vaadin/vaadin-button#^2.1.0",
-    "vaadin-context-menu": "^4.3.1"
+    "vaadin-context-menu": "^4.3.1",
+    "vaadin-mobile-drag-drop": "vaadin/vaadin-mobile-drag-drop#^1.0.0"
   },
   "dependencies": {
     "polymer": "^2.0.0",
