@@ -66,6 +66,24 @@ This program is available under Apache License Version 2.0, available at https:/
       return {cache: this, scaledIndex: thisLevelIndex};
     }
 
+    getCache(item, find) {
+      // Note(cg): search items in the current cache.
+      if (Object.keys(this.items).some(k => find(item, this.items[k]))) {
+        return this;
+      }
+      // Note(cg): otherwise check subCaches recursively.
+      let result;
+      Object.keys(this.itemCaches).some(k => {
+        const cache = this.itemCaches[k];
+        if ( result = cache.getCache(item, find)) {
+          return true; // Note(cg): stop some.
+        }
+      });
+      return result;
+    }
+
+
+
   };
 
 
@@ -223,6 +241,18 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     /**
+     * get the cache containing item
+     * @param  {Object}   item - a model to find
+     * @param  {Function} find  - the find function: function(a,b) {return true when a === b}}
+     *                            if no function is provided, will use this._itesmEqual
+     * @return {Vaadin.Grid.ItemCache}      the cache containing item.
+     */
+    getCache(item, find) {
+      find = find || this._itemsEqual.bind(this);
+      return this._cache.getCache(item, find);
+    }
+
+    /**
      * Returns a value that identifies the item. Uses `itemIdPath` if available.
      * Can be customized by overriding.
      */
@@ -338,22 +368,39 @@ This program is available under Apache License Version 2.0, available at https:/
 
     /**
      * Clears the cached pages and reloads data from dataprovider when needed.
+     * When an item is provided, will only clear - an reload - cache containing this item.
+     * 
+     * @param  {Object}   item - a model to find
+     * @param  {Function} find - the find function: function(a,b) {return true when a === b}}
+     *                           if no function is provided, will use this._itesmEqual
      */
-    clearCache() {
-      this._cache = new Vaadin.Grid.ItemCache(this);
-      Array.from(this.$.items.children).forEach(row => {
-        Array.from(row.children).forEach(cell => {
-          // Force data system to pick up subproperty changes
-          cell._instance && cell._instance._setPendingProperty('item', {}, false);
+    clearCache(item, find) {
+      if (item) {
+        const cache = this.getCache(item, find);
+        const parentCache = cache && cache.parentCache;
+        if(parentCache) {
+          const caches = parentCache.itemCaches
+          const index = Object.keys(caches).find(key => caches[key] === cache);
+          caches[index] = null;
+          parentCache.ensureSubCacheForScaledIndex(index);
+        }  
+      }
+      else {
+        this._cache = new Vaadin.Grid.ItemCache(this);
+        Array.from(this.$.items.children).forEach(row => {
+          Array.from(row.children).forEach(cell => {
+            // Force data system to pick up subproperty changes
+            cell._instance && cell._instance._setPendingProperty('item', {}, false);
+          });
         });
-      });
-      this._cache.size = this.size || 0;
-      this._cache.updateSize();
-      this._hasData = false;
-      this._assignModels();
+        this._cache.size = this.size || 0;
+        this._cache.updateSize();
+        this._hasData = false;
+        this._assignModels();
 
-      if (!this._effectiveSize) {
-        this._loadPage(0, this._cache);
+        if (!this._effectiveSize) {
+          this._loadPage(0, this._cache);
+        }
       }
     }
 
