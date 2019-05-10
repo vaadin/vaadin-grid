@@ -239,10 +239,9 @@ This program is available under Apache License Version 2.0, available at https:/
 
     /**
      * get the cache containing item
-     * @param  {Object}   item - a model to find
      * @return {Vaadin.Grid.ItemCache}      the cache containing item.
      */
-    getCache(item, find) {
+    getCache(item) {
       return this._cache._getCache(item, this._itemsEqual.bind(this));
     }
 
