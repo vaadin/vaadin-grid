@@ -75,15 +75,12 @@ This program is available under Apache License Version 2.0, available at https:/
       let result;
       Object.keys(this.itemCaches).some(k => {
         const cache = this.itemCaches[k];
-        if ( result = cache.getCache(item, find)) {
-          return true; // Note(cg): stop some.
+        if (result = cache.getCache(item, find)) {
+          return true; // Note(cg): stop Array.some.
         }
       });
       return result;
     }
-
-
-
   };
 
 
@@ -369,7 +366,7 @@ This program is available under Apache License Version 2.0, available at https:/
     /**
      * Clears the cached pages and reloads data from dataprovider when needed.
      * When an item is provided, will only clear - an reload - cache containing this item.
-     * 
+     *
      * @param  {Object}   item - a model to find
      * @param  {Function} find - the find function: function(a,b) {return true when a === b}}
      *                           if no function is provided, will use this._itesmEqual
@@ -378,14 +375,13 @@ This program is available under Apache License Version 2.0, available at https:/
       if (item) {
         const cache = this.getCache(item, find);
         const parentCache = cache && cache.parentCache;
-        if(parentCache) {
-          const caches = parentCache.itemCaches
+        if (parentCache) {
+          const caches = parentCache.itemCaches;
           const index = Object.keys(caches).find(key => caches[key] === cache);
           caches[index] = null;
           parentCache.ensureSubCacheForScaledIndex(index);
-        }  
-      }
-      else {
+        }
+      } else {
         this._cache = new Vaadin.Grid.ItemCache(this);
         Array.from(this.$.items.children).forEach(row => {
           Array.from(row.children).forEach(cell => {
