@@ -132,8 +132,6 @@ describe('drag and drop', () => {
 
   beforeEach(done => {
     dragData = {};
-    // Fixture removes the element form dom after each test but
-    // we want to reuse the instance
     if (!grid.parentElement) {
       document.body.appendChild(grid);
     }
