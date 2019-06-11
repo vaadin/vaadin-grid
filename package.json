@@ -15,7 +15,7 @@
     "eslint": "^3.19.0",
     "eslint-config-vaadin": "latest",
     "eslint-plugin-html": "^2.0.0",
-    "gulp": "^3.9.1",
+    "gulp": "latest",
     "gulp-eslint": "^3.0.1",
     "gulp-html-extract": "^0.3.0",
     "gulp-stylelint": "^3.7.0",
