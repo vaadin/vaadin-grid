@@ -5,7 +5,7 @@ var eslint = require('gulp-eslint');
 var htmlExtract = require('gulp-html-extract');
 var stylelint = require('gulp-stylelint');
 
-gulp.task('lint', ['lint:js', 'lint:html', 'lint:css']);
+gulp.task('lint', ['lint:js', 'lint:html']);
 
 gulp.task('lint:js', function() {
   return gulp.src([
@@ -30,20 +30,4 @@ gulp.task('lint:html', function() {
   .pipe(eslint())
   .pipe(eslint.format())
   .pipe(eslint.failAfterError('fail'));
-});
-
-gulp.task('lint:css', function() {
-  return gulp.src([
-    '*.html',
-    'demo/**/*.html',
-    'test/**/*.html'
-  ])
-  .pipe(htmlExtract({
-    sel: 'style'
-  }))
-  .pipe(stylelint({
-    reporters: [
-      {formatter: 'string', console: true}
-    ]
-  }));
 });
