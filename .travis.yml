@@ -10,7 +10,7 @@ install:
 - polymer install --variants
 before_script:
 # - gulp lint
-- polymer lint --rules polymer-2-hybrid --input *.html
+# - polymer lint --rules polymer-2-hybrid --input *.html
 script:
 - xvfb-run -s '-screen 0 1024x768x24' polymer test test/basic.html test/app-localize-behavior.html
   test/column.html test/column-group.html test/column-groups.html test/column-resizing.html
