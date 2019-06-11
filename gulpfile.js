@@ -5,7 +5,7 @@ var eslint = require('gulp-eslint');
 var htmlExtract = require('gulp-html-extract');
 var stylelint = require('gulp-stylelint');
 
-//gulp.task('lint', ['lint:js', 'lint:html']);
+gulp.task('lint', ['lint:js', 'lint:html']);
 
 gulp.task('lint:js', function() {
   return gulp.src([
