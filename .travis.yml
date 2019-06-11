@@ -9,7 +9,7 @@ install:
 - npm install
 - polymer install --variants
 before_script:
-- gulp lint
+# - gulp lint
 - polymer lint --rules polymer-2-hybrid --input *.html
 script:
 - xvfb-run -s '-screen 0 1024x768x24' polymer test test/basic.html test/app-localize-behavior.html
