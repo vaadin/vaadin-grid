@@ -158,11 +158,7 @@
 
       #table[overflow-hidden],
       #outerscroller[overflow-hidden] {
-        /*
-           we only want to disable the built-in scrolling on the y-axis since that
-           is what #outerscroller provides in lieu of the browser's native scrolling
-         */
-        overflow-y: hidden;
+        overflow: hidden;
       }
 
       vaadin-grid-sizer {
