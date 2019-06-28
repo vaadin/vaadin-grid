@@ -366,15 +366,14 @@ This program is available under Apache License Version 2.0, available at https:/
      * @param  {Object}   item - a model to find
      */
     clearCache(item) {
-      if (item) {
-        const cache = this.getCache(item);
-        const parentCache = cache && cache.parentCache;
-        if (parentCache) {
-          const caches = parentCache.itemCaches;
-          const index = Object.keys(caches).find(key => caches[key] === cache);
-          caches[index] = null;
-          parentCache.ensureSubCacheForScaledIndex(index);
-        }
+      const cache = item && this.getCache(item);
+      const parentCache = cache && cache.parentCache;
+
+      if (parentCache) {
+        const caches = parentCache.itemCaches;
+        const index = Object.keys(caches).find(key => caches[key] === cache);
+        caches[index] = null;
+        parentCache.ensureSubCacheForScaledIndex(index);
       } else {
         this._cache = new Vaadin.Grid.ItemCache(this);
         Array.from(this.$.items.children).forEach(row => {
