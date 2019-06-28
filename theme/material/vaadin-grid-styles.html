@@ -109,7 +109,6 @@
 
       [part~="cell"]:not([last-frozen]) [part="resize-handle"] {
         border-right: 1px solid var(--material-divider-color);
-        right: -1px;
       }
 
       /* Keyboard navigation */
@@ -165,6 +164,11 @@
         top: auto;
         bottom: 100%;
         margin-bottom: -1px;
+      }
+
+      [part~="row"][details-opened][dragover="below"] [part~="cell"]:not([part~="details-cell"])::after,
+      [part~="row"][details-opened][dragover="above"] [part~="details-cell"]::after {
+        display: none;
       }
 
       [part~="row"][dragover][dragover="on-top"] [part~="cell"]::after {

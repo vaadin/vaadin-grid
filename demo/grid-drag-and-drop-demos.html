@@ -29,7 +29,7 @@
         <li><b>grid-drop</b> <i>fired when a drop occurs on top of the grid</i></li>
       </ul>
     </p>
-    <vaadin-demo-snippet id='grid-drag-and-drop-demos-row-reordering'>
+    <vaadin-demo-snippet id="grid-drag-and-drop-demos-row-reordering" when-defined="vaadin-grid">
       <template preserve-content>
         <vaadin-grid rows-draggable>
           <vaadin-grid-column path="name.first" header="First name"></vaadin-grid-column>
@@ -87,9 +87,9 @@
       refers to the item of the grid row on which the drop occurred.
     </p>
 
-    <vaadin-demo-snippet id='grid-drag-and-drop-demos-drag-between-grids'>
+    <vaadin-demo-snippet id="grid-drag-and-drop-demos-drag-between-grids" when-defined="vaadin-grid">
       <template preserve-content>
-        <div style="display: flex">
+        <div style="display: flex;">
           <vaadin-grid rows-draggable>
             <vaadin-grid-selection-column auto-select></vaadin-grid-selection-column>
             <vaadin-grid-column path="name.first" header="First name"></vaadin-grid-column>
@@ -181,9 +181,9 @@
         the right to create a hierarchical structure.</b>
     </p>
 
-    <vaadin-demo-snippet id='grid-drag-and-drop-demos-drop-location'>
+    <vaadin-demo-snippet id="grid-drag-and-drop-demos-drop-location" when-defined="vaadin-grid">
       <template preserve-content>
-        <div style="display: flex">
+        <div style="display: flex;">
           <vaadin-grid id="source" rows-draggable>
             <vaadin-grid-column path="name.first" header="First name"></vaadin-grid-column>
             <vaadin-grid-column path="name.last" header="Last name"></vaadin-grid-column>
@@ -277,9 +277,9 @@
     <p>
       <b>Hint:</b> Try dragging the grid's rows to the grid of the same demo but on another browser window.
     </p>
-    <vaadin-demo-snippet id='grid-drag-and-drop-demos-drag-data'>
+    <vaadin-demo-snippet id="grid-drag-and-drop-demos-drag-data" when-defined="vaadin-grid">
       <template preserve-content>
-        <div style="display: flex">
+        <div style="display: flex;">
           <vaadin-grid drop-mode="between" rows-draggable>
             <vaadin-grid-selection-column auto-select></vaadin-grid-selection-column>
             <vaadin-grid-column path="name.first" header="First name"></vaadin-grid-column>
@@ -369,7 +369,7 @@
         </ul>
       </b>
     </p>
-    <vaadin-demo-snippet id='grid-drag-and-drop-demos-filters'>
+    <vaadin-demo-snippet id="grid-drag-and-drop-demos-filters" when-defined="vaadin-grid">
       <template preserve-content>
         <b>Supervisors</b>
         <vaadin-grid rows-draggable>
