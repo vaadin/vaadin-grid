@@ -269,7 +269,7 @@
       <style include="vaadin-grid-data-provider-themability-styles"></style>
 
       <div id="spinner"></div>
-      <div id="table" tabindex="-1" overflow-hidden$="[[_hideTableOverflow(scrollbarWidth, safari)]]">
+      <div id="table" tabindex="-1">
         <div id="sizerwrapper">
           <vaadin-grid-sizer id="fixedsizer" top="[[_estScrollHeight]]" column-tree="[[columnTree]]"></vaadin-grid-sizer>
         </div>
@@ -279,7 +279,7 @@
       </div>
 
       <div id="reorderghost"></div>
-      <vaadin-grid-table-outer-scroller id="outerscroller" scroll-target="[[scrollTarget]]" overflow-hidden$="[[_hideOuterScroller(scrollbarWidth, safari)]]"
+      <vaadin-grid-table-outer-scroller id="outerscroller" scroll-target="[[scrollTarget]]"
       ios$="[[ios]]" scrolling$="[[scrolling]]">
       <vaadin-grid-sizer id="outersizer" top="[[_estScrollHeight]]" column-tree="[[columnTree]]"></vaadin-grid-sizer>
     </vaadin-grid-table-outer-scroller>
