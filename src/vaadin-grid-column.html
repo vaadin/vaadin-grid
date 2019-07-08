@@ -512,26 +512,44 @@ This program is available under Apache License Version 2.0, available at https:/
       this.__updatingVirtual = true;
       this._grid.__columnCellPool = this._grid.__columnCellPool || [];
 
-      if (virtual && this._cells && this._cells.length) {
-        this._grid.__columnCellPool.push({
-          _cells: this._cells,
-          _headerCell: this._headerCell,
-          _footerCell: this._footerCell,
-        });
-        Object.assign(this, {
-          _cells: [],
-          _headerCell: undefined,
-          _footerCell: undefined
-        });
-      } else if (!virtual && !this._cells.length) {
-        const pooledCells = this._grid.__columnCellPool.pop() || {_cells: []};
+      const columnCells = {
+        _cells: this._cells,
+        _headerCell: this._headerCell,
+        _footerCell: this._footerCell
+      };
 
-        [...pooledCells._cells, pooledCells._headerCell, pooledCells._footerCell].forEach(cell => {
-          if (cell) {
-            cell.hidden = false;
-            cell._column = this;
-          }
-        });
+      if (virtual && this._cells && this._cells.length) {
+        // this._grid.__columnCellPool.push({
+        //   _cells: this._cells,
+        //   _headerCell: this._headerCell,
+        //   _footerCell: this._footerCell,
+        // });
+        // Object.assign(this, {
+        //   _cells: [],
+        //   _headerCell: undefined,
+        //   _footerCell: undefined
+        // });
+        // [...this._cells, this._headerCell, this._footerCell].forEach(cell => {
+        //   if (cell) {
+            // if (!cell._parentElement) {
+            //   cell._parentElement = cell.parentElement;
+            // }
+
+            //   if (cell.parentElement) {
+            //     cell.parentElement.removeChild(cell);
+            //   }
+            // cell.hidden = true;
+
+        //   }
+        // });
+      } else if (!virtual && !this._cells.length) {
+        // const pooledCells = this._grid.__columnCellPool.pop() || {_cells: []};
+
+        // [...this._cells, this._headerCell, this._footerCell].forEach(cell => {
+        //   if (cell) {
+        //     cell.hidden = false;
+        //   }
+        // });
 
         Array.from(this._grid.$.items.children).forEach(row => {
           if (!Array.from(row.children).filter(cell => cell._column === this)[0]) {
@@ -540,31 +558,43 @@ This program is available under Apache License Version 2.0, available at https:/
             cell._column = this;
             row.appendChild(cell);
             this._grid.appendChild(cell._content);
-            pooledCells._cells.push(cell);
+            columnCells._cells.push(cell);
           }
         });
 
-        if (!pooledCells._headerCell && this._grid.$.header.children.length) {
+        if (!this._headerCell && this._grid.$.header.children.length) {
           const cell = this._grid._createCell('th');
           cell.setAttribute('part', 'cell header-cell');
           cell._column = this;
           Array.from(this._grid.$.header.children).pop().appendChild(cell);
           this._grid.appendChild(cell._content);
-          pooledCells._headerCell = cell;
+          columnCells._headerCell = cell;
         }
 
         // TODO: Dry
-        if (!pooledCells._footerCell && this._grid.$.header.children.length) {
+        if (!this._footerCell && this._grid.$.header.children.length) {
           const cell = this._grid._createCell('td');
           cell.setAttribute('part', 'cell footer-cell');
           cell._column = this;
           Array.from(this._grid.$.footer.children)[0].appendChild(cell);
           this._grid.appendChild(cell._content);
-          pooledCells._footerCell = cell;
+          columnCells._footerCell = cell;
         }
 
-        Object.assign(this, pooledCells);
+        Object.assign(this, columnCells);
+        this._cells = columnCells._cells.slice(0);
       }
+
+      [...this._cells, this._headerCell, this._footerCell].forEach(cell => {
+        if (cell) {
+          if (virtual) {
+            cell._parentElement = cell.parentElement;
+            cell._parentElement.removeChild(cell);
+          } else if (cell._parentElement) {
+            cell._parentElement.appendChild(cell);
+          }
+        }
+      });
 
       this.__updatingVirtual = false;
     }
