@@ -303,6 +303,19 @@ This program is available under Apache License Version 2.0, available at https:/
       }
     }
 
+    setColumnOrders(columns) {
+      if (columns.slice(1).filter(c => !this._isSwapAllowed(c, columns[0]))[0]) {
+        throw new Error('The ordered columns must 1. have the same parent (grid or column group) 2. be all frozen or non-frozen');
+      } else {
+        columns.forEach((c, index) => {
+          const currentOrder = columns.slice(0).sort((a, b) => a._order - b._order);
+          if (currentOrder[index] !== c) {
+            this._swapColumnOrders(currentOrder[index], c);
+          }
+        });
+      }
+    }
+
     _swapColumnOrders(column1, column2) {
       const _order = column1._order;
       column1._order = column2._order;
