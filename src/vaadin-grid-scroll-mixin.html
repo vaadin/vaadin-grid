@@ -81,7 +81,6 @@ This program is available under Apache License Version 2.0, available at https:/
     constructor() {
       super();
       this._scrollLineHeight = this._getScrollLineHeight();
-      this._scrollPageHeight = this._scrollLineHeight;
     }
 
     /**
@@ -98,9 +97,7 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     _scrollViewportHeightUpdated(_viewportHeight) {
-      window.requestAnimationFrame(() => {
-        this._scrollPageHeight = _viewportHeight - this.$.header.clientHeight - this.$.footer.clientHeight - this._scrollLineHeight;
-      });
+      this._scrollPageHeight = _viewportHeight - this.$.header.clientHeight - this.$.footer.clientHeight - this._scrollLineHeight;
     }
 
     ready() {
