@@ -540,8 +540,7 @@ This program is available under Apache License Version 2.0, available at https:/
         return cell;
       }
 
-      _updateRow(row, columns, section, isColumnRow, noNotify) {
-        section = section || 'body';
+      _updateRow(row, columns, section = 'body', isColumnRow, noNotify) {
 
         const contentsFragment = document.createDocumentFragment();
 
@@ -630,7 +629,7 @@ This program is available under Apache License Version 2.0, available at https:/
 
         this._frozenCellsChanged();
         this._updateFirstAndLastColumnForRow(row);
-        this.__cacheEffectiveColumnMetrics();
+        // this.__cacheEffectiveColumnMetrics();
         this._updateVirtualColumns();
       }
 
