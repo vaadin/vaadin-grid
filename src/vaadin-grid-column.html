@@ -247,7 +247,7 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     __runRenderer(renderer, cell, rowData) {
-      if (!cell.parentElement || !cell._content) {
+      if (!cell._row || !cell._content) {
         return;
       }
 
@@ -264,7 +264,7 @@ This program is available under Apache License Version 2.0, available at https:/
       }
 
       cells.forEach(cell => {
-        const model = cell.parentElement && this._grid.__getRowModel(cell.parentElement);
+        const model = cell._row && this._grid.__getRowModel(cell._row);
 
         if (renderer) {
           cell._renderer = renderer;
@@ -303,7 +303,7 @@ This program is available under Apache License Version 2.0, available at https:/
     _setFooterTemplateOrRenderer(footerTemplate, footerRenderer, footerCell) {
       if ((footerTemplate || footerRenderer) && footerCell) {
         this.__setColumnTemplateOrRenderer(footerTemplate, footerRenderer, [footerCell]);
-        this._grid.__updateHeaderFooterRowVisibility(footerCell.parentElement);
+        this._grid.__updateHeaderFooterRowVisibility(footerCell._row);
       }
     }
 
@@ -400,7 +400,7 @@ This program is available under Apache License Version 2.0, available at https:/
       }
 
       if (headerCell) {
-        this._grid.__updateHeaderFooterRowVisibility(headerCell.parentElement);
+        this._grid.__updateHeaderFooterRowVisibility(headerCell._row);
       }
     }
 
@@ -511,60 +511,52 @@ This program is available under Apache License Version 2.0, available at https:/
       }
       this.__updatingVirtual = true;
 
-      if (!virtual && !this._cells.length) {
-
-        const columnCells = {
-          _cells: this._cells,
-          _headerCell: this._headerCell,
-          _footerCell: this._footerCell
-        };
+      if (!virtual) {
+        const columnCells = {};
 
         Array.from(this._grid.$.items.children).forEach(row => {
-          if (!Array.from(row.children).filter(cell => cell._column === this)[0]) {
-            const cell = this._grid._createCell('td');
-            cell.setAttribute('part', 'cell body-cell');
-            cell._column = this;
-            row.appendChild(cell);
-            this._grid.appendChild(cell._content);
-            columnCells._cells.push(cell);
+          if (!this._cells.filter(cell => cell._row === row).length) {
+            columnCells._cells = columnCells._cells || this._cells.slice(0);
+            columnCells._cells.push(this.__createCell('td', 'cell body-cell', this, row));
           }
         });
 
         if (!this._headerCell && this._grid.$.header.children.length) {
-          const cell = this._grid._createCell('th');
-          cell.setAttribute('part', 'cell header-cell');
-          cell._column = this;
-          Array.from(this._grid.$.header.children).pop().appendChild(cell);
-          this._grid.appendChild(cell._content);
-          columnCells._headerCell = cell;
+          const row = Array.from(this._grid.$.header.children).pop();
+          columnCells._headerCell = this.__createCell('th', 'cell header-cell', this, row);
         }
 
-        // TODO: Dry
         if (!this._footerCell && this._grid.$.header.children.length) {
-          const cell = this._grid._createCell('td');
-          cell.setAttribute('part', 'cell footer-cell');
-          cell._column = this;
-          Array.from(this._grid.$.footer.children)[0].appendChild(cell);
-          this._grid.appendChild(cell._content);
-          columnCells._footerCell = cell;
+          const row = Array.from(this._grid.$.footer.children)[0];
+          columnCells._footerCell = this.__createCell('td', 'cell footer-cell', this, row);
         }
 
         Object.assign(this, columnCells);
-        this._cells = columnCells._cells.slice(0);
       }
 
       [...this._cells, this._headerCell, this._footerCell].forEach(cell => {
         if (cell) {
           if (virtual) {
-            cell._parentElement = cell.parentElement;
-            cell._parentElement.removeChild(cell);
-          } else if (cell._parentElement) {
-            cell._parentElement.appendChild(cell);
+            cell._row.removeChild(cell);
+            // TODO: Is removing the content element unnecessary optimization/overhead?
+            this._grid.removeChild(cell._content);
+          } else if (cell._row) {
+            cell._row.appendChild(cell);
+            this._grid.appendChild(cell._content);
           }
         }
       });
 
       this.__updatingVirtual = false;
+    }
+
+    __createCell(tagName, partName, column, parentRow) {
+      // TODO: Move grid._createCell to column
+      const cell = this._grid._createCell(tagName);
+      cell.setAttribute('part', partName);
+      cell._column = column;
+      cell._row = parentRow;
+      return cell;
     }
 
   };
