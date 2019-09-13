@@ -502,6 +502,11 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     _visibilityChanged(virtual, frozen) {
+      if (this._updatingCells) {
+        return;
+      }
+      this._updatingCells = true;
+
       if (!this._sizerCells && this._grid.$) {
         const sizerCells = [];
         [this._grid.$.outersizer, this._grid.$.fixedsizer].forEach(row => {
@@ -534,7 +539,7 @@ This program is available under Apache License Version 2.0, available at https:/
           columnCells._headerCell = this.__createCell('th', 'cell header-cell', this, row);
         }
 
-        if (!this._footerCell && this._grid.$.header.children.length) {
+        if (!this._footerCell && this._grid.$.footer.children.length) {
           const row = Array.from(this._grid.$.footer.children)[0];
           columnCells._footerCell = this.__createCell('td', 'cell footer-cell', this, row);
         }
@@ -554,6 +559,8 @@ This program is available under Apache License Version 2.0, available at https:/
           }
         }
       });
+
+      this._updatingCells = false;
     }
 
     __createCell(tagName, partName, column, parentRow) {
