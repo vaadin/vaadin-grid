@@ -491,66 +491,6 @@ This program is available under Apache License Version 2.0, available at https:/
         return this.$.items;
       }
 
-      _updateRow(row, columns, section = 'body', isColumnRow, noNotify) {
-
-        const contentsFragment = document.createDocumentFragment();
-
-        Array.from(row.children).forEach(cell => cell._vacant = true);
-        row.innerHTML = '';
-        if (row.id !== 'outersizer' && row.id !== 'fixedsizer') {
-          row.hidden = true;
-        }
-        columns.forEach((column, index) => {
-          let cell;
-
-          // Body
-          column._cells = column._cells || [];
-          column._sizerCells = column._sizerCells || [];
-          cell = column._cells.filter(cell => cell._vacant)[0];
-          if (!cell) {
-            cell = column._createCell('td', true);
-            column._sizerCells.push(cell);
-          }
-          cell.setAttribute('part', 'cell body-cell');
-
-          row.appendChild(cell);
-
-          if (index === columns.length - 1 && (this._rowDetailsTemplate || this.rowDetailsRenderer)) {
-            // Add details cell as last cell to body rows
-            this._detailsCells = this._detailsCells || [];
-            const detailsCell = this._detailsCells.filter(cell => cell._vacant)[0] || column._createCell('td');
-            if (this._detailsCells.indexOf(detailsCell) === -1) {
-              this._detailsCells.push(detailsCell);
-            }
-            if (!detailsCell._content.parentElement) {
-              contentsFragment.appendChild(detailsCell._content);
-            }
-            this._configureDetailsCell(detailsCell);
-            row.appendChild(detailsCell);
-            this._a11ySetRowDetailsCell(row, detailsCell);
-            detailsCell._vacant = false;
-          }
-
-          if (column.notifyPath && !noNotify) {
-            column.notifyPath('_cells.*', column._cells);
-          }
-
-          if (cell._content && !cell._content.parentElement) {
-            contentsFragment.appendChild(cell._content);
-          }
-          cell._vacant = false;
-          cell._column = column;
-        });
-
-        // Might be empty if only cache was used
-        this.appendChild(contentsFragment);
-
-        this._frozenCellsChanged();
-        this._updateFirstAndLastColumnForRow(row);
-        // this.__cacheEffectiveColumnMetrics();
-        // this._updateVirtualColumns();
-      }
-
       __updateHeaderFooterRowVisibility(row) {
         if (!row) {
           return;
@@ -606,10 +546,6 @@ This program is available under Apache License Version 2.0, available at https:/
       }
 
       _columnTreeChanged(columnTree, splices) {
-        // Sizer rows
-        this._updateRow(this.$.outersizer, columnTree[columnTree.length - 1]);
-        this._updateRow(this.$.fixedsizer, columnTree[columnTree.length - 1]);
-
         while (this.$.header.children.length < columnTree.length) {
           const headerRow = document.createElement('tr');
           headerRow.setAttribute('part', 'row');

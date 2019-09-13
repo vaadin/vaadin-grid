@@ -502,10 +502,22 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     _visibilityChanged(virtual, frozen) {
+      if (!this._sizerCells && this._grid.$) {
+        const sizerCells = [];
+        [this._grid.$.outersizer, this._grid.$.fixedsizer].forEach(row => {
+          const cell = this.__createCell('td', 'cell body-cell', this, row);
+          row.appendChild(cell);
+          sizerCells.push(cell);
+        });
+        this._sizerCells = sizerCells;
+      }
+
       if (virtual === undefined || frozen === undefined) {
         return;
       }
 
+      // TODO: Once ready, move back to grid level & utilize document fragments
+      // = updateColumnRows (iterate columns and batch update row content)
       const columnVisible = !virtual || frozen;
       if (columnVisible && this._grid.$) {
         const columnCells = {};
