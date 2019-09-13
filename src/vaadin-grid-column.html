@@ -531,7 +531,7 @@ This program is available under Apache License Version 2.0, available at https:/
       }
 
       [...this._cells, this._headerCell, this._footerCell].forEach(cell => {
-        if (cell && cell._row) {
+        if (cell) {
           if (columnVisible) {
             !cell.parentElement && cell._row.appendChild(cell);
             !cell._content.parentElement && this._grid.appendChild(cell._content);

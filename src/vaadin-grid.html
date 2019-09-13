@@ -470,9 +470,9 @@ This program is available under Apache License Version 2.0, available at https:/
           const row = document.createElement('tr');
           row.setAttribute('part', 'row');
           row.setAttribute('role', 'row');
-          if (this._columnTree) {
-            this._updateRow(row, this._columnTree[this._columnTree.length - 1], 'body', false, true);
-          }
+          // if (this._columnTree) {
+          //   this._updateRow(row, this._columnTree[this._columnTree.length - 1], 'body', false, true);
+          // }
           rows.push(row);
         }
 
@@ -503,70 +503,36 @@ This program is available under Apache License Version 2.0, available at https:/
         columns.forEach((column, index) => {
           let cell;
 
-          if (section === 'body') {
-            // Body
-            const bodyCell = row.localName === 'tr';
-            if (column.virtual && bodyCell) {
-              return;
-            }
-            column._cells = column._cells || [];
-            column._sizerCells = column._sizerCells || [];
-            cell = column._cells.filter(cell => cell._vacant)[0];
-            if (!cell) {
-              if (bodyCell) {
-                    // cell = column._createCell('td');
-                    // column._cells.push(cell);
-                    return;
-              } else {
-                cell = column._createCell('td', true);
-                column._sizerCells.push(cell);
-              }
-            }
-            cell.setAttribute('part', 'cell body-cell');
+          // Body
+          column._cells = column._cells || [];
+          column._sizerCells = column._sizerCells || [];
+          cell = column._cells.filter(cell => cell._vacant)[0];
+          if (!cell) {
+            cell = column._createCell('td', true);
+            column._sizerCells.push(cell);
+          }
+          cell.setAttribute('part', 'cell body-cell');
 
-            row.appendChild(cell);
+          row.appendChild(cell);
 
-            if (index === columns.length - 1 && (this._rowDetailsTemplate || this.rowDetailsRenderer)) {
-              // Add details cell as last cell to body rows
-              this._detailsCells = this._detailsCells || [];
-              const detailsCell = this._detailsCells.filter(cell => cell._vacant)[0] || column._createCell('td');
-              if (this._detailsCells.indexOf(detailsCell) === -1) {
-                this._detailsCells.push(detailsCell);
-              }
-              if (!detailsCell._content.parentElement) {
-                contentsFragment.appendChild(detailsCell._content);
-              }
-              this._configureDetailsCell(detailsCell);
-              row.appendChild(detailsCell);
-              this._a11ySetRowDetailsCell(row, detailsCell);
-              detailsCell._vacant = false;
+          if (index === columns.length - 1 && (this._rowDetailsTemplate || this.rowDetailsRenderer)) {
+            // Add details cell as last cell to body rows
+            this._detailsCells = this._detailsCells || [];
+            const detailsCell = this._detailsCells.filter(cell => cell._vacant)[0] || column._createCell('td');
+            if (this._detailsCells.indexOf(detailsCell) === -1) {
+              this._detailsCells.push(detailsCell);
             }
+            if (!detailsCell._content.parentElement) {
+              contentsFragment.appendChild(detailsCell._content);
+            }
+            this._configureDetailsCell(detailsCell);
+            row.appendChild(detailsCell);
+            this._a11ySetRowDetailsCell(row, detailsCell);
+            detailsCell._vacant = false;
+          }
 
-            if (column.notifyPath && !noNotify) {
-              column.notifyPath('_cells.*', column._cells);
-            }
-          } else {
-            // Header & footer
-            const tagName = section === 'header' ? 'th' : 'td';
-            if (isColumnRow || column.localName === 'vaadin-grid-column-group') {
-              if (column.virtual && isColumnRow) {
-                return;
-              }
-              cell = column[`_${section}Cell`] || column._createCell(tagName);
-              cell._column = column;
-              row.appendChild(cell);
-              column[`_${section}Cell`] = cell;
-            } else {
-              column._emptyCells = column._emptyCells || [];
-              cell = column._emptyCells.filter(cell => cell._vacant)[0] || column._createCell(tagName);
-              cell._column = column;
-              row.appendChild(cell);
-              if (column._emptyCells.indexOf(cell) === -1) {
-                column._emptyCells.push(cell);
-              }
-            }
-            cell.setAttribute('part', `cell ${section}-cell`);
-            this.__updateHeaderFooterRowVisibility(row);
+          if (column.notifyPath && !noNotify) {
+            column.notifyPath('_cells.*', column._cells);
           }
 
           if (cell._content && !cell._content.parentElement) {
