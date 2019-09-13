@@ -723,6 +723,10 @@ This program is available under Apache License Version 2.0, available at https:/
         this._resetKeyboardNavigation();
         this._a11yUpdateHeaderRows();
         this._a11yUpdateFooterRows();
+
+        this.__cacheEffectiveColumnMetrics();
+        this.__debounceCacheMetrics.flush();
+        this._updateVirtualColumns();
       }
 
       _updateItem(row, item) {

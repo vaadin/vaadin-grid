@@ -510,46 +510,14 @@ This program is available under Apache License Version 2.0, available at https:/
         return;
       }
       this.__updatingVirtual = true;
-      this._grid.__columnCellPool = this._grid.__columnCellPool || [];
 
-      const columnCells = {
-        _cells: this._cells,
-        _headerCell: this._headerCell,
-        _footerCell: this._footerCell
-      };
+      if (!virtual && !this._cells.length) {
 
-      if (virtual && this._cells && this._cells.length) {
-        // this._grid.__columnCellPool.push({
-        //   _cells: this._cells,
-        //   _headerCell: this._headerCell,
-        //   _footerCell: this._footerCell,
-        // });
-        // Object.assign(this, {
-        //   _cells: [],
-        //   _headerCell: undefined,
-        //   _footerCell: undefined
-        // });
-        // [...this._cells, this._headerCell, this._footerCell].forEach(cell => {
-        //   if (cell) {
-            // if (!cell._parentElement) {
-            //   cell._parentElement = cell.parentElement;
-            // }
-
-            //   if (cell.parentElement) {
-            //     cell.parentElement.removeChild(cell);
-            //   }
-            // cell.hidden = true;
-
-        //   }
-        // });
-      } else if (!virtual && !this._cells.length) {
-        // const pooledCells = this._grid.__columnCellPool.pop() || {_cells: []};
-
-        // [...this._cells, this._headerCell, this._footerCell].forEach(cell => {
-        //   if (cell) {
-        //     cell.hidden = false;
-        //   }
-        // });
+        const columnCells = {
+          _cells: this._cells,
+          _headerCell: this._headerCell,
+          _footerCell: this._footerCell
+        };
 
         Array.from(this._grid.$.items.children).forEach(row => {
           if (!Array.from(row.children).filter(cell => cell._column === this)[0]) {
