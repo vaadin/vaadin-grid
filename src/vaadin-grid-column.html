@@ -113,7 +113,9 @@ This program is available under Apache License Version 2.0, available at https:/
          */
         footerRenderer: Function,
 
-        virtual: Boolean
+        virtual: {
+          value: true
+        }
       };
     }
 
@@ -132,7 +134,7 @@ This program is available under Apache License Version 2.0, available at https:/
         '_resizableChanged(resizable, _headerCell)',
         '_reorderStatusChanged(_reorderStatus, _headerCell, _footerCell, _cells.*)',
         '_hiddenChanged(hidden, _headerCell, _footerCell, _cells.*)',
-        '_virtualChanged(virtual, cells.*)'
+        '_visibilityChanged(virtual, frozen, _cells.*)'
       ];
     }
 
@@ -362,9 +364,6 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     _frozenChanged(frozen, headerCell, footerCell, cells) {
-      if (this.__updatingVirtual) {
-        return;
-      }
       if (this.parentElement && this.parentElement._columnPropChanged) {
         this.parentElement._columnPropChanged('frozen', frozen);
       }
@@ -502,16 +501,13 @@ This program is available under Apache License Version 2.0, available at https:/
       this._previousHidden = hidden;
     }
 
-    _virtualChanged(virtual, cells) {
-      if (virtual === undefined) {
-        return
-      }
-      if (this.__updatingVirtual) {
+    _visibilityChanged(virtual, frozen) {
+      if (virtual === undefined || frozen === undefined) {
         return;
       }
-      this.__updatingVirtual = true;
 
-      if (!virtual) {
+      const columnVisible = !virtual || frozen;
+      if (columnVisible && this._grid.$) {
         const columnCells = {};
 
         Array.from(this._grid.$.items.children).forEach(row => {
@@ -535,30 +531,75 @@ This program is available under Apache License Version 2.0, available at https:/
       }
 
       [...this._cells, this._headerCell, this._footerCell].forEach(cell => {
-        if (cell) {
-          if (virtual) {
+        if (cell && cell._row) {
+          if (columnVisible) {
+            !cell.parentElement && cell._row.appendChild(cell);
+            !cell._content.parentElement && this._grid.appendChild(cell._content);
+          } else if (cell._row) {
             cell._row.removeChild(cell);
             // TODO: Is removing the content element unnecessary optimization/overhead?
             this._grid.removeChild(cell._content);
-          } else if (cell._row) {
-            cell._row.appendChild(cell);
-            this._grid.appendChild(cell._content);
           }
         }
       });
-
-      this.__updatingVirtual = false;
     }
 
     __createCell(tagName, partName, column, parentRow) {
       // TODO: Move grid._createCell to column
-      const cell = this._grid._createCell(tagName);
+      const cell = this._createCell(tagName);
       cell.setAttribute('part', partName);
       cell._column = column;
       cell._row = parentRow;
       return cell;
     }
 
+    _createCell(tagName, skipContent) {
+      const contentId = Vaadin.Grid._contentIndex = Vaadin.Grid._contentIndex + 1 || 0;
+      const slotName = 'vaadin-grid-cell-content-' + contentId;
+
+      const cell = document.createElement(tagName);
+      cell.id = slotName.replace('-content-', '-');
+      cell.setAttribute('tabindex', '-1');
+      cell.setAttribute('role', tagName === 'td' ? 'gridcell' : 'columnheader');
+
+      const slot = document.createElement('slot');
+      slot.setAttribute('name', slotName);
+
+      cell.appendChild(slot);
+
+      if (!skipContent) {
+        const cellContent = document.createElement('vaadin-grid-cell-content');
+        cellContent.setAttribute('slot', slotName);
+        cell._content = cellContent;
+
+        // With native Shadow DOM, mousedown on slotted element does not focus
+        // focusable slot wrapper, that is why cells are not focused with
+        // mousedown. Workaround: listen for mousedown and focus manually.
+        cellContent.addEventListener('mousedown', () => {
+          if (window.chrome) {
+            // Chrome bug: focusing before mouseup prevents text selection, see http://crbug.com/771903
+            const mouseUpListener = () => {
+              if (!cellContent.contains(this._grid.getRootNode().activeElement)) {
+                cell.focus();
+              }
+              // If focus is in the cell content — respect it, do not change.
+              document.removeEventListener('mouseup', mouseUpListener, true);
+            };
+            document.addEventListener('mouseup', mouseUpListener, true);
+          } else {
+            // Focus on mouseup, on the other hand, removes selection on Safari.
+            // Watch out sync focus removal issue, only async focus works here.
+            setTimeout(() => {
+              if (!cellContent.contains(this._grid.getRootNode().activeElement)) {
+                cell.focus();
+              }
+            });
+          }
+        });
+      }
+
+      return cell;
+    }
   };
 </script>
 
@@ -647,7 +688,9 @@ This program is available under Apache License Version 2.0, available at https:/
             type: Object
           },
 
-          _cells: Array,
+          _cells: {
+            value: () => []
+          },
 
           _sizerCells: Array
 

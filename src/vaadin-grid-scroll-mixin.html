@@ -276,37 +276,23 @@ This program is available under Apache License Version 2.0, available at https:/
       const columns = this._columnTree[this._columnTree.length - 1]
         .slice(0).sort((a, b) => a._order - b._order);
 
-      let nonVirtualCount = columns.filter(c => !c.virtual && !c.frozen).length;
-      let inViewport;
       let virtualChanged = false;
       columns.forEach(column => {
         const columnLeft = column.__effectiveLeft - scrollLeft;
         const columnRight = columnLeft + column.__effectiveWidth;
         const columnInViewport = columnRight > -column.__effectiveWidth && columnLeft < this.__effectiveWidth + column.__effectiveWidth;
-        if (columnInViewport && !column.frozen) {
-          inViewport = true;
-        }
 
-        if (inViewport && nonVirtualCount-- > 0) {
-          column._virtual = false;
-        } else {
-          column._virtual = !(columnInViewport || column.frozen);
-        }
+        column._virtual = !columnInViewport;
 
-        if (column.virtual === column._virtual) {
+        if (column.virtual !== column._virtual) {
           virtualChanged = true;
         }
       });
 
-      // Need to assign virtual columns before non-virtual ones so extra columns won't get rendered unnecessarily
-      columns.filter(column => column._virtual).forEach(column => column.virtual = true);
-      columns.filter(column => !column._virtual).forEach(column => column.virtual = false);
-
-      (this.__columnCellPool || []).forEach(pooledCells => {
-        [...pooledCells._cells, pooledCells._headerCell, pooledCells._footerCell].forEach(cell => cell.hidden = true);
-      });
-
       if (virtualChanged) {
+        console.log('Should only invoke once initially');
+
+        columns.forEach(column => column.virtual = column._virtual);
         const firstNonVirtual = columns.filter(column => !column.virtual && !column.frozen)[0];
 
         if (firstNonVirtual) {

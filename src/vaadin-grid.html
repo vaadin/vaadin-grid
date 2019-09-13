@@ -491,55 +491,6 @@ This program is available under Apache License Version 2.0, available at https:/
         return this.$.items;
       }
 
-      _createCell(tagName, skipContent) {
-        const contentId = this._contentIndex = this._contentIndex + 1 || 0;
-        const slotName = 'vaadin-grid-cell-content-' + contentId;
-
-        const cellContent = document.createElement('vaadin-grid-cell-content');
-        cellContent.setAttribute('slot', slotName);
-
-        const cell = document.createElement(tagName);
-        cell.id = slotName.replace('-content-', '-');
-        cell.setAttribute('tabindex', '-1');
-        cell.setAttribute('role', tagName === 'td' ? 'gridcell' : 'columnheader');
-
-        const slot = document.createElement('slot');
-        slot.setAttribute('name', slotName);
-
-        cell.appendChild(slot);
-
-        if (!skipContent) {
-          cell._content = cellContent;
-
-          // With native Shadow DOM, mousedown on slotted element does not focus
-          // focusable slot wrapper, that is why cells are not focused with
-          // mousedown. Workaround: listen for mousedown and focus manually.
-          cellContent.addEventListener('mousedown', () => {
-            if (window.chrome) {
-              // Chrome bug: focusing before mouseup prevents text selection, see http://crbug.com/771903
-              const mouseUpListener = () => {
-                if (!cellContent.contains(this.getRootNode().activeElement)) {
-                  cell.focus();
-                }
-                // If focus is in the cell content — respect it, do not change.
-                document.removeEventListener('mouseup', mouseUpListener, true);
-              };
-              document.addEventListener('mouseup', mouseUpListener, true);
-            } else {
-              // Focus on mouseup, on the other hand, removes selection on Safari.
-              // Watch out sync focus removal issue, only async focus works here.
-              setTimeout(() => {
-                if (!cellContent.contains(this.getRootNode().activeElement)) {
-                  cell.focus();
-                }
-              });
-            }
-          });
-        }
-
-        return cell;
-      }
-
       _updateRow(row, columns, section = 'body', isColumnRow, noNotify) {
 
         const contentsFragment = document.createDocumentFragment();
@@ -563,10 +514,11 @@ This program is available under Apache License Version 2.0, available at https:/
             cell = column._cells.filter(cell => cell._vacant)[0];
             if (!cell) {
               if (bodyCell) {
-                cell = this._createCell('td');
-                column._cells.push(cell);
+                    // cell = column._createCell('td');
+                    // column._cells.push(cell);
+                    return;
               } else {
-                cell = this._createCell('td', true);
+                cell = column._createCell('td', true);
                 column._sizerCells.push(cell);
               }
             }
@@ -577,7 +529,7 @@ This program is available under Apache License Version 2.0, available at https:/
             if (index === columns.length - 1 && (this._rowDetailsTemplate || this.rowDetailsRenderer)) {
               // Add details cell as last cell to body rows
               this._detailsCells = this._detailsCells || [];
-              const detailsCell = this._detailsCells.filter(cell => cell._vacant)[0] || this._createCell('td');
+              const detailsCell = this._detailsCells.filter(cell => cell._vacant)[0] || column._createCell('td');
               if (this._detailsCells.indexOf(detailsCell) === -1) {
                 this._detailsCells.push(detailsCell);
               }
@@ -600,13 +552,13 @@ This program is available under Apache License Version 2.0, available at https:/
               if (column.virtual && isColumnRow) {
                 return;
               }
-              cell = column[`_${section}Cell`] || this._createCell(tagName);
+              cell = column[`_${section}Cell`] || column._createCell(tagName);
               cell._column = column;
               row.appendChild(cell);
               column[`_${section}Cell`] = cell;
             } else {
               column._emptyCells = column._emptyCells || [];
-              cell = column._emptyCells.filter(cell => cell._vacant)[0] || this._createCell(tagName);
+              cell = column._emptyCells.filter(cell => cell._vacant)[0] || column._createCell(tagName);
               cell._column = column;
               row.appendChild(cell);
               if (column._emptyCells.indexOf(cell) === -1) {
@@ -630,7 +582,7 @@ This program is available under Apache License Version 2.0, available at https:/
         this._frozenCellsChanged();
         this._updateFirstAndLastColumnForRow(row);
         // this.__cacheEffectiveColumnMetrics();
-        this._updateVirtualColumns();
+        // this._updateVirtualColumns();
       }
 
       __updateHeaderFooterRowVisibility(row) {
@@ -692,8 +644,6 @@ This program is available under Apache License Version 2.0, available at https:/
         this._updateRow(this.$.outersizer, columnTree[columnTree.length - 1]);
         this._updateRow(this.$.fixedsizer, columnTree[columnTree.length - 1]);
 
-        Array.from(this.$.items.children).forEach(row => this._updateRow(row, columnTree[columnTree.length - 1]));
-
         while (this.$.header.children.length < columnTree.length) {
           const headerRow = document.createElement('tr');
           headerRow.setAttribute('part', 'row');
@@ -710,11 +660,10 @@ This program is available under Apache License Version 2.0, available at https:/
           this.$.footer.removeChild(this.$.footer.firstElementChild);
         }
 
-        Array.from(this.$.header.children)
-          .forEach((headerRow, index) => this._updateRow(headerRow, columnTree[index], 'header', index === columnTree.length - 1));
 
-        Array.from(this.$.footer.children)
-          .forEach((footerRow, index) => this._updateRow(footerRow, columnTree[columnTree.length - 1 - index], 'footer', index === 0));
+        Array.from(this.$.header.children)
+          .concat(Array.from(this.$.footer.children))
+          .forEach((row, index) => this.__updateHeaderFooterRowVisibility(row));
 
         this._resizeHandler();
         this._frozenCellsChanged();
