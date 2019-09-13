@@ -510,7 +510,7 @@ This program is available under Apache License Version 2.0, available at https:/
       if (!this._sizerCells && this._grid.$) {
         const sizerCells = [];
         [this._grid.$.outersizer, this._grid.$.fixedsizer].forEach(row => {
-          const cell = this.__createCell('td', 'cell body-cell', this, row);
+          const cell = this.__createCell('td', 'cell body-cell', this, row, true);
           row.appendChild(cell);
           sizerCells.push(cell);
         });
@@ -563,20 +563,16 @@ This program is available under Apache License Version 2.0, available at https:/
       this._updatingCells = false;
     }
 
-    __createCell(tagName, partName, column, parentRow) {
+    __createCell(tagName, partName, column, parentRow, skipContent) {
       // TODO: Move grid._createCell to column
-      const cell = this._createCell(tagName);
+      const cell = document.createElement(tagName);
       cell.setAttribute('part', partName);
       cell._column = column;
       cell._row = parentRow;
-      return cell;
-    }
 
-    _createCell(tagName, skipContent) {
       const contentId = Vaadin.Grid._contentIndex = Vaadin.Grid._contentIndex + 1 || 0;
       const slotName = 'vaadin-grid-cell-content-' + contentId;
 
-      const cell = document.createElement(tagName);
       cell.id = slotName.replace('-content-', '-');
       cell.setAttribute('tabindex', '-1');
       cell.setAttribute('role', tagName === 'td' ? 'gridcell' : 'columnheader');

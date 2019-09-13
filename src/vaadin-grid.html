@@ -470,9 +470,6 @@ This program is available under Apache License Version 2.0, available at https:/
           const row = document.createElement('tr');
           row.setAttribute('part', 'row');
           row.setAttribute('role', 'row');
-          // if (this._columnTree) {
-          //   this._updateRow(row, this._columnTree[this._columnTree.length - 1], 'body', false, true);
-          // }
           rows.push(row);
         }
 
@@ -548,11 +545,13 @@ This program is available under Apache License Version 2.0, available at https:/
       _columnTreeChanged(columnTree, splices) {
         while (this.$.header.children.length < columnTree.length) {
           const headerRow = document.createElement('tr');
+          headerRow.hidden = true;
           headerRow.setAttribute('part', 'row');
           headerRow.setAttribute('role', 'row');
           this.$.header.appendChild(headerRow);
 
           const footerRow = document.createElement('tr');
+          footerRow.hidden = true;
           footerRow.setAttribute('part', 'row');
           footerRow.setAttribute('role', 'row');
           this.$.footer.appendChild(footerRow);
@@ -561,11 +560,6 @@ This program is available under Apache License Version 2.0, available at https:/
           this.$.header.removeChild(this.$.header.firstElementChild);
           this.$.footer.removeChild(this.$.footer.firstElementChild);
         }
-
-
-        Array.from(this.$.header.children)
-          .concat(Array.from(this.$.footer.children))
-          .forEach((row, index) => this.__updateHeaderFooterRowVisibility(row));
 
         this._resizeHandler();
         this._frozenCellsChanged();
