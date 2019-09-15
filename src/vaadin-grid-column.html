@@ -154,6 +154,7 @@ This program is available under Apache License Version 2.0, available at https:/
       requestAnimationFrame(() => {
         this._allCells.forEach(cell => {
           if (cell._content && !cell._content.parentNode) {
+            //TODO: Remove?
             this._grid && this._grid.appendChild(cell._content);
           }
         });

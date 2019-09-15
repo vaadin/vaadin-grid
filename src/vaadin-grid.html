@@ -640,11 +640,22 @@ This program is available under Apache License Version 2.0, available at https:/
 
         const columns = this.__getAllColumns();
 
+        // Let's never reduce non-virtual (visible) columns count to keep it simple
+        const nonVirtualColumnMinCount = columns.filter(c => !c._virtual).length;
+        let nonVirtualColumnCount = 0;
+
         columns.forEach(column => {
           const columnLeft = column.__effectiveLeft - scrollLeft;
           const columnRight = columnLeft + column.__effectiveWidth;
           const columnInViewport = columnRight > -column.__effectiveWidth && columnLeft < this.__effectiveWidth + column.__effectiveWidth;
           column._virtual = !columnInViewport;
+          if (!column._virtual) {
+            nonVirtualColumnCount++;
+          }
+          if (column._virtual && nonVirtualColumnCount > 0 && nonVirtualColumnCount < nonVirtualColumnMinCount) {
+            column._virtual = false;
+            nonVirtualColumnCount++;
+          }
         });
 
         const firstNonVirtual = columns.filter(column => !column._virtual && !column.frozen)[0];
@@ -659,29 +670,39 @@ This program is available under Apache License Version 2.0, available at https:/
       }
 
       __updateRowCells(rows, columns, cellTagName, cellPartName, skipCellContent) {
-        const rowFragment = document.createDocumentFragment();
         const contentFragment = document.createDocumentFragment();
 
         rows.filter(row => row).forEach(row => {
+          const rowFragment = document.createDocumentFragment();
+          const rowCells = Array.from(row.children);
+
+          row._freeCells = row._freeCells || [];
+          row._freeCells = row._freeCells.concat(rowCells.filter(cell => columns.indexOf(cell._column) === -1));
+
           columns.forEach(column => {
-            let cell = column._allCells.filter(c => c._row === row)[0];
+            let cell = rowCells.filter(cell => cell._column === column)[0];
             if (!cell) {
-              // TODO: Should cell create happen somewhere else?
-              cell = this.__createCell(cellTagName, cellPartName, column, row, skipCellContent)
+              if (row._freeCells.length) {
+                cell = row._freeCells.pop();
+              } else {
+                cell = this.__createCell(cellTagName, cellPartName, column, row, skipCellContent);
+              }
             }
+            cell._column = column;
+
             if (!cell.parentElement) {
               rowFragment.appendChild(cell);
-              cell._content && contentFragment.appendChild(cell._content);
+            }
+            if (cell._content && !cell._content.parentElement) {
+              contentFragment.appendChild(cell._content);
             }
           });
+
           row.appendChild(rowFragment);
 
-          Array.from(row.children).forEach(cell => {
-            if (columns.indexOf(cell._column) === -1) {
-              row.removeChild(cell);
-              // TODO: Is removing the content elements unnecessary overhead?
-              cell._content && this.removeChild(cell._content);
-            }
+          // Cleanup
+          row._freeCells.forEach(cell => {
+            row.removeChild(cell);
           });
         });
 
