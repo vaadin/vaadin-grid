@@ -57,31 +57,35 @@
 
 <body>
   <vaadin-grid column-reordering-allowed size="10000">
-    <vaadin-grid-selection-column auto-select frozen></vaadin-grid-selection-column>
   </vaadin-grid>
 
   <script>
     const columns = document.createDocumentFragment();
-      for (let i = 0; i < 200; i++) {
-        const column = document.createElement('vaadin-grid-column');
-        column.resizable = true;
-        column._index = i;
-        column.header='h-' + i;
-        column.renderer = (root, col, {index}) => {
-          root.textContent = `${col._index}-${index}`;
-        };
-        columns.appendChild(column);
+    const column = document.createElement('vaadin-grid-selection-column');
+    column.autoSelect = true;
+    column.frozen = true;
+    columns.appendChild(column);
 
-      }
-      const grid = document.querySelector('vaadin-grid');
-      grid.dataProvider = (params, callback) => {
-        const arr = [];
-        for (let i = 0; i < params.pageSize; i++) {
-          arr.push({});
-        }
-        callback(arr);
+    for (let i = 0; i < 200; i++) {
+      const column = document.createElement('vaadin-grid-column');
+      column.resizable = true;
+      column._index = i;
+      column.header='h-' + i;
+      column.renderer = (root, col, {index}) => {
+        root.textContent = `${col._index}-${index}`;
       };
-      grid.appendChild(columns);
+      columns.appendChild(column);
+
+    }
+    const grid = document.querySelector('vaadin-grid');
+    grid.dataProvider = (params, callback) => {
+      const arr = [];
+      for (let i = 0; i < params.pageSize; i++) {
+        arr.push({});
+      }
+      callback(arr);
+    };
+    grid.appendChild(columns);
   </script>
 </body>
 </html>

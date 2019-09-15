@@ -473,11 +473,11 @@ This program is available under Apache License Version 2.0, available at https:/
           rows.push(row);
         }
 
-        if (this._columnTree) {
-          this._columnTree[this._columnTree.length - 1].forEach(c => c.notifyPath && c.notifyPath('_cells.*', c._cells));
-        }
+        // Is this still needed?
+        this.__getAllColumns().forEach(c => c.notifyPath && c.notifyPath('_cells.*', c._cells));
 
         Polymer.RenderStatus.beforeNextRender(this, () => {
+          this.__updateColumnRows();
           this._updateFirstAndLastColumn();
           this._resetKeyboardNavigation();
         });
@@ -568,9 +568,180 @@ This program is available under Apache License Version 2.0, available at https:/
         this._a11yUpdateHeaderRows();
         this._a11yUpdateFooterRows();
 
+        this.__updateSizerRows();
         this.__cacheEffectiveColumnMetrics();
         this.__debounceCacheMetrics.flush();
+        this.__updateColumnRows();
+      }
+
+      __getAllColumns() {
+        return this._columnTree ? this._columnTree[this._columnTree.length - 1]
+          .slice(0).sort((a, b) => a._order - b._order) : [];
+      }
+
+      __updateSizerRows() {
+        const columns = this.__getAllColumns();
+
+        [this.$.outersizer, this.$.fixedsizer].forEach(row => {
+          this.__updateRowCells(row, columns, 'td', 'cell body-cell', true);
+        });
+
+        // Update column cell references
+        columns.forEach(column => {
+          column._sizerCells = [
+            Array.from(this.$.outersizer.children).filter(cell => cell._column === column)[0],
+            Array.from(this.$.fixedsizer.children).filter(cell => cell._column === column)[0]
+          ];
+          column.notifyPath('_cells.*', column._cells);
+        })
+      }
+
+      __updateColumnRows() {
+        if (this._updatingCells) {
+          console.log("Should not be called! Remove")
+          return;
+        }
+        this._updatingCells = true;
+
         this._updateVirtualColumns();
+        const columns = this.__getAllColumns().filter(column => (!column._virtual || column.frozen));
+
+        // Body cells
+        Array.from(this.$.items.children).forEach(row => {
+          this.__updateRowCells(row, columns, 'td', 'cell body-cell');
+        });
+
+        // Header & footer cells
+        const headerRow = Array.from(this.$.header.children).pop();
+        const footerRow = Array.from(this.$.footer.children)[0];
+        this.__updateRowCells(headerRow, columns, 'th', 'cell header-cell');
+        this.__updateRowCells(footerRow, columns, 'td', 'cell footer-cell');
+
+        // Update column cell references
+        columns.forEach(column => {
+          let _cells = column._cells;
+          Array.from(this.$.items.children).forEach(row => {
+            if (!_cells.filter(cell => cell._row === row).length) {
+              // Intentionally create a new array instance to trigger column observers
+              _cells = _cells.concat(Array.from(row.children).filter(cell => cell._column === column));
+            }
+          });
+
+          column.setProperties({
+            _cells,
+            _headerCell: Array.from(headerRow.children).filter(cell => cell._column === column)[0],
+            _footerCell: Array.from(footerRow.children).filter(cell => cell._column === column)[0]
+          })
+        });
+
+        this._updatingCells = false;
+      }
+
+      _updateVirtualColumns() {
+        const scrollLeft = this.$.table.scrollLeft;
+
+        const columns = this.__getAllColumns();
+
+        columns.forEach(column => {
+          const columnLeft = column.__effectiveLeft - scrollLeft;
+          const columnRight = columnLeft + column.__effectiveWidth;
+          const columnInViewport = columnRight > -column.__effectiveWidth && columnLeft < this.__effectiveWidth + column.__effectiveWidth;
+          column._virtual = !columnInViewport;
+        });
+
+        const firstNonVirtual = columns.filter(column => !column._virtual && !column.frozen)[0];
+
+        if (firstNonVirtual) {
+          this.__virtualColumnsTranslate = firstNonVirtual.__effectiveLeft;
+          const lastFrozen = columns.filter(column => column._lastFrozen)[0];
+          if (lastFrozen) {
+            this.__virtualColumnsTranslate -= lastFrozen.__effectiveLeft + lastFrozen.__effectiveWidth;
+          }
+        }
+      }
+
+      __updateRowCells(row, columns, cellTagName, cellPartName, skipContent) {
+        if (!row) {
+          return;
+        }
+
+        const rowFragment = document.createDocumentFragment();
+        const contentFragment = document.createDocumentFragment();
+
+        columns.forEach(column => {
+          let cell = column._allCells.filter(c => c._row === row)[0];
+          if (!cell) {
+            cell = this.__createCell(cellTagName, cellPartName, column, row, skipContent)
+          }
+          if (!cell.parentElement) {
+            rowFragment.appendChild(cell);
+            cell._content && contentFragment.appendChild(cell._content);
+          }
+
+        });
+
+        row.appendChild(rowFragment);
+        this.appendChild(contentFragment);
+
+        Array.from(row.children).forEach(cell => {
+          if (columns.indexOf(cell._column) === -1) {
+            row.removeChild(cell);
+            cell._content && this.removeChild(cell._content);
+          }
+        });
+      }
+
+      __createCell(tagName, partName, column, parentRow, skipContent) {
+        console.log("new cell")
+        const cell = document.createElement(tagName);
+        cell.setAttribute('part', partName);
+        cell._column = column;
+        cell._row = parentRow;
+
+        const contentId = Vaadin.Grid._contentIndex = Vaadin.Grid._contentIndex + 1 || 0;
+        const slotName = 'vaadin-grid-cell-content-' + contentId;
+
+        cell.id = slotName.replace('-content-', '-');
+        cell.setAttribute('tabindex', '-1');
+        cell.setAttribute('role', tagName === 'td' ? 'gridcell' : 'columnheader');
+
+        const slot = document.createElement('slot');
+        slot.setAttribute('name', slotName);
+
+        cell.appendChild(slot);
+
+        if (!skipContent) {
+          const cellContent = document.createElement('vaadin-grid-cell-content');
+          cellContent.setAttribute('slot', slotName);
+          cell._content = cellContent;
+
+          // With native Shadow DOM, mousedown on slotted element does not focus
+          // focusable slot wrapper, that is why cells are not focused with
+          // mousedown. Workaround: listen for mousedown and focus manually.
+          cellContent.addEventListener('mousedown', () => {
+            if (window.chrome) {
+              // Chrome bug: focusing before mouseup prevents text selection, see http://crbug.com/771903
+              const mouseUpListener = () => {
+                if (!cellContent.contains(this.getRootNode().activeElement)) {
+                  cell.focus();
+                }
+                // If focus is in the cell content — respect it, do not change.
+                document.removeEventListener('mouseup', mouseUpListener, true);
+              };
+              document.addEventListener('mouseup', mouseUpListener, true);
+            } else {
+              // Focus on mouseup, on the other hand, removes selection on Safari.
+              // Watch out sync focus removal issue, only async focus works here.
+              setTimeout(() => {
+                if (!cellContent.contains(this.getRootNode().activeElement)) {
+                  cell.focus();
+                }
+              });
+            }
+          });
+        }
+
+        return cell;
       }
 
       _updateItem(row, item) {

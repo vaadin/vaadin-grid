@@ -262,58 +262,20 @@ This program is available under Apache License Version 2.0, available at https:/
       }
 
       this._updateOverflow();
-      this._updateVirtualColumns();
+      this.__updateColumnRows();
       this._translateStationaryElements();
-    }
-
-    _updateVirtualColumns() {
-      if (!this._columnTree) {
-        return;
-      }
-
-      const scrollLeft = this.$.table.scrollLeft;
-
-      const columns = this._columnTree[this._columnTree.length - 1]
-        .slice(0).sort((a, b) => a._order - b._order);
-
-      let virtualChanged = false;
-      columns.forEach(column => {
-        const columnLeft = column.__effectiveLeft - scrollLeft;
-        const columnRight = columnLeft + column.__effectiveWidth;
-        const columnInViewport = columnRight > -column.__effectiveWidth && columnLeft < this.__effectiveWidth + column.__effectiveWidth;
-
-        column._virtual = !columnInViewport;
-
-        if (column.virtual !== column._virtual) {
-          virtualChanged = true;
-        }
-      });
-
-      if (virtualChanged) {
-        console.log('Should only invoke once initially');
-
-        columns.forEach(column => column.virtual = column._virtual);
-        const firstNonVirtual = columns.filter(column => !column.virtual && !column.frozen)[0];
-
-        if (firstNonVirtual) {
-          this.__virtualColumnsTranslate = firstNonVirtual.__effectiveLeft;
-          const lastFrozen = columns.filter(column => column._lastFrozen)[0];
-          if (lastFrozen) {
-            this.__virtualColumnsTranslate -= lastFrozen.__effectiveLeft + lastFrozen.__effectiveWidth;
-          }
-        }
-      }
     }
 
     _resizeHandler() {
       super._resizeHandler();
 
       this.__effectiveWidth = this.offsetWidth;
-      this._updateVirtualColumns();
+      this.__updateColumnRows();
       this.__cacheEffectiveColumnMetrics();
     }
 
     __cacheEffectiveColumnMetrics() {
+      // TODO: Move to column
       this.__debounceCacheMetrics = Polymer.Debouncer.debounce(
         this.__debounceCacheMetrics,
         Polymer.Async.animationFrame,
