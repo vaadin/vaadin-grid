@@ -473,10 +473,10 @@ This program is available under Apache License Version 2.0, available at https:/
           rows.push(row);
         }
 
-        // const columns = this.__getAllColumns().filter(column => (!column._virtual || column.frozen));
-        // this.__updateRowCells(rows, columns, 'td', 'cell body-cell', true);
+        // TODO: Potential optimization: populate the newly created
+        // rows with __updateRowCells here before they're attached
 
-        // Is this still needed?
+        // TODO: Is this still needed?
         this.__getAllColumns().forEach(c => c.notifyPath && c.notifyPath('_cells.*', c._cells));
 
         Polymer.RenderStatus.beforeNextRender(this, () => {
@@ -667,6 +667,7 @@ This program is available under Apache License Version 2.0, available at https:/
           columns.forEach(column => {
             let cell = column._allCells.filter(c => c._row === row)[0];
             if (!cell) {
+              // TODO: Should cell create happen somewhere else?
               cell = this.__createCell(cellTagName, cellPartName, column, row, skipCellContent)
             }
             if (!cell.parentElement) {
@@ -679,6 +680,7 @@ This program is available under Apache License Version 2.0, available at https:/
           Array.from(row.children).forEach(cell => {
             if (columns.indexOf(cell._column) === -1) {
               row.removeChild(cell);
+              // TODO: Is removing the content elements unnecessary overhead?
               cell._content && this.removeChild(cell._content);
             }
           });
