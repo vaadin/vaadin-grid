@@ -605,19 +605,19 @@ This program is available under Apache License Version 2.0, available at https:/
         this._updatingCells = true;
 
         this._updateVirtualColumns();
-        const columns = this.__getAllColumns().filter(column => (!column._virtual || column.frozen));
+        const visibleColumns = this.__getAllColumns().filter(column => !column._virtual || column.frozen);
 
-        // Body cells
-        this.__updateRowCells(Array.from(this.$.items.children), columns, 'td', 'cell body-cell');
-
-        // Header & footer cells
+        const bodyRows = Array.from(this.$.items.children);
         const headerRow = Array.from(this.$.header.children).pop();
         const footerRow = Array.from(this.$.footer.children)[0];
-        this.__updateRowCells([headerRow], columns, 'th', 'cell header-cell');
-        this.__updateRowCells([footerRow], columns, 'td', 'cell footer-cell');
+
+        this.__updateRowCells(bodyRows, visibleColumns, 'td', 'cell body-cell');
+        this.__updateRowCells([headerRow], visibleColumns, 'th', 'cell header-cell');
+        this.__updateRowCells([footerRow], visibleColumns, 'td', 'cell footer-cell');
+
 
         // Update column cell references
-        columns.forEach(column => {
+        visibleColumns.forEach(column => {
           let _cells = column._cells;
           Array.from(this.$.items.children).forEach(row => {
             if (!_cells.filter(cell => cell._row === row).length) {
@@ -625,7 +625,6 @@ This program is available under Apache License Version 2.0, available at https:/
               _cells = _cells.concat(Array.from(row.children).filter(cell => cell._column === column));
             }
           });
-
           column.setProperties({
             _cells,
             _headerCell: Array.from(headerRow.children).filter(cell => cell._column === column)[0],
