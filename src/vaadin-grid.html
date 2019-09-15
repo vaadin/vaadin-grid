@@ -473,6 +473,9 @@ This program is available under Apache License Version 2.0, available at https:/
           rows.push(row);
         }
 
+        // const columns = this.__getAllColumns().filter(column => (!column._virtual || column.frozen));
+        // this.__updateRowCells(rows, columns, 'td', 'cell body-cell', true);
+
         // Is this still needed?
         this.__getAllColumns().forEach(c => c.notifyPath && c.notifyPath('_cells.*', c._cells));
 
@@ -582,9 +585,7 @@ This program is available under Apache License Version 2.0, available at https:/
       __updateSizerRows() {
         const columns = this.__getAllColumns();
 
-        [this.$.outersizer, this.$.fixedsizer].forEach(row => {
-          this.__updateRowCells(row, columns, 'td', 'cell body-cell', true);
-        });
+        this.__updateRowCells([this.$.outersizer, this.$.fixedsizer], columns, 'td', 'cell body-cell', true);
 
         // Update column cell references
         columns.forEach(column => {
@@ -607,15 +608,13 @@ This program is available under Apache License Version 2.0, available at https:/
         const columns = this.__getAllColumns().filter(column => (!column._virtual || column.frozen));
 
         // Body cells
-        Array.from(this.$.items.children).forEach(row => {
-          this.__updateRowCells(row, columns, 'td', 'cell body-cell');
-        });
+        this.__updateRowCells(Array.from(this.$.items.children), columns, 'td', 'cell body-cell');
 
         // Header & footer cells
         const headerRow = Array.from(this.$.header.children).pop();
         const footerRow = Array.from(this.$.footer.children)[0];
-        this.__updateRowCells(headerRow, columns, 'th', 'cell header-cell');
-        this.__updateRowCells(footerRow, columns, 'td', 'cell footer-cell');
+        this.__updateRowCells([headerRow], columns, 'th', 'cell header-cell');
+        this.__updateRowCells([footerRow], columns, 'td', 'cell footer-cell');
 
         // Update column cell references
         columns.forEach(column => {
@@ -660,35 +659,32 @@ This program is available under Apache License Version 2.0, available at https:/
         }
       }
 
-      __updateRowCells(row, columns, cellTagName, cellPartName, skipContent) {
-        if (!row) {
-          return;
-        }
-
+      __updateRowCells(rows, columns, cellTagName, cellPartName, skipCellContent) {
         const rowFragment = document.createDocumentFragment();
         const contentFragment = document.createDocumentFragment();
 
-        columns.forEach(column => {
-          let cell = column._allCells.filter(c => c._row === row)[0];
-          if (!cell) {
-            cell = this.__createCell(cellTagName, cellPartName, column, row, skipContent)
-          }
-          if (!cell.parentElement) {
-            rowFragment.appendChild(cell);
-            cell._content && contentFragment.appendChild(cell._content);
-          }
+        rows.filter(row => row).forEach(row => {
+          columns.forEach(column => {
+            let cell = column._allCells.filter(c => c._row === row)[0];
+            if (!cell) {
+              cell = this.__createCell(cellTagName, cellPartName, column, row, skipCellContent)
+            }
+            if (!cell.parentElement) {
+              rowFragment.appendChild(cell);
+              cell._content && contentFragment.appendChild(cell._content);
+            }
+          });
+          row.appendChild(rowFragment);
 
+          Array.from(row.children).forEach(cell => {
+            if (columns.indexOf(cell._column) === -1) {
+              row.removeChild(cell);
+              cell._content && this.removeChild(cell._content);
+            }
+          });
         });
 
-        row.appendChild(rowFragment);
         this.appendChild(contentFragment);
-
-        Array.from(row.children).forEach(cell => {
-          if (columns.indexOf(cell._column) === -1) {
-            row.removeChild(cell);
-            cell._content && this.removeChild(cell._content);
-          }
-        });
       }
 
       __createCell(tagName, partName, column, parentRow, skipContent) {
