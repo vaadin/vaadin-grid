@@ -53,7 +53,7 @@ script:
       else
         npm run check &&
         npm run lint &&
-        wct;
+        xvfb-run -s '-screen 0 1024x768x24' wct;
       fi &&
       if [[ "$TRAVIS_EVENT_TYPE" = "cron" && "$TEST_SUITE" = "unit_tests" ]]; then
         wct --env saucelabs-cron;
@@ -67,7 +67,7 @@ script:
       if [[ "$TRAVIS_EVENT_TYPE" != "pull_request" && "$TRAVIS_BRANCH" != quick/* ]]; then
         wct --npm --env saucelabs:$TEST_SUITE;
       else
-        wct --npm;
+        xvfb-run -s '-screen 0 1024x768x24' wct --npm;
       fi;
     fi
 
