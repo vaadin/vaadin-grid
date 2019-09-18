@@ -647,7 +647,7 @@ This program is available under Apache License Version 2.0, available at https:/
         columns.forEach(column => {
           const columnLeft = column.__effectiveLeft - scrollLeft;
           const columnRight = columnLeft + column.__effectiveWidth;
-          const columnInViewport = columnRight > -column.__effectiveWidth && columnLeft < this.__effectiveWidth + column.__effectiveWidth;
+          const columnInViewport = columnLeft < this.__effectiveWidth && columnRight > 0;
           column._virtual = !columnInViewport;
           if (!column._virtual) {
             nonVirtualColumnCount++;
