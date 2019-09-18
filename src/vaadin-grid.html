@@ -594,12 +594,12 @@ This program is available under Apache License Version 2.0, available at https:/
             Array.from(this.$.fixedsizer.children).filter(cell => cell._column === column)[0]
           ];
           column.notifyPath('_cells.*', column._cells);
-        })
+        });
       }
 
       __updateColumnRows() {
         if (this._updatingCells) {
-          console.log("Should not be called! Remove")
+          // console.log('Should not be called! Remove');
           return;
         }
         this._updatingCells = true;
@@ -629,7 +629,7 @@ This program is available under Apache License Version 2.0, available at https:/
             _cells,
             _headerCell: Array.from(headerRow.children).filter(cell => cell._column === column)[0],
             _footerCell: Array.from(footerRow.children).filter(cell => cell._column === column)[0]
-          })
+          });
         });
 
         this._updatingCells = false;
@@ -710,7 +710,7 @@ This program is available under Apache License Version 2.0, available at https:/
       }
 
       __createCell(tagName, partName, column, parentRow, skipContent) {
-        console.log("new cell")
+        // console.log('new cell');
         const cell = document.createElement(tagName);
         cell.setAttribute('part', partName);
         cell._column = column;

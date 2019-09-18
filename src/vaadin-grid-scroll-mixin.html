@@ -280,12 +280,12 @@ This program is available under Apache License Version 2.0, available at https:/
         Polymer.Async.animationFrame,
         () => {
           Array.from(this.$.outersizer.children)
-          .forEach(cell => {
-            if (cell._column) {
-              cell._column.__effectiveWidth = cell.offsetWidth;
-              cell._column.__effectiveLeft = cell.offsetLeft;
-            }
-          });
+            .forEach(cell => {
+              if (cell._column) {
+                cell._column.__effectiveWidth = cell.offsetWidth;
+                cell._column.__effectiveLeft = cell.offsetLeft;
+              }
+            });
         }
       );
     }

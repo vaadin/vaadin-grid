@@ -265,7 +265,6 @@ This program is available under Apache License Version 2.0, available at https:/
       // `_preventScrollerRotatingCellFocus(item, index)` during scrolling.
       this._toggleAttribute('navigating', true, this);
 
-      const columnIndexByOrder = dstColumns.reduce((acc, col, i) => (acc[col._order] = i, acc), {});
       const dstColumnOrder = dstSortedColumnOrders[dstOrderedColumnIndex];
 
       // For body rows, use index property to find destination row, otherwise use DOM child index

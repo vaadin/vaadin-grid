@@ -70,7 +70,7 @@
       const column = document.createElement('vaadin-grid-column');
       column.resizable = true;
       column._index = i;
-      column.header='h-' + i;
+      column.header = 'h-' + i;
       column.renderer = (root, col, {index}) => {
         root.textContent = `${col._index}-${index}`;
       };
