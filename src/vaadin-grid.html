@@ -702,7 +702,7 @@ This program is available under Apache License Version 2.0, available at https:/
 
           // Cleanup
           row._freeCells.forEach(cell => {
-            row.removeChild(cell);
+            cell.parentElement === row && row.removeChild(cell);
           });
         });
 

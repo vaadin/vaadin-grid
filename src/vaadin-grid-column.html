@@ -195,6 +195,11 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     get _allCells() {
+      if (this._virtual && !this.frozen) {
+        return []
+          .concat(this._sizerCells || [])
+          .filter(cell => cell);
+      }
       return []
         .concat(this._cells || [])
         .concat(this._sizerCells || [])
@@ -271,7 +276,10 @@ This program is available under Apache License Version 2.0, available at https:/
         if (renderer) {
           cell._renderer = renderer;
 
-          cell._content.innerHTML = ''; // TODO: Reconsider!
+          if (cell._content.childElementCount) {
+            cell._content.innerHTML = ''; // TODO: Reconsider!
+          }
+
           if (model && (model.item || renderer === this.headerRenderer || renderer === this.footerRenderer)) {
             this.__runRenderer(renderer, cell, model);
           }
