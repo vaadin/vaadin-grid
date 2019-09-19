@@ -80,7 +80,9 @@ This program is available under Apache License Version 2.0, available at https:/
         }
 
         if (this.detailsOpenedItems.length) {
-          Array.from(this.$.items.children).forEach(this._toggleDetailsCell, this);
+          Array.from(this.$.items.children).forEach((row, item) => {
+            this._toggleDetailsCell(row, item, false);
+          }, this);
           this._update();
         }
       }
@@ -92,10 +94,11 @@ This program is available under Apache License Version 2.0, available at https:/
         return;
       }
       Array.from(this.$.items.children).forEach(row => {
-        this._toggleDetailsCell(row, row._item);
+        this._toggleDetailsCell(row, row._item, false);
         this._a11yUpdateRowDetailsOpened(row, this._isDetailsOpened(row._item));
         this._toggleAttribute('details-opened', this._isDetailsOpened(row._item), row);
       });
+      requestAnimationFrame(() => this.notifyResize());
     }
 
     _configureDetailsCell(cell) {
@@ -105,7 +108,7 @@ This program is available under Apache License Version 2.0, available at https:/
       this._toggleAttribute('frozen', true, cell);
     }
 
-    _toggleDetailsCell(row, item) {
+    _toggleDetailsCell(row, item, requestAnimation) {
       const cell = row.querySelector('[part~="details-cell"]');
       if (!cell) {
         return;
@@ -130,9 +133,9 @@ This program is available under Apache License Version 2.0, available at https:/
           }
 
           Polymer.flush();
-          row.style.setProperty('padding-bottom', `${cell.offsetHeight}px`);
-
-          requestAnimationFrame(() => this.notifyResize());
+          if (requestAnimation) {
+            requestAnimationFrame(() => this.notifyResize());
+          }
         }
       }
       if (hiddenChanged) {
