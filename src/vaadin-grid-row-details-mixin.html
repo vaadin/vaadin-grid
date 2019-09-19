@@ -96,6 +96,7 @@ This program is available under Apache License Version 2.0, available at https:/
         this._a11yUpdateRowDetailsOpened(row, this._isDetailsOpened(row._item));
         this._toggleAttribute('details-opened', this._isDetailsOpened(row._item), row);
       });
+      requestAnimationFrame(() => this.notifyResize());
     }
 
     _configureDetailsCell(cell) {
@@ -130,9 +131,6 @@ This program is available under Apache License Version 2.0, available at https:/
           }
 
           Polymer.flush();
-          row.style.setProperty('padding-bottom', `${cell.offsetHeight}px`);
-
-          requestAnimationFrame(() => this.notifyResize());
         }
       }
       if (hiddenChanged) {
