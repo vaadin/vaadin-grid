@@ -181,7 +181,6 @@ This program is available under Apache License Version 2.0, available at https:/
             this._debounceIncreasePool,
             Polymer.Async.animationFrame,
             () => {
-              this._updateMetrics();
               const remainingPhysicalSize = this._optPhysicalSize - this._physicalSize;
               let estimatedMissingRowCount = Math.ceil(remainingPhysicalSize / this._physicalAverage);
 

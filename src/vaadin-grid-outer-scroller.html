@@ -100,12 +100,16 @@ This program is available under Apache License Version 2.0, available at https:/
       }
 
       _syncScrollTarget() {
-        requestAnimationFrame(() => {
-          this.scrollTarget.scrollTop = this.scrollTop;
-          this.scrollTarget.scrollLeft = this.scrollLeft;
-          this.scrollHandler._scrollHandler();
-        });
-
+        if (this.outerScrolling) {
+          this._debouncerSyncScrollTarget = Polymer.Debouncer.debounce(
+            this._debouncerSyncScrollTarget,
+            Polymer.Async.animationFrame,
+            () => {
+              this.scrollTarget.scrollTop = this.scrollTop;
+              this.scrollTarget.scrollLeft = this.scrollLeft;
+              this.scrollHandler._scrollHandler();
+            });
+        }
       }
 
     }
