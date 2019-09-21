@@ -605,7 +605,8 @@ This program is available under Apache License Version 2.0, available at https:/
         this._updatingCells = true;
 
         this._updateVirtualColumns();
-        const visibleColumns = this.__getAllColumns().filter(column => !column._virtual || column.frozen);
+        const columns = this.__getAllColumns();
+        const visibleColumns = columns.filter(column => !column._virtual || column.frozen);
 
         const bodyRows = Array.from(this.$.items.children);
         const headerRow = Array.from(this.$.header.children).pop();
@@ -615,21 +616,26 @@ This program is available under Apache License Version 2.0, available at https:/
         this.__updateRowCells([headerRow], visibleColumns, 'th', 'cell header-cell');
         this.__updateRowCells([footerRow], visibleColumns, 'td', 'cell footer-cell');
 
-
         // Update column cell references
-        visibleColumns.forEach(column => {
-          let _cells = column._cells;
-          Array.from(this.$.items.children).forEach(row => {
-            if (!_cells.filter(cell => cell._row === row).length) {
-              // Intentionally create a new array instance to trigger column observers
-              _cells = _cells.concat(Array.from(row.children).filter(cell => cell._column === column));
-            }
-          });
-          column.setProperties({
-            _cells,
-            _headerCell: Array.from(headerRow.children).filter(cell => cell._column === column)[0],
-            _footerCell: Array.from(footerRow.children).filter(cell => cell._column === column)[0]
-          });
+        columns.forEach(column => {
+          if (visibleColumns.indexOf(column) === -1) {
+            // Emtpy the cell references without changing the array instance
+            // (to avoid unnecessary observer invocations)
+            column._cells.length = 0;
+          } else {
+            let _cells = column._cells;
+            Array.from(this.$.items.children).forEach(row => {
+              if (!_cells.filter(cell => cell._row === row).length) {
+                // Intentionally create a new array instance to trigger column observers
+                _cells = _cells.concat(Array.from(row.children).filter(cell => cell._column === column));
+              }
+            });
+            column.setProperties({
+              _cells,
+              _headerCell: Array.from(headerRow.children).filter(cell => cell._column === column)[0],
+              _footerCell: Array.from(footerRow.children).filter(cell => cell._column === column)[0]
+            });
+          }
         });
 
         this._updatingCells = false;
@@ -698,7 +704,9 @@ This program is available under Apache License Version 2.0, available at https:/
             }
           });
 
-          row.appendChild(rowFragment);
+          if (rowFragment.childElementCount) {
+            row.appendChild(rowFragment);
+          }
 
           // Cleanup
           row._freeCells.forEach(cell => {
@@ -706,7 +714,9 @@ This program is available under Apache License Version 2.0, available at https:/
           });
         });
 
-        this.appendChild(contentFragment);
+        if (contentFragment.childElementCount) {
+          this.appendChild(contentFragment);
+        }
       }
 
       __createCell(tagName, partName, column, parentRow, skipContent) {
