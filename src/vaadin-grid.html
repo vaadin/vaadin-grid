@@ -607,6 +607,9 @@ This program is available under Apache License Version 2.0, available at https:/
         this._updateVirtualColumns();
         const columns = this.__getAllColumns();
         const visibleColumns = columns.filter(column => !column._virtual || column.frozen);
+        if (this._rowDetailsTemplate || this.rowDetailsRenderer) {
+          visibleColumns.push('details');
+        }
 
         const bodyRows = Array.from(this.$.items.children);
         const headerRow = Array.from(this.$.header.children).pop();
@@ -626,12 +629,24 @@ This program is available under Apache License Version 2.0, available at https:/
             let _cells = column._cells;
 
             bodyRows.forEach(bodyRow => {
+              const bodyRowCells = Array.from(bodyRow.children);
               if (!_cells.filter(cell => cell._row === bodyRow).length) {
                 if (_cells === column._cells) {
                   // Intentionally create a new array instance to trigger column observers
                   _cells = _cells.slice(0);
+                  this.notifyResize();
                 }
-                _cells.push(Array.from(bodyRow.children).filter(cell => cell._column === column)[0]);
+                _cells.push(bodyRowCells.filter(cell => cell._column === column)[0]);
+              }
+
+              // Prepare details cell
+              const detailsCell = bodyRowCells.filter(cell =>
+                cell._column === 'details' && cell.getAttribute('part') !== 'cell details-cell'
+              )[0];
+              if (detailsCell) {
+                detailsCell.setAttribute('part', 'cell details-cell');
+                this._a11yUpdateRowDetailsOpened(bodyRow, false);
+                delete detailsCell._instance;
               }
             });
             column.setProperties({

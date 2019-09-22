@@ -67,17 +67,7 @@ This program is available under Apache License Version 2.0, available at https:/
           rowDetailsTemplate.templatizer = templatizer;
         }
 
-        if (this._columnTree) {
-          // Only update the rows if the column tree has already been initialized
-          Array.from(this.$.items.children).forEach(row => {
-            if (!row.querySelector('[part~=details-cell]')) {
-              this._updateRow(row, this._columnTree[this._columnTree.length - 1]);
-              this._a11yUpdateRowDetailsOpened(row, false);
-            }
-            // Clear any old template instances
-            delete row.querySelector('[part~=details-cell]')._instance;
-          });
-        }
+        this.__updateColumnRows();
 
         if (this.detailsOpenedItems.length) {
           Array.from(this.$.items.children).forEach(this._toggleDetailsCell, this);
