@@ -687,7 +687,9 @@ This program is available under Apache License Version 2.0, available at https:/
           const rowCells = Array.from(row.children);
 
           row._freeCells = row._freeCells || [];
-          row._freeCells = row._freeCells.concat(rowCells.filter(cell => columns.indexOf(cell._column) === -1));
+          row._freeCells = row._freeCells.concat(rowCells.filter(cell =>
+            cell.getAttribute('part').indexOf('details') === -1 && columns.indexOf(cell._column) === -1
+          ));
 
           columns.forEach(column => {
             let cell = rowCells.filter(cell => cell._column === column)[0];
@@ -695,10 +697,11 @@ This program is available under Apache License Version 2.0, available at https:/
               if (row._freeCells.length) {
                 cell = row._freeCells.pop();
               } else {
-                cell = this.__createCell(cellTagName, cellPartName, column, row, skipCellContent);
+                cell = this.__createCell(cellTagName, cellPartName, skipCellContent);
               }
             }
             cell._column = column;
+            cell._row = row;
 
             if (!cell.parentElement) {
               rowFragment.appendChild(cell);
@@ -723,12 +726,10 @@ This program is available under Apache License Version 2.0, available at https:/
         }
       }
 
-      __createCell(tagName, partName, column, parentRow, skipContent) {
+      __createCell(tagName, partName, skipContent) {
         // console.log('new cell');
         const cell = document.createElement(tagName);
         cell.setAttribute('part', partName);
-        cell._column = column;
-        cell._row = parentRow;
 
         const contentId = Vaadin.Grid._contentIndex = Vaadin.Grid._contentIndex + 1 || 0;
         const slotName = 'vaadin-grid-cell-content-' + contentId;
