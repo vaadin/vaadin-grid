@@ -619,15 +619,19 @@ This program is available under Apache License Version 2.0, available at https:/
         // Update column cell references
         columns.forEach(column => {
           if (visibleColumns.indexOf(column) === -1) {
-            // Emtpy the cell references without changing the array instance
+            // Empty the cell references of virtual columns without changing the array instance
             // (to avoid unnecessary observer invocations)
             column._cells.length = 0;
           } else {
             let _cells = column._cells;
-            Array.from(this.$.items.children).forEach(row => {
-              if (!_cells.filter(cell => cell._row === row).length) {
-                // Intentionally create a new array instance to trigger column observers
-                _cells = _cells.concat(Array.from(row.children).filter(cell => cell._column === column));
+
+            bodyRows.forEach(bodyRow => {
+              if (!_cells.filter(cell => cell._row === bodyRow).length) {
+                if (_cells === column._cells) {
+                  // Intentionally create a new array instance to trigger column observers
+                  _cells = _cells.slice(0);
+                }
+                _cells.push(Array.from(bodyRow.children).filter(cell => cell._column === column)[0]);
               }
             });
             column.setProperties({
