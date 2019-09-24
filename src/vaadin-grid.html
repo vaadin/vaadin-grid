@@ -598,61 +598,83 @@ This program is available under Apache License Version 2.0, available at https:/
       }
 
       __updateColumnRows() {
+        if (!this._columnTree) {
+          return;
+        }
+
         if (this._updatingCells) {
           // console.log('Should not be called! Remove');
           return;
         }
         this._updatingCells = true;
 
+
+
         this._updateVirtualColumns();
-        const columns = this.__getAllColumns();
-        const visibleColumns = columns.filter(column => !column._virtual || column.frozen);
-        if (this._rowDetailsTemplate || this.rowDetailsRenderer) {
-          visibleColumns.push('details');
-        }
 
+        const headerRows = Array.from(this.$.header.children);
+        const footerRows = Array.from(this.$.footer.children);
         const bodyRows = Array.from(this.$.items.children);
-        const headerRow = Array.from(this.$.header.children).pop();
-        const footerRow = Array.from(this.$.footer.children)[0];
 
-        this.__updateRowCells(bodyRows, visibleColumns, 'td', 'cell body-cell');
-        this.__updateRowCells([headerRow], visibleColumns, 'th', 'cell header-cell');
-        this.__updateRowCells([footerRow], visibleColumns, 'td', 'cell footer-cell');
+        this._columnTree.forEach((columns, layerIndex) => {
+          const headerRow = headerRows[layerIndex];
+          const footerRow = footerRows[this._columnTree.length - layerIndex - 1];
+          this.__updateRowCells([headerRow], columns, 'th', 'cell header-cell');
+          this.__updateRowCells([footerRow], columns, 'td', 'cell footer-cell');
+          const isColumnRow = layerIndex === this._columnTree.length - 1;
+          columns.forEach(column => {
+            if (isColumnRow || column.localName === 'vaadin-grid-column-group') {
+              column._headerCell = column._headerCell || Array.from(headerRow.children).filter(cell => cell._column === column)[0];
+              column._footerCell = column._footerCell || Array.from(footerRow.children).filter(cell => cell._column === column)[0];
+            } else {
+              column._emptyCells = column._emptyCells || [];
+              column._emptyCells.push(Array.from(headerRow.children).filter(cell => cell._column === column)[0]);
+              column._emptyCells.push(Array.from(headerRow.children).filter(cell => cell._column === column)[0]);
+            }
+          });
 
-        // Update column cell references
-        columns.forEach(column => {
-          if (visibleColumns.indexOf(column) === -1) {
-            // Empty the cell references of virtual columns without changing the array instance
-            // (to avoid unnecessary observer invocations)
-            column._cells.length = 0;
-          } else {
-            let _cells = column._cells;
+          const visibleColumns = columns.filter(column => !column._virtual || column.frozen);
+          if (isColumnRow) {
+            // Column row
+            if (this._rowDetailsTemplate || this.rowDetailsRenderer) {
+              visibleColumns.push('details');
+            }
+            this.__updateRowCells(bodyRows, visibleColumns, 'td', 'cell body-cell');
 
-            bodyRows.forEach(bodyRow => {
-              const bodyRowCells = Array.from(bodyRow.children);
-              if (!_cells.filter(cell => cell._row === bodyRow).length) {
-                if (_cells === column._cells) {
-                  // Intentionally create a new array instance to trigger column observers
-                  _cells = _cells.slice(0);
-                  this.notifyResize();
-                }
-                _cells.push(bodyRowCells.filter(cell => cell._column === column)[0]);
+            // Update column cell references
+            columns.forEach(column => {
+              if (visibleColumns.indexOf(column) === -1) {
+                // Empty the cell references of virtual columns without changing the array instance
+                // (to avoid unnecessary observer invocations)
+                column._cells.length = 0;
+              } else {
+                let _cells = column._cells;
+
+                bodyRows.forEach(bodyRow => {
+                  const bodyRowCells = Array.from(bodyRow.children);
+
+                  if (!_cells.filter(cell => cell && cell._row === bodyRow).length) {
+                    if (_cells === column._cells) {
+                      // Intentionally create a new array instance to trigger column observers
+                      _cells = _cells.slice(0);
+                      this.notifyResize();
+                    }
+                    _cells.push(bodyRowCells.filter(cell => cell._column === column)[0]);
+                  }
+
+                  // Prepare details cell
+                  const detailsCell = bodyRowCells.filter(cell =>
+                    cell._column === 'details' && cell.getAttribute('part') !== 'cell details-cell'
+                  )[0];
+                  if (detailsCell) {
+                    detailsCell.setAttribute('part', 'cell details-cell');
+                    this._a11yUpdateRowDetailsOpened(bodyRow, false);
+                    delete detailsCell._instance;
+                    bodyRowCells.forEach(cell => cell !== detailsCell && cell.setAttribute('aria-controls', detailsCell.id));
+                  }
+                });
+                column._cells = _cells;
               }
-
-              // Prepare details cell
-              const detailsCell = bodyRowCells.filter(cell =>
-                cell._column === 'details' && cell.getAttribute('part') !== 'cell details-cell'
-              )[0];
-              if (detailsCell) {
-                detailsCell.setAttribute('part', 'cell details-cell');
-                this._a11yUpdateRowDetailsOpened(bodyRow, false);
-                delete detailsCell._instance;
-              }
-            });
-            column.setProperties({
-              _cells,
-              _headerCell: Array.from(headerRow.children).filter(cell => cell._column === column)[0],
-              _footerCell: Array.from(footerRow.children).filter(cell => cell._column === column)[0]
             });
           }
         });

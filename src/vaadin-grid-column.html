@@ -198,6 +198,9 @@ This program is available under Apache License Version 2.0, available at https:/
       if (this._virtual && !this.frozen) {
         return []
           .concat(this._sizerCells || [])
+          .concat(this._emptyCells || [])
+          .concat(this._headerCell)
+          .concat(this._footerCell)
           .filter(cell => cell);
       }
       return []
