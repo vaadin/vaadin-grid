@@ -593,7 +593,7 @@ This program is available under Apache License Version 2.0, available at https:/
             Array.from(this.$.outersizer.children).filter(cell => cell._column === column)[0],
             Array.from(this.$.fixedsizer.children).filter(cell => cell._column === column)[0]
           ];
-          column.notifyPath('_cells.*', column._cells);
+          column.notifyPath && column.notifyPath('_cells.*', column._cells);
         });
       }
 
@@ -607,7 +607,6 @@ This program is available under Apache License Version 2.0, available at https:/
           return;
         }
         this._updatingCells = true;
-
 
 
         this._updateVirtualColumns();
@@ -646,6 +645,7 @@ This program is available under Apache License Version 2.0, available at https:/
               if (visibleColumns.indexOf(column) === -1) {
                 // Empty the cell references of virtual columns without changing the array instance
                 // (to avoid unnecessary observer invocations)
+                column._cells = column._cells || [];
                 column._cells.length = 0;
               } else {
                 let _cells = column._cells;
