@@ -200,6 +200,10 @@ This program is available under Apache License Version 2.0, available at https:/
         z-index: 0;
       }
 
+      [ios] [frozen] {
+        will-change: auto;
+      }
+
       /* Reordering styles */
       :host([reordering]) [part~="cell"] ::slotted(vaadin-grid-cell-content),
       :host([reordering]) [part~="resize-handle"],
