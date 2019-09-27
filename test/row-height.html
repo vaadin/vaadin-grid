@@ -9,6 +9,7 @@
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
   <script src="../../web-component-tester/browser.js"></script>
   <script src="../../iron-test-helpers/mock-interactions.js"></script>
+  <link rel="import" href="../../test-fixture/test-fixture.html">
 
   <dom-module id="row-height-grid-styles" theme-for="vaadin-grid">
     <template>
@@ -28,7 +29,7 @@
 
   <test-fixture id="two-columns">
     <template>
-      <vaadin-grid style="width: 200px; height: 200px;" size="10000">
+      <vaadin-grid style="width: 200px; height: 200px;" size="10000" hidden>
         <vaadin-grid-column>
           <template class="header">foo</template>
           <template>foo</template>
@@ -42,7 +43,7 @@
 
   <test-fixture id="default-content">
     <template>
-      <vaadin-grid style="width: 200px; height: 200px;" size="10000">
+      <vaadin-grid style="width: 200px; height: 200px;" size="10000" hidden>
         <vaadin-grid-column>
           <template>
             <div>foobar</div>
@@ -55,16 +56,16 @@
 
   <test-fixture id="two-columns-uneven-content">
     <template>
-      <vaadin-grid style="width: 200px; height: 200px;" size="10000">
+      <vaadin-grid style="width: 200px; height: 200px;" size="10000" hidden>
         <vaadin-grid-column>
           <template>
-            <div style="line-height: 2em">foobar</div>
+            <div style="line-height: 2em;">foobar</div>
           </template>
           <template class="header">foo</template>
         </vaadin-grid-column>
         <vaadin-grid-column>
           <template>
-            <div style="line-height: 0.5em">foobar</div>
+            <div style="line-height: 0.5em;">foobar</div>
           </template>
           <template class="header">foo</template>
         </vaadin-grid-column>
@@ -79,7 +80,6 @@
 
       function init(fixtureName, cb) {
         grid = fixture(fixtureName);
-        grid.dataProvider = infiniteDataProvider;
         listenOnce(grid, 'animationend', () => {
           flushGrid(grid);
 
@@ -91,8 +91,12 @@
           cb();
         });
 
-        flushGrid(grid);
-        header = grid.$.header;
+        requestAnimationFrame(() => {
+          grid.dataProvider = infiniteDataProvider;
+          grid.hidden = false;
+          flushGrid(grid);
+          header = grid.$.header;
+        });
       }
 
       it('should have higher cells on each row', done => {
@@ -121,6 +125,22 @@
 
           expect(header.getBoundingClientRect().top).to.be.closeTo(grid.getBoundingClientRect().top, 1);
           done();
+        });
+      });
+
+      it('should not misalign on reattach', done => {
+        init('default-content', () => {
+          scrollToEnd(grid);
+
+          const parentNode = grid.parentNode;
+          parentNode.removeChild(grid);
+          parentNode.offsetHeight;
+          parentNode.appendChild(grid);
+
+          setTimeout(() => {
+            expect(header.getBoundingClientRect().top).to.be.closeTo(grid.getBoundingClientRect().top, 1);
+            done();
+          });
         });
       });
 

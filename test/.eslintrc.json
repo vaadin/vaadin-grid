@@ -55,6 +55,7 @@
     "fire": false,
     "getContainerCell": false,
     "footerTrap": false,
-    "wheel": false
+    "wheel": false,
+    "ensureDefined": false
   }
 }

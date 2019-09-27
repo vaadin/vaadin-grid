@@ -12,6 +12,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   const firefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
   const defaultCellWidth = 100;
 
+  function ensureDefined(id, cb) {
+    if (customElements.get(id)) {
+      cb();
+    } else {
+      customElements.whenDefined(id).then(() => cb());
+    }
+  };
+
   function flushGrid(grid) {
     grid._observer.flush();
     if (grid._debounceScrolling) {

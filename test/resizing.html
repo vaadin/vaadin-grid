@@ -9,6 +9,7 @@
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
   <script src="../../web-component-tester/browser.js"></script>
   <script src="../../iron-test-helpers/mock-interactions.js"></script>
+  <link rel="import" href="../../test-fixture/test-fixture.html">
 
   <link rel="import" href="helpers.html">
   <link rel="import" href="../vaadin-grid.html">
@@ -24,7 +25,7 @@
         }
       </style>
 
-      <vaadin-grid id="grid" style="width: 200px; height: 400px;" size="10" data-provider="[[dataProvider]]">
+      <vaadin-grid id="grid" style="width: 200px; height: 400px;" size="10" data-provider="[[dataProvider]]" hidden>
         <template class="row-details">
           [[index]]
         </template>
@@ -37,7 +38,7 @@
 
     </template>
     <script>
-      HTMLImports.whenReady(() => {
+      customElements.whenDefined('vaadin-grid').then(() => {
         Polymer({
           is: 'test-component',
 
@@ -63,7 +64,7 @@
       describe('notifyResize', () => {
         let component, grid, scroller;
 
-        before(done => HTMLImports.whenReady(done));
+        before(done => ensureDefined('test-component', done));
 
         beforeEach(done => {
           component = fixture('default');
@@ -73,6 +74,7 @@
             flushGrid(grid);
             done();
           });
+          requestAnimationFrame(() => grid.hidden = false);
         });
 
         it('should align rows correctly', () => {
