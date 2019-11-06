@@ -716,7 +716,7 @@ This program is available under Apache License Version 2.0, available at https:/
         this._a11yUpdateRowLevel(row, model.level);
         this._toggleAttribute('expanded', model.expanded, row);
         if (this._rowDetailsTemplate || this.rowDetailsRenderer) {
-          this._toggleDetailsCell(row, item, true);
+          this._toggleDetailsCell(row, item);
           this._updateDetailsCellHeights();
         }
         this._generateCellClassNames(row, model);
@@ -745,7 +745,6 @@ This program is available under Apache License Version 2.0, available at https:/
       }
 
       _resizeHandler() {
-        this._updateDetailsCellHeights();
         this._accessIronListAPI(super._resizeHandler, true);
         this._updateHeaderFooterMetrics();
       }
