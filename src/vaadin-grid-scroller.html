@@ -192,7 +192,7 @@ This program is available under Apache License Version 2.0, available at https:/
 
         if (!this._initialPoolCreated) {
           this._initialPoolCreated = true;
-          super._increasePoolIfNeeded(25);
+          super._increasePoolIfNeeded(12);
         } else if (this._optPhysicalSize !== Infinity) {
           this._debounceIncreasePool = Polymer.Debouncer.debounce(
             this._debounceIncreasePool,

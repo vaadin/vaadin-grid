@@ -85,13 +85,13 @@
 
         grid.style.display = 'none';
 
-        expect(grid._physicalItems.length).to.eql(25);
+        expect(grid._physicalItems.length).to.eql(12);
 
         grid.style.display = '';
         grid._resizeHandler();
         flushGrid(grid);
 
-        expect(grid._physicalItems.length).to.be.above(25);
+        expect(grid._physicalItems.length).to.be.above(12);
       });
 
       it('pool should not increase if the scroller has no size', () => {
@@ -106,7 +106,7 @@
         grid._update();
         grid._increasePoolIfNeeded();
 
-        expect(grid._physicalCount).to.equal(25);
+        expect(grid._physicalCount).to.equal(12);
       });
 
       it('should minimize physical count', () => {
