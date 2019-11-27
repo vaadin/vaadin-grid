@@ -134,7 +134,7 @@ This program is available under Apache License Version 2.0, available at https:/
           const rowRect = row.getBoundingClientRect();
           if (!window.ShadyDOM) {
             if (this._ios) {
-              e.dataTransfer.setDragImage(row);
+              e.dataTransfer.setDragImage(row, null, null);
             } else {
               e.dataTransfer.setDragImage(row, e.clientX - rowRect.left, e.clientY - rowRect.top);
             }

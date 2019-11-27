@@ -372,13 +372,17 @@ describe('drag and drop', () => {
         it('should genrate drag image with offset', () => {
           grid._ios = false;
           const event = fireDragStart();
-          expect(event.dataTransfer.setDragImage.getCall(0).args.length).to.equal(3);
+          const args = event.dataTransfer.setDragImage.getCall(0).args;
+          expect(typeof args[1]).to.equal('number');
+          expect(typeof args[2]).to.equal('number');
         });
 
         it('should genrate drag image without offset', () => {
           grid._ios = true;
           const event = fireDragStart();
-          expect(event.dataTransfer.setDragImage.getCall(0).args.length).to.equal(1);
+          const args = event.dataTransfer.setDragImage.getCall(0).args;
+          expect(args[1]).to.be.null;
+          expect(args[2]).to.be.null;
         });
       }
 
