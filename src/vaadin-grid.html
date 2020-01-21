@@ -549,6 +549,7 @@ This program is available under Apache License Version 2.0, available at https:/
         if (row.id !== 'outersizer' && row.id !== 'fixedsizer') {
           row.hidden = true;
         }
+        columns = columns.filter(column => !column.hidden);
         columns.forEach((column, index) => {
           let cell;
 
@@ -672,6 +673,10 @@ This program is available under Apache License Version 2.0, available at https:/
       }
 
       _columnTreeChanged(columnTree, splices) {
+        this._renderColumnTree(columnTree);
+      }
+
+      _renderColumnTree(columnTree) {
         Array.from(this.$.items.children).forEach(row => this._updateRow(row, columnTree[columnTree.length - 1]));
 
         while (this.$.header.children.length < columnTree.length) {
