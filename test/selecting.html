@@ -492,6 +492,10 @@
         expect(firstBodyCellContent.textContent).to.equal('foo');
         expect(firstHeaderCellContent.firstElementChild).to.equal(selectAllCheckbox);
       });
+
+      it('should autoWidth property of vaadin-grid-selection-column is true', () => {
+        expect(selectionColumn.autoWidth).to.be.true;
+      });
     });
   </script>
 
