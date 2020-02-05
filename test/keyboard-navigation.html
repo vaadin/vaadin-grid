@@ -793,18 +793,17 @@
         });
 
         describe('with hidden columns', () => {
-          it('should skip over hidden column with right arrow', (done) => {
+          it('should skip over hidden column with right arrow', () => {
             grid._columnTree[0][1].hidden = true;
-            requestAnimationFrame(() => {
-              body.children[0].children[0].focus();
+            flushGrid(grid);
 
-              right();
+            body.children[0].children[0].focus();
 
-              expect(getFocusedCellIndex()).to.equal(1);
-              const columnFocusedCell = grid.shadowRoot.activeElement._column;
-              expect(columnFocusedCell.hidden).to.be.false;
-              done();
-            });
+            right();
+
+            expect(getFocusedCellIndex()).to.equal(1);
+            const columnFocusedCell = grid.shadowRoot.activeElement._column;
+            expect(columnFocusedCell.hidden).to.be.false;
           });
 
           it('should skip over hidden column with left arrow', () => {
@@ -817,18 +816,17 @@
             expect(getFocusedCellIndex()).to.equal(0);
           });
 
-          it('should not navigate to hidden column with left arrow', (done) => {
+          it('should not navigate to hidden column with left arrow', () => {
             grid._columnTree[0][0].hidden = true;
-            requestAnimationFrame(() => {
-              body.children[0].children[1].focus();
+            flushGrid(grid);
 
-              left();
+            body.children[0].children[1].focus();
 
-              expect(getFocusedCellIndex()).to.equal(0);
-              const columnFocusedCell = grid.shadowRoot.activeElement._column;
-              expect(columnFocusedCell.hidden).to.be.false;
-              done();
-            });
+            left();
+
+            expect(getFocusedCellIndex()).to.equal(0);
+            const columnFocusedCell = grid.shadowRoot.activeElement._column;
+            expect(columnFocusedCell.hidden).to.be.false;
           });
 
           it('should not navigate to hidden column with right arrow', () => {
@@ -841,32 +839,31 @@
             expect(getFocusedCellIndex()).to.equal(1);
           });
 
-          it('should not navigate to hidden column with end', (done) => {
+          it('should not navigate to hidden column with end', () => {
             grid._columnTree[0][0].hidden = true;
-            requestAnimationFrame(() => {
-              body.children[0].children[1].focus();
+            flushGrid(grid);
 
-              home();
+            body.children[0].children[1].focus();
 
-              expect(getFocusedCellIndex()).to.equal(0);
-              const columnFocusedCell = grid.shadowRoot.activeElement._column;
-              expect(columnFocusedCell.hidden).to.be.false;
-              done();
-            });
+            home();
+
+            expect(getFocusedCellIndex()).to.equal(0);
+            const columnFocusedCell = grid.shadowRoot.activeElement._column;
+            expect(columnFocusedCell.hidden).to.be.false;
           });
 
-          it('should not navigate to hidden column with home', (done) => {
+          it('should not navigate to hidden column with home', () => {
             grid._columnTree[0][2].hidden = true;
-            requestAnimationFrame(() => {
-              body.children[0].children[0].focus();
+            flushGrid(grid);
 
-              end();
+            body.children[0].children[0].focus();
 
-              expect(getFocusedCellIndex()).to.equal(1);
-              const columnFocusedCell = grid.shadowRoot.activeElement._column;
-              expect(columnFocusedCell.hidden).to.be.false;
-              done();
-            });
+            end();
+
+            expect(getFocusedCellIndex()).to.equal(1);
+            const columnFocusedCell = grid.shadowRoot.activeElement._column;
+            expect(columnFocusedCell.hidden).to.be.false;
+
           });
         });
 
