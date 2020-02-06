@@ -146,31 +146,25 @@
             expect(getContainerCell(grid.$.header, 0, 0).colSpan).to.eql(1);
           });
 
-          it('should not be bound to column header cells', (done) => {
+          it('should not be bound to column header cells', () => {
             column.hidden = true;
+            flushGrid(grid);
 
-            requestAnimationFrame(() => {
-              expect(column._headerCell.parentElement).to.be.not.ok;
-              done();
-            });
+            expect(column._headerCell.parentElement).to.be.not.ok;
           });
 
-          it('should be bound to row cells', (done) => {
+          it('should be bound to row cells', () => {
             column.hidden = true;
+            flushGrid(grid);
 
-            requestAnimationFrame(() => {
-              expect(column._cells[0].parentElement).to.be.not.ok;
-              done();
-            });
+            expect(column._cells[0].parentElement).to.be.not.ok;
           });
 
-          it('should be bound to footer cells', (done) => {
+          it('should be bound to footer cells', () => {
             column.hidden = true;
+            flushGrid(grid);
 
-            requestAnimationFrame(() => {
-              expect(column._footerCell.parentElement).to.be.not.ok;
-              done();
-            });
+            expect(column._footerCell.parentElement).to.be.not.ok;
           });
 
           it('should notify resize', () => {
