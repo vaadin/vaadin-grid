@@ -678,7 +678,7 @@ This program is available under Apache License Version 2.0, available at https:/
       }
 
       _renderColumnTree(columnTree) {
-        Array.from(this.$.items.children).forEach(row => this._updateRow(row, columnTree[columnTree.length - 1]));
+        Array.from(this.$.items.children).forEach((row) => this._updateRow(row, columnTree[columnTree.length - 1], null, false, true));
 
         while (this.$.header.children.length < columnTree.length) {
           const headerRow = document.createElement('tr');
@@ -703,7 +703,7 @@ This program is available under Apache License Version 2.0, available at https:/
           .forEach((footerRow, index) => this._updateRow(footerRow, columnTree[columnTree.length - 1 - index], 'footer', index === 0));
 
         // Sizer rows
-        this._updateRow(this.$.outersizer, columnTree[columnTree.length - 1]);
+        this._updateRow(this.$.outersizer, columnTree[columnTree.length - 1], null, false, true);
         this._updateRow(this.$.fixedsizer, columnTree[columnTree.length - 1]);
 
         this._resizeHandler();

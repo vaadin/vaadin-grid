@@ -471,11 +471,6 @@ This program is available under Apache License Version 2.0, available at https:/
       }
 
       if (!!hidden !== !!this._previousHidden && this._grid) {
-        if (this._previousHidden && this._cells) {
-          this._cells.forEach(cell => {
-            this._grid.appendChild(cell);
-          });
-        }
         if (hidden === true) {
           this._allCells.forEach(cell => {
             if (cell._content.parentNode) {
