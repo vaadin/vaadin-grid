@@ -62,22 +62,26 @@ This program is available under Apache License Version 2.0, available at https:/
     _onSorterChanged(e) {
       const sorter = e.target;
 
+      sorter.addEventListener('sorter-deattach', e => this._onSorterChanged(e));
+      sorter.addEventListener('sorter-attach', e => this._onSorterChanged(e));
+
       this._removeArrayItem(this._sorters, sorter);
       sorter._order = null;
 
-      if (this.multiSort) {
-        if (sorter.direction) {
-          this._sorters.unshift(sorter);
-        }
-
-        this._sorters.forEach((sorter, index) => sorter._order = this._sorters.length > 1 ? index : null, this);
-      } else {
-        if (sorter.direction) {
-          this._sorters.forEach(sorter => {
-            sorter._order = null;
-            sorter.direction = null;
-          });
-          this._sorters = [sorter];
+      if (sorter._isConnected) {
+        if (this.multiSort) {
+          if (sorter.direction) {
+            this._sorters.unshift(sorter);
+          }
+          this._sorters.forEach((sorter, index) => sorter._order = this._sorters.length > 1 ? index : null, this);
+        } else {
+          if (sorter.direction) {
+            this._sorters.forEach(sorter => {
+              sorter._order = null;
+              sorter.direction = null;
+            });
+            this._sorters = [sorter];
+          }
         }
       }
 
