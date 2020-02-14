@@ -498,19 +498,19 @@
             expect(grid._onSorterChanged.called).to.be.true;
             expect(sorter._isConnected).to.be.true;
     
-            // Check sorters array adds sorter(new value sort if _isConnected is true)
-            expect(grid._sorters.includes(sorter)).to.be.true;
             // Remove sorter from sorters array and sorters array is not duplicated
             // Because of this._removeArrayItem(this._sorters, sorter) runs
             expect((new Set(grid._sorters)).size !== grid._sorters.length).to.be.false;
-
+            // Check sorters array adds sorter(new value sort if _isConnected is true)
+            expect(grid._sorters.includes(sorter)).to.be.true;
+    
             sorter.disconnectedCallback();
+            // Remove sorter from sorters array and sorters array is not duplicated
+            // Because of this._removeArrayItem(this._sorters, sorter) runs
+            expect((new Set(grid._sorters)).size !== grid._sorters.length).to.be.false;
             expect(sorter._isConnected).to.be.false;
             // Check sorters array adds sorter(new value sort if _isConnected is false)
             expect(grid._sorters.includes(sorter)).to.be.false;
-            // Remove sorter from sorters array and sorters array is not duplicated
-            // Because of this._removeArrayItem(this._sorters, sorter) runs
-            expect((new Set(grid._sorters)).size !== grid._sorters.length).to.be.false;
           });
         });
       });
