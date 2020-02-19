@@ -295,37 +295,38 @@ This program is available under Apache License Version 2.0, available at https:/
           }
 
           // Populate the cache with new items
-          items.forEach((item, itemsIndex) => {
-            const itemIndex = page * this.pageSize + itemsIndex;
-            cache.items[itemIndex] = item;
-            if (this._isExpanded(item)) {
-              // Force synchronous data request for expanded item sub-cache
-              cache.ensureSubCacheForScaledIndex(itemIndex);
-            }
-          });
+          (() => {
+            const itemsInViewPort = this.__getViewportRows().map(row => row._item);
+
+            items.forEach((item, itemsIndex) => {
+              const itemIndex = page * this.pageSize + itemsIndex;
+              cache.items[itemIndex] = item;
+              if (this._isExpanded(item) && itemsInViewPort.indexOf(item) > -1) {
+                // Force synchronous data request for expanded item sub-cache
+                cache.ensureSubCacheForScaledIndex(itemIndex);
+              }
+            });
+          })();
 
           this._hasData = true;
 
           delete cache.pendingRequests[page];
 
-          if (!this._cache.isLoading()) {
-            // All active requests have finished, update the effective size and rows
-            this._setLoading(false);
-            this._cache.updateSize();
-            this._effectiveSize = this._cache.effectiveSize;
+          this._setLoading(false);
+          this._cache.updateSize();
+          this._effectiveSize = this._cache.effectiveSize;
 
-            Array.from(this.$.items.children)
-              .filter(row => !row.hidden)
-              .forEach(row => {
-                const cachedItem = this._cache.getItemForIndex(row.index);
-                if (cachedItem) {
-                  this._toggleAttribute('loading', false, row);
-                  this._updateItem(row, cachedItem);
-                }
-              });
+          Array.from(this.$.items.children)
+            .filter(row => !row.hidden)
+            .forEach(row => {
+              const cachedItem = this._cache.getItemForIndex(row.index);
+              if (cachedItem) {
+                this._toggleAttribute('loading', false, row);
+                this._updateItem(row, cachedItem);
+              }
+            });
 
-            this._increasePoolIfNeeded(0);
-          }
+          this._increasePoolIfNeeded(0);
 
           this.__itemsReceived();
         });
