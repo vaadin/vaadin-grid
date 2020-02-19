@@ -855,16 +855,6 @@ This program is available under Apache License Version 2.0, available at https:/
           }
         );
       }
-
-      __getViewportRows() {
-        const headerBottom = this.$.header.getBoundingClientRect().bottom;
-        const footerTop = this.$.footer.getBoundingClientRect().top;
-        return Array.from(this.$.items.children)
-          .filter(row => {
-            const rowRect = row.getBoundingClientRect();
-            return rowRect.bottom > headerBottom && rowRect.top < footerTop;
-          });
-      }
     }
 
     customElements.define(GridElement.is, GridElement);
