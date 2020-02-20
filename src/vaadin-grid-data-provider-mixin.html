@@ -231,10 +231,14 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     _isExpanded(item) {
-      return this.expandedItems && this._getItemIndexInArray(item, this.expandedItems) > -1;
+      return this.__expandedKeys[this.getItemId(item)];
     }
 
     _expandedItemsChanged(e) {
+      this.__expandedKeys = {};
+      this.expandedItems.forEach(item => {
+        this.__expandedKeys[this.getItemId(item)] = true;
+      });
       this._cache.updateSize();
       this._effectiveSize = this._cache.effectiveSize;
       this._assignModels();
