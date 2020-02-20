@@ -331,7 +331,7 @@
             expect(grid.dataProvider.getCall(2).args[0].parentItem.value).to.equal('foo7');
           });
 
-          it('should request expanded items first pages before rendering', () => {
+          it('should render when new items are received', () => {
             generateItemIds = true;
             // Reset pageSize to 50 so we get 1 data request / cache level
             grid.pageSize = 50;
@@ -349,10 +349,10 @@
 
             expect(grid.dataProvider.callCount).to.equal(2);
 
-            // Effective size should not have changed in between the data requests
-            expect(renderSpy.called).to.be.false;
-            expect(increasePoolSpy.callCount).to.equal(1);
-            expect(updateItemSpy.callCount).to.be.below(70);
+            // Effective size should change in between the data requests
+            expect(renderSpy.called).to.be.true;
+            expect(increasePoolSpy.callCount).to.above(1);
+            expect(updateItemSpy.callCount).to.be.below(90);
           });
 
           ['renderer', 'template'].forEach(type => {
