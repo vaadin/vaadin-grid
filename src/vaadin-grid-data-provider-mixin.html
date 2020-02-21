@@ -298,9 +298,9 @@ This program is available under Apache License Version 2.0, available at https:/
             }
           }
 
-          // Populate the cache with new items
           const currentItems = Array.from(this.$.items.children).map(row => row._item);
 
+          // Populate the cache with new items
           items.forEach((item, itemsIndex) => {
             const itemIndex = page * this.pageSize + itemsIndex;
             cache.items[itemIndex] = item;
