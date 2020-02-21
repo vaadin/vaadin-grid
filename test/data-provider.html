@@ -355,6 +355,17 @@
             expect(updateItemSpy.callCount).to.be.below(90);
           });
 
+          it('should keep item expanded on itemIdPath change', () => {
+            grid.dataProvider = finiteDataProvider;
+            expect(grid.itemIdPath).to.be.null;
+            expect(isIndexExpanded(grid, 0)).to.be.false;
+            expandIndex(grid, 0);
+            expect(isIndexExpanded(grid, 0)).to.be.true;
+            grid.itemIdPath = 'id';
+            grid.render();
+            expect(isIndexExpanded(grid, 0)).to.be.true;
+          });
+
           ['renderer', 'template'].forEach(type => {
 
             describe(`${type}`, () => {
