@@ -154,6 +154,7 @@ This program is available under Apache License Version 2.0, available at https:/
     static get observers() {
       return [
         '_sizeChanged(size)',
+        '_itemIdPathChanged(itemIdPath)',
         '_expandedItemsChanged(expandedItems.*)'
       ];
     }
@@ -235,13 +236,23 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     _expandedItemsChanged(e) {
-      this.__expandedKeys = new Set();
-      this.expandedItems.forEach(item => {
-        this.__expandedKeys.add(this.getItemId(item));
-      });
+      this.__cacheExpandedKeys();
       this._cache.updateSize();
       this._effectiveSize = this._cache.effectiveSize;
       this._assignModels();
+    }
+
+    _itemIdPathChanged(e) {
+      this.__cacheExpandedKeys();
+    }
+
+    __cacheExpandedKeys() {
+      if (this.expandedItems) {
+        this.__expandedKeys = new Set();
+        this.expandedItems.forEach(item => {
+          this.__expandedKeys.add(this.getItemId(item));
+        });
+      }
     }
 
     /**
