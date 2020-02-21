@@ -231,13 +231,13 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     _isExpanded(item) {
-      return !!this.__expandedKeys.get(this.getItemId(item));
+      return this.__expandedKeys.has(this.getItemId(item));
     }
 
     _expandedItemsChanged(e) {
-      this.__expandedKeys = new Map();
+      this.__expandedKeys = new Set();
       this.expandedItems.forEach(item => {
-        this.__expandedKeys.set(this.getItemId(item), true);
+        this.__expandedKeys.add(this.getItemId(item));
       });
       this._cache.updateSize();
       this._effectiveSize = this._cache.effectiveSize;
