@@ -129,7 +129,7 @@ This program is available under Apache License Version 2.0, available at https:/
      * @memberof Vaadin
      * @mixes Vaadin.ThemableMixin
      */
-    class GridTreeToggleElement extends Vaadin.ThemableMixin(Polymer.Element) {
+    class GridTreeToggleElement extends Vaadin.ThemableMixin(Vaadin.DirMixin(Polymer.Element)) {
       static get is() {
         return 'vaadin-grid-tree-toggle';
       }

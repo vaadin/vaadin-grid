@@ -35,6 +35,12 @@
       :host([expanded]) [part="toggle"]::before {
         transform: rotate(90deg);
       }
+
+      /* RTL specific styles */
+
+      :host([dir="rtl"][expanded]) [part="toggle"]::before {
+        transform: rotate(-90deg);
+      }
     </style>
   </template>
 </dom-module>
