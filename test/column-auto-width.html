@@ -92,7 +92,7 @@
             );
           });
         };
-        grid._recalculateColumnWidths.called = false;
+        sinon.spy.reset();
         whenColumnWidthsCalculated(() => {
           expectColumnWidthsToBeOk(columns);
           done();
@@ -106,7 +106,7 @@
         requestAnimationFrame(() => {
           grid.hidden = false;
 
-          grid._recalculateColumnWidths.called = false;
+          sinon.spy.reset();
           whenColumnWidthsCalculated(() => {
             expectColumnWidthsToBeOk(columns);
             done();
