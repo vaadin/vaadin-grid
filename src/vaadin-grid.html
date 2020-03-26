@@ -417,11 +417,7 @@ This program is available under Apache License Version 2.0, available at https:/
 
       connectedCallback() {
         super.connectedCallback();
-        requestAnimationFrame(() => {
-          if (this._recalculateColumnWidthOnceLoadingFinished) {
-            this.recalculateColumnWidths();
-          }
-        });
+        this.recalculateColumnWidths();
       }
 
       __hasRowsWithClientHeight() {
@@ -695,6 +691,7 @@ This program is available under Apache License Version 2.0, available at https:/
 
       _columnTreeChanged(columnTree, splices) {
         this._renderColumnTree(columnTree);
+        this.recalculateColumnWidths();
       }
 
       _renderColumnTree(columnTree) {
