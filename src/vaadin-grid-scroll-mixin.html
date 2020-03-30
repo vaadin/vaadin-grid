@@ -397,7 +397,7 @@ This program is available under Apache License Version 2.0, available at https:/
       const isRTL = this.getAttribute('dir') === 'rtl';
 
       if (isRTL && rtl) {
-        x = - (outerScroller.scrollWidth - (x + outerScroller.clientWidth) + 1);
+        x = - (outerScroller.scrollWidth - (x + outerScroller.clientWidth));
       }
       return `translate(${x}px, ${y}px)`;
     }
