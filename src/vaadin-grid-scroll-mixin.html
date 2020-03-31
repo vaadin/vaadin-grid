@@ -350,6 +350,7 @@ This program is available under Apache License Version 2.0, available at https:/
             cell.style.transform = '';
           });
           this._frozenCells = Array.prototype.slice.call(this.$.table.querySelectorAll('[frozen]'));
+          this._updateScrollerMeasurements();
           this._translateStationaryElements();
         }
       );
@@ -386,20 +387,19 @@ This program is available under Apache License Version 2.0, available at https:/
         this.$.footer.style.transform = this.$.header.style.transform = this._getTranslate(0, this._scrollTop);
       }
 
-      var frozenCellTransform = this._getTranslate(this._scrollLeft, 0, true);
-      for (var i = 0; i < this._frozenCells.length; i++) {
-        this._frozenCells[i].style.transform = frozenCellTransform;
+      if (this._frozenCells.length > 0) {
+        const x = this.__isRTL ?
+          this._scrollLeft + this.__scrollerMetrics.clientWidth - this.__scrollerMetrics.scrollWidth
+          : this._scrollLeft;
+        var frozenCellTransform = this._getTranslate(x, 0);
+        for (var i = 0; i < this._frozenCells.length; i++) {
+          this._frozenCells[i].style.transform = frozenCellTransform;
+        }
       }
     }
 
-    _getTranslate(x, y, rtl) {
-      const outerScroller = this.$.outerscroller;
-      const isRTL = this.getAttribute('dir') === 'rtl';
-
-      if (isRTL && rtl) {
-        x = - (outerScroller.scrollWidth - (x + outerScroller.clientWidth));
-      }
-      return `translate(${x}px, ${y}px)`;
+    _getTranslate(x, y) {
+      return 'translate(' + x + 'px,' + y + 'px)';
     }
 
     _scrollHeightUpdated(_estScrollHeight) {
