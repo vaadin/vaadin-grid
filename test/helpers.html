@@ -205,6 +205,22 @@
     return visibleRows;
   };
 
+  window.isWithinParentConstraints = (el, parent) => {
+    ['top', 'bottom', 'left', 'right'].forEach(constraint => {
+      if (el.getBoundingClientRect[constraint] !== parent.getBoundingClientRect[constraint]) {
+        return false;
+      }
+    });
+
+    return true;
+  };
+
+  window.getCustomCSSPropertyValue = (element, propertyName) => {
+    return window.ShadyCSS
+      ? window.ShadyCSS.getComputedStyleValue(element, propertyName)
+      : getComputedStyle(element).getPropertyValue(propertyName);
+  };
+
   // http://stackoverflow.com/a/15203639/1331425
   window.isVisible = (el) => {
     let top = el.offsetTop;
