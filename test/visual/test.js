@@ -49,32 +49,32 @@ gemini.suite('vaadin-grid', (rootSuite) => {
             });
           });
       });
-    });
 
-    gemini.suite(`sorting-${theme}`, (suite) => {
-      suite
-        .setUrl(`sorting.html?theme=${theme}`)
-        .setCaptureElements('#sorting')
-        .capture('sorting-initial', {}, (actions, find) => {
-          actions.wait(6000);
-        })
-        .before((actions, find) => {
-          this.firstNameSorter = find('#first-name-sorter');
-          this.lastNameSorter = find('#last-name-sorter');
-        })
-        .capture('single-column-asc', {}, (actions, find) => {
-          actions.click(this.firstNameSorter);
-        })
-        .capture('multiple-columns-asc-asc', {}, (actions, find) => {
-          actions.click(this.lastNameSorter);
-        })
-        .capture('multiple-columns-asc-desc', {}, (actions, find) => {
-          actions.click(this.lastNameSorter);
-        })
-        .capture('single-column-desc', {}, (actions, find) => {
-          actions.click(this.lastNameSorter);
-          actions.click(this.firstNameSorter);
-        });
+      gemini.suite(`sorting-${theme}-${direction}`, (suite) => {
+        suite
+          .setUrl(`sorting.html?theme=${theme}&dir=${direction}`)
+          .setCaptureElements('#sorting')
+          .capture('sorting-initial', {}, (actions, find) => {
+            actions.wait(6000);
+          })
+          .before((actions, find) => {
+            this.firstNameSorter = find('#first-name-sorter');
+            this.lastNameSorter = find('#last-name-sorter');
+          })
+          .capture('single-column-asc', {}, (actions, find) => {
+            actions.click(this.firstNameSorter);
+          })
+          .capture('multiple-columns-asc-asc', {}, (actions, find) => {
+            actions.click(this.lastNameSorter);
+          })
+          .capture('multiple-columns-asc-desc', {}, (actions, find) => {
+            actions.click(this.lastNameSorter);
+          })
+          .capture('single-column-desc', {}, (actions, find) => {
+            actions.click(this.lastNameSorter);
+            actions.click(this.firstNameSorter);
+          });
+      });
     });
 
     gemini.suite(`drag-and-drop-${theme}`, (suite) => {
