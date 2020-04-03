@@ -67,7 +67,7 @@
             expect(getComputedStyle(outerCell).transform).to.equal('none');
             done();
           });
-          grid.$.table.scrollLeft = 100;
+          grid.__setNormalizedScrollLeft(grid.$.table, 100);
         });
 
         ['header', 'body'].forEach(container => {

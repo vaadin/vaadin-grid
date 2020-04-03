@@ -389,7 +389,8 @@ This program is available under Apache License Version 2.0, available at https:/
 
       if (this._frozenCells.length > 0) {
         const x = this.__isRTL ?
-          this._scrollLeft + this.__scrollerMetrics.clientWidth - this.__scrollerMetrics.scrollWidth
+          this.__getNormalizedScrollLeft(this.$.table) + this.__scrollerMetrics.clientWidth -
+          this.__scrollerMetrics.scrollWidth
           : this._scrollLeft;
         var frozenCellTransform = this._getTranslate(x, 0);
         for (var i = 0; i < this._frozenCells.length; i++) {
