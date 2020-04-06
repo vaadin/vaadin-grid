@@ -345,11 +345,6 @@
         border-radius: 0 var(--lumo-border-radius-s) var(--lumo-border-radius-s) 0;
       }
 
-      :host([dir="rtl"]) #scroller:not([ios]) [part~="row"][dragstart]:not([dragstart=""])::after {
-        left: auto;
-        right: var(--_grid-drag-start-x);
-      }
-
       :host([dir="rtl"][theme~="column-borders"]) [part~="cell"]:not([last-column]):not([part~="details-cell"]) {
         border-right: none;
         border-left: var(--_lumo-grid-border-width) solid var(--_lumo-grid-secondary-border-color);
