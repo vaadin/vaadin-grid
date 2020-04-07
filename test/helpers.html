@@ -206,13 +206,8 @@
   };
 
   window.isWithinParentConstraints = (el, parent) => {
-    ['top', 'bottom', 'left', 'right'].forEach(constraint => {
-      if (el.getBoundingClientRect[constraint] !== parent.getBoundingClientRect[constraint]) {
-        return false;
-      }
-    });
-
-    return true;
+    return ['top', 'bottom', 'left', 'right'].every(constraint =>
+      el.getBoundingClientRect[constraint] === parent.getBoundingClientRect[constraint]);
   };
 
   window.getCustomCSSPropertyValue = (element, propertyName) => {
