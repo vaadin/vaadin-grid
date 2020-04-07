@@ -40,14 +40,13 @@
       describe(`frozen columns ${direction}`, () => {
         let grid;
         let columns;
-        let isRTL;
+        const isRTL = direction === 'rtl';
 
         beforeEach(() => {
           grid = fixture('frozen-columns');
           grid.dataProvider = infiniteDataProvider;
           columns = grid.querySelectorAll('vaadin-grid-column');
           document.documentElement.setAttribute('dir', direction);
-          isRTL = direction === 'rtl';
 
           flushGrid(grid);
         });

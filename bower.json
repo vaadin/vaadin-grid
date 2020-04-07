@@ -66,7 +66,7 @@
     "iron-list": "^v2.0.4",
     "vaadin-demo-helpers": "vaadin/vaadin-demo-helpers#^3.1.0-alpha1",
     "vaadin-button": "vaadin/vaadin-button#^2.1.0",
-    "vaadin-context-menu": "^4.3.1"
+    "vaadin-context-menu": "vaadin/vaadin-context-menu#^4.4.0-alpha1"
   },
   "dependencies": {
     "polymer": "^2.0.0",
