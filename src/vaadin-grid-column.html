@@ -244,11 +244,17 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     __runRenderer(renderer, cell, rowData) {
-      const args = [cell._content, this];
-      if (rowData && rowData.item) {
-        args.push(rowData);
-      }
-      renderer.apply(this, args);
+      cell._debouncerRenderer = Polymer.Debouncer.debounce(
+        cell._debouncerRenderer,
+        Polymer.Async.animationFrame,
+        () => {
+          const args = [cell._content, this];
+          if (rowData && rowData.item) {
+            args.push(rowData);
+          }
+          renderer.apply(this, args);
+        }
+      );
     }
 
     __setColumnTemplateOrRenderer(template, renderer, cells) {
@@ -371,7 +377,7 @@ This program is available under Apache License Version 2.0, available at https:/
 
       if (path && cells.value) {
         if (!renderer && !bodyTemplate) {
-          const pathRenderer = (root, owner, {item}) => this.__setTextContent(root, this.get(path, item));
+          const pathRenderer = (root, owner, model) => model && this.__setTextContent(root, this.get(path, model.item));
           this.__setColumnTemplateOrRenderer(undefined, pathRenderer, cells.value);
         }
 

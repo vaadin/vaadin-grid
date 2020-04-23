@@ -443,10 +443,22 @@ This program is available under Apache License Version 2.0, available at https:/
         }
       }
 
+      _flushRenderers() {
+        this._columnTree && this._columnTree.forEach(level => {
+          level.forEach(column => {
+            column._allCells && column._allCells.forEach((cell) => {
+              cell._debouncerRenderer && cell._debouncerRenderer.flush();
+            });
+          });
+        });
+      }
+
       /**
        * @param {Array<Vaadin.GridColumnElement>} cols the columns to auto size based on their content width
        */
       _recalculateColumnWidths(cols) {
+        this._flushRenderers();
+
         // Note: The `cols.forEach()` loops below could be implemented as a single loop but this has been
         // split for performance reasons to batch these similar actions [write/read] together to avoid
         // unnecessary layout trashing.
@@ -487,7 +499,7 @@ This program is available under Apache License Version 2.0, available at https:/
         } else {
           const cols = this._getColumns().filter(col => !col.hidden && col.autoWidth);
           this._recalculateColumnWidths(cols);
-  
+
         }
       }
 
@@ -758,7 +770,12 @@ This program is available under Apache License Version 2.0, available at https:/
         Array.from(row.children).forEach(cell => {
           if (cell._renderer) {
             const owner = cell._column || this;
-            cell._renderer.call(owner, cell._content, owner, model);
+            if (owner.__runRenderer) {
+              owner.__runRenderer(cell._renderer, cell, model);
+            } else {
+              cell._renderer.call(owner, cell._content, owner, model);
+            }
+
           } else if (cell._instance) {
             cell._instance.__detailsOpened__ = model.detailsOpened;
             cell._instance.__selected__ = model.selected;

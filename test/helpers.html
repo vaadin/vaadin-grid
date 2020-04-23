@@ -47,6 +47,8 @@
     if (grid._debouncerHiddenChanged) {
       grid._debouncerHiddenChanged.flush();
     }
+
+    grid._flushRenderers();
   };
 
   window.getCell = (grid, index) => {

@@ -90,6 +90,7 @@
           column.renderer = function(root, owner, model) {
             root.innerHTML = model.index + ' test';
           };
+          flushGrid(grid);
           expect(getCell(grid, 0)._content.innerHTML).to.eql('0 test');
           expect(getCell(grid, 1)._content.innerHTML).to.eql('1 test');
         });
@@ -157,6 +158,7 @@
             column.renderer = sinon.spy();
             column.renderer.reset();
             grid.rowDetailsRenderer = () => {};
+            flushGrid(grid);
             expect(column.renderer.called).to.be.true;
           });
 
@@ -274,6 +276,7 @@
           flushGrid(grid);
           renderers.forEach(renderer => renderer.reset());
           grid.render();
+          flushGrid(grid);
           renderers.forEach(renderer => {
             expect(renderer).to.be.called;
           });

@@ -652,9 +652,11 @@
           const data = [{value: 'foo'}];
           grid.size = 1;
           container.dataProvider = (params, cb) => cb(data);
+          flushGrid(grid);
           expect(getCellContent(getFirstCell(grid)).textContent.trim()).to.equal('foo');
           data[0].value = 'bar';
           grid.clearCache();
+          flushGrid(grid);
           expect(getCellContent(getFirstCell(grid)).textContent.trim()).to.equal('bar');
         });
 

@@ -194,6 +194,7 @@
 
           beforeEach(() => {
             emptyColumn.path = 'value';
+            flushGrid(grid);
           });
 
           it('should use path as the header', () => {
@@ -213,6 +214,7 @@
           it('should not override header renderer content', () => {
             emptyColumn.headerRenderer = root => root.textContent = 'foo';
             emptyColumn.path = 'foo';
+            flushGrid(grid);
             expect(getHeaderCellContent(grid, 1, 2).textContent.trim()).to.equal('foo');
           });
 
@@ -243,6 +245,7 @@
           it('should not override renderer content', () => {
             emptyColumn.renderer = root => root.textContent = 'foo';
             emptyColumn.path = 'foo';
+            flushGrid(grid);
             expect(getBodyCellContent(grid, 0, 2).textContent.trim()).to.equal('foo');
           });
 
@@ -282,6 +285,7 @@
               }
             });
             emptyColumn.path = 'value';
+            flushGrid(grid);
             flush(() => {
               expect(spy.callCount).to.equal(1);
               done();
@@ -321,6 +325,7 @@
           it('should not override header renderer text content', () => {
             emptyColumn.headerRenderer = root => root.textContent = 'foo';
             emptyColumn.header = 'Bar';
+            flushGrid(grid);
             expect(getHeaderCellContent(grid, 1, 2).textContent.trim()).to.equal('foo');
           });
 

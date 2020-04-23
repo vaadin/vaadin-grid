@@ -253,6 +253,7 @@
           it('should not override header renderer content', () => {
             emptyGroup.headerRenderer = root => root.textContent = 'foo';
             emptyGroup.header = 'Bar';
+            flushGrid(grid);
             expect(getHeaderCellContent(0, 1).trim()).to.equal('foo');
           });
 
