@@ -14,23 +14,34 @@ This program is available under Apache License Version 2.0, available at https:/
   Vaadin.Grid.KeyboardNavigationMixin = superClass => class KeyboardNavigationMixin extends superClass {
     static get properties() {
       return {
+        /** @private */
         _headerFocusable: {
           type: Object,
           observer: '_focusableChanged'
         },
+
+        /** @private */
         _itemsFocusable: {
           type: Object,
           observer: '_focusableChanged'
         },
+
+        /** @private */
         _footerFocusable: {
           type: Object,
           observer: '_focusableChanged'
         },
+
+        /** @private */
         _navigatingIsHidden: Boolean,
+
+        /** @private */
         _focusedItemIndex: {
           type: Number,
           value: 0
         },
+
+        /** @private */
         _focusedColumnOrder: Number
       };
     }
@@ -59,6 +70,7 @@ This program is available under Apache License Version 2.0, available at https:/
       this.addEventListener('mouseup', () => this._isMousedown = false);
     }
 
+    /** @private */
     _focusableChanged(focusable, oldFocusable) {
       if (oldFocusable) {
         oldFocusable.setAttribute('tabindex', '-1');
@@ -68,6 +80,10 @@ This program is available under Apache License Version 2.0, available at https:/
       }
     }
 
+    /**
+     * @param {!KeyboardEvent} e
+     * @protected
+     */
     _onKeyDown(e) {
       // Ensure standard key value, unified across browsers
       let key = e.key;
@@ -120,6 +136,7 @@ This program is available under Apache License Version 2.0, available at https:/
       }
     }
 
+    /** @private */
     _ensureScrolledToIndex(index) {
       const targetRowInDom = Array.from(this.$.items.children).filter(child => child.index === index)[0];
       if (!targetRowInDom) {
@@ -127,6 +144,7 @@ This program is available under Apache License Version 2.0, available at https:/
       }
     }
 
+    /** @private */
     _onNavigationKeyDown(e, key) {
       e.preventDefault();
 
@@ -304,6 +322,7 @@ This program is available under Apache License Version 2.0, available at https:/
       dstCell.focus();
     }
 
+    /** @private */
     _parseEventPath(path) {
       const tableIndex = path.indexOf(this.$.table);
       return {
@@ -313,6 +332,7 @@ This program is available under Apache License Version 2.0, available at https:/
       };
     }
 
+    /** @private */
     _onInteractionKeyDown(e, key) {
       const localTarget = e.composedPath()[0];
       const localTargetIsTextInput = localTarget.localName === 'input' &&
@@ -353,6 +373,7 @@ This program is available under Apache License Version 2.0, available at https:/
       }
     }
 
+    /** @private */
     _predictFocusStepTarget(srcElement, step) {
       const tabOrder = [
         this.$.table,
@@ -373,6 +394,7 @@ This program is available under Apache License Version 2.0, available at https:/
       return tabOrder[index];
     }
 
+    /** @private */
     _onTabKeyDown(e) {
       const focusTarget = this._predictFocusStepTarget(e.composedPath()[0], e.shiftKey ? -1 : 1);
 
@@ -407,6 +429,7 @@ This program is available under Apache License Version 2.0, available at https:/
       this._toggleAttribute('navigating', true, this);
     }
 
+    /** @private */
     _onSpaceKeyDown(e) {
       e.preventDefault();
 
@@ -422,6 +445,10 @@ This program is available under Apache License Version 2.0, available at https:/
       }
     }
 
+    /**
+     * @param {!FocusEvent} e
+     * @protected
+     */
     _onFocusIn(e) {
       if (!this._isMousedown) {
         this._toggleAttribute('navigating', true, this);
@@ -444,11 +471,16 @@ This program is available under Apache License Version 2.0, available at https:/
       }
     }
 
+    /**
+     * @param {!FocusEvent} e
+     * @protected
+     */
     _onFocusOut(e) {
       this._toggleAttribute('navigating', false, this);
       this._detectInteracting(e);
     }
 
+    /** @private */
     _onCellFocusIn(e) {
       this._detectInteracting(e);
 
@@ -469,6 +501,7 @@ This program is available under Apache License Version 2.0, available at https:/
       this._detectFocusedItemIndex(e);
     }
 
+    /** @private */
     _onCellFocusOut(e) {
       if (e.composedPath().indexOf(this.$.table) === 3) {
         const cell = e.composedPath()[0];
@@ -477,12 +510,14 @@ This program is available under Apache License Version 2.0, available at https:/
       }
     }
 
+    /** @private */
     _detectInteracting(e) {
       this._toggleAttribute('interacting',
         e.composedPath().some(el => el.localName === 'vaadin-grid-cell-content'),
         this);
     }
 
+    /** @private */
     _detectFocusedItemIndex(e) {
       const {rowGroup, row} = this._parseEventPath(e.composedPath());
       if (rowGroup === this.$.items) {
@@ -490,6 +525,11 @@ This program is available under Apache License Version 2.0, available at https:/
       }
     }
 
+    /**
+     * @param {!GridItem} item
+     * @param {number} index
+     * @protected
+     */
     _preventScrollerRotatingCellFocus(item, index) {
       if (item.index === this._focusedItemIndex && this.hasAttribute('navigating') && this._activeRowGroup === this.$.items) {
         // Focused item has went, hide navigation mode
@@ -503,6 +543,12 @@ This program is available under Apache License Version 2.0, available at https:/
       }
     }
 
+    /**
+     * @param {HTMLElement=} rowGroup
+     * @param {number=} rowIndex
+     * @return {!Array<!GridColumnElement>}
+     * @protected
+     */
     _getColumns(rowGroup, rowIndex) {
       let columnTreeLevel = this._columnTree.length - 1;
       if (rowGroup === this.$.header) {
@@ -513,6 +559,7 @@ This program is available under Apache License Version 2.0, available at https:/
       return this._columnTree[columnTreeLevel];
     }
 
+    /** @protected */
     _resetKeyboardNavigation() {
       if (this.$.header.firstElementChild) {
         this._headerFocusable = Array.from(this.$.header.firstElementChild.children).filter(el => !el.hidden)[0];
@@ -534,6 +581,10 @@ This program is available under Apache License Version 2.0, available at https:/
       }
     }
 
+    /**
+     * @param {!HTMLElement} dstCell
+     * @protected
+     */
     _scrollHorizontallyToCell(dstCell) {
       if (dstCell.hasAttribute('frozen') || this._elementMatches(dstCell, '[part~="details-cell"]')) {
         // These cells are, by design, always visible, no need to scroll.
@@ -576,6 +627,7 @@ This program is available under Apache License Version 2.0, available at https:/
       }
     }
 
+    /** @private */
     _elementMatches(el, query) {
       return el.matches ? el.matches(query) :
         Array.from(el.parentNode.querySelectorAll(query)).indexOf(el) !== -1;

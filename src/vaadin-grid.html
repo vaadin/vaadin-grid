@@ -294,6 +294,7 @@ This program is available under Apache License Version 2.0, available at https:/
      * See [ThemableMixin – how to apply styles for shadow parts](https://github.com/vaadin/vaadin-themable-mixin/wiki)
      *
      * @memberof Vaadin
+     * @extends Vaadin.Grid.ScrollerElement
      * @mixes Vaadin.ThemableMixin
      * @mixes Vaadin.Grid.A11yMixin
      * @mixes Vaadin.Grid.ActiveItemMixin
@@ -350,7 +351,7 @@ This program is available under Apache License Version 2.0, available at https:/
 
       static get properties() {
         return {
-
+          /** @private */
           _this: {
             type: Object,
             value: function() {
@@ -358,37 +359,44 @@ This program is available under Apache License Version 2.0, available at https:/
             }
           },
 
+          /** @private */
           _safari: {
             type: Boolean,
             value: /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
           },
 
+          /** @private */
           _ios: {
             type: Boolean,
             value: (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream)
               || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
           },
 
+          /** @private */
           _edge: {
             type: Boolean,
             value: typeof CSS !== 'undefined' && CSS.supports('(-ms-ime-align:auto)')
           },
 
+          /** @private */
           _ie: {
             type: Boolean,
             value: !!(navigator.userAgent.match(/Trident/) && !navigator.userAgent.match(/MSIE/))
           },
 
+          /** @private */
           _firefox: {
             type: Boolean,
             value: navigator.userAgent.toLowerCase().indexOf('firefox') > -1
           },
 
+          /** @private */
           _android: {
             type: Boolean,
             value: /android/i.test(navigator.userAgent)
           },
 
+          /** @private */
           _touchDevice: {
             type: Boolean,
             value: TOUCH_DEVICE
@@ -406,6 +414,8 @@ This program is available under Apache License Version 2.0, available at https:/
             reflectToAttribute: true,
             observer: '_heightByRowsChanged'
           },
+
+          /** @private */
           _recalculateColumnWidthOnceLoadingFinished: {
             type: Boolean,
             value: true
@@ -446,6 +456,7 @@ This program is available under Apache License Version 2.0, available at https:/
 
       /**
        * @param {Array<Vaadin.GridColumnElement>} cols the columns to auto size based on their content width
+       * @private
        */
       _recalculateColumnWidths(cols) {
         // Note: The `cols.forEach()` loops below could be implemented as a single loop but this has been
@@ -488,10 +499,10 @@ This program is available under Apache License Version 2.0, available at https:/
         } else {
           const cols = this._getColumns().filter(col => !col.hidden && col.autoWidth);
           this._recalculateColumnWidths(cols);
-  
         }
       }
 
+      /** @private */
       _createScrollerRows(count) {
         const rows = [];
         for (var i = 0; i < count; i++) {
@@ -515,10 +526,12 @@ This program is available under Apache License Version 2.0, available at https:/
         return rows;
       }
 
+      /** @private */
       _getRowTarget() {
         return this.$.items;
       }
 
+      /** @private */
       _createCell(tagName) {
         const contentId = this._contentIndex = this._contentIndex + 1 || 0;
         const slotName = 'vaadin-grid-cell-content-' + contentId;
@@ -566,6 +579,7 @@ This program is available under Apache License Version 2.0, available at https:/
         return cell;
       }
 
+      /** @private */
       _updateRow(row, columns, section, isColumnRow, noNotify) {
         section = section || 'body';
 
@@ -687,6 +701,7 @@ This program is available under Apache License Version 2.0, available at https:/
         }
       }
 
+      /** @private */
       _updateScrollerItem(row, index) {
         this._preventScrollerRotatingCellFocus(row, index);
 
@@ -700,11 +715,13 @@ This program is available under Apache License Version 2.0, available at https:/
         this._getItem(index, row);
       }
 
+      /** @private */
       _columnTreeChanged(columnTree, splices) {
         this._renderColumnTree(columnTree);
         this.recalculateColumnWidths();
       }
 
+      /** @private */
       _renderColumnTree(columnTree) {
         Array.from(this.$.items.children).forEach((row) => this._updateRow(row, columnTree[columnTree.length - 1], null, false, true));
 
@@ -742,6 +759,11 @@ This program is available under Apache License Version 2.0, available at https:/
         this._a11yUpdateFooterRows();
       }
 
+      /**
+       * @protected
+       * @param {HTMLElement} row
+       * @param {GridItem} item
+       */
       _updateItem(row, item) {
         row._item = item;
         const model = this.__getRowModel(row);
@@ -778,6 +800,7 @@ This program is available under Apache License Version 2.0, available at https:/
         );
       }
 
+      /** @private */
       _resizeHandler() {
         this._updateDetailsCellHeights();
         this._accessIronListAPI(super._resizeHandler, true);
@@ -785,6 +808,7 @@ This program is available under Apache License Version 2.0, available at https:/
         this._updateHeaderFooterMetrics();
       }
 
+      /** @private */
       _updateHeaderFooterMetrics() {
         const headerHeight = this.$.header.clientHeight + 'px';
         const footerHeight = this.$.footer.clientHeight + 'px';
@@ -800,6 +824,7 @@ This program is available under Apache License Version 2.0, available at https:/
         });
       }
 
+      /** @private */
       _onAnimationEnd(e) {
         // ShadyCSS applies scoping suffixes to animation names
         if (e.animationName.indexOf('vaadin-grid-appear') === 0) {
@@ -811,6 +836,12 @@ This program is available under Apache License Version 2.0, available at https:/
         }
       }
 
+      /**
+       * @param {string} name
+       * @param {boolean} bool
+       * @param {!Element} node
+       * @protected
+       */
       _toggleAttribute(name, bool, node) {
         if (node.hasAttribute(name) === !bool) {
           if (bool) {
@@ -821,6 +852,7 @@ This program is available under Apache License Version 2.0, available at https:/
         }
       }
 
+      /** @private */
       __getRowModel(row) {
         return {
           index: row.index,
@@ -859,6 +891,7 @@ This program is available under Apache License Version 2.0, available at https:/
         super.notifyResize();
       }
 
+      /** @private */
       _heightByRowsChanged(value, oldValue) {
         if (value || oldValue) {
           this.notifyResize();
