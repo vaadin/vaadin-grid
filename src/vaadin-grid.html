@@ -487,7 +487,7 @@ This program is available under Apache License Version 2.0, available at https:/
         } else {
           const cols = this._getColumns().filter(col => !col.hidden && col.autoWidth);
           this._recalculateColumnWidths(cols);
-  
+
         }
       }
 
@@ -780,7 +780,6 @@ This program is available under Apache License Version 2.0, available at https:/
       _resizeHandler() {
         this._updateDetailsCellHeights();
         this._accessIronListAPI(super._resizeHandler, true);
-        this._updateScrollerMeasurements();
         this._updateHeaderFooterMetrics();
       }
 
