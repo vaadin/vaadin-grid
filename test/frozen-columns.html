@@ -53,16 +53,12 @@
 
         after(() => document.documentElement.removeAttribute('dir'));
 
-        !isRTL && it('should update scrollerMetrics on dir changed to rtl after frozen columns set', done => {
+        !isRTL && it('should not throw on scrolling when dir changed to rtl after frozen columns set', () => {
           columns[0].frozen = true;
           grid._debouncerCacheElements.flush();
           grid.setAttribute('dir', 'rtl');
-          listenOnce(grid.$.table, 'scroll', () => {
-            expect(grid.__scrollerMetrics).not.to.be.undefined;
-            grid.removeAttribute('dir');
-            done();
-          });
-          grid.__setNormalizedScrollLeft(grid.$.table, 100);
+          // Emulate scrolling with the wheel
+          expect(() => wheel(grid, 1, 1)).not.to.throw(Error);
         });
 
         it('should have last frozen only when there are frozen columns', () => {
