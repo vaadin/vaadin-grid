@@ -270,7 +270,7 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     /**
-     * @param {HTMLElement} cell
+     * @param {!HTMLElement} cell
      * @return {!HTMLElement}
      * @protected
      */
@@ -326,8 +326,8 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     /**
-     * @param {GridColumnElement} column1
-     * @param {GridColumnElement} column2
+     * @param {GridColumnElement | undefined} column1
+     * @param {GridColumnElement | undefined} column2
      * @return {boolean | undefined}
      * @protected
      */
@@ -372,7 +372,7 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     /**
-     * @param {HTMLElement} targetCell
+     * @param {HTMLElement | undefined} targetCell
      * @param {GridColumnElement} draggedColumn
      * @return {GridColumnElement | undefined}
      * @protected

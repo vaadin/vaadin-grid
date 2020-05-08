@@ -40,12 +40,18 @@ This program is available under Apache License Version 2.0, available at https:/
           }
         },
 
-        /** @private */
+        /**
+         * @type {HTMLTemplateElement}
+         * @protected
+         */
         _headerTemplate: {
           type: Object
         },
 
-        /** @private */
+        /**
+         * @type {HTMLTemplateElement}
+         * @protected
+         */
         _footerTemplate: {
           type: Object
         },
@@ -53,6 +59,7 @@ This program is available under Apache License Version 2.0, available at https:/
         /**
          * When true, the column is frozen. When a column inside of a column group is frozen,
          * all of the sibling columns inside the group will get frozen also.
+         * @type {boolean}
          */
         frozen: {
           type: Boolean,
@@ -82,19 +89,25 @@ This program is available under Apache License Version 2.0, available at https:/
           type: String
         },
 
-        /** @private */
+        /**
+         * @type {boolean}
+         * @protected
+         */
         _lastFrozen: {
           type: Boolean,
           value: false
         },
 
-        /** @private */
+        /** @protected */
         _order: Number,
 
         /** @private */
         _reorderStatus: Boolean,
 
-        /** @private */
+        /**
+         * @type {Array<!HTMLElement>}
+         * @protected
+         */
         _emptyCells: Array,
 
         /** @private */
@@ -103,7 +116,7 @@ This program is available under Apache License Version 2.0, available at https:/
         /** @private */
         _footerCell: Object,
 
-        /** @private */
+        /** @protected */
         _grid: Object,
 
         /**
@@ -202,7 +215,7 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     /**
-     * @return {!GridElement}
+     * @return {!GridElement | undefined}
      * @protected
      */
     get _grid() {
@@ -431,15 +444,15 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     /**
-     * @param {string} path
-     * @param {string} header
-     * @param {Element} headerCell
-     * @param {Element} footerCell
-     * @param {Array<Element>} cells
-     * @param {GridBodyRenderer} renderer
-     * @param {GridHeaderFooterRenderer} headerRenderer
-     * @param {HTMLTemplateElement} bodyTemplate
-     * @param {HTMLTemplateElement} headerTemplate
+     * @param {string | undefined} path
+     * @param {string | undefined} header
+     * @param {!HTMLTableCellElement | undefined} headerCell
+     * @param {!HTMLTableCellElement | undefined} footerCell
+     * @param {!object | undefined} cells
+     * @param {GridBodyRenderer | undefined} renderer
+     * @param {GridHeaderFooterRenderer | undefined} headerRenderer
+     * @param {HTMLTemplateElement | undefined} bodyTemplate
+     * @param {HTMLTemplateElement | undefined} headerTemplate
      * @protected
      */
     _pathOrHeaderChanged(path, header, headerCell, footerCell, cells, renderer, headerRenderer, bodyTemplate, headerTemplate) {
@@ -671,18 +684,25 @@ This program is available under Apache License Version 2.0, available at https:/
            * You can manually trigger the auto sizing behavior again by calling `grid.recalculateColumnWidths()`.
            *
            * The column width may still grow larger when `flexGrow` is not 0.
+           * @type {boolean}
            */
           autoWidth: {
             type: Boolean,
             value: false
           },
 
-          /** @private */
+          /**
+          * @type {HTMLTemplateElement}
+          * @protected
+          */
           _bodyTemplate: {
             type: Object
           },
 
-          /** @private */
+          /**
+          * @type {Array<!HTMLElement>}
+          * @protected
+          */
           _cells: Array
 
         };
