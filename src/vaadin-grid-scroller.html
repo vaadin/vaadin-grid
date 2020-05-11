@@ -375,17 +375,26 @@ This program is available under Apache License Version 2.0, available at https:/
       /** @private */
       _removeFocusedItem() { /* Ignore */ }
 
-      /** @protected */
+      /**
+       * @return {number}
+       * @protected
+       */
       get _firstVisibleIndex() {
         return this._accessIronListAPI(() => super.firstVisibleIndex);
       }
 
-      /** @protected */
+      /**
+       * @return {number}
+       * @protected
+       */
       get _lastVisibleIndex() {
         return this._accessIronListAPI(() => super.lastVisibleIndex);
       }
 
-      /** @protected */
+      /**
+       * @param {number} index
+       * @protected
+       */
       _scrollToIndex(index) {
         this._accessIronListAPI(() => this.scrollToIndex(index));
       }
