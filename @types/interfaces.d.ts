@@ -65,6 +65,7 @@ export interface GridRowData {
   selected?: boolean;
   expanded?: boolean;
   level?: number;
+  detailsOpened?: boolean;
 }
 
 export type GridRowDetailsRenderer = (

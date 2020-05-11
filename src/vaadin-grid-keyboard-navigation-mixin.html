@@ -20,7 +20,10 @@ This program is available under Apache License Version 2.0, available at https:/
           observer: '_focusableChanged'
         },
 
-        /** @private */
+        /**
+         * @type {!HTMLElement | undefined}
+         * @protected
+         */
         _itemsFocusable: {
           type: Object,
           observer: '_focusableChanged'
@@ -35,7 +38,10 @@ This program is available under Apache License Version 2.0, available at https:/
         /** @private */
         _navigatingIsHidden: Boolean,
 
-        /** @private */
+        /**
+         * @type {number}
+         * @protected
+         */
         _focusedItemIndex: {
           type: Number,
           value: 0
@@ -46,6 +52,7 @@ This program is available under Apache License Version 2.0, available at https:/
       };
     }
 
+    /** @protected */
     ready() {
       super.ready();
 
@@ -279,7 +286,7 @@ This program is available under Apache License Version 2.0, available at https:/
       }
 
       // This has to be set after scrolling, otherwise it can be removed by
-      // `_preventScrollerRotatingCellFocus(item, index)` during scrolling.
+      // `_preventScrollerRotatingCellFocus(row, index)` during scrolling.
       this._toggleAttribute('navigating', true, this);
 
       const columnIndexByOrder = dstColumns.reduce((acc, col, i) => (acc[col._order] = i, acc), {});
@@ -526,12 +533,12 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     /**
-     * @param {!GridItem} item
+     * @param {!HTMLTableRowElement} row
      * @param {number} index
      * @protected
      */
-    _preventScrollerRotatingCellFocus(item, index) {
-      if (item.index === this._focusedItemIndex && this.hasAttribute('navigating') && this._activeRowGroup === this.$.items) {
+    _preventScrollerRotatingCellFocus(row, index) {
+      if (row.index === this._focusedItemIndex && this.hasAttribute('navigating') && this._activeRowGroup === this.$.items) {
         // Focused item has went, hide navigation mode
         this._navigatingIsHidden = true;
         this._toggleAttribute('navigating', false, this);
@@ -544,7 +551,7 @@ This program is available under Apache License Version 2.0, available at https:/
     }
 
     /**
-     * @param {HTMLElement=} rowGroup
+     * @param {HTMLTableSectionElement=} rowGroup
      * @param {number=} rowIndex
      * @return {!Array<!GridColumnElement>}
      * @protected

@@ -35,7 +35,10 @@ This program is available under Apache License Version 2.0, available at https:/
           },
         },
 
-        /** @private */
+        /**
+         * @type {number}
+         * @protected
+         */
         _scrollbarWidth: {
           type: Number,
           value: function() {
@@ -111,6 +114,7 @@ This program is available under Apache License Version 2.0, available at https:/
       this._scrollPageHeight = _viewportHeight - this.$.header.clientHeight - this.$.footer.clientHeight - this._scrollLineHeight;
     }
 
+    /** @protected */
     ready() {
       super.ready();
       this.scrollTarget = this.$.table;
@@ -361,7 +365,7 @@ This program is available under Apache License Version 2.0, available at https:/
       }
     }
 
-    /** @private */
+    /** @protected */
     _frozenCellsChanged() {
       this._debouncerCacheElements = Polymer.Debouncer.debounce(
         this._debouncerCacheElements,
@@ -378,7 +382,7 @@ This program is available under Apache License Version 2.0, available at https:/
       this._updateLastFrozen();
     }
 
-    /** @private */
+    /** @protected */
     _updateScrollerMeasurements() {
       if (this._frozenCells.length > 0 && this.__isRTL) {
         this.__scrollerMetrics = {

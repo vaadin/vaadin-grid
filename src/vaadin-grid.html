@@ -407,6 +407,7 @@ This program is available under Apache License Version 2.0, available at https:/
            *
            * Effectively, this disables the grid's virtual scrolling so that all the rows are rendered in the DOM at once.
            * If the grid has a large number of items, using the feature is discouraged to avoid performance issues.
+           * @type {boolean}
            */
           heightByRows: {
             type: Boolean,
@@ -428,11 +429,18 @@ This program is available under Apache License Version 2.0, available at https:/
         this.addEventListener('animationend', this._onAnimationEnd);
       }
 
+      /** @protected */
       connectedCallback() {
         super.connectedCallback();
         this.recalculateColumnWidths();
       }
 
+      /**
+       * @param {string} name
+       * @param {?string} oldValue
+       * @param {?string} newValue
+       * @protected
+       */
       attributeChangedCallback(name, oldValue, newValue) {
         super.attributeChangedCallback(name, oldValue, newValue);
         if (name === 'dir') {
@@ -441,10 +449,12 @@ This program is available under Apache License Version 2.0, available at https:/
         }
       }
 
+      /** @private */
       __hasRowsWithClientHeight() {
         return !!Array.from(this.$.items.children).filter(row => row.clientHeight).length;
       }
 
+      /** @private */
       __itemsReceived() {
         if (this._recalculateColumnWidthOnceLoadingFinished
           && !this._cache.isLoading()
@@ -455,7 +465,7 @@ This program is available under Apache License Version 2.0, available at https:/
       }
 
       /**
-       * @param {Array<Vaadin.GridColumnElement>} cols the columns to auto size based on their content width
+       * @param {!Array<!GridColumnElement>} cols the columns to auto size based on their content width
        * @private
        */
       _recalculateColumnWidths(cols) {
@@ -579,7 +589,14 @@ This program is available under Apache License Version 2.0, available at https:/
         return cell;
       }
 
-      /** @private */
+      /**
+       * @param {!HTMLTableRowElement} row
+       * @param {!Array<!GridColumnElement>} columns
+       * @param {?string} section
+       * @param {boolean} isColumnRow
+       * @param {boolean} noNotify
+       * @protected
+       */
       _updateRow(row, columns, section, isColumnRow, noNotify) {
         section = section || 'body';
 
@@ -660,6 +677,7 @@ This program is available under Apache License Version 2.0, available at https:/
         this._updateFirstAndLastColumnForRow(row);
       }
 
+      /** @private */
       __updateHeaderFooterRowVisibility(row) {
         if (!row) {
           return;
@@ -721,7 +739,10 @@ This program is available under Apache License Version 2.0, available at https:/
         this.recalculateColumnWidths();
       }
 
-      /** @private */
+      /**
+       * @param {!Array<!GridColumnElement>} columnTree
+       * @protected
+       */
       _renderColumnTree(columnTree) {
         Array.from(this.$.items.children).forEach((row) => this._updateRow(row, columnTree[columnTree.length - 1], null, false, true));
 
@@ -760,9 +781,9 @@ This program is available under Apache License Version 2.0, available at https:/
       }
 
       /**
-       * @protected
-       * @param {HTMLElement} row
+       * @param {!HTMLElement} row
        * @param {GridItem} item
+       * @protected
        */
       _updateItem(row, item) {
         row._item = item;
@@ -808,7 +829,7 @@ This program is available under Apache License Version 2.0, available at https:/
         this._updateHeaderFooterMetrics();
       }
 
-      /** @private */
+      /** @protected */
       _updateHeaderFooterMetrics() {
         const headerHeight = this.$.header.clientHeight + 'px';
         const footerHeight = this.$.footer.clientHeight + 'px';
@@ -852,7 +873,10 @@ This program is available under Apache License Version 2.0, available at https:/
         }
       }
 
-      /** @private */
+      /**
+       * @param {!HTMLTableRowElement} row
+       * @protected
+       */
       __getRowModel(row) {
         return {
           index: row.index,
@@ -898,6 +922,7 @@ This program is available under Apache License Version 2.0, available at https:/
         }
       }
 
+      /** @private */
       __forceReflow() {
         this._debouncerForceReflow = Polymer.Debouncer.debounce(this._debouncerForceReflow,
           Polymer.Async.animationFrame, () => {

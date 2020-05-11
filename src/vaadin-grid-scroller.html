@@ -31,7 +31,10 @@ This program is available under Apache License Version 2.0, available at https:/
             notify: true
           },
 
-          /** @private */
+          /**
+           * @type {number}
+           * @protected
+           */
           _vidxOffset: {
             value: 0
           }
@@ -44,15 +47,16 @@ This program is available under Apache License Version 2.0, available at https:/
         ];
       }
 
+      /** @protected */
       connectedCallback() {
         super.connectedCallback();
         this._scrollHandler();
       }
 
       /**
-       * @protected
-       * @param {unknown} item
+       * @param {!HTMLTableRowElement} item
        * @param {number} index
+       * @protected
        */
       _updateScrollerItem(item, index) {}
 
@@ -69,8 +73,8 @@ This program is available under Apache License Version 2.0, available at https:/
       _canPopulate() {}
 
       /**
-       * @protected
        * @param {number} index
+       * @protected
        */
       scrollToIndex(index) {
         this._warnPrivateAPIAccess('scrollToIndex');
@@ -152,7 +156,7 @@ This program is available under Apache License Version 2.0, available at https:/
         requestAnimationFrame(() => this._update());
       }
 
-      /** @private */
+      /** @protected */
       _positionItems() {
         this._adjustScrollPosition();
 
@@ -208,6 +212,7 @@ This program is available under Apache License Version 2.0, available at https:/
         }
       }
 
+      /** @private */
       __reorderChildNodes() {
         const childNodes = Array.from(this.$.items.childNodes);
         const rowsInOrder = !!childNodes.reduce((inOrder, current, currentIndex, array) => {
@@ -248,7 +253,7 @@ This program is available under Apache License Version 2.0, available at https:/
       /**
        * Assigns the data models to a given set of items.
        * @param {!Array<number>=} itemSet
-       * @private
+       * @protected
        */
       _assignModels(itemSet) {
         this._iterateItems((pidx, vidx) => {
@@ -258,7 +263,7 @@ This program is available under Apache License Version 2.0, available at https:/
         }, itemSet);
       }
 
-      /** @private */
+      /** @protected */
       _scrollHandler() {
         const delta = this.$.table.scrollTop - this._scrollPosition;
         this._accessIronListAPI(super._scrollHandler);
@@ -370,17 +375,17 @@ This program is available under Apache License Version 2.0, available at https:/
       /** @private */
       _removeFocusedItem() { /* Ignore */ }
 
-      /** @private */
+      /** @protected */
       get _firstVisibleIndex() {
         return this._accessIronListAPI(() => super.firstVisibleIndex);
       }
 
-      /** @private */
+      /** @protected */
       get _lastVisibleIndex() {
         return this._accessIronListAPI(() => super.lastVisibleIndex);
       }
 
-      /** @private */
+      /** @protected */
       _scrollToIndex(index) {
         this._accessIronListAPI(() => this.scrollToIndex(index));
       }

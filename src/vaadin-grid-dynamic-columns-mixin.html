@@ -14,6 +14,7 @@ This program is available under Apache License Version 2.0, available at https:/
    */
   Vaadin.Grid.DynamicColumnsMixin = superClass => class DynamicColumnsMixin extends superClass {
 
+    /** @protected */
     ready() {
       super.ready();
       this._addNodeObserver();

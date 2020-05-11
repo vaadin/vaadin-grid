@@ -10,18 +10,26 @@ This program is available under Apache License Version 2.0, available at https:/
 
   Vaadin.Grid.ItemCache = class ItemCache {
     /**
-     * @param {HTMLElement} grid
-     * @param {ItemCache?} parentCache
-     * @param {GridItem?} parentItem
+     * @param {!HTMLElement} grid
+     * @param {!ItemCache | undefined} parentCache
+     * @param {!GridItem | undefined} parentItem
      */
     constructor(grid, parentCache, parentItem) {
+      /** @type {!HTMLElement} */
       this.grid = grid;
+      /** @type {!ItemCache | undefined} */
       this.parentCache = parentCache;
+      /** @type {!GridItem | undefined} */
       this.parentItem = parentItem;
+      /** @type {object} */
       this.itemCaches = {};
+      /** @type {object} */
       this.items = {};
+      /** @type {number} */
       this.effectiveSize = 0;
+      /** @type {number} */
       this.size = 0;
+      /** @type {object} */
       this.pendingRequests = {};
     }
 
@@ -29,14 +37,14 @@ This program is available under Apache License Version 2.0, available at https:/
      * @return {boolean}
      */
     isLoading() {
-      return Object.keys(this.pendingRequests).length || Object.keys(this.itemCaches).filter(index => {
+      return Boolean(Object.keys(this.pendingRequests).length || Object.keys(this.itemCaches).filter(index => {
         return this.itemCaches[index].isLoading();
-      })[0];
+      })[0]);
     }
 
     /**
      * @param {number} index
-     * @return {!GridItem}
+     * @return {!GridItem | undefined}
      */
     getItemForIndex(index) {
       const {cache, scaledIndex} = this.getCacheAndIndex(index);
@@ -66,7 +74,7 @@ This program is available under Apache License Version 2.0, available at https:/
 
     /**
      * @param {number} index
-     * @return {{cache: ItemCache, scaledIndex: number}}
+     * @return {{cache: !ItemCache, scaledIndex: number}}
      */
     getCacheAndIndex(index) {
       let thisLevelIndex = index;
@@ -144,7 +152,7 @@ This program is available under Apache License Version 2.0, available at https:/
         },
 
         /**
-         * @type {ItemCache}
+         * @type {!ItemCache}
          * @protected
          */
         _cache: {
@@ -195,7 +203,7 @@ This program is available under Apache License Version 2.0, available at https:/
     /**
      * @param {number} index
      * @param {HTMLElement} el
-     * @return {void}
+     * @protected
      */
     _getItem(index, el) {
       if (index >= this._effectiveSize) {
@@ -233,7 +241,7 @@ This program is available under Apache License Version 2.0, available at https:/
     /**
      * Returns a value that identifies the item. Uses `itemIdPath` if available.
      * Can be customized by overriding.
-     * @param {!GridItem} item
+     * @return {!GridItem | !unknown}
      * @return {string?}
      */
     getItemId(item) {
@@ -311,7 +319,7 @@ This program is available under Apache License Version 2.0, available at https:/
      * @protected
      */
     _canPopulate() {
-      return this._hasData && this._columnTree;
+      return Boolean(this._hasData && this._columnTree);
     }
 
     /**

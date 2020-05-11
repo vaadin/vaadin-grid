@@ -95,6 +95,7 @@ This program is available under Apache License Version 2.0, available at https:/
         ];
       }
 
+      /** @protected */
       ready() {
         super.ready();
         this.$.table.addEventListener('dragstart', this._onDragStart.bind(this));
@@ -266,6 +267,7 @@ This program is available under Apache License Version 2.0, available at https:/
         }
       }
 
+      /** @private */
       __dndAutoScroll(clientY) {
         if (this.__dndAutoScrolling) {
           return true;
@@ -297,6 +299,7 @@ This program is available under Apache License Version 2.0, available at https:/
         }
       }
 
+      /** @private */
       __getViewportRows() {
         const headerBottom = this.$.header.getBoundingClientRect().bottom;
         const footerTop = this.$.footer.getBoundingClientRect().top;
@@ -342,6 +345,7 @@ This program is available under Apache License Version 2.0, available at https:/
         }
       }
 
+      /** @private */
       __formatDefaultTransferData(rows) {
         return rows
           .map(row => {

@@ -64,6 +64,7 @@ This program is available under Apache License Version 2.0, available at https:/
 
           /**
            * Flex grow ratio for the cell widths. When set to 0, cell width is fixed.
+           * @type {number}
            */
           flexGrow: {
             type: Number,
@@ -72,6 +73,7 @@ This program is available under Apache License Version 2.0, available at https:/
 
           /**
            * When true, all the items are selected.
+           * @type {boolean}
            */
           selectAll: {
             type: Boolean,
@@ -81,6 +83,7 @@ This program is available under Apache License Version 2.0, available at https:/
 
           /**
            * When true, the active gets automatically selected.
+           * @type {boolean}
            */
           autoSelect: {
             type: Boolean,
@@ -122,6 +125,7 @@ This program is available under Apache License Version 2.0, available at https:/
         super._pathOrHeaderChanged(path, header, headerCell, footerCell, cells, renderer, headerRenderer, bodyTemplate, headerTemplate);
       }
 
+      /** @private */
       __cleanCellsOfTemplateProperties(cells) {
         cells.forEach(cell => {
           cell._content.innerHTML = '';
