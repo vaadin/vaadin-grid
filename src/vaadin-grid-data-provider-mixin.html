@@ -105,6 +105,7 @@ This program is available under Apache License Version 2.0, available at https:/
 
         /**
          * Number of items fetched at a time from the dataprovider.
+         * @type {number}
          */
         pageSize: {
           type: Number,
@@ -241,8 +242,8 @@ This program is available under Apache License Version 2.0, available at https:/
     /**
      * Returns a value that identifies the item. Uses `itemIdPath` if available.
      * Can be customized by overriding.
+     * @param {!GridItem} item
      * @return {!GridItem | !unknown}
-     * @return {string?}
      */
     getItemId(item) {
       return this.itemIdPath ? this.get(this.itemIdPath, item) : item;
@@ -270,6 +271,7 @@ This program is available under Apache License Version 2.0, available at https:/
       this.__cacheExpandedKeys();
     }
 
+    /** @private */
     __cacheExpandedKeys() {
       if (this.expandedItems) {
         this.__expandedKeys = new Set();

@@ -454,7 +454,7 @@ This program is available under Apache License Version 2.0, available at https:/
         return !!Array.from(this.$.items.children).filter(row => row.clientHeight).length;
       }
 
-      /** @private */
+      /** @protected */
       __itemsReceived() {
         if (this._recalculateColumnWidthOnceLoadingFinished
           && !this._cache.isLoading()
@@ -677,7 +677,10 @@ This program is available under Apache License Version 2.0, available at https:/
         this._updateFirstAndLastColumnForRow(row);
       }
 
-      /** @private */
+      /**
+       * @param {HTMLTableRowElement} row
+       * @protected
+       */
       __updateHeaderFooterRowVisibility(row) {
         if (!row) {
           return;
@@ -875,6 +878,7 @@ This program is available under Apache License Version 2.0, available at https:/
 
       /**
        * @param {!HTMLTableRowElement} row
+       * @return {!GridRowData}
        * @protected
        */
       __getRowModel(row) {
@@ -922,7 +926,7 @@ This program is available under Apache License Version 2.0, available at https:/
         }
       }
 
-      /** @private */
+      /** @protected */
       __forceReflow() {
         this._debouncerForceReflow = Polymer.Debouncer.debounce(this._debouncerForceReflow,
           Polymer.Async.animationFrame, () => {
