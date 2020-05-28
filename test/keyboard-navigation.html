@@ -1425,8 +1425,9 @@
             const clickStub = sinon.stub(firstChild, 'click');
 
             spaceDown();
-            spaceUp();
+            expect(clickStub.called).to.be.false;
 
+            spaceUp();
             expect(clickStub.called).to.be.true;
           });
 
