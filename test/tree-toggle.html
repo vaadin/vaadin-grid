@@ -86,14 +86,14 @@
 
       it('should not toggle on internal focusable click', () => {
         toggle = fixture('toggle-with-content');
-        let clickEvent = click(toggle.querySelector('input'));
+        const clickEvent = click(toggle.querySelector('input'));
         expect(toggle.expanded).to.be.false;
         expect(clickEvent.defaultPrevented).to.be.false;
       });
 
       it('should toggle on internal non-focusable element click', () => {
         toggle = fixture('toggle-with-content');
-        let clickEvent = click(toggle.querySelector('div'));
+        const clickEvent = click(toggle.querySelector('div'));
         expect(toggle.expanded).to.be.true;
         expect(clickEvent.defaultPrevented).to.be.true;
       });
