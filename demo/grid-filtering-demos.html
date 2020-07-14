@@ -81,9 +81,16 @@
                 grid.size = response.size;
 
                 callback(response.result);
+                grid.scrollToIndex(0);
               };
 
-              const index = params.page * params.pageSize;
+              let index = params.page * params.pageSize;
+              params.filters.forEach(item => {
+                if (item.value.length > 0) {
+                  index = 0;
+                }
+              });
+
               let url = 'https://demo.vaadin.com/demo-data/1.0/people?index=' + index + '&count=' + params.pageSize;
 
               // `params.filters` format: [{path: 'lastName', direction: 'asc'}, ...];
