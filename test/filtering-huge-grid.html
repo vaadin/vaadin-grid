@@ -62,8 +62,7 @@
 
     describe('filtering', function() {
       let container, grid, filter;
-      const maxgridsize = 300000;
-      this.timeout(3000000);
+      const maxgridsize = 150000;
 
       before(done => ensureDefined('x-grid', done));
 
@@ -91,25 +90,23 @@
             }
             callback(response);
           };
-          expect(getCellContent(getFirstVisibleItem(grid)).textContent).to.contain('item0');
           done();
-
         });
 
         it('should be able to manually scroll to the bottom', done => {
+          expect(getCellContent(getFirstVisibleItem(grid)).textContent).to.contain('item0');
           grid.scrollToIndex(maxgridsize);
-          expect(getCellContent(getFirstVisibleItem(grid)).textContent).to.contain('item299975');
+          expect(getCellContent(getFirstVisibleItem(grid)).textContent).to.contain('item149975');
 
           filter = getHeaderCellContent(grid, 0, 0).querySelector('vaadin-grid-filter');
           const filterTextField = filter.$.filter;
 
           listenOnce(filter, 'filter-changed', e => {
             expect(filter.value).to.eql('1');
-            this.timeout(() => {
+            setTimeout(() => {
               expect(getCellContent(getFirstVisibleItem(grid)).textContent).to.contain('item0');
               done();
-            }, 1);
-
+            });
           });
           filterTextField.value = '1';
         });
