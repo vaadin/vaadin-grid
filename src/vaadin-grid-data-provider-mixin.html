@@ -370,6 +370,7 @@ This program is available under Apache License Version 2.0, available at https:/
           delete cache.pendingRequests[page];
 
           if (!this._cache.isLoading()) {
+            // All active requests have finished, update the effective size and rows
             this._setLoading(false);
             this._cache.updateSize();
             this._effectiveSize = this._cache.effectiveSize;
