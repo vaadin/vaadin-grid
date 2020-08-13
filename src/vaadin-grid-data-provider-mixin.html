@@ -369,8 +369,8 @@ This program is available under Apache License Version 2.0, available at https:/
 
           delete cache.pendingRequests[page];
 
-          this._debouncerApplyNewData = Polymer.Debouncer.debounce(
-            this._debouncerApplyNewData,
+          this._debouncerApplyCachedData = Polymer.Debouncer.debounce(
+            this._debouncerApplyCachedData,
             Polymer.Async.timeOut.after(0),
             () => {
               this._setLoading(false);
@@ -392,7 +392,7 @@ This program is available under Apache License Version 2.0, available at https:/
           );
 
           if (!this._cache.isLoading()) {
-            this._debouncerApplyNewData.flush();
+            this._debouncerApplyCachedData.flush();
           }
 
           this.__itemsReceived();
