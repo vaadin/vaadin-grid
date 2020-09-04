@@ -738,7 +738,7 @@ This program is available under Apache License Version 2.0, available at https:/
           .forEach((footerRow, index) => this._updateRow(footerRow, columnTree[columnTree.length - 1 - index], 'footer', index === 0));
 
         // Sizer rows
-        this._updateRow(this.$.sizer, columnTree[columnTree.length - 1], null, false, true);
+        this._updateRow(this.$.sizer, columnTree[columnTree.length - 1]);
 
         this._resizeHandler();
         this._frozenCellsChanged();
