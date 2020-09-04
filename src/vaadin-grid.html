@@ -32,6 +32,7 @@ This program is available under Apache License Version 2.0, available at https:/
     <style include="vaadin-grid-styles"></style>
 
     <div id="scroller"
+      ios$="[[_ios]]"
       loading$=[[loading]]
       column-reordering-allowed$="[[columnReorderingAllowed]]">
 
@@ -745,6 +746,11 @@ This program is available under Apache License Version 2.0, available at https:/
         this._resetKeyboardNavigation();
         this._a11yUpdateHeaderRows();
         this._a11yUpdateFooterRows();
+        this.__updateItemsMinHeight();
+      }
+
+      __updateItemsMinHeight() {
+        this.$.items.style.minHeight = `${this.clientHeight - this.$.header.offsetHeight - this.$.footer.offsetHeight}px`;
       }
 
       /**
@@ -793,6 +799,7 @@ This program is available under Apache License Version 2.0, available at https:/
         this._updateDetailsCellHeights();
         this._accessIronListAPI(super._resizeHandler, true);
         this._updateScrollerMeasurements();
+        this.__updateItemsMinHeight();
       }
 
       /** @private */

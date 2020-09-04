@@ -201,19 +201,6 @@
         grid.$.table.dispatchEvent(new CustomEvent('scroll'));
       });
 
-<<<<<<< HEAD
-      it('should not sync outer scroller on IOS', done => {
-        grid._ios = true;
-        const spy = sinon.spy(grid.$.outerscroller, 'syncOuterScroller');
-        listenOnce(grid.$.table, 'scroll', () => {
-          expect(spy.called).to.be.false;
-          done();
-        });
-        grid.$.table.scrollTop += 1;
-      });
-
-=======
->>>>>>> 4841151e... Remove outer sroller
       describe('overflow attribute', () => {
 
         it('bottom right', () => {
