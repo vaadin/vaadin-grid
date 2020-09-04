@@ -360,8 +360,17 @@ This program is available under Apache License Version 2.0, available at https:/
       this.$.footer.style.transform = this._getTranslate(-scrollLeft + leftOffset, topOffset + footerOffset);
       this.$.items.style.transform = this._getTranslate(-scrollLeft + leftOffset, 0);
 
-      const frozenCellsTranslate = this._getTranslate(scrollLeft, 0);
-      this._frozenCells.forEach(cell => cell.style.transform = frozenCellsTranslate);
+      if (this._frozenCells.length > 0) {
+        const x = this.__isRTL ?
+          this.__getNormalizedScrollLeft(this.$.table) + this.__scrollerMetrics.clientWidth -
+          this.__scrollerMetrics.scrollWidth
+          : this._scrollLeft;
+        var frozenCellTransform = this._getTranslate(x, 0);
+
+        for (var i = 0; i < this._frozenCells.length; i++) {
+          this._frozenCells[i].style.transform = frozenCellTransform;
+        }
+      }
     }
 
     get _useSticky() {
