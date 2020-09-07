@@ -175,20 +175,6 @@
         expect(scrollTop).to.equal(newScrollTop);
       });
 
-      it('should mark wheel scroll', () => {
-        const scroller = grid.$.scroller;
-        expect(scroller.hasAttribute('wheel-scrolling')).to.be.false;
-        expect(grid._wheelScrolling).not.to.be.ok;
-        wheel(grid, 0, 0);
-
-        expect(scroller.hasAttribute('wheel-scrolling')).to.be.true;
-        expect(grid._wheelScrolling).to.be.ok;
-        grid._debouncerWheelScrolling.flush();
-
-        expect(scroller.hasAttribute('wheel-scrolling')).to.be.false;
-        expect(grid._wheelScrolling).not.to.be.ok;
-      });
-
       it('should defer adding scrolling state attributes', done => {
         const scroller = grid.$.scroller;
         listenOnce(grid.$.table, 'scroll', () => {
@@ -259,7 +245,7 @@
 
       it('should not have vertical scroll bars', done => {
         Polymer.RenderStatus.afterNextRender(grid, () => {
-          expect(grid.clientHeight).to.be.above(grid.$.header.clientHeight + grid.$.items.clientHeight);
+          expect(grid.clientHeight).not.to.be.below(grid.$.header.clientHeight + grid.$.items.clientHeight);
           done();
         });
       });
