@@ -38,6 +38,11 @@ This program is available under Apache License Version 2.0, available at https:/
         _deltaYAcc: {
           type: Number,
           value: 0
+        },
+
+        _useSticky: {
+          type: Boolean,
+          value: CSS && CSS.supports && CSS.supports('position', 'sticky')
         }
 
       };
@@ -371,13 +376,6 @@ This program is available under Apache License Version 2.0, available at https:/
           this._frozenCells[i].style.transform = frozenCellTransform;
         }
       }
-    }
-
-    get _useSticky() {
-      // if (this._nativeStickyValue === undefined) {
-        this._nativeStickyValue = getComputedStyle(this.$.items).position.indexOf('sticky') !== -1;
-      // }
-      return this._nativeStickyValue;
     }
 
     _getTranslate(x, y) {
