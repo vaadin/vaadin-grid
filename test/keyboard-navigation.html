@@ -1153,14 +1153,17 @@
             });
           });
 
-          it('should scroll cells visible with left arrow on footer', () => {
+          it('should scroll cells visible with left arrow on footer', done => {
             focusFirstFooterCell();
             down();
             right();
 
-            left();
+            setTimeout(() => {
+              left();
 
-            expect(grid.$.table.scrollLeft).to.equal(0);
+              expect(grid.$.table.scrollLeft).to.equal(0);
+              done();
+            });
           });
         });
 
