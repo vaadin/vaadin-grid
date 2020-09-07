@@ -750,7 +750,10 @@ This program is available under Apache License Version 2.0, available at https:/
       }
 
       __updateItemsMinHeight() {
-        this.$.items.style.minHeight = `${this.clientHeight - this.$.header.offsetHeight - this.$.footer.offsetHeight}px`;
+        this.$.items.style.minHeight = '';
+        if (!this.heightByRows) {
+          this.$.items.style.minHeight = `${this.clientHeight - this.$.header.offsetHeight - this.$.footer.offsetHeight}px`;
+        }
       }
 
       /**
