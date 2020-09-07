@@ -267,6 +267,13 @@ This program is available under Apache License Version 2.0, available at https:/
 
       /* RTL specific styles */
 
+      :host([dir="rtl"]) #items,
+      :host([dir="rtl"]) #header,
+      :host([dir="rtl"]) #footer {
+        left: auto;
+        right: 0;
+      }
+
       :host([dir="rtl"]) [part~="reorder-ghost"] {
         left: auto;
         right: 0;
