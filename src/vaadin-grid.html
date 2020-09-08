@@ -32,6 +32,7 @@ This program is available under Apache License Version 2.0, available at https:/
     <style include="vaadin-grid-styles"></style>
 
     <div id="scroller"
+      safari$="[[_safari]]"
       ios$="[[_ios]]"
       ie$="[[_ie]]"
       loading$=[[loading]]
@@ -338,6 +339,13 @@ This program is available under Apache License Version 2.0, available at https:/
 
       static get properties() {
         return {
+          /** @private */
+          _safari: {
+            type: Boolean,
+            value: /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
+          },
+
+          /** @private */
           _ios: {
             type: Boolean,
             value: (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream)
