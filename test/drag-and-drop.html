@@ -825,10 +825,13 @@ describe('drag and drop', () => {
       flush(() => done());
     });
 
-    it('should auto scroll down', () => {
-      const scrollTop = grid.$.table.scrollTop;
-      fireDragOver(grid.__getViewportRows().pop(), 'above');
-      expect(grid.$.table.scrollTop).to.be.within(scrollTop + 20, scrollTop + 100);
+    it('should auto scroll down', done => {
+      flush(() => {
+        const scrollTop = grid.$.table.scrollTop;
+        fireDragOver(grid.__getViewportRows().pop(), 'above');
+        expect(grid.$.table.scrollTop).to.be.within(scrollTop + 20, scrollTop + 100);
+        done();
+      });
     });
 
     it('should auto scroll down fast', () => {
