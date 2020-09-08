@@ -15,7 +15,7 @@ This program is available under Apache License Version 2.0, available at https:/
     /** @private */
     get _timeouts() {
       return {
-        SCROLLING: 100,
+        SCROLLING: 500,
         IGNORE_WHEEL: 500
       };
     }
@@ -103,6 +103,17 @@ This program is available under Apache License Version 2.0, available at https:/
         this._rowWithFocusedElement = e.composedPath()[itemsIndex - 1];
       });
       this.$.items.addEventListener('focusout', () => this._rowWithFocusedElement = undefined);
+
+      // Reordering the physical rows cancels the user's grab of the scroll bar handle on Safari.
+      // Need to defer reordering until the user lets go of the scroll bar handle.
+      this.scrollTarget.addEventListener('mousedown', () => this.__mouseDown = true);
+      this.scrollTarget.addEventListener('mouseup', () => {
+        this.__mouseDown = false;
+        if (this.__pendingReorder) {
+          this.__pendingReorder = false;
+          setTimeout(() => this._reorderRows(), this._timeouts.SCROLLING);
+        }
+      });
     }
 
     /**
@@ -270,6 +281,11 @@ This program is available under Apache License Version 2.0, available at https:/
      * @private
      */
     _reorderRows() {
+      if (this.__mouseDown) {
+        this.__pendingReorder = true;
+        return;
+      }
+
       const body = this.$.items;
       const items = body.querySelectorAll('tr');
       if (!items.length) {
