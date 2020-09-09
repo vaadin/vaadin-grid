@@ -331,7 +331,7 @@ describe('drag and drop', () => {
           const event = dragStartSpy.getCall(0).args[0];
           expect(event.detail.draggedItems).to.eql([grid.items[0]]);
           done();
-        })
+        });
       });
 
       it('should auto generate data transfer text data', () => {
