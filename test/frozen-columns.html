@@ -48,6 +48,9 @@
           columns = grid.querySelectorAll('vaadin-grid-column');
           document.documentElement.setAttribute('dir', direction);
 
+          // FIXME (yuriy): Dir helper incorrectly detects scrollType before the tests
+          isRTL && grid.__setScrollType('negative');
+
           flushGrid(grid);
         });
 
