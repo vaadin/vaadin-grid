@@ -104,7 +104,7 @@
         const table = grid.$.table;
         table.scrollLeft = table.scrollWidth - table.offsetWidth;
         grid._previousMomentum = 0;
-        grid._debouncerIgnoreNewWheel.flush();
+        flushGrid(grid);
 
         expect(wheel(1, 0).defaultPrevented).to.be.false;
         expect(wheel(-1, 0).defaultPrevented).to.be.true;

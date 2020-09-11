@@ -223,6 +223,21 @@ describe('drag and drop', () => {
         expect(spy.called).to.be.true;
       });
 
+      it('should only use visible items for the row count state attribute', done => {
+        grid.style.height = '80px';
+        flushGrid(grid);
+        grid.notifyResize();
+        grid.selectedItems = grid.items;
+
+        setTimeout(() => {
+          flushGrid(grid);
+          fireDragStart();
+          const row = getRows(grid.$.items)[0];
+          expect(row.getAttribute('dragstart')).to.equal('');
+          done();
+        });
+      });
+
       it('should add dragging state attribute', () => {
         fireDragStart();
         expect(grid.hasAttribute('dragging-rows')).to.be.true;
@@ -236,20 +251,6 @@ describe('drag and drop', () => {
 
         requestAnimationFrame(() => {
           expect(row.hasAttribute('dragstart')).to.be.false;
-          done();
-        });
-      });
-
-      it('should only use visible items for the row count state attribute', done => {
-        grid.style.height = '80px';
-        flushGrid(grid);
-        grid.notifyResize();
-        grid.selectedItems = grid.items;
-
-        setTimeout(() => {
-          fireDragStart();
-          const row = getRows(grid.$.items)[0];
-          expect(row.getAttribute('dragstart')).to.equal('');
           done();
         });
       });
@@ -327,6 +328,7 @@ describe('drag and drop', () => {
         grid.selectedItems = grid.items;
 
         setTimeout(() => {
+          flushGrid(grid);
           fireDragStart();
           const event = dragStartSpy.getCall(0).args[0];
           expect(event.detail.draggedItems).to.eql([grid.items[0]]);
@@ -348,6 +350,7 @@ describe('drag and drop', () => {
         grid.selectedItems = grid.items;
 
         setTimeout(() => {
+          flushGrid(grid);
           fireDragStart();
           fireDrop();
           const event = dropSpy.getCall(0).args[0];
@@ -822,16 +825,13 @@ describe('drag and drop', () => {
 
       grid.$.table.scrollTop = 0;
       flushGrid(grid);
-      flush(() => done());
+      animationFrameFlush(() => done());
     });
 
-    it('should auto scroll down', done => {
-      animationFrameFlush(() => {
-        const scrollTop = grid.$.table.scrollTop;
-        fireDragOver(grid.__getViewportRows().pop(), 'above');
-        expect(grid.$.table.scrollTop).to.be.within(scrollTop + 20, scrollTop + 100);
-        done();
-      });
+    it('should auto scroll down', () => {
+      const scrollTop = grid.$.table.scrollTop;
+      fireDragOver(grid.__getViewportRows().pop(), 'above');
+      expect(grid.$.table.scrollTop).to.be.within(scrollTop + 20, scrollTop + 100);
     });
 
     it('should auto scroll down fast', () => {

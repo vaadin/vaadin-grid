@@ -340,6 +340,7 @@
         grid._resetKeyboardNavigation();
         grid.removeAttribute('navigating');
         focusable.focus();
+        flushGrid(grid);
       });
 
       describe('navigation mode', () => {
@@ -1129,15 +1130,14 @@
             expect(grid.$.table.scrollLeft).to.equal(0);
           });
 
-          it('should scroll cells visible with end', done => {
+          it('should scroll cells visible with end', () => {
             focusItem(0);
 
             end();
 
-            animationFrameFlush(() => {
-              expect(grid.$.table.scrollLeft).to.equal(grid.$.table.scrollWidth - grid.$.table.clientWidth);
-              done();
-            });
+            flushGrid(grid);
+
+            expect(grid.$.table.scrollLeft).to.equal(grid.$.table.scrollWidth - grid.$.table.clientWidth);
           });
 
           it('should scroll cell visible under from frozen cells with left arrow', done => {
