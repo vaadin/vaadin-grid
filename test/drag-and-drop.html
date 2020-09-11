@@ -826,7 +826,7 @@ describe('drag and drop', () => {
     });
 
     it('should auto scroll down', done => {
-      flush(() => {
+      animationFrameFlush(() => {
         const scrollTop = grid.$.table.scrollTop;
         fireDragOver(grid.__getViewportRows().pop(), 'above');
         expect(grid.$.table.scrollTop).to.be.within(scrollTop + 20, scrollTop + 100);

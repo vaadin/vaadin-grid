@@ -1129,12 +1129,15 @@
             expect(grid.$.table.scrollLeft).to.equal(0);
           });
 
-          it('should scroll cells visible with end', () => {
+          it('should scroll cells visible with end', done => {
             focusItem(0);
 
             end();
 
-            expect(grid.$.table.scrollLeft).to.equal(grid.$.table.scrollWidth - grid.$.table.clientWidth);
+            animationFrameFlush(() => {
+              expect(grid.$.table.scrollLeft).to.equal(grid.$.table.scrollWidth - grid.$.table.clientWidth);
+              done();
+            });
           });
 
           it('should scroll cell visible under from frozen cells with left arrow', done => {

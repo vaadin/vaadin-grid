@@ -769,7 +769,10 @@ This program is available under Apache License Version 2.0, available at https:/
         if (this._firefox) {
           // Sticky (or translated) footer in a flexbox host doesn't get included in
           // the scroll height calculation on FF. This is a workaround for the issue.
-          this.$.items.style.paddingBottom = `${this.$.footer.offsetHeight}px`;
+          this.$.items.style.paddingBottom = 0;
+          if (!this.heightByRows) {
+            this.$.items.style.paddingBottom = `${this.$.footer.offsetHeight}px`;
+          }
         }
       }
 
