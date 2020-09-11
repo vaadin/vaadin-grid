@@ -148,6 +148,13 @@ This program is available under Apache License Version 2.0, available at https:/
         requestAnimationFrame(() => this._update());
 
         this.__updateFooterPositioning();
+
+        if (this._ie) {
+          // Workaround an IE flexbox bug where the rows would horizontally collapse
+          // whenever item count change toggles the scrollbar visibility (is tested)
+          this.$.table.style.display = 'block';
+          setTimeout(() => this.$.table.style.display = 'flex');
+        }
       }
 
       /** @protected */
