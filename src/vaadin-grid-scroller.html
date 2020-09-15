@@ -153,7 +153,10 @@ This program is available under Apache License Version 2.0, available at https:/
           // Workaround an IE flexbox bug where the rows would horizontally collapse
           // whenever item count change toggles the scrollbar visibility (is tested)
           this.$.table.style.display = 'block';
-          setTimeout(() => this.$.table.style.display = 'flex');
+          setTimeout(() => {
+            this.$.table.style.display = 'flex';
+            this._translateStationaryElements();
+          });
         }
       }
 
