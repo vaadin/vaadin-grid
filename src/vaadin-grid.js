@@ -696,9 +696,9 @@ class GridElement extends
           return true;
         }
       } else {
-        if (column.footerRenderer || column._footerTemplate) {
+        if (column.footerRenderer) {
           // The cell is the footer cell of a column that has a footer renderer
-          // or a footer template -> row should be visible
+          // -> row should be visible
           return true;
         }
       }

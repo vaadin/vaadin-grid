@@ -38,14 +38,6 @@ export const ColumnBaseMixin = superClass => class ColumnBaseMixin extends super
       },
 
       /**
-       * @type {HTMLTemplateElement}
-       * @protected
-       */
-      _footerTemplate: {
-        type: Object
-      },
-
-      /**
        * When true, the column is frozen. When a column inside of a column group is frozen,
        * all of the sibling columns inside the group will get frozen also.
        * @type {boolean}
@@ -144,7 +136,7 @@ export const ColumnBaseMixin = superClass => class ColumnBaseMixin extends super
       '_lastFrozenChanged(_lastFrozen)',
       '_setBodyTemplateOrRenderer(_bodyTemplate, renderer, _cells, _cells.*)',
       '_setHeaderRenderer(headerRenderer, _headerCell)',
-      '_setFooterTemplateOrRenderer(_footerTemplate, footerRenderer, _footerCell)',
+      '_setFooterRenderer(footerRenderer, _footerCell)',
       '_resizableChanged(resizable, _headerCell)',
       '_reorderStatusChanged(_reorderStatus, _headerCell, _footerCell, _cells.*)',
       '_hiddenChanged(hidden, _headerCell, _footerCell, _cells.*)'
@@ -156,7 +148,6 @@ export const ColumnBaseMixin = superClass => class ColumnBaseMixin extends super
     super.connectedCallback();
 
     this._bodyTemplate && (this._bodyTemplate.templatizer._grid = this._grid);
-    this._footerTemplate && (this._footerTemplate.templatizer._grid = this._grid);
 
     this._templateObserver.flush();
     if (!this._bodyTemplate) {
@@ -231,17 +222,8 @@ export const ColumnBaseMixin = superClass => class ColumnBaseMixin extends super
     super();
 
     this._templateObserver = new FlattenedNodesObserver(this, info => {
-      this._footerTemplate = this._prepareFooterTemplate();
       this._bodyTemplate = this._prepareBodyTemplate();
     });
-  }
-
-  /**
-   * @return {HTMLTemplateElement}
-   * @protected
-   */
-  _prepareFooterTemplate() {
-    return this._prepareTemplatizer(this._findTemplate(false, true) || null, {});
   }
 
   /**
@@ -335,9 +317,9 @@ export const ColumnBaseMixin = superClass => class ColumnBaseMixin extends super
   }
 
   /** @private */
-  _setFooterTemplateOrRenderer(footerTemplate, footerRenderer, footerCell) {
-    if ((footerTemplate || footerRenderer) && footerCell) {
-      this.__setColumnTemplateOrRenderer(footerTemplate, footerRenderer, [footerCell]);
+  _setFooterRenderer(footerRenderer, footerCell) {
+    if (footerRenderer && footerCell) {
+      this.__setColumnTemplateOrRenderer(undefined, footerRenderer, [footerCell]);
       this._grid.__updateHeaderFooterRowVisibility(footerCell.parentElement);
     }
   }
