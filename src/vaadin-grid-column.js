@@ -41,14 +41,6 @@ export const ColumnBaseMixin = superClass => class ColumnBaseMixin extends super
        * @type {HTMLTemplateElement}
        * @protected
        */
-      _headerTemplate: {
-        type: Object
-      },
-
-      /**
-       * @type {HTMLTemplateElement}
-       * @protected
-       */
       _footerTemplate: {
         type: Object
       },
@@ -146,12 +138,12 @@ export const ColumnBaseMixin = superClass => class ColumnBaseMixin extends super
       '_widthChanged(width, _headerCell, _footerCell, _cells.*)',
       '_frozenChanged(frozen, _headerCell, _footerCell, _cells.*)',
       '_flexGrowChanged(flexGrow, _headerCell, _footerCell, _cells.*)',
-      '_pathOrHeaderChanged(path, header, _headerCell, _footerCell, _cells.*, renderer, headerRenderer, _bodyTemplate, _headerTemplate)',
+      '_pathOrHeaderChanged(path, header, _headerCell, _footerCell, _cells.*, renderer, headerRenderer, _bodyTemplate)',
       '_textAlignChanged(textAlign, _cells.*, _headerCell, _footerCell)',
       '_orderChanged(_order, _headerCell, _footerCell, _cells.*)',
       '_lastFrozenChanged(_lastFrozen)',
       '_setBodyTemplateOrRenderer(_bodyTemplate, renderer, _cells, _cells.*)',
-      '_setHeaderTemplateOrRenderer(_headerTemplate, headerRenderer, _headerCell)',
+      '_setHeaderRenderer(headerRenderer, _headerCell)',
       '_setFooterTemplateOrRenderer(_footerTemplate, footerRenderer, _footerCell)',
       '_resizableChanged(resizable, _headerCell)',
       '_reorderStatusChanged(_reorderStatus, _headerCell, _footerCell, _cells.*)',
@@ -164,7 +156,6 @@ export const ColumnBaseMixin = superClass => class ColumnBaseMixin extends super
     super.connectedCallback();
 
     this._bodyTemplate && (this._bodyTemplate.templatizer._grid = this._grid);
-    this._headerTemplate && (this._headerTemplate.templatizer._grid = this._grid);
     this._footerTemplate && (this._footerTemplate.templatizer._grid = this._grid);
 
     this._templateObserver.flush();
@@ -240,18 +231,9 @@ export const ColumnBaseMixin = superClass => class ColumnBaseMixin extends super
     super();
 
     this._templateObserver = new FlattenedNodesObserver(this, info => {
-      this._headerTemplate = this._prepareHeaderTemplate();
       this._footerTemplate = this._prepareFooterTemplate();
       this._bodyTemplate = this._prepareBodyTemplate();
     });
-  }
-
-  /**
-   * @return {HTMLTemplateElement}
-   * @protected
-   */
-  _prepareHeaderTemplate() {
-    return this._prepareTemplatizer(this._findTemplate(true) || null, {});
   }
 
   /**
@@ -346,9 +328,9 @@ export const ColumnBaseMixin = superClass => class ColumnBaseMixin extends super
   }
 
   /** @private */
-  _setHeaderTemplateOrRenderer(headerTemplate, headerRenderer, headerCell) {
-    if ((headerTemplate || headerRenderer) && headerCell) {
-      this.__setColumnTemplateOrRenderer(headerTemplate, headerRenderer, [headerCell]);
+  _setHeaderRenderer(headerRenderer, headerCell) {
+    if (headerRenderer && headerCell) {
+      this.__setColumnTemplateOrRenderer(undefined, headerRenderer, [headerCell]);
     }
   }
 
@@ -450,12 +432,11 @@ export const ColumnBaseMixin = superClass => class ColumnBaseMixin extends super
    * @param {GridBodyRenderer | undefined} renderer
    * @param {GridHeaderFooterRenderer | undefined} headerRenderer
    * @param {HTMLTemplateElement | undefined} bodyTemplate
-   * @param {HTMLTemplateElement | undefined} headerTemplate
    * @protected
    */
-  _pathOrHeaderChanged(path, header, headerCell, footerCell, cells, renderer, headerRenderer, bodyTemplate, headerTemplate) {
+  _pathOrHeaderChanged(path, header, headerCell, footerCell, cells, renderer, headerRenderer, bodyTemplate) {
     const hasHeaderText = header !== undefined;
-    if (!headerRenderer && !headerTemplate && hasHeaderText && headerCell) {
+    if (!headerRenderer && hasHeaderText && headerCell) {
       this.__setTextContent(headerCell._content, header);
     }
 
@@ -465,7 +446,7 @@ export const ColumnBaseMixin = superClass => class ColumnBaseMixin extends super
         this.__setColumnTemplateOrRenderer(undefined, pathRenderer, cells.value);
       }
 
-      if (!headerRenderer && !headerTemplate && !hasHeaderText && headerCell && header !== null) {
+      if (!headerRenderer && !hasHeaderText && headerCell && header !== null) {
         this.__setTextContent(headerCell._content, this._generateHeader(path));
       }
     }

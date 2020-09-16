@@ -681,9 +681,9 @@ class GridElement extends
         return false;
       }
       if (row.parentElement === this.$.header) {
-        if (column.headerRenderer || column._headerTemplate) {
+        if (column.headerRenderer) {
           // The cell is the header cell of a column that has a header renderer
-          // or a header template -> row should be visible
+          // -> row should be visible
           return true;
         }
         if (column.header === null) {
