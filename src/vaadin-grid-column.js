@@ -7,7 +7,6 @@ import { PolymerElement } from '@polymer/polymer/polymer-element.js';
 
 import { FlattenedNodesObserver } from '@polymer/polymer/lib/utils/flattened-nodes-observer.js';
 import { DirMixin } from '@vaadin/vaadin-element-mixin/vaadin-dir-mixin.js';
-import { Templatizer } from './vaadin-grid-templatizer.js';
 import { Debouncer } from '@polymer/polymer/lib/utils/debounce.js';
 import { animationFrame } from '@polymer/polymer/lib/utils/async.js';
 
@@ -130,11 +129,11 @@ export const ColumnBaseMixin = superClass => class ColumnBaseMixin extends super
       '_widthChanged(width, _headerCell, _footerCell, _cells.*)',
       '_frozenChanged(frozen, _headerCell, _footerCell, _cells.*)',
       '_flexGrowChanged(flexGrow, _headerCell, _footerCell, _cells.*)',
-      '_pathOrHeaderChanged(path, header, _headerCell, _footerCell, _cells.*, renderer, headerRenderer, _bodyTemplate)',
+      '_pathOrHeaderChanged(path, header, _headerCell, _footerCell, _cells.*, renderer, headerRenderer)',
       '_textAlignChanged(textAlign, _cells.*, _headerCell, _footerCell)',
       '_orderChanged(_order, _headerCell, _footerCell, _cells.*)',
       '_lastFrozenChanged(_lastFrozen)',
-      '_setBodyTemplateOrRenderer(_bodyTemplate, renderer, _cells, _cells.*)',
+      '_setBodyRenderer(renderer, _cells, _cells.*)',
       '_setHeaderRenderer(headerRenderer, _headerCell)',
       '_setFooterRenderer(footerRenderer, _footerCell)',
       '_resizableChanged(resizable, _headerCell)',
@@ -146,14 +145,6 @@ export const ColumnBaseMixin = superClass => class ColumnBaseMixin extends super
   /** @protected */
   connectedCallback() {
     super.connectedCallback();
-
-    this._bodyTemplate && (this._bodyTemplate.templatizer._grid = this._grid);
-
-    this._templateObserver.flush();
-    if (!this._bodyTemplate) {
-      // The observer might not have triggered if the tag is empty. Run manually.
-      this._templateObserver.callback();
-    }
 
     requestAnimationFrame(() => {
       this._allCells.forEach(cell => {
@@ -218,41 +209,6 @@ export const ColumnBaseMixin = superClass => class ColumnBaseMixin extends super
       .filter(cell => cell);
   }
 
-  constructor() {
-    super();
-
-    this._templateObserver = new FlattenedNodesObserver(this, info => {
-      this._bodyTemplate = this._prepareBodyTemplate();
-    });
-  }
-
-  /**
-   * @return {HTMLTemplateElement}
-   * @protected
-   */
-  _prepareBodyTemplate() {
-    return this._prepareTemplatizer(this._findTemplate() || null);
-  }
-
-  /**
-   * @param {HTMLTemplateElement} template
-   * @param {object} instanceProps
-   * @return {HTMLTemplateElement}
-   * @protected
-   */
-  _prepareTemplatizer(template, instanceProps) {
-    if (template && !template.templatizer) {
-      const templatizer = new Templatizer();
-      templatizer._grid = this._grid;
-      templatizer.dataHost = this.dataHost;
-      templatizer._instanceProps = instanceProps || templatizer._instanceProps;
-      templatizer.template = template;
-      template.templatizer = templatizer;
-    }
-
-    return template;
-  }
-
   /** @protected */
   _renderHeaderAndFooter() {
     if (this.headerRenderer && this._headerCell) {
@@ -273,11 +229,7 @@ export const ColumnBaseMixin = superClass => class ColumnBaseMixin extends super
   }
 
   /** @private */
-  __setColumnTemplateOrRenderer(template, renderer, cells) {
-    if (template && renderer) {
-      throw new Error('You should only use either a renderer or a template');
-    }
-
+  __setColumnRenderer(renderer, cells) {
     cells.forEach(cell => {
       const model = this._grid.__getRowModel(cell.parentElement);
 
@@ -287,73 +239,30 @@ export const ColumnBaseMixin = superClass => class ColumnBaseMixin extends super
         if (model.item || renderer === this.headerRenderer || renderer === this.footerRenderer) {
           this.__runRenderer(renderer, cell, model);
         }
-      } else if (cell._template !== template) {
-        cell._template = template;
-
-        cell._content.innerHTML = '';
-        template.templatizer._grid = template.templatizer._grid || this._grid;
-        const inst = template.templatizer.createInstance();
-        cell._content.appendChild(inst.root);
-        cell._instance = inst;
-        if (model.item) {
-          cell._instance.setProperties(model);
-        }
       }
     });
   }
 
   /** @private */
-  _setBodyTemplateOrRenderer(template, renderer, cells, splices) {
-    if ((template || renderer) && cells) {
-      this.__setColumnTemplateOrRenderer(template, renderer, cells);
+  _setBodyRenderer(renderer, cells, splices) {
+    if (renderer && cells) {
+      this.__setColumnRenderer(renderer, cells);
     }
   }
 
   /** @private */
   _setHeaderRenderer(headerRenderer, headerCell) {
     if (headerRenderer && headerCell) {
-      this.__setColumnTemplateOrRenderer(undefined, headerRenderer, [headerCell]);
+      this.__setColumnRenderer(headerRenderer, [headerCell]);
     }
   }
 
   /** @private */
   _setFooterRenderer(footerRenderer, footerCell) {
     if (footerRenderer && footerCell) {
-      this.__setColumnTemplateOrRenderer(undefined, footerRenderer, [footerCell]);
+      this.__setColumnRenderer(footerRenderer, [footerCell]);
       this._grid.__updateHeaderFooterRowVisibility(footerCell.parentElement);
     }
-  }
-
-  /**
-   * @param {boolean} header
-   * @param {boolean} footer
-   * @return {HTMLTemplateElement}
-   * @protected
-   */
-  _selectFirstTemplate(header = false, footer = false) {
-    return FlattenedNodesObserver.getFlattenedNodes(this)
-      .filter(node =>
-        node.localName === 'template'
-        && node.classList.contains('header') === header
-        && node.classList.contains('footer') === footer
-      )[0];
-  }
-
-  /**
-   * @param {boolean} header
-   * @param {boolean} footer
-   * @return {HTMLTemplateElement}
-   * @protected
-   */
-  _findTemplate(header, footer) {
-    const template = this._selectFirstTemplate(header, footer);
-    if (template) {
-      if (this.dataHost) {
-        // set dataHost to the context where template has been defined
-        template._rootDataHost = this.dataHost._rootDataHost || this.dataHost;
-      }
-    }
-    return template;
   }
 
   /** @private */
@@ -413,19 +322,18 @@ export const ColumnBaseMixin = superClass => class ColumnBaseMixin extends super
    * @param {!object | undefined} cells
    * @param {GridBodyRenderer | undefined} renderer
    * @param {GridHeaderFooterRenderer | undefined} headerRenderer
-   * @param {HTMLTemplateElement | undefined} bodyTemplate
    * @protected
    */
-  _pathOrHeaderChanged(path, header, headerCell, footerCell, cells, renderer, headerRenderer, bodyTemplate) {
+  _pathOrHeaderChanged(path, header, headerCell, footerCell, cells, renderer, headerRenderer) {
     const hasHeaderText = header !== undefined;
     if (!headerRenderer && hasHeaderText && headerCell) {
       this.__setTextContent(headerCell._content, header);
     }
 
     if (path && cells.value) {
-      if (!renderer && !bodyTemplate) {
+      if (!renderer) {
         const pathRenderer = (root, owner, {item}) => this.__setTextContent(root, this.get(path, item));
-        this.__setColumnTemplateOrRenderer(undefined, pathRenderer, cells.value);
+        this.__setColumnRenderer(undefined, pathRenderer, cells.value);
       }
 
       if (!headerRenderer && !hasHeaderText && headerCell && header !== null) {
@@ -649,14 +557,6 @@ class GridColumnElement extends ColumnBaseMixin(DirMixin(PolymerElement)) {
       autoWidth: {
         type: Boolean,
         value: false
-      },
-
-      /**
-       * @type {HTMLTemplateElement}
-       * @protected
-       */
-      _bodyTemplate: {
-        type: Object
       },
 
       /**
