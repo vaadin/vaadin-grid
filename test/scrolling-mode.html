@@ -6,13 +6,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-  <script src="../../web-component-tester/browser.js"></script>
-  <script src="../../iron-test-helpers/mock-interactions.js"></script>
-  <link rel="import" href="../../test-fixture/test-fixture.html">
+  <script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+  <script src="../../../wct-browser-legacy/browser.js"></script>
+  <script src="../../../@polymer/iron-test-helpers/mock-interactions.js" type="module"></script>
+  <script type="module" src="../../../@polymer/test-fixture/test-fixture.js"></script>
 
-  <link rel="import" href="helpers.html">
-  <link rel="import" href="../vaadin-grid.html">
+  <script type="module" src="./helpers.js"></script>
+  <script type="module" src="../vaadin-grid.js"></script>
 </head>
 
 <body>
@@ -27,267 +27,271 @@
     </template>
   </test-fixture>
 
-  <script>
-    describe('scrolling mode', () => {
-      let fixedContainers;
-      let grid;
+  <script type="module">
+import '@polymer/test-fixture/test-fixture.js';
+import './helpers.js';
+import '../vaadin-grid.js';
+import { afterNextRender } from '@polymer/polymer/lib/utils/render-status.js';
+describe('scrolling mode', () => {
+  let fixedContainers;
+  let grid;
 
-      beforeEach(() => {
-        grid = fixture('default');
-        grid.dataProvider = infiniteDataProvider;
-        fixedContainers = !!navigator.userAgent.match(/Edge/) && grid._scrollbarWidth === 0;
-        flushGrid(grid);
-      });
+  beforeEach(() => {
+    grid = fixture('default');
+    grid.dataProvider = infiniteDataProvider;
+    fixedContainers = !!navigator.userAgent.match(/Edge/) && grid._scrollbarWidth === 0;
+    flushGrid(grid);
+  });
 
-      function isFixed(element) {
-        return window.getComputedStyle(element).position === 'fixed';
-      }
+  function isFixed(element) {
+    return window.getComputedStyle(element).position === 'fixed';
+  }
 
-      function wheel(deltaX, deltaY, deltaMode = WheelEvent.DOM_DELTA_PIXEL) {
-        const e = new CustomEvent('wheel', {bubbles: true, cancelable: true});
-        e.deltaY = deltaY;
-        e.deltaX = deltaX;
-        e.deltaMode = deltaMode;
-        getBodyCellContent(grid, 0, 0).dispatchEvent(e);
-        grid._debouncerWheelAnimationFrame.flush();
-        return e;
-      }
+  function wheel(deltaX, deltaY, deltaMode = WheelEvent.DOM_DELTA_PIXEL) {
+    const e = new CustomEvent('wheel', {bubbles: true, cancelable: true});
+    e.deltaY = deltaY;
+    e.deltaX = deltaX;
+    e.deltaMode = deltaMode;
+    getBodyCellContent(grid, 0, 0).dispatchEvent(e);
+    grid._debouncerWheelAnimationFrame.flush();
+    return e;
+  }
 
-      it('should scroll by pixels when deltaMode is DOM_DELTA_PIXEL (default)', () => {
-        wheel(0, 1, WheelEvent.DOM_DELTA_PIXEL);
-        expect(grid.$.table.scrollTop).to.equal(1);
-      });
+  it('should scroll by pixels when deltaMode is DOM_DELTA_PIXEL (default)', () => {
+    wheel(0, 1, WheelEvent.DOM_DELTA_PIXEL);
+    expect(grid.$.table.scrollTop).to.equal(1);
+  });
 
-      it('should scroll by lines when deltaMode is DOM_DELTA_LINE', () => {
-        wheel(0, 1, WheelEvent.DOM_DELTA_LINE);
-        expect(grid.$.table.scrollTop).to.equal(16);
-      });
+  it('should scroll by lines when deltaMode is DOM_DELTA_LINE', () => {
+    wheel(0, 1, WheelEvent.DOM_DELTA_LINE);
+    expect(grid.$.table.scrollTop).to.equal(16);
+  });
 
-      it('should scroll by pages when deltaMode is DOM_DELTA_PAGE', () => {
-        wheel(0, 1, WheelEvent.DOM_DELTA_PAGE);
-        expect(grid._scrollPageHeight).to.be.above(1);
-        expect(grid.$.table.scrollTop).to.equal(grid._scrollPageHeight);
-      });
+  it('should scroll by pages when deltaMode is DOM_DELTA_PAGE', () => {
+    wheel(0, 1, WheelEvent.DOM_DELTA_PAGE);
+    expect(grid._scrollPageHeight).to.be.above(1);
+    expect(grid.$.table.scrollTop).to.equal(grid._scrollPageHeight);
+  });
 
-      it('should have the right amount of scrollbars/scrollers', () => {
-        let scrollbars = 0;
-        scrollbars += window.getComputedStyle(grid.$.table).overflow === 'hidden' ? 0 : 1;
-        scrollbars += window.getComputedStyle(grid.$.outerscroller).overflow === 'hidden' ? 0 : 1;
-        expect(scrollbars).to.equal(getScrollbarWidth() > 0 ? 2 : 1);
-      });
+  it('should have the right amount of scrollbars/scrollers', () => {
+    let scrollbars = 0;
+    scrollbars += window.getComputedStyle(grid.$.table).overflow === 'hidden' ? 0 : 1;
+    scrollbars += window.getComputedStyle(grid.$.outerscroller).overflow === 'hidden' ? 0 : 1;
+    expect(scrollbars).to.equal(getScrollbarWidth() > 0 ? 2 : 1);
+  });
 
-      it('should/should not have fixed container elements depending on scrolling mode', () => {
-        expect(isFixed(grid.$.items)).to.equal(fixedContainers);
-        expect(isFixed(grid.$.header)).to.equal(fixedContainers);
-      });
+  it('should/should not have fixed container elements depending on scrolling mode', () => {
+    expect(isFixed(grid.$.items)).to.equal(fixedContainers);
+    expect(isFixed(grid.$.header)).to.equal(fixedContainers);
+  });
 
-      it('should have correct scroll bounds on all scroll modes', () => {
-        expect(grid.$.outerscroller.scrollHeight).to.be.above(grid.clientHeight);
-        expect(grid.$.table.scrollHeight).to.equal(grid.$.outerscroller.scrollHeight);
-        expect(grid.$.table.scrollWidth).to.equal(grid.$.outerscroller.scrollWidth);
-      });
+  it('should have correct scroll bounds on all scroll modes', () => {
+    expect(grid.$.outerscroller.scrollHeight).to.be.above(grid.clientHeight);
+    expect(grid.$.table.scrollHeight).to.equal(grid.$.outerscroller.scrollHeight);
+    expect(grid.$.table.scrollWidth).to.equal(grid.$.outerscroller.scrollWidth);
+  });
 
-      it('should not have the table transformed with fixed containers', () => {
-        // This is to ensure that a fixed body/header/footer are not positioned
-        // in relation to the table element but it's parent
-        if (fixedContainers) {
-          expect(window.getComputedStyle(grid.$.table).transform).to.equal('none');
-        }
-      });
+  it('should not have the table transformed with fixed containers', () => {
+    // This is to ensure that a fixed body/header/footer are not positioned
+    // in relation to the table element but it's parent
+    if (fixedContainers) {
+      expect(window.getComputedStyle(grid.$.table).transform).to.equal('none');
+    }
+  });
 
-      it('should only cancel wheel events when scrolling is possible - vertical', () => {
-        grid.style.fontSize = '12px';
+  it('should only cancel wheel events when scrolling is possible - vertical', () => {
+    grid.style.fontSize = '12px';
 
-        expect(wheel(0, -1).defaultPrevented).to.be.false;
-        expect(wheel(0, 1).defaultPrevented).to.be.true;
+    expect(wheel(0, -1).defaultPrevented).to.be.false;
+    expect(wheel(0, 1).defaultPrevented).to.be.true;
 
-        grid._previousMomentum = 0;
-        scrollToEnd(grid);
+    grid._previousMomentum = 0;
+    scrollToEnd(grid);
 
-        grid._debouncerIgnoreNewWheel.flush();
+    grid._debouncerIgnoreNewWheel.flush();
 
-        expect(wheel(0, 1).defaultPrevented).to.be.false;
-        expect(wheel(0, -1).defaultPrevented).to.be.true;
-      });
+    expect(wheel(0, 1).defaultPrevented).to.be.false;
+    expect(wheel(0, -1).defaultPrevented).to.be.true;
+  });
 
-      it('should only cancel wheel events when scrolling is possible - horizontal', () => {
-        expect(wheel(-1, 0).defaultPrevented).to.be.false;
-        expect(wheel(1, 0).defaultPrevented).to.be.true;
+  it('should only cancel wheel events when scrolling is possible - horizontal', () => {
+    expect(wheel(-1, 0).defaultPrevented).to.be.false;
+    expect(wheel(1, 0).defaultPrevented).to.be.true;
 
-        const table = grid.$.table;
-        table.scrollLeft = table.scrollWidth - table.offsetWidth;
-        grid._previousMomentum = 0;
-        grid._debouncerIgnoreNewWheel.flush();
+    const table = grid.$.table;
+    table.scrollLeft = table.scrollWidth - table.offsetWidth;
+    grid._previousMomentum = 0;
+    grid._debouncerIgnoreNewWheel.flush();
 
-        expect(wheel(1, 0).defaultPrevented).to.be.false;
-        expect(wheel(-1, 0).defaultPrevented).to.be.true;
-      });
+    expect(wheel(1, 0).defaultPrevented).to.be.false;
+    expect(wheel(-1, 0).defaultPrevented).to.be.true;
+  });
 
-      it('should not prevent wheel events when scrolled to max', () => {
-        scrollToEnd(grid);
-        flushGrid(grid);
-        expect(wheel(0, 1).defaultPrevented).to.be.false;
-        expect(wheel(0, 1).defaultPrevented).to.be.false;
-      });
+  it('should not prevent wheel events when scrolled to max', () => {
+    scrollToEnd(grid);
+    flushGrid(grid);
+    expect(wheel(0, 1).defaultPrevented).to.be.false;
+    expect(wheel(0, 1).defaultPrevented).to.be.false;
+  });
 
-      it('should prevent default during cancel period', () => {
-        wheel(1, 0);
-        wheel(-1, 0);
-        expect(wheel(-100, 0).defaultPrevented).to.be.true;
-      });
+  it('should prevent default during cancel period', () => {
+    wheel(1, 0);
+    wheel(-1, 0);
+    expect(wheel(-100, 0).defaultPrevented).to.be.true;
+  });
 
-      it('should skip a wheel event while processing the previous one', () => {
-        wheel(0, 1);
-        grid._wheelAnimationFrame = true;
-        expect(wheel(0, 1).defaultPrevented).to.be.true;
-        expect(grid.$.table.scrollTop).to.equal(1);
-      });
+  it('should skip a wheel event while processing the previous one', () => {
+    wheel(0, 1);
+    grid._wheelAnimationFrame = true;
+    expect(wheel(0, 1).defaultPrevented).to.be.true;
+    expect(grid.$.table.scrollTop).to.equal(1);
+  });
 
-      it('should accumulate delta Y while wheeling during animation frame', () => {
-        wheel(0, 1);
-        grid._wheelAnimationFrame = true;
-        wheel(0, 1);
-        grid._wheelAnimationFrame = false;
-        wheel(0, 1);
-        expect(grid.$.table.scrollTop).to.equal(3);
-      });
+  it('should accumulate delta Y while wheeling during animation frame', () => {
+    wheel(0, 1);
+    grid._wheelAnimationFrame = true;
+    wheel(0, 1);
+    grid._wheelAnimationFrame = false;
+    wheel(0, 1);
+    expect(grid.$.table.scrollTop).to.equal(3);
+  });
 
-      it('should clear accumulated delta', () => {
-        wheel(0, 1);
-        grid._wheelAnimationFrame = true;
-        wheel(0, 1);
-        grid._wheelAnimationFrame = false;
-        wheel(0, 1);
-        wheel(0, 1);
-        expect(grid.$.table.scrollTop).to.equal(4);
-      });
+  it('should clear accumulated delta', () => {
+    wheel(0, 1);
+    grid._wheelAnimationFrame = true;
+    wheel(0, 1);
+    grid._wheelAnimationFrame = false;
+    wheel(0, 1);
+    wheel(0, 1);
+    expect(grid.$.table.scrollTop).to.equal(4);
+  });
 
-      it('should not throw on table wheel', () => {
-        const tableWheel = () => {
-          const e = new CustomEvent('wheel', {bubbles: true, cancelable: true});
-          e.deltaY = -1;
-          e.deltaX = 0;
-          grid.$.items.dispatchEvent(e);
-        };
-        expect(tableWheel).to.not.throw(Error);
-      });
+  it('should not throw on table wheel', () => {
+    const tableWheel = () => {
+      const e = new CustomEvent('wheel', {bubbles: true, cancelable: true});
+      e.deltaY = -1;
+      e.deltaX = 0;
+      grid.$.items.dispatchEvent(e);
+    };
+    expect(tableWheel).to.not.throw(Error);
+  });
 
-      it('should have proper height', () => {
-        expect(grid.scrollHeight - grid.clientHeight).to.equal(0);
-      });
+  it('should have proper height', () => {
+    expect(grid.scrollHeight - grid.clientHeight).to.equal(0);
+  });
 
-      it('should not scroll document on attach', () => {
-        document.body.style.paddingTop = '10000px';
-        document.documentElement.scrollTop = 10000;
-        const scrollTop = document.documentElement.scrollTop;
-        fixture('default');
-        const newScrollTop = document.documentElement.scrollTop;
-        // Cleanup
-        document.body.style.paddingTop = '';
+  it('should not scroll document on attach', () => {
+    document.body.style.paddingTop = '10000px';
+    document.documentElement.scrollTop = 10000;
+    const scrollTop = document.documentElement.scrollTop;
+    fixture('default');
+    const newScrollTop = document.documentElement.scrollTop;
+    // Cleanup
+    document.body.style.paddingTop = '';
 
-        expect(scrollTop).to.equal(newScrollTop);
-      });
+    expect(scrollTop).to.equal(newScrollTop);
+  });
 
-      it('should mark wheel scroll', () => {
-        const scroller = grid.$.scroller;
-        expect(scroller.hasAttribute('wheel-scrolling')).to.be.false;
-        expect(grid._wheelScrolling).not.to.be.ok;
-        wheel(grid, 0, 0);
+  it('should mark wheel scroll', () => {
+    const scroller = grid.$.scroller;
+    expect(scroller.hasAttribute('wheel-scrolling')).to.be.false;
+    expect(grid._wheelScrolling).not.to.be.ok;
+    wheel(grid, 0, 0);
 
-        expect(scroller.hasAttribute('wheel-scrolling')).to.be.true;
-        expect(grid._wheelScrolling).to.be.ok;
-        grid._debouncerWheelScrolling.flush();
+    expect(scroller.hasAttribute('wheel-scrolling')).to.be.true;
+    expect(grid._wheelScrolling).to.be.ok;
+    grid._debouncerWheelScrolling.flush();
 
-        expect(scroller.hasAttribute('wheel-scrolling')).to.be.false;
-        expect(grid._wheelScrolling).not.to.be.ok;
-      });
+    expect(scroller.hasAttribute('wheel-scrolling')).to.be.false;
+    expect(grid._wheelScrolling).not.to.be.ok;
+  });
 
-      it('should defer adding scrolling state attributes', done => {
-        const scroller = grid.$.scroller;
-        listenOnce(grid.$.table, 'scroll', () => {
-          expect(scroller.hasAttribute('scrolling')).to.be.false;
-          requestAnimationFrame(() => {
-            expect(scroller.hasAttribute('scrolling')).to.be.true;
-            done();
-          });
-        });
-        grid.$.table.dispatchEvent(new CustomEvent('scroll'));
-      });
-
-      it('should not sync outer scroller on IOS', done => {
-        grid._ios = true;
-        const spy = sinon.spy(grid.$.outerscroller, 'syncOuterScroller');
-        listenOnce(grid.$.table, 'scroll', () => {
-          expect(spy.called).to.be.false;
-          done();
-        });
-        grid.$.table.scrollTop += 1;
-      });
-
-      describe('overflow attribute', () => {
-
-        it('bottom right', () => {
-          grid._scrollToIndex(0);
-          flushGrid(grid);
-          expect(grid.getAttribute('overflow')).to.equal('bottom right');
-        });
-
-        it('bottom left', () => {
-          grid._scrollToIndex(0);
-          grid.$.table.scrollLeft = grid.$.table.scrollWidth;
-          grid._scrollHandler();
-          flushGrid(grid);
-          expect(grid.getAttribute('overflow')).to.equal('bottom left');
-        });
-
-        it('bottom top', () => {
-          grid._scrollToIndex(1);
-          flushGrid(grid);
-          expect(grid.getAttribute('overflow')).to.contain('top');
-          expect(grid.getAttribute('overflow')).to.contain('bottom');
-        });
-
-        it('left right', () => {
-          grid.$.table.scrollLeft = 1;
-          grid._scrollHandler();
-          flushGrid(grid);
-          expect(grid.getAttribute('overflow')).to.contain('left');
-          expect(grid.getAttribute('overflow')).to.contain('right');
-        });
-
-        it('top right', () => {
-          scrollToEnd(grid);
-          flushGrid(grid);
-          expect(grid.getAttribute('overflow')).to.equal('top right');
-        });
-
-        it('top left', () => {
-          scrollToEnd(grid);
-          grid.$.table.scrollLeft = grid.$.table.scrollWidth;
-          grid._scrollHandler();
-          flushGrid(grid);
-          expect(grid.getAttribute('overflow')).to.equal('top left');
-        });
-
+  it('should defer adding scrolling state attributes', done => {
+    const scroller = grid.$.scroller;
+    listenOnce(grid.$.table, 'scroll', () => {
+      expect(scroller.hasAttribute('scrolling')).to.be.false;
+      requestAnimationFrame(() => {
+        expect(scroller.hasAttribute('scrolling')).to.be.true;
+        done();
       });
     });
+    grid.$.table.dispatchEvent(new CustomEvent('scroll'));
+  });
 
-    describe('empty grid', () => {
-      let grid;
-
-      beforeEach(() => {
-        grid = fixture('default');
-        flushGrid(grid);
-      });
-
-      it('should not have vertical scroll bars', done => {
-        Polymer.RenderStatus.afterNextRender(grid, () => {
-          expect(grid.clientHeight).to.be.above(grid.$.header.clientHeight + grid.$.items.clientHeight);
-          done();
-        });
-      });
+  it('should not sync outer scroller on IOS', done => {
+    grid._ios = true;
+    const spy = sinon.spy(grid.$.outerscroller, 'syncOuterScroller');
+    listenOnce(grid.$.table, 'scroll', () => {
+      expect(spy.called).to.be.false;
+      done();
     });
-  </script>
+    grid.$.table.scrollTop += 1;
+  });
+
+  describe('overflow attribute', () => {
+
+    it('bottom right', () => {
+      grid._scrollToIndex(0);
+      flushGrid(grid);
+      expect(grid.getAttribute('overflow')).to.equal('bottom right');
+    });
+
+    it('bottom left', () => {
+      grid._scrollToIndex(0);
+      grid.$.table.scrollLeft = grid.$.table.scrollWidth;
+      grid._scrollHandler();
+      flushGrid(grid);
+      expect(grid.getAttribute('overflow')).to.equal('bottom left');
+    });
+
+    it('bottom top', () => {
+      grid._scrollToIndex(1);
+      flushGrid(grid);
+      expect(grid.getAttribute('overflow')).to.contain('top');
+      expect(grid.getAttribute('overflow')).to.contain('bottom');
+    });
+
+    it('left right', () => {
+      grid.$.table.scrollLeft = 1;
+      grid._scrollHandler();
+      flushGrid(grid);
+      expect(grid.getAttribute('overflow')).to.contain('left');
+      expect(grid.getAttribute('overflow')).to.contain('right');
+    });
+
+    it('top right', () => {
+      scrollToEnd(grid);
+      flushGrid(grid);
+      expect(grid.getAttribute('overflow')).to.equal('top right');
+    });
+
+    it('top left', () => {
+      scrollToEnd(grid);
+      grid.$.table.scrollLeft = grid.$.table.scrollWidth;
+      grid._scrollHandler();
+      flushGrid(grid);
+      expect(grid.getAttribute('overflow')).to.equal('top left');
+    });
+
+  });
+});
+
+describe('empty grid', () => {
+  let grid;
+
+  beforeEach(() => {
+    grid = fixture('default');
+    flushGrid(grid);
+  });
+
+  it('should not have vertical scroll bars', done => {
+    afterNextRender(grid, () => {
+      expect(grid.clientHeight).to.be.above(grid.$.header.clientHeight + grid.$.items.clientHeight);
+      done();
+    });
+  });
+});
+</script>
 
 </body>
 

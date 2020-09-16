@@ -1,44 +1,5 @@
 {
-  "name": "@vaadin/vaadin-grid",
-  "version": "5.7.1",
   "description": "A free, flexible and high-quality Web Component for showing large amounts of tabular data",
-  "main": "vaadin-grid.html",
-  "author": "Vaadin Ltd",
-  "license": "Apache-2.0",
-  "repository": "vaadin/vaadin-grid",
-  "bugs": {
-    "url": "https://github.com/vaadin/vaadin-grid/issues"
-  },
-  "homepage": "https://vaadin.com/components",
-  "files": [
-    "vaadin-*.d.ts",
-    "vaadin-*.js",
-    "all-imports.js",
-    "@types",
-    "src",
-    "theme"
-  ],
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run lint"
-    }
-  },
-  "scripts": {
-    "test": "wct",
-    "check": "npm-run-all --parallel check:*",
-    "check:bower": "magi check-bower",
-    "check:version": "magi check-version",
-    "lint": "npm-run-all --parallel lint:*",
-    "lint:css": "stylelint *.html src/*.html demo/*.html theme/**/*.html test/*html",
-    "lint:html": "eslint *.html src demo test --ext .html",
-    "lint:js": "eslint *.js test",
-    "prestart": "polymer analyze vaadin-* > analysis.json",
-    "start": "polymer serve --port 3000 --open",
-    "preversion": "magi update-version"
-  },
-  "devDependencies": {
-    "@vaadin/vaadin-component-dev-dependencies": "^3.0.0"
-  },
   "keywords": [
     "vaadin",
     "elements",
@@ -51,5 +12,65 @@
     "data-grid",
     "data-table"
   ],
-  "dependencies": {}
+  "repository": "vaadin/vaadin-grid",
+  "homepage": "https://vaadin.com/components",
+  "name": "@vaadin/vaadin-grid",
+  "version": "5.7.1",
+  "main": "vaadin-grid.js",
+  "author": "Vaadin Ltd",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/vaadin/vaadin-grid/issues"
+  },
+  "files": [
+    "vaadin-*.d.ts",
+    "vaadin-*.js",
+    "all-imports.js",
+    "@types",
+    "src",
+    "theme"
+  ],
+  "dependencies": {
+    "@polymer/iron-a11y-announcer": "^3.0.0",
+    "@polymer/iron-a11y-keys-behavior": "^3.0.0",
+    "@polymer/iron-resizable-behavior": "^3.0.0",
+    "@polymer/iron-scroll-target-behavior": "^3.0.0",
+    "@polymer/polymer": "^3.0.0",
+    "@vaadin/vaadin-checkbox": "^2.4.0",
+    "@vaadin/vaadin-element-mixin": "^2.4.1",
+    "@vaadin/vaadin-lumo-styles": "^1.6.0",
+    "@vaadin/vaadin-material-styles": "^1.3.2",
+    "@vaadin/vaadin-text-field": "^2.7.0",
+    "@vaadin/vaadin-themable-mixin": "^1.6.1"
+  },
+  "resolutions": {
+    "@webcomponents/webcomponentsjs": "2.0.0",
+    "es-abstract": "1.17.6",
+    "@types/doctrine": "0.0.3",
+    "inherits": "2.0.3",
+    "samsam": "1.1.3",
+    "supports-color": "3.1.2",
+    "type-detect": "1.0.0"
+  },
+  "scripts": {
+    "generate-typings": "gen-typescript-declarations --outDir . --verify"
+  },
+  "devDependencies": {
+    "@polymer/app-localize-behavior": "^3.0.0",
+    "@polymer/iron-ajax": "^3.0.0",
+    "@polymer/iron-component-page": "^4.0.0",
+    "@polymer/iron-flex-layout": "^3.0.0",
+    "@polymer/iron-image": "^3.0.0",
+    "@polymer/iron-list": "^3.0.0",
+    "@polymer/iron-media-query": "^3.0.0",
+    "@polymer/iron-test-helpers": "^3.0.0",
+    "@polymer/paper-checkbox": "^3.0.0",
+    "@polymer/paper-input": "^3.0.0",
+    "@polymer/paper-slider": "^3.0.0",
+    "@vaadin/vaadin-button": "^2.4.0",
+    "@vaadin/vaadin-context-menu": "^4.5.0",
+    "@vaadin/vaadin-demo-helpers": "^3.1.0",
+    "@webcomponents/webcomponentsjs": "^2.0.0",
+    "wct-browser-legacy": "^1.0.1"
+  }
 }

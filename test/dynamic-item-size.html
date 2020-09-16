@@ -4,13 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-  <script src="../../web-component-tester/browser.js"></script>
-  <script src="../../iron-test-helpers/mock-interactions.js"></script>
-  <link rel="import" href="../../test-fixture/test-fixture.html">
+  <script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+  <script src="../../../wct-browser-legacy/browser.js"></script>
+  <script src="../../../@polymer/iron-test-helpers/mock-interactions.js" type="module"></script>
+  <script type="module" src="../../../@polymer/test-fixture/test-fixture.js"></script>
 
-  <link rel="import" href="helpers.html">
-  <link rel="import" href="../vaadin-grid.html">
+  <script type="module" src="./helpers.js"></script>
+  <script type="module" src="../vaadin-grid.js"></script>
 
   <dom-module id="dynamic-item-size-grid-styles" theme-for="vaadin-grid">
     <template>
@@ -45,39 +45,41 @@
     </template>
   </test-fixture>
 
-  <script>
+  <script type="module">
+import '@polymer/test-fixture/test-fixture.js';
+import './helpers.js';
+import '../vaadin-grid.js';
 
-    describe('Dynamic item size', () => {
-      let scroller, grid;
+describe('Dynamic item size', () => {
+  let scroller, grid;
 
-      beforeEach(() => {
-        grid = fixture('default');
-        grid.dataProvider = infiniteDataProvider;
-        scroller = grid.$.scroller;
-        flushGrid(grid);
-      });
+  beforeEach(() => {
+    grid = fixture('default');
+    grid.dataProvider = infiniteDataProvider;
+    scroller = grid.$.scroller;
+    flushGrid(grid);
+  });
 
-      it('update size using item index', done => {
-        const firstItem = getFirstVisibleItem(grid);
+  it('update size using item index', done => {
+    const firstItem = getFirstVisibleItem(grid);
 
-        expect(firstItem.offsetHeight).to.be.below(100);
+    expect(firstItem.offsetHeight).to.be.below(100);
 
-        grid.classList.add('high');
-        flushGrid(grid);
+    grid.classList.add('high');
+    flushGrid(grid);
 
-        // The following is to make Safari react
-        // to host class change and apply new styles
-        grid.style.display = 'none';
-        flush(() => {
-          grid.style.display = 'block';
-          expect(firstItem.offsetHeight).not.to.be.below(100);
-          done();
-        });
-      });
-
+    // The following is to make Safari react
+    // to host class change and apply new styles
+    grid.style.display = 'none';
+    flush(() => {
+      grid.style.display = 'block';
+      expect(firstItem.offsetHeight).not.to.be.below(100);
+      done();
     });
+  });
 
-  </script>
+});
+</script>
 
 </body>
 </html>

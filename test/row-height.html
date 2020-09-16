@@ -6,10 +6,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-  <script src="../../web-component-tester/browser.js"></script>
-  <script src="../../iron-test-helpers/mock-interactions.js"></script>
-  <link rel="import" href="../../test-fixture/test-fixture.html">
+  <script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+  <script src="../../../wct-browser-legacy/browser.js"></script>
+  <script src="../../../@polymer/iron-test-helpers/mock-interactions.js" type="module"></script>
+  <script type="module" src="../../../@polymer/test-fixture/test-fixture.js"></script>
 
   <dom-module id="row-height-grid-styles" theme-for="vaadin-grid">
     <template>
@@ -21,8 +21,8 @@
     </template>
   </dom-module>
 
-  <link rel="import" href="helpers.html">
-  <link rel="import" href="../vaadin-grid.html">
+  <script type="module" src="./helpers.js"></script>
+  <script type="module" src="../vaadin-grid.js"></script>
 </head>
 
 <body>
@@ -73,91 +73,94 @@
     </template>
   </test-fixture>
 
-  <script>
-    describe('rows', () => {
+  <script type="module">
+import '@polymer/test-fixture/test-fixture.js';
+import './helpers.js';
+import '../vaadin-grid.js';
+describe('rows', () => {
 
-      let grid, header, rows, defaultHeight, cells;
+  let grid, header, rows, defaultHeight, cells;
 
-      function init(fixtureName, cb) {
-        grid = fixture(fixtureName);
-        listenOnce(grid, 'animationend', () => {
-          flushGrid(grid);
+  function init(fixtureName, cb) {
+    grid = fixture(fixtureName);
+    listenOnce(grid, 'animationend', () => {
+      flushGrid(grid);
 
-          rows = getRows(grid.$.items);
-          defaultHeight = getRows(header)[0].clientHeight;
+      rows = getRows(grid.$.items);
+      defaultHeight = getRows(header)[0].clientHeight;
 
-          cells = getRowCells(rows[0]);
+      cells = getRowCells(rows[0]);
 
-          cb();
-        });
-
-        requestAnimationFrame(() => {
-          grid.dataProvider = infiniteDataProvider;
-          grid.hidden = false;
-          flushGrid(grid);
-          header = grid.$.header;
-        });
-      }
-
-      it('should have higher cells on each row', done => {
-        init('two-columns', () => {
-          cells[0].style.height = cells[0].clientHeight * 2 + 'px';
-          flush(() => {
-            expect(cells[1].clientHeight).to.equal(cells[0].clientHeight);
-            done();
-          });
-        });
-      });
-
-      it('should not misalign on resize (wheel)', done => {
-        init('default-content', () => {
-          scrollToEnd(grid);
-
-          // Simulate a wheel event that doesn't cause a scroll event
-          const e = new CustomEvent('wheel', {bubbles: true});
-          e.deltaY = -100;
-          e.deltaX = 0;
-          grid.$.table.dispatchEvent(e);
-
-          // Simulate a (window) resize
-          grid.style.width = '200px';
-          grid._resizeHandler();
-
-          expect(header.getBoundingClientRect().top).to.be.closeTo(grid.getBoundingClientRect().top, 1);
-          done();
-        });
-      });
-
-      it('should not misalign on reattach', done => {
-        init('default-content', () => {
-          scrollToEnd(grid);
-
-          const parentNode = grid.parentNode;
-          parentNode.removeChild(grid);
-          parentNode.offsetHeight;
-          parentNode.appendChild(grid);
-
-          setTimeout(() => {
-            expect(header.getBoundingClientRect().top).to.be.closeTo(grid.getBoundingClientRect().top, 1);
-            done();
-          });
-        });
-      });
-
-      it('should update height when hiding columns', done => {
-        init('two-columns-uneven-content', () => {
-          grid.querySelectorAll('vaadin-grid-column')[0].hidden = true;
-
-          // Flush row height and position calculations
-          flushGrid(grid);
-
-          expect(rows[0].getBoundingClientRect().bottom).to.eql(rows[1].getBoundingClientRect().top);
-          done();
-        });
-      });
-
+      cb();
     });
-  </script>
+
+    requestAnimationFrame(() => {
+      grid.dataProvider = infiniteDataProvider;
+      grid.hidden = false;
+      flushGrid(grid);
+      header = grid.$.header;
+    });
+  }
+
+  it('should have higher cells on each row', done => {
+    init('two-columns', () => {
+      cells[0].style.height = cells[0].clientHeight * 2 + 'px';
+      flush(() => {
+        expect(cells[1].clientHeight).to.equal(cells[0].clientHeight);
+        done();
+      });
+    });
+  });
+
+  it('should not misalign on resize (wheel)', done => {
+    init('default-content', () => {
+      scrollToEnd(grid);
+
+      // Simulate a wheel event that doesn't cause a scroll event
+      const e = new CustomEvent('wheel', {bubbles: true});
+      e.deltaY = -100;
+      e.deltaX = 0;
+      grid.$.table.dispatchEvent(e);
+
+      // Simulate a (window) resize
+      grid.style.width = '200px';
+      grid._resizeHandler();
+
+      expect(header.getBoundingClientRect().top).to.be.closeTo(grid.getBoundingClientRect().top, 1);
+      done();
+    });
+  });
+
+  it('should not misalign on reattach', done => {
+    init('default-content', () => {
+      scrollToEnd(grid);
+
+      const parentNode = grid.parentNode;
+      parentNode.removeChild(grid);
+      parentNode.offsetHeight;
+      parentNode.appendChild(grid);
+
+      setTimeout(() => {
+        expect(header.getBoundingClientRect().top).to.be.closeTo(grid.getBoundingClientRect().top, 1);
+        done();
+      });
+    });
+  });
+
+  it('should update height when hiding columns', done => {
+    init('two-columns-uneven-content', () => {
+      grid.querySelectorAll('vaadin-grid-column')[0].hidden = true;
+
+      // Flush row height and position calculations
+      flushGrid(grid);
+
+      expect(rows[0].getBoundingClientRect().bottom).to.eql(rows[1].getBoundingClientRect().top);
+      done();
+    });
+  });
+
+});
+</script>
 
 </body>
 

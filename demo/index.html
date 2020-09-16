@@ -4,30 +4,41 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
   <title>vaadin-grid Examples</title>
-  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
 
-  <script src="grid-demo-data.js"></script>
+  <script src="./grid-demo-data.js"></script>
 
-  <link rel="import" href="../../polymer/polymer.html">
-  <link rel="import" href="../../vaadin-demo-helpers/vaadin-component-demo.html">
-  <link rel="import" href="../../vaadin-demo-helpers/vaadin-demo-snippet.html">
-  <script src="../../vaadin-demo-helpers/vaadin-demo-ready-event-emitter.js"></script>
+  <script type="module" src="../../../@polymer/polymer/polymer-legacy.js"></script>
+  <script type="module" src="../../../@vaadin/vaadin-demo-helpers/vaadin-component-demo.js"></script>
+  <script type="module" src="../../../@vaadin/vaadin-demo-helpers/vaadin-demo-snippet.js"></script>
+  <script src="../../../@vaadin/vaadin-demo-helpers/vaadin-demo-ready-event-emitter.js"></script>
   <script src="./grid-demo.js"></script>
 
-  <link rel="import" href="../all-imports.html">
-  <link rel="import" href="../../vaadin-checkbox/vaadin-checkbox.html">
-  <link rel="import" href="../../iron-image/iron-image.html">
-  <link rel="import" href="../../iron-media-query/iron-media-query.html">
-  <link rel="import" href="../demo/x-data-provider.html">
-  <link rel="import" href="../../vaadin-button/vaadin-button.html">
-  <link rel="import" href="../../vaadin-text-field/vaadin-text-field.html">
-  <link rel="import" href="../../vaadin-text-field/vaadin-text-area.html">
-  <link rel="import" href="../../iron-ajax/iron-ajax.html">
-  <link rel="import" href="../../vaadin-lumo-styles/icons.html">
-  <link rel="import" href="../../vaadin-context-menu/vaadin-context-menu.html">
+  <script type="module" src="../all-imports.js"></script>
+  <script type="module" src="../../../@vaadin/vaadin-checkbox/vaadin-checkbox.js"></script>
+  <script type="module" src="../../../@polymer/iron-image/iron-image.js"></script>
+  <script type="module" src="../../../@polymer/iron-media-query/iron-media-query.js"></script>
+  <script type="module" src="./x-data-provider.js"></script>
+  <script type="module" src="../../../@vaadin/vaadin-button/vaadin-button.js"></script>
+  <script type="module" src="../../../@vaadin/vaadin-text-field/vaadin-text-field.js"></script>
+  <script type="module" src="../../../@vaadin/vaadin-text-field/vaadin-text-area.js"></script>
+  <script type="module" src="../../../@polymer/iron-ajax/iron-ajax.js"></script>
+  <script type="module" src="../../../@vaadin/vaadin-lumo-styles/icons.js"></script>
+  <script type="module" src="../../../@vaadin/vaadin-context-menu/vaadin-context-menu.js"></script>
 
   <!-- Used in the styling examples, keep in sync -->
-  <dom-module id="grid-styling-demo-theme" theme-for="vaadin-grid">
+  <!-- FIXME(polymer-modulizer):
+        These imperative modules that innerHTML your HTML are
+        a hacky way to be sure that any mixins in included style
+        modules are ready before any elements that reference them are
+        instantiated, otherwise the CSS @apply mixin polyfill won't be
+        able to expand the underlying CSS custom properties.
+        See: https://github.com/Polymer/polymer-modulizer/issues/154
+        -->
+    <script type="module">
+const $_documentContainer = document.createElement('template');
+
+$_documentContainer.innerHTML = `<dom-module id="grid-styling-demo-theme" theme-for="vaadin-grid">
     <template>
       <style>
         /* Background needs a stronger selector to not be overridden */
@@ -48,14 +59,27 @@
         }
       </style>
     </template>
-  </dom-module>
+  </dom-module>`;
 
-  <custom-style>
+document.body.appendChild($_documentContainer.content);
+</script>
+
+  <script type="module">
+const $_documentContainer = document.createElement('template');
+
+$_documentContainer.innerHTML = `<custom-style>
     <style include="vaadin-component-demo-shared-styles"></style>
-  </custom-style>
+  </custom-style>`;
+
+document.body.appendChild($_documentContainer.content);
+</script>
 </head>
 
 <body>
-  <vaadin-component-demo config-src="demos.json"></vaadin-component-demo>
+  <script type="module">
+const $_documentContainer = document.createElement('template');
+$_documentContainer.innerHTML = `<vaadin-component-demo config-src="demos.json"></vaadin-component-demo>`;
+document.body.appendChild($_documentContainer.content);
+</script>
 </body>
 </html>

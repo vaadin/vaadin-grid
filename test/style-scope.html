@@ -6,14 +6,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-  <script src="../../web-component-tester/browser.js"></script>
-  <script src="../../iron-test-helpers/mock-interactions.js"></script>
-  <link rel="import" href="../../test-fixture/test-fixture.html">
+  <script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+  <script src="../../../wct-browser-legacy/browser.js"></script>
+  <script src="../../../@polymer/iron-test-helpers/mock-interactions.js" type="module"></script>
+  <script type="module" src="../../../@polymer/test-fixture/test-fixture.js"></script>
 
-  <link rel="import" href="helpers.html">
-  <link rel="import" href="../vaadin-grid.html">
-  <link rel="import" href="../../paper-slider/paper-slider.html">
+  <script type="module" src="./helpers.js"></script>
+  <script type="module" src="../vaadin-grid.js"></script>
+  <script type="module" src="../../../@polymer/paper-slider/paper-slider.js"></script>
 
 </head>
 
@@ -50,20 +50,23 @@
         </vaadin-grid-column>
       </vaadin-grid>
     </template>
-    <script>
-      document.addEventListener('WebComponentsReady', () => {
-        Polymer({
-          is: 'test-component',
+    <script type="module">
+import '@polymer/test-fixture/test-fixture.js';
+import './helpers.js';
+import '../vaadin-grid.js';
+import '@polymer/paper-slider/paper-slider.js';
+import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
+Polymer({
+  is: 'test-component',
 
-          properties: {
-            dataProvider: {
-              value: () => infiniteDataProvider
-            }
-          }
+  properties: {
+    dataProvider: {
+      value: () => infiniteDataProvider
+    }
+  }
 
-        });
-      });
-    </script>
+});
+</script>
   </dom-module>
 
   <test-fixture id="default">
@@ -92,112 +95,115 @@
 
 
 
-  <script>
-  document.addEventListener('WebComponentsReady', () => {
-    describe('style scope', () => {
+  <script type="module">
+import '@polymer/test-fixture/test-fixture.js';
+import './helpers.js';
+import '../vaadin-grid.js';
+import '@polymer/paper-slider/paper-slider.js';
+import { useShadow } from '@polymer/polymer/lib/utils/settings.js';
+describe('style scope', () => {
 
-      describe('component', () => {
+  describe('component', () => {
 
-        let component;
-        let wrapper;
-        let content;
-        let slider;
-        let interval;
-        const clearTestInterval = () => {
-          if (interval) {
-            clearInterval(interval);
-            interval = undefined;
-          }
-        };
+    let component;
+    let wrapper;
+    let content;
+    let slider;
+    let interval;
+    const clearTestInterval = () => {
+      if (interval) {
+        clearInterval(interval);
+        interval = undefined;
+      }
+    };
 
-        beforeEach(() => {
-          clearTestInterval();
-          component = fixture('default');
+    beforeEach(() => {
+      clearTestInterval();
+      component = fixture('default');
 
-          flushGrid(component.$.grid);
+      flushGrid(component.$.grid);
 
-          wrapper = component.$.grid.querySelector('vaadin-grid-cell-content');
-          content = component.$.grid.querySelector('.my-content');
+      wrapper = component.$.grid.querySelector('vaadin-grid-cell-content');
+      content = component.$.grid.querySelector('.my-content');
 
-          slider = component.$$('paper-slider');
-        });
-
-        it('should target cell content', done => {
-          // Timing this test on P3 + iOS 9 Safari is too difficult.
-          // Let's wait for the condition and let the test timeout if it's never met instead.
-          interval = setInterval(() => {
-            if (window.getComputedStyle(wrapper).color === 'rgb(0, 255, 0)') {
-              clearTestInterval();
-              done();
-            }
-          }, 1);
-        });
-
-        it('should target cell wrapper', () => {
-          expect(window.getComputedStyle(content).color).to.equal('rgb(255, 0, 0)');
-        });
-
-        it('should polyfill style mixins to child web-components', () => {
-          expect(window.getComputedStyle(slider.$$('paper-input')).color).to.equal('rgb(0, 255, 0)');
-        });
-
-        it('should not have vaadin-grid-table scope', () => {
-          expect(content.classList.contains('vaadin-grid-table')).to.be.false;
-        });
-
-      });
-
-      describe('dom-bind', () => {
-        let grid;
-
-        beforeEach(() => grid = document.querySelector('#dom-bind-grid'));
-
-        if (!Polymer.Settings.useShadow) {
-          // Only test non-shadow
-          let scroller;
-          let table;
-          let body;
-
-          beforeEach(() => {
-            scroller = grid.$.scroller;
-            table = grid.$.table;
-            body = grid.$.items;
-            grid.dataProvider = infiniteDataProvider;
-            flushGrid(grid);
-          });
-
-          it('should not lose scope on reorder', done => {
-            const row = body.children[0];
-
-            const cell = row.querySelector('[part~="cell"]');
-            const content = cell._content.querySelector('.my-content');
-
-            expect(window.getComputedStyle(content).color).to.equal('rgb(255, 0, 0)');
-
-            listenOnce(table, 'scroll', () => {
-              flushGrid(grid);
-              expect(window.getComputedStyle(content).color).to.equal('rgb(255, 0, 0)');
-              done();
-            });
-
-            // Deliberately mess the row order...
-            body.appendChild(row);
-            // ...and schedule a reorder
-            table.scrollTop += 1;
-
-          });
-
-          it('should not have vaadin-grid-table scope', () => {
-            const row = body.children[24];
-            const cell = row.querySelector('[part~="cell"]');
-            const content = cell._content.querySelector('.my-content');
-            expect(content.classList.contains('vaadin-grid-table')).to.be.false;
-          });
-        }
-      });
+      slider = component.$$('paper-slider');
     });
+
+    it('should target cell content', done => {
+      // Timing this test on P3 + iOS 9 Safari is too difficult.
+      // Let's wait for the condition and let the test timeout if it's never met instead.
+      interval = setInterval(() => {
+        if (window.getComputedStyle(wrapper).color === 'rgb(0, 255, 0)') {
+          clearTestInterval();
+          done();
+        }
+      }, 1);
+    });
+
+    it('should target cell wrapper', () => {
+      expect(window.getComputedStyle(content).color).to.equal('rgb(255, 0, 0)');
+    });
+
+    it('should polyfill style mixins to child web-components', () => {
+      expect(window.getComputedStyle(slider.$$('paper-input')).color).to.equal('rgb(0, 255, 0)');
+    });
+
+    it('should not have vaadin-grid-table scope', () => {
+      expect(content.classList.contains('vaadin-grid-table')).to.be.false;
+    });
+
   });
-  </script>
+
+  describe('dom-bind', () => {
+    let grid;
+
+    beforeEach(() => grid = document.querySelector('#dom-bind-grid'));
+
+    if (!useShadow) {
+      // Only test non-shadow
+      let scroller;
+      let table;
+      let body;
+
+      beforeEach(() => {
+        scroller = grid.$.scroller;
+        table = grid.$.table;
+        body = grid.$.items;
+        grid.dataProvider = infiniteDataProvider;
+        flushGrid(grid);
+      });
+
+      it('should not lose scope on reorder', done => {
+        const row = body.children[0];
+
+        const cell = row.querySelector('[part~="cell"]');
+        const content = cell._content.querySelector('.my-content');
+
+        expect(window.getComputedStyle(content).color).to.equal('rgb(255, 0, 0)');
+
+        listenOnce(table, 'scroll', () => {
+          flushGrid(grid);
+          expect(window.getComputedStyle(content).color).to.equal('rgb(255, 0, 0)');
+          done();
+        });
+
+        // Deliberately mess the row order...
+        body.appendChild(row);
+        // ...and schedule a reorder
+        table.scrollTop += 1;
+
+      });
+
+      it('should not have vaadin-grid-table scope', () => {
+        const row = body.children[24];
+        const cell = row.querySelector('[part~="cell"]');
+        const content = cell._content.querySelector('.my-content');
+        expect(content.classList.contains('vaadin-grid-table')).to.be.false;
+      });
+    }
+  });
+});
+</script>
 
 </body>
 

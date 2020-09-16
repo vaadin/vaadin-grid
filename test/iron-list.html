@@ -5,13 +5,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-  <script src="../../web-component-tester/browser.js"></script>
-  <link rel="import" href="../../iron-list/iron-list.html">
-  <link rel="import" href="../../test-fixture/test-fixture.html">
+  <script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+  <script src="../../../wct-browser-legacy/browser.js"></script>
+  <script type="module" src="../../../@polymer/iron-list/iron-list.js"></script>
+  <script type="module" src="../../../@polymer/test-fixture/test-fixture.js"></script>
 
-  <link rel="import" href="helpers.html">
-  <link rel="import" href="../vaadin-grid.html">
+  <script type="module" src="./helpers.js"></script>
+  <script type="module" src="../vaadin-grid.js"></script>
 </head>
 
 <body>
@@ -27,34 +27,37 @@
     </template>
   </test-fixture>
 
-  <script>
-    describe('iron list', () => {
-      let grid, ironList;
+  <script type="module">
+import '@polymer/iron-list/iron-list.js';
+import '@polymer/test-fixture/test-fixture.js';
+import './helpers.js';
+import '../vaadin-grid.js';
+describe('iron list', () => {
+  let grid, ironList;
 
-      beforeEach(done => {
-        grid = fixture('default')[0];
-        ironList = fixture('default')[1];
-        grid.dataProvider = infiniteDataProvider;
-        flushGrid(grid);
-        animationFrameFlush(done);
-      });
+  beforeEach(done => {
+    grid = fixture('default')[0];
+    ironList = fixture('default')[1];
+    grid.dataProvider = infiniteDataProvider;
+    flushGrid(grid);
+    animationFrameFlush(done);
+  });
 
-      it('should work with another iron-list on the page', () => {
-        expect(grid.$ && ironList.is).to.equal('iron-list');
-      });
+  it('should work with another iron-list on the page', () => {
+    expect(grid.$ && ironList.is).to.equal('iron-list');
+  });
 
-      it('should warn when using iron-list APIs trough grid', () => {
-        const _warn = console.warn;
-        const spy = console.warn = sinon.spy();
-        grid.firstVisibleIndex;
-        grid.lastVisibleIndex;
-        console.warn = _warn;
-        expect(spy.callCount).to.be.above(1);
-      });
+  it('should warn when using iron-list APIs trough grid', () => {
+    const _warn = console.warn;
+    const spy = console.warn = sinon.spy();
+    grid.firstVisibleIndex;
+    grid.lastVisibleIndex;
+    console.warn = _warn;
+    expect(spy.callCount).to.be.above(1);
+  });
 
-    });
-
-  </script>
+});
+</script>
 
 </body>
 
