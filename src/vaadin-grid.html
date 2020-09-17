@@ -833,6 +833,11 @@ This program is available under Apache License Version 2.0, available at https:/
           e.stopPropagation();
           this.notifyResize();
           this.__itemsReceived();
+
+          requestAnimationFrame(() => {
+            // This needs to be set programmatically in order to avoid an iOS 10 bug (disappearing grid)
+            this.$.table.style.webkitOverflowScrolling = 'touch';
+          });
         }
       }
 
