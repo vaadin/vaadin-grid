@@ -42,7 +42,10 @@ This program is available under Apache License Version 2.0, available at https:/
 
         _useSticky: {
           type: Boolean,
-          value: (window.CSS && window.CSS.supports && window.CSS.supports('position', 'sticky'))
+          value: (window.CSS && (
+            window.CSS.supports && window.CSS.supports('position', 'sticky') ||
+            window.CSS.supports && window.CSS.supports('position', '-webkit-sticky'))
+          )
         }
 
       };
