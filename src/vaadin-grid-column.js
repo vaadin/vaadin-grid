@@ -333,7 +333,7 @@ export const ColumnBaseMixin = superClass => class ColumnBaseMixin extends super
     if (path && cells.value) {
       if (!renderer) {
         const pathRenderer = (root, owner, {item}) => this.__setTextContent(root, this.get(path, item));
-        this.__setColumnRenderer(undefined, pathRenderer, cells.value);
+        this.__setColumnRenderer(pathRenderer, cells.value);
       }
 
       if (!headerRenderer && !hasHeaderText && headerCell && header !== null) {
