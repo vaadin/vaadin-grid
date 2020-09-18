@@ -97,6 +97,10 @@ This program is available under Apache License Version 2.0, available at https:/
     /** @protected */
     ready() {
       super.ready();
+
+      // Preserve accessor to the legacy scrolling functionality
+      this.$.outerscroller = document.createElement('div');
+
       this.scrollTarget = this.$.table;
 
       this.addEventListener('wheel', this._onWheel);
