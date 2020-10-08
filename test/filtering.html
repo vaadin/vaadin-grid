@@ -171,10 +171,10 @@
         scrollToEnd(grid);
 
         setTimeout(() => {
-          grid._filters[0].value = '99';
+          grid._filters[0].value = '09';
           flushFilters(grid);
           requestAnimationFrame(() => {
-            expect(grid.$.items.querySelectorAll('tr:not([hidden])')).to.have.length(19);
+            expect(grid.$.items.querySelectorAll('tr:not([hidden])')).to.have.length(9);
             done();
           });
         }, 200);
