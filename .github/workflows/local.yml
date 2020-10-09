@@ -11,15 +11,6 @@ jobs:
     - uses: actions/setup-node@v1
       with:
         node-version: 12
-    - name: Install required packages
-      env:
-        DISPLAY: :99.0
-    - run: |
-        sudo apt-get -qq update
-        sudo apt-get install -y xvfb matchbox-window-manager
-        Xvfb -ac :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
-        matchbox-window-manager&
-        sleep 5
 
     - name: Cache node modules
       uses: actions/cache@v2
@@ -45,4 +36,4 @@ jobs:
       run: npm run lint
 
     - name: Run unit tests
-      run: npm test
+      run: xvfb-run -s '-screen 0 1024x768x24' npm test
