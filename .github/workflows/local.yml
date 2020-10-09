@@ -16,7 +16,7 @@ jobs:
     - run: |
         sudo apt-get -qq update
         sudo apt-get install -y xvfb matchbox-window-manager
-        sh -e /etc/init.d/xvfb start
+        xvfb start
         matchbox-window-manager&
         sleep 5
 
