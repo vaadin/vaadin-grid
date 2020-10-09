@@ -11,12 +11,11 @@ jobs:
     - uses: actions/setup-node@v1
       with:
         node-version: 12
-      env:
-        DISPLAY: :99.0
     - run: |
         sudo apt-get -qq update
         sudo apt-get install -y xvfb matchbox-window-manager
-        xvfb start
+        export DISPLAY=:99.0
+        Xvfb -ac :99 -screen 0 1280x1024x16 > /dev/null 2>&1 &
         matchbox-window-manager&
         sleep 5
 
