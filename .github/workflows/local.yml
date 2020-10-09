@@ -11,8 +11,6 @@ jobs:
     - uses: actions/setup-node@v1
       with:
         node-version: 12
-
-    - name: Install window manager
       env:
         DISPLAY: :99.0
     - run: |
@@ -47,49 +45,3 @@ jobs:
 
     - name: Run unit tests
       run: npm test
-
-  polymer-3:
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v2
-    - run: |
-        git config user.name github-actions
-        git config user.email github-actions@github.com
-
-    - uses: actions/setup-node@v1
-      with:
-        node-version: 12
-
-    - name: Install window manager
-      env:
-        DISPLAY: :99.0
-    - run: |
-        sh -e /etc/init.d/xvfb start
-        sudo apt-get -qq update
-        sudo apt-get install -y matchbox-window-manager
-        matchbox-window-manager&
-        sleep 5
-
-    - name: Cache node modules
-      uses: actions/cache@v2
-      env:
-        cache-name: cache-polymer-3
-      with:
-        path: ~/.npm
-        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-
-    - name: Install CLI tools
-      run: npm install -g bower magi-cli polymer-modulizer web-component-tester yarn
-
-    - name: Install dependencies
-      run: npm -q i
-
-    - name: Convert to P3
-      run: magi p3-convert --out . --import-style=name
-
-    - name: Run yarn
-      run: yarn install --flat
-
-    - name: Run unit tests
-      run: wct --npm
