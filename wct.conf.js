@@ -11,6 +11,9 @@ module.exports = {
           'headless',
           'disable-gpu',
           'no-sandbox'
+        ],
+        firefox: [
+          '-headless'
         ]
       }
     }
