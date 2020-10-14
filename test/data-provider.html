@@ -314,7 +314,7 @@
               flushGrid(grid);
               expect(grid.dataProvider.lastCall.args[0].parentItem).to.be.ok;
               done();
-            })
+            });
           });
 
           it('should request pages from 0', () => {
