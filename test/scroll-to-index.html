@@ -148,6 +148,22 @@
           expect(cell.parentElement.index).to.equal(targetIndex);
         });
 
+        it('should continue scrolling after child items get loaded', done => {
+          grid.size = 50;
+          grid.expandedItems = ['foo49'];
+          grid.dataProvider = ({page, parentItem}, cb) => {
+            setTimeout(() => {
+              const scope = parentItem || '';
+              cb(Array(...new Array(grid.pageSize)).map((_, index) => scope + 'foo' + index));
+              if (parentItem) {
+                expect(grid._firstVisibleIndex).to.be.above(75);
+                done();
+              }
+            });
+          };
+          grid.scrollToIndex(100);
+        });
+
       });
 
     });
