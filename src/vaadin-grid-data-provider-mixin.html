@@ -387,12 +387,6 @@ This program is available under Apache License Version 2.0, available at https:/
                 });
 
               this._increasePoolIfNeeded(0);
-
-              if (this.__pendingScrollToIndex) {
-                const index = this.__pendingScrollToIndex;
-                delete this.__pendingScrollToIndex;
-                this.scrollToIndex(index);
-              }
             }
           );
 

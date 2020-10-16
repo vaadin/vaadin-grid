@@ -131,9 +131,6 @@ This program is available under Apache License Version 2.0, available at https:/
      */
     scrollToIndex(index) {
       this._accessIronListAPI(() => super.scrollToIndex(index));
-      if (this._cache.isLoading()) {
-        this.__pendingScrollToIndex = index;
-      }
     }
 
     /** @private */
