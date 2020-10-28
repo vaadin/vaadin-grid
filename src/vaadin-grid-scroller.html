@@ -79,11 +79,6 @@ This program is available under Apache License Version 2.0, available at https:/
       scrollToIndex(index) {
         this._warnPrivateAPIAccess('scrollToIndex');
 
-        if (index > this._physicalCount) {
-          this._increasePoolIfNeeded(0);
-          this._debounceIncreasePool && this._debounceIncreasePool.flush();
-        }
-
         this._scrollingToIndex = true;
         index = Math.min(Math.max(index, 0), this._effectiveSize - 1);
         this.$.table.scrollTop = index / this._effectiveSize * (this.$.table.scrollHeight - this.$.table.offsetHeight);
