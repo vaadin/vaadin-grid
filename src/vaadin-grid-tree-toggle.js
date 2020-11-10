@@ -4,7 +4,6 @@ Copyright (c) 2017 Vaadin Ltd.
 This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
 */
 import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
-import '@polymer/polymer/lib/elements/custom-style.js';
 import { Debouncer } from '@polymer/polymer/lib/utils/debounce.js';
 import { ThemableMixin } from '@vaadin/vaadin-themable-mixin/vaadin-themable-mixin.js';
 import { DirMixin } from '@vaadin/vaadin-element-mixin/vaadin-dir-mixin.js';
@@ -12,7 +11,7 @@ import { isFocusable } from './vaadin-grid-active-item-mixin.js';
 import { microTask } from '@polymer/polymer/lib/utils/async.js';
 const $_documentContainer = document.createElement('template');
 
-$_documentContainer.innerHTML = `<custom-style>
+$_documentContainer.innerHTML = `
   <style>
     @font-face {
       font-family: "vaadin-grid-tree-icons";
@@ -21,7 +20,7 @@ $_documentContainer.innerHTML = `<custom-style>
       font-style: normal;
     }
   </style>
-</custom-style>`;
+`;
 
 document.head.appendChild($_documentContainer.content);
 /**
