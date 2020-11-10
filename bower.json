@@ -49,24 +49,6 @@
     "package-lock.json",
     "wct.conf.js"
   ],
-  "devDependencies": {
-    "webcomponentsjs": "1.2.0",
-    "web-component-tester": "^6.1.5",
-    "sinonjs": "Polymer/sinon.js#^1.14.1",
-    "iron-test-helpers": "^v2.0.0",
-    "paper-input": "^v2.0.0",
-    "paper-checkbox": "^v2.0.0",
-    "iron-flex-layout": "^v2.0.0",
-    "iron-image": "^v2.0.0",
-    "paper-slider": "^v2.0.0",
-    "iron-media-query": "^v2.0.0",
-    "iron-component-page": "^3.0.0",
-    "iron-ajax": "PolymerElements/iron-ajax#^v2.0.0",
-    "iron-list": "^v2.0.4",
-    "vaadin-demo-helpers": "vaadin/vaadin-demo-helpers#^3.1.0",
-    "vaadin-button": "vaadin/vaadin-button#^2.4.0",
-    "vaadin-context-menu": "vaadin/vaadin-context-menu#^4.5.0"
-  },
   "dependencies": {
     "polymer": "^2.0.0",
     "iron-resizable-behavior": "PolymerElements/iron-resizable-behavior#^v2.0.0",
@@ -79,5 +61,11 @@
     "vaadin-lumo-styles": "vaadin/vaadin-lumo-styles#^1.6.0",
     "vaadin-material-styles": "vaadin/vaadin-material-styles#^1.3.2",
     "vaadin-element-mixin": "vaadin/vaadin-element-mixin#^2.4.1"
+  },
+  "devDependencies": {
+    "webcomponentsjs": "1.2.0",
+    "web-component-tester": "^6.1.5",
+    "iron-component-page": "^3.0.0",
+    "iron-test-helpers": "^v2.0.0"
   }
 }
