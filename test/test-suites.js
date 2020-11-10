@@ -21,7 +21,6 @@ window.VaadinGridSuites = [
   'tree-toggle.html',
   'iron-list.html',
   'keyboard-navigation.html',
-  'lazy-import.html',
   'light-dom-observing.html',
   'physical-count.html',
   'resizing.html',

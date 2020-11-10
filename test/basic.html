@@ -67,7 +67,6 @@ import { afterNextRender } from '@polymer/polymer/lib/utils/render-status.js';
 import '@polymer/test-fixture/test-fixture.js';
 import './helpers.js';
 import '../vaadin-grid.js';
-import { Base } from '@polymer/polymer/polymer-legacy.js';
 describe('basic features', () => {
   let grid;
 
@@ -443,26 +442,6 @@ describe('missing imports', () => {
 
         expect(error).to.not.be.instanceOf(Error);
       });
-
-      it('should not warn for present import', (done) => {
-        if (window.isV2()) {
-          Base.importHref(`../${elementName}.html`, () => {
-            sinon.stub(console, 'warn');
-
-            grid.appendChild(document.createElement(elementName));
-            grid._observer && grid._observer.flush && grid._observer.flush();
-            grid._debouncerCheckImports.flush();
-
-            expect(console.warn.called).to.be.false;
-            console.warn.restore();
-            done();
-          });
-        } else {
-          // importHref is removed in Polymer 3 stable release, skip the test.
-          done();
-        }
-      });
-
     });
   };
 

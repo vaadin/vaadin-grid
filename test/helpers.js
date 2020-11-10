@@ -2,8 +2,6 @@ import { flush as flush$0 } from '@polymer/polymer/lib/utils/flush.js';
 import { DomApi } from '@polymer/polymer/lib/legacy/polymer.dom.js';
 window.defaultCellWidth = 100;
 
-window.isV2 = () => window['Polymer'] && window['Polymer']['version'] && window['Polymer']['version'].indexOf('2') === 0;
-
 window.ensureDefined = (id, cb) => {
   if (customElements.get(id)) {
     cb();
