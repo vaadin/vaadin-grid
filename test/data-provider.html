@@ -128,7 +128,6 @@ customElements.whenDefined('vaadin-grid').then(() => {
 import '@polymer/test-fixture/test-fixture.js';
 import './helpers.js';
 import '../vaadin-grid.js';
-import { Base } from '@polymer/polymer/polymer-legacy.js';
 import { useShadow } from '@polymer/polymer/lib/utils/settings.js';
 
 function simulateScrollToStart(grid, done) {
@@ -140,7 +139,7 @@ function simulateScrollToStart(grid, done) {
       table.scrollTop -= 2500;
     } else {
       table.removeEventListener('scroll', handler);
-      Base.async(done, 100);
+      setTimeout(done, 100);
     }
   };
 
@@ -157,7 +156,7 @@ function simulateScrollToEnd(grid, done) {
       table.scrollTop += 2500;
     } else {
       table.removeEventListener('scroll', handler);
-      Base.async(done, 100);
+      setTimeout(done, 100);
     }
   };
 
