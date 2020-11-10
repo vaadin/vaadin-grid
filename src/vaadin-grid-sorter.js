@@ -3,13 +3,10 @@
 Copyright (c) 2017 Vaadin Ltd.
 This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
 */
-import '@polymer/polymer/polymer-legacy.js';
-
+import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
 import '@polymer/polymer/lib/elements/custom-style.js';
 import { ThemableMixin } from '@vaadin/vaadin-themable-mixin/vaadin-themable-mixin.js';
 import { DirMixin } from '@vaadin/vaadin-element-mixin/vaadin-dir-mixin.js';
-import { html } from '@polymer/polymer/lib/utils/html-tag.js';
-import { PolymerElement } from '@polymer/polymer/polymer-element.js';
 const $_documentContainer = document.createElement('template');
 
 $_documentContainer.innerHTML = `<custom-style>

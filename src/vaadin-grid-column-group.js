@@ -3,8 +3,6 @@
 Copyright (c) 2017 Vaadin Ltd.
 This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
 */
-import '@polymer/polymer/polymer-legacy.js';
-
 import { microTask } from '@polymer/polymer/lib/utils/async.js';
 import { FlattenedNodesObserver } from '@polymer/polymer/lib/utils/flattened-nodes-observer.js';
 import { ColumnBaseMixin } from './vaadin-grid-column.js';

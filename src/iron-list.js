@@ -24,8 +24,6 @@ To update:
   from HTML and may be out of place here. Review them and
   then delete this comment!
 */
-import '@polymer/polymer/polymer-legacy.js';
-
 import { IronResizableBehavior } from '@polymer/iron-resizable-behavior/iron-resizable-behavior.js';
 import { IronScrollTargetBehavior } from '@polymer/iron-scroll-target-behavior/iron-scroll-target-behavior.js';
 import { animationFrame, idlePeriod, microTask } from '@polymer/polymer/lib/utils/async.js';

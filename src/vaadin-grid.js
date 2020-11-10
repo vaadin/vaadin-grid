@@ -3,8 +3,6 @@
 Copyright (c) 2017 Vaadin Ltd.
 This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
 */
-import '@polymer/polymer/polymer-legacy.js';
-
 import { ThemableMixin } from '@vaadin/vaadin-themable-mixin/vaadin-themable-mixin.js';
 import { ScrollerElement } from './vaadin-grid-scroller.js';
 import { A11yMixin } from './vaadin-grid-a11y-mixin.js';
