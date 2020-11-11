@@ -3,15 +3,11 @@
 Copyright (c) 2017 Vaadin Ltd.
 This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
 */
-import '@polymer/polymer/lib/elements/dom-module.js';
+import { registerStyles, css } from '@vaadin/vaadin-themable-mixin/register-styles.js';
 
-import { html } from '@polymer/polymer/lib/utils/html-tag.js';
-const VaadinGridStyles = document.createElement('dom-module');
-
-// NOTE(web-padawan): https://github.com/vaadin/vaadin-grid/issues/1514
-VaadinGridStyles.appendChild(
-  html`
-  <style>
+registerStyles(
+  'vaadin-grid',
+  css`
     @keyframes vaadin-grid-appear {
       to {
         opacity: 1;
@@ -107,26 +103,26 @@ VaadinGridStyles.appendChild(
       overflow: visible;
     }
 
-    [part~="row"] {
+    [part~='row'] {
       display: flex;
       width: 100%;
       box-sizing: border-box;
       margin: 0;
     }
 
-    [part~="row"][loading] [part~="body-cell"] ::slotted(vaadin-grid-cell-content) {
+    [part~='row'][loading] [part~='body-cell'] ::slotted(vaadin-grid-cell-content) {
       opacity: 0;
     }
 
-    #items [part~="row"] {
+    #items [part~='row'] {
       position: absolute;
     }
 
-    #items [part~="row"]:empty {
+    #items [part~='row']:empty {
       height: 1em;
     }
 
-    [part~="cell"]:not([part~="details-cell"]) {
+    [part~='cell']:not([part~='details-cell']) {
       flex-shrink: 0;
       flex-grow: 1;
       box-sizing: border-box;
@@ -138,7 +134,7 @@ VaadinGridStyles.appendChild(
       white-space: nowrap;
     }
 
-    [part~="details-cell"] {
+    [part~='details-cell'] {
       position: absolute;
       bottom: 0;
       width: 100%;
@@ -146,7 +142,7 @@ VaadinGridStyles.appendChild(
       padding: 0;
     }
 
-    [part~="cell"] ::slotted(vaadin-grid-cell-content) {
+    [part~='cell'] ::slotted(vaadin-grid-cell-content) {
       display: block;
       width: 100%;
       box-sizing: border-box;
@@ -169,13 +165,13 @@ VaadinGridStyles.appendChild(
     }
 
     /* Reordering styles */
-    :host([reordering]) [part~="cell"] ::slotted(vaadin-grid-cell-content),
-    :host([reordering]) [part~="resize-handle"],
-    #scroller[no-content-pointer-events] [part~="cell"] ::slotted(vaadin-grid-cell-content) {
+    :host([reordering]) [part~='cell'] ::slotted(vaadin-grid-cell-content),
+    :host([reordering]) [part~='resize-handle'],
+    #scroller[no-content-pointer-events] [part~='cell'] ::slotted(vaadin-grid-cell-content) {
       pointer-events: none;
     }
 
-    [part~="reorder-ghost"] {
+    [part~='reorder-ghost'] {
       visibility: hidden;
       position: fixed;
       pointer-events: none;
@@ -192,12 +188,12 @@ VaadinGridStyles.appendChild(
       user-select: none;
     }
 
-    #scroller[ie][column-reordering-allowed] [part~="header-cell"] {
+    #scroller[ie][column-reordering-allowed] [part~='header-cell'] {
       -ms-user-select: none;
     }
 
     /* Resizing styles */
-    [part~="resize-handle"] {
+    [part~='resize-handle'] {
       position: absolute;
       top: 0;
       right: 0;
@@ -206,16 +202,16 @@ VaadinGridStyles.appendChild(
       z-index: 1;
     }
 
-    [part~="resize-handle"]::before {
+    [part~='resize-handle']::before {
       position: absolute;
-      content: "";
+      content: '';
       height: 100%;
       width: 35px;
       transform: translateX(-50%);
     }
 
-    [last-column] [part~="resize-handle"]::before,
-    [last-frozen] [part~="resize-handle"]::before {
+    [last-column] [part~='resize-handle']::before,
+    [last-frozen] [part~='resize-handle']::before {
       width: 18px;
       transform: none;
       right: 0;
@@ -235,15 +231,15 @@ VaadinGridStyles.appendChild(
       visibility: hidden;
     }
 
-    #sizer [part~="details-cell"] {
+    #sizer [part~='details-cell'] {
       display: none !important;
     }
 
-    #sizer [part~="cell"][hidden] {
+    #sizer [part~='cell'][hidden] {
       display: none !important;
     }
 
-    #sizer [part~="cell"] {
+    #sizer [part~='cell'] {
       display: block;
       flex-shrink: 0;
       line-height: 0;
@@ -254,42 +250,41 @@ VaadinGridStyles.appendChild(
       border: none !important;
     }
 
-    #sizer [part~="cell"]::before {
-      content: "-";
+    #sizer [part~='cell']::before {
+      content: '-';
     }
 
-    #sizer [part~="cell"] ::slotted(vaadin-grid-cell-content) {
+    #sizer [part~='cell'] ::slotted(vaadin-grid-cell-content) {
       display: none !important;
     }
 
     /* RTL specific styles */
 
-    :host([dir="rtl"]) #items,
-    :host([dir="rtl"]) #header,
-    :host([dir="rtl"]) #footer {
+    :host([dir='rtl']) #items,
+    :host([dir='rtl']) #header,
+    :host([dir='rtl']) #footer {
       left: auto;
     }
 
-    :host([dir="rtl"]) [part~="reorder-ghost"] {
+    :host([dir='rtl']) [part~='reorder-ghost'] {
       left: auto;
       right: 0;
     }
 
-    :host([dir="rtl"]) [part~="resize-handle"] {
+    :host([dir='rtl']) [part~='resize-handle'] {
       left: 0;
       right: auto;
     }
 
-    :host([dir="rtl"]) [part~="resize-handle"]::before {
+    :host([dir='rtl']) [part~='resize-handle']::before {
       transform: translateX(50%);
     }
 
-    :host([dir="rtl"]) [last-column] [part~="resize-handle"]::before,
-    :host([dir="rtl"]) [last-frozen] [part~="resize-handle"]::before {
+    :host([dir='rtl']) [last-column] [part~='resize-handle']::before,
+    :host([dir='rtl']) [last-frozen] [part~='resize-handle']::before {
       left: 0;
       right: auto;
     }
-  </style>
-`);
-
-VaadinGridStyles.register('vaadin-grid-styles');
+  `,
+  { moduleId: 'vaadin-grid-styles' }
+);

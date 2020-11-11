@@ -293,8 +293,6 @@ class GridElement extends
                                       ScrollerElement)))))))))))))))))) {
   static get template() {
     return html`
-    <style include="vaadin-grid-styles"></style>
-
     <div id="scroller" safari\$="[[_safari]]" ios\$="[[_ios]]" ie\$="[[_ie]]" loading\$="[[loading]]" column-reordering-allowed\$="[[columnReorderingAllowed]]">
 
       <table id="table" role="grid" aria-multiselectable="true" tabindex="0">
