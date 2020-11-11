@@ -1,4 +1,4 @@
-import { flush as flush$0 } from '@polymer/polymer/lib/utils/flush.js';
+import { flush } from '@polymer/polymer/lib/utils/flush.js';
 import { DomApi } from '@polymer/polymer/lib/legacy/polymer.dom.js';
 window.defaultCellWidth = 100;
 
@@ -28,14 +28,14 @@ window.flushGrid = (grid) => {
   if (grid._debouncerForceReflow) {
     grid._debouncerForceReflow.flush();
   }
-  flush$0();
+  flush();
   if (grid._debounceOverflow) {
     grid._debounceOverflow.flush();
   }
   while (grid._debounceIncreasePool) {
     grid._debounceIncreasePool.flush();
     grid._debounceIncreasePool = null;
-    flush$0();
+    flush();
   }
   if (grid._debouncerHiddenChanged) {
     grid._debouncerHiddenChanged.flush();
