@@ -7,22 +7,17 @@ The complete set of contributors may be found at http://polymer.github.io/CONTRI
 Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 */
+
 /**
 
 This is a fork of <iron-list> for <vaadin-grid>'s internal purposes only!
 To update:
 1. Get the most recent code from https://github.com/PolymerElements/iron-list/
-2. Remove the  <dom-module id="iron-list"> to avoid collisions with actual <iron-list>
-3. Change "Polymer({" to "window.PolymerIronList = Polymer.Class({" to expose the class
-3.1. Add @namespace
+2. Remove `is: 'iron-list'` and `_template` to avoid collisions with actual <iron-list>
+3. Change "Polymer({" to "export const PolymerIronList = Class({" to expose the class
 4. Optional: Remove all properties and functions not needed by <vaadin-grid>
 5. Profit!
 
-*/
-/*
-  FIXME(polymer-modulizer): the above comments were extracted
-  from HTML and may be out of place here. Review them and
-  then delete this comment!
 */
 import { IronResizableBehavior } from '@polymer/iron-resizable-behavior/iron-resizable-behavior.js';
 import { IronScrollTargetBehavior } from '@polymer/iron-scroll-target-behavior/iron-scroll-target-behavior.js';
@@ -33,9 +28,6 @@ import { Debouncer, enqueueDebouncer } from '@polymer/polymer/lib/utils/debounce
 var IOS = navigator.userAgent.match(/iP(?:hone|ad;(?: U;)? CPU) OS (\d+)/);
 var IOS_TOUCH_SCROLLING = IOS && IOS[1] >= 8;
 var DEFAULT_PHYSICAL_COUNT = 3;
-var ANIMATION_FRAME = animationFrame;
-var IDLE_TIME = idlePeriod;
-var MICRO_TASK = microTask;
 
 /**
  * @constructor
@@ -111,7 +103,7 @@ export const PolymerIronList = Class({
 
   /**
    * An array of DOM nodes that are currently in the tree
-   * @type {?Array<!TemplatizerNode>}
+   * @type {?Array<!TemplateInstanceBase>}
    */
   _physicalItems: null,
 
@@ -127,12 +119,6 @@ export const PolymerIronList = Class({
    * @type {?number}
    */
   _firstVisibleIndexVal: null,
-
-  /**
-   * A Polymer collection for the items.
-   * @type {?Polymer.Collection}
-   */
-  _collection: null,
 
   /**
    * A cached value for the last visible index.
@@ -328,7 +314,7 @@ export const PolymerIronList = Class({
   },
 
   attached: function() {
-    this._debounce('_render', this._render, ANIMATION_FRAME);
+    this._debounce('_render', this._render, animationFrame);
     // `iron-resize` is fired when the list is attached if the event is added
     // before attached causing unnecessary work.
     this.listen(this, 'iron-resize', '_resizeHandler');
@@ -385,7 +371,7 @@ export const PolymerIronList = Class({
         this._physicalStart = this._physicalStart - reusables.indexes.length;
       }
       this._update(reusables.indexes, isScrollingDown ? null : reusables.indexes);
-      this._debounce('_increasePoolIfNeeded', this._increasePoolIfNeeded.bind(this, 0), MICRO_TASK);
+      this._debounce('_increasePoolIfNeeded', this._increasePoolIfNeeded.bind(this, 0), microTask);
     }
   },
 
@@ -522,7 +508,7 @@ export const PolymerIronList = Class({
         this._increasePoolIfNeeded.bind(
           this,
           nextIncrease
-        ), MICRO_TASK);
+        ), microTask);
     } else if (this._physicalSize < this._optPhysicalSize) {
       // Yield and increase the pool during idle time until the physical size is optimal.
       this._debounce(
@@ -530,7 +516,7 @@ export const PolymerIronList = Class({
         this._increasePoolIfNeeded.bind(
           this,
           this._clamp(Math.round(50 / this._templateCost), 1, nextIncrease)
-        ), IDLE_TIME);
+        ), idlePeriod);
     }
   },
 
@@ -565,8 +551,6 @@ export const PolymerIronList = Class({
       this._virtualStart = 0;
       this._physicalTop = 0;
       this._virtualCount = this.items ? this.items.length : 0;
-      this._collection = this.items && undefined ?
-        undefined.get(this.items) : null;
       this._physicalIndexForKey = {};
       this._firstVisibleIndexVal = null;
       this._lastVisibleIndexVal = null;
@@ -578,7 +562,7 @@ export const PolymerIronList = Class({
         this._resetScrollPosition(0);
       }
       this._removeFocusedItem();
-      this._debounce('_render', this._render, ANIMATION_FRAME);
+      this._debounce('_render', this._render, animationFrame);
     }
   },
 
@@ -815,7 +799,7 @@ export const PolymerIronList = Class({
         // Uninstall the scroll event listener.
         this.toggleScrollListener(false);
       }
-    }, ANIMATION_FRAME);
+    }, animationFrame);
   },
 
   /**
