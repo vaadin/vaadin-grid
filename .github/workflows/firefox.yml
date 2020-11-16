@@ -1,9 +1,9 @@
-name: sauce-p2-desktop
+name: firefox
 
 on: [push]
 
 jobs:
-  tests:
+  unit-tests:
     runs-on: ubuntu-latest
 
     steps:
@@ -12,17 +12,11 @@ jobs:
       with:
         node-version: 12
 
-    - name: Install CLI tools
-      run: npm install -g bower
-
     - name: Install dependencies
-      run: npm -q i
+      run: npm install
 
-    - name: Install Bower
-      run: bower -q i
-
-    - name: Run unit tests
+    - name: Test in Firefox
       env:
         SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
         SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
-      run: npm test -- --env saucelabs:desktop
+      run: npm run test:firefox
