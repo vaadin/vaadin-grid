@@ -1,17 +1,7 @@
 import { flush } from '@polymer/polymer/lib/utils/flush.js';
-import { DomApi } from '@polymer/polymer/lib/legacy/polymer.dom.js';
-window.defaultCellWidth = 100;
 
-window.ensureDefined = (id, cb) => {
-  if (customElements.get(id)) {
-    cb();
-  } else {
-    customElements.whenDefined(id).then(() => cb());
-  }
-};
-
-window.whenGridAppearAnimationEnd = (grid, cb) => {
-  const onAnimationEnd = e => {
+export const whenGridAppearAnimationEnd = (grid, cb) => {
+  const onAnimationEnd = (e) => {
     if (e.animationName.indexOf('vaadin-grid-appear') === 0) {
       grid.removeEventListener('animationend', onAnimationEnd);
       cb();
@@ -20,7 +10,7 @@ window.whenGridAppearAnimationEnd = (grid, cb) => {
   grid.addEventListener('animationend', onAnimationEnd);
 };
 
-window.flushGrid = (grid) => {
+export const flushGrid = (grid) => {
   grid._observer.flush();
   if (grid._debounceScrolling) {
     grid._debounceScrolling.flush();
@@ -49,67 +39,41 @@ window.flushGrid = (grid) => {
   grid._scrollHandler();
 };
 
-window.getCell = (grid, index) => {
+export const getCell = (grid, index) => {
   return grid.$.items.querySelectorAll('[part~="cell"]')[index];
 };
 
-window.getFirstCell = (grid) => {
+export const getFirstCell = (grid) => {
   return getCell(grid, 0);
 };
 
-window.getScrollbarWidth = () => {
-  // Create the measurement node
-  const scrollDiv = document.createElement('div');
-  scrollDiv.style.width = '100px';
-  scrollDiv.style.height = '100px';
-  scrollDiv.style.overflow = 'scroll';
-  scrollDiv.style.position = 'absolute';
-  scrollDiv.style.top = '-9999px';
-  document.body.appendChild(scrollDiv);
-  // Get the scrollbar width
-  const scrollbarWidth = scrollDiv.offsetWidth - scrollDiv.clientWidth;
-
-  // Delete the DIV
-  document.body.removeChild(scrollDiv);
-  return scrollbarWidth;
+export const infiniteDataProvider = (params, callback) => {
+  callback(
+    Array.apply(null, Array(params.pageSize)).map((item, index) => {
+      return {
+        value: 'foo' + (params.page * params.pageSize + index)
+      };
+    })
+  );
 };
 
-window.infiniteDataProvider = (params, callback) => {
-  callback(Array.apply(null, Array(params.pageSize)).map((item, index) => {
-    return {
-      value: 'foo' + (params.page * params.pageSize + index)
-    };
-  }));
-};
 
-window.findElementInList = (container, selector) => {
-  const children = container._children;
-  const ms = DomApi.matchesSelector;
-
-  for (let i; i < children.length; i++) {
-    if (children[i].nodeType === Node.ELEMENT_NODE && ms.call(children[i], selector)) {
-      return children[i];
-    }
-  }
-  return null;
-};
-
-window.listenOnce = (element, eventName, callback) => {
-  const listener = e => {
+export const listenOnce = (element, eventName, callback) => {
+  const listener = (e) => {
     element.removeEventListener(eventName, listener);
     callback(e);
   };
   element.addEventListener(eventName, listener);
 };
 
-window.buildItem = (index) => {
+export const buildItem = (index) => {
   return {
     index: index
   };
 };
 
-window.wheel = (target, deltaX, deltaY, ctrlKey) => {
-  const e = new CustomEvent('wheel', {bubbles: true, cancelable: true});
+export const wheel = (target, deltaX, deltaY, ctrlKey) => {
+  const e = new CustomEvent('wheel', { bubbles: true, cancelable: true });
   e.deltaX = deltaX;
   e.deltaY = deltaY;
   e.ctrlKey = ctrlKey;
@@ -117,15 +81,15 @@ window.wheel = (target, deltaX, deltaY, ctrlKey) => {
   return e;
 };
 
-window.buildDataSet = (size) => {
+export const buildDataSet = (size) => {
   const data = [];
   while (data.length < size) {
-    data.push(window.buildItem(data.length));
+    data.push(buildItem(data.length));
   }
   return data;
 };
 
-window.scrollToEnd = (grid, callback) => {
+export const scrollToEnd = (grid, callback) => {
   grid._scrollToIndex(grid.size - 1);
 
   // Ensure rows are in order
@@ -139,85 +103,9 @@ window.scrollToEnd = (grid, callback) => {
   }
 };
 
-window.simulateScroll = (config) => {
-  const list = config.list;
-  const target = config.target;
-  const delay = config.delay || 1;
-  let contribution = Math.abs(config.contribution) || 10;
-  // scroll back up
-  if (target < list.scrollTop) {
-    contribution = -contribution;
-  }
-
-  const scrollHandler = () => {
-    setTimeout(() => {
-      const minScrollTop = 0;
-      const maxScrollTop = list.scrollHeight - list.offsetHeight;
-
-      config.onScroll && config.onScroll();
-
-      if (list.scrollTop < target && contribution > 0 && list.scrollTop < maxScrollTop) {
-        list.scrollTop = Math.min(maxScrollTop, list.scrollTop + contribution);
-
-      } else if (list.scrollTop > target && contribution < 0 && list.scrollTop > minScrollTop) {
-        list.scrollTop = Math.max(minScrollTop, list.scrollTop + contribution);
-
-      } else {
-        list.removeEventListener('scroll', scrollHandler);
-        list.scrollTop = target;
-        config.onScrollEnd && config.onScrollEnd();
-      }
-    }, delay);
-  };
-  list.addEventListener('scroll', scrollHandler);
-  scrollHandler();
-};
-
-window.getGridRowFromIndex = (grid, index) => {
-  return Math.floor(index / grid._itemsPerRow);
-};
-
-window.getFirstVisibleItem = (grid) => {
-  const visibleRows = window.getVisibleItems(grid);
-  if (visibleRows.length) {
-    return visibleRows[0];
-  }
-  return null;
-};
-
-window.getLastVisibleItem = (grid) => {
-  const visibleRows = window.getVisibleItems(grid);
-  if (visibleRows.length) {
-    return visibleRows.pop();
-  }
-  return null;
-};
-
-window.getVisibleItems = (grid) => {
-  flushGrid(grid);
-  const rows = grid.$.items.children;
-  const visibleRows = [];
-  for (var i = 0; i < rows.length; i++) {
-    if (isVisible(rows[i])) {
-      visibleRows.push(rows[i]);
-    }
-  }
-  return visibleRows;
-};
-
-window.isWithinParentConstraints = (el, parent) => {
-  return ['top', 'bottom', 'left', 'right'].every(constraint =>
-    el.getBoundingClientRect[constraint] === parent.getBoundingClientRect[constraint]);
-};
-
-window.getCustomCSSPropertyValue = (element, propertyName) => {
-  return window.ShadyCSS
-    ? window.ShadyCSS.getComputedStyleValue(element, propertyName)
-    : getComputedStyle(element).getPropertyValue(propertyName);
-};
 
 // http://stackoverflow.com/a/15203639/1331425
-window.isVisible = (el) => {
+export const isVisible = (el) => {
   let top = el.offsetTop;
   let left = el.offsetLeft;
   const width = el.offsetWidth;
@@ -230,90 +118,85 @@ window.isVisible = (el) => {
   }
 
   return (
-    top < (window.pageYOffset + window.innerHeight) &&
-    left < (window.pageXOffset + window.innerWidth) &&
-    (top + height) > window.pageYOffset &&
-    (left + width) > window.pageXOffset
+    top < window.pageYOffset + window.innerHeight &&
+    left < window.pageXOffset + window.innerWidth &&
+    top + height > window.pageYOffset &&
+    left + width > window.pageXOffset
   );
 };
 
-window.isFullOfItems = (list) => {
-  const listRect = list.getBoundingClientRect();
-  const listHeight = listRect.height - 1;
-  let item, y = listRect.top + 1;
-  // IE 10 & 11 doesn't render propertly :(
-  let badPixels = 0;
-  while (y < listHeight) {
-    item = document.elementFromPoint(listRect.left + 100, y);
-
-    if (!item) {
-      badPixels++;
-    }
-    y++;
-    if (badPixels > 2) {
-      return false;
+const getVisibleItems = (grid) => {
+  flushGrid(grid);
+  const rows = grid.$.items.children;
+  const visibleRows = [];
+  for (var i = 0; i < rows.length; i++) {
+    if (isVisible(rows[i])) {
+      visibleRows.push(rows[i]);
     }
   }
-  return true;
+  return visibleRows;
 };
 
-window.checkRepeatedItems = (list) => {
-  const listRect = list.getBoundingClientRect();
-  const listHeight = list.offsetHeight;
-  const listItems = {};
-
-  return () => {
-    let itemKey;
-    let y = listRect.top;
-    while (y < listHeight) {
-      const item = document.elementFromPoint(listRect.left + 100, y + 2);
-      itemKey = item.textContent || item.innerText;
-
-      if (item.parentNode && item.parentNode._templateInstance) {
-        if (listItems[itemKey] && listItems[itemKey] != item) {
-          return true;
-        }
-        listItems[itemKey] = item;
-      }
-      y += item.offsetHeight;
-    }
-    return false;
-  };
+export const getFirstVisibleItem = (grid) => {
+  const visibleRows = getVisibleItems(grid);
+  if (visibleRows.length) {
+    return visibleRows[0];
+  }
+  return null;
 };
 
-window.getRows = (container) => {
+export const getLastVisibleItem = (grid) => {
+  const visibleRows = getVisibleItems(grid);
+  if (visibleRows.length) {
+    return visibleRows.pop();
+  }
+  return null;
+};
+
+export const isWithinParentConstraints = (el, parent) => {
+  return ['top', 'bottom', 'left', 'right'].every(
+    (constraint) => el.getBoundingClientRect[constraint] === parent.getBoundingClientRect[constraint]
+  );
+};
+
+export const getCustomCSSPropertyValue = (element, propertyName) => {
+  return getComputedStyle(element).getPropertyValue(propertyName);
+};
+
+
+export const getRows = (container) => {
   return container.querySelectorAll('tr');
 };
 
-window.getRowCells = (row) => {
+export const getRowCells = (row) => {
   return Array.prototype.slice.call(row.querySelectorAll('[part~="cell"]'));
 };
 
-window.getCellContent = (cell) => {
+export const getCellContent = (cell) => {
   return cell ? cell.querySelector('slot').assignedNodes()[0] : null;
 };
 
-window.getHeaderCellContent = (grid, row, col) => {
+export const getHeaderCellContent = (grid, row, col) => {
   const container = grid.$.header;
   return getContainerCellContent(container, row, col);
 };
 
-window.getBodyCellContent = (grid, row, col) => {
+export const getBodyCellContent = (grid, row, col) => {
   const container = grid.$.items;
   return getContainerCellContent(container, row, col);
 };
 
-window.getContainerCellContent = (container, row, col) => {
+export const getContainerCellContent = (container, row, col) => {
   return getCellContent(getContainerCell(container, row, col));
 };
 
-window.getContainerCell = (container, row, col) => {
+export const getContainerCell = (container, row, col) => {
   const rows = getRows(container);
   const cells = getRowCells(rows[row]);
   return cells[col];
 };
 
-window.dragStart = (source) => {
+export const dragStart = (source) => {
   let grid = source.parentElement;
   while (grid) {
     if (grid.localName === 'vaadin-grid') {
@@ -322,54 +205,68 @@ window.dragStart = (source) => {
     grid = grid.parentNode || grid.host;
   }
   const sourceRect = source.getBoundingClientRect();
-  fire('track', {
-    x: Math.round(sourceRect.left + sourceRect.width / 2),
-    y: Math.round(sourceRect.top + sourceRect.height / 2),
-    state: 'start'
-  }, {
-    node: source,
-    bubbles: true
-  });
+  fire(
+    'track',
+    {
+      x: Math.round(sourceRect.left + sourceRect.width / 2),
+      y: Math.round(sourceRect.top + sourceRect.height / 2),
+      state: 'start'
+    },
+    {
+      node: source,
+      bubbles: true
+    }
+  );
 };
 
-window.dragOver = (source, target, clientX) => {
+export const dragOver = (source, target, clientX) => {
   dragStart(source);
   const targetRect = target.getBoundingClientRect();
-  fire('track', {
-    x: Math.round(clientX || targetRect.left + targetRect.width / 2),
-    y: Math.round(targetRect.top + targetRect.height / 2),
-    state: 'track'
-  }, {
-    node: source,
-    bubbles: true
-  });
+  fire(
+    'track',
+    {
+      x: Math.round(clientX || targetRect.left + targetRect.width / 2),
+      y: Math.round(targetRect.top + targetRect.height / 2),
+      state: 'track'
+    },
+    {
+      node: source,
+      bubbles: true
+    }
+  );
 };
 
-window.dragAndDropOver = (source, target) => {
+export const dragAndDropOver = (source, target) => {
   dragOver(source, target);
-  fire('track', {
-    x: 0,
-    y: 0,
-    state: 'end'
-  }, {
-    node: source,
-    bubbles: true
-  });
+  fire(
+    'track',
+    {
+      x: 0,
+      y: 0,
+      state: 'end'
+    },
+    {
+      node: source,
+      bubbles: true
+    }
+  );
 };
 
-window.makeSoloTouchEvent = (type, xy, node) => {
-  const touches = [{
-    identifier: 0,
-    target: node,
-    clientX: xy.x,
-    clientY: xy.y
-  }];
+export const makeSoloTouchEvent = (type, xy, node) => {
+  const touches = [
+    {
+      identifier: 0,
+      target: node,
+      clientX: xy.x,
+      clientY: xy.y
+    }
+  ];
   const touchEventInit = {
     touches: touches,
     targetTouches: touches,
     changedTouches: touches
   };
-  const event = new CustomEvent(type, {bubbles: true, cancelable: true});
+  const event = new CustomEvent(type, { bubbles: true, cancelable: true });
   for (var property in touchEventInit) {
     event[property] = touchEventInit[property];
   }
@@ -377,22 +274,25 @@ window.makeSoloTouchEvent = (type, xy, node) => {
   return event;
 };
 
-window.click = (element) => {
-  fire('click', {}, {
-    node: element,
-    bubbles: true
+export function click(element) {
+  const event = new CustomEvent('click', {
+    bubbles: true,
+    cancelable: true,
+    composed: true
   });
+  element.dispatchEvent(event);
+  return event;
+}
+
+export const flushColumns = (grid) => {
+  Array.prototype.forEach.call(grid.querySelectorAll('vaadin-grid-column, vaadin-grid-column-group'), (col) =>
+    col._templateObserver.flush()
+  );
 };
 
-window.flushColumns = (grid) => {
-  Array.prototype
-    .forEach.call(grid.querySelectorAll('vaadin-grid-column, vaadin-grid-column-group'),
-      col => col._templateObserver.flush());
-};
-
-window.fire = (type, detail, options) => {
+export const fire = (type, detail, options) => {
   options = options || {};
-  detail = (detail === null || detail === undefined) ? {} : detail;
+  detail = detail === null || detail === undefined ? {} : detail;
   const event = new Event(type, {
     bubbles: options.bubbles === undefined ? true : options.bubbles,
     cancelable: Boolean(options.cancelable),

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
 <head lang="en">
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Drag and drop visual tests</title>
   <script src="../../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
   <script>
@@ -29,8 +29,7 @@
 
   <script>
     const grid = document.querySelector('vaadin-grid');
-    grid.rowDetailsRenderer = root => root.innerHTML = '<p>Details</p>';
+    grid.rowDetailsRenderer = (root) => (root.innerHTML = '<p>Details</p>');
     grid.items = Vaadin.GridDemo.users;
   </script>
-
 </body>

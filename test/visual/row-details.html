@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
 <head lang="en">
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Row details visual tests</title>
   <script src="../../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
   <script>
@@ -13,7 +13,7 @@
     document.documentElement.setAttribute('dir', dir);
   </script>
   <script src="../../demo/grid-demo-data.js"></script>
-  <link href="../../demo/x-data-provider.html" rel="import">
+  <link href="../../demo/x-data-provider.html" rel="import" />
 </head>
 
 <body>
@@ -39,13 +39,13 @@
             <template class="header">
               <div class="header-content">
                 <b>1-200 of 15,554</b>
-                <input placeholder="Search profiles" focus-target>
+                <input placeholder="Search profiles" focus-target />
               </div>
             </template>
 
             <vaadin-grid-column width="45px" flex-grow="0">
               <template>
-                <input type="checkbox" checked="{{selected::change}}">
+                <input type="checkbox" checked="{{selected::change}}" />
               </template>
             </vaadin-grid-column>
 
@@ -64,7 +64,6 @@
               <template>[[item.location.state]]</template>
             </vaadin-grid-column>
           </vaadin-grid-column-group>
-
         </vaadin-grid>
       </template>
     </dom-bind>

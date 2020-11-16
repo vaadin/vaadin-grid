@@ -31,6 +31,12 @@
     "src",
     "theme"
   ],
+  "scripts": {
+    "debug": "web-test-runner test/*.test.js --watch",
+    "test": "web-test-runner test/*.test.js",
+    "test:firefox": "TEST_ENV=firefox npm test",
+    "test:safari": "TEST_ENV=safari npm test"
+  },
   "dependencies": {
     "@polymer/polymer": "^3.0.0",
     "@polymer/iron-resizable-behavior": "^3.0.0",
@@ -45,9 +51,14 @@
     "@vaadin/vaadin-element-mixin": "^2.4.1"
   },
   "devDependencies": {
-    "@webcomponents/webcomponentsjs": "^2.0.0",
-    "wct-browser-legacy": "^1.0.1",
+    "@esm-bundle/chai": "^4.1.5",
+    "@open-wc/testing-helpers": "^1.8.0",
     "@polymer/iron-component-page": "^4.0.0",
-    "@polymer/iron-test-helpers": "^3.0.0"
+    "@polymer/iron-list": "^3.1.0",
+    "@polymer/iron-test-helpers": "^3.0.0",
+    "@web/test-runner": "^0.9.7",
+    "@web/test-runner-saucelabs": "^0.1.1",
+    "@webcomponents/webcomponentsjs": "^2.0.0",
+    "sinon": "^9.2.0"
   }
 }
