@@ -31,7 +31,7 @@ import { PolymerElement } from '@polymer/polymer/polymer-element.js';
  * </vaadin-grid-column-group>
  * ```
  *
- * @extends PolymerElement
+ * @extends HTMLElement
  * @mixes ColumnBaseMixin
  */
 class GridColumnGroupElement extends ColumnBaseMixin(PolymerElement) {

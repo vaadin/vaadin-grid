@@ -64,7 +64,7 @@ document.head.appendChild($_documentContainer.content);
  * ---|---|---
  * `--vaadin-grid-tree-toggle-level-offset` | Visual offset step for each tree sublevel | `1em`
  *
- * @extends PolymerElement
+ * @extends HTMLElement
  * @mixes ThemableMixin
  */
 class GridTreeToggleElement extends ThemableMixin(DirMixin(PolymerElement)) {

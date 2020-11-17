@@ -612,7 +612,7 @@ export const ColumnBaseMixin = superClass => class ColumnBaseMixin extends super
  * to configure the `<vaadin-grid-column>`.
  * ```
  *
- * @extends PolymerElement
+ * @extends HTMLElement
  * @mixes ColumnBaseMixin
  */
 class GridColumnElement extends ColumnBaseMixin(DirMixin(PolymerElement)) {

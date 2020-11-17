@@ -50,7 +50,7 @@ document.head.appendChild($_documentContainer.content);
  * -------------|-------------|------------
  * `direction` | Sort direction of a sorter | :host
  *
- * @extends PolymerElement
+ * @extends HTMLElement
  */
 class GridSorterElement extends ThemableMixin(DirMixin(PolymerElement)) {
   static get template() {

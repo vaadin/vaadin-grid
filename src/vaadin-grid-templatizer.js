@@ -10,7 +10,7 @@ import { templatize } from '@polymer/polymer/lib/utils/templatize.js';
  * `vaadin-grid-templatizer` is a helper element for the `vaadin-grid` that is preparing and
  * stamping instances of cells and columns templates
  *
- * @extends PolymerElement
+ * @extends HTMLElement
  * @private
  */
 class GridTemplatizer extends (class extends PolymerElement {}) {

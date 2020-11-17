@@ -253,6 +253,7 @@ const TOUCH_DEVICE = (() => {
  * See [ThemableMixin – how to apply styles for shadow parts](https://github.com/vaadin/vaadin-themable-mixin/wiki)
  *
  * @extends ScrollerElement
+ * @mixes ElementMixin
  * @mixes ThemableMixin
  * @mixes A11yMixin
  * @mixes ActiveItemMixin
