@@ -1,8 +1,8 @@
 /**
-@license
-Copyright (c) 2018 Vaadin Ltd.
-This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
-*/
+ * @license
+ * Copyright (c) 2020 Vaadin Ltd.
+ * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
+ */
 import { PolymerElement } from '@polymer/polymer/polymer-element.js';
 
 import { FlattenedNodesObserver } from '@polymer/polymer/lib/utils/flattened-nodes-observer.js';

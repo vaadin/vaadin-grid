@@ -1,8 +1,8 @@
 /**
-@license
-Copyright (c) 2017 Vaadin Ltd.
-This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
-*/
+ * @license
+ * Copyright (c) 2020 Vaadin Ltd.
+ * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
+ */
 import { html } from '@polymer/polymer/lib/utils/html-tag.js';
 import { GridColumnElement } from './vaadin-grid-column.js';
 import '@vaadin/vaadin-checkbox/src/vaadin-checkbox.js';
