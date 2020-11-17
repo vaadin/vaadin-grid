@@ -1,44 +1,44 @@
-import {ThemableMixin} from '@vaadin/vaadin-themable-mixin/vaadin-themable-mixin.js';
+import { ThemableMixin } from '@vaadin/vaadin-themable-mixin/vaadin-themable-mixin.js';
 
-import {GridItem, GridItemModel} from '../@types/interfaces';
+import { GridItem, GridItemModel } from '../@types/interfaces';
 
-import {ScrollerElement} from './vaadin-grid-scroller.js';
+import { ScrollerElement } from './vaadin-grid-scroller.js';
 
-import {A11yMixin} from './vaadin-grid-a11y-mixin.js';
+import { A11yMixin } from './vaadin-grid-a11y-mixin.js';
 
-import {ActiveItemMixin} from './vaadin-grid-active-item-mixin.js';
+import { ActiveItemMixin } from './vaadin-grid-active-item-mixin.js';
 
-import {ArrayDataProviderMixin} from './vaadin-grid-array-data-provider-mixin.js';
+import { ArrayDataProviderMixin } from './vaadin-grid-array-data-provider-mixin.js';
 
-import {ColumnResizingMixin} from './vaadin-grid-column-resizing-mixin.js';
+import { ColumnResizingMixin } from './vaadin-grid-column-resizing-mixin.js';
 
-import {DataProviderMixin} from './vaadin-grid-data-provider-mixin.js';
+import { DataProviderMixin } from './vaadin-grid-data-provider-mixin.js';
 
-import {DynamicColumnsMixin} from './vaadin-grid-dynamic-columns-mixin.js';
+import { DynamicColumnsMixin } from './vaadin-grid-dynamic-columns-mixin.js';
 
-import {EventContextMixin} from './vaadin-grid-event-context-mixin.js';
+import { EventContextMixin } from './vaadin-grid-event-context-mixin.js';
 
-import {FilterMixin} from './vaadin-grid-filter-mixin.js';
+import { FilterMixin } from './vaadin-grid-filter-mixin.js';
 
-import {RowDetailsMixin} from './vaadin-grid-row-details-mixin.js';
+import { RowDetailsMixin } from './vaadin-grid-row-details-mixin.js';
 
-import {ScrollMixin} from './vaadin-grid-scroll-mixin.js';
+import { ScrollMixin } from './vaadin-grid-scroll-mixin.js';
 
-import {SelectionMixin} from './vaadin-grid-selection-mixin.js';
+import { SelectionMixin } from './vaadin-grid-selection-mixin.js';
 
-import {SortMixin} from './vaadin-grid-sort-mixin.js';
+import { SortMixin } from './vaadin-grid-sort-mixin.js';
 
-import {StylingMixin} from './vaadin-grid-styling-mixin.js';
+import { StylingMixin } from './vaadin-grid-styling-mixin.js';
 
-import {DragAndDropMixin} from './vaadin-grid-drag-and-drop-mixin.js';
+import { DragAndDropMixin } from './vaadin-grid-drag-and-drop-mixin.js';
 
-import {KeyboardNavigationMixin} from './vaadin-grid-keyboard-navigation-mixin.js';
+import { KeyboardNavigationMixin } from './vaadin-grid-keyboard-navigation-mixin.js';
 
-import {ColumnReorderingMixin} from './vaadin-grid-column-reordering-mixin.js';
+import { ColumnReorderingMixin } from './vaadin-grid-column-reordering-mixin.js';
 
-import {ElementMixin} from '@vaadin/vaadin-element-mixin/vaadin-element-mixin.js';
+import { ElementMixin } from '@vaadin/vaadin-element-mixin/vaadin-element-mixin.js';
 
-import {GridColumnElement} from './vaadin-grid-column.js';
+import { GridColumnElement } from './vaadin-grid-column.js';
 
 /**
  * `<vaadin-grid>` is a free, high quality data grid / data table Web Component. The content of the
@@ -253,27 +253,35 @@ import {GridColumnElement} from './vaadin-grid-column.js';
  *
  * See [ThemableMixin – how to apply styles for shadow parts](https://github.com/vaadin/vaadin-themable-mixin/wiki)
  */
-declare class GridElement extends
-  ElementMixin(
+declare class GridElement extends ElementMixin(
   ThemableMixin(
-  A11yMixin(
-  ActiveItemMixin(
-  ArrayDataProviderMixin(
-  ColumnResizingMixin(
-  DataProviderMixin(
-  DynamicColumnsMixin(
-  FilterMixin(
-  RowDetailsMixin(
-  ScrollMixin(
-  SelectionMixin(
-  SortMixin(
-  KeyboardNavigationMixin(
-  ColumnReorderingMixin(
-  EventContextMixin(
-  StylingMixin(
-  DragAndDropMixin(
-  ScrollerElement)))))))))))))))))) {
-
+    A11yMixin(
+      ActiveItemMixin(
+        ArrayDataProviderMixin(
+          ColumnResizingMixin(
+            DataProviderMixin(
+              DynamicColumnsMixin(
+                FilterMixin(
+                  RowDetailsMixin(
+                    ScrollMixin(
+                      SelectionMixin(
+                        SortMixin(
+                          KeyboardNavigationMixin(
+                            ColumnReorderingMixin(EventContextMixin(StylingMixin(DragAndDropMixin(ScrollerElement))))
+                          )
+                        )
+                      )
+                    )
+                  )
+                )
+              )
+            )
+          )
+        )
+      )
+    )
+  )
+) {
   /**
    * If true, the grid's height is defined by its rows.
    *
@@ -282,19 +290,30 @@ declare class GridElement extends
    * @attr {boolean} height-by-rows
    */
   heightByRows: boolean;
-  connectedCallback(): void;
-  attributeChangedCallback(name: string, oldValue: string|null, newValue: string|null): void;
+
   __itemsReceived(): void;
 
   /**
    * Updates the `width` of all columns which have `autoWidth` set to `true`.
    */
   recalculateColumnWidths(): void;
-  _updateRow(row: HTMLTableRowElement, columns: GridColumnElement[], section: string|null, isColumnRow: boolean, noNotify: boolean): void;
-  __updateHeaderFooterRowVisibility(row: HTMLTableRowElement|null): void;
+
+  _updateRow(
+    row: HTMLTableRowElement,
+    columns: GridColumnElement[],
+    section: string | null,
+    isColumnRow: boolean,
+    noNotify: boolean
+  ): void;
+
+  __updateHeaderFooterRowVisibility(row: HTMLTableRowElement | null): void;
+
   _renderColumnTree(columnTree: GridColumnElement[]): void;
-  _updateItem(row: HTMLElement, item: GridItem|null): void;
+
+  _updateItem(row: HTMLElement, item: GridItem | null): void;
+
   _toggleAttribute(name: string, bool: boolean, node: Element): void;
+
   __getRowModel(row: HTMLTableRowElement): GridItemModel;
 
   /**
@@ -310,13 +329,14 @@ declare class GridElement extends
    * contained image whose bounds aren't known beforehand finishes loading).
    */
   notifyResize(): void;
+
   __forceReflow(): void;
 }
 
 declare global {
   interface HTMLElementTagNameMap {
-    "vaadin-grid": GridElement;
+    'vaadin-grid': GridElement;
   }
 }
 
-export {GridElement};
+export { GridElement };

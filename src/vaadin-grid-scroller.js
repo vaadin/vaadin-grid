@@ -4,11 +4,11 @@
  * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
  */
 import { afterNextRender } from '@polymer/polymer/lib/utils/render-status.js';
-
 import { animationFrame } from '@polymer/polymer/lib/utils/async.js';
 import { flush } from '@polymer/polymer/lib/utils/flush.js';
-import { PolymerIronList } from './iron-list.js';
 import { Debouncer } from '@polymer/polymer/lib/utils/debounce.js';
+import { PolymerIronList } from './iron-list.js';
+
 /**
  * This Element is used internally by vaadin-grid.
  *
@@ -16,7 +16,6 @@ import { Debouncer } from '@polymer/polymer/lib/utils/debounce.js';
  * @extends HTMLElement
  */
 class GridScrollerElement extends PolymerIronList {
-
   static get is() {
     return 'vaadin-grid-scroller';
   }
@@ -33,15 +32,14 @@ class GridScrollerElement extends PolymerIronList {
        * @protected
        */
       _vidxOffset: {
+        type: Number,
         value: 0
       }
     };
   }
 
   static get observers() {
-    return [
-      '_effectiveSizeChanged(_effectiveSize)'
-    ];
+    return ['_effectiveSizeChanged(_effectiveSize)'];
   }
 
   /** @protected */
@@ -55,7 +53,7 @@ class GridScrollerElement extends PolymerIronList {
    * @param {number} index
    * @protected
    */
-  _updateScrollerItem(item, index) {}
+  _updateScrollerItem() {}
 
   /** @protected */
   _afterScroll() {}
@@ -78,7 +76,7 @@ class GridScrollerElement extends PolymerIronList {
 
     this._scrollingToIndex = true;
     index = Math.min(Math.max(index, 0), this._effectiveSize - 1);
-    this.$.table.scrollTop = index / this._effectiveSize * (this.$.table.scrollHeight - this.$.table.offsetHeight);
+    this.$.table.scrollTop = (index / this._effectiveSize) * (this.$.table.scrollHeight - this.$.table.offsetHeight);
     this._scrollHandler();
 
     if (this._accessIronListAPI(() => this._maxScrollTop) && this._virtualCount < this._effectiveSize) {
@@ -89,7 +87,7 @@ class GridScrollerElement extends PolymerIronList {
     this._scrollHandler();
 
     // Ensure scroll position
-    const row = Array.from(this.$.items.children).filter(child => child.index === index)[0];
+    const row = Array.from(this.$.items.children).filter((child) => child.index === index)[0];
     if (row) {
       const headerOffset = row.getBoundingClientRect().top - this.$.header.getBoundingClientRect().bottom;
       if (Math.abs(headerOffset) > 1) {
@@ -120,22 +118,26 @@ class GridScrollerElement extends PolymerIronList {
     if (!Array.isArray(this.items)) {
       // Edge/IE seems to have the lowest maximum
       const maxVirtualItems = this._edge || this._ie ? 30000 : 100000;
-      this.items = {length: Math.min(size, maxVirtualItems)};
+      this.items = { length: Math.min(size, maxVirtualItems) };
     }
 
-    this._accessIronListAPI(() => super._itemsChanged({path: 'items'}));
+    this._accessIronListAPI(() => super._itemsChanged({ path: 'items' }));
 
     this._virtualCount = Math.min(this.items.length, size) || 0;
 
     if (this._scrollTop === 0) {
       this._accessIronListAPI(() => this._scrollToIndex(Math.min(size - 1, fvi)));
-      this._iterateItems((pidx, vidx) => {
+      this._iterateItems((pidx) => {
         const row = this._physicalItems[pidx];
         if (row.index === fvi) {
           this.$.table.scrollTop += Math.round(row.getBoundingClientRect().top - fviOffset);
         }
         // Restore keyboard focus to the right cell
-        if (row.index === this._focusedItemIndex && this._itemsFocusable && this.$.items.contains(this.shadowRoot.activeElement)) {
+        if (
+          row.index === this._focusedItemIndex &&
+          this._itemsFocusable &&
+          this.$.items.contains(this.shadowRoot.activeElement)
+        ) {
           const cellIndex = Array.from(this._itemsFocusable.parentElement.children).indexOf(this._itemsFocusable);
           row.children[cellIndex].focus();
         }
@@ -168,7 +170,7 @@ class GridScrollerElement extends PolymerIronList {
     }
 
     let y = this._physicalTop;
-    this._iterateItems((pidx, vidx) => {
+    this._iterateItems((pidx) => {
       this._physicalItems[pidx].style.transform = `translateY(${y}px)`;
       y += this._physicalSizes[pidx];
     });
@@ -191,25 +193,22 @@ class GridScrollerElement extends PolymerIronList {
       this._initialPoolCreated = true;
       super._increasePoolIfNeeded(25);
     } else if (this._optPhysicalSize !== Infinity) {
-      this._debounceIncreasePool = Debouncer.debounce(
-        this._debounceIncreasePool,
-        animationFrame,
-        () => {
-          this._updateMetrics();
-          const remainingPhysicalSize = this._optPhysicalSize - this._physicalSize;
-          let estimatedMissingRowCount = Math.ceil(remainingPhysicalSize / this._physicalAverage);
+      this._debounceIncreasePool = Debouncer.debounce(this._debounceIncreasePool, animationFrame, () => {
+        this._updateMetrics();
+        const remainingPhysicalSize = this._optPhysicalSize - this._physicalSize;
+        let estimatedMissingRowCount = Math.ceil(remainingPhysicalSize / this._physicalAverage);
 
-          if (this._physicalCount + estimatedMissingRowCount > this._effectiveSize) {
-            // Do not increase the physical item count above the this._effectiveSize
-            estimatedMissingRowCount = Math.max(0, this._effectiveSize - this._physicalCount);
-          }
+        if (this._physicalCount + estimatedMissingRowCount > this._effectiveSize) {
+          // Do not increase the physical item count above the this._effectiveSize
+          estimatedMissingRowCount = Math.max(0, this._effectiveSize - this._physicalCount);
+        }
 
-          if (this._physicalSize && estimatedMissingRowCount > 0 && this._optPhysicalSize !== Infinity) {
-            super._increasePoolIfNeeded(estimatedMissingRowCount);
-            // Ensure the rows are in order after increasing pool
-            this.__reorderChildNodes();
-          }
-        });
+        if (this._physicalSize && estimatedMissingRowCount > 0 && this._optPhysicalSize !== Infinity) {
+          super._increasePoolIfNeeded(estimatedMissingRowCount);
+          // Ensure the rows are in order after increasing pool
+          this.__reorderChildNodes();
+        }
+      });
     }
   }
 
@@ -223,9 +222,11 @@ class GridScrollerElement extends PolymerIronList {
     }, true);
 
     if (!rowsInOrder) {
-      childNodes.sort((row1, row2) => {
-        return row1.index - row2.index;
-      }).forEach(row => this.$.items.appendChild(row));
+      childNodes
+        .sort((row1, row2) => {
+          return row1.index - row2.index;
+        })
+        .forEach((row) => this.$.items.appendChild(row));
     }
   }
 
@@ -234,7 +235,7 @@ class GridScrollerElement extends PolymerIronList {
     const fragment = document.createDocumentFragment();
     const physicalItems = this._createScrollerRows(size);
 
-    physicalItems.forEach(inst => fragment.appendChild(inst));
+    physicalItems.forEach((inst) => fragment.appendChild(inst));
     this._getRowTarget().appendChild(fragment);
 
     // Weird hack needed to get Safari to actually distribute slots
@@ -330,7 +331,7 @@ class GridScrollerElement extends PolymerIronList {
     this._debouncerWarnPrivateAPIAccess = Debouncer.debounce(
       this._debouncerWarnPrivateAPIAccess,
       animationFrame,
-      () => this._warnPrivateAPIAccessAsyncEnabled = true
+      () => (this._warnPrivateAPIAccessAsyncEnabled = true)
     );
     return returnValue;
   }
@@ -359,22 +360,34 @@ class GridScrollerElement extends PolymerIronList {
   }
 
   /** @private */
-  _createFocusBackfillItem() { /* Ignore */ }
+  _createFocusBackfillItem() {
+    /* Ignore */
+  }
 
   /** @private */
-  _multiSelectionChanged() { /* Ignore */ }
+  _multiSelectionChanged() {
+    /* Ignore */
+  }
 
   /** @private */
-  clearSelection() { /* Ignore */ }
+  clearSelection() {
+    /* Ignore */
+  }
 
   /** @protected */
-  _itemsChanged() { /* Ignore */ }
+  _itemsChanged() {
+    /* Ignore */
+  }
 
   /** @private */
-  _manageFocus() { /* Ignore */ }
+  _manageFocus() {
+    /* Ignore */
+  }
 
   /** @private */
-  _removeFocusedItem() { /* Ignore */ }
+  _removeFocusedItem() {
+    /* Ignore */
+  }
 
   /**
    * @return {number}
@@ -402,27 +415,32 @@ class GridScrollerElement extends PolymerIronList {
 
   /** @private */
   get firstVisibleIndex() {
-    this._warnPrivateAPIAccess('firstVisibleIndex'); return super.firstVisibleIndex;
+    this._warnPrivateAPIAccess('firstVisibleIndex');
+    return super.firstVisibleIndex;
   }
 
   /** @private */
   set firstVisibleIndex(value) {
-    this._warnPrivateAPIAccess('firstVisibleIndex'); super.firstVisibleIndex = value;
+    this._warnPrivateAPIAccess('firstVisibleIndex');
+    super.firstVisibleIndex = value;
   }
 
   /** @private */
   get lastVisibleIndex() {
-    this._warnPrivateAPIAccess('lastVisibleIndex'); return super.lastVisibleIndex;
+    this._warnPrivateAPIAccess('lastVisibleIndex');
+    return super.lastVisibleIndex;
   }
 
   /** @private */
   set lastVisibleIndex(value) {
-    this._warnPrivateAPIAccess('lastVisibleIndex'); super.lastVisibleIndex = value;
+    this._warnPrivateAPIAccess('lastVisibleIndex');
+    super.lastVisibleIndex = value;
   }
 
   /** @private */
   updateViewportBoundaries() {
-    this._warnPrivateAPIAccess('updateViewportBoundaries'); super.updateViewportBoundaries.apply(this, arguments);
+    this._warnPrivateAPIAccess('updateViewportBoundaries');
+    super.updateViewportBoundaries.apply(this, arguments);
   }
 
   /** @protected */

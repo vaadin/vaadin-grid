@@ -3,10 +3,10 @@
  * Copyright (c) 2020 Vaadin Ltd.
  * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
  */
-import { GridColumnElement } from './vaadin-grid-column.js';
-
-import './vaadin-grid-filter.js';
 import { html } from '@polymer/polymer/lib/utils/html-tag.js';
+import { GridColumnElement } from './vaadin-grid-column.js';
+import './vaadin-grid-filter.js';
+
 /**
  * `<vaadin-grid-filter-column>` is a helper element for the `<vaadin-grid>`
  * that provides default header template and functionality for filtering.
@@ -19,17 +19,23 @@ import { html } from '@polymer/polymer/lib/utils/html-tag.js';
  *  <vaadin-grid-column>
  *    ...
  * ```
- *
  */
 class GridFilterColumnElement extends GridColumnElement {
   static get template() {
     return html`
-    <template class="header" id="headerTemplate">
-      <vaadin-grid-filter path="[[path]]" value="[[_filterValue]]">
-        <vaadin-text-field theme="small" focus-target="" style="max-width: 100%;" slot="filter" value="{{_filterValue}}" label="[[_getHeader(header, path)]]"></vaadin-text-field>
-      </vaadin-grid-filter>
-    </template>
-`;
+      <template class="header" id="headerTemplate">
+        <vaadin-grid-filter path="[[path]]" value="[[_filterValue]]">
+          <vaadin-text-field
+            theme="small"
+            focus-target=""
+            style="max-width: 100%;"
+            slot="filter"
+            value="{{_filterValue}}"
+            label="[[_getHeader(header, path)]]"
+          ></vaadin-text-field>
+        </vaadin-grid-filter>
+      </template>
+    `;
   }
 
   static get is() {

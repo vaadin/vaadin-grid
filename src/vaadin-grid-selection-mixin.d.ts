@@ -1,17 +1,16 @@
-import {GridItem} from '../@types/interfaces';
+import { GridItem } from '../@types/interfaces';
 
 declare function SelectionMixin<T extends new (...args: any[]) => {}>(base: T): T & SelectionMixinConstructor;
 
 interface SelectionMixinConstructor {
-  new(...args: any[]): SelectionMixin;
+  new (...args: any[]): SelectionMixin;
 }
 
 interface SelectionMixin {
-
   /**
    * An array that contains the selected items.
    */
-  selectedItems: Array<GridItem|null>|null;
+  selectedItems: Array<GridItem | null> | null;
   _isSelected(item: GridItem): boolean;
 
   /**
@@ -36,4 +35,4 @@ interface SelectionMixin {
   _toggleItem(item: GridItem): void;
 }
 
-export {SelectionMixin, SelectionMixinConstructor};
+export { SelectionMixin, SelectionMixinConstructor };

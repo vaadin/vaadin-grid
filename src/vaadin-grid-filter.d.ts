@@ -13,25 +13,21 @@
  * ```
  */
 declare class GridFilterElement extends HTMLElement {
-
   /**
    * JS Path of the property in the item used for filtering the data.
    */
-  path: string|null|undefined;
+  path: string | null | undefined;
 
   /**
    * Current filter value.
    */
-  value: string|null|undefined;
-  ready(): void;
-  connectedCallback(): void;
-  focus(): void;
+  value: string | null | undefined;
 }
 
 declare global {
   interface HTMLElementTagNameMap {
-    "vaadin-grid-filter": GridFilterElement;
+    'vaadin-grid-filter': GridFilterElement;
   }
 }
 
-export {GridFilterElement};
+export { GridFilterElement };

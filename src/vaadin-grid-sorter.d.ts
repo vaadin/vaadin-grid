@@ -1,4 +1,4 @@
-import {GridSorterDirection} from '../@types/interfaces';1
+import { GridSorterDirection } from '../@types/interfaces';
 
 /**
  * `<vaadin-grid-sorter>` is a helper element for the `<vaadin-grid>` that provides out-of-the-box UI controls,
@@ -31,28 +31,25 @@ import {GridSorterDirection} from '../@types/interfaces';1
  * `direction` | Sort direction of a sorter | :host
  */
 declare class GridSorterElement extends HTMLElement {
-
   /**
    * JS Path of the property in the item used for sorting the data.
    */
-  path: string|null|undefined;
+  path: string | null | undefined;
 
   /**
    * How to sort the data.
    * Possible values are `asc` to use an ascending algorithm, `desc` to sort the data in
    * descending direction, or `null` for not sorting the data.
    */
-  direction: GridSorterDirection|null|undefined;
-  _order: number|null;
-  ready(): void;
-  connectedCallback(): void;
-  disconnectedCallback(): void;
+  direction: GridSorterDirection | null | undefined;
+
+  _order: number | null;
 }
 
 declare global {
   interface HTMLElementTagNameMap {
-    "vaadin-grid-sorter": GridSorterElement;
+    'vaadin-grid-sorter': GridSorterElement;
   }
 }
 
-export {GridSorterElement};
+export { GridSorterElement };

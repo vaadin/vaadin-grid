@@ -6,6 +6,7 @@
 import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
 import { ThemableMixin } from '@vaadin/vaadin-themable-mixin/vaadin-themable-mixin.js';
 import { DirMixin } from '@vaadin/vaadin-element-mixin/vaadin-dir-mixin.js';
+
 const $_documentContainer = document.createElement('template');
 
 $_documentContainer.innerHTML = `
@@ -20,6 +21,7 @@ $_documentContainer.innerHTML = `
 `;
 
 document.head.appendChild($_documentContainer.content);
+
 /**
  * `<vaadin-grid-sorter>` is a helper element for the `<vaadin-grid>` that provides out-of-the-box UI controls,
  * visual feedback, and handlers for sorting the grid data.
@@ -55,53 +57,53 @@ document.head.appendChild($_documentContainer.content);
 class GridSorterElement extends ThemableMixin(DirMixin(PolymerElement)) {
   static get template() {
     return html`
-    <style>
-      :host {
-        display: inline-flex;
-        cursor: pointer;
-        max-width: 100%;
-      }
+      <style>
+        :host {
+          display: inline-flex;
+          cursor: pointer;
+          max-width: 100%;
+        }
 
-      [part="content"] {
-        flex: 1 1 auto;
-      }
+        [part='content'] {
+          flex: 1 1 auto;
+        }
 
-      [part="indicators"] {
-        position: relative;
-        align-self: center;
-        flex: none;
-      }
+        [part='indicators'] {
+          position: relative;
+          align-self: center;
+          flex: none;
+        }
 
-      [part="order"] {
-        display: inline;
-        vertical-align: super;
-      }
+        [part='order'] {
+          display: inline;
+          vertical-align: super;
+        }
 
-      [part="indicators"]::before {
-        font-family: 'vaadin-grid-sorter-icons';
-        display: inline-block;
-      }
+        [part='indicators']::before {
+          font-family: 'vaadin-grid-sorter-icons';
+          display: inline-block;
+        }
 
-      :host(:not([direction])) [part="indicators"]::before {
-        content: "\\e901";
-      }
+        :host(:not([direction])) [part='indicators']::before {
+          content: '\\e901';
+        }
 
-      :host([direction=asc]) [part="indicators"]::before {
-        content: "\\e900";
-      }
+        :host([direction='asc']) [part='indicators']::before {
+          content: '\\e900';
+        }
 
-      :host([direction=desc]) [part="indicators"]::before {
-        content: "\\e902";
-      }
-    </style>
+        :host([direction='desc']) [part='indicators']::before {
+          content: '\\e902';
+        }
+      </style>
 
-    <div part="content">
-      <slot></slot>
-    </div>
-    <div part="indicators">
-      <span part="order">[[_getDisplayOrder(_order)]]</span>
-    </div>
-`;
+      <div part="content">
+        <slot></slot>
+      </div>
+      <div part="indicators">
+        <span part="order">[[_getDisplayOrder(_order)]]</span>
+      </div>
+    `;
   }
 
   static get is() {
@@ -146,10 +148,7 @@ class GridSorterElement extends ThemableMixin(DirMixin(PolymerElement)) {
   }
 
   static get observers() {
-    return [
-      '_pathOrDirectionChanged(path, direction, _isConnected)',
-      '_directionOrOrderChanged(direction, _order)'
-    ];
+    return ['_pathOrDirectionChanged(path, direction, _isConnected)', '_directionOrOrderChanged(direction, _order)'];
   }
 
   /** @protected */
@@ -177,7 +176,7 @@ class GridSorterElement extends ThemableMixin(DirMixin(PolymerElement)) {
     }
 
     if (isConnected) {
-      this.dispatchEvent(new CustomEvent('sorter-changed', {bubbles: true, composed: true}));
+      this.dispatchEvent(new CustomEvent('sorter-changed', { bubbles: true, composed: true }));
     }
   }
 
@@ -214,7 +213,7 @@ class GridSorterElement extends ThemableMixin(DirMixin(PolymerElement)) {
     // Need this workaround (toggle any inline css property on and off) until the issue gets fixed.
     var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
     if (isSafari && this.root) {
-      this.root.querySelectorAll('*').forEach(function(el) {
+      this.root.querySelectorAll('*').forEach(function (el) {
         el.style['-webkit-backface-visibility'] = 'visible';
         el.style['-webkit-backface-visibility'] = '';
       });

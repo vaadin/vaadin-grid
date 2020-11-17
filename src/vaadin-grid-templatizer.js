@@ -13,7 +13,7 @@ import { templatize } from '@polymer/polymer/lib/utils/templatize.js';
  * @extends HTMLElement
  * @private
  */
-class GridTemplatizer extends (class extends PolymerElement {}) {
+class GridTemplatizer extends class extends PolymerElement {} {
   static get is() {
     return 'vaadin-grid-templatizer';
   }
@@ -26,13 +26,13 @@ class GridTemplatizer extends (class extends PolymerElement {}) {
 
       _templateInstances: {
         type: Array,
-        value: function() {
+        value: function () {
           return [];
         }
       },
 
       _parentPathValues: {
-        value: function() {
+        value: function () {
           return {};
         }
       },
@@ -42,9 +42,7 @@ class GridTemplatizer extends (class extends PolymerElement {}) {
   }
 
   static get observers() {
-    return [
-      '_templateInstancesChanged(_templateInstances.*, _parentPathValues.*)'
-    ];
+    return ['_templateInstancesChanged(_templateInstances.*, _parentPathValues.*)'];
   }
 
   constructor() {
@@ -86,15 +84,15 @@ class GridTemplatizer extends (class extends PolymerElement {}) {
         instanceProps: this._instanceProps,
         parentModel: true,
 
-        forwardHostProp: function(prop, value) {
+        forwardHostProp: function (prop, value) {
           this._forwardParentProp(prop, value);
 
           if (this._templateInstances) {
-            this._templateInstances.forEach(inst => inst.notifyPath(prop, value));
+            this._templateInstances.forEach((inst) => inst.notifyPath(prop, value));
           }
         },
 
-        notifyInstanceProp: function(inst, prop, value) {
+        notifyInstanceProp: function (inst, prop, value) {
           if (prop === 'index' || prop === 'item') {
             // We don’t need a change notification for these.
             return;
@@ -109,9 +107,11 @@ class GridTemplatizer extends (class extends PolymerElement {}) {
           }
           inst[originalProp] = value;
 
-          const row = Array.from(this._grid.$.items.children).filter(row => this._grid._itemsEqual(row._item, inst.item))[0];
+          const row = Array.from(this._grid.$.items.children).filter((row) =>
+            this._grid._itemsEqual(row._item, inst.item)
+          )[0];
           if (row) {
-            Array.from(row.children).forEach(cell => {
+            Array.from(row.children).forEach((cell) => {
               if (cell._instance) {
                 cell._instance[originalProp] = value;
                 cell._instance.notifyPath(prop, value);
@@ -131,17 +131,16 @@ class GridTemplatizer extends (class extends PolymerElement {}) {
             this._grid[gridCallback](inst, value);
           }
         }
-
       });
     }
   }
 
   _forwardParentProp(prop, value) {
     this._parentPathValues[prop] = value;
-    this._templateInstances.forEach(inst => inst.notifyPath(prop, value));
+    this._templateInstances.forEach((inst) => inst.notifyPath(prop, value));
   }
 
-  _templateInstancesChanged(t, p) {
+  _templateInstancesChanged(t) {
     let index, count;
     if (t.path === '_templateInstances') {
       // Iterate all instances
@@ -154,13 +153,12 @@ class GridTemplatizer extends (class extends PolymerElement {}) {
     } else {
       return;
     }
-    Object.keys(this._parentPathValues || {}).forEach(keyName => {
+    Object.keys(this._parentPathValues || {}).forEach((keyName) => {
       for (var i = index; i < index + count; i++) {
         this._templateInstances[i].set(keyName, this._parentPathValues[keyName]);
       }
     });
   }
-
 }
 
 customElements.define(GridTemplatizer.is, GridTemplatizer);

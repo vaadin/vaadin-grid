@@ -1,4 +1,4 @@
-import {ThemableMixin} from '@vaadin/vaadin-themable-mixin/vaadin-themable-mixin.js';
+import { ThemableMixin } from '@vaadin/vaadin-themable-mixin/vaadin-themable-mixin.js';
 
 /**
  * `<vaadin-grid-tree-toggle>` is a helper element for the `<vaadin-grid>`
@@ -41,10 +41,7 @@ import {ThemableMixin} from '@vaadin/vaadin-themable-mixin/vaadin-themable-mixin
  * ---|---|---
  * `--vaadin-grid-tree-toggle-level-offset` | Visual offset step for each tree sublevel | `1em`
  */
-declare class GridTreeToggleElement extends
-  ThemableMixin(
-  HTMLElement) {
-
+declare class GridTreeToggleElement extends ThemableMixin(HTMLElement) {
   /**
    * Current level of the tree represented with a horizontal offset
    * of the toggle button.
@@ -60,13 +57,12 @@ declare class GridTreeToggleElement extends
    * Sublevel toggle state.
    */
   expanded: boolean;
-  ready(): void;
 }
 
 declare global {
   interface HTMLElementTagNameMap {
-    "vaadin-grid-tree-toggle": GridTreeToggleElement;
+    'vaadin-grid-tree-toggle': GridTreeToggleElement;
   }
 }
 
-export {GridTreeToggleElement};
+export { GridTreeToggleElement };

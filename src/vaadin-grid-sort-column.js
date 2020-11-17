@@ -4,9 +4,9 @@
  * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
  */
 import { GridColumnElement } from './vaadin-grid-column.js';
-
-import './vaadin-grid-sorter.js';
 import { html } from '@polymer/polymer/lib/utils/html-tag.js';
+import './vaadin-grid-sorter.js';
+
 /**
  * `<vaadin-grid-sort-column>` is a helper element for the `<vaadin-grid>`
  * that provides default header template and functionality for sorting.
@@ -19,15 +19,14 @@ import { html } from '@polymer/polymer/lib/utils/html-tag.js';
  *  <vaadin-grid-column>
  *    ...
  * ```
- *
  */
 class GridSortColumnElement extends GridColumnElement {
   static get template() {
     return html`
-    <template class="header" id="headerTemplate">
-      <vaadin-grid-sorter path="[[path]]" direction="{{direction}}">[[_getHeader(header, path)]]</vaadin-grid-sorter>
-    </template>
-`;
+      <template class="header" id="headerTemplate">
+        <vaadin-grid-sorter path="[[path]]" direction="{{direction}}">[[_getHeader(header, path)]]</vaadin-grid-sorter>
+      </template>
+    `;
   }
 
   static get is() {

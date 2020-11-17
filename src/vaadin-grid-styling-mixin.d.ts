@@ -1,13 +1,12 @@
-import {GridCellClassNameGenerator} from '../@types/interfaces';
+import { GridCellClassNameGenerator } from '../@types/interfaces';
 
 declare function StylingMixin<T extends new (...args: any[]) => {}>(base: T): T & StylingMixinConstructor;
 
 interface StylingMixinConstructor {
-  new(...args: any[]): StylingMixin;
+  new (...args: any[]): StylingMixin;
 }
 
 interface StylingMixin {
-
   /**
    * A function that allows generating CSS class names for grid cells
    * based on their row and column. The return value should be the generated
@@ -24,7 +23,7 @@ interface StylingMixin {
    *   - `model.level` Level of the tree represented with a horizontal offset of the toggle button.
    *   - `model.selected` Selected state.
    */
-  cellClassNameGenerator: GridCellClassNameGenerator|null|undefined;
+  cellClassNameGenerator: GridCellClassNameGenerator | null | undefined;
 
   /**
    * Runs the `cellClassNameGenerator` for the visible cells.
@@ -35,4 +34,4 @@ interface StylingMixin {
   generateCellClassNames(): void;
 }
 
-export {StylingMixin, StylingMixinConstructor};
+export { StylingMixin, StylingMixinConstructor };

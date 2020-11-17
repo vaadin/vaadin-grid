@@ -1,4 +1,4 @@
-import {GridColumnElement} from './vaadin-grid-column.js';
+import { GridColumnElement } from './vaadin-grid-column.js';
 
 /**
  * `<vaadin-grid-filter-column>` is a helper element for the `<vaadin-grid>`
@@ -14,22 +14,21 @@ import {GridColumnElement} from './vaadin-grid-column.js';
  * ```
  */
 declare class GridFilterColumnElement extends GridColumnElement {
-
   /**
    * Text to display as the label of the column filter text-field.
    */
-  header: string|null|undefined;
+  header: string | null | undefined;
 
   /**
    * JS Path of the property in the item used for filtering the data.
    */
-  path: string|null|undefined;
+  path: string | null | undefined;
 }
 
 declare global {
   interface HTMLElementTagNameMap {
-    "vaadin-grid-filter-column": GridFilterColumnElement;
+    'vaadin-grid-filter-column': GridFilterColumnElement;
   }
 }
 
-export {GridFilterColumnElement};
+export { GridFilterColumnElement };

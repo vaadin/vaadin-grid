@@ -1,25 +1,31 @@
-import {GridColumnElement} from './vaadin-grid-column.js';
+import { GridColumnElement } from './vaadin-grid-column.js';
 
-
-declare function KeyboardNavigationMixin<T extends new (...args: any[]) => {}>(base: T): T & KeyboardNavigationMixinConstructor;
+declare function KeyboardNavigationMixin<T extends new (...args: any[]) => {}>(
+  base: T
+): T & KeyboardNavigationMixinConstructor;
 
 interface KeyboardNavigationMixinConstructor {
-  new(...args: any[]): KeyboardNavigationMixin;
+  new (...args: any[]): KeyboardNavigationMixin;
 }
 
-export {};
-
 interface KeyboardNavigationMixin {
-  _itemsFocusable: HTMLElement|undefined;
+  _itemsFocusable: HTMLElement | undefined;
+
   _focusedItemIndex: number;
-  ready(): void;
+
   _onKeyDown(e: KeyboardEvent): void;
+
   _onFocusIn(e: FocusEvent): void;
+
   _onFocusOut(e: FocusEvent): void;
+
   _preventScrollerRotatingCellFocus(row: HTMLTableRowElement, index: number): void;
-  _getColumns(rowGroup?: HTMLTableSectionElement|null, rowIndex?: number): GridColumnElement[];
+
+  _getColumns(rowGroup?: HTMLTableSectionElement | null, rowIndex?: number): GridColumnElement[];
+
   _resetKeyboardNavigation(): void;
+
   _scrollHorizontallyToCell(dstCell: HTMLElement): void;
 }
 
-export {KeyboardNavigationMixin, KeyboardNavigationMixinConstructor};
+export { KeyboardNavigationMixin, KeyboardNavigationMixinConstructor };

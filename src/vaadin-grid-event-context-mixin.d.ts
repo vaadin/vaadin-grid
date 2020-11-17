@@ -1,14 +1,12 @@
-import {GridEventContext} from '../@types/interfaces';
+import { GridEventContext } from '../@types/interfaces';
 
 declare function EventContextMixin<T extends new (...args: any[]) => {}>(base: T): T & EventContextMixinConstructor;
 
 interface EventContextMixinConstructor {
-  new(...args: any[]): EventContextMixin;
+  new (...args: any[]): EventContextMixin;
 }
 
-
 interface EventContextMixin {
-
   /**
    * Returns an object with context information about the event target:
    * - `item`: the data object corresponding to the targeted row (not specified when targeting header or footer)
@@ -27,9 +25,7 @@ interface EventContextMixin {
    * This may be the case eg. if the event is fired on the `<vaadin-grid>` element and not any deeper in the DOM, or if
    * the event targets the empty part of the grid body.
    */
-  getEventContext(event: Event): GridEventContext|object|null;
+  getEventContext(event: Event): GridEventContext | object | null;
 }
 
-
-
-export {EventContextMixin, EventContextMixinConstructor};
+export { EventContextMixin, EventContextMixinConstructor };

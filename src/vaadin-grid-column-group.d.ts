@@ -1,4 +1,4 @@
-import {ColumnBaseMixin, GridColumnElement} from './vaadin-grid-column.js';
+import { ColumnBaseMixin, GridColumnElement } from './vaadin-grid-column.js';
 
 /**
  * A `<vaadin-grid-column-group>` is used to make groups of columns in `<vaadin-grid>` and
@@ -24,33 +24,31 @@ import {ColumnBaseMixin, GridColumnElement} from './vaadin-grid-column.js';
  * </vaadin-grid-column-group>
  * ```
  */
-declare class GridColumnGroupElement extends
-  ColumnBaseMixin(
-  HTMLElement) {
-
+declare class GridColumnGroupElement extends ColumnBaseMixin(HTMLElement) {
   /**
    * Flex grow ratio for the column group as the sum of the ratios of its child columns.
    * @attr {number} flex-grow
    */
-  readonly flexGrow: number|null|undefined;
+  readonly flexGrow: number | null | undefined;
 
   /**
    * Width of the column group as the sum of the widths of its child columns.
    */
-  readonly width: string|null|undefined;
-  connectedCallback(): void;
-  disconnectedCallback(): void;
-  _columnPropChanged(path: string, value?: unknown|null): void;
+  readonly width: string | null | undefined;
+
+  _columnPropChanged(path: string, value?: unknown | null): void;
+
   _updateFlexAndWidth(): void;
+
   _getChildColumns(el: GridColumnGroupElement): GridColumnElement[];
+
   _isColumnElement(node: Node): boolean;
 }
 
 declare global {
   interface HTMLElementTagNameMap {
-    "vaadin-grid-column-group": GridColumnGroupElement;
+    'vaadin-grid-column-group': GridColumnGroupElement;
   }
 }
 
-export {GridColumnGroupElement};
-
+export { GridColumnGroupElement };

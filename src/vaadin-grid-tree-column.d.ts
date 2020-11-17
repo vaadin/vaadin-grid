@@ -1,4 +1,4 @@
-import {GridColumnElement} from './vaadin-grid-column.js';
+import { GridColumnElement } from './vaadin-grid-column.js';
 
 /**
  * `<vaadin-grid-tree-column>` is a helper element for the `<vaadin-grid>`
@@ -14,23 +14,22 @@ import {GridColumnElement} from './vaadin-grid-column.js';
  * ```
  */
 declare class GridTreeColumnElement extends GridColumnElement {
-
   /**
    * JS Path of the property in the item used as text content for the tree toggle.
    */
-  path: string|null|undefined;
+  path: string | null | undefined;
 
   /**
    * JS Path of the property in the item that indicates whether the item has child items.
    * @attr {string} item-has-children-path
    */
-  itemHasChildrenPath: string|null|undefined;
+  itemHasChildrenPath: string | null | undefined;
 }
 
 declare global {
   interface HTMLElementTagNameMap {
-    "vaadin-grid-tree-column": GridTreeColumnElement;
+    'vaadin-grid-tree-column': GridTreeColumnElement;
   }
 }
 
-export {GridTreeColumnElement};
+export { GridTreeColumnElement };

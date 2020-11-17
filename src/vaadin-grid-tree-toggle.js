@@ -4,11 +4,12 @@
  * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
  */
 import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
+import { microTask } from '@polymer/polymer/lib/utils/async.js';
 import { Debouncer } from '@polymer/polymer/lib/utils/debounce.js';
 import { ThemableMixin } from '@vaadin/vaadin-themable-mixin/vaadin-themable-mixin.js';
 import { DirMixin } from '@vaadin/vaadin-element-mixin/vaadin-dir-mixin.js';
 import { isFocusable } from './vaadin-grid-active-item-mixin.js';
-import { microTask } from '@polymer/polymer/lib/utils/async.js';
+
 const $_documentContainer = document.createElement('template');
 
 $_documentContainer.innerHTML = `
@@ -23,6 +24,7 @@ $_documentContainer.innerHTML = `
 `;
 
 document.head.appendChild($_documentContainer.content);
+
 /**
  * `<vaadin-grid-tree-toggle>` is a helper element for the `<vaadin-grid>`
  * that provides toggle and level display functionality for the item tree.
@@ -70,65 +72,65 @@ document.head.appendChild($_documentContainer.content);
 class GridTreeToggleElement extends ThemableMixin(DirMixin(PolymerElement)) {
   static get template() {
     return html`
-    <style>
-      :host {
-        display: inline-flex;
-        align-items: baseline;
+      <style>
+        :host {
+          display: inline-flex;
+          align-items: baseline;
 
-        /* CSS API for :host */
-        --vaadin-grid-tree-toggle-level-offset: 1em;
+          /* CSS API for :host */
+          --vaadin-grid-tree-toggle-level-offset: 1em;
 
-        /*
+          /*
           ShadyCSS seems to polyfill :dir(rtl) only for :host, thus using
           a host custom CSS property for ltr/rtl toggle icon choice.
          */
-        ---collapsed-icon: "\\e7be\\00a0";
-      }
+          ---collapsed-icon: '\\e7be\\00a0';
+        }
 
-      :host(:dir(rtl)) {
-        ---collapsed-icon: "\\e7bd\\00a0";
-      }
+        :host(:dir(rtl)) {
+          ---collapsed-icon: '\\e7bd\\00a0';
+        }
 
-      :host([hidden]) {
-        display: none !important;
-      }
+        :host([hidden]) {
+          display: none !important;
+        }
 
-      :host(:not([leaf])) {
-        cursor: pointer;
-      }
+        :host(:not([leaf])) {
+          cursor: pointer;
+        }
 
-      #level-spacer,
-      [part="toggle"] {
-        flex: none;
-      }
+        #level-spacer,
+        [part='toggle'] {
+          flex: none;
+        }
 
-      #level-spacer {
-        display: inline-block;
-        width: calc(var(---level, '0') * var(--vaadin-grid-tree-toggle-level-offset));
-      }
+        #level-spacer {
+          display: inline-block;
+          width: calc(var(---level, '0') * var(--vaadin-grid-tree-toggle-level-offset));
+        }
 
-      [part="toggle"]::before {
-        font-family: "vaadin-grid-tree-icons";
-        line-height: 1em; /* make icon font metrics not affect baseline */
-      }
+        [part='toggle']::before {
+          font-family: 'vaadin-grid-tree-icons';
+          line-height: 1em; /* make icon font metrics not affect baseline */
+        }
 
-      :host(:not([expanded])) [part="toggle"]::before {
-        content: var(---collapsed-icon);
-      }
+        :host(:not([expanded])) [part='toggle']::before {
+          content: var(---collapsed-icon);
+        }
 
-      :host([expanded]) [part="toggle"]::before {
-        content: "\\e7bc\\00a0"; /* icon glyph + single non-breaking space */
-      }
+        :host([expanded]) [part='toggle']::before {
+          content: '\\e7bc\\00a0'; /* icon glyph + single non-breaking space */
+        }
 
-      :host([leaf]) [part="toggle"] {
-        visibility: hidden;
-      }
-    </style>
+        :host([leaf]) [part='toggle'] {
+          visibility: hidden;
+        }
+      </style>
 
-    <span id="level-spacer"></span>
-    <span part="toggle"></span>
-    <slot></slot>
-`;
+      <span id="level-spacer"></span>
+      <span part="toggle"></span>
+      <slot></slot>
+    `;
   }
 
   static get is() {
@@ -175,7 +177,7 @@ class GridTreeToggleElement extends ThemableMixin(DirMixin(PolymerElement)) {
   ready() {
     super.ready();
 
-    this.addEventListener('click', e => this._onClick(e));
+    this.addEventListener('click', (e) => this._onClick(e));
   }
 
   /** @private */
@@ -197,10 +199,8 @@ class GridTreeToggleElement extends ThemableMixin(DirMixin(PolymerElement)) {
     this.style['---level'] = value;
     // Async is to make DOM updates applied before evaluating the style
     // update, required for polyfilled RTL support in MSIE and Edge.
-    this._debouncerUpdateLevel = Debouncer.debounce(
-      this._debouncerUpdateLevel,
-      microTask,
-      () => this.updateStyles({'---level': value})
+    this._debouncerUpdateLevel = Debouncer.debounce(this._debouncerUpdateLevel, microTask, () =>
+      this.updateStyles({ '---level': value })
     );
   }
 }

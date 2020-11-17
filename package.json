@@ -32,13 +32,30 @@
     "theme"
   ],
   "scripts": {
+    "check-version": "magi check-version",
     "debug": "web-test-runner test/*.test.js --watch",
+    "lint": "npm run lint:js && npm run lint:css",
+    "lint:js": "eslint src theme test",
+    "lint:css": "stylelint src/*.js theme/**/*-styles.js",
+    "prestart": "polymer analyze vaadin-* > analysis.json",
+    "preversion": "magi update-version",
     "screenshots": "hermione test/visual/test.js --update-refs",
     "start": "web-dev-server --node-resolve --open",
     "test": "web-test-runner test/*.test.js",
     "test:firefox": "TEST_ENV=firefox npm test",
     "test:safari": "TEST_ENV=safari npm test",
     "test:visual": "hermione test/visual/test.js"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "prettier --write"
+    ]
   },
   "dependencies": {
     "@polymer/polymer": "^3.0.0",
@@ -63,9 +80,19 @@
     "@web/test-runner": "^0.9.7",
     "@web/test-runner-saucelabs": "^0.1.1",
     "@webcomponents/webcomponentsjs": "^2.0.0",
+    "eslint": "^7.13.0",
+    "eslint-config-prettier": "^6.15.0",
+    "eslint-plugin-prettier": "^3.1.4",
     "hermione": "^3.9.1",
     "hermione-esm": "^0.4.0",
     "hermione-sauce": "^0.1.0",
-    "sinon": "^9.2.0"
+    "husky": "^4.3.0",
+    "lint-staged": "^10.5.1",
+    "magi-cli": "^0.28.0",
+    "prettier": "^2.1.2",
+    "sinon": "^9.2.0",
+    "stylelint": "^13.7.2",
+    "stylelint-config-prettier": "^8.0.2",
+    "stylelint-config-vaadin": "^0.2.7"
   }
 }

@@ -3,10 +3,10 @@
  * Copyright (c) 2020 Vaadin Ltd.
  * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
  */
-import { GridColumnElement } from './vaadin-grid-column.js';
-
-import './vaadin-grid-tree-toggle.js';
 import { html } from '@polymer/polymer/lib/utils/html-tag.js';
+import { GridColumnElement } from './vaadin-grid-column.js';
+import './vaadin-grid-tree-toggle.js';
+
 /**
  * `<vaadin-grid-tree-column>` is a helper element for the `<vaadin-grid>`
  * that provides default template and functionality for toggling tree/hierarchical items.
@@ -19,17 +19,20 @@ import { html } from '@polymer/polymer/lib/utils/html-tag.js';
  *  <vaadin-grid-column>
  *    ...
  * ```
- *
  */
 class GridTreeColumnElement extends GridColumnElement {
   static get template() {
     return html`
-    <template id="template">
-      <vaadin-grid-tree-toggle leaf="[[__isLeafItem(item, itemHasChildrenPath)]]" expanded="{{expanded}}" level="[[level]]">
-        [[__getToggleContent(path, item)]]
-      </vaadin-grid-tree-toggle>
-    </template>
-`;
+      <template id="template">
+        <vaadin-grid-tree-toggle
+          leaf="[[__isLeafItem(item, itemHasChildrenPath)]]"
+          expanded="{{expanded}}"
+          level="[[level]]"
+        >
+          [[__getToggleContent(path, item)]]
+        </vaadin-grid-tree-toggle>
+      </template>
+    `;
   }
 
   static get is() {

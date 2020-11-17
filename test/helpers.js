@@ -57,7 +57,6 @@ export const infiniteDataProvider = (params, callback) => {
   );
 };
 
-
 export const listenOnce = (element, eventName, callback) => {
   const listener = (e) => {
     element.removeEventListener(eventName, listener);
@@ -102,7 +101,6 @@ export const scrollToEnd = (grid, callback) => {
     callback();
   }
 };
-
 
 // http://stackoverflow.com/a/15203639/1331425
 export const isVisible = (el) => {
@@ -162,7 +160,6 @@ export const isWithinParentConstraints = (el, parent) => {
 export const getCustomCSSPropertyValue = (element, propertyName) => {
   return getComputedStyle(element).getPropertyValue(propertyName);
 };
-
 
 export const getRows = (container) => {
   return container.querySelectorAll('tr');

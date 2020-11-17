@@ -6,6 +6,7 @@
 import { html } from '@polymer/polymer/lib/utils/html-tag.js';
 import { GridColumnElement } from './vaadin-grid-column.js';
 import '@vaadin/vaadin-checkbox/src/vaadin-checkbox.js';
+
 /**
  * `<vaadin-grid-selection-column>` is a helper element for the `<vaadin-grid>`
  * that provides default templates and functionality for item selection.
@@ -32,13 +33,20 @@ import '@vaadin/vaadin-checkbox/src/vaadin-checkbox.js';
 class GridSelectionColumnElement extends GridColumnElement {
   static get template() {
     return html`
-    <template class="header" id="defaultHeaderTemplate">
-      <vaadin-checkbox class="vaadin-grid-select-all-checkbox" aria-label="Select All" hidden\$="[[_selectAllHidden]]" on-checked-changed="_onSelectAllCheckedChanged" checked="[[_isChecked(selectAll, _indeterminate)]]" indeterminate="[[_indeterminate]]"></vaadin-checkbox>
-    </template>
-    <template id="defaultBodyTemplate">
-      <vaadin-checkbox aria-label="Select Row" checked="{{selected}}"></vaadin-checkbox>
-    </template>
-`;
+      <template class="header" id="defaultHeaderTemplate">
+        <vaadin-checkbox
+          class="vaadin-grid-select-all-checkbox"
+          aria-label="Select All"
+          hidden$="[[_selectAllHidden]]"
+          on-checked-changed="_onSelectAllCheckedChanged"
+          checked="[[_isChecked(selectAll, _indeterminate)]]"
+          indeterminate="[[_indeterminate]]"
+        ></vaadin-checkbox>
+      </template>
+      <template id="defaultBodyTemplate">
+        <vaadin-checkbox aria-label="Select Row" checked="{{selected}}"></vaadin-checkbox>
+      </template>
+    `;
   }
 
   static get is() {
@@ -83,7 +91,7 @@ class GridSelectionColumnElement extends GridColumnElement {
        */
       autoSelect: {
         type: Boolean,
-        value: false,
+        value: false
       },
 
       /** @private */
@@ -102,13 +110,21 @@ class GridSelectionColumnElement extends GridColumnElement {
   }
 
   static get observers() {
-    return [
-      '_onSelectAllChanged(selectAll)'
-    ];
+    return ['_onSelectAllChanged(selectAll)'];
   }
 
   /** @private */
-  _pathOrHeaderChanged(path, header, headerCell, footerCell, cells, renderer, headerRenderer, bodyTemplate, headerTemplate) {
+  _pathOrHeaderChanged(
+    path,
+    header,
+    headerCell,
+    footerCell,
+    cells,
+    renderer,
+    headerRenderer,
+    bodyTemplate,
+    headerTemplate
+  ) {
     // As a special case, allow overriding the default header / body templates
     if (cells.value && (path !== undefined || renderer !== undefined)) {
       this._bodyTemplate = bodyTemplate = undefined;
@@ -118,12 +134,22 @@ class GridSelectionColumnElement extends GridColumnElement {
       this._headerTemplate = headerTemplate = undefined;
       this.__cleanCellsOfTemplateProperties([headerCell]);
     }
-    super._pathOrHeaderChanged(path, header, headerCell, footerCell, cells, renderer, headerRenderer, bodyTemplate, headerTemplate);
+    super._pathOrHeaderChanged(
+      path,
+      header,
+      headerCell,
+      footerCell,
+      cells,
+      renderer,
+      headerRenderer,
+      bodyTemplate,
+      headerTemplate
+    );
   }
 
   /** @private */
   __cleanCellsOfTemplateProperties(cells) {
-    cells.forEach(cell => {
+    cells.forEach((cell) => {
       cell._content.innerHTML = '';
       delete cell._instance;
       delete cell._template;
@@ -226,7 +252,7 @@ class GridSelectionColumnElement extends GridColumnElement {
   }
 
   /** @private */
-  _onSelectedItemsChanged(e) {
+  _onSelectedItemsChanged() {
     this._selectAllChangeLock = true;
     if (Array.isArray(this._grid.items)) {
       if (!this._grid.selectedItems.length) {
@@ -244,7 +270,7 @@ class GridSelectionColumnElement extends GridColumnElement {
   }
 
   /** @private */
-  _onDataProviderChanged(e) {
+  _onDataProviderChanged() {
     this._selectAllHidden = !Array.isArray(this._grid.items);
   }
 }

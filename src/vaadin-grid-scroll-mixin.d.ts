@@ -1,12 +1,10 @@
 declare function ScrollMixin<T extends new (...args: any[]) => {}>(base: T): T & ScrollMixinConstructor;
 
 interface ScrollMixinConstructor {
-  new(...args: any[]): ScrollMixin;
+  new (...args: any[]): ScrollMixin;
 }
 
 interface ScrollMixin {
-  ready(): void;
-
   /**
    * Scroll to a specific row index in the virtual list. Note that the row index is
    * not always the same for any particular item. For example, sorting/filtering/expanding
@@ -15,9 +13,12 @@ interface ScrollMixin {
    * @param index Row index to scroll to
    */
   scrollToIndex(index: number): void;
+
   _frozenCellsChanged(): void;
+
   _updateScrollerMeasurements(): void;
+
   _updateLastFrozen(): void;
 }
 
-export {ScrollMixin, ScrollMixinConstructor};
+export { ScrollMixin, ScrollMixinConstructor };

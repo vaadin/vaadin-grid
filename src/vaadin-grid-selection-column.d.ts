@@ -1,4 +1,4 @@
-import {GridColumnElement} from './vaadin-grid-column.js';
+import { GridColumnElement } from './vaadin-grid-column.js';
 
 /**
  * `<vaadin-grid-selection-column>` is a helper element for the `<vaadin-grid>`
@@ -23,11 +23,10 @@ import {GridColumnElement} from './vaadin-grid-column.js';
  * __The default content can also be overridden__
  */
 declare class GridSelectionColumnElement extends GridColumnElement {
-
   /**
    * Width of the cells for this column.
    */
-  width: string|null|undefined;
+  width: string | null | undefined;
 
   /**
    * Flex grow ratio for the cell widths. When set to 0, cell width is fixed.
@@ -46,14 +45,12 @@ declare class GridSelectionColumnElement extends GridColumnElement {
    * @attr {boolean} auto-select
    */
   autoSelect: boolean;
-  connectedCallback(): void;
-  disconnectedCallback(): void;
 }
 
 declare global {
   interface HTMLElementTagNameMap {
-    "vaadin-grid-selection-column": GridSelectionColumnElement;
+    'vaadin-grid-selection-column': GridSelectionColumnElement;
   }
 }
 
-export {GridSelectionColumnElement};
+export { GridSelectionColumnElement };

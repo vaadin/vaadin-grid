@@ -3,10 +3,11 @@
  * Copyright (c) 2020 Vaadin Ltd.
  * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
  */
+import { PolymerElement } from '@polymer/polymer/polymer-element.js';
 import { microTask } from '@polymer/polymer/lib/utils/async.js';
 import { FlattenedNodesObserver } from '@polymer/polymer/lib/utils/flattened-nodes-observer.js';
 import { ColumnBaseMixin } from './vaadin-grid-column.js';
-import { PolymerElement } from '@polymer/polymer/polymer-element.js';
+
 /**
  * A `<vaadin-grid-column-group>` is used to make groups of columns in `<vaadin-grid>` and
  * to configure additional headers and footers.
@@ -35,7 +36,6 @@ import { PolymerElement } from '@polymer/polymer/polymer-element.js';
  * @mixes ColumnBaseMixin
  */
 class GridColumnGroupElement extends ColumnBaseMixin(PolymerElement) {
-
   static get is() {
     return 'vaadin-grid-column-group';
   }
@@ -44,7 +44,7 @@ class GridColumnGroupElement extends ColumnBaseMixin(PolymerElement) {
     return {
       /** @private */
       _childColumns: {
-        value: function() {
+        value: function () {
           return this._getChildColumns(this);
         }
       },
@@ -137,7 +137,7 @@ class GridColumnGroupElement extends ColumnBaseMixin(PolymerElement) {
       const _rootColumns = rootColumns.slice(0);
 
       if (!order) {
-        _rootColumns.forEach(column => column._order = 0);
+        _rootColumns.forEach((column) => (column._order = 0));
         return;
       }
       // The parent column order number cascades downwards to it's children
@@ -156,12 +156,11 @@ class GridColumnGroupElement extends ColumnBaseMixin(PolymerElement) {
       // Final scope for the child columns needs to mind both factors.
       const scope = Math.pow(10, trailingZeros - childCountDigits);
 
-
       if (_rootColumns[0] && _rootColumns[0]._order) {
         _rootColumns.sort((a, b) => a._order - b._order);
       }
 
-      _rootColumns.forEach((column, index) => column._order = order + ((index + 1) * scope));
+      _rootColumns.forEach((column, index) => (column._order = order + (index + 1) * scope));
     }
   }
 
@@ -171,7 +170,7 @@ class GridColumnGroupElement extends ColumnBaseMixin(PolymerElement) {
       return;
     }
 
-    rootColumns.forEach(column => column._reorderStatus = reorderStatus);
+    rootColumns.forEach((column) => (column._reorderStatus = reorderStatus));
   }
 
   /** @private */
@@ -180,18 +179,18 @@ class GridColumnGroupElement extends ColumnBaseMixin(PolymerElement) {
       return;
     }
 
-    rootColumns.forEach(column => column.resizable = resizable);
+    rootColumns.forEach((column) => (column.resizable = resizable));
   }
 
   /** @private */
   _updateVisibleChildColumns(childColumns) {
-    this._visibleChildColumns = Array.prototype.filter.call(childColumns, col => !col.hidden);
+    this._visibleChildColumns = Array.prototype.filter.call(childColumns, (col) => !col.hidden);
   }
 
   /** @private */
   _childColumnsChanged(childColumns) {
     if (!this._autoHidden && this.hidden) {
-      Array.prototype.forEach.call(childColumns, column => column.hidden = true);
+      Array.prototype.forEach.call(childColumns, (column) => (column.hidden = true));
       this._updateVisibleChildColumns(childColumns);
     }
   }
@@ -203,10 +202,17 @@ class GridColumnGroupElement extends ColumnBaseMixin(PolymerElement) {
     }
 
     if (this._visibleChildColumns.length) {
-      this._setWidth('calc(' + Array.prototype
-        .reduce.call(this._visibleChildColumns, (prev, curr) => prev += ' + ' + (curr.width || '0px')
-          .replace('calc', ''), '')
-        .substring(3) + ')');
+      this._setWidth(
+        'calc(' +
+          Array.prototype.reduce
+            .call(
+              this._visibleChildColumns,
+              (prev, curr) => (prev += ' + ' + (curr.width || '0px').replace('calc', '')),
+              ''
+            )
+            .substring(3) +
+          ')'
+      );
     } else {
       this._setWidth('0px');
     }
@@ -222,7 +228,7 @@ class GridColumnGroupElement extends ColumnBaseMixin(PolymerElement) {
 
     // Don’t propagate the default `false` value.
     if (frozen !== false) {
-      Array.from(rootColumns).forEach(col => col.frozen = frozen);
+      Array.from(rootColumns).forEach((col) => (col.frozen = frozen));
     }
   }
 
@@ -230,7 +236,7 @@ class GridColumnGroupElement extends ColumnBaseMixin(PolymerElement) {
   _groupHiddenChanged(hidden, rootColumns) {
     if (rootColumns && !this._preventHiddenCascade) {
       this._ignoreVisibleChildColumns = true;
-      rootColumns.forEach(column => column.hidden = hidden);
+      rootColumns.forEach((column) => (column.hidden = hidden));
       this._ignoreVisibleChildColumns = false;
     }
 
@@ -273,10 +279,11 @@ class GridColumnGroupElement extends ColumnBaseMixin(PolymerElement) {
 
   /** @private */
   _addNodeObserver() {
-    this._observer = new FlattenedNodesObserver(this, info => {
-      if (info.addedNodes.filter(this._isColumnElement).length > 0 ||
-        info.removedNodes.filter(this._isColumnElement).length > 0) {
-
+    this._observer = new FlattenedNodesObserver(this, (info) => {
+      if (
+        info.addedNodes.filter(this._isColumnElement).length > 0 ||
+        info.removedNodes.filter(this._isColumnElement).length > 0
+      ) {
         this._preventHiddenCascade = true;
         this._rootColumns = this._getChildColumns(this);
         this._childColumns = this._rootColumns;
