@@ -163,20 +163,6 @@ class GridSelectionColumnElement extends GridColumnElement {
     this._grid.removeEventListener('filter-changed', this._boundOnSelectedItemsChanged);
     this._grid.removeEventListener('selected-items-changed', this._boundOnSelectedItemsChanged);
 
-    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-    if (isSafari && window.ShadyDOM && this.parentElement) {
-      // Detach might have beem caused by order change.
-      // Shady on safari doesn't restore isAttached so we'll need to do it manually.
-      const parent = this.parentElement;
-      const nextSibling = this.nextElementSibling;
-      parent.removeChild(this);
-      if (nextSibling) {
-        parent.insertBefore(this, nextSibling);
-      } else {
-        parent.appendChild(this);
-      }
-    }
-
     super.disconnectedCallback();
   }
 

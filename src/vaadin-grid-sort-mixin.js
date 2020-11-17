@@ -3,9 +3,6 @@
  * Copyright (c) 2020 Vaadin Ltd.
  * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
  */
-import { microTask } from '@polymer/polymer/lib/utils/async.js';
-
-import { PolymerElement } from '@polymer/polymer/polymer-element.js';
 
 /**
  * @polymerMixin
@@ -48,22 +45,6 @@ export const SortMixin = superClass => class SortMixin extends superClass {
   ready() {
     super.ready();
     this.addEventListener('sorter-changed', this._onSorterChanged);
-
-    // With Polymer 2 & shady the 'sorter-changed' listener isn't guaranteed to be registered
-    // before child <vaadin-grid-sorter>'s upgrade and fire the events. The following
-    // makes sure that 'sorter-changed' is fired for all <vaadin-grid-sorter> elements
-    // after this (<vaadin-grid>) is ready (and the listeners are active).
-    if (window.ShadyDOM) {
-      microTask.run(() => {
-        const sorters = this.querySelectorAll('vaadin-grid-sorter');
-        Array.from(sorters).forEach((sorter) => {
-          // Don't try to fire if the sorter hasn't been upgraded yet
-          if (sorter instanceof PolymerElement) {
-            sorter.dispatchEvent(new CustomEvent('sorter-changed', {bubbles: true, composed: true}));
-          }
-        });
-      });
-    }
   }
 
   /** @private */

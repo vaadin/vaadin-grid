@@ -136,13 +136,11 @@ export const DragAndDropMixin = superClass => class DragAndDropMixin extends sup
       }
 
       const rowRect = row.getBoundingClientRect();
-      if (!window.ShadyDOM) {
-        if (this._ios) {
-          e.dataTransfer.setDragImage(row);
-        } else {
-          e.dataTransfer.setDragImage(row, e.clientX - rowRect.left, e.clientY - rowRect.top);
-        }
 
+      if (this._ios) {
+        e.dataTransfer.setDragImage(row);
+      } else {
+        e.dataTransfer.setDragImage(row, e.clientX - rowRect.left, e.clientY - rowRect.top);
       }
 
       let rows = [row];
@@ -385,9 +383,7 @@ export const DragAndDropMixin = superClass => class DragAndDropMixin extends sup
     const dragDisabled = !this.rowsDraggable || (this.dragFilter && !this.dragFilter(model));
     const dropDisabled = !this.dropMode || (this.dropFilter && !this.dropFilter(model));
 
-    const draggableElements = window.ShadyDOM
-      ? [row]
-      : Array.from(row.children).map(cell => cell._content);
+    const draggableElements = Array.from(row.children).map(cell => cell._content);
 
     draggableElements.forEach(e => {
       if (dragDisabled) {
