@@ -12,14 +12,6 @@ jobs:
       with:
         node-version: 12
 
-    - name: Cache node modules
-      uses: actions/cache@v2
-      env:
-        cache-name: cache-visual-tests
-      with:
-        path: ~/.npm
-        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-
     - name: Install CLI tools
       run: npm install -g bower gemini gemini-sauce gemini-polyserve
 
