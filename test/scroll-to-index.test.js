@@ -37,7 +37,7 @@ describe('scroll to index', () => {
       it('should scroll to scaled index', () => {
         [0, 1, 2, 3, 5, 8, 13, 21, 34, 55, 77, 88, 100].forEach((percentage) => {
           const index = Math.ceil(((grid.size - 1) * percentage) / 100);
-          grid.scrollToIndex(grid._firefox ? 1 : 0); // FF58 workaround
+          grid.scrollToIndex(0);
           grid.scrollToIndex(index);
 
           if (percentage === 100) {

@@ -6,7 +6,6 @@
 import { GestureEventListeners } from '@polymer/polymer/lib/mixins/gesture-event-listeners.js';
 import { addListener } from '@polymer/polymer/lib/utils/gestures.js';
 import { dom } from '@polymer/polymer/lib/legacy/polymer.dom.js';
-import { useShadow } from '@polymer/polymer/lib/utils/settings.js';
 
 /**
  * @polymerMixin
@@ -220,17 +219,7 @@ export const ColumnReorderingMixin = (superClass) =>
       if (!this._draggedColumn) {
         this._toggleAttribute('no-content-pointer-events', true, this.$.scroller);
       }
-      let cell;
-      if (useShadow) {
-        cell = this.shadowRoot.elementFromPoint(x, y);
-      } else {
-        cell = document.elementFromPoint(x, y);
-
-        // Workaround a FF58 bug
-        if (cell.localName === 'vaadin-grid-cell-content') {
-          cell = cell.assignedSlot.parentNode;
-        }
-      }
+      const cell = this.shadowRoot.elementFromPoint(x, y);
       this._toggleAttribute('no-content-pointer-events', false, this.$.scroller);
 
       // Make sure the element is actually a cell
