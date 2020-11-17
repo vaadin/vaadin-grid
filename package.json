@@ -33,9 +33,12 @@
   ],
   "scripts": {
     "debug": "web-test-runner test/*.test.js --watch",
+    "screenshots": "hermione test/visual/test.js --update-refs",
+    "start": "web-dev-server --node-resolve --open",
     "test": "web-test-runner test/*.test.js",
     "test:firefox": "TEST_ENV=firefox npm test",
-    "test:safari": "TEST_ENV=safari npm test"
+    "test:safari": "TEST_ENV=safari npm test",
+    "test:visual": "hermione test/visual/test.js"
   },
   "dependencies": {
     "@polymer/polymer": "^3.0.0",
@@ -56,9 +59,13 @@
     "@polymer/iron-component-page": "^4.0.0",
     "@polymer/iron-list": "^3.1.0",
     "@polymer/iron-test-helpers": "^3.0.0",
+    "@web/dev-server": "0.0.21",
     "@web/test-runner": "^0.9.7",
     "@web/test-runner-saucelabs": "^0.1.1",
     "@webcomponents/webcomponentsjs": "^2.0.0",
+    "hermione": "^3.9.1",
+    "hermione-esm": "^0.4.0",
+    "hermione-sauce": "^0.1.0",
     "sinon": "^9.2.0"
   }
 }
