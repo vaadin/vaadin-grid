@@ -186,18 +186,6 @@ function focusWithMouse(element, mouseTarget) {
   mouseUp(mouseTarget);
 }
 
-function focusHeaderInput() {
-  const cell = grid.$.header.children[0].children[1];
-  const contents = getCellContent(cell);
-  contents.children[0].focus();
-}
-
-function focusFooterInput() {
-  const cell = grid.$.footer.children[0].children[1];
-  const contents = getCellContent(cell);
-  contents.children[0].focus();
-}
-
 function focusFirstHeaderCell() {
   focusWithMouse(getFirstHeaderCell());
 }
@@ -226,14 +214,6 @@ function getFocusedCellIndex() {
 function getFocusedRowIndex() {
   const focusedRow = grid.shadowRoot.activeElement.parentNode;
   return Array.from(focusedRow.parentNode.children).indexOf(focusedRow);
-}
-
-function getFocusableCellIndex() {
-  return Array.from(grid._itemsFocusable.parentNode.children).indexOf(grid._itemsFocusable);
-}
-
-function getFocusableRowIndex() {
-  return grid._itemsFocusable.parentNode.index;
 }
 
 function getTabbableElements(root) {
