@@ -128,7 +128,14 @@ This program is available under Apache License Version 2.0, available at https:/
               notify: true,
               value: null
             },
-
+            /**
+            * A custom function to use when sorting the data.
+            * Takes two arguments which are items being passed to the grid.
+            */
+            cmp : {
+              type: Function,
+              value: undefined
+            },
             /**
              * @type {number | null}
              * @protected

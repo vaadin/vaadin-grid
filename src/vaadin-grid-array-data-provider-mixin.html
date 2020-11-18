@@ -119,9 +119,9 @@ This program is available under Apache License Version 2.0, available at https:/
     _multiSort(a, b) {
       return this._sorters.map(sort => {
         if (sort.direction === 'asc') {
-          return this._compare(Polymer.Base.get(sort.path, a), Polymer.Base.get(sort.path, b));
+          return sort.cmp ? sort.cmp(a, b) : this._compare(Base.get(sort.path, a), Base.get(sort.path, b));
         } else if (sort.direction === 'desc') {
-          return this._compare(Polymer.Base.get(sort.path, b), Polymer.Base.get(sort.path, a));
+          return sort.cmp ? sort.cmp (b, a) : this._compare(Base.get(sort.path, b), Base.get(sort.path, a));
         }
         return 0;
       }).reduce((p, n) => {
