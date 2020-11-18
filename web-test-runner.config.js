@@ -10,6 +10,15 @@ const config = {
     config: {
       timeout: '10000' // default 2000
     }
+  },
+  coverageConfig: {
+    include: ['**/src/*'],
+    threshold: {
+      statements: 97,
+      branches: 59,
+      functions: 96,
+      lines: 97
+    }
   }
 };
 
@@ -26,9 +35,9 @@ const sauce = {
     platform: 'macOS 10.15',
     browserVersion: '13.1'
   }
-}
+};
 
-if (env === 'firefox' || env === 'safari') {
+if (env === 'firefox' || env === 'safari') {
   const sauceLabsLauncher = createSauceLabsLauncher({
     user: process.env.SAUCE_USERNAME,
     key: process.env.SAUCE_ACCESS_KEY

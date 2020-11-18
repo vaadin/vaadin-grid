@@ -41,7 +41,7 @@
     "preversion": "magi update-version",
     "screenshots": "hermione test/visual/test.js --update-refs",
     "start": "web-dev-server --node-resolve --open",
-    "test": "web-test-runner test/*.test.js",
+    "test": "web-test-runner test/*.test.js --coverage",
     "test:firefox": "TEST_ENV=firefox npm test",
     "test:safari": "TEST_ENV=safari npm test",
     "test:visual": "hermione test/visual/test.js"
