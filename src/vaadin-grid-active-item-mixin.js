@@ -62,10 +62,7 @@ export const ActiveItemMixin = (superClass) =>
       const cellContent = cell._content;
 
       const activeElement = this.getRootNode().activeElement;
-      const cellContentHasFocus =
-        cellContent.contains(activeElement) &&
-        // MSIE bug: flex children receive focus. Make type & attributes check.
-        (!this._ie || this._isFocusable(activeElement));
+      const cellContentHasFocus = cellContent.contains(activeElement);
       if (!cellContentHasFocus && !this._isFocusable(e.target)) {
         this.dispatchEvent(
           new CustomEvent('cell-activate', {

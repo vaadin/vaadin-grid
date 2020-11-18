@@ -91,11 +91,7 @@ export const ColumnReorderingMixin = (superClass) =>
           return;
         }
 
-        const activeElement = this.getRootNode().activeElement;
-        if (
-          headerCell._content.contains(this.getRootNode().activeElement) &&
-          (!this._ie || !this._isFocusable(activeElement))
-        ) {
+        if (headerCell._content.contains(this.getRootNode().activeElement)) {
           // Something was focused inside the cell
           return;
         }

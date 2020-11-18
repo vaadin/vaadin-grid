@@ -306,7 +306,6 @@ class GridElement extends ElementMixin(
         id="scroller"
         safari$="[[_safari]]"
         ios$="[[_ios]]"
-        ie$="[[_ie]]"
         loading$="[[loading]]"
         column-reordering-allowed$="[[columnReorderingAllowed]]"
       >
@@ -359,12 +358,6 @@ class GridElement extends ElementMixin(
       _edge: {
         type: Boolean,
         value: typeof CSS !== 'undefined' && CSS.supports('(-ms-ime-align:auto)')
-      },
-
-      /** @private */
-      _ie: {
-        type: Boolean,
-        value: !!(navigator.userAgent.match(/Trident/) && !navigator.userAgent.match(/MSIE/))
       },
 
       /** @private */

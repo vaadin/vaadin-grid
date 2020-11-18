@@ -188,10 +188,6 @@ registerStyles(
       user-select: none;
     }
 
-    #scroller[ie][column-reordering-allowed] [part~='header-cell'] {
-      -ms-user-select: none;
-    }
-
     /* Resizing styles */
     [part~='resize-handle'] {
       position: absolute;

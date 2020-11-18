@@ -117,7 +117,7 @@ class GridScrollerElement extends PolymerIronList {
     }
     if (!Array.isArray(this.items)) {
       // Edge/IE seems to have the lowest maximum
-      const maxVirtualItems = this._edge || this._ie ? 30000 : 100000;
+      const maxVirtualItems = this._edge ? 30000 : 100000;
       this.items = { length: Math.min(size, maxVirtualItems) };
     }
 
@@ -147,16 +147,6 @@ class GridScrollerElement extends PolymerIronList {
     requestAnimationFrame(() => this._update());
 
     this.__updateFooterPositioning();
-
-    if (this._ie) {
-      // Workaround an IE flexbox bug where the rows would horizontally collapse
-      // whenever item count change toggles the scrollbar visibility (is tested)
-      this.$.table.style.display = 'block';
-      setTimeout(() => {
-        this.$.table.style.display = 'flex';
-        this._translateStationaryElements();
-      });
-    }
   }
 
   /** @protected */
