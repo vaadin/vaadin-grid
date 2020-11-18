@@ -223,13 +223,11 @@ describe('empty grid', () => {
 });
 
 describe('scroll on attach', () => {
-  let grid;
-
   it('should not scroll document on attach', () => {
     document.body.style.paddingTop = '10000px';
     document.documentElement.scrollTop = 10000;
     const scrollTop = document.documentElement.scrollTop;
-    grid = fixtureSync(`
+    fixtureSync(`
       <vaadin-grid style="width: 50px; height: 400px;" size="1000">
         <vaadin-grid-column>
           <template>[[index]]</template>

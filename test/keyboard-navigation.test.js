@@ -1459,14 +1459,9 @@ describe('keyboard navigation', () => {
   });
 
   describe('interaction mode', () => {
-    let input;
-
     beforeEach(() => {
       focusItem(0);
       clickItem(0);
-
-      const cell = getRowCell(0, 1);
-      input = getCellContent(cell).children[0];
     });
 
     it('should enter interaction mode with enter', () => {

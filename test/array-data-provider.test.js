@@ -248,7 +248,7 @@ describe('invalid paths', () => {
       const _warn = console.warn;
       const spy = (console.warn = sinon.spy());
 
-      listenOnce(filter, 'filter-changed', (e) => {
+      listenOnce(filter, 'filter-changed', () => {
         setTimeout(() => {
           console.warn = _warn;
           expect(spy.called).to.be.true;
@@ -263,7 +263,7 @@ describe('invalid paths', () => {
       const _warn = console.warn;
       const spy = (console.warn = sinon.spy());
 
-      listenOnce(filter, 'filter-changed', (e) => {
+      listenOnce(filter, 'filter-changed', () => {
         setTimeout(() => {
           console.warn = _warn;
           expect(spy.called).to.be.false;
@@ -278,7 +278,7 @@ describe('invalid paths', () => {
       const _warn = console.warn;
       const spy = (console.warn = sinon.spy());
 
-      listenOnce(filter, 'filter-changed', (e) => {
+      listenOnce(filter, 'filter-changed', () => {
         setTimeout(() => {
           console.warn = _warn;
           expect(spy.called).to.be.false;

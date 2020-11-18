@@ -27,25 +27,25 @@ describe('class name generator', () => {
     expect(Array.from(cell.classList)).to.deep.equal(initialCellClasses.concat(expectedClasses));
 
   it('should add classes for cells', () => {
-    grid.cellClassNameGenerator = (column, model) => 'foo';
+    grid.cellClassNameGenerator = () => 'foo';
     assertClassList(firstCell, ['foo']);
     assertClassList(getContainerCell(grid.$.items, 1, 1), ['foo']);
   });
 
   it('should add all classes separated by whitespaces', () => {
-    grid.cellClassNameGenerator = (column, model) => 'foo bar baz';
+    grid.cellClassNameGenerator = () => 'foo bar baz';
     assertClassList(firstCell, ['foo', 'bar', 'baz']);
   });
 
   it('should not remove existing classes', () => {
     firstCell.classList.add('bar');
-    grid.cellClassNameGenerator = (column, model) => 'foo';
+    grid.cellClassNameGenerator = () => 'foo';
     assertClassList(firstCell, ['bar', 'foo']);
   });
 
   it('should remove old generated classes', () => {
-    grid.cellClassNameGenerator = (column, model) => 'foo';
-    grid.cellClassNameGenerator = (column, model) => 'bar';
+    grid.cellClassNameGenerator = () => 'foo';
+    grid.cellClassNameGenerator = () => 'bar';
     assertClassList(firstCell, ['bar']);
   });
 
@@ -56,7 +56,7 @@ describe('class name generator', () => {
   });
 
   it('should be called for details cell with undefined column', (done) => {
-    grid.rowDetailsRenderer = (root, grid, model) => {};
+    grid.rowDetailsRenderer = () => {};
     grid.cellClassNameGenerator = (column, model) => model.index + ' ' + column;
     requestAnimationFrame(() => {
       assertClassList(getContainerCell(grid.$.items, 0, 2), ['0', 'undefined']);
@@ -76,17 +76,17 @@ describe('class name generator', () => {
   });
 
   it('should not throw with falsy return value', () => {
-    expect(() => (grid.cellClassNameGenerator = (column, model) => {})).not.to.throw(Error);
+    expect(() => (grid.cellClassNameGenerator = () => {})).not.to.throw(Error);
   });
 
   it('should clear generated classes with falsy return value', () => {
-    grid.cellClassNameGenerator = (column, model) => 'foo';
-    grid.cellClassNameGenerator = (column, model) => {};
+    grid.cellClassNameGenerator = () => 'foo';
+    grid.cellClassNameGenerator = () => {};
     assertClassList(firstCell, []);
   });
 
   it('should clear generated classes with falsy property value', () => {
-    grid.cellClassNameGenerator = (column, model) => 'foo';
+    grid.cellClassNameGenerator = () => 'foo';
     grid.cellClassNameGenerator = undefined;
     assertClassList(firstCell, []);
   });
@@ -94,7 +94,7 @@ describe('class name generator', () => {
   ['generateCellClassNames', 'clearCache', 'render'].forEach((funcName) => {
     it(`should update classes on ${funcName}`, () => {
       let condition = false;
-      grid.cellClassNameGenerator = (column, model) => condition && 'foo';
+      grid.cellClassNameGenerator = () => condition && 'foo';
       condition = true;
       assertClassList(firstCell, []);
       grid[funcName]();
@@ -112,7 +112,7 @@ describe('class name generator', () => {
   });
 
   it('should not throw with extra whitespace in the result', () => {
-    expect(() => (grid.cellClassNameGenerator = (column, model) => ' foo  bar ')).not.to.throw(Error);
+    expect(() => (grid.cellClassNameGenerator = () => ' foo  bar ')).not.to.throw(Error);
     assertClassList(firstCell, ['foo', 'bar']);
   });
 });

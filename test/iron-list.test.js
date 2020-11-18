@@ -6,7 +6,7 @@ import '@polymer/iron-list/iron-list.js';
 import '../vaadin-grid.js';
 
 describe('iron list', () => {
-  let wrapper, grid, ironList, index;
+  let wrapper, grid, ironList;
 
   beforeEach(() => {
     wrapper = fixtureSync(`
@@ -32,7 +32,7 @@ describe('iron list', () => {
   it('should warn when using iron-list APIs trough grid', () => {
     grid._debouncerWarnPrivateAPIAccess && grid._debouncerWarnPrivateAPIAccess.flush();
     sinon.stub(console, 'warn');
-    index = grid.firstVisibleIndex;
+    grid.firstVisibleIndex;
     expect(console.warn.callCount).to.equal(1);
     console.warn.restore();
   });

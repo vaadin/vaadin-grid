@@ -677,7 +677,7 @@ describe('wrapped grid', () => {
     });
 
     it('should be in loading state when dataProvider changes', () => {
-      container.dataProvider = (params, callback) => {};
+      container.dataProvider = () => {};
       expect(grid.loading).to.be.true;
     });
 
@@ -714,7 +714,7 @@ describe('wrapped grid', () => {
     });
 
     it('should set loading attribute to rows', () => {
-      container.dataProvider = (params, callback) => {};
+      container.dataProvider = () => {};
       expect(getRows(grid.$.items)[0].hasAttribute('loading')).to.be.true;
     });
 

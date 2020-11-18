@@ -142,7 +142,7 @@ class ObservedGrid extends PolymerElement {
     };
   }
 
-  _count(item, index) {
+  _count() {
     this.count = this.count || 0;
     this.count++;
   }
@@ -178,7 +178,7 @@ describe('templates', () => {
     });
 
     it('should not fire an event when a focusable element is clicked', (done) => {
-      const listener = (e) => done('Should not come here!');
+      const listener = () => done('Should not come here!');
       grid.addEventListener('cell-activate', listener);
 
       const input = getCellContent(getCell(grid, 1)).querySelector('vaadin-text-field');

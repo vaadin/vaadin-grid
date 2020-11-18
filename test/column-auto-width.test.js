@@ -1,7 +1,7 @@
 import { expect } from '@esm-bundle/chai';
 import sinon from 'sinon';
-import { fixtureSync } from '@open-wc/testing-helpers';
-import { flushGrid, whenGridAppearAnimationEnd } from './helpers.js';
+import { fixtureSync, oneEvent } from '@open-wc/testing-helpers';
+import { flushGrid } from './helpers.js';
 import '../vaadin-grid.js';
 import '../vaadin-grid-tree-column.js';
 
@@ -35,7 +35,7 @@ describe('column auto-width', function () {
     }
   }
 
-  beforeEach((done) => {
+  beforeEach(async () => {
     grid = fixtureSync(`
       <vaadin-grid style="width: 600px; height: 200px;" hidden>
         <vaadin-grid-column auto-width flex-grow="0" path="a"></vaadin-grid-column>
@@ -48,8 +48,8 @@ describe('column auto-width', function () {
     columns = grid.querySelectorAll('vaadin-grid-column');
     // Show the grid and wait for animationend event ("vaadin-grid-appear")
     // to ensure the grid is in a consistent state before starting each test
-    whenGridAppearAnimationEnd(grid, done);
     grid.hidden = false;
+    await oneEvent(grid, 'animationend');
   });
 
   it('should have correct column widths when items are set', (done) => {

@@ -49,7 +49,7 @@ describe('renderers', () => {
     });
 
     it('should pass column as `owner` and `this` to the renderer', () => {
-      column.renderer = function (root, owner, model) {
+      column.renderer = function (root, owner) {
         expect(this).to.eql(owner);
         expect(owner.localName).to.eql('vaadin-grid-column');
       };
@@ -94,7 +94,7 @@ describe('renderers', () => {
       });
 
       it('should pass column as `owner` and `this` to the renderer', () => {
-        grid.rowDetailsRenderer = function (root, owner, model) {
+        grid.rowDetailsRenderer = function (root, owner) {
           expect(this).to.eql(owner);
           expect(owner.localName).to.eql('vaadin-grid');
         };
@@ -172,7 +172,7 @@ describe('renderers', () => {
 
   describe('header cell', () => {
     beforeEach(() => {
-      column.headerRenderer = function (root, column) {
+      column.headerRenderer = (root) => {
         root.innerHTML = 'RDR header';
       };
 
@@ -212,7 +212,7 @@ describe('renderers', () => {
 
   describe('footer cell', () => {
     beforeEach(() => {
-      column.footerRenderer = function (root, column) {
+      column.footerRenderer = (root) => {
         root.innerHTML = 'RDR footer';
       };
 

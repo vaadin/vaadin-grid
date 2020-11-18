@@ -284,7 +284,7 @@ describe('lazy init', () => {
     </vaadin-grid>
   `);
     grid.size = 100;
-    grid.dataProvider = (params, callback) => {
+    grid.dataProvider = () => {
       // Don't provide any data
     };
     flush();

@@ -129,7 +129,7 @@ describe('scroll to index', () => {
     it('should continue scrolling after child items get loaded', (done) => {
       grid.size = 50;
       grid.expandedItems = ['foo49'];
-      grid.dataProvider = ({ page, parentItem }, cb) => {
+      grid.dataProvider = ({ parentItem }, cb) => {
         setTimeout(() => {
           const scope = parentItem || '';
           cb(Array(...new Array(grid.pageSize)).map((_, index) => scope + 'foo' + index));
@@ -157,7 +157,7 @@ describe('scroll to index', () => {
     });
 
     it('should scroll to index only once', (done) => {
-      grid.dataProvider = ({ page, parentItem }, cb) => {
+      grid.dataProvider = ({ page }, cb) => {
         if (page === 0) {
           // Still in loading state, this will end up as pending scroll to index
           grid.scrollToIndex(100);

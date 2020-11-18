@@ -95,9 +95,6 @@ import '../vaadin-grid.js';
         });
 
         it('should not move while content scrolls horizontally', (done) => {
-          const initialContainerRect = containerElement.getBoundingClientRect();
-          const borderTopWidth = containerElement.style.borderTopWidth || '0';
-          const containerTop = parseInt(borderTopWidth) + initialContainerRect.top + 2;
           const cells = getRowCells(containerRows[0]);
 
           listenOnce(grid.$.table, 'scroll', () => {

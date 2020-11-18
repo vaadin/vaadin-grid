@@ -1,15 +1,5 @@
 import { flush } from '@polymer/polymer/lib/utils/flush.js';
 
-export const whenGridAppearAnimationEnd = (grid, cb) => {
-  const onAnimationEnd = (e) => {
-    if (e.animationName.indexOf('vaadin-grid-appear') === 0) {
-      grid.removeEventListener('animationend', onAnimationEnd);
-      cb();
-    }
-  };
-  grid.addEventListener('animationend', onAnimationEnd);
-};
-
 export const flushGrid = (grid) => {
   grid._observer.flush();
   if (grid._debounceScrolling) {

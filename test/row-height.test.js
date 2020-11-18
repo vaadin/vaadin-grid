@@ -1,7 +1,7 @@
 import { expect } from '@esm-bundle/chai';
 import { aTimeout, fixtureSync, nextFrame, oneEvent } from '@open-wc/testing-helpers';
 import { registerStyles, css } from '@vaadin/vaadin-themable-mixin/register-styles.js';
-import { flushGrid, getRows, getRowCells, infiniteDataProvider, listenOnce, scrollToEnd } from './helpers.js';
+import { flushGrid, getRows, getRowCells, infiniteDataProvider, scrollToEnd } from './helpers.js';
 import '../vaadin-grid.js';
 
 registerStyles(
@@ -54,7 +54,7 @@ const fixtures = {
 };
 
 describe('rows', () => {
-  let grid, header, rows, defaultHeight, cells;
+  let grid, header, rows, cells;
 
   async function init(fixtureName) {
     grid = fixtureSync(fixtures[fixtureName]);
@@ -70,7 +70,6 @@ describe('rows', () => {
     flushGrid(grid);
 
     rows = getRows(grid.$.items);
-    defaultHeight = getRows(header)[0].clientHeight;
 
     cells = getRowCells(rows[0]);
   }
