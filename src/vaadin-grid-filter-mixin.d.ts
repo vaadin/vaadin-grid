@@ -1,4 +1,4 @@
-import { GridFilter } from '../@types/interfaces';
+import { GridFilter } from './interfaces';
 
 declare function FilterMixin<T extends new (...args: any[]) => {}>(base: T): T & FilterMixinConstructor;
 

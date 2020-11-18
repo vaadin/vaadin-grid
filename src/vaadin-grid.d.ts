@@ -1,6 +1,6 @@
 import { ThemableMixin } from '@vaadin/vaadin-themable-mixin/vaadin-themable-mixin.js';
 
-import { GridItem, GridItemModel } from '../@types/interfaces';
+import { GridItem, GridItemModel } from './interfaces';
 
 import { ScrollerElement } from './vaadin-grid-scroller.js';
 

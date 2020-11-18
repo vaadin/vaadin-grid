@@ -1,4 +1,4 @@
-import { GridSorterDirection } from '../@types/interfaces';
+import { GridSorterDirection } from './interfaces';
 
 import { GridColumnElement } from './vaadin-grid-column.js';
 

@@ -1,4 +1,4 @@
-import { GridItem } from '../@types/interfaces';
+import { GridItem } from './interfaces';
 
 declare function SelectionMixin<T extends new (...args: any[]) => {}>(base: T): T & SelectionMixinConstructor;
 

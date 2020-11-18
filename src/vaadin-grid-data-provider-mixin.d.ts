@@ -1,4 +1,4 @@
-import { GridDataProvider, GridItem } from '../@types/interfaces';
+import { GridDataProvider, GridItem } from './interfaces';
 
 declare class ItemCache {
   grid: HTMLElement;

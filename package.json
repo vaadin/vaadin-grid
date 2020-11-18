@@ -27,7 +27,6 @@
     "vaadin-*.d.ts",
     "vaadin-*.js",
     "all-imports.js",
-    "@types",
     "src",
     "theme"
   ],

@@ -1,4 +1,4 @@
-import { GridSorterDirection } from '../@types/interfaces';
+import { GridSorterDirection } from './interfaces';
 
 /**
  * `<vaadin-grid-sorter>` is a helper element for the `<vaadin-grid>` that provides out-of-the-box UI controls,

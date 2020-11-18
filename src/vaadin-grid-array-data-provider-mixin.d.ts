@@ -1,10 +1,4 @@
-import {
-  GridDataProviderCallback,
-  GridDataProviderParams,
-  GridItem,
-  GridFilter,
-  GridSorter
-} from '../@types/interfaces';
+import { GridDataProviderCallback, GridDataProviderParams, GridItem, GridFilter, GridSorter } from './interfaces';
 
 declare function ArrayDataProviderMixin<T extends new (...args: any[]) => {}>(
   base: T

@@ -1,4 +1,4 @@
-import { GridEventContext } from '../@types/interfaces';
+import { GridEventContext } from './interfaces';
 
 declare function EventContextMixin<T extends new (...args: any[]) => {}>(base: T): T & EventContextMixinConstructor;
 

@@ -1,5 +1,5 @@
-import { GridColumnElement } from '../src/vaadin-grid-column.js';
-import { GridElement } from '../src/vaadin-grid.js';
+import { GridColumnElement } from './vaadin-grid-column.js';
+import { GridElement } from './vaadin-grid.js';
 
 export type GridBodyRenderer = (
   root: HTMLElement,

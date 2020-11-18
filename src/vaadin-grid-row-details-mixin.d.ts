@@ -1,4 +1,4 @@
-import { GridItem, GridRowDetailsRenderer } from '../@types/interfaces';
+import { GridItem, GridRowDetailsRenderer } from './interfaces';
 
 declare function RowDetailsMixin<T extends new (...args: any[]) => {}>(base: T): T & RowDetailsMixinConstructor;
 

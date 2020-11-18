@@ -1,4 +1,4 @@
-import { GridCellClassNameGenerator } from '../@types/interfaces';
+import { GridCellClassNameGenerator } from './interfaces';
 
 declare function StylingMixin<T extends new (...args: any[]) => {}>(base: T): T & StylingMixinConstructor;
 

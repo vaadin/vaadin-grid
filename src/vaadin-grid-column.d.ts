@@ -1,6 +1,6 @@
 import { GridElement } from './vaadin-grid.js';
 
-import { GridBodyRenderer, GridColumnTextAlign, GridHeaderFooterRenderer } from '../@types/interfaces';
+import { GridBodyRenderer, GridColumnTextAlign, GridHeaderFooterRenderer } from './interfaces';
 
 declare function ColumnBaseMixin<T extends new (...args: any[]) => {}>(base: T): T & ColumnBaseMixinConstructor;
 

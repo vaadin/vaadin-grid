@@ -1,4 +1,4 @@
-import { GridSorter } from '../@types/interfaces';
+import { GridSorter } from './interfaces';
 
 declare function SortMixin<T extends new (...args: any[]) => {}>(base: T): T & SortMixinConstructor;
 
