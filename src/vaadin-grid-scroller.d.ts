@@ -3,7 +3,7 @@ import { PolymerIronList } from './iron-list.js';
 /**
  * This Element is used internally by vaadin-grid.
  */
-declare class GridScrollerElement extends PolymerIronList {
+declare class ScrollerElement extends PolymerIronList {
   readonly _firstVisibleIndex: number;
 
   readonly _lastVisibleIndex: number;
@@ -44,10 +44,4 @@ declare class GridScrollerElement extends PolymerIronList {
   _resizeHandler(): void;
 }
 
-declare global {
-  interface HTMLElementTagNameMap {
-    'vaadin-grid-scroller': GridScrollerElement;
-  }
-}
-
-export { GridScrollerElement as ScrollerElement };
+export { ScrollerElement };

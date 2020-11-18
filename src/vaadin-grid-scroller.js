@@ -15,11 +15,7 @@ import { PolymerIronList } from './iron-list.js';
  * @implements PolymerIronList
  * @extends HTMLElement
  */
-class GridScrollerElement extends PolymerIronList {
-  static get is() {
-    return 'vaadin-grid-scroller';
-  }
-
+class ScrollerElement extends PolymerIronList {
   static get properties() {
     return {
       size: {
@@ -415,6 +411,4 @@ class GridScrollerElement extends PolymerIronList {
   }
 }
 
-customElements.define(GridScrollerElement.is, GridScrollerElement);
-
-export { GridScrollerElement as ScrollerElement };
+export { ScrollerElement };
