@@ -198,9 +198,6 @@ export const RowDetailsMixin = (superClass) =>
 
     /** @private */
     _detailsOpenedInstanceChangedCallback(instance, value) {
-      if (super._detailsOpenedInstanceChangedCallback) {
-        super._detailsOpenedInstanceChangedCallback(instance, value);
-      }
       if (value) {
         this.openItemDetails(instance.item);
       } else {

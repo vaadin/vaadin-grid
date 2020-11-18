@@ -88,9 +88,6 @@ export const SelectionMixin = (superClass) =>
 
     /** @private */
     _selectedInstanceChangedCallback(instance, value) {
-      if (super._selectedInstanceChangedCallback) {
-        super._selectedInstanceChangedCallback(instance, value);
-      }
       if (value) {
         this.selectItem(instance.item);
       } else {
