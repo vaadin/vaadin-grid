@@ -6,6 +6,9 @@
 import { Debouncer } from '@polymer/polymer/lib/utils/debounce.js';
 import { timeOut } from '@polymer/polymer/lib/utils/async.js';
 
+/**
+ * @private
+ */
 export const ItemCache = class ItemCache {
   /**
    * @param {!HTMLElement} grid

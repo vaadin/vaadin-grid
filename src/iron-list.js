@@ -30,7 +30,7 @@ var IOS_TOUCH_SCROLLING = IOS && IOS[1] >= 8;
 var DEFAULT_PHYSICAL_COUNT = 3;
 
 /**
- * @constructor
+ * @private
  */
 export const PolymerIronList = Class({
   behaviors: [IronResizableBehavior, IronScrollTargetBehavior],
