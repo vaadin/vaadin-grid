@@ -369,6 +369,7 @@ describe('reordering grid with columns groups', () => {
     `);
     grid.dataProvider = infiniteDataProvider;
     flushGrid(grid);
+    await nextFrame();
     await aTimeout(0);
   });
 
