@@ -171,6 +171,14 @@ describe('invalid paths', () => {
     flushGrid(grid);
   });
 
+  beforeEach(() => {
+    sinon.stub(console, 'warn');
+  });
+
+  afterEach(() => {
+    console.warn.restore();
+  });
+
   describe('invalid sorters paths', () => {
     let sorter;
 
@@ -179,36 +187,21 @@ describe('invalid paths', () => {
     });
 
     it('should warn about invalid path with undefined parent property', () => {
-      const _warn = console.warn;
-      const spy = (console.warn = sinon.spy());
-
       sorter.path = 'foo.bar';
       click(sorter);
-      console.warn = _warn;
-
-      expect(spy.called).to.be.true;
+      expect(console.warn.called).to.be.true;
     });
 
     it('should not warn about undefined values with defined parent property', () => {
-      const _warn = console.warn;
-      const spy = (console.warn = sinon.spy());
-
       sorter.path = 'name.foo';
       click(sorter);
-      console.warn = _warn;
-
-      expect(spy.called).to.be.false;
+      expect(console.warn.called).to.be.false;
     });
 
     it('should not warn about invalid path without dots', () => {
-      const _warn = console.warn;
-      const spy = (console.warn = sinon.spy());
-
       sorter.path = 'foobar';
       click(sorter);
-      console.warn = _warn;
-
-      expect(spy.called).to.be.false;
+      expect(console.warn.called).to.be.false;
     });
 
     it('should not warn about undefined values with defined parent property (long path)', () => {
@@ -222,14 +215,9 @@ describe('invalid paths', () => {
         }
       ];
 
-      const _warn = console.warn;
-      const spy = (console.warn = sinon.spy());
-
       sorter.path = 'name.last.foo';
       click(sorter);
-      console.warn = _warn;
-
-      expect(spy.called).to.be.false;
+      expect(console.warn.called).to.be.false;
     });
   });
 
@@ -245,13 +233,9 @@ describe('invalid paths', () => {
     });
 
     it('should warn about invalid path with undefined parent property', (done) => {
-      const _warn = console.warn;
-      const spy = (console.warn = sinon.spy());
-
       listenOnce(filter, 'filter-changed', () => {
         setTimeout(() => {
-          console.warn = _warn;
-          expect(spy.called).to.be.true;
+          expect(console.warn.called).to.be.true;
           done();
         });
       });
@@ -260,13 +244,9 @@ describe('invalid paths', () => {
     });
 
     it('should not warn about undefined values with defined parent property', (done) => {
-      const _warn = console.warn;
-      const spy = (console.warn = sinon.spy());
-
       listenOnce(filter, 'filter-changed', () => {
         setTimeout(() => {
-          console.warn = _warn;
-          expect(spy.called).to.be.false;
+          expect(console.warn.called).to.be.false;
           done();
         });
       });
@@ -275,13 +255,9 @@ describe('invalid paths', () => {
     });
 
     it('should not warn about invalid path without dots', (done) => {
-      const _warn = console.warn;
-      const spy = (console.warn = sinon.spy());
-
       listenOnce(filter, 'filter-changed', () => {
         setTimeout(() => {
-          console.warn = _warn;
-          expect(spy.called).to.be.false;
+          expect(console.warn.called).to.be.false;
           done();
         });
       });
