@@ -134,16 +134,6 @@ export const PolymerIronList = Class({
   _focusedVirtualIndex: -1,
 
   /**
-   * The maximum items per row
-   */
-  _itemsPerRow: 1,
-
-  /**
-   * The height of the row in grid layout.
-   */
-  _rowHeight: 0,
-
-  /**
    * The cost of stamping a template in ms.
    */
   _templateCost: 0,
@@ -187,8 +177,7 @@ export const PolymerIronList = Class({
    * The largest n-th value for an item such that it can be rendered in `_physicalStart`.
    */
   get _maxVirtualStart() {
-    var virtualCount = this._convertIndexToCompleteRow(this._virtualCount);
-    return Math.max(0, virtualCount - this._physicalCount);
+    return Math.max(0, this._virtualCount - this._physicalCount);
   },
 
   set _virtualStart(val) {
@@ -335,11 +324,11 @@ export const PolymerIronList = Class({
     // Random access.
     if (Math.abs(delta) > this._physicalSize && this._physicalSize > 0) {
       delta = delta - this._scrollOffset;
-      var idxAdjustment = Math.round(delta / this._physicalAverage) * this._itemsPerRow;
+      var idxAdjustment = Math.round(delta / this._physicalAverage);
       this._virtualStart = this._virtualStart + idxAdjustment;
       this._physicalStart = this._physicalStart + idxAdjustment;
       // Estimate new physical offset.
-      this._physicalTop = Math.floor(this._virtualStart / this._itemsPerRow) * this._physicalAverage;
+      this._physicalTop = Math.floor(this._virtualStart) * this._physicalAverage;
       this._update();
     } else if (this._physicalCount > 0) {
       var reusables = this._getReusables(isScrollingDown);
@@ -456,7 +445,6 @@ export const PolymerIronList = Class({
       DEFAULT_PHYSICAL_COUNT,
       this._virtualCount - this._virtualStart
     );
-    nextPhysicalCount = this._convertIndexToCompleteRow(nextPhysicalCount);
     var delta = nextPhysicalCount - this._physicalCount;
     var nextIncrease = Math.round(this._physicalCount * 0.5);
 
@@ -616,10 +604,7 @@ export const PolymerIronList = Class({
       this._physicalAverageCount += this._physicalSizes[pidx] ? 1 : 0;
     }, itemSet);
 
-    oldPhysicalSize =
-      this._itemsPerRow === 1 ? oldPhysicalSize : Math.ceil(this._physicalCount / this._itemsPerRow) * this._rowHeight;
     this._physicalSize = this._physicalSize + newPhysicalSize - oldPhysicalSize;
-    this._itemsPerRow = 1;
 
     // Update the average if it measured something.
     if (this._physicalAverageCount !== prevAvgCount) {
@@ -716,7 +701,7 @@ export const PolymerIronList = Class({
     this._assignModels();
     this._updateMetrics();
     // Estimate new physical offset.
-    this._physicalTop = Math.floor(this._virtualStart / this._itemsPerRow) * this._physicalAverage;
+    this._physicalTop = Math.floor(this._virtualStart) * this._physicalAverage;
 
     var currentTopItem = this._physicalStart;
     var currentVirtualItem = this._virtualStart;
@@ -770,16 +755,6 @@ export const PolymerIronList = Class({
       },
       animationFrame
     );
-  },
-
-  /**
-   * Converts a random index to the index of the item that completes it's row.
-   * Allows for better order and fill computation when grid == true.
-   */
-  _convertIndexToCompleteRow: function (idx) {
-    // when grid == false _itemPerRow can be unset.
-    this._itemsPerRow = this._itemsPerRow || 1;
-    return idx;
   },
 
   _isIndexRendered: function (idx) {
