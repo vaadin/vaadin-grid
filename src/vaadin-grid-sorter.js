@@ -148,7 +148,7 @@ class GridSorterElement extends ThemableMixin(DirMixin(PolymerElement)) {
   }
 
   static get observers() {
-    return ['_pathOrDirectionChanged(path, direction, _isConnected)', '_directionOrOrderChanged(direction, _order)'];
+    return ['_pathOrDirectionChanged(path, direction, _isConnected)'];
   }
 
   /** @protected */
@@ -200,23 +200,6 @@ class GridSorterElement extends ThemableMixin(DirMixin(PolymerElement)) {
       this.direction = null;
     } else {
       this.direction = 'asc';
-    }
-  }
-
-  /** @private */
-  _directionOrOrderChanged(direction, order) {
-    if (direction === undefined || order === undefined) {
-      return;
-    }
-
-    // Safari has an issue with repainting shadow root element styles when a host attribute changes.
-    // Need this workaround (toggle any inline css property on and off) until the issue gets fixed.
-    var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-    if (isSafari && this.root) {
-      this.root.querySelectorAll('*').forEach(function (el) {
-        el.style['-webkit-backface-visibility'] = 'visible';
-        el.style['-webkit-backface-visibility'] = '';
-      });
     }
   }
 }
