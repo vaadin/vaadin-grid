@@ -359,33 +359,8 @@ class GridScrollerElement extends PolymerIronList {
     this._accessIronListAPI(super._render);
   }
 
-  /** @private */
-  _createFocusBackfillItem() {
-    /* Ignore */
-  }
-
-  /** @private */
-  _multiSelectionChanged() {
-    /* Ignore */
-  }
-
-  /** @private */
-  clearSelection() {
-    /* Ignore */
-  }
-
   /** @protected */
   _itemsChanged() {
-    /* Ignore */
-  }
-
-  /** @private */
-  _manageFocus() {
-    /* Ignore */
-  }
-
-  /** @private */
-  _removeFocusedItem() {
     /* Ignore */
   }
 

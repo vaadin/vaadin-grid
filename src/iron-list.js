@@ -426,7 +426,6 @@ export const PolymerIronList = Class({
     if ((itemSet && itemSet.length === 0) || this._physicalCount === 0) {
       return;
     }
-    this._manageFocus();
     this._assignModels(itemSet);
     this._updateMetrics(itemSet);
     // Adjust offset after measuring.
@@ -544,7 +543,6 @@ export const PolymerIronList = Class({
       if (this._scrollTop > this._scrollOffset) {
         this._resetScrollPosition(0);
       }
-      this._removeFocusedItem();
       this._debounce('_render', this._render, animationFrame);
     }
   },
@@ -715,7 +713,6 @@ export const PolymerIronList = Class({
     if (!this._isIndexRendered(idx) || idx >= this._maxVirtualStart) {
       this._virtualStart = idx - 1;
     }
-    this._manageFocus();
     this._assignModels();
     this._updateMetrics();
     // Estimate new physical offset.
