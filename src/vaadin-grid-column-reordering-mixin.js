@@ -5,7 +5,6 @@
  */
 import { GestureEventListeners } from '@polymer/polymer/lib/mixins/gesture-event-listeners.js';
 import { addListener } from '@polymer/polymer/lib/utils/gestures.js';
-import { dom } from '@polymer/polymer/lib/legacy/polymer.dom.js';
 
 /**
  * @polymerMixin
@@ -119,7 +118,7 @@ export const ColumnReorderingMixin = (superClass) =>
       }
 
       // Cancel reordering if there are draggable nodes on the event path
-      const path = e.path || dom(e).path;
+      const path = e.composedPath && e.composedPath();
       if (path && path.filter((node) => node.hasAttribute && node.hasAttribute('draggable'))[0]) {
         return;
       }
