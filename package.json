@@ -60,8 +60,6 @@
     "@polymer/polymer": "^3.0.0",
     "@polymer/iron-resizable-behavior": "^3.0.0",
     "@polymer/iron-scroll-target-behavior": "^3.0.0",
-    "@polymer/iron-a11y-keys-behavior": "^3.0.0",
-    "@polymer/iron-a11y-announcer": "^3.0.0",
     "@vaadin/vaadin-themable-mixin": "^1.6.1",
     "@vaadin/vaadin-checkbox": "^2.5.0",
     "@vaadin/vaadin-text-field": "^2.8.0",
