@@ -6,19 +6,16 @@
 import { Debouncer } from '@polymer/polymer/lib/utils/debounce.js';
 import { animationFrame, timeOut, microTask } from '@polymer/polymer/lib/utils/async.js';
 
+const timeouts = {
+  SCROLLING: 500,
+  IGNORE_WHEEL: 500
+};
+
 /**
  * @polymerMixin
  */
 export const ScrollMixin = (superClass) =>
   class ScrollMixin extends superClass {
-    /** @private */
-    get _timeouts() {
-      return {
-        SCROLLING: 500,
-        IGNORE_WHEEL: 500
-      };
-    }
-
     static get properties() {
       return {
         /**
@@ -116,7 +113,7 @@ export const ScrollMixin = (superClass) =>
         this.__mouseDown = false;
         if (this.__pendingReorder) {
           this.__pendingReorder = false;
-          setTimeout(() => this._reorderRows(), this._timeouts.SCROLLING);
+          setTimeout(() => this._reorderRows(), timeouts.SCROLLING);
         }
       });
     }
@@ -178,7 +175,7 @@ export const ScrollMixin = (superClass) =>
         this._ignoreNewWheel = true;
         this._debouncerIgnoreNewWheel = Debouncer.debounce(
           this._debouncerIgnoreNewWheel,
-          timeOut.after(this._timeouts.IGNORE_WHEEL),
+          timeOut.after(timeouts.IGNORE_WHEEL),
           () => (this._ignoreNewWheel = false)
         );
       } else if ((this._hasResidualMomentum && momentum <= this._previousMomentum) || this._ignoreNewWheel) {
@@ -227,16 +224,12 @@ export const ScrollMixin = (superClass) =>
         // Defer setting state attributes to avoid Edge hiccups
         this._scrollingFrame = requestAnimationFrame(() => this._toggleAttribute('scrolling', true, this.$.scroller));
       }
-      this._debounceScrolling = Debouncer.debounce(
-        this._debounceScrolling,
-        timeOut.after(this._timeouts.SCROLLING),
-        () => {
-          cancelAnimationFrame(this._scrollingFrame);
-          delete this._scrollingFrame;
-          this._toggleAttribute('scrolling', false, this.$.scroller);
-          this._reorderRows();
-        }
-      );
+      this._debounceScrolling = Debouncer.debounce(this._debounceScrolling, timeOut.after(timeouts.SCROLLING), () => {
+        cancelAnimationFrame(this._scrollingFrame);
+        delete this._scrollingFrame;
+        this._toggleAttribute('scrolling', false, this.$.scroller);
+        this._reorderRows();
+      });
     }
 
     /** @private */
