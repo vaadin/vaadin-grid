@@ -319,9 +319,6 @@ class GridElement extends ElementMixin(
         <div part="reorder-ghost"></div>
       </div>
 
-      <!-- The template needs at least one slot or else shady doesn't distribute -->
-      <slot name="nodistribute"></slot>
-
       <div id="focusexit" tabindex="0"></div>
     `;
   }
