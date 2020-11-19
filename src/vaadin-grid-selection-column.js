@@ -28,7 +28,6 @@ import '@vaadin/vaadin-checkbox/src/vaadin-checkbox.js';
  * selection for all the items at once.
  *
  * __The default content can also be overridden__
- *
  */
 class GridSelectionColumnElement extends GridColumnElement {
   static get template() {

@@ -309,4 +309,5 @@ class GridColumnGroupElement extends ColumnBaseMixin(PolymerElement) {
 }
 
 customElements.define(GridColumnGroupElement.is, GridColumnGroupElement);
+
 export { GridColumnGroupElement };

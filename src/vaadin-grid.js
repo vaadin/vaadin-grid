@@ -929,4 +929,5 @@ class GridElement extends ElementMixin(
 }
 
 customElements.define(GridElement.is, GridElement);
+
 export { GridElement };
