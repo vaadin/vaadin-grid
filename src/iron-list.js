@@ -25,9 +25,9 @@ import { animationFrame, idlePeriod, microTask } from '@polymer/polymer/lib/util
 import { Class } from '@polymer/polymer/lib/legacy/class.js';
 import { flush } from '@polymer/polymer/lib/utils/flush.js';
 import { Debouncer, enqueueDebouncer } from '@polymer/polymer/lib/utils/debounce.js';
-var IOS = navigator.userAgent.match(/iP(?:hone|ad;(?: U;)? CPU) OS (\d+)/);
-var IOS_TOUCH_SCROLLING = IOS && IOS[1] >= 8;
-var DEFAULT_PHYSICAL_COUNT = 3;
+const IOS = navigator.userAgent.match(/iP(?:hone|ad;(?: U;)? CPU) OS (\d+)/);
+const IOS_TOUCH_SCROLLING = IOS && IOS[1] >= 8;
+const DEFAULT_PHYSICAL_COUNT = 3;
 
 /**
  * @private
@@ -243,9 +243,9 @@ export const PolymerIronList = Class({
    * @type {number}
    */
   get firstVisibleIndex() {
-    var idx = this._firstVisibleIndexVal;
+    let idx = this._firstVisibleIndexVal;
     if (idx == null) {
-      var physicalOffset = this._physicalTop + this._scrollOffset;
+      let physicalOffset = this._physicalTop + this._scrollOffset;
 
       idx =
         this._iterateItems(function (pidx, vidx) {
@@ -266,9 +266,9 @@ export const PolymerIronList = Class({
    * @type {number}
    */
   get lastVisibleIndex() {
-    var idx = this._lastVisibleIndexVal;
+    let idx = this._lastVisibleIndexVal;
     if (idx == null) {
-      var physicalOffset = this._physicalTop + this._scrollOffset;
+      let physicalOffset = this._physicalTop + this._scrollOffset;
       this._iterateItems(function (pidx, vidx) {
         if (physicalOffset < this._scrollBottom) {
           idx = vidx;
@@ -302,7 +302,7 @@ export const PolymerIronList = Class({
    * @method updateViewportBoundaries
    */
   updateViewportBoundaries: function () {
-    var styles = window.getComputedStyle(this);
+    const styles = window.getComputedStyle(this);
     this._scrollerPaddingTop = this.scrollTarget === this ? 0 : parseInt(styles['padding-top'], 10);
     this._isRTL = Boolean(styles.direction === 'rtl');
     this._viewportWidth = this.$.items.offsetWidth;
@@ -313,9 +313,9 @@ export const PolymerIronList = Class({
    * Recycles the physical items when needed.
    */
   _scrollHandler: function () {
-    var scrollTop = Math.max(0, Math.min(this._maxScrollTop, this._scrollTop));
-    var delta = scrollTop - this._scrollPosition;
-    var isScrollingDown = delta >= 0;
+    const scrollTop = Math.max(0, Math.min(this._maxScrollTop, this._scrollTop));
+    let delta = scrollTop - this._scrollPosition;
+    const isScrollingDown = delta >= 0;
     // Track the current scroll position.
     this._scrollPosition = scrollTop;
     // Clear indexes for first and last visible indexes.
@@ -324,14 +324,14 @@ export const PolymerIronList = Class({
     // Random access.
     if (Math.abs(delta) > this._physicalSize && this._physicalSize > 0) {
       delta = delta - this._scrollOffset;
-      var idxAdjustment = Math.round(delta / this._physicalAverage);
+      const idxAdjustment = Math.round(delta / this._physicalAverage);
       this._virtualStart = this._virtualStart + idxAdjustment;
       this._physicalStart = this._physicalStart + idxAdjustment;
       // Estimate new physical offset.
       this._physicalTop = Math.floor(this._virtualStart) * this._physicalAverage;
       this._update();
     } else if (this._physicalCount > 0) {
-      var reusables = this._getReusables(isScrollingDown);
+      const reusables = this._getReusables(isScrollingDown);
       if (isScrollingDown) {
         this._physicalTop = reusables.physicalTop;
         this._virtualStart = this._virtualStart + reusables.indexes.length;
@@ -352,16 +352,16 @@ export const PolymerIronList = Class({
    * @param {boolean} fromTop If the potential reusable items are above the scrolling region.
    */
   _getReusables: function (fromTop) {
-    var ith, offsetContent, physicalItemHeight;
-    var idxs = [];
-    var protectedOffsetContent = this._hiddenContentSize * this._ratio;
-    var virtualStart = this._virtualStart;
-    var virtualEnd = this._virtualEnd;
-    var physicalCount = this._physicalCount;
-    var top = this._physicalTop + this._scrollOffset;
-    var bottom = this._physicalBottom + this._scrollOffset;
-    var scrollTop = this._scrollTop;
-    var scrollBottom = this._scrollBottom;
+    let ith, offsetContent, physicalItemHeight;
+    const idxs = [];
+    const protectedOffsetContent = this._hiddenContentSize * this._ratio;
+    const virtualStart = this._virtualStart;
+    const virtualEnd = this._virtualEnd;
+    const physicalCount = this._physicalCount;
+    let top = this._physicalTop + this._scrollOffset;
+    const bottom = this._physicalBottom + this._scrollOffset;
+    const scrollTop = this._scrollTop;
+    const scrollBottom = this._scrollBottom;
 
     if (fromTop) {
       ith = this._physicalStart;
@@ -420,7 +420,7 @@ export const PolymerIronList = Class({
     // Adjust offset after measuring.
     if (movingUp) {
       while (movingUp.length) {
-        var idx = movingUp.pop();
+        const idx = movingUp.pop();
         this._physicalTop -= this._getPhysicalSizeIncrement(idx);
       }
     }
@@ -440,23 +440,23 @@ export const PolymerIronList = Class({
    * Increases the pool size.
    */
   _increasePoolIfNeeded: function (count) {
-    var nextPhysicalCount = this._clamp(
+    const nextPhysicalCount = this._clamp(
       this._physicalCount + count,
       DEFAULT_PHYSICAL_COUNT,
       this._virtualCount - this._virtualStart
     );
-    var delta = nextPhysicalCount - this._physicalCount;
-    var nextIncrease = Math.round(this._physicalCount * 0.5);
+    const delta = nextPhysicalCount - this._physicalCount;
+    let nextIncrease = Math.round(this._physicalCount * 0.5);
 
     if (delta < 0) {
       return;
     }
     if (delta > 0) {
-      var ts = window.performance.now();
+      const ts = window.performance.now();
       // Concat arrays in place.
       [].push.apply(this._physicalItems, this._createPool(delta));
       // Push 0s into physicalSizes. Can't use Array.fill because IE11 doesn't support it.
-      for (var i = 0; i < delta; i++) {
+      for (let i = 0; i < delta; i++) {
         this._physicalSizes.push(0);
       }
       this._physicalCount = this._physicalCount + delta;
@@ -498,7 +498,7 @@ export const PolymerIronList = Class({
       return;
     }
     if (this._physicalCount !== 0) {
-      var reusables = this._getReusables(true);
+      const reusables = this._getReusables(true);
       this._physicalTop = reusables.physicalTop;
       this._virtualStart = this._virtualStart + reusables.indexes.length;
       this._physicalStart = this._physicalStart + reusables.indexes.length;
@@ -543,7 +543,7 @@ export const PolymerIronList = Class({
    * @param {!Array<number>=} itemSet
    */
   _iterateItems: function (fn, itemSet) {
-    var pidx, vidx, rtn, i;
+    let pidx, vidx, rtn, i;
 
     if (arguments.length === 2 && itemSet) {
       for (i = 0; i < itemSet.length; i++) {
@@ -592,10 +592,10 @@ export const PolymerIronList = Class({
     // so we can measure them.
     flush();
 
-    var newPhysicalSize = 0;
-    var oldPhysicalSize = 0;
-    var prevAvgCount = this._physicalAverageCount;
-    var prevPhysicalAvg = this._physicalAverage;
+    let newPhysicalSize = 0;
+    let oldPhysicalSize = 0;
+    const prevAvgCount = this._physicalAverageCount;
+    const prevPhysicalAvg = this._physicalAverage;
 
     this._iterateItems(function (pidx) {
       oldPhysicalSize += this._physicalSizes[pidx];
@@ -620,7 +620,7 @@ export const PolymerIronList = Class({
   _positionItems: function () {
     this._adjustScrollPosition();
 
-    var y = this._physicalTop;
+    let y = this._physicalTop;
 
     this._iterateItems(function (pidx) {
       this.translate3d(0, y + 'px', 0, this._physicalItems[pidx]);
@@ -636,12 +636,12 @@ export const PolymerIronList = Class({
    * Adjusts the scroll position when it was overestimated.
    */
   _adjustScrollPosition: function () {
-    var deltaHeight =
+    const deltaHeight =
       this._virtualStart === 0 ? this._physicalTop : Math.min(this._scrollPosition + this._physicalTop, 0);
     // Note: the delta can be positive or negative.
     if (deltaHeight !== 0) {
       this._physicalTop = this._physicalTop - deltaHeight;
-      var scrollTop = this._scrollTop;
+      const scrollTop = this._scrollTop;
       // juking scroll position during interial scrolling on iOS is no bueno
       if (!IOS_TOUCH_SCROLLING && scrollTop > 0) {
         this._resetScrollPosition(scrollTop - deltaHeight);
@@ -703,10 +703,10 @@ export const PolymerIronList = Class({
     // Estimate new physical offset.
     this._physicalTop = Math.floor(this._virtualStart) * this._physicalAverage;
 
-    var currentTopItem = this._physicalStart;
-    var currentVirtualItem = this._virtualStart;
-    var targetOffsetTop = 0;
-    var hiddenContentSize = this._hiddenContentSize;
+    let currentTopItem = this._physicalStart;
+    let currentVirtualItem = this._virtualStart;
+    let targetOffsetTop = 0;
+    const hiddenContentSize = this._hiddenContentSize;
     // scroll to the item as much as we can.
     while (currentVirtualItem < idx && targetOffsetTop <= hiddenContentSize) {
       targetOffsetTop = targetOffsetTop + this._getPhysicalSizeIncrement(currentTopItem);

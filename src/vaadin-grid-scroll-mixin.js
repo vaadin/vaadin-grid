@@ -163,7 +163,7 @@ export const ScrollMixin = (superClass) =>
         () => (this._wheelAnimationFrame = false)
       );
 
-      var momentum = Math.abs(e.deltaX) + Math.abs(deltaY);
+      const momentum = Math.abs(e.deltaX) + Math.abs(deltaY);
 
       if (this._canScroll(table, e.deltaX, deltaY)) {
         e.preventDefault();
@@ -389,9 +389,9 @@ export const ScrollMixin = (superClass) =>
             this.__scrollerMetrics.clientWidth -
             this.__scrollerMetrics.scrollWidth
           : this._scrollLeft;
-        var frozenCellTransform = this._getTranslate(x, 0);
+        const frozenCellTransform = this._getTranslate(x, 0);
 
-        for (var i = 0; i < this._frozenCells.length; i++) {
+        for (let i = 0; i < this._frozenCells.length; i++) {
           this._frozenCells[i].style.transform = frozenCellTransform;
         }
       }

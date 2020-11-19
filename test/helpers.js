@@ -117,7 +117,7 @@ const getVisibleItems = (grid) => {
   flushGrid(grid);
   const rows = grid.$.items.children;
   const visibleRows = [];
-  for (var i = 0; i < rows.length; i++) {
+  for (let i = 0; i < rows.length; i++) {
     if (isVisible(rows[i])) {
       visibleRows.push(rows[i]);
     }
@@ -250,7 +250,7 @@ export const makeSoloTouchEvent = (type, xy, node) => {
     changedTouches: touches
   };
   const event = new CustomEvent(type, { bubbles: true, cancelable: true });
-  for (var property in touchEventInit) {
+  for (let property in touchEventInit) {
     event[property] = touchEventInit[property];
   }
   node.dispatchEvent(event);

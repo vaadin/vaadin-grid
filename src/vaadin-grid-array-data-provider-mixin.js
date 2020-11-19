@@ -85,7 +85,7 @@ export const ArrayDataProviderMixin = (superClass) =>
 
       let result = true;
 
-      for (var i in arrayToCheck) {
+      for (let i in arrayToCheck) {
         const path = arrayToCheck[i].path;
 
         // skip simple paths

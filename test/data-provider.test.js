@@ -193,7 +193,7 @@ describe('data provider', () => {
       grid.dataProvider = sinon.spy(infiniteDataProvider);
       grid.size = 10;
 
-      for (var i = 0; i < grid.dataProvider.callCount; i++) {
+      for (let i = 0; i < grid.dataProvider.callCount; i++) {
         const page = grid.dataProvider.getCall(i).args[0].page;
         expect(page).to.be.above(-1);
       }
@@ -610,7 +610,7 @@ describe('wrapped grid', () => {
       await aTimeout(loadDebounceTime);
       // assuming grid has about 30 items
       expect(container.dataProvider.callCount).to.be.above(2);
-      for (var i = 0; i < container.dataProvider.callCount; i++) {
+      for (let i = 0; i < container.dataProvider.callCount; i++) {
         expect(container.dataProvider.getCall(i).args[0].page).to.eql(i);
       }
     });

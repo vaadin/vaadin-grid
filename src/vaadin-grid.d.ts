@@ -175,12 +175,12 @@ import { GridColumnElement } from './vaadin-grid-column.js';
  *
  * ```javascript
  * grid.dataProvider = function(params, callback) {
- *   var url = 'https://api.example/data' +
+ *   const url = 'https://api.example/data' +
  *       '?page=' + params.page +        // the requested page index
  *       '&per_page=' + params.pageSize; // number of items on the page
- *   var xhr = new XMLHttpRequest();
+ *   const xhr = new XMLHttpRequest();
  *   xhr.onload = function() {
- *     var response = JSON.parse(xhr.responseText);
+ *     const response = JSON.parse(xhr.responseText);
  *     callback(
  *       response.employees, // requested page of items
  *       response.totalSize  // total number of items
@@ -196,12 +196,12 @@ import { GridColumnElement } from './vaadin-grid-column.js';
  * ```javascript
  * grid.size = 200; // The total number of items
  * grid.dataProvider = function(params, callback) {
- *   var url = 'https://api.example/data' +
+ *   const url = 'https://api.example/data' +
  *       '?page=' + params.page +        // the requested page index
  *       '&per_page=' + params.pageSize; // number of items on the page
- *   var xhr = new XMLHttpRequest();
+ *   const xhr = new XMLHttpRequest();
  *   xhr.onload = function() {
- *     var response = JSON.parse(xhr.responseText);
+ *     const response = JSON.parse(xhr.responseText);
  *     callback(response.employees);
  *   };
  *   xhr.open('GET', url, true);

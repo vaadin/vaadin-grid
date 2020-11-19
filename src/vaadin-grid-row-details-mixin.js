@@ -69,7 +69,7 @@ export const RowDetailsMixin = (superClass) =>
       }
       if (rowDetailsTemplate || rowDetailsRenderer) {
         if (rowDetailsTemplate && !rowDetailsTemplate.templatizer) {
-          var templatizer = new Templatizer();
+          const templatizer = new Templatizer();
           templatizer._grid = this;
           templatizer.dataHost = this.dataHost;
           templatizer.template = rowDetailsTemplate;

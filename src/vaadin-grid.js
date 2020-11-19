@@ -173,12 +173,12 @@ const TOUCH_DEVICE = (() => {
  *
  * ```javascript
  * grid.dataProvider = function(params, callback) {
- *   var url = 'https://api.example/data' +
+ *   const url = 'https://api.example/data' +
  *       '?page=' + params.page +        // the requested page index
  *       '&per_page=' + params.pageSize; // number of items on the page
- *   var xhr = new XMLHttpRequest();
+ *   const xhr = new XMLHttpRequest();
  *   xhr.onload = function() {
- *     var response = JSON.parse(xhr.responseText);
+ *     const response = JSON.parse(xhr.responseText);
  *     callback(
  *       response.employees, // requested page of items
  *       response.totalSize  // total number of items
@@ -194,12 +194,12 @@ const TOUCH_DEVICE = (() => {
  * ```javascript
  * grid.size = 200; // The total number of items
  * grid.dataProvider = function(params, callback) {
- *   var url = 'https://api.example/data' +
+ *   const url = 'https://api.example/data' +
  *       '?page=' + params.page +        // the requested page index
  *       '&per_page=' + params.pageSize; // number of items on the page
- *   var xhr = new XMLHttpRequest();
+ *   const xhr = new XMLHttpRequest();
  *   xhr.onload = function() {
- *     var response = JSON.parse(xhr.responseText);
+ *     const response = JSON.parse(xhr.responseText);
  *     callback(response.employees);
  *   };
  *   xhr.open('GET', url, true);
@@ -492,7 +492,7 @@ class GridElement extends ElementMixin(
   /** @private */
   _createScrollerRows(count) {
     const rows = [];
-    for (var i = 0; i < count; i++) {
+    for (let i = 0; i < count; i++) {
       const row = document.createElement('tr');
       row.setAttribute('part', 'row');
       row.setAttribute('role', 'row');

@@ -105,7 +105,7 @@ describe('scroll to index', () => {
         flushGrid(grid);
         // Check that the rows are in order
         const rows = grid.$.items.querySelectorAll('[part~="row"]');
-        for (var i = 1; i < rows.length; i++) {
+        for (let i = 1; i < rows.length; i++) {
           expect(rows[i].index).to.equal(rows[i - 1].index + 1);
         }
         done();

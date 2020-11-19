@@ -56,23 +56,23 @@ export const DynamicColumnsMixin = (superClass) =>
 
     /** @private */
     _getColumnTree() {
-      var rootColumns = FlattenedNodesObserver.getFlattenedNodes(this).filter(this._isColumnElement);
-      var _columnTree = [];
+      const rootColumns = FlattenedNodesObserver.getFlattenedNodes(this).filter(this._isColumnElement);
+      const columnTree = [];
 
-      for (var c = rootColumns; ; ) {
-        _columnTree.push(c);
+      for (let c = rootColumns; ; ) {
+        columnTree.push(c);
         if (!this._hasColumnGroups(c)) {
           break;
         }
         c = this._flattenColumnGroups(c);
       }
 
-      return _columnTree;
+      return columnTree;
     }
 
     /** @protected */
     _updateColumnTree() {
-      var columnTree = this._getColumnTree();
+      const columnTree = this._getColumnTree();
       if (!this._arrayEquals(columnTree, this._columnTree)) {
         this._columnTree = columnTree;
       }
@@ -111,7 +111,7 @@ export const DynamicColumnsMixin = (superClass) =>
         return false;
       }
 
-      for (var i = 0, l = arr1.length; i < l; i++) {
+      for (let i = 0, l = arr1.length; i < l; i++) {
         // Check if we have nested arrays
         if (arr1[i] instanceof Array && arr2[i] instanceof Array) {
           // recurse into the nested arrays
@@ -136,7 +136,7 @@ export const DynamicColumnsMixin = (superClass) =>
         'vaadin-grid-sort-column',
         'vaadin-grid-sorter'
       ].forEach((elementName) => {
-        var element = this.querySelector(elementName);
+        const element = this.querySelector(elementName);
         if (element && !(element instanceof PolymerElement)) {
           console.warn(`Make sure you have imported the required module for <${elementName}> element.`);
         }

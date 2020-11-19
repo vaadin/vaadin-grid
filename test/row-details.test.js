@@ -266,7 +266,7 @@ describe('row details', () => {
 
   describe('repeat', () => {
     const items = [];
-    for (var i = 0; i < 50; i++) {
+    for (let i = 0; i < 50; i++) {
       items.push({ details: [1, 2, 3, 4] });
     }
 

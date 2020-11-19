@@ -55,11 +55,11 @@ export const ColumnResizingMixin = (superClass) =>
         }
 
         const columnRowCells = Array.from(this.$.header.querySelectorAll('[part~="row"]:last-child [part~="cell"]'));
-        var targetCell = columnRowCells.filter((cell) => cell._column === column)[0];
+        const targetCell = columnRowCells.filter((cell) => cell._column === column)[0];
         // Resize the target column
         if (targetCell.offsetWidth) {
-          var style = window.getComputedStyle(targetCell);
-          var minWidth =
+          const style = window.getComputedStyle(targetCell);
+          const minWidth =
             10 +
             parseInt(style.paddingLeft) +
             parseInt(style.paddingRight) +

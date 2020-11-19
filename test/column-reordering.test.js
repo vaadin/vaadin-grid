@@ -82,7 +82,7 @@ describe('reordering simple grid', () => {
     await aTimeout(0);
     const colCount = getRowCells(getRows(grid.$.header)[0]).length;
     headerContent = [];
-    for (var i = 0; i < colCount; i++) {
+    for (let i = 0; i < colCount; i++) {
       headerContent.push(getVisualHeaderCellContent(grid, 0, i));
     }
     flushGrid(grid);
@@ -540,7 +540,7 @@ describe('reordering with draggable contents', () => {
     await aTimeout(0);
     const colCount = getRowCells(getRows(grid.$.header)[0]).length;
     visualColumnCellContents = [];
-    for (var i = 0; i < colCount; i++) {
+    for (let i = 0; i < colCount; i++) {
       visualColumnCellContents.push(getVisualColumnCellContents(grid, i));
     }
   });

@@ -154,7 +154,7 @@ class GridTemplatizer extends class extends PolymerElement {} {
       return;
     }
     Object.keys(this._parentPathValues || {}).forEach((keyName) => {
-      for (var i = index; i < index + count; i++) {
+      for (let i = index; i < index + count; i++) {
         this._templateInstances[i].set(keyName, this._parentPathValues[keyName]);
       }
     });
