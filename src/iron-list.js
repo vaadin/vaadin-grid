@@ -249,7 +249,7 @@ export const PolymerIronList = Class({
 
       idx =
         this._iterateItems(function (pidx, vidx) {
-          physicalOffset += this._getPhysicalSizeIncrement(pidx);
+          physicalOffset += this._physicalSizes[pidx];
 
           if (physicalOffset > this._scrollPosition) {
             return vidx;
@@ -273,7 +273,7 @@ export const PolymerIronList = Class({
         if (physicalOffset < this._scrollBottom) {
           idx = vidx;
         }
-        physicalOffset += this._getPhysicalSizeIncrement(pidx);
+        physicalOffset += this._physicalSizes[pidx];
       });
       this._lastVisibleIndexVal = idx;
     }
@@ -331,16 +331,16 @@ export const PolymerIronList = Class({
       this._physicalTop = Math.floor(this._virtualStart) * this._physicalAverage;
       this._update();
     } else if (this._physicalCount > 0) {
-      const reusables = this._getReusables(isScrollingDown);
+      const { physicalTop, indexes } = this._getReusables(isScrollingDown);
       if (isScrollingDown) {
-        this._physicalTop = reusables.physicalTop;
-        this._virtualStart = this._virtualStart + reusables.indexes.length;
-        this._physicalStart = this._physicalStart + reusables.indexes.length;
+        this._physicalTop = physicalTop;
+        this._virtualStart = this._virtualStart + indexes.length;
+        this._physicalStart = this._physicalStart + indexes.length;
       } else {
-        this._virtualStart = this._virtualStart - reusables.indexes.length;
-        this._physicalStart = this._physicalStart - reusables.indexes.length;
+        this._virtualStart = this._virtualStart - indexes.length;
+        this._physicalStart = this._physicalStart - indexes.length;
       }
-      this._update(reusables.indexes, isScrollingDown ? null : reusables.indexes);
+      this._update(indexes, isScrollingDown ? null : indexes);
       this._debounce('_increasePoolIfNeeded', this._increasePoolIfNeeded.bind(this, 0), microTask);
     }
   },
@@ -372,7 +372,7 @@ export const PolymerIronList = Class({
     }
     // eslint-disable-next-line no-constant-condition
     while (true) {
-      physicalItemHeight = this._getPhysicalSizeIncrement(ith);
+      physicalItemHeight = this._physicalSizes[ith];
       offsetContent = offsetContent - physicalItemHeight;
       if (idxs.length >= physicalCount || offsetContent <= protectedOffsetContent) {
         break;
@@ -421,7 +421,7 @@ export const PolymerIronList = Class({
     if (movingUp) {
       while (movingUp.length) {
         const idx = movingUp.pop();
-        this._physicalTop -= this._getPhysicalSizeIncrement(idx);
+        this._physicalTop -= this._physicalSizes[idx];
       }
     }
     this._positionItems();
@@ -498,11 +498,11 @@ export const PolymerIronList = Class({
       return;
     }
     if (this._physicalCount !== 0) {
-      const reusables = this._getReusables(true);
-      this._physicalTop = reusables.physicalTop;
-      this._virtualStart = this._virtualStart + reusables.indexes.length;
-      this._physicalStart = this._physicalStart + reusables.indexes.length;
-      this._update(reusables.indexes);
+      const { physicalTop, indexes } = this._getReusables(true);
+      this._physicalTop = physicalTop;
+      this._virtualStart = this._virtualStart + indexes.length;
+      this._physicalStart = this._physicalStart + indexes.length;
+      this._update(indexes);
       this._update();
       this._increasePoolIfNeeded(0);
     } else if (this._virtualCount > 0) {
@@ -628,10 +628,6 @@ export const PolymerIronList = Class({
     });
   },
 
-  _getPhysicalSizeIncrement: function (pidx) {
-    return this._physicalSizes[pidx];
-  },
-
   /**
    * Adjusts the scroll position when it was overestimated.
    */
@@ -709,7 +705,7 @@ export const PolymerIronList = Class({
     const hiddenContentSize = this._hiddenContentSize;
     // scroll to the item as much as we can.
     while (currentVirtualItem < idx && targetOffsetTop <= hiddenContentSize) {
-      targetOffsetTop = targetOffsetTop + this._getPhysicalSizeIncrement(currentTopItem);
+      targetOffsetTop = targetOffsetTop + this._physicalSizes[currentTopItem];
       currentTopItem = (currentTopItem + 1) % this._physicalCount;
       currentVirtualItem++;
     }
