@@ -147,10 +147,6 @@ export const isWithinParentConstraints = (el, parent) => {
   );
 };
 
-export const getCustomCSSPropertyValue = (element, propertyName) => {
-  return getComputedStyle(element).getPropertyValue(propertyName);
-};
-
 export const getRows = (container) => {
   return container.querySelectorAll('tr');
 };

@@ -29,22 +29,16 @@ describe('sorting', () => {
       orderIndicator = sorter.shadowRoot.querySelector('[part="order"]');
     });
 
-    function clickSorter(sorter) {
-      const clickEvent = new CustomEvent('click', { bubbles: true, cancelable: true, composed: true });
-      sorter.dispatchEvent(clickEvent);
-      return clickEvent;
-    }
-
     it('should have default direction', () => {
       expect(sorter.direction).to.equal(null);
     });
 
     it('should toggle direction', () => {
-      clickSorter(sorter);
+      click(sorter);
       expect(sorter.direction).to.equal('asc');
-      clickSorter(sorter);
+      click(sorter);
       expect(sorter.direction).to.equal('desc');
-      clickSorter(sorter);
+      click(sorter);
       expect(sorter.direction).to.equal(null);
     });
 
@@ -76,7 +70,7 @@ describe('sorting', () => {
     });
 
     it('should prevent default on click', () => {
-      const clickEvent = clickSorter(sorter);
+      const clickEvent = click(sorter);
 
       expect(clickEvent.defaultPrevented).to.be.true;
     });
