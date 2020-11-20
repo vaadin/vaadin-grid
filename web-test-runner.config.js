@@ -67,7 +67,7 @@ if (env === 'firefox' || env === 'safari') {
   };
 
   config.files = tests;
-  config.concurrency = 2;
+  config.concurrency = env === 'firefox' ? 2 : 1;
   config.browsers = [
     sauceLabsLauncher({
       ...sharedCapabilities,
