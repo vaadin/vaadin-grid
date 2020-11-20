@@ -134,10 +134,13 @@
       }
 
       [part~="row"][dragstart] {
-        /* Add bottom-space to the row so the drag number doesn't get clipped. Needed for IE/Edge */
-        border-bottom: 100px solid transparent;
         z-index: 100 !important;
         opacity: 0.9;
+      }
+
+      #scroller[ie] [part~="row"][dragstart] {
+        /* Add bottom-space to the row so the drag number doesn't get clipped. Needed for IE */
+        border-bottom: 100px solid transparent;
       }
 
       [part~="row"][dragstart] [part~="cell"] {
@@ -157,7 +160,7 @@
         background: var(--lumo-primary-color-50pct);
       }
 
-      #scroller:not([ios]) [part~="row"][dragstart]:not([dragstart=""])::after {
+      #scroller [part~="row"][dragstart]:not([dragstart=""])::after {
         display: block;
         position: absolute;
         left: var(--_grid-drag-start-x);
