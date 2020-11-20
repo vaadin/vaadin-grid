@@ -1,5 +1,6 @@
 /* eslint-env node */
 const { createSauceLabsLauncher } = require('@web/test-runner-saucelabs');
+const fs = require('fs');
 
 const config = {
   nodeResolve: true,
@@ -38,6 +39,21 @@ const sauce = {
 };
 
 if (env === 'firefox' || env === 'safari') {
+  // Exclude some tests to reduce Safari flakiness
+  const exclude = [
+    'all-imports.test.js',
+    'extension.test.js',
+    'hidden-grid.test.js',
+    'iron-list.test.js',
+    'missing-imports.test.js',
+    'resizing-material.test.js'
+  ];
+
+  const tests = fs
+    .readdirSync('./test/')
+    .filter((file) => file.includes('test.js') && !exclude.includes(file))
+    .map((file) => `test/${file}`);
+
   const sauceLabsLauncher = createSauceLabsLauncher({
     user: process.env.SAUCE_USERNAME,
     key: process.env.SAUCE_ACCESS_KEY
@@ -50,6 +66,7 @@ if (env === 'firefox' || env === 'safari') {
     }
   };
 
+  config.files = tests;
   config.concurrency = 2;
   config.browsers = [
     sauceLabsLauncher({
