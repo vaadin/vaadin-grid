@@ -79,16 +79,11 @@ class GridTreeToggleElement extends ThemableMixin(DirMixin(PolymerElement)) {
 
           /* CSS API for :host */
           --vaadin-grid-tree-toggle-level-offset: 1em;
-
-          /*
-          ShadyCSS seems to polyfill :dir(rtl) only for :host, thus using
-          a host custom CSS property for ltr/rtl toggle icon choice.
-         */
-          ---collapsed-icon: '\\e7be\\00a0';
+          --_collapsed-icon: '\\e7be\\00a0';
         }
 
-        :host(:dir(rtl)) {
-          ---collapsed-icon: '\\e7bd\\00a0';
+        :host([dir='rtl']) {
+          --_collapsed-icon: '\\e7bd\\00a0';
         }
 
         :host([hidden]) {
@@ -115,7 +110,7 @@ class GridTreeToggleElement extends ThemableMixin(DirMixin(PolymerElement)) {
         }
 
         :host(:not([expanded])) [part='toggle']::before {
-          content: var(---collapsed-icon);
+          content: var(--_collapsed-icon);
         }
 
         :host([expanded]) [part='toggle']::before {
