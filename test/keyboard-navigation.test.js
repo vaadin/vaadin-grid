@@ -1,6 +1,6 @@
 import { expect } from '@esm-bundle/chai';
 import sinon from 'sinon';
-import { aTimeout, fixtureSync, nextFrame } from '@open-wc/testing-helpers';
+import { aTimeout, fixtureSync, nextFrame } from '@open-wc/testing-helpers/index-no-side-effects.js';
 import {
   keyDownOn,
   keyUpOn,
@@ -221,7 +221,7 @@ function getTabbableElements(root) {
 }
 
 describe('keyboard navigation', () => {
-  beforeEach(async () => {
+  before(async () => {
     grid = fixtureSync(`
       <vaadin-grid theme="no-border">
         <template class="row-details">
@@ -264,27 +264,45 @@ describe('keyboard navigation', () => {
     footer = grid.$.footer;
 
     grid._observer.flush();
+    flushGrid(grid);
 
     focusable = document.createElement('input');
     focusable.setAttribute('id', 'focusable');
     grid.parentNode.appendChild(focusable);
 
-    flushGrid(grid);
+    await aTimeout(0);
+  });
 
-    grid.items = ['foo', 'bar'];
+  after(() => {
+    focusable.remove();
+    grid.remove();
+  });
+
+  beforeEach(() => {
+    // Reset side effects from tests
+    grid.style.width = '';
+    grid.style.border = '';
+
+    if (grid.items[0] !== 'foo' || grid.items[1] !== 'bar') {
+      grid.size = undefined;
+      grid.dataProvider = undefined;
+      grid.items = ['foo', 'bar'];
+      flushGrid(grid);
+    }
+    grid.activeItem = null;
+    grid.detailsOpenedItems = [];
     grid._columnTree[0].forEach((column) => {
       column.hidden = false;
       column.frozen = false;
     });
 
-    flushGrid(grid);
+    grid._focusedItemIndex = 0;
+    grid._focusedColumnOrder = undefined;
+    grid._resetKeyboardNavigation();
+    grid.removeAttribute('navigating');
 
     focusable.focus();
-    await aTimeout(0);
-  });
-
-  afterEach(() => {
-    grid.parentNode.removeChild(focusable);
+    flushGrid(grid);
   });
 
   describe('navigation mode', () => {
