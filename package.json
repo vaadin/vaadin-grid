@@ -75,7 +75,7 @@
     "@polymer/iron-test-helpers": "^3.0.0",
     "@web/dev-server": "0.0.21",
     "@web/test-runner": "^0.9.11",
-    "@web/test-runner-saucelabs": "^0.1.1",
+    "@web/test-runner-saucelabs": "^0.1.2",
     "eslint": "^7.13.0",
     "eslint-config-prettier": "^6.15.0",
     "eslint-plugin-prettier": "^3.1.4",
