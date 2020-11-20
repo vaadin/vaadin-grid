@@ -34,7 +34,7 @@ const sauce = {
   safari: {
     browserName: 'safari',
     platform: 'macOS 10.15',
-    browserVersion: '13.1'
+    browserVersion: 'latest'
   }
 };
 
