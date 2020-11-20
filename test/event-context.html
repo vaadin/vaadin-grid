@@ -6,13 +6,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-  <script src="../../web-component-tester/browser.js"></script>
-  <script src="../../iron-test-helpers/mock-interactions.js"></script>
-  <link rel="import" href="../../test-fixture/test-fixture.html">
+  <script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+  <script src="../../../wct-browser-legacy/browser.js"></script>
+  <script src="../../../@polymer/iron-test-helpers/mock-interactions.js" type="module"></script>
+  <script type="module" src="../../../@polymer/test-fixture/test-fixture.js"></script>
 
-  <link rel="import" href="helpers.html">
-  <link rel="import" href="../all-imports.html">
+  <script type="module" src="./helpers.js"></script>
+  <script type="module" src="../all-imports.js"></script>
 </head>
 
 <body>
@@ -34,114 +34,116 @@
     </template>
   </test-fixture>
 
-  <script>
-    describe('get context info from event', () => {
-      let grid, column, columnGroup;
+  <script type="module">
+import '@polymer/test-fixture/test-fixture.js';
+import './helpers.js';
+import '../all-imports.js';
+describe('get context info from event', () => {
+  let grid, column, columnGroup;
 
-      beforeEach(() => {
-        grid = fixture('grid');
-        column = grid.querySelector('vaadin-grid-column');
-        columnGroup = grid.querySelector('vaadin-grid-column-group');
+  beforeEach(() => {
+    grid = fixture('grid');
+    column = grid.querySelector('vaadin-grid-column');
+    columnGroup = grid.querySelector('vaadin-grid-column-group');
 
-        grid.rowDetailsRenderer = function(root, grid, model) {
-          root.innerHTML = '<div>details</div>';
-        };
-        grid.openItemDetails(grid.items[0]);
+    grid.rowDetailsRenderer = function(root, grid, model) {
+      root.innerHTML = '<div>details</div>';
+    };
+    grid.openItemDetails(grid.items[0]);
 
-        flushGrid(grid);
-      });
+    flushGrid(grid);
+  });
 
-      const testEventContext = (target, expectedContext, done) => {
-        grid.addEventListener('click', e => {
-          const context = grid.getEventContext(e);
-          expect(context).to.deep.equals(expectedContext);
-          done();
-        });
-        click(target);
-      };
-
-      it('should include properties when targeting body', done => {
-        const cell = getContainerCell(grid.$.items, 0, 0);
-        testEventContext(cell,
-          {
-            item: {foo: 'bar'},
-            column: column,
-            section: 'body',
-            index: 0,
-            selected: false,
-            detailsOpened: true,
-            expanded: false,
-            level: 0
-          },
-          done);
-      });
-
-      it('should include properties when targeting header', done => {
-        const headerCell = getContainerCell(grid.$.header, 1, 0);
-        testEventContext(headerCell,
-          {
-            column: column,
-            section: 'header'
-          },
-          done);
-      });
-
-      it('should include properties when targeting footer', done => {
-        const footerCell = getContainerCell(grid.$.footer, 0, 0);
-        testEventContext(footerCell,
-          {
-            column: column,
-            section: 'footer'
-          },
-          done);
-      });
-
-      it('should include properties when targeting column-group header', done => {
-        const columnGroupHeader = getContainerCell(grid.$.header, 0, 0);
-        testEventContext(columnGroupHeader,
-          {
-            column: columnGroup,
-            section: 'header'
-          },
-          done);
-      });
-
-      it('should include properties when targeting column-group footer', done => {
-        const columnGroupFooter = getContainerCell(grid.$.footer, 1, 0);
-        testEventContext(columnGroupFooter,
-          {
-            column: columnGroup,
-            section: 'footer'
-          },
-          done);
-      });
-
-      it('should include properties when targeting row details', done => {
-        const detailsCell = getContainerCell(grid.$.items, 0, 1);
-        testEventContext(detailsCell,
-          {
-            item: {foo: 'bar'},
-            section: 'details',
-            index: 0,
-            selected: false,
-            detailsOpened: true,
-            expanded: false,
-            level: 0
-          },
-          done);
-      });
-
-      it('should return empty object when targeting empty body', done => {
-        testEventContext(grid.$.table, {}, done);
-      });
-
-      it('should return empty object when targeting grid element', done => {
-        testEventContext(grid, {}, done);
-      });
-
+  const testEventContext = (target, expectedContext, done) => {
+    grid.addEventListener('click', e => {
+      const context = grid.getEventContext(e);
+      expect(context).to.deep.equals(expectedContext);
+      done();
     });
+    click(target);
+  };
 
-  </script>
+  it('should include properties when targeting body', done => {
+    const cell = getContainerCell(grid.$.items, 0, 0);
+    testEventContext(cell,
+      {
+        item: {foo: 'bar'},
+        column: column,
+        section: 'body',
+        index: 0,
+        selected: false,
+        detailsOpened: true,
+        expanded: false,
+        level: 0
+      },
+      done);
+  });
+
+  it('should include properties when targeting header', done => {
+    const headerCell = getContainerCell(grid.$.header, 1, 0);
+    testEventContext(headerCell,
+      {
+        column: column,
+        section: 'header'
+      },
+      done);
+  });
+
+  it('should include properties when targeting footer', done => {
+    const footerCell = getContainerCell(grid.$.footer, 0, 0);
+    testEventContext(footerCell,
+      {
+        column: column,
+        section: 'footer'
+      },
+      done);
+  });
+
+  it('should include properties when targeting column-group header', done => {
+    const columnGroupHeader = getContainerCell(grid.$.header, 0, 0);
+    testEventContext(columnGroupHeader,
+      {
+        column: columnGroup,
+        section: 'header'
+      },
+      done);
+  });
+
+  it('should include properties when targeting column-group footer', done => {
+    const columnGroupFooter = getContainerCell(grid.$.footer, 1, 0);
+    testEventContext(columnGroupFooter,
+      {
+        column: columnGroup,
+        section: 'footer'
+      },
+      done);
+  });
+
+  it('should include properties when targeting row details', done => {
+    const detailsCell = getContainerCell(grid.$.items, 0, 1);
+    testEventContext(detailsCell,
+      {
+        item: {foo: 'bar'},
+        section: 'details',
+        index: 0,
+        selected: false,
+        detailsOpened: true,
+        expanded: false,
+        level: 0
+      },
+      done);
+  });
+
+  it('should return empty object when targeting empty body', done => {
+    testEventContext(grid.$.table, {}, done);
+  });
+
+  it('should return empty object when targeting grid element', done => {
+    testEventContext(grid, {}, done);
+  });
+
+});
+</script>
 
 </body>
 
