@@ -4,8 +4,8 @@
  * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
  */
 import { PolymerElement } from '@polymer/polymer/polymer-element.js';
-
 import { templatize } from '@polymer/polymer/lib/utils/templatize.js';
+
 /**
  * `vaadin-grid-templatizer` is a helper element for the `vaadin-grid` that is preparing and
  * stamping instances of cells and columns templates
@@ -13,7 +13,7 @@ import { templatize } from '@polymer/polymer/lib/utils/templatize.js';
  * @extends HTMLElement
  * @private
  */
-class GridTemplatizer extends class extends PolymerElement {} {
+class GridTemplatizer extends PolymerElement {
   static get is() {
     return 'vaadin-grid-templatizer';
   }
