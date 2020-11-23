@@ -1,6 +1,17 @@
 import { GridColumnElement } from './vaadin-grid-column.js';
 
 /**
+ * Fired when the `selectAll` property changes.
+ */
+export type GridSelectionColumnSelectAllChanged = CustomEvent<{ value: boolean }>;
+
+export interface GridSelectionColumnElementEventMap {
+  'select-all-changed': GridSelectionColumnSelectAllChanged;
+}
+
+export interface GridSelectionColumnEventMap extends HTMLElementEventMap, GridSelectionColumnElementEventMap {}
+
+/**
  * `<vaadin-grid-selection-column>` is a helper element for the `<vaadin-grid>`
  * that provides default templates and functionality for item selection.
  *
@@ -45,6 +56,18 @@ declare class GridSelectionColumnElement extends GridColumnElement {
    * @attr {boolean} auto-select
    */
   autoSelect: boolean;
+
+  addEventListener<K extends keyof GridSelectionColumnEventMap>(
+    type: K,
+    listener: (this: GridSelectionColumnElement, ev: GridSelectionColumnEventMap[K]) => void,
+    options?: boolean | AddEventListenerOptions
+  ): void;
+
+  removeEventListener<K extends keyof GridSelectionColumnEventMap>(
+    type: K,
+    listener: (this: GridSelectionColumnElement, ev: GridSelectionColumnEventMap[K]) => void,
+    options?: boolean | EventListenerOptions
+  ): void;
 }
 
 declare global {

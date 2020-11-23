@@ -1,4 +1,15 @@
 /**
+ * Fired when the `value` property changes.
+ */
+export type GridFilterValueChanged = CustomEvent<{ value: string }>
+
+export interface GridFilterElementEventMap {
+  'value-changed': GridFilterValueChanged;
+}
+
+export interface GridFilterEventMap extends HTMLElementEventMap, GridFilterElementEventMap {}
+
+/**
  * `<vaadin-grid-filter>` is a helper element for the `<vaadin-grid>` that provides out-of-the-box UI controls,
  * and handlers for filtering the grid data.
  *
@@ -22,6 +33,18 @@ declare class GridFilterElement extends HTMLElement {
    * Current filter value.
    */
   value: string | null | undefined;
+
+  addEventListener<K extends keyof GridFilterEventMap>(
+    type: K,
+    listener: (this: GridFilterElement, ev: GridFilterEventMap[K]) => void,
+    options?: boolean | AddEventListenerOptions
+  ): void;
+
+  removeEventListener<K extends keyof GridFilterEventMap>(
+    type: K,
+    listener: (this: GridFilterElement, ev: GridFilterEventMap[K]) => void,
+    options?: boolean | EventListenerOptions
+  ): void;
 }
 
 declare global {

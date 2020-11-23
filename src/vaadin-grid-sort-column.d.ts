@@ -3,6 +3,17 @@ import { GridSorterDirection } from './interfaces';
 import { GridColumnElement } from './vaadin-grid-column.js';
 
 /**
+ * Fired when the `direction` property changes.
+ */
+export type GridSortColumnDirectionChanged = CustomEvent<{ value: GridSorterDirection }>;
+
+export interface GridSortColumnElementEventMap {
+  'direction-changed': GridSortColumnDirectionChanged;
+}
+
+export interface GridSortColumnEventMap extends HTMLElementEventMap, GridSortColumnElementEventMap {}
+
+/**
  * `<vaadin-grid-sort-column>` is a helper element for the `<vaadin-grid>`
  * that provides default header template and functionality for sorting.
  *
@@ -27,6 +38,18 @@ declare class GridSortColumnElement extends GridColumnElement {
    * descending direction, or `null` for not sorting the data.
    */
   direction: GridSorterDirection | null | undefined;
+
+  addEventListener<K extends keyof GridSortColumnEventMap>(
+    type: K,
+    listener: (this: GridSortColumnElement, ev: GridSortColumnEventMap[K]) => void,
+    options?: boolean | AddEventListenerOptions
+  ): void;
+
+  removeEventListener<K extends keyof GridSortColumnEventMap>(
+    type: K,
+    listener: (this: GridSortColumnElement, ev: GridSortColumnEventMap[K]) => void,
+    options?: boolean | EventListenerOptions
+  ): void;
 }
 
 declare global {

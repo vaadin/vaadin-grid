@@ -1,6 +1,8 @@
+import { ElementMixin } from '@vaadin/vaadin-element-mixin/vaadin-element-mixin.js';
+
 import { ThemableMixin } from '@vaadin/vaadin-themable-mixin/vaadin-themable-mixin.js';
 
-import { GridItem, GridItemModel } from './interfaces';
+import { GridDropLocation, GridItem, GridItemModel } from './interfaces';
 
 import { ScrollerElement } from './vaadin-grid-scroller.js';
 
@@ -36,9 +38,84 @@ import { KeyboardNavigationMixin } from './vaadin-grid-keyboard-navigation-mixin
 
 import { ColumnReorderingMixin } from './vaadin-grid-column-reordering-mixin.js';
 
-import { ElementMixin } from '@vaadin/vaadin-element-mixin/vaadin-element-mixin.js';
-
 import { GridColumnElement } from './vaadin-grid-column.js';
+
+/**
+ * Fired when the `activeItem` property changes.
+ */
+export type GridActiveItemChanged = CustomEvent<{ value: GridItem }>;
+
+/**
+ * Fired when the cell is activated with click or keyboard.
+ */
+export type GridCellActivate = CustomEvent<{ model: GridItemModel }>;
+
+/**
+ * Fired when the columns in the grid are reordered.
+ */
+export type GridColumnReorder = CustomEvent<{ columns: GridColumnElement[] }>;
+
+/**
+ * Fired when the grid column resize is finished.
+ */
+export type GridColumnResize = CustomEvent<{ resizedColumn: GridColumnElement }>;
+
+/**
+ * Fired when the `expandedItems` property changes.
+ */
+export type GridExpandedItemsChanged = CustomEvent<{ value: GridItem[] }>;
+
+/**
+ * Fired when starting to drag grid rows.
+ */
+export type GridDragStart = CustomEvent<{
+  draggedItems: GridItem[];
+  setDraggedItemsCount: (count: number) => void;
+  setDragData: (type: string, data: string) => void;
+}>;
+
+/**
+ * Fired when a drop occurs on top of the grid.
+ */
+export type GridDrop = CustomEvent<{
+  dropTargetItem: GridItem;
+  dropLocation: GridDropLocation;
+  dragData: Array<{ type: string, data: string }>
+}>;
+
+/**
+ * Fired when the `loading` property changes.
+ */
+export type GridLoadingChanged = CustomEvent<{ value: boolean }>;
+
+/**
+ * Fired when the `selectedItems` property changes.
+ */
+export type GridSelectedItemsChanged = CustomEvent<{ value: GridItem[] }>;
+
+export interface GridElementEventMap {
+  'active-item-changed': GridActiveItemChanged;
+
+  'cell-activate': GridCellActivate;
+
+  'column-reorder': GridColumnReorder;
+
+  'column-resize': GridColumnResize;
+
+  'expanded-items-changed': GridExpandedItemsChanged;
+
+  'grid-dragstart': GridDragStart;
+
+  'grid-dragend': Event;
+
+  'grid-drop': GridDrop;
+
+  'loading-changed': GridLoadingChanged;
+
+  'selected-items-changed': GridSelectedItemsChanged;
+}
+
+export interface GridEventMap extends HTMLElementEventMap, GridElementEventMap {}
 
 /**
  * `<vaadin-grid>` is a free, high quality data grid / data table Web Component. The content of the
@@ -331,6 +408,18 @@ declare class GridElement extends ElementMixin(
   notifyResize(): void;
 
   __forceReflow(): void;
+
+  addEventListener<K extends keyof GridEventMap>(
+    type: K,
+    listener: (this: GridElement, ev: GridEventMap[K]) => void,
+    options?: boolean | AddEventListenerOptions
+  ): void;
+
+  removeEventListener<K extends keyof GridEventMap>(
+    type: K,
+    listener: (this: GridElement, ev: GridEventMap[K]) => void,
+    options?: boolean | EventListenerOptions
+  ): void;
 }
 
 declare global {

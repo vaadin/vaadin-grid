@@ -34,6 +34,8 @@ export type GridDataProvider = (
 
 export type GridDragAndDropFilter = (model: GridItemModel) => boolean;
 
+export type GridDropLocation = 'above' | 'on-top' | 'below' | 'empty';
+
 export type GridDropMode = 'between' | 'on-top' | 'on-top-or-between' | 'on-grid';
 
 export interface GridFilter {
@@ -80,3 +82,5 @@ export interface GridSorter {
   path: string;
   direction: GridSorterDirection;
 }
+
+export { GridColumnElement };

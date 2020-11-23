@@ -1,6 +1,17 @@
 import { ThemableMixin } from '@vaadin/vaadin-themable-mixin/vaadin-themable-mixin.js';
 
 /**
+ * Fired when the `expanded` property changes.
+ */
+export type GridTreeToggleExpandedChanged = CustomEvent<{ value: boolean }>;
+
+export interface GridTreeToggleElementEventMap {
+  'expanded-changed': GridTreeToggleExpandedChanged;
+}
+
+export interface GridTreeToggleEventMap extends HTMLElementEventMap, GridTreeToggleElementEventMap {}
+
+/**
  * `<vaadin-grid-tree-toggle>` is a helper element for the `<vaadin-grid>`
  * that provides toggle and level display functionality for the item tree.
  *
@@ -57,6 +68,18 @@ declare class GridTreeToggleElement extends ThemableMixin(HTMLElement) {
    * Sublevel toggle state.
    */
   expanded: boolean;
+
+  addEventListener<K extends keyof GridTreeToggleEventMap>(
+    type: K,
+    listener: (this: GridTreeToggleElement, ev: GridTreeToggleEventMap[K]) => void,
+    options?: boolean | AddEventListenerOptions
+  ): void;
+
+  removeEventListener<K extends keyof GridTreeToggleEventMap>(
+    type: K,
+    listener: (this: GridTreeToggleElement, ev: GridTreeToggleEventMap[K]) => void,
+    options?: boolean | EventListenerOptions
+  ): void;
 }
 
 declare global {
