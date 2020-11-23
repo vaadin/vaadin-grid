@@ -91,20 +91,7 @@ export const KeyboardNavigationMixin = (superClass) =>
      * @protected
      */
     _onKeyDown(e) {
-      // Ensure standard key value, unified across browsers
-      let key = e.key;
-      if (key === 'Up' || key === 'Down' || key === 'Left' || key === 'Right') {
-        // MSIE & Edge
-        key = 'Arrow' + key;
-      }
-      if (key === 'Esc') {
-        // MSIE & Edge
-        key = 'Escape';
-      }
-      if (key === 'Spacebar') {
-        // MSIE
-        key = ' ';
-      }
+      const key = e.key;
 
       let keyGroup;
       switch (key) {

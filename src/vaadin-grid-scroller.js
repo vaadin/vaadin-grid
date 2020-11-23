@@ -112,8 +112,7 @@ class ScrollerElement extends PolymerIronList {
       this._scrollTop = 0;
     }
     if (!Array.isArray(this.items)) {
-      // Edge/IE seems to have the lowest maximum
-      const maxVirtualItems = this._edge ? 30000 : 100000;
+      const maxVirtualItems = 100000;
       this.items = { length: Math.min(size, maxVirtualItems) };
     }
 

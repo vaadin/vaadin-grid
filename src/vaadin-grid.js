@@ -352,12 +352,6 @@ class GridElement extends ElementMixin(
       },
 
       /** @private */
-      _edge: {
-        type: Boolean,
-        value: typeof CSS !== 'undefined' && CSS.supports('(-ms-ime-align:auto)')
-      },
-
-      /** @private */
       _firefox: {
         type: Boolean,
         value: navigator.userAgent.toLowerCase().indexOf('firefox') > -1

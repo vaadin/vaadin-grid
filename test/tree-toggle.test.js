@@ -68,7 +68,6 @@ describe('tree toggle', () => {
         let prevWidth = 0;
         for (let i = 1; i < 3; i++) {
           toggle.level = i;
-          toggle._debouncerUpdateLevel.flush();
           const width = spacer.getBoundingClientRect().width;
           expect(width).to.be.gt(prevWidth);
           prevWidth = width;

@@ -4,8 +4,6 @@
  * This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
  */
 import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
-import { microTask } from '@polymer/polymer/lib/utils/async.js';
-import { Debouncer } from '@polymer/polymer/lib/utils/debounce.js';
 import { ThemableMixin } from '@vaadin/vaadin-themable-mixin/vaadin-themable-mixin.js';
 import { DirMixin } from '@vaadin/vaadin-element-mixin/vaadin-dir-mixin.js';
 import { isFocusable } from './vaadin-grid-active-item-mixin.js';
@@ -191,12 +189,7 @@ class GridTreeToggleElement extends ThemableMixin(DirMixin(PolymerElement)) {
   /** @private */
   _levelChanged(level) {
     const value = Number(level).toString();
-    this.style['---level'] = value;
-    // Async is to make DOM updates applied before evaluating the style
-    // update, required for polyfilled RTL support in MSIE and Edge.
-    this._debouncerUpdateLevel = Debouncer.debounce(this._debouncerUpdateLevel, microTask, () =>
-      this.updateStyles({ '---level': value })
-    );
+    this.style.setProperty('---level', value);
   }
 }
 
