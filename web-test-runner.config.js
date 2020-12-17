@@ -99,7 +99,7 @@ if (env === 'ios') {
         // http://appium.io/docs/en/writing-running-appium/caps/
         'appium:deviceName': 'iPhone 11',
         // See https://github.com/actions/virtual-environments/blob/main/images/macos/macos-10.15-Readme.md#installed-simulators
-        'appium:platformVersion': '13.6',
+        'appium:platformVersion': '14.2',
         'appium:orientation': 'PORTRAIT',
         'appium:automationName': 'XCUITest',
         'appium:newCommandTimeout': 240
