@@ -1,0 +1,40 @@
+name: ios
+
+on:
+  push:
+    branches:
+      - '**'
+    tags-ignore:
+      - '*.*'
+
+jobs:
+  unit-tests:
+    runs-on: macos-10.15
+    if: "! contains(toJSON(github.event.commits.*.message), '[skip ci]')"
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v1
+      with:
+        node-version: 12
+
+    - name: Set XCode version
+      run: sudo xcode-select -s "/Applications/Xcode_11.6.app"
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Install Appium
+      run: npm install -g appium --chromedriver-skip-install
+
+    - name: Start Appium server
+      run: appium &>/dev/null &
+
+    - name: Poll for Appium Server
+      run: |
+        until $(curl --output /dev/null --silent --head --fail http://127.0.0.1:4723/wd/hub/sessions); do
+          sleep 5
+        done
+
+    - name: Test in iOS
+      run: npm run test:ios

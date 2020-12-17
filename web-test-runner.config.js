@@ -1,12 +1,13 @@
 /* eslint-env node */
 const { createSauceLabsLauncher } = require('@web/test-runner-saucelabs');
+const { webdriverLauncher } = require('@web/test-runner-webdriver');
 const fs = require('fs');
 
 const config = {
   nodeResolve: true,
-  browserStartTimeout: 60000, // default 30000
-  testsStartTimeout: 60000, // default 10000
-  testsFinishTimeout: 60000, // default 20000
+  browserStartTimeout: 1000 * 60 * 3, // default 30000
+  testsStartTimeout: 1000 * 60 * 3, // default 10000
+  testsFinishTimeout: 1000 * 60 * 3, // default 20000
   testFramework: {
     config: {
       timeout: '10000' // default 2000
@@ -38,8 +39,10 @@ const sauce = {
   }
 };
 
-if (env === 'firefox' || env === 'safari') {
-  // Exclude some tests to reduce Safari flakiness
+let tests;
+
+if (env === 'firefox' || env === 'safari' || env === 'ios') {
+  // Exclude some suites to speed up tests.
   const exclude = [
     'all-imports.test.js',
     'extension.test.js',
@@ -49,11 +52,13 @@ if (env === 'firefox' || env === 'safari') {
     'resizing-material.test.js'
   ];
 
-  const tests = fs
+  tests = fs
     .readdirSync('./test/')
     .filter((file) => file.includes('test.js') && !exclude.includes(file))
     .map((file) => `test/${file}`);
+}
 
+if (env === 'firefox' || env === 'safari') {
   const sauceLabsLauncher = createSauceLabsLauncher({
     user: process.env.SAUCE_USERNAME,
     key: process.env.SAUCE_ACCESS_KEY
@@ -72,6 +77,33 @@ if (env === 'firefox' || env === 'safari') {
     sauceLabsLauncher({
       ...sharedCapabilities,
       ...sauce[env]
+    })
+  ];
+}
+
+if (env === 'ios') {
+  // Exclude keyboard navigation tests on iOS
+  config.files = tests.filter((test) => test.indexOf('keyboard-navigation') === -1);
+  config.concurrency = 1;
+  config.browsers = [
+    webdriverLauncher({
+      port: 4723,
+      path: '/wd/hub/',
+      capabilities: {
+        // The defaults you need to have in your config
+        browserName: 'safari',
+        platformName: 'iOS',
+        maxInstances: 1,
+        // For W3C the appium capabilities need to have an extension prefix
+        // This is `appium:` for all Appium Capabilities which can be found here
+        // http://appium.io/docs/en/writing-running-appium/caps/
+        'appium:deviceName': 'iPhone 11',
+        // See https://github.com/actions/virtual-environments/blob/main/images/macos/macos-10.15-Readme.md#installed-simulators
+        'appium:platformVersion': '13.6',
+        'appium:orientation': 'PORTRAIT',
+        'appium:automationName': 'XCUITest',
+        'appium:newCommandTimeout': 240
+      }
     })
   ];
 }
