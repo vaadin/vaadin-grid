@@ -794,7 +794,7 @@ class GridElement extends ElementMixin(
 
   /**
    * @param {!HTMLElement} row
-   * @param {GridItem} item
+   * @param {unknown} item
    * @protected
    */
   _updateItem(row, item) {

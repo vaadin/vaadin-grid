@@ -14,7 +14,7 @@ export const ActiveItemMixin = (superClass) =>
         /**
          * The item user has last interacted with. Turns to `null` after user deactivates
          * the item by re-interacting with the currently active item.
-         * @type {GridItem}
+         * @type {unknown}
          */
         activeItem: {
           type: Object,

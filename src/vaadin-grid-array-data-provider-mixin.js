@@ -16,7 +16,7 @@ export const ArrayDataProviderMixin = (superClass) =>
          * An array containing the items which will be stamped to the column template
          * instances.
          *
-         * @type {Array<!GridItem> | undefined}
+         * @type {Array<unknown> | undefined}
          */
         items: Array
       };
@@ -75,7 +75,7 @@ export const ArrayDataProviderMixin = (superClass) =>
      * Check array of filters/sorters for paths validity, console.warn invalid items
      * @param {!Array<!GridFilter | !GridSorter>} arrayToCheck The array of filters/sorters to check
      * @param {string} action The name of action to include in warning (filtering, sorting)
-     * @param {!Array<!GridItem>} items
+     * @param {!Array<unknown>} items
      * @protected
      */
     _checkPaths(arrayToCheck, action, items) {
@@ -159,8 +159,8 @@ export const ArrayDataProviderMixin = (superClass) =>
     }
 
     /**
-     * @param {!Array<!GridItem>} items
-     * @return {!Array<!GridItem>}
+     * @param {!Array<unknown>} items
+     * @return {!Array<unknown>}
      * @protected
      */
     _filter(items) {

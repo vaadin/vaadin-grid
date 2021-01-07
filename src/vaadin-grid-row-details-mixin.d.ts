@@ -1,4 +1,4 @@
-import { GridItem, GridRowDetailsRenderer } from './interfaces';
+import { GridRowDetailsRenderer } from './interfaces';
 
 declare function RowDetailsMixin<T extends new (...args: any[]) => {}>(base: T): T & RowDetailsMixinConstructor;
 
@@ -10,7 +10,7 @@ interface RowDetailsMixin {
   /**
    * An array containing references to items with open row details.
    */
-  detailsOpenedItems: Array<GridItem | null> | null | undefined;
+  detailsOpenedItems: Array<unknown> | null | undefined;
 
   _rowDetailsTemplate: HTMLTemplateElement | null;
 
@@ -25,27 +25,27 @@ interface RowDetailsMixin {
    *   - `model.index` The index of the item.
    *   - `model.item` The item.
    */
-  rowDetailsRenderer: GridRowDetailsRenderer | null | undefined;
+  rowDetailsRenderer: GridRowDetailsRenderer<any> | null | undefined;
 
   _detailsCells: HTMLElement[] | undefined;
 
   _configureDetailsCell(cell: HTMLElement): void;
 
-  _toggleDetailsCell(row: HTMLElement, item: GridItem): void;
+  _toggleDetailsCell(row: HTMLElement, item: unknown): void;
 
   _updateDetailsCellHeights(): void;
 
-  _isDetailsOpened(item: GridItem): boolean;
+  _isDetailsOpened(item: unknown): boolean;
 
   /**
    * Open the details row of a given item.
    */
-  openItemDetails(item: GridItem): void;
+  openItemDetails(item: unknown): void;
 
   /**
    * Close the details row of a given item.
    */
-  closeItemDetails(item: GridItem): void;
+  closeItemDetails(item: unknown): void;
 }
 
 export { RowDetailsMixin, RowDetailsMixinConstructor };

@@ -1,17 +1,17 @@
-import { GridDataProvider, GridItem } from './interfaces';
+import { GridDataProvider } from './interfaces';
 
 declare class ItemCache {
   grid: HTMLElement;
   parentCache: ItemCache | undefined;
-  parentItem: GridItem | undefined;
+  parentItem: unknown | undefined;
   itemCaches: object | null;
   items: object | null;
   effectiveSize: number;
   size: number;
   pendingRequests: object | null;
-  constructor(grid: HTMLElement, parentCache: ItemCache | undefined, parentItem: GridItem | undefined);
+  constructor(grid: HTMLElement, parentCache: ItemCache | undefined, parentItem: unknown | undefined);
   isLoading(): boolean;
-  getItemForIndex(index: number): GridItem | undefined;
+  getItemForIndex(index: number): unknown | undefined;
   updateSize(): void;
   ensureSubCacheForScaledIndex(scaledIndex: number): void;
   getCacheAndIndex(index: number): { cache: ItemCache; scaledIndex: number };
@@ -51,7 +51,7 @@ interface DataProviderMixin {
    *     are requested, total number of items in the requested sublevel.
    *     Optional when tree is not used, required for tree.
    */
-  dataProvider: GridDataProvider | null | undefined;
+  dataProvider: GridDataProvider<any> | null | undefined;
 
   /**
    * `true` while data is being requested from the data provider.
@@ -69,7 +69,7 @@ interface DataProviderMixin {
   /**
    * An array that contains the expanded items.
    */
-  expandedItems: GridItem[];
+  expandedItems: Array<unknown>;
 
   _getItem(index: number, el: HTMLElement | null): void;
 
@@ -77,19 +77,19 @@ interface DataProviderMixin {
    * Returns a value that identifies the item. Uses `itemIdPath` if available.
    * Can be customized by overriding.
    */
-  getItemId(item: GridItem): GridItem | unknown;
+  getItemId(item: unknown): unknown;
 
-  _isExpanded(item: GridItem): boolean;
+  _isExpanded(item: unknown): boolean;
 
   /**
    * Expands the given item tree.
    */
-  expandItem(item: GridItem): void;
+  expandItem(item: unknown): void;
 
   /**
    * Collapses the given item tree.
    */
-  collapseItem(item: GridItem): void;
+  collapseItem(item: unknown): void;
 
   _getIndexLevel(index: number): number;
 
@@ -106,9 +106,9 @@ interface DataProviderMixin {
 
   _ensureFirstPageLoaded(): void;
 
-  _itemsEqual(item1: GridItem, item2: GridItem): boolean;
+  _itemsEqual(item1: unknown, item2: unknown): boolean;
 
-  _getItemIndexInArray(item: GridItem, array: GridItem[]): number;
+  _getItemIndexInArray(item: unknown, array: Array<unknown>): number;
 }
 
 export { DataProviderMixin, DataProviderMixinConstructor, ItemCache };

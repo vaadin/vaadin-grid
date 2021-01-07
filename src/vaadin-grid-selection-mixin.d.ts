@@ -1,5 +1,3 @@
-import { GridItem } from './interfaces';
-
 declare function SelectionMixin<T extends new (...args: any[]) => {}>(base: T): T & SelectionMixinConstructor;
 
 interface SelectionMixinConstructor {
@@ -10,29 +8,30 @@ interface SelectionMixin {
   /**
    * An array that contains the selected items.
    */
-  selectedItems: Array<GridItem | null> | null;
-  _isSelected(item: GridItem): boolean;
+  selectedItems: Array<unknown> | null;
+
+  _isSelected(item: unknown): boolean;
 
   /**
    * Selects the given item.
    *
    * @param item The item object
    */
-  selectItem(item: GridItem): void;
+  selectItem(item: unknown): void;
 
   /**
    * Deselects the given item if it is already selected.
    *
    * @param item The item object
    */
-  deselectItem(item: GridItem): void;
+  deselectItem(item: unknown): void;
 
   /**
    * Toggles the selected state of the given item.
    *
    * @param item The item object
    */
-  _toggleItem(item: GridItem): void;
+  _toggleItem(item: unknown): void;
 }
 
 export { SelectionMixin, SelectionMixinConstructor };

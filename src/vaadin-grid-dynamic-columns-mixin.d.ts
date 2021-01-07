@@ -9,7 +9,7 @@ interface DynamicColumnsMixinConstructor {
 }
 
 interface DynamicColumnsMixin {
-  _getChildColumns(el: GridColumnGroupElement): GridColumnElement[];
+  _getChildColumns(el: GridColumnGroupElement): Array<GridColumnElement<unknown>>;
 
   _updateColumnTree(): void;
 

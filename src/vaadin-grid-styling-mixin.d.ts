@@ -23,7 +23,7 @@ interface StylingMixin {
    *   - `model.level` Level of the tree represented with a horizontal offset of the toggle button.
    *   - `model.selected` Selected state.
    */
-  cellClassNameGenerator: GridCellClassNameGenerator | null | undefined;
+  cellClassNameGenerator: GridCellClassNameGenerator<any> | null | undefined;
 
   /**
    * Runs the `cellClassNameGenerator` for the visible cells.

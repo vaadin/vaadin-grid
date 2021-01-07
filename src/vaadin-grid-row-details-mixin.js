@@ -15,7 +15,7 @@ export const RowDetailsMixin = (superClass) =>
       return {
         /**
          * An array containing references to items with open row details.
-         * @type {Array<GridItem> | null | undefined}
+         * @type {Array<unknown> | null | undefined}
          */
         detailsOpenedItems: {
           type: Array,
@@ -121,7 +121,7 @@ export const RowDetailsMixin = (superClass) =>
 
     /**
      * @param {!HTMLElement} row
-     * @param {!GridItem} item
+     * @param {unknown} item
      * @protected
      */
     _toggleDetailsCell(row, item) {
@@ -168,7 +168,7 @@ export const RowDetailsMixin = (superClass) =>
     }
 
     /**
-     * @param {!GridItem} item
+     * @param {unknown} item
      * @return {boolean}
      * @protected
      */
@@ -178,7 +178,7 @@ export const RowDetailsMixin = (superClass) =>
 
     /**
      * Open the details row of a given item.
-     * @param {!GridItem} item
+     * @param {unknown} item
      */
     openItemDetails(item) {
       if (!this._isDetailsOpened(item)) {
@@ -188,7 +188,7 @@ export const RowDetailsMixin = (superClass) =>
 
     /**
      * Close the details row of a given item.
-     * @param {!GridItem} item
+     * @param {unknown} item
      */
     closeItemDetails(item) {
       if (this._isDetailsOpened(item)) {

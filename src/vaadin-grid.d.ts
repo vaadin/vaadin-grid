@@ -2,7 +2,15 @@ import { ElementMixin } from '@vaadin/vaadin-element-mixin/vaadin-element-mixin.
 
 import { ThemableMixin } from '@vaadin/vaadin-themable-mixin/vaadin-themable-mixin.js';
 
-import { GridDropLocation, GridItem, GridItemModel } from './interfaces';
+import {
+  GridCellClassNameGenerator,
+  GridDataProvider,
+  GridDragAndDropFilter,
+  GridDropLocation,
+  GridEventContext,
+  GridItemModel,
+  GridRowDetailsRenderer
+} from './interfaces';
 
 import { ScrollerElement } from './vaadin-grid-scroller.js';
 
@@ -43,33 +51,33 @@ import { GridColumnElement } from './vaadin-grid-column.js';
 /**
  * Fired when the `activeItem` property changes.
  */
-export type GridActiveItemChanged = CustomEvent<{ value: GridItem }>;
+export type GridActiveItemChanged<T> = CustomEvent<{ value: T }>;
 
 /**
  * Fired when the cell is activated with click or keyboard.
  */
-export type GridCellActivate = CustomEvent<{ model: GridItemModel }>;
+export type GridCellActivate<T> = CustomEvent<{ model: GridItemModel<T> }>;
 
 /**
  * Fired when the columns in the grid are reordered.
  */
-export type GridColumnReorder = CustomEvent<{ columns: GridColumnElement[] }>;
+export type GridColumnReorder<T> = CustomEvent<{ columns: GridColumnElement<T>[] }>;
 
 /**
  * Fired when the grid column resize is finished.
  */
-export type GridColumnResize = CustomEvent<{ resizedColumn: GridColumnElement }>;
+export type GridColumnResize<T> = CustomEvent<{ resizedColumn: GridColumnElement<T> }>;
 
 /**
  * Fired when the `expandedItems` property changes.
  */
-export type GridExpandedItemsChanged = CustomEvent<{ value: GridItem[] }>;
+export type GridExpandedItemsChanged<T> = CustomEvent<{ value: Array<T> }>;
 
 /**
  * Fired when starting to drag grid rows.
  */
-export type GridDragStart = CustomEvent<{
-  draggedItems: GridItem[];
+export type GridDragStart<T> = CustomEvent<{
+  draggedItems: Array<T>;
   setDraggedItemsCount: (count: number) => void;
   setDragData: (type: string, data: string) => void;
 }>;
@@ -77,10 +85,10 @@ export type GridDragStart = CustomEvent<{
 /**
  * Fired when a drop occurs on top of the grid.
  */
-export type GridDrop = CustomEvent<{
-  dropTargetItem: GridItem;
+export type GridDrop<T> = CustomEvent<{
+  dropTargetItem: T;
   dropLocation: GridDropLocation;
-  dragData: Array<{ type: string, data: string }>
+  dragData: Array<{ type: string; data: string }>;
 }>;
 
 /**
@@ -91,31 +99,31 @@ export type GridLoadingChanged = CustomEvent<{ value: boolean }>;
 /**
  * Fired when the `selectedItems` property changes.
  */
-export type GridSelectedItemsChanged = CustomEvent<{ value: GridItem[] }>;
+export type GridSelectedItemsChanged<T> = CustomEvent<{ value: Array<T> }>;
 
-export interface GridElementEventMap {
-  'active-item-changed': GridActiveItemChanged;
+export interface GridElementEventMap<T> {
+  'active-item-changed': GridActiveItemChanged<T>;
 
-  'cell-activate': GridCellActivate;
+  'cell-activate': GridCellActivate<T>;
 
-  'column-reorder': GridColumnReorder;
+  'column-reorder': GridColumnReorder<T>;
 
-  'column-resize': GridColumnResize;
+  'column-resize': GridColumnResize<T>;
 
-  'expanded-items-changed': GridExpandedItemsChanged;
+  'expanded-items-changed': GridExpandedItemsChanged<T>;
 
-  'grid-dragstart': GridDragStart;
+  'grid-dragstart': GridDragStart<T>;
 
   'grid-dragend': Event;
 
-  'grid-drop': GridDrop;
+  'grid-drop': GridDrop<T>;
 
   'loading-changed': GridLoadingChanged;
 
-  'selected-items-changed': GridSelectedItemsChanged;
+  'selected-items-changed': GridSelectedItemsChanged<T>;
 }
 
-export interface GridEventMap extends HTMLElementEventMap, GridElementEventMap {}
+export type GridEventMap<T> = HTMLElementEventMap & GridElementEventMap<T>;
 
 /**
  * `<vaadin-grid>` is a free, high quality data grid / data table Web Component. The content of the
@@ -341,7 +349,7 @@ export interface GridEventMap extends HTMLElementEventMap, GridElementEventMap {
  * @fires {CustomEvent} loading-changed - Fired when the `loading` property changes.
  * @fires {CustomEvent} selected-items-changed - Fired when the `selectedItems` property changes.
  */
-declare class GridElement extends ElementMixin(
+declare class GridElement<Item> extends ElementMixin(
   ThemableMixin(
     A11yMixin(
       ActiveItemMixin(
@@ -371,6 +379,173 @@ declare class GridElement extends ElementMixin(
   )
 ) {
   /**
+   * The item user has last interacted with. Turns to `null` after user deactivates
+   * the item by re-interacting with the currently active item.
+   */
+  activeItem: Item | null;
+
+  /**
+   * An array containing the items which will be stamped to the column template
+   * instances.
+   */
+  items: Array<Item> | null | undefined;
+
+  /**
+   * A function that allows generating CSS class names for grid cells
+   * based on their row and column. The return value should be the generated
+   * class name as a string, or multiple class names separated by whitespace
+   * characters.
+   *
+   * Receives two arguments:
+   * - `column` The `<vaadin-grid-column>` element (`undefined` for details-cell).
+   * - `model` The object with the properties related with
+   *   the rendered item, contains:
+   *   - `model.index` The index of the item.
+   *   - `model.item` The item.
+   *   - `model.expanded` Sublevel toggle state.
+   *   - `model.level` Level of the tree represented with a horizontal offset of the toggle button.
+   *   - `model.selected` Selected state.
+   */
+  cellClassNameGenerator: GridCellClassNameGenerator<Item> | null | undefined;
+
+  /**
+   * Function that provides items lazily. Receives arguments `params`, `callback`
+   *
+   * `params.page` Requested page index
+   *
+   * `params.pageSize` Current page size
+   *
+   * `params.filters` Currently applied filters
+   *
+   * `params.sortOrders` Currently applied sorting orders
+   *
+   * `params.parentItem` When tree is used, and sublevel items
+   * are requested, reference to parent item of the requested sublevel.
+   * Otherwise `undefined`.
+   *
+   * `callback(items, size)` Callback function with arguments:
+   *   - `items` Current page of items
+   *   - `size` Total number of items. When tree sublevel items
+   *     are requested, total number of items in the requested sublevel.
+   *     Optional when tree is not used, required for tree.
+   */
+  dataProvider: GridDataProvider<Item> | null | undefined;
+
+  /**
+   * Returns an object with context information about the event target:
+   * - `item`: the data object corresponding to the targeted row (not specified when targeting header or footer)
+   * - `column`: the column element corresponding to the targeted cell (not specified when targeting row details)
+   * - `section`: whether the event targeted the body, header, footer or details of the grid
+   *
+   * These additional properties are included when `item` is specified:
+   * - `index`: the index of the item
+   * - `selected`: the selected state of the item
+   * - `detailsOpened`: whether the row details are open for the item
+   * - `expanded`: the expanded state of the tree toggle
+   * - `level`: the tree hierarchy level
+   *
+   * The returned object is populated only when a grid cell, header, footer or row details is found in `event.composedPath()`.
+   * This means mostly mouse and keyboard events. If such a grid part is not found in the path, an empty object is returned.
+   * This may be the case eg. if the event is fired on the `<vaadin-grid>` element and not any deeper in the DOM, or if
+   * the event targets the empty part of the grid body.
+   */
+  getEventContext(event: Event): GridEventContext<Item> | object | null;
+
+  /**
+   * An array that contains the expanded items.
+   */
+  expandedItems: Array<Item>;
+
+  /**
+   * Returns a value that identifies the item. Uses `itemIdPath` if available.
+   * Can be customized by overriding.
+   */
+  getItemId(item: Item): Item | unknown;
+
+  /**
+   * Expands the given item tree.
+   */
+  expandItem(item: Item): void;
+
+  /**
+   * Collapses the given item tree.
+   */
+  collapseItem(item: Item): void;
+
+  /**
+   * An array containing references to items with open row details.
+   */
+  detailsOpenedItems: Array<Item> | null | undefined;
+
+  /**
+   * Custom function for rendering the content of the row details.
+   * Receives three arguments:
+   *
+   * - `root` The row details content DOM element. Append your content to it.
+   * - `grid` The `<vaadin-grid>` element.
+   * - `model` The object with the properties related with
+   *   the rendered item, contains:
+   *   - `model.index` The index of the item.
+   *   - `model.item` The item.
+   */
+  rowDetailsRenderer: GridRowDetailsRenderer<Item> | null | undefined;
+
+  /**
+   * Open the details row of a given item.
+   */
+  openItemDetails(item: Item): void;
+
+  /**
+   * Close the details row of a given item.
+   */
+  closeItemDetails(item: Item): void;
+
+  /**
+   * An array that contains the selected items.
+   */
+  selectedItems: Array<Item> | null;
+
+  /**
+   * Selects the given item.
+   */
+  selectItem(item: Item): void;
+
+  /**
+   * Deselects the given item if it is already selected.
+   */
+  deselectItem(item: Item): void;
+
+  /**
+   * A function that filters dragging of specific grid rows. The return value should be false
+   * if dragging of the row should be disabled.
+   *
+   * Receives one argument:
+   * - `model` The object with the properties related with
+   *   the rendered item, contains:
+   *   - `model.index` The index of the item.
+   *   - `model.item` The item.
+   *   - `model.expanded` Sublevel toggle state.
+   *   - `model.level` Level of the tree represented with a horizontal offset of the toggle button.
+   *   - `model.selected` Selected state.
+   */
+  dragFilter: GridDragAndDropFilter<Item> | null | undefined;
+
+  /**
+   * A function that filters dropping on specific grid rows. The return value should be false
+   * if dropping on the row should be disabled.
+   *
+   * Receives one argument:
+   * - `model` The object with the properties related with
+   *   the rendered item, contains:
+   *   - `model.index` The index of the item.
+   *   - `model.item` The item.
+   *   - `model.expanded` Sublevel toggle state.
+   *   - `model.level` Level of the tree represented with a horizontal offset of the toggle button.
+   *   - `model.selected` Selected state.
+   */
+  dropFilter: GridDragAndDropFilter<Item> | null | undefined;
+
+  /**
    * If true, the grid's height is defined by its rows.
    *
    * Effectively, this disables the grid's virtual scrolling so that all the rows are rendered in the DOM at once.
@@ -388,7 +563,7 @@ declare class GridElement extends ElementMixin(
 
   _updateRow(
     row: HTMLTableRowElement,
-    columns: GridColumnElement[],
+    columns: Array<GridColumnElement<Item>>,
     section: string | null,
     isColumnRow: boolean,
     noNotify: boolean
@@ -396,13 +571,13 @@ declare class GridElement extends ElementMixin(
 
   __updateHeaderFooterRowVisibility(row: HTMLTableRowElement | null): void;
 
-  _renderColumnTree(columnTree: GridColumnElement[]): void;
+  _renderColumnTree(columnTree: Array<GridColumnElement<Item>>): void;
 
-  _updateItem(row: HTMLElement, item: GridItem | null): void;
+  _updateItem(row: HTMLElement, item: Item | null): void;
 
   _toggleAttribute(name: string, bool: boolean, node: Element): void;
 
-  __getRowModel(row: HTMLTableRowElement): GridItemModel;
+  __getRowModel(row: HTMLTableRowElement): GridItemModel<Item>;
 
   /**
    * Manually invoke existing renderers for all the columns
@@ -420,22 +595,22 @@ declare class GridElement extends ElementMixin(
 
   __forceReflow(): void;
 
-  addEventListener<K extends keyof GridEventMap>(
+  addEventListener<K extends keyof GridEventMap<Item>>(
     type: K,
-    listener: (this: GridElement, ev: GridEventMap[K]) => void,
+    listener: (this: GridElement<Item>, ev: GridEventMap<Item>[K]) => void,
     options?: boolean | AddEventListenerOptions
   ): void;
 
-  removeEventListener<K extends keyof GridEventMap>(
+  removeEventListener<K extends keyof GridEventMap<Item>>(
     type: K,
-    listener: (this: GridElement, ev: GridEventMap[K]) => void,
+    listener: (this: GridElement<Item>, ev: GridEventMap<Item>[K]) => void,
     options?: boolean | EventListenerOptions
   ): void;
 }
 
 declare global {
   interface HTMLElementTagNameMap {
-    'vaadin-grid': GridElement;
+    'vaadin-grid': GridElement<unknown>;
   }
 }
 

@@ -17,7 +17,7 @@ interface ColumnReorderingMixin {
    */
   columnReorderingAllowed: boolean;
 
-  _getColumnsInOrder(): GridColumnElement[];
+  _getColumnsInOrder(): Array<GridColumnElement<unknown>>;
 
   _cellFromPoint(x: number, y: number): HTMLElement | null | undefined;
 
@@ -25,23 +25,23 @@ interface ColumnReorderingMixin {
 
   _updateGhost(cell: HTMLElement): HTMLElement;
 
-  _setSiblingsReorderStatus(column: GridColumnElement, status: string): void;
+  _setSiblingsReorderStatus(column: GridColumnElement<unknown>, status: string): void;
 
   _autoScroller(): void;
 
   _isSwapAllowed(
-    column1: GridColumnElement | null | undefined,
-    column2: GridColumnElement | null | undefined
+    column1: GridColumnElement<unknown> | null | undefined,
+    column2: GridColumnElement<unknown> | null | undefined
   ): boolean | undefined;
 
-  _isSwappableByPosition(targetColumn: GridColumnElement, clientX: number): boolean;
+  _isSwappableByPosition(targetColumn: GridColumnElement<unknown>, clientX: number): boolean;
 
-  _swapColumnOrders(column1: GridColumnElement, column2: GridColumnElement): void;
+  _swapColumnOrders(column1: GridColumnElement<unknown>, column2: GridColumnElement<unknown>): void;
 
   _getTargetColumn(
     targetCell: HTMLElement | null | undefined,
-    draggedColumn: GridColumnElement | null
-  ): GridColumnElement | null | undefined;
+    draggedColumn: GridColumnElement<unknown> | null
+  ): GridColumnElement<unknown> | null | undefined;
 }
 
 export { ColumnReorderingMixin };

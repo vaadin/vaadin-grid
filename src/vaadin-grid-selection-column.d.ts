@@ -35,7 +35,7 @@ export interface GridSelectionColumnEventMap extends HTMLElementEventMap, GridSe
  *
  * @fires {CustomEvent} select-all-changed - Fired when the `selectAll` property changes.
  */
-declare class GridSelectionColumnElement extends GridColumnElement {
+declare class GridSelectionColumnElement<T> extends GridColumnElement<T> {
   /**
    * Width of the cells for this column.
    */
@@ -61,20 +61,20 @@ declare class GridSelectionColumnElement extends GridColumnElement {
 
   addEventListener<K extends keyof GridSelectionColumnEventMap>(
     type: K,
-    listener: (this: GridSelectionColumnElement, ev: GridSelectionColumnEventMap[K]) => void,
+    listener: (this: GridSelectionColumnElement<T>, ev: GridSelectionColumnEventMap[K]) => void,
     options?: boolean | AddEventListenerOptions
   ): void;
 
   removeEventListener<K extends keyof GridSelectionColumnEventMap>(
     type: K,
-    listener: (this: GridSelectionColumnElement, ev: GridSelectionColumnEventMap[K]) => void,
+    listener: (this: GridSelectionColumnElement<T>, ev: GridSelectionColumnEventMap[K]) => void,
     options?: boolean | EventListenerOptions
   ): void;
 }
 
 declare global {
   interface HTMLElementTagNameMap {
-    'vaadin-grid-selection-column': GridSelectionColumnElement;
+    'vaadin-grid-selection-column': GridSelectionColumnElement<unknown>;
   }
 }
 

@@ -13,7 +13,7 @@ export const SelectionMixin = (superClass) =>
       return {
         /**
          * An array that contains the selected items.
-         * @type {Array<GridItem>}
+         * @type {Array<unknown>}
          */
         selectedItems: {
           type: Object,
@@ -28,7 +28,7 @@ export const SelectionMixin = (superClass) =>
     }
 
     /**
-     * @param {!GridItem} item
+     * @param {unknown} item
      * @return {boolean}
      * @protected
      */
@@ -40,7 +40,7 @@ export const SelectionMixin = (superClass) =>
      * Selects the given item.
      *
      * @method selectItem
-     * @param {!GridItem} item The item object
+     * @param {unknown} item The item object
      */
     selectItem(item) {
       if (!this._isSelected(item)) {
@@ -52,7 +52,7 @@ export const SelectionMixin = (superClass) =>
      * Deselects the given item if it is already selected.
      *
      * @method deselect
-     * @param {!GridItem} item The item object
+     * @param {unknown} item The item object
      */
     deselectItem(item) {
       const index = this._getItemIndexInArray(item, this.selectedItems);
@@ -65,7 +65,7 @@ export const SelectionMixin = (superClass) =>
      * Toggles the selected state of the given item.
      *
      * @method toggle
-     * @param {!GridItem} item The item object
+     * @param {unknown} item The item object
      * @protected
      */
     _toggleItem(item) {

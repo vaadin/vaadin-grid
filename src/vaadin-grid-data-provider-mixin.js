@@ -13,14 +13,14 @@ export const ItemCache = class ItemCache {
   /**
    * @param {!HTMLElement} grid
    * @param {!ItemCache | undefined} parentCache
-   * @param {!GridItem | undefined} parentItem
+   * @param {unknown} parentItem
    */
   constructor(grid, parentCache, parentItem) {
     /** @type {!HTMLElement} */
     this.grid = grid;
     /** @type {!ItemCache | undefined} */
     this.parentCache = parentCache;
-    /** @type {!GridItem | undefined} */
+    /** @type {unknown} */
     this.parentItem = parentItem;
     /** @type {object} */
     this.itemCaches = {};
@@ -48,7 +48,7 @@ export const ItemCache = class ItemCache {
 
   /**
    * @param {number} index
-   * @return {!GridItem | undefined}
+   * @return {unknown}
    */
   getItemForIndex(index) {
     const { cache, scaledIndex } = this.getCacheAndIndex(index);
@@ -179,7 +179,7 @@ export const DataProviderMixin = (superClass) =>
 
         /**
          * An array that contains the expanded items.
-         * @type {!Array<!GridItem>}
+         * @type {!Array<unknown>}
          */
         expandedItems: {
           type: Object,
@@ -243,15 +243,15 @@ export const DataProviderMixin = (superClass) =>
     /**
      * Returns a value that identifies the item. Uses `itemIdPath` if available.
      * Can be customized by overriding.
-     * @param {!GridItem} item
-     * @return {!GridItem | !unknown}
+     * @param {unknown} item
+     * @return {unknown}
      */
     getItemId(item) {
       return this.itemIdPath ? this.get(this.itemIdPath, item) : item;
     }
 
     /**
-     * @param {!GridItem} item
+     * @param {unknown} item
      * @return {boolean}
      * @protected
      */
@@ -284,7 +284,7 @@ export const DataProviderMixin = (superClass) =>
 
     /**
      * Expands the given item tree.
-     * @param {!GridItem} item
+     * @param {unknown} item
      */
     expandItem(item) {
       if (!this._isExpanded(item)) {
@@ -294,7 +294,7 @@ export const DataProviderMixin = (superClass) =>
 
     /**
      * Collapses the given item tree.
-     * @param {!GridItem} item
+     * @param {unknown} item
      */
     collapseItem(item) {
       if (this._isExpanded(item)) {
@@ -476,8 +476,8 @@ export const DataProviderMixin = (superClass) =>
     }
 
     /**
-     * @param {!GridItem} item1
-     * @param {!GridItem} item2
+     * @param {unknown} item1
+     * @param {unknown} item2
      * @return {boolean}
      * @protected
      */
@@ -486,8 +486,8 @@ export const DataProviderMixin = (superClass) =>
     }
 
     /**
-     * @param {!GridItem} item
-     * @param {!Array<!GridItem>} array
+     * @param {unknown} item
+     * @param {!Array<unknown>} array
      * @return {number}
      * @protected
      */

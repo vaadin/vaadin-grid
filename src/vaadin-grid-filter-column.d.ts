@@ -13,7 +13,7 @@ import { GridColumnElement } from './vaadin-grid-column.js';
  *    ...
  * ```
  */
-declare class GridFilterColumnElement extends GridColumnElement {
+declare class GridFilterColumnElement<T> extends GridColumnElement<T> {
   /**
    * Text to display as the label of the column filter text-field.
    */
@@ -27,7 +27,7 @@ declare class GridFilterColumnElement extends GridColumnElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'vaadin-grid-filter-column': GridFilterColumnElement;
+    'vaadin-grid-filter-column': GridFilterColumnElement<unknown>;
   }
 }
 

@@ -21,7 +21,7 @@ interface KeyboardNavigationMixin {
 
   _preventScrollerRotatingCellFocus(row: HTMLTableRowElement, index: number): void;
 
-  _getColumns(rowGroup?: HTMLTableSectionElement | null, rowIndex?: number): GridColumnElement[];
+  _getColumns(rowGroup?: HTMLTableSectionElement | null, rowIndex?: number): Array<GridColumnElement<unknown>>;
 
   _resetKeyboardNavigation(): void;
 

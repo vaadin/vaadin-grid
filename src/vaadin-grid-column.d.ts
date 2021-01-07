@@ -11,7 +11,8 @@ interface ColumnBaseMixinConstructor {
 export { ColumnBaseMixinConstructor };
 
 interface ColumnBaseMixin {
-  readonly _grid: GridElement | undefined;
+  readonly _grid: GridElement<any> | undefined;
+
   readonly _allCells: HTMLElement[];
 
   /**
@@ -59,7 +60,7 @@ interface ColumnBaseMixin {
    * - `root` The header cell content DOM element. Append your content to it.
    * - `column` The `<vaadin-grid-column>` element.
    */
-  headerRenderer: GridHeaderFooterRenderer | null | undefined;
+  headerRenderer: GridHeaderFooterRenderer<unknown> | null | undefined;
 
   /**
    * Custom function for rendering the footer content.
@@ -68,9 +69,9 @@ interface ColumnBaseMixin {
    * - `root` The footer cell content DOM element. Append your content to it.
    * - `column` The `<vaadin-grid-column>` element.
    */
-  footerRenderer: GridHeaderFooterRenderer | null | undefined;
+  footerRenderer: GridHeaderFooterRenderer<unknown> | null | undefined;
 
-  _findHostGrid(): GridElement | undefined;
+  _findHostGrid(): GridElement<any> | undefined;
 
   _prepareHeaderTemplate(): HTMLTemplateElement | null;
 
@@ -92,8 +93,8 @@ interface ColumnBaseMixin {
     headerCell: HTMLTableCellElement | undefined,
     footerCell: HTMLTableCellElement | undefined,
     cells: object | undefined,
-    renderer: GridBodyRenderer | null | undefined,
-    headerRenderer: GridHeaderFooterRenderer | null | undefined,
+    renderer: GridBodyRenderer<unknown> | null | undefined,
+    headerRenderer: GridHeaderFooterRenderer<unknown> | null | undefined,
     bodyTemplate: HTMLTemplateElement | null | undefined,
     headerTemplate: HTMLTemplateElement | null | undefined
   ): void;
@@ -111,7 +112,7 @@ interface ColumnBaseMixin {
  * to configure the `<vaadin-grid-column>`.
  * ```
  */
-declare class GridColumnElement extends ColumnBaseMixin(HTMLElement) {
+declare class GridColumnElement<Item> extends ColumnBaseMixin(HTMLElement) {
   /**
    * Width of the cells for this column.
    */
@@ -137,7 +138,7 @@ declare class GridColumnElement extends ColumnBaseMixin(HTMLElement) {
    *   - `model.level` Level of the tree represented with a horizontal offset of the toggle button.
    *   - `model.selected` Selected state.
    */
-  renderer: GridBodyRenderer | null | undefined;
+  renderer: GridBodyRenderer<Item> | null | undefined;
 
   /**
    * Path to an item sub-property whose value gets displayed in the column body cells.
@@ -170,7 +171,7 @@ declare class GridColumnElement extends ColumnBaseMixin(HTMLElement) {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'vaadin-grid-column': GridColumnElement;
+    'vaadin-grid-column': GridColumnElement<unknown>;
   }
 }
 

@@ -1,5 +1,3 @@
-import { GridItem } from './interfaces';
-
 declare function ActiveItemMixin<T extends new (...args: any[]) => {}>(base: T): T & ActiveItemMixinConstructor;
 
 interface ActiveItemMixinConstructor {
@@ -11,7 +9,7 @@ interface ActiveItemMixin {
    * The item user has last interacted with. Turns to `null` after user deactivates
    * the item by re-interacting with the currently active item.
    */
-  activeItem: GridItem | null;
+  activeItem: unknown | null;
 
   /**
    * We need to listen to click instead of tap because on mobile safari, the

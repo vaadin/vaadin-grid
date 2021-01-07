@@ -1,29 +1,31 @@
-import '../../src/vaadin-grid';
+import { GridElement } from '../../src/vaadin-grid';
 import '../../src/vaadin-grid-filter';
 import '../../src/vaadin-grid-selection-column';
 import '../../src/vaadin-grid-sorter';
 import '../../src/vaadin-grid-sort-column';
 import '../../src/vaadin-grid-tree-toggle';
-import { GridColumnElement, GridDropLocation, GridItem, GridItemModel, GridSorterDirection } from '../../src/interfaces';
+import { GridColumnElement, GridDropLocation, GridItemModel, GridSorterDirection } from '../../src/interfaces';
 
 const assert = <T>(value: T) => value;
 
-const grid = document.createElement('vaadin-grid');
+type User = { name: string; email: string };
+
+const grid = document.createElement('vaadin-grid') as GridElement<User>;
 
 grid.addEventListener('active-item-changed', (event) => {
-  assert<GridItem>(event.detail.value);
+  assert<User>(event.detail.value);
 });
 
 grid.addEventListener('cell-activate', (event) => {
-  assert<GridItemModel>(event.detail.model);
+  assert<GridItemModel<User>>(event.detail.model);
 });
 
 grid.addEventListener('column-reorder', (event) => {
-  assert<GridColumnElement[]>(event.detail.columns);
+  assert<Array<GridColumnElement<User>>>(event.detail.columns);
 });
 
 grid.addEventListener('column-resize', (event) => {
-  assert<GridColumnElement>(event.detail.resizedColumn);
+  assert<GridColumnElement<User>>(event.detail.resizedColumn);
 });
 
 grid.addEventListener('loading-changed', (event) => {
@@ -31,19 +33,19 @@ grid.addEventListener('loading-changed', (event) => {
 });
 
 grid.addEventListener('expanded-items-changed', (event) => {
-  assert<GridItem[]>(event.detail.value);
+  assert<User[]>(event.detail.value);
 });
 
 grid.addEventListener('selected-items-changed', (event) => {
-  assert<GridItem[]>(event.detail.value);
+  assert<User[]>(event.detail.value);
 });
 
 grid.addEventListener('grid-dragstart', (event) => {
-  assert<GridItem[]>(event.detail.draggedItems);
+  assert<User[]>(event.detail.draggedItems);
 });
 
 grid.addEventListener('grid-drop', (event) => {
-  assert<GridItem>(event.detail.dropTargetItem);
+  assert<User>(event.detail.dropTargetItem);
   assert<GridDropLocation>(event.detail.dropLocation);
 });
 

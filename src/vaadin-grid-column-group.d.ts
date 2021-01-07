@@ -40,7 +40,7 @@ declare class GridColumnGroupElement extends ColumnBaseMixin(HTMLElement) {
 
   _updateFlexAndWidth(): void;
 
-  _getChildColumns(el: GridColumnGroupElement): GridColumnElement[];
+  _getChildColumns(el: GridColumnGroupElement): Array<GridColumnElement<unknown>>;
 
   _isColumnElement(node: Node): boolean;
 }
