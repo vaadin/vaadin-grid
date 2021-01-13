@@ -5,6 +5,8 @@ import {
   buildDataSet,
   click,
   flushGrid,
+  getCellContent,
+  getFirstVisibleItem,
   getBodyCellContent,
   getHeaderCellContent,
   getRows,
@@ -16,6 +18,37 @@ import '../vaadin-grid-sorter.js';
 import '../vaadin-grid-sort-column.js';
 
 describe('sorting', () => {
+  describe('attached', () => {
+    it('should populate rows when asynchronously sorted if attached hidden with 0 height', (done) => {
+      const grid = window.document.createElement('vaadin-grid');
+      const col = window.document.createElement('vaadin-grid-column');
+      col.setAttribute('path', 'item');
+      grid.appendChild(col);
+
+      grid.size = 1;
+      grid.dataProvider = function (params, callback) {
+        callback([{ item: 'A' }]);
+      };
+
+      grid.style.maxHeight = '0';
+      grid.style.display = 'none';
+      window.document.body.appendChild(grid);
+
+      setTimeout(() => {
+        grid.querySelector('vaadin-grid-column').headerRenderer = function (root) {
+          root.innerHTML = '<vaadin-grid-sorter path="item" direction="asc">Item</vaadin-grid-sorter>';
+        };
+        grid.removeAttribute('style');
+
+        expect(getCellContent(getFirstVisibleItem(grid)).textContent).to.equal('A');
+
+        // Grid should be removed after test as was attached to body.
+        window.document.body.removeChild(grid);
+        done();
+      });
+    });
+  });
+
   describe('sorter', () => {
     let sorter, button, orderIndicator;
 
