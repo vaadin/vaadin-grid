@@ -566,8 +566,8 @@ describe('data provider', () => {
 
 describe('attached', () => {
   it('should have rows when attached and shown after cache is cleared on hidden grid', (done) => {
-    const grid = window.document.createElement('vaadin-grid');
-    const col = window.document.createElement('vaadin-grid-column');
+    const grid = document.createElement('vaadin-grid');
+    const col = document.createElement('vaadin-grid-column');
     col.setAttribute('path', 'item');
     grid.appendChild(col);
 
@@ -577,7 +577,7 @@ describe('attached', () => {
     };
 
     grid.style.display = 'none';
-    window.document.body.appendChild(grid);
+    document.body.appendChild(grid);
 
     setTimeout(() => {
       grid.clearCache();
@@ -585,7 +585,7 @@ describe('attached', () => {
       expect(getCellContent(getFirstVisibleItem(grid)).textContent).to.equal('A');
 
       // Grid should be removed after test as was attached to body.
-      window.document.body.removeChild(grid);
+      document.body.removeChild(grid);
       done();
     });
   });
