@@ -78,10 +78,6 @@ export const SortMixin = (superClass) =>
         // No need to clear cache if sorters didn't change
         JSON.stringify(this._previousSorters) !== JSON.stringify(this._mapSorters())
       ) {
-        // If initial pool is not created we need to force it
-        // before hasData will change to false with `clearCache`
-        !this._initialPoolCreated && this._increasePoolIfNeeded();
-
         this.clearCache();
       }
 

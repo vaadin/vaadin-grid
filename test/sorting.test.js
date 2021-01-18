@@ -19,7 +19,7 @@ import '../vaadin-grid-sort-column.js';
 
 describe('sorting', () => {
   describe('attached', () => {
-    it('should populate rows when asynchronously sorted if attached hidden with 0 height', (done) => {
+    it('should have rows when attached and shown after cache is cleared on hidden grid with 0 height', (done) => {
       const grid = window.document.createElement('vaadin-grid');
       const col = window.document.createElement('vaadin-grid-column');
       col.setAttribute('path', 'item');
@@ -35,11 +35,8 @@ describe('sorting', () => {
       window.document.body.appendChild(grid);
 
       setTimeout(() => {
-        grid.querySelector('vaadin-grid-column').headerRenderer = function (root) {
-          root.innerHTML = '<vaadin-grid-sorter path="item" direction="asc">Item</vaadin-grid-sorter>';
-        };
+        grid.clearCache();
         grid.removeAttribute('style');
-
         expect(getCellContent(getFirstVisibleItem(grid)).textContent).to.equal('A');
 
         // Grid should be removed after test as was attached to body.
