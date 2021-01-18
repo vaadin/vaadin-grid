@@ -19,7 +19,7 @@ import '../vaadin-grid-sort-column.js';
 
 describe('sorting', () => {
   describe('attached', () => {
-    it('should have rows when attached and shown after cache is cleared on hidden grid with 0 height', (done) => {
+    it('should have rows when attached and shown after cache is cleared on hidden grid', (done) => {
       const grid = window.document.createElement('vaadin-grid');
       const col = window.document.createElement('vaadin-grid-column');
       col.setAttribute('path', 'item');
@@ -30,7 +30,6 @@ describe('sorting', () => {
         callback([{ item: 'A' }]);
       };
 
-      grid.style.maxHeight = '0';
       grid.style.display = 'none';
       window.document.body.appendChild(grid);
 
