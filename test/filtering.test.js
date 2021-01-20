@@ -67,7 +67,7 @@ describe('filter', () => {
 });
 
 describe('filtering', () => {
-  let grid;
+  let grid, filter;
 
   beforeEach(() => {
     grid = fixtureSync(`
@@ -95,6 +95,7 @@ describe('filtering', () => {
     if (grid._observer.flush) {
       grid._observer.flush();
     }
+    filter = grid._filters[0];
   });
 
   it('should have filters', () => {
@@ -105,6 +106,12 @@ describe('filtering', () => {
 
   it('should have default inputs', () => {
     grid._filters.forEach((filter) => expect(filter.$.filter.clientHeight).to.be.greaterThan(0));
+  });
+
+  it('should not keep references to filters when column is removed', () => {
+    grid.removeChild(grid.firstElementChild);
+    flushGrid(grid);
+    expect(grid._filters).to.not.contain(filter);
   });
 
   it('should pass filters to dataProvider', (done) => {
@@ -190,7 +197,7 @@ describe('filtering', () => {
 });
 
 describe('array data provider', () => {
-  let grid;
+  let grid, filterFirst, filterSecond;
 
   beforeEach(() => {
     grid = fixtureSync(`
@@ -216,8 +223,11 @@ describe('array data provider', () => {
     flushGrid(grid);
 
     flushFilters(grid);
-    grid._filters[0].value = '';
-    grid._filters[1].value = '';
+    filterFirst = grid._filters[0];
+    filterSecond = grid._filters[1];
+
+    filterFirst.value = '';
+    filterSecond.value = '';
     flushFilters(grid);
     grid.items = [
       {
@@ -250,6 +260,34 @@ describe('array data provider', () => {
     grid._filters[0].value = 'r';
     flushFilters(grid);
     expect(getBodyCellContent(grid, 0, 0).innerText).to.equal('bar');
+  });
+
+  // TODO: find better option to check rather than grid._cache.items...
+  it('should update filtering when column is removed', () => {
+    filterFirst.value = 'bar';
+    flushFilters(grid);
+
+    grid.removeChild(grid.firstElementChild);
+    flushGrid(grid);
+
+    expect(Object.keys(grid._cache.items).length).to.equal(3);
+  });
+
+  // TODO: find better option to check rather than grid._cache.items...
+  it('should not filter items before grid is re-attached', () => {
+    filterFirst.value = 'bar';
+    flushFilters(grid);
+
+    const parentNode = grid.parentNode;
+    parentNode.removeChild(grid);
+    grid.removeChild(grid.firstElementChild);
+    flushGrid(grid);
+
+    expect(Object.keys(grid._cache.items).length).to.equal(1);
+
+    parentNode.appendChild(grid);
+
+    expect(Object.keys(grid._cache.items).length).to.equal(3);
   });
 
   it('should sort filtered items', () => {
