@@ -51,18 +51,35 @@ export const SortMixin = (superClass) =>
     /** @private */
     _onSorterChanged(e) {
       const sorter = e.target;
+      e.stopPropagation();
 
+      this.__updateSorter(sorter);
+      this.__applySorters();
+    }
+
+    /** @private */
+    __removeSorters(sorters) {
+      if (sorters.length == 0) {
+        return;
+      }
+
+      sorters.forEach((sorter) => this.__updateSorter(sorter, true));
+      this.__applySorters();
+    }
+
+    /** @private */
+    __updateSorter(sorter, removed = false) {
       this._removeArrayItem(this._sorters, sorter);
       sorter._order = null;
 
       if (this.multiSort) {
-        if (sorter.direction) {
+        if (!removed && sorter.direction) {
           this._sorters.unshift(sorter);
         }
 
         this._sorters.forEach((sorter, index) => (sorter._order = this._sorters.length > 1 ? index : null), this);
       } else {
-        if (sorter.direction) {
+        if (!removed && sorter.direction) {
           this._sorters.forEach((sorter) => {
             sorter._order = null;
             sorter.direction = null;
@@ -70,12 +87,14 @@ export const SortMixin = (superClass) =>
           this._sorters = [sorter];
         }
       }
+    }
 
-      e.stopPropagation();
-
+    /** @private */
+    __applySorters() {
       if (
         this.dataProvider &&
-        // No need to clear cache if sorters didn't change
+        // No need to clear cache if sorters didn't change and grid is attached
+        this.__isConnected &&
         JSON.stringify(this._previousSorters) !== JSON.stringify(this._mapSorters())
       ) {
         this.clearCache();

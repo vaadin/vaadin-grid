@@ -199,6 +199,28 @@ export const ColumnBaseMixin = (superClass) =>
       this._gridValue = undefined;
     }
 
+    /** @private */
+    __getColumnSorters() {
+      return this.__getElementsInCells('vaadin-grid-sorter');
+    }
+
+    /** @private */
+    __getColumnFilters() {
+      return this.__getElementsInCells('vaadin-grid-filter');
+    }
+
+    /** @private */
+    __getElementsInCells(name) {
+      // TODO: Check how grid behaves with several filters and sorters in different column cells  to verify this logic
+      return this._allCells.reduce((result, cell) => {
+        const sorter = cell._content.querySelector(name);
+        if (sorter) {
+          return result.concat(sorter);
+        }
+        return result;
+      }, []);
+    }
+
     /**
      * @return {!GridElement | undefined}
      * @protected

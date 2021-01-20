@@ -88,10 +88,14 @@ export const DynamicColumnsMixin = (superClass) =>
           this._rowDetailsTemplate = rowDetailsTemplate;
         }
 
-        if (
-          info.addedNodes.filter(this._isColumnElement).length > 0 ||
-          info.removedNodes.filter(this._isColumnElement).length > 0
-        ) {
+        const removedColumns = info.removedNodes.filter(this._isColumnElement);
+        if (info.addedNodes.filter(this._isColumnElement).length > 0 || removedColumns.length > 0) {
+          this.__removeSorters(
+            removedColumns.reduce((sorters, column) => sorters.concat(column.__getColumnSorters()), [])
+          );
+          this.__removeFilters(
+            removedColumns.reduce((filters, column) => filters.concat(column.__getColumnFilters()), [])
+          );
           this._updateColumnTree();
         }
 

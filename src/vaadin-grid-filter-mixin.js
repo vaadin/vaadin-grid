@@ -29,13 +29,35 @@ export const FilterMixin = (superClass) =>
 
     /** @private */
     _filterChanged(e) {
-      if (this._filters.indexOf(e.target) === -1) {
-        this._filters.push(e.target);
-      }
-
       e.stopPropagation();
 
-      if (this.dataProvider) {
+      this.__updateFilter(e.target);
+      this.__applyFilters();
+    }
+
+    __removeFilters(filters) {
+      if (filters.length == 0) {
+        return;
+      }
+
+      filters.forEach((filter) => this.__updateFilter(filter, true));
+      this.__applyFilters();
+    }
+
+    /** @private */
+    __updateFilter(filter, removed = false) {
+      const filterIndex = this._filters.indexOf(filter);
+
+      if (filterIndex === -1) {
+        this._filters.push(filter);
+      } else if (removed) {
+        this._filters.splice(filterIndex, 1);
+      }
+    }
+
+    /** @private */
+    __applyFilters() {
+      if (this.dataProvider && this.__isConnected) {
         this.clearCache();
       }
     }

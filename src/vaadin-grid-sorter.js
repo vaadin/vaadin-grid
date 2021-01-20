@@ -146,6 +146,12 @@ class GridSorterElement extends ThemableMixin(DirMixin(PolymerElement)) {
       _isConnected: {
         type: Boolean,
         value: false
+      },
+
+      /** @private */
+      __preservedOrder: {
+        type: Boolean,
+        value: false
       }
     };
   }
@@ -179,7 +185,11 @@ class GridSorterElement extends ThemableMixin(DirMixin(PolymerElement)) {
     }
 
     if (isConnected) {
-      this.dispatchEvent(new CustomEvent('sorter-changed', { bubbles: true, composed: true }));
+      if (this.__preservedOrder) {
+        this.__preservedOrder = false;
+      } else {
+        this.dispatchEvent(new CustomEvent('sorter-changed', { bubbles: true, composed: true }));
+      }
     }
   }
 
