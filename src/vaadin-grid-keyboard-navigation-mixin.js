@@ -1,3 +1,5 @@
+import { PolymerElement } from '@polymer/polymer';
+
 /**
  * @license
  * Copyright (c) 2020 Vaadin Ltd.
@@ -508,7 +510,7 @@ export const KeyboardNavigationMixin = (superClass) =>
         // Fire a public event for cell focus.
         const context = this.getEventContext(e);
         if (context.column && context.column.path && context.item) {
-          context.content = Polymer.Base.get(context.column.path, context.item);
+          context.content = PolymerElement.get(context.column.path, context.item);
         }
         this.dispatchEvent(
           new CustomEvent('cell-focus', {
