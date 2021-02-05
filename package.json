@@ -33,7 +33,7 @@
   "scripts": {
     "analyze": "polymer analyze vaadin-* > analysis.json",
     "check-version": "magi check-version",
-    "debug": "web-test-runner test/*.test.js --watch",
+    "debug": "web-test-runner test/keyboard-navigation.test.js --watch",
     "dist": "rimraf dist && npm run analyze && rollup -c rollup.config.js && cp analysis.json dist",
     "lint": "npm run lint:js && npm run lint:css && npm run lint:types",
     "lint:js": "eslint src theme test",

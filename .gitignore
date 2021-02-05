@@ -5,3 +5,5 @@ yarn.lock
 coverage
 dist
 analysis.json
+demo/
+.vscode

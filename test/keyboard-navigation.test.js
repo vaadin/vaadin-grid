@@ -1803,6 +1803,15 @@ describe('keyboard navigation', () => {
       expect(spy.callCount).to.equal(1);
     });
 
+    it('should dispatch cell-focus after cell focus', () => {
+      const spy = sinon.spy();
+      grid.addEventListener('cell-focus', spy);
+
+      tabToBody();
+
+      expect(spy.callCount).to.equal(1);
+    });
+
     it('should dispatch cell-focusout after cell blur', () => {
       tabToBody();
 
