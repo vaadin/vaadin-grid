@@ -211,7 +211,7 @@ describe('scroll to index', () => {
   describe('Tree grid', () => {
     // Issue https://github.com/vaadin/vaadin-grid/issues/2107
     it('should display correctly when scrolled to bottom immediately after setting dataProvider', (done) => {
-      const grid = fixtures.treeGrid;
+      const grid = fixtureSync(fixtures.treeGrid);
       grid.size = 1;
       const numberOfChidren = 250;
       grid.itemIdPath = 'name';
