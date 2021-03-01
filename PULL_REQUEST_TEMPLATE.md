@@ -22,4 +22,4 @@ Fixes # (issue)
 
 #### Additional for `Feature` type of change
 
-- [ ] Enhancement / new feature was discussed in a corresponding GitHub issue and Acceptance Criteria were created.
+- [ ] Enhancement / new feature was discussed in a corresponding GitHub issue and Acceptance Criteria was created.
