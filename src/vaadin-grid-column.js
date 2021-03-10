@@ -310,6 +310,11 @@ export const ColumnBaseMixin = (superClass) =>
 
     /** @private */
     __setColumnTemplateOrRenderer(template, renderer, cells) {
+      // no renderer or template needed in a hidden column
+      if (this.hidden) {
+        return;
+      }
+
       if (template && renderer) {
         throw new Error('You should only use either a renderer or a template');
       }
@@ -340,7 +345,7 @@ export const ColumnBaseMixin = (superClass) =>
 
     /** @private */
     _setBodyTemplateOrRenderer(template, renderer, cells) {
-      if ((template || renderer) && cells && !this.hidden) {
+      if ((template || renderer) && cells) {
         this.__setColumnTemplateOrRenderer(template, renderer, cells);
       }
     }
