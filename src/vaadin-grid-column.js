@@ -340,7 +340,7 @@ export const ColumnBaseMixin = (superClass) =>
 
     /** @private */
     _setBodyTemplateOrRenderer(template, renderer, cells) {
-      if ((template || renderer) && cells) {
+      if ((template || renderer) && cells && !this.hidden) {
         this.__setColumnTemplateOrRenderer(template, renderer, cells);
       }
     }
