@@ -313,6 +313,10 @@ This program is available under Apache License Version 2.0, available at https:/
 
     /** @private */
     __setColumnTemplateOrRenderer(template, renderer, cells) {
+      // no renderer or template needed in a hidden column
+      if (this.hidden) {
+        return;
+      }
       if (template && renderer) {
         throw new Error('You should only use either a renderer or a template');
       }
