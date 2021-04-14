@@ -90,12 +90,9 @@ export const DynamicColumnsMixin = (superClass) =>
 
         const removedColumns = info.removedNodes.filter(this._isColumnElement);
         if (info.addedNodes.filter(this._isColumnElement).length > 0 || removedColumns.length > 0) {
-          this.__removeSorters(
-            removedColumns.reduce((sorters, column) => sorters.concat(column.__getColumnSorters()), [])
-          );
-          this.__removeFilters(
-            removedColumns.reduce((filters, column) => filters.concat(column.__getColumnFilters()), [])
-          );
+          const filterNotConnected = n => !n.isConnected;
+          this.__removeSorters(this._sorters.filter(filterNotConnected));
+          this.__removeFilters(this._filters.filter(filterNotConnected));
           this._updateColumnTree();
         }
 
