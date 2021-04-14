@@ -88,8 +88,8 @@ export const DynamicColumnsMixin = (superClass) =>
           this._rowDetailsTemplate = rowDetailsTemplate;
         }
 
-        const removedColumns = info.removedNodes.filter(this._isColumnElement);
-        if (info.addedNodes.filter(this._isColumnElement).length > 0 || removedColumns.length > 0) {
+        if (info.addedNodes.filter(this._isColumnElement).length > 0
+          || info.removedNodes.filter(this._isColumnElement).length > 0) {
           const filterNotConnected = n => !n.isConnected;
           this.__removeSorters(this._sorters.filter(filterNotConnected));
           this.__removeFilters(this._filters.filter(filterNotConnected));
