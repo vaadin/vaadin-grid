@@ -63,23 +63,31 @@ export const SortMixin = (superClass) =>
         return;
       }
 
-      sorters.forEach((sorter) => this.__updateSorter(sorter, true));
+      sorters.forEach((sorter) => {
+        this._removeArrayItem(this._sorters, sorter);
+        if (this.multiSort) {
+          this.__updateSortOrders();
+        }
+      });
       this.__applySorters();
     }
 
     /** @private */
-    __updateSorter(sorter, removed = false) {
-      this._removeArrayItem(this._sorters, sorter);
+    __updateSortOrders() {
+        this._sorters.forEach((sorter, index) => (sorter._order = this._sorters.length > 1 ? index : null), this);
+    }
+
+    /** @private */
+    __updateSorter(sorter) {
       sorter._order = null;
 
       if (this.multiSort) {
-        if (!removed && sorter.direction) {
+        if (sorter.direction) {
           this._sorters.unshift(sorter);
         }
-
-        this._sorters.forEach((sorter, index) => (sorter._order = this._sorters.length > 1 ? index : null), this);
+        this.__updateSortOrders();
       } else {
-        if (!removed && sorter.direction) {
+        if (sorter.direction) {
           this._sorters.forEach((sorter) => {
             sorter._order = null;
             sorter.direction = null;
