@@ -102,7 +102,7 @@ export const SortMixin = (superClass) =>
       if (
         this.dataProvider &&
         // No need to clear cache if sorters didn't change and grid is attached
-        this.__isConnected &&
+        this.isAttached &&
         JSON.stringify(this._previousSorters) !== JSON.stringify(this._mapSorters())
       ) {
         this.clearCache();

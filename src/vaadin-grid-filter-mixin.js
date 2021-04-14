@@ -57,7 +57,7 @@ export const FilterMixin = (superClass) =>
 
     /** @private */
     __applyFilters() {
-      if (this.dataProvider && this.__isConnected) {
+      if (this.dataProvider && this.isAttached) {
         this.clearCache();
       }
     }
