@@ -87,9 +87,8 @@ export const DynamicColumnsMixin = (superClass) =>
         if (rowDetailsTemplate && this._rowDetailsTemplate !== rowDetailsTemplate) {
           this._rowDetailsTemplate = rowDetailsTemplate;
         }
-
-        if (info.addedNodes.filter(this._isColumnElement).length > 0
-          || info.removedNodes.filter(this._isColumnElement).length > 0) {
+        const hasColumnElements = nodeCollection => nodeCollection.filter(this._isColumnElement).length > 0;
+        if (hasColumnElements(info.addedNodes) || hasColumnElements(info.removedNodes)) {
           const filterNotConnected = n => !n.isConnected;
           this.__removeSorters(this._sorters.filter(filterNotConnected));
           this.__removeFilters(this._filters.filter(filterNotConnected));
