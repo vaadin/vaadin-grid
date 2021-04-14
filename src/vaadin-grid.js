@@ -414,12 +414,6 @@ class GridElement extends ElementMixin(
     this.recalculateColumnWidths();
   }
 
-  /** @protected */
-  disconnectedCallback() {
-    super.disconnectedCallback();
-    this.querySelectorAll('vaadin-grid-sorter').forEach((sorter) => (sorter.__preservedOrder = true));
-  }
-
   /**
    * @param {string} name
    * @param {?string} oldValue
