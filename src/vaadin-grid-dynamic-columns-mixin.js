@@ -89,7 +89,10 @@ export const DynamicColumnsMixin = (superClass) =>
         }
         const hasColumnElements = (nodeCollection) => nodeCollection.filter(this._isColumnElement).length > 0;
         if (hasColumnElements(info.addedNodes) || hasColumnElements(info.removedNodes)) {
-          const filterNotConnected = (n) => !n.isConnected;
+          const allRemovedCells = info.removedNodes.flatMap((c) => c._allCells);
+          const filterNotConnected = (element) =>
+            allRemovedCells.filter((cell) => cell._content.contains(element)).length;
+
           this.__removeSorters(this._sorters.filter(filterNotConnected));
           this.__removeFilters(this._filters.filter(filterNotConnected));
           this._updateColumnTree();
