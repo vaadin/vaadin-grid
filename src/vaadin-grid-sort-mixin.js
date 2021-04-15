@@ -83,6 +83,7 @@ export const SortMixin = (superClass) =>
 
       if (this.multiSort) {
         if (sorter.direction) {
+          this._removeArrayItem(this._sorters, sorter);
           this._sorters.unshift(sorter);
         }
         this.__updateSortOrders();
