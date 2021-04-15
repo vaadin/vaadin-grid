@@ -118,8 +118,10 @@ class GridSorterElement extends ThemableMixin(DirMixin(PolymerElement)) {
       /**
        * JS Path of the property in the item used for sorting the data.
        */
-      path: String,
-
+      path: {
+        type: String,
+        observer: '__pathChanged'
+      },
       /**
        * How to sort the data.
        * Possible values are `asc` to use an ascending algorithm, `desc` to sort the data in
@@ -130,7 +132,8 @@ class GridSorterElement extends ThemableMixin(DirMixin(PolymerElement)) {
         type: String,
         reflectToAttribute: true,
         notify: true,
-        value: null
+        value: null,
+        observer: '__directionChanged'
       },
 
       /**
@@ -145,13 +148,10 @@ class GridSorterElement extends ThemableMixin(DirMixin(PolymerElement)) {
       /** @private */
       _isConnected: {
         type: Boolean,
-        value: false
+        value: false,
+        observer: '__isConnectedChanged'
       }
     };
-  }
-
-  static get observers() {
-    return ['_pathOrDirectionChanged(path, direction, _isConnected)'];
   }
 
   /** @protected */
@@ -173,13 +173,29 @@ class GridSorterElement extends ThemableMixin(DirMixin(PolymerElement)) {
   }
 
   /** @private */
-  _pathOrDirectionChanged(path, direction, isConnected) {
-    if (path === undefined || direction === undefined || isConnected === undefined) {
+  __pathChanged(newValue, oldValue) {
+    this._pathOrDirectionChanged('path', newValue, oldValue);
+  }
+
+  /** @private */
+  __directionChanged(newValue, oldValue) {
+    this._pathOrDirectionChanged('direction', newValue, oldValue);
+  }
+
+  /** @private */
+  __isConnectedChanged(newValue, oldValue) {
+    this._pathOrDirectionChanged('_isConnected', newValue, oldValue);
+  }
+
+  /** @private */
+  _pathOrDirectionChanged(property, newValue, oldValue) {
+    if (this.path === undefined || this.direction === undefined || this.isConnected === undefined) {
       return;
     }
 
-    if (isConnected) {
-      this.dispatchEvent(new CustomEvent('sorter-changed', { bubbles: true, composed: true }));
+    if (this.isConnected) {
+      const detail = { property, newValue, oldValue };
+      this.dispatchEvent(new CustomEvent('sorter-changed', { bubbles: true, composed: true, detail }));
     }
   }
 

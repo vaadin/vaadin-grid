@@ -52,9 +52,10 @@ export const SortMixin = (superClass) =>
     _onSorterChanged(e) {
       const sorter = e.target;
       e.stopPropagation();
-
-      this.__updateSorter(sorter);
-      this.__applySorters();
+      if (e.detail.property !== '_isConnected' || !e.detail.newValue || this._sorters.indexOf(sorter) === -1) {
+        this.__updateSorter(sorter);
+        this.__applySorters();
+      }
     }
 
     /** @private */
