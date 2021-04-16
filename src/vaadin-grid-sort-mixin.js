@@ -52,9 +52,13 @@ export const SortMixin = (superClass) =>
     _onSorterChanged(e) {
       const sorter = e.target;
       e.stopPropagation();
-      if (e.detail.property !== '_isConnected' || !e.detail.newValue || this._sorters.indexOf(sorter) === -1) {
+      if (this._isUpdatingSorter) return;
+      try {
+        this._isUpdatingSorter = true;
         this.__updateSorter(sorter);
         this.__applySorters();
+      } finally {
+        this._isUpdatingSorter = false;
       }
     }
 
@@ -83,17 +87,19 @@ export const SortMixin = (superClass) =>
       sorter._order = null;
 
       if (this.multiSort) {
+        this._removeArrayItem(this._sorters, sorter);
         if (sorter.direction) {
-          this._removeArrayItem(this._sorters, sorter);
           this._sorters.unshift(sorter);
         }
         this.__updateSortOrders();
       } else {
         if (sorter.direction) {
-          this._sorters.forEach((sorter) => {
-            sorter._order = null;
-            sorter.direction = null;
-          });
+          this._sorters
+            .filter((s) => s != sorter)
+            .forEach((sorter) => {
+              sorter._order = null;
+              sorter.direction = null;
+            });
           this._sorters = [sorter];
         }
       }

@@ -369,7 +369,7 @@ describe('sorting', () => {
         grid.dataProvider.resetHistory();
         sorterFirst.direction = 'desc';
 
-        expect(grid.dataProvider.args[1][0].sortOrders.length).to.eql(1);
+        expect(grid.dataProvider.args[0][0].sortOrders.length).to.eql(1);
       });
 
       it('should remove order from sorters', () => {

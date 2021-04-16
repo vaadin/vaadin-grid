@@ -118,10 +118,8 @@ class GridSorterElement extends ThemableMixin(DirMixin(PolymerElement)) {
       /**
        * JS Path of the property in the item used for sorting the data.
        */
-      path: {
-        type: String,
-        observer: '__pathChanged'
-      },
+      path: String,
+
       /**
        * How to sort the data.
        * Possible values are `asc` to use an ascending algorithm, `desc` to sort the data in
@@ -132,8 +130,7 @@ class GridSorterElement extends ThemableMixin(DirMixin(PolymerElement)) {
         type: String,
         reflectToAttribute: true,
         notify: true,
-        value: null,
-        observer: '__directionChanged'
+        value: null
       },
 
       /**
@@ -154,6 +151,10 @@ class GridSorterElement extends ThemableMixin(DirMixin(PolymerElement)) {
     };
   }
 
+  static get observers() {
+    return ['_pathOrDirectionChanged(path, direction)'];
+  }
+
   /** @protected */
   ready() {
     super.ready();
@@ -170,32 +171,28 @@ class GridSorterElement extends ThemableMixin(DirMixin(PolymerElement)) {
   disconnectedCallback() {
     super.disconnectedCallback();
     this._isConnected = false;
+    this._wasDisconnected = true;
   }
 
   /** @private */
-  __pathChanged(newValue, oldValue) {
-    this._pathOrDirectionChanged('path', newValue, oldValue);
-  }
-
-  /** @private */
-  __directionChanged(newValue, oldValue) {
-    this._pathOrDirectionChanged('direction', newValue, oldValue);
-  }
-
-  /** @private */
-  __isConnectedChanged(newValue, oldValue) {
-    this._pathOrDirectionChanged('_isConnected', newValue, oldValue);
-  }
-
-  /** @private */
-  _pathOrDirectionChanged(property, newValue, oldValue) {
-    if (this.path === undefined || this.direction === undefined || this.isConnected === undefined) {
+  _pathOrDirectionChanged(path, direction) {
+    if (path === undefined || direction === undefined) {
       return;
     }
 
     if (this.isConnected) {
-      const detail = { property, newValue, oldValue };
-      this.dispatchEvent(new CustomEvent('sorter-changed', { bubbles: true, composed: true, detail }));
+      this.dispatchEvent(new CustomEvent('sorter-changed', { bubbles: true, composed: true }));
+    }
+  }
+
+  /** @private */
+  __isConnectedChanged(isConnected) {
+    if (isConnected) {
+      if (this._wasDisconnected) {
+        this._wasDisconnected = false;
+      } else {
+        this._pathOrDirectionChanged(this.path, this.direction);
+      }
     }
   }
 
