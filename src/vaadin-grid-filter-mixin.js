@@ -40,18 +40,21 @@ export const FilterMixin = (superClass) =>
         return;
       }
 
-      filters.forEach((filter) => this.__updateFilter(filter, true));
+      this._filters.forEach((filter) => {
+        const filterIndex = this._filters.indexOf(filter);
+        if (filterIndex !== -1) {
+          this._filters.splice(filterIndex, 1);
+        }
+      });
       this.__applyFilters();
     }
 
     /** @private */
-    __updateFilter(filter, removed = false) {
+    __updateFilter(filter) {
       const filterIndex = this._filters.indexOf(filter);
 
       if (filterIndex === -1) {
         this._filters.push(filter);
-      } else if (removed) {
-        this._filters.splice(filterIndex, 1);
       }
     }
 
