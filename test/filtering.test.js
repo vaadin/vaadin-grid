@@ -3,7 +3,14 @@ import sinon from 'sinon';
 import { fixtureSync } from '@open-wc/testing-helpers';
 import { PolymerElement, html } from '@polymer/polymer/polymer-element.js';
 import { flush } from '@polymer/polymer/lib/utils/flush.js';
-import { flushGrid, getBodyCellContent, getHeaderCellContent, listenOnce, scrollToEnd } from './helpers.js';
+import {
+  flushGrid,
+  getBodyCellContent,
+  getHeaderCellContent,
+  listenOnce,
+  scrollToEnd,
+  getVisibleItems
+} from './helpers.js';
 import '../vaadin-grid.js';
 import '../vaadin-grid-filter.js';
 import '../vaadin-grid-filter-column.js';
@@ -262,7 +269,6 @@ describe('array data provider', () => {
     expect(getBodyCellContent(grid, 0, 0).innerText).to.equal('bar');
   });
 
-  // TODO: find better option to check rather than grid._cache.items...
   it('should update filtering when column is removed', () => {
     filterFirst.value = 'bar';
     flushFilters(grid);
@@ -270,7 +276,7 @@ describe('array data provider', () => {
     grid.removeChild(grid.firstElementChild);
     flushGrid(grid);
 
-    expect(Object.keys(grid._cache.items).length).to.equal(3);
+    expect(getVisibleItems(grid).length).to.equal(3);
   });
 
   // TODO: find better option to check rather than grid._cache.items...
