@@ -175,14 +175,8 @@ class GridSorterElement extends ThemableMixin(DirMixin(PolymerElement)) {
   }
 
   /** @private */
-  _pathOrDirectionChanged(path, direction) {
-    if (path === undefined || direction === undefined) {
-      return;
-    }
-
-    if (this.isConnected) {
-      this.dispatchEvent(new CustomEvent('sorter-changed', { bubbles: true, composed: true }));
-    }
+  _pathOrDirectionChanged() {
+    this.__dispatchSorterChangedEvenIfPossible();
   }
 
   /** @private */
@@ -191,9 +185,18 @@ class GridSorterElement extends ThemableMixin(DirMixin(PolymerElement)) {
       if (this._wasDisconnected) {
         this._wasDisconnected = false;
       } else {
-        this._pathOrDirectionChanged(this.path, this.direction);
+        this.__dispatchSorterChangedEvenIfPossible();
       }
     }
+  }
+
+  /** @private */
+  __dispatchSorterChangedEvenIfPossible() {
+    if (this.path === undefined || this.direction === undefined || !this.isConnected) {
+      return;
+    }
+
+    this.dispatchEvent(new CustomEvent('sorter-changed', { bubbles: true, composed: true }));
   }
 
   /** @private */
