@@ -279,7 +279,6 @@ describe('array data provider', () => {
     expect(getVisibleItems(grid).length).to.equal(3);
   });
 
-  // TODO: find better option to check rather than grid._cache.items...
   it('should not filter items before grid is re-attached', () => {
     filterFirst.value = 'bar';
     flushFilters(grid);
