@@ -36,12 +36,12 @@ export const FilterMixin = (superClass) =>
     }
 
     /** @private */
-    __removeFilters(filters) {
-      if (filters.length == 0) {
+    __removeFilters(filtersToRemove) {
+      if (filtersToRemove.length == 0) {
         return;
       }
 
-      filters.forEach((filter) => {
+      filtersToRemove.forEach((filter) => {
         const filterIndex = this._filters.indexOf(filter);
         if (filterIndex !== -1) {
           this._filters.splice(filterIndex, 1);
