@@ -145,7 +145,6 @@ class GridSorterElement extends ThemableMixin(DirMixin(PolymerElement)) {
       /** @private */
       _isConnected: {
         type: Boolean,
-        value: false,
         observer: '__isConnectedChanged'
       }
     };
@@ -171,7 +170,6 @@ class GridSorterElement extends ThemableMixin(DirMixin(PolymerElement)) {
   disconnectedCallback() {
     super.disconnectedCallback();
     this._isConnected = false;
-    this._wasDisconnected = true;
   }
 
   /** @private */
@@ -180,19 +178,17 @@ class GridSorterElement extends ThemableMixin(DirMixin(PolymerElement)) {
   }
 
   /** @private */
-  __isConnectedChanged(isConnected) {
-    if (isConnected) {
-      if (this._wasDisconnected) {
-        this._wasDisconnected = false;
-      } else {
-        this.__dispatchSorterChangedEvenIfPossible();
-      }
+  __isConnectedChanged(newValue, oldValue) {
+    if (oldValue === false) {
+      return;
     }
+
+    this.__dispatchSorterChangedEvenIfPossible();
   }
 
   /** @private */
   __dispatchSorterChangedEvenIfPossible() {
-    if (this.path === undefined || this.direction === undefined || !this.isConnected) {
+    if (this.path === undefined || this.direction === undefined || !this._isConnected) {
       return;
     }
 
