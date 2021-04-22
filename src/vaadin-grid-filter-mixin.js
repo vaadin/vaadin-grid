@@ -35,6 +35,7 @@ export const FilterMixin = (superClass) =>
       this.__applyFilters();
     }
 
+    /** @private */
     __removeFilters(filters) {
       if (filters.length == 0) {
         return;
