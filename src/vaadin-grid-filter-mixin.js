@@ -40,7 +40,7 @@ export const FilterMixin = (superClass) =>
         return;
       }
 
-      this._filters.forEach((filter) => {
+      filters.forEach((filter) => {
         const filterIndex = this._filters.indexOf(filter);
         if (filterIndex !== -1) {
           this._filters.splice(filterIndex, 1);

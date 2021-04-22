@@ -121,6 +121,15 @@ describe('filtering', () => {
     expect(grid._filters).to.not.contain(filter);
   });
 
+  it('should keep references to filters for columns that are not removed', () => {
+    expect(grid._filters.length).to.eql(2);
+    expect(grid._filters[1].path).to.eql('last');
+    grid.removeChild(grid.firstElementChild.nextElementSibling);
+    flushGrid(grid);
+    expect(grid._filters.length).to.eql(1);
+    expect(grid._filters[0].path).to.eql('first');
+  });
+
   it('should pass filters to dataProvider', (done) => {
     grid.size = 10;
 
