@@ -41,12 +41,7 @@ export const FilterMixin = (superClass) =>
         return;
       }
 
-      filtersToRemove.forEach((filter) => {
-        const filterIndex = this._filters.indexOf(filter);
-        if (filterIndex !== -1) {
-          this._filters.splice(filterIndex, 1);
-        }
-      });
+      this._filters = this._filters.filter((filter) => filtersToRemove.indexOf(filter) < 0);
       this.__applyFilters();
     }
 
