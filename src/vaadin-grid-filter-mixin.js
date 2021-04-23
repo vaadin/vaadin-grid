@@ -31,7 +31,7 @@ export const FilterMixin = (superClass) =>
     _filterChanged(e) {
       e.stopPropagation();
 
-      this.__updateFilter(e.target);
+      this.__addFilter(e.target);
       this.__applyFilters();
     }
 
@@ -46,7 +46,7 @@ export const FilterMixin = (superClass) =>
     }
 
     /** @private */
-    __updateFilter(filter) {
+    __addFilter(filter) {
       const filterIndex = this._filters.indexOf(filter);
 
       if (filterIndex === -1) {
