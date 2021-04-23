@@ -57,14 +57,12 @@ export const SortMixin = (superClass) =>
     }
 
     /** @private */
-    __removeSorters(sorters) {
-      if (sorters.length == 0) {
+    __removeSorters(sortersToRemove) {
+      if (sortersToRemove.length == 0) {
         return;
       }
 
-      sorters.forEach((sorter) => {
-        this._removeArrayItem(this._sorters, sorter);
-      });
+      this._sorters = this._sorters.filter((sorter) => sortersToRemove.indexOf(sorter) < 0);
       if (this.multiSort) {
         this.__updateSortOrders();
       }
