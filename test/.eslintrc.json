@@ -36,6 +36,7 @@
     "getContainerCellContent": false,
     "getFirstVisibleItem": false,
     "getLastVisibleItem": false,
+    "getVisibleItems": false,
     "simulateScroll": false,
     "getScrollbarWidth": false,
     "scrollToEnd": false,
