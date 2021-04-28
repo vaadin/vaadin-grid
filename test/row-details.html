@@ -109,6 +109,14 @@
         return event;
       }
 
+      function openRowDetails(index) {
+        grid.openItemDetails(grid._cache.items[index]);
+      }
+
+      function closeRowDetails(index) {
+        grid.closeItemDetails(grid._cache.items[index]);
+      }
+
       it('should not increase row update count', () => {
         grid = fixture('default');
         const spy = sinon.spy(grid, '_updateRow');
@@ -120,10 +128,6 @@
 
       describe('simple', () => {
 
-        function openRowDetails(index) {
-          grid.openItemDetails(grid._cache.items[index]);
-        }
-
         beforeEach(done => {
 
           grid = fixture('default');
@@ -132,10 +136,6 @@
           bodyRows = getRows(grid.$.items);
           animationFrameFlush(() => done());
         });
-
-        function closeRowDetails(index) {
-          grid.closeItemDetails(grid._cache.items[index]);
-        }
 
         it('should not activate on click', () => {
           openRowDetails(0);
@@ -203,13 +203,6 @@
         it('should have correct bounds', () => {
           openRowDetails(1);
           assertDetailsBounds();
-        });
-
-        it('should have state attribute', () => {
-          openRowDetails(1);
-          expect(bodyRows[1].hasAttribute('details-opened')).to.be.true;
-          closeRowDetails(1);
-          expect(bodyRows[1].hasAttribute('details-opened')).to.be.false;
         });
 
         it('should have correct bounds when modified after opening', done => {
@@ -326,6 +319,64 @@
 
           const row = getRows(grid.$.items)[0];
           expect(row.offsetHeight).to.be.above(70);
+        });
+      });
+
+      describe('details opened attribute', () => {
+        let dataset = [];
+        const dataProvider = (params, callback) => callback(dataset);
+
+        const countRowsMarkedAsDetailsOpened = (grid) => {
+          return grid.$.items.querySelectorAll('tr[details-opened]').length;
+        };
+
+        beforeEach(done => {
+          dataset = buildDataSet(10);
+          grid = fixture('default');
+          grid.dataProvider = dataProvider;
+          flushGrid(grid);
+          bodyRows = getRows(grid.$.items);
+          animationFrameFlush(() => done());
+        });
+
+        it('should update when opening/closing imperatively', () => {
+          openRowDetails(1);
+          expect(bodyRows[1].hasAttribute('details-opened')).to.be.true;
+          expect(countRowsMarkedAsDetailsOpened(grid)).to.equal(1);
+          closeRowDetails(1);
+          expect(bodyRows[1].hasAttribute('details-opened')).to.be.false;
+          expect(countRowsMarkedAsDetailsOpened(grid)).to.equal(0);
+        });
+
+        it('should be removed when item is removed', () => {
+          openRowDetails(0);
+          dataset.shift(); // remove opened item
+          grid.clearCache();
+
+          expect(bodyRows[0].hasAttribute('details-opened')).to.be.false;
+          expect(countRowsMarkedAsDetailsOpened(grid)).to.equal(0);
+        });
+
+        it('should be removed when items are replaced', () => {
+          openRowDetails(0);
+          dataset = buildDataSet(10); // replace data
+          grid.clearCache();
+
+          expect(bodyRows[0].hasAttribute('details-opened')).to.be.false;
+          expect(countRowsMarkedAsDetailsOpened(grid)).to.equal(0);
+        });
+
+        it('should be removed on all rows when items are replaced', () => {
+          // Open all rows
+          dataset.forEach((_, i) => {
+            openRowDetails(i);
+          });
+          expect(countRowsMarkedAsDetailsOpened(grid)).to.equal(dataset.length);
+
+          dataset = buildDataSet(10); // replace data
+          grid.clearCache();
+
+          expect(countRowsMarkedAsDetailsOpened(grid)).to.equal(0);
         });
       });
     });
