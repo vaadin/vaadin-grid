@@ -518,6 +518,11 @@ This program is available under Apache License Version 2.0, available at https:/
       if (this.__pendingScrollToIndex && this.$.items.children.length) {
         const index = this.__pendingScrollToIndex;
         delete this.__pendingScrollToIndex;
+
+        if (this._debounceIncreasePool) {
+          this._debounceIncreasePool.flush();
+        }
+
         this.scrollToIndex(index);
       }
     }
