@@ -88,7 +88,7 @@ This program is available under Apache License Version 2.0, available at https:/
 
         const hasColumnElements = (nodeCollection) => nodeCollection.filter(this._isColumnElement).length > 0;
         if (hasColumnElements(info.addedNodes) || hasColumnElements(info.removedNodes)) {
-          const allRemovedCells = info.removedNodes.flatMap((c) => c._allCells);
+          const allRemovedCells = info.removedNodes.reduce((list, c) => list.concat(c._allCells), []);
           const filterNotConnected = (element) =>
             allRemovedCells.filter((cell) => cell._content.contains(element)).length;
 
