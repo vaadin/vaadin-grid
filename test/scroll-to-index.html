@@ -274,15 +274,16 @@
       it('should not reuse rows if subitems are loaded while scrolling to bottom', (done) => {
         grid.size = 25;
 
-        const parents = Array.from({length: 10}).map((_, i) => ({name: i, hasChildren: true}));
+        const parents = [...new Array(10)].map((_, i) => ({name: i, hasChildren: true}));
 
         grid.dataProvider = ({parentItem}, cb) => {
+          // debugger;
           setTimeout(() => {
             if (!parentItem) {
               cb(parents, parents.length);
             } else {
               const {name: parentName} = parentItem;
-              const children = Array.from({length: 10}).map((_, i) => ({
+              const children = [...new Array(10)].map((_, i) => ({
                 name: `${parentName * 10 + i}`,
                 hasChildren: false
               }));
