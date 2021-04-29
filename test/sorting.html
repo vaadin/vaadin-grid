@@ -164,6 +164,7 @@
 
         beforeEach(() => {
           grid = fixture('dom-operations');
+          flushGrid(grid);
 
           // TODO: find better way to select
           columnFirst = grid.querySelectorAll('vaadin-grid-sort-column')[0];
