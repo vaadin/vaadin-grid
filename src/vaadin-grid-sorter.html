@@ -141,14 +141,14 @@ This program is available under Apache License Version 2.0, available at https:/
             /** @private */
             _isConnected: {
               type: Boolean,
-              value: false
+              observer: '__isConnectedChanged'
             }
           };
         }
 
         static get observers() {
           return [
-            '_pathOrDirectionChanged(path, direction, _isConnected)',
+            '_pathOrDirectionChanged(path, direction)',
             '_directionOrOrderChanged(direction, _order)'
           ];
         }
@@ -172,14 +172,26 @@ This program is available under Apache License Version 2.0, available at https:/
         }
 
         /** @private */
-        _pathOrDirectionChanged(path, direction, isConnected) {
-          if (path === undefined || direction === undefined || isConnected === undefined) {
+        _pathOrDirectionChanged() {
+          this.__dispatchSorterChangedEvenIfPossible();
+        }
+
+        /** @private */
+        __isConnectedChanged(newValue, oldValue) {
+          if (oldValue === false) {
             return;
           }
 
-          if (isConnected) {
-            this.dispatchEvent(new CustomEvent('sorter-changed', {bubbles: true, composed: true}));
+          this.__dispatchSorterChangedEvenIfPossible();
+        }
+
+        /** @private */
+        __dispatchSorterChangedEvenIfPossible() {
+          if (this.path === undefined || this.direction === undefined || !this._isConnected) {
+            return;
           }
+
+          this.dispatchEvent(new CustomEvent('sorter-changed', {bubbles: true, composed: true}));
         }
 
         /** @private */
