@@ -339,7 +339,7 @@ class GridElement extends ElementMixin(
   }
 
   static get version() {
-    return '6.0.1';
+    return '6.0.2';
   }
 
   static get observers() {
