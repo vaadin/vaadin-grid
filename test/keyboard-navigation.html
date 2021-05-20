@@ -1549,7 +1549,7 @@
         });
 
         it('should exit interaction mode when blurred', () => {
-          grid.setAttribute('interacting', '');
+          grid._setInteracting(true);
 
           focusable.focus();
 
@@ -1557,7 +1557,7 @@
         });
 
         it('should exit interaction mode when tabbed into', () => {
-          grid.setAttribute('interacting', '');
+          grid._setInteracting(true);
 
           tabToHeader();
 
@@ -1565,7 +1565,7 @@
         });
 
         it('should exit interaction mode when shift-tabbed into', () => {
-          grid.setAttribute('interacting', '');
+          grid._setInteracting(true);
 
           shiftTabToFooter();
 
@@ -1795,7 +1795,7 @@
         });
 
         it('should exit interaction mode with escape', () => {
-          grid.setAttribute('interacting', '');
+          grid._setInteracting(true);
 
           escape();
 
