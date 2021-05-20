@@ -23,6 +23,9 @@ import {
 import '../vaadin-grid.js';
 import '../vaadin-grid-column-group.js';
 
+// Detect if tests are running in Sauce Labs, see `web-test-runner.config.js`
+const isSauceLabsLauncher = window.browserLauncher === 'saucelabs';
+
 window.top.focus && window.top.focus();
 window.focus();
 
@@ -1613,52 +1616,61 @@ describe('keyboard navigation', () => {
       spy.restore();
     });
 
-    // Skip: sendKeys is not supported in WTR when using web-driver
-    it.skip('should focus the next input element when tabbing in interaction mode', async () => {
-      // Focus first input
-      right();
-      enter();
+    // Skip: sendKeys is not supported in Sauce Labs launcher
+    (isSauceLabsLauncher ? it.skip : it)(
+      'should focus the next input element when tabbing in interaction mode',
+      async () => {
+        // Focus first input
+        right();
+        enter();
 
-      const nextInput = getCellInput(0, 2);
+        const nextInput = getCellInput(0, 2);
 
-      await sendKeys({ press: 'Tab' });
+        await sendKeys({ press: 'Tab' });
 
-      expect(document.activeElement).to.equal(nextInput);
-    });
+        expect(document.activeElement).to.equal(nextInput);
+      }
+    );
 
     /**
      * This test is a workaround for the fact that the sendKeys command does not support shift+tabbing ATM
      * Ideally the test would try to shift tab to the previous input and check that the input in a previous cell
      * was focused, despite the focus target cell being in the tab order between current and previous input
      */
-    // Skip: sendKeys is not supported in WTR when using web-driver
-    it.skip('should skip the grid focus target when tabbing in interaction mode', async () => {
-      // Focus first input
-      right();
-      enter();
+    // Skip: sendKeys is not supported in Sauce Labs launcher
+    (isSauceLabsLauncher ? it.skip : it)(
+      'should skip the grid focus target when tabbing in interaction mode',
+      async () => {
+        // Focus first input
+        right();
+        enter();
 
-      const nextInput = getCellInput(0, 2);
+        const nextInput = getCellInput(0, 2);
 
-      // Modify grid state to get the focus target cell in the tab order between current and next input
-      grid._itemsFocusable = getRowCell(0, 2);
+        // Modify grid state to get the focus target cell in the tab order between current and next input
+        grid._itemsFocusable = getRowCell(0, 2);
 
-      await sendKeys({ press: 'Tab' });
+        await sendKeys({ press: 'Tab' });
 
-      expect(document.activeElement).to.equal(nextInput);
-    });
+        expect(document.activeElement).to.equal(nextInput);
+      }
+    );
 
-    // Skip: sendKeys is not supported in WTR when using web-driver
-    it.skip('should move cell focus target when focusing the next input element in interaction mode', async () => {
-      // Focus first input
-      right();
-      enter();
+    // Skip: sendKeys is not supported in Sauce Labs launcher
+    (isSauceLabsLauncher ? it.skip : it)(
+      'should move cell focus target when focusing the next input element in interaction mode',
+      async () => {
+        // Focus first input
+        right();
+        enter();
 
-      const nextCell = getRowCell(0, 2);
+        const nextCell = getRowCell(0, 2);
 
-      await sendKeys({ press: 'Tab' });
+        await sendKeys({ press: 'Tab' });
 
-      expect(grid._itemsFocusable).to.equal(nextCell);
-    });
+        expect(grid._itemsFocusable).to.equal(nextCell);
+      }
+    );
 
     it('should focus the element with `focus-target` when entering interaction mode', () => {
       const cell = getRowCell(0, 1);

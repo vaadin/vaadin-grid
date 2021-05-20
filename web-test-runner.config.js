@@ -67,9 +67,26 @@ if (env === 'firefox' || env === 'safari') {
     }
   );
 
+  // Use custom HTML to set global flag that tests are running with
+  // the Sauce Labs Launcher. Can be used by tests to check if certain
+  // capabilities are available, such as sending keys to the browser.
+  const testRunnerHtml = (testFramework) => `
+    <!DOCTYPE html>
+    <html>
+      <body>
+        <script>
+          /* Mark tests as being run with the Sauce Labs launcher */
+          window.browserLauncher = 'saucelabs';
+        </script>
+        <script type="module" src="${testFramework}"></script>
+      </body>
+    </html>
+  `;
+
   config.files = tests;
   config.concurrency = env === 'firefox' ? 2 : 1;
   config.browsers = [sauceLabsLauncher(sauce[env])];
+  config.testRunnerHtml = testRunnerHtml;
 }
 
 module.exports = config;
