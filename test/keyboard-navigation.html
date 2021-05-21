@@ -1623,14 +1623,22 @@
           spy.restore();
         });
 
-        it('should focus the next input element when tabbing in interaction mode', () => {
+        it('should update the focus target when focussing content in a different cell in interaction mode', () => {
           right(); // focus the cell with input.
           enter();
 
-          tab(getCellContent(getRowCell(0, 1)).children[0]); // tab in the input
+          // This should really use a native tab key press, but that is not possible with WCT
+          getCellContent(getRowCell(1, 1)).focus();
 
-          // expecting focusable item cell to remain in place, instead actual focus moves.
-          expect(grid._itemsFocusable).to.equal(getRowCell(0, 1));
+          expect(grid._itemsFocusable).to.equal(getRowCell(1, 1));
+        });
+
+        it('should prevent the focus target cell from receiving focus in interaction mode', () => {
+          right(); // focus the cell with input.
+          enter();
+
+          const cell = getRowCell(0, 1);
+          expect(cell.tabIndex).to.equal(-1);
         });
 
         it('should focus the element with `focus-target` when entering interaction mode', () => {
