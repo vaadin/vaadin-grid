@@ -1627,8 +1627,8 @@
           right(); // focus the cell with input.
           enter();
 
-          // This should really use a native tab key press, but that is not possible with WCT
-          getCellContent(getRowCell(1, 1)).focus();
+          // This should use a native tab key press, but that is not possible with WCT
+          getCellContent(getRowCell(1, 1)).children[0].focus();
 
           expect(grid._itemsFocusable).to.equal(getRowCell(1, 1));
         });
@@ -1637,6 +1637,9 @@
           right(); // focus the cell with input.
           enter();
 
+          // This should use a native tab key press to verify the cell does not interfere
+          // with the native tab order, but that is not possible with WCT
+          // Instead we check the internal component state
           const cell = getRowCell(0, 1);
           expect(cell.tabIndex).to.equal(-1);
         });
