@@ -1549,7 +1549,7 @@
         });
 
         it('should exit interaction mode when blurred', () => {
-          grid.setAttribute('interacting', '');
+          grid._setInteracting(true);
 
           focusable.focus();
 
@@ -1557,7 +1557,7 @@
         });
 
         it('should exit interaction mode when tabbed into', () => {
-          grid.setAttribute('interacting', '');
+          grid._setInteracting(true);
 
           tabToHeader();
 
@@ -1565,7 +1565,7 @@
         });
 
         it('should exit interaction mode when shift-tabbed into', () => {
-          grid.setAttribute('interacting', '');
+          grid._setInteracting(true);
 
           shiftTabToFooter();
 
@@ -1623,14 +1623,25 @@
           spy.restore();
         });
 
-        it('should focus the next input element when tabbing in interaction mode', () => {
+        it('should update the focus target when focussing content in a different cell in interaction mode', () => {
           right(); // focus the cell with input.
           enter();
 
-          tab(getCellContent(getRowCell(0, 1)).children[0]); // tab in the input
+          // This should use a native tab key press, but that is not possible with WCT
+          getCellContent(getRowCell(1, 1)).children[0].focus();
 
-          // expecting focusable item cell to remain in place, instead actual focus moves.
-          expect(grid._itemsFocusable).to.equal(getRowCell(0, 1));
+          expect(grid._itemsFocusable).to.equal(getRowCell(1, 1));
+        });
+
+        it('should prevent the focus target cell from receiving focus in interaction mode', () => {
+          right(); // focus the cell with input.
+          enter();
+
+          // This should use a native tab key press to verify the cell does not interfere
+          // with the native tab order, but that is not possible with WCT
+          // Instead we check the internal component state
+          const cell = getRowCell(0, 1);
+          expect(cell.tabIndex).to.equal(-1);
         });
 
         it('should focus the element with `focus-target` when entering interaction mode', () => {
@@ -1795,7 +1806,7 @@
         });
 
         it('should exit interaction mode with escape', () => {
-          grid.setAttribute('interacting', '');
+          grid._setInteracting(true);
 
           escape();
 
