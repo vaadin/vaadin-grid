@@ -44,14 +44,16 @@ This program is available under Apache License Version 2.0, available at https:/
         left: 0;
       }
 
-      :host([height-by-rows]) {
+      :host([height-by-rows]),
+      :host([all-rows-visible]) {
         height: auto;
         align-self: flex-start;
         flex-grow: 0;
         width: 100%;
       }
 
-      :host([height-by-rows]) #scroller {
+      :host([height-by-rows]) #scroller,
+      :host([all-rows-visible]) #scroller {
         width: 100%;
         height: 100%;
         position: relative;
