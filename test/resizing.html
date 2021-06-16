@@ -165,7 +165,7 @@
           it('should work with heightByRows', () => {
             const grid = fixture('height-by-rows');
             const rows = 100;
-            grid.items = Array.from({length: rows});
+            grid.items = Array(...new Array(rows)).map(() => {});
             flushGrid(grid);
 
             grid.heightByRows = true;
@@ -177,7 +177,7 @@
           it('should work with allRowsVisible', () => {
             const grid = fixture('height-by-rows');
             const rows = 100;
-            grid.items = Array.from({length: rows});
+            grid.items = Array(...new Array(rows)).map(() => {});
             flushGrid(grid);
 
             grid.allRowsVisible = true;
