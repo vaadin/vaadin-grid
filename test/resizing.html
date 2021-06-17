@@ -133,85 +133,158 @@
             .to.be.closeTo(bodyRows[1].getBoundingClientRect().top, 2);
         });
 
-        it('should align height with number of rows', done => {
-          grid.style.height = '';
-          grid.heightByRows = true;
-          // grid.notifyResize();
-          // flushGrid(grid);
-          animationFrameFlush(() => {
-            const headerHeight = grid.$.header.clientHeight;
-            const bodyHeight = grid.$.items.clientHeight;
-            const footerHeight = grid.$.footer.clientHeight;
-            expect(grid.clientHeight).to.equal(headerHeight + bodyHeight + footerHeight);
-            done();
+        describe('align height with number of rows', () => {
+          it('should work with heightByRows', done => {
+            grid.style.height = '';
+            grid.heightByRows = true;
+            // grid.notifyResize();
+            // flushGrid(grid);
+            animationFrameFlush(() => {
+              const headerHeight = grid.$.header.clientHeight;
+              const bodyHeight = grid.$.items.clientHeight;
+              const footerHeight = grid.$.footer.clientHeight;
+              expect(grid.clientHeight).to.equal(headerHeight + bodyHeight + footerHeight);
+              done();
+            });
+          });
+          it('should work with allRowsVisible', done => {
+            grid.style.height = '';
+            grid.allRowsVisible = true;
+            // grid.notifyResize();
+            // flushGrid(grid);
+            animationFrameFlush(() => {
+              const headerHeight = grid.$.header.clientHeight;
+              const bodyHeight = grid.$.items.clientHeight;
+              const footerHeight = grid.$.footer.clientHeight;
+              expect(grid.clientHeight).to.equal(headerHeight + bodyHeight + footerHeight);
+              done();
+            });
           });
         });
+        describe('align height with number of rows after first render', () => {
+          it('should work with heightByRows', () => {
+            const grid = fixture('height-by-rows');
+            const rows = 100;
+            grid.items = Array(...new Array(rows)).map(() => {});
+            flushGrid(grid);
 
-        it('should align height with number of rows after first render', () => {
-          const grid = fixture('height-by-rows');
-          const rows = 100;
-          grid.items = grid.items = Array(...new Array(rows)).map(() => {});
-          flushGrid(grid);
+            grid.heightByRows = true;
+            flushGrid(grid);
 
-          grid.heightByRows = true;
-          flushGrid(grid);
+            expect(grid.$.items.children.length).to.equal(rows);
+          });
 
-          expect(grid.$.items.children.length).to.equal(rows);
+          it('should work with allRowsVisible', () => {
+            const grid = fixture('height-by-rows');
+            const rows = 100;
+            grid.items = Array(...new Array(rows)).map(() => {});
+            flushGrid(grid);
+
+            grid.allRowsVisible = true;
+            flushGrid(grid);
+
+            expect(grid.$.items.children.length).to.equal(rows);
+          });
         });
 
         // NOTE: This issue only manifests with scrollbars that affect the layout
         // (On mac: Show scroll bars: Always) and Chrome / Safari browser
-        it('should have correct layout after column width change', done => {
-          grid.style.height = '';
-          grid.heightByRows = true;
-          grid.querySelector('vaadin-grid-column').width = '300px';
-          // Before next render
-          animationFrameFlush(() => {
-            // After next render
-            setTimeout(() => {
-              expect(grid.$.scroller.getBoundingClientRect().bottom)
-                .to.equal(grid.$.table.getBoundingClientRect().bottom);
-              done();
+        describe('correct layout after column width change', () => {
+          it('should work with heightByRows', done => {
+            grid.style.height = '';
+            grid.heightByRows = true;
+            grid.querySelector('vaadin-grid-column').width = '300px';
+            // Before next render
+            animationFrameFlush(() => {
+              // After next render
+              setTimeout(() => {
+                expect(grid.$.scroller.getBoundingClientRect().bottom)
+                  .to.equal(grid.$.table.getBoundingClientRect().bottom);
+                done();
+              });
+            });
+          });
+
+          it('should work with allRowsVisible', done => {
+            grid.style.height = '';
+            grid.allRowsVisible = true;
+            grid.querySelector('vaadin-grid-column').width = '300px';
+            // Before next render
+            animationFrameFlush(() => {
+              // After next render
+              setTimeout(() => {
+                expect(grid.$.scroller.getBoundingClientRect().bottom)
+                  .to.equal(grid.$.table.getBoundingClientRect().bottom);
+                done();
+              });
             });
           });
         });
 
         describe('flexbox parent', () => {
+          describe('using heightByRows', () => {
+            beforeEach(() => {
+              grid.style.height = grid.style.width = '';
+              grid.size = 1;
+              component.style.display = 'flex';
+              component.style.flexDirection = 'column';
+              grid.heightByRows = true;
+            });
 
-          beforeEach(() => {
-            grid.style.height = grid.style.width = '';
-            grid.size = 1;
-            component.style.display = 'flex';
-            component.style.flexDirection = 'column';
-            grid.heightByRows = true;
+            it('should have the default height inside a column flexbox', () => {
+              grid.heightByRows = false;
+              expect(grid.getBoundingClientRect().height).to.equal(400);
+            });
+
+            it('should auto-grow inside a fixed height column flexbox', () => {
+              component.style.height = '500px';
+              expect(grid.getBoundingClientRect().height).to.equal(129);
+            });
+
+            it('should auto-grow inside a fixed height row flexbox', () => {
+              component.style.flexDirection = 'row';
+              component.style.height = '500px';
+              expect(grid.getBoundingClientRect().height).to.equal(129);
+            });
+
+            it('should not shrink horizontally inside a row flexbox', () => {
+              component.style.flexDirection = 'row';
+              expect(grid.getBoundingClientRect().width).to.be.above(890);
+            });
           });
 
-          it('should have the default height inside a column flexbox', () => {
-            grid.heightByRows = false;
-            expect(grid.getBoundingClientRect().height).to.equal(400);
-          });
+          describe('using allRowsVisible', () => {
+            beforeEach(() => {
+              grid.style.height = grid.style.width = '';
+              grid.size = 1;
+              component.style.display = 'flex';
+              component.style.flexDirection = 'column';
+              grid.allRowsVisible = true;
+            });
 
-          it('should auto-grow inside a fixed height column flexbox', () => {
-            component.style.height = '500px';
-            expect(grid.getBoundingClientRect().height).to.equal(129);
-          });
+            it('should have the default height inside a column flexbox', () => {
+              grid.allRowsVisible = false;
+              expect(grid.getBoundingClientRect().height).to.equal(400);
+            });
 
-          it('should auto-grow inside a fixed height row flexbox', () => {
-            component.style.flexDirection = 'row';
-            component.style.height = '500px';
-            expect(grid.getBoundingClientRect().height).to.equal(129);
-          });
+            it('should auto-grow inside a fixed height column flexbox', () => {
+              component.style.height = '500px';
+              expect(grid.getBoundingClientRect().height).to.equal(129);
+            });
 
-          it('should not shrink horizontally inside a row flexbox', () => {
-            component.style.flexDirection = 'row';
-            expect(grid.getBoundingClientRect().width).to.be.above(890);
-          });
+            it('should auto-grow inside a fixed height row flexbox', () => {
+              component.style.flexDirection = 'row';
+              component.style.height = '500px';
+              expect(grid.getBoundingClientRect().height).to.equal(129);
+            });
 
+            it('should not shrink horizontally inside a row flexbox', () => {
+              component.style.flexDirection = 'row';
+              expect(grid.getBoundingClientRect().width).to.be.above(890);
+            });
+          });
         });
-
       });
-
-
     });
   </script>
 
