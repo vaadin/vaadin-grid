@@ -865,8 +865,6 @@
         let grid;
 
         beforeEach(() => {
-          const items = Array.from(Array(13).keys()).slice(1);
-
           grid = fixture('nested-group');
           flushGrid(grid);
         });
@@ -881,10 +879,8 @@
 
       describe('More than 100 columns', () => {
         let grid;
-        let items;
 
         beforeEach(() => {
-          items = Array.from(Array(101).keys());
           grid = fixture(`grid-many-column`);
           flushGrid(grid);
         });
