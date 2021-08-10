@@ -457,10 +457,12 @@ This program is available under Apache License Version 2.0, available at https:/
       }
 
       /** @protected */
+      // This function is more like "tryToResizeWidth" instead
       __itemsReceived() {
         if (this._recalculateColumnWidthOnceLoadingFinished
-          && !this._cache.isLoading()
-          && this.__hasRowsWithClientHeight()) {
+        && !this._cache.isLoading()
+        && this.__hasRowsWithClientHeight()
+            && (!this._debounceIncreasePool || !this._debounceIncreasePool.isActive())) {
           this._recalculateColumnWidthOnceLoadingFinished = false;
           this.recalculateColumnWidths();
         }
