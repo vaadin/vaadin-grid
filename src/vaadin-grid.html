@@ -458,7 +458,7 @@ This program is available under Apache License Version 2.0, available at https:/
 
       /** @protected */
       // This function is more like "tryToResizeWidth" instead
-      __itemsReceived() {
+      __flushPendingRecalculateColumnWidths() {
         if (this._recalculateColumnWidthOnceLoadingFinished
         && !this._cache.isLoading()
         && this.__hasRowsWithClientHeight()
@@ -870,7 +870,7 @@ This program is available under Apache License Version 2.0, available at https:/
           this._render();
           e.stopPropagation();
           this.notifyResize();
-          this.__itemsReceived();
+          this.__flushPendingRecalculateColumnWidths();
 
           requestAnimationFrame(() => {
             this.__scrollToPendingIndex();
