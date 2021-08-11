@@ -111,6 +111,34 @@
         });
       });
 
+
+      it('should recalculate column widths not until necessary rows have been rendered', () => {
+        // First, only render a single item
+        let size = 1;
+        grid.dataProvider = (params, callback) => {
+          callback(testItems.slice(0, params.pageSize), size);
+        };
+
+        // Have grid load the rest of the items
+        size = 4;
+        grid.clearCache();
+
+        // Invoke recalculateColumnWidths manually
+        //
+        // Before the fix, this would have executed immediately, since all the data items are already loaded,
+        // but since the DOM row elements haven't yet been created, the column widths would not get calculated
+        // from the expected set of samples.
+        // With the fix in place, the recalculateColumnWidths will not execute until the grid
+        // has also finished creating the necessary DOM row elements.
+        grid.recalculateColumnWidths();
+
+        // TODO: Investigate why two calls is necessary
+        flushGrid(grid);
+        flushGrid(grid);
+
+        expectColumnWidthsToBeOk(columns);
+      });
+
       it('should have correct column widths once visible', done => {
         grid.hidden = true;
         grid.items = testItems;
