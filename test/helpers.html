@@ -48,6 +48,12 @@
       grid._debouncerIgnoreNewWheel.flush();
     }
     grid._scrollHandler();
+    Polymer.flush();
+    while (grid._debounceIncreasePool) {
+      grid._debounceIncreasePool.flush();
+      grid._debounceIncreasePool = null;
+      Polymer.flush();
+    }
   };
 
   window.getCell = (grid, index) => {
