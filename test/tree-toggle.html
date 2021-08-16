@@ -135,6 +135,15 @@
             prevWidth = width;
           }
         });
+
+        it('should increase width immediately after when changing level', () => {
+          const spacer = toggle.shadowRoot.querySelector('#level-spacer');
+          let width = spacer.getBoundingClientRect().width;
+          expect(width).to.be.eq(0);
+          toggle.level = 1;
+          width = spacer.getBoundingClientRect().width;
+          expect(width).to.be.gt(0);
+        });
       });
 
       describe('themability', () => {
