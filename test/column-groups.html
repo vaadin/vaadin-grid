@@ -590,7 +590,10 @@
         beforeEach(() => {
           grid = fixture(`grid-many-column`);
           const repeater = grid.querySelector('dom-repeat');
-          const items = Array.from(Array(102).keys());
+          const items = [];
+          for (var i = 0; i < 102; i++) {
+            items.push(i);
+          }
           repeater.items = items;
           repeater.render();
           flushGrid(grid);
