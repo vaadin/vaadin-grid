@@ -461,7 +461,7 @@ This program is available under Apache License Version 2.0, available at https:/
         if (this._recalculateColumnWidthOnceLoadingFinished
         && !this._cache.isLoading()
         && this.__hasRowsWithClientHeight()
-            && (!this._debounceIncreasePool || !this._debounceIncreasePool.isActive())) {
+        && !this.__isCreatingRows()) {
           this._recalculateColumnWidthOnceLoadingFinished = false;
           this.recalculateColumnWidths();
         }
@@ -508,7 +508,7 @@ This program is available under Apache License Version 2.0, available at https:/
         if (!this._columnTree) {
           return; // No columns
         }
-        if (this._cache.isLoading()) {
+        if (this._cache.isLoading() || this.__isCreatingRows()) {
           this._recalculateColumnWidthOnceLoadingFinished = true;
         } else {
           const cols = this._getColumns().filter(col => !col.hidden && col.autoWidth);

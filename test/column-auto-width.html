@@ -111,6 +111,30 @@
         });
       });
 
+      it('should recalculate widths after iron-list is done creating rows', done => {
+        spy.reset();
+        // make the grid big enough to fit more than 25 items
+        grid.style.height = '1000px';
+
+        const items = [];
+        // create 25 narrow items (25 is the default iron-list pool size)
+        for (let i = 0; i < 25; i++) {
+          items.push({a: 'fubar', b: 'foo', c: 'foo', d: 'a'});
+        }
+        // create 10 wide items, for a total of 35 items
+        for (let i = 0; i < 10; i++) {
+          items.push({a: 'foo', b: 'foo bar baz', c: 'foo bar', d: 'bar'});
+        }
+        // set data
+        grid.items = [...items];
+
+        // Check columns width match the wider content.
+        // The second column has wider content after the initial pool size
+        whenColumnWidthsCalculated(() => {
+          expectColumnWidthsToBeOk(columns);
+          done();
+        });
+      });
 
       it('should recalculate column widths not until necessary rows have been rendered', () => {
         // First, only render a single item
