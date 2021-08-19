@@ -212,6 +212,7 @@ This program is available under Apache License Version 2.0, available at https:/
                 // Ensure the rows are in order after increasing pool
                 this.__reorderChildNodes();
               }
+              this.__flushPendingRecalculateColumnWidths();
             });
         }
       }
@@ -432,6 +433,19 @@ This program is available under Apache License Version 2.0, available at https:/
       _resizeHandler() {
         super._resizeHandler();
         Polymer.flush();
+      }
+
+      __isCreatingRows() {
+        // iron-list's _increasePoolIfNeeded function may have scheduled a debouncer
+        // that will re-invoke _increasePoolIfNeeded (in vaadin-grid-scroller)
+        const schedulingDebounceIncreasePool = this._debouncers
+          && this._debouncers._increasePoolIfNeeded
+          && this._debouncers._increasePoolIfNeeded.isActive();
+        // vaadin-grid-scroller's overridden _increasePoolIfNeeded may have scheduled a _debounceIncreasePool debouncer
+        const debouncingIncreasePoolActive = this._debounceIncreasePool && this._debounceIncreasePool.isActive();
+
+        // If either of the conditions are true, we consider the grid is still in the process of creating new rows
+        return schedulingDebounceIncreasePool || debouncingIncreasePoolActive;
       }
     }
 
