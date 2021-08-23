@@ -5,6 +5,7 @@ This program is available under Apache License Version 2.0, available at https:/
 -->
 
 <link rel="import" href="../../polymer/lib/mixins/gesture-event-listeners.html">
+<link rel="import" href="vaadin-grid-helpers.html">
 
 <script>
   window.Vaadin = window.Vaadin || {};
@@ -294,7 +295,7 @@ This program is available under Apache License Version 2.0, available at https:/
       // Reset all column orders
       columnTree[0].forEach((column, index) => column._order = 0);
       // Set order numbers to top-level columns
-      columnTree[0].forEach((column, index) => column._order = (index + 1) * this._orderBaseScope);
+      Vaadin.GridHelper._updateColumnOrders(columnTree[0], this._orderBaseScope, 0);
     }
 
     /**

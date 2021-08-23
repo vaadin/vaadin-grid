@@ -23,6 +23,80 @@
 </head>
 
 <body>
+
+  <test-fixture id="grid-many-column">
+    <template>
+      <vaadin-grid>
+        <dom-repeat as="column">
+          <template is="dom-repeat" as="column">
+            <vaadin-grid-column-group>
+              <vaadin-grid-column id="col{{column}}">
+                <template class="header">Col {{column}}</template>
+              </vaadin-grid-column>
+            </vaadin-grid-column-group>
+          </template>
+        </dom-repeat>
+      </vaadin-grid>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="nested-group">
+    <template>
+      <vaadin-grid>
+        <vaadin-grid-column-group header="groupA">
+          <vaadin-grid-column-group header="group1">
+            <vaadin-grid-column header="Col 0"></vaadin-grid-column>
+            <vaadin-grid-column header="Col 1"></vaadin-grid-column>
+          </vaadin-grid-column-group>
+          <vaadin-grid-column-group header="group2">
+            <vaadin-grid-column header="Col 2"></vaadin-grid-column>
+            <vaadin-grid-column header="Col 3"></vaadin-grid-column>
+          </vaadin-grid-column-group>
+          <vaadin-grid-column-group header="group3">
+            <vaadin-grid-column header="Col 4"></vaadin-grid-column>
+            <vaadin-grid-column header="Col 5"></vaadin-grid-column>
+          </vaadin-grid-column-group>
+          <vaadin-grid-column-group header="group4">
+            <vaadin-grid-column header="Col 6"></vaadin-grid-column>
+            <vaadin-grid-column header="Col 7"></vaadin-grid-column>
+          </vaadin-grid-column-group>
+          <vaadin-grid-column-group header="group5">
+            <vaadin-grid-column header="Col 8"></vaadin-grid-column>
+            <vaadin-grid-column header="Col 9"></vaadin-grid-column>
+          </vaadin-grid-column-group>
+          <vaadin-grid-column-group header="group6">
+            <vaadin-grid-column header="Col 10"></vaadin-grid-column>
+            <vaadin-grid-column header="Col 11"></vaadin-grid-column>
+          </vaadin-grid-column-group>
+          <vaadin-grid-column-group header="group7">
+            <vaadin-grid-column header="Col 12"></vaadin-grid-column>
+            <vaadin-grid-column header="Col 13"></vaadin-grid-column>
+          </vaadin-grid-column-group>
+          <vaadin-grid-column-group header="group8">
+            <vaadin-grid-column header="Col 14"></vaadin-grid-column>
+            <vaadin-grid-column header="Col 15"></vaadin-grid-column>
+          </vaadin-grid-column-group>
+          <vaadin-grid-column-group header="group9">
+            <vaadin-grid-column header="Col 16"></vaadin-grid-column>
+            <vaadin-grid-column header="Col 17"></vaadin-grid-column>
+          </vaadin-grid-column-group>
+          <vaadin-grid-column-group header="group10">
+            <vaadin-grid-column header="Col 18"></vaadin-grid-column>
+            <vaadin-grid-column id="col19" header="Col 19"></vaadin-grid-column>
+          </vaadin-grid-column-group>
+          <vaadin-grid-column-group header="group11">
+            <vaadin-grid-column id="col20" header="Col 20"></vaadin-grid-column>
+            <vaadin-grid-column id="col21" header="Col 21"></vaadin-grid-column>
+          </vaadin-grid-column-group>
+          <vaadin-grid-column-group header="group12">
+            <vaadin-grid-column id="col22" header="Col 22"></vaadin-grid-column>
+            <vaadin-grid-column id="col23" header="Col 23"></vaadin-grid-column>
+          </vaadin-grid-column-group>
+        </vaadin-grid-column-group>
+      </vaadin-grid>
+    </template>
+  </test-fixture>
+
   <test-fixture id="no-headers">
     <template>
       <vaadin-grid size="10">
@@ -492,6 +566,44 @@
           });
         });
 
+      });
+
+      describe('Large nested groups', () => {
+        let grid;
+
+        beforeEach(() => {
+          grid = fixture('nested-group');
+          flushGrid(grid);
+        });
+
+        it('should correctly set column order', () => {
+          const col19 = grid.querySelector('#col19');
+          const col20 = grid.querySelector('#col20');
+
+          expect(col19._order).to.be.lessThan(col20._order);
+        });
+      });
+
+      describe('More than 100 columns', () => {
+        let grid;
+
+        beforeEach(() => {
+          grid = fixture(`grid-many-column`);
+          const repeater = grid.querySelector('dom-repeat');
+          const items = [];
+          for (var i = 0; i < 102; i++) {
+            items.push(i);
+          }
+          repeater.items = items;
+          repeater.render();
+          flushGrid(grid);
+        });
+
+        it('should correctly set column order when we have more than 100 columns', () => {
+          const col99 = grid.querySelector('#col99');
+          const col100 = grid.querySelector('#col100');
+          expect(col99._order).to.be.lessThan(col100._order);
+        });
       });
     });
   </script>

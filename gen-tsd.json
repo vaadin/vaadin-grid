@@ -7,6 +7,7 @@
     "src/iron-list.js",
     "src/vaadin-grid-styles.js",
     "src/vaadin-grid-templatizer.js",
+    "src/vaadin-grid-helpers.js",
     "demo/**/*",
     "test/**/*",
     "theme/**/*"
