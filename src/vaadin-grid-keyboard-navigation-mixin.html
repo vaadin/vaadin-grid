@@ -541,7 +541,7 @@ This program is available under Apache License Version 2.0, available at https:/
         // Fire a public event for cell focus.
         const context = this.getEventContext(e);
         cell.dispatchEvent(
-          new CustomEvent('cell-focus', { bubbles: true, composed: true, detail: { context: context } })
+          new CustomEvent('cell-focus', {bubbles: true, composed: true, detail: {context: context}})
         );
       }
 
@@ -749,5 +749,13 @@ This program is available under Apache License Version 2.0, available at https:/
       }
       return null;
     }
+
+    /**
+     * Fired when a cell is focused with click or keyboard navigation.
+     *
+     * Use context property of @see {@link GridCellFocusEvent} to get detail information about the event.
+     *
+     * @event cell-focus
+     */
   };
 </script>
