@@ -124,12 +124,9 @@ describe('drag and drop', () => {
     return event;
   };
 
-  beforeEach(done => {
-    dragData = {};
+  before(done => {
     grid = fixture('default');
     grid.hidden = true;
-    grid.items = getTestItems();
-    flushGrid(grid);
     requestAnimationFrame(() => {
       // Wait for the appear animation to finish
       listenOnce(grid, 'animationend', () => {
@@ -137,6 +134,31 @@ describe('drag and drop', () => {
       });
       requestAnimationFrame(() => grid.hidden = false);
     });
+  });
+
+  beforeEach(done => {
+    dragData = {};
+    if (!grid.parentElement) {
+      document.body.appendChild(grid);
+    }
+    grid.items = getTestItems();
+    flushGrid(grid);
+    if (grid._safari) {
+      setTimeout(() => done());
+    } else {
+      done();
+    }
+
+  });
+
+  afterEach(() => {
+    fireDragEnd(grid.$.table);
+    fireDrop(grid.$.table);
+    grid.rowsDraggable = false;
+    grid.dropMode = null;
+    grid.style.height = '';
+    grid.selectedItems = [];
+    grid.dataProvider = null;
   });
 
   it('should not be draggable by default', () => {
@@ -164,13 +186,18 @@ describe('drag and drop', () => {
       let dragStartSpy;
       let dropSpy;
 
-      beforeEach(() => {
+      before(() => {
         dragStartSpy = sinon.spy();
         dropSpy = sinon.spy();
         grid.addEventListener('grid-dragstart', dragStartSpy);
         grid.addEventListener('grid-drop', dropSpy);
+      });
+
+      beforeEach(() => {
         grid.rowsDraggable = true;
         grid.dropMode = 'on-top';
+        dragStartSpy.reset();
+        dropSpy.reset();
       });
 
       it('should stop the native event', () => {
