@@ -671,23 +671,6 @@
           }, loadDebounceTime);
         });
 
-        // FIXME: flaky
-        it.skip('should call dataprovider multiple times to load all items', done => {
-          container.dataProvider.reset();
-          grid.style.fontSize = '12px';
-          grid.pageSize = 10;
-          flushGrid(grid);
-
-          setTimeout(() => {
-            // assuming grid has about 30 items
-            expect(container.dataProvider.callCount).to.be.above(2);
-            for (var i = 0; i < container.dataProvider.callCount; i++) {
-              expect(container.dataProvider.getCall(i).args[0].page).to.eql(i);
-            }
-            done();
-          }, loadDebounceTime);
-        });
-
         it('should always load visible items', done => {
           grid.pageSize = 10;
 
