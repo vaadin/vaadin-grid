@@ -13,6 +13,7 @@
 
   <link rel="import" href="helpers.html">
   <link rel="import" href="../vaadin-grid.html">
+  <link rel="import" href="../vaadin-grid-column-group.html">
 </head>
 
 <body>
@@ -32,6 +33,110 @@
     <template>
       <vaadin-grid>
         <vaadin-grid-tree-column auto-width path="name"></vaadin-grid-tree-column>
+      </vaadin-grid>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="column-group-1">
+    <template>
+      <vaadin-grid style="width: 200px;">
+        <vaadin-grid-column-group header="a lengthy header that should change the width of the column">
+          <vaadin-grid-column auto-width path="a" header="small header"></vaadin-grid-column>
+        </vaadin-grid-column-group>
+      </vaadin-grid>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="column-group-2">
+    <template>
+      <vaadin-grid style="width: 200px;">
+        <vaadin-grid-column-group header="a lengthy header that should change the width of the column">
+          <vaadin-grid-column auto-width path="a" header="small header"></vaadin-grid-column>
+          <vaadin-grid-column auto-width path="b" header="small header"></vaadin-grid-column>
+        </vaadin-grid-column-group>
+      </vaadin-grid>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="column-group-3">
+    <template>
+      <vaadin-grid style="width: 200px;">
+        <vaadin-grid-column-group header="HeaderHeaderHeaderHeaderHeaderHeaderHeaderHeaderHeaderHeader">
+          <vaadin-grid-column auto-width path="first"></vaadin-grid-column>
+          <vaadin-grid-column auto-width path="last"></vaadin-grid-column>
+        </vaadin-grid-column-group>
+      </vaadin-grid>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="column-group-4">
+    <template>
+      <vaadin-grid style="width: 200px;">
+        <vaadin-grid-column-group header="HeaderHeaderHeaderHeaderHeaderHeaderHeaderHeaderHeaderHeader">
+          <vaadin-grid-column auto-width flex-grow="3" path="first"></vaadin-grid-column>
+          <vaadin-grid-column auto-width path="last"></vaadin-grid-column>
+        </vaadin-grid-column-group>
+      </vaadin-grid>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="column-group-5">
+    <template>
+      <vaadin-grid style="width: 200px;">
+        <vaadin-grid-column-group header="a lengthy header that should change the width of the column">
+          <vaadin-grid-column auto-width path="a" header="header"></vaadin-grid-column>
+          <vaadin-grid-column auto-width path="b" header="headerheader"></vaadin-grid-column>
+        </vaadin-grid-column-group>
+      </vaadin-grid>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="column-group-6">
+    <template>
+      <vaadin-grid style="width: 200px;">
+        <vaadin-grid-column-group header="a lengthy header, greater than immediate column-group">
+          <vaadin-grid-column-group header="immediate column-group">
+            <vaadin-grid-column auto-width path="a" header="header"></vaadin-grid-column>
+          </vaadin-grid-column-group>
+        </vaadin-grid-column-group>
+      </vaadin-grid>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="column-group-7">
+    <template>
+      <vaadin-grid style="width: 200px;">
+        <vaadin-grid-column-group header="small header">
+          <vaadin-grid-column auto-width path="a" header="a lengthy header that should change the width of the column"></vaadin-grid-column>
+        </vaadin-grid-column-group>
+      </vaadin-grid>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="column-group-8">
+    <template>
+      <vaadin-grid style="width: 200px;">
+        <vaadin-grid-column-group>
+          <vaadin-grid-column auto-width path="a" header="header"></vaadin-grid-column>
+        </vaadin-grid-column-group>
+      </vaadin-grid>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="column-group-9">
+    <template>
+      <vaadin-grid style="width: 200px;">
+        <vaadin-grid-column-group>
+          <vaadin-grid-column auto-width path="a" header="header"></vaadin-grid-column>
+        </vaadin-grid-column-group>
+      </vaadin-grid>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="column-group-10">
+    <template>
+      <vaadin-grid style="width: 200px;">
+        <vaadin-grid-column auto-width path="a" header="header"></vaadin-grid-column>
       </vaadin-grid>
     </template>
   </test-fixture>
@@ -218,6 +323,136 @@
         grid._getData();
         flushGrid(grid);
         expect(grid._recalculateColumnWidths.called).to.be.true;
+      });
+    });
+
+    describe('column group', () => {
+      const num = (str) => parseInt(str, 10);
+      const nextTick = () => new Promise(resolve => setTimeout(resolve));
+
+      function expectColumnsWidthToBeOk(grid, ws, delta = 5) {
+        const columns = grid.querySelectorAll('vaadin-grid-column');
+
+        Array.from(columns).forEach((col, i) => {
+          const columnWidth = num(col.width);
+          expect(columnWidth).to.be.closeTo(ws[i], delta);
+        });
+      }
+
+      function createGrid(id, items = [{a: 'm', b: 'mm'}]) {
+        const grid = fixture(id);
+        grid.items = items;
+        flushGrid(grid);
+
+        return grid;
+      }
+
+      it('should consider column group when calculating column width', () => {
+        const grid = createGrid('column-group-1');
+        expectColumnsWidthToBeOk(grid, [420], 25);
+      });
+
+      it('should distribute the excess space to all columns', () => {
+        const grid = createGrid('column-group-2');
+        expectColumnsWidthToBeOk(grid, [217, 217], 20);
+      });
+
+      it('should distribute the extra necessary space to all columns regardless of flexGrow', () => {
+        const items = [{first: 'fff', last: 'lll'}];
+
+        const grid = createGrid('column-group-3', items);
+        const gridWithFlexGrow = createGrid('column-group-4', items);
+
+        const [columnA, columnB] = grid.querySelectorAll('vaadin-grid-column');
+        const [columnA2, columnB2] = gridWithFlexGrow.querySelectorAll('vaadin-grid-column');
+
+        expect(columnA.width).to.equal(columnA2.width);
+        expect(columnB.width).to.equal(columnB2.width);
+      });
+
+      it('should distribute the excess space to all columns according to their initial width', () => {
+        const grid = createGrid('column-group-5');
+        const [columnA, columnB] = grid.querySelectorAll('vaadin-grid-column');
+        expect(num(columnB.width)).to.be.greaterThan(num(columnA.width));
+      });
+
+      it('should consider all the parent vaadin-grid-column-groups when calculating the necessary width', () => {
+        const grid = createGrid('column-group-6');
+
+        expectColumnsWidthToBeOk(grid, [403], 30);
+      });
+
+      it('should consider vaadin-grid-column header when calculating column width', () => {
+        const grid = createGrid('column-group-7');
+
+        expectColumnsWidthToBeOk(grid, [420], 25);
+      });
+
+      it('should consider vaadin-grid-column-group footer when calculating column width', () => {
+        const grid = createGrid('column-group-8');
+
+        const columnGroup = document.querySelector('vaadin-grid-column-group');
+        const column = document.querySelector('vaadin-grid-column');
+
+        columnGroup.footerRenderer = (root) => {
+          const footer = document.createElement('footer');
+          footer.textContent = 'group footer';
+          footer.style.width = '300px';
+
+          root.appendChild(footer);
+        };
+
+        column.footerRenderer = (root) => {
+          const footer = document.createElement('footer');
+          footer.textContent = 'column footer';
+          root.appendChild(footer);
+        };
+
+        grid.recalculateColumnWidths();
+        flushGrid(grid);
+        expectColumnsWidthToBeOk(grid, [333]);
+      });
+
+      it('should consider vaadin-grid-column footer when calculating column width', () => {
+        const grid = createGrid('column-group-9');
+        const columnGroup = document.querySelector('vaadin-grid-column-group');
+        const column = document.querySelector('vaadin-grid-column');
+
+        columnGroup.footerRenderer = (root) => {
+          const footer = document.createElement('footer');
+          footer.textContent = 'group footer';
+          root.appendChild(footer);
+        };
+
+        column.footerRenderer = (root) => {
+          const footer = document.createElement('footer');
+          footer.textContent = 'footer';
+          footer.style.width = '300px';
+
+          root.appendChild(footer);
+        };
+
+        grid.recalculateColumnWidths();
+        flushGrid(grid);
+        expectColumnsWidthToBeOk(grid, [333]);
+      });
+
+      it('should not error when there is no vaadin-grid-column-group', () => {
+        const grid = createGrid('column-group-10');
+
+        const column = document.querySelector('vaadin-grid-column');
+
+        column.footerRenderer = (root) => {
+          const footer = document.createElement('footer');
+          footer.textContent = 'footer';
+          footer.style.width = '300px';
+
+          root.appendChild(footer);
+        };
+
+        grid.recalculateColumnWidths();
+        flushGrid(grid);
+        expectColumnsWidthToBeOk(grid, [333]);
       });
     });
   </script>
