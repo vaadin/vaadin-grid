@@ -327,7 +327,6 @@
 
     describe('column group', () => {
       const num = (str) => parseInt(str, 10);
-      const nextTick = () => new Promise(resolve => setTimeout(resolve));
 
       function expectColumnsWidthToBeOk(grid, ws, delta = 5) {
         const columns = grid.querySelectorAll('vaadin-grid-column');
