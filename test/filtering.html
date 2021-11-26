@@ -70,6 +70,15 @@
     </template>
   </test-fixture>
 
+  <test-fixture id="grid-with-external-filter">
+    <template>
+      <vaadin-grid>
+        <vaadin-grid-column path="first"></vaadin-grid-column>
+        <vaadin-grid-column id="last" path="last"></vaadin-grid-column>
+      </vaadin-grid>
+    </template>
+  </test-fixture>
+
   <script>
 
     describe('filter', () => {
@@ -330,6 +339,39 @@
         expect(flushFilters.bind(this, grid)).to.not.throw(Error);
       });
 
+    });
+
+    describe('in-memory filtering and hiding a column', () => {
+      it('should correctly display items after filter is cleared and column is visible', () => {
+        const grid = fixture('grid-with-external-filter');
+        const column = grid.querySelector('#last');
+        // this is the minimum amount of items that this bug happens
+        const itemCount = 56;
+        const items = Array.apply(null, Array(itemCount)).map((_, i) => {
+          return {
+            first: 'foo' + i,
+            last: 'bar' + i
+          };
+        });
+        grid.items = items;
+        flushGrid(grid);
+
+        // filter the data and hide one column
+        column.hidden = true;
+        grid.items = items.filter(item => item.first === 'foo55');
+        flushGrid(grid);
+
+        // clear filter and show column again
+        column.hidden = false;
+        grid.items = items;
+        flushGrid(grid);
+    
+        const bodyRows = getRows(grid.$.items);
+        const rowCells = getRowCells(bodyRows[5]);
+        const cellContent = getCellContent(rowCells[1]).textContent;
+    
+        expect(cellContent).to.be.equal('bar5');
+      });
     });
   </script>
 
