@@ -28,8 +28,14 @@ jobs:
     - name: Run yarn
       run: yarn install --flat
 
-    - name: Run unit tests
+   - name: Run unit tests set 1
       env:
         SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
         SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
-      run: wct --npm --env saucelabs:desktop
+      run: npm test -- --env saucelabs:desktop
+
+    - name: Run unit tests set 2
+      env:
+        SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
+        SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
+      run: npm test -- --env saucelabs:desktop   test/column.html test/data-provider.html  test/drag-and-drop.html  test/dynamic-item-size.html  test/event-context.html  test/filtering.html  test/frozen-columns.html  test/hidden-grid.html  test/tree-toggle.html  test/iron-list.html  test/keyboard-navigation.html  test/lazy-import.html  test/light-dom-observing.html  test/physical-count.html  test/resizing.html  test/resizing-material.html  test/row-details.html  test/row-height.html  test/scroll-to-index.html  test/scrolling-mode.html  test/selecting.html  test/sorting.html  test/style-scope.html  test/templates.html  test/renderers.html
