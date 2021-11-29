@@ -21,7 +21,7 @@ jobs:
     - name: Install Bower
       run: bower -q i
 
-   - name: Run unit tests set 1
+    - name: Run unit tests set 1
       env:
         SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
         SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
