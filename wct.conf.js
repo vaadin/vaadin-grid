@@ -2,7 +2,7 @@ var envIndex = process.argv.indexOf('--env') + 1;
 var env = envIndex ? process.argv[envIndex] : undefined;
 
 module.exports = {
-  testTimeout: 180 * 1000,
+  testTimeout: 300 * 1000,
   verbose: true,
   plugins: {
     local: {
