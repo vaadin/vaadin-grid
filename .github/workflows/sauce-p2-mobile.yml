@@ -21,8 +21,14 @@ jobs:
     - name: Install Bower
       run: bower -q i
 
-    - name: Run unit tests
+    - name: Run unit tests iPhone 12
       env:
         SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
         SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
-      run: npm test -- --env saucelabs:mobile
+      run: npm test -- --env saucelabs:mobile_iphone12
+
+    - name: Run unit tests iPhone 10
+      env:
+        SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
+        SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
+      run: npm test -- --env saucelabs:mobile_iphone10

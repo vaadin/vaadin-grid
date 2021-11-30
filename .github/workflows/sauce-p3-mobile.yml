@@ -28,8 +28,14 @@ jobs:
     - name: Run yarn
       run: yarn install --flat
 
-    - name: Run unit tests
+    - name: Run unit tests iPhone 12
       env:
         SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
         SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
-      run: wct --npm --env saucelabs:mobile
+      run: wct --npm --env saucelabs:mobile_iphone12
+    
+    - name: Run unit tests iPhone 10
+      env:
+        SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
+        SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
+      run: wct --npm --env saucelabs:mobile_iphone10

@@ -28,8 +28,20 @@ jobs:
     - name: Run yarn
       run: yarn install --flat
 
-    - name: Run unit tests
+    - name: Run unit tests Safari
       env:
         SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
         SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
-      run: wct --npm --env saucelabs:desktop
+      run: wct --npm --env saucelabs:desktop_safari
+    
+    - name: Run unit tests IE
+      env:
+        SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
+        SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
+      run: wct --npm --env saucelabs:desktop_ie
+
+    - name: Run unit tests Edge
+      env:
+        SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
+        SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
+      run: wct --npm --env saucelabs:desktop_edge

@@ -16,16 +16,16 @@ module.exports = {
     }
   },
   registerHooks: function(context) {
-    const saucelabsPlatformsMobile = [
-      'iOS Simulator/iphone@12.2',
+    const saucelabsPlatformsMobileIphone12 = [
+      'iOS Simulator/iphone@12.2'
+    ];
+    const saucelabsPlatformsMobileIphone10 = [
       'iOS Simulator/iphone@10.3'
     ];
 
-    const saucelabsPlatformsDesktop = [
-      'macOS 10.13/safari@latest',
-      'Windows 10/microsoftedge@18',
-      'Windows 10/internet explorer@11'
-    ];
+    const saucelabsPlatformsDesktopSafari = ['macOS 10.13/safari@latest'];
+    const saucelabsPlatformsDesktopIE = ['Windows 10/microsoftedge@18'];
+    const saucelabsPlatformsDesktopEdge = ['Windows 10/internet explorer@11'];
 
     const cronPlatforms = [
       'iOS Simulator/ipad@12.2',
@@ -34,16 +34,23 @@ module.exports = {
       'Windows 10/firefox@latest'
     ];
 
-    if (env === 'saucelabs:mobile') {
-      context.options.plugins.sauce.browsers = saucelabsPlatformsMobile;
-
-    } else if (env === 'saucelabs:desktop') {
-      context.options.plugins.sauce.browsers = saucelabsPlatformsDesktop;
-
+    if (env === 'saucelabs:mobile_iphone10') {
+      context.options.plugins.sauce.browsers = saucelabsPlatformsMobileIphone10;
+    } else if (env === 'saucelabs:mobile_iphone12') {
+      context.options.plugins.sauce.browsers = saucelabsPlatformsMobileIphone12;
+    } else if (env === 'saucelabs:desktop_safari') {
+      context.options.plugins.sauce.browsers = saucelabsPlatformsDesktopSafari;
+    } else if (env === 'saucelabs:desktop_edge') {
+      context.options.plugins.sauce.browsers = saucelabsPlatformsDesktopEdge;
+    } else if (env === 'saucelabs:desktop_ie') {
+      context.options.plugins.sauce.browsers = saucelabsPlatformsDesktopIE;
     } else if (env === 'saucelabs') {
       context.options.plugins.sauce.browsers = [
-        ...saucelabsPlatformsMobile,
-        ...saucelabsPlatformsDesktop
+        ...saucelabsPlatformsMobileIphone10,
+        ...saucelabsPlatformsMobileIphone12,
+        ...saucelabsPlatformsDesktopSafari,
+        ...saucelabsPlatformsDesktopEdge,
+        ...saucelabsPlatformsDesktopIE
       ];
 
     } else if (env === 'saucelabs-cron') {
