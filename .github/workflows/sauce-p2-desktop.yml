@@ -25,22 +25,22 @@ jobs:
       env:
         SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
         SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
-      run: npm test --env saucelabs:desktop --profile batch1
+      run: npm test -- --env saucelabs:desktop --profile batch1
 
     - name: Run unit tests batch 2
       env:
         SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
         SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
-      run: npm test --env saucelabs:desktop --profile batch2
+      run: npm test -- --env saucelabs:desktop --profile batch2
     
     - name: Run unit tests batch 3
       env:
         SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
         SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
-      run: npm test --env saucelabs:desktop --profile batch3
+      run: npm test -- --env saucelabs:desktop --profile batch3
 
     - name: Run unit tests batch 4
       env:
         SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
         SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
-      run: npm test --env saucelabs:desktop --profile batch4
+      run: npm test -- --env saucelabs:desktop --profile batch4
