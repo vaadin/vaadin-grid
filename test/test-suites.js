@@ -45,9 +45,18 @@ window.VaadinGridSuitsBatch4 = [
   'renderers.html'
 ];
 
+window.VaadinGridSuits = [].concat.apply([],
+  window.VaadinGridSuitsBatch1,
+  window.VaadinGridSuitsBatch2,
+  window.VaadinGridSuitsBatch3,
+  window.VaadinGridSuitsBatch4);
+
+
 if (isPolymer2) {
   window.VaadinGridSuitsBatch1.push('app-localize-behavior.html');
   window.VaadinGridSuitsBatch2.push('app-localize-behavior.html');
   window.VaadinGridSuitsBatch3.push('app-localize-behavior.html');
   window.VaadinGridSuitsBatch4.push('app-localize-behavior.html');
+
+  window.VaadinGridSuits.push('app-localize-behavior.html');
 }
