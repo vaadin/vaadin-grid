@@ -24,8 +24,8 @@ module.exports = {
     ];
 
     const saucelabsPlatformsDesktopSafari = ['macOS 10.13/safari@latest'];
-    const saucelabsPlatformsDesktopIE = ['Windows 10/microsoftedge@18'];
-    const saucelabsPlatformsDesktopEdge = ['Windows 10/internet explorer@11'];
+    const saucelabsPlatformsDesktopIE = ['Windows 10/internet explorer@11'];
+    const saucelabsPlatformsDesktopEdge = ['Windows 10/microsoftedge@18'];
 
     const cronPlatforms = [
       'iOS Simulator/ipad@12.2',
