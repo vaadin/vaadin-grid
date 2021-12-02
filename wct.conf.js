@@ -1,7 +1,5 @@
 var envIndex = process.argv.indexOf('--env') + 1;
 var env = envIndex ? process.argv[envIndex] : undefined;
-var profileIndex = process.argv.indexOf('--profile') + 1;
-var profile = envIndex ? process.argv[profileIndex] : undefined;
 
 module.exports = {
   testTimeout: 300 * 1000,
@@ -18,14 +16,19 @@ module.exports = {
     }
   },
   registerHooks: function(context) {
-    const saucelabsPlatformsMobile = [
-      'iOS Simulator/iphone@10.3',
+    const saucelabsPlatformsMobileIOS10 = [
+      'iOS Simulator/iphone@10.3'
+    ];
+
+    const saucelabsPlatformsMobileIOS12 = [
       'iOS Simulator/iphone@12.2'
     ];
 
-    const saucelabsPlatformsDesktop = ['macOS 10.13/safari@latest',
-      'Windows 10/internet explorer@11',
-      'Windows 10/microsoftedge@18'];
+    const saucelabsPlatformsDesktopSafari = ['macOS 10.13/safari@latest'];
+
+    const saucelabsPlatformsDesktopIE = ['Windows 10/internet explorer@11'];
+
+    const saucelabsPlatformsDesktopEdge = ['Windows 10/microsoftedge@18'];
 
     const cronPlatforms = [
       'iOS Simulator/ipad@12.2',
@@ -33,36 +36,28 @@ module.exports = {
       'Windows 10/chrome@latest',
       'Windows 10/firefox@latest'
     ];
-    if (profile) {
-      if (profile == 'batch1') {
-        context.options.suits = [
-          'test/index.batch1.html'
-        ];
-      } else if (profile == 'batch2') {
-        context.options.suits = [
-          'test/index.batch2.html'
-        ];
-      } else if (profile == 'batch3') {
-        context.options.suits = [
-          'test/index.batch3.html'
-        ];
-      } else if (profile == 'batch4') {
-        context.options.suits = [
-          'test/index.batch4.html'
-        ];
-      }
+
+    context.options.suits = [
+      'test/index.html'
+    ];
+    if (env === 'saucelabs:mobile_ios10') {
+      context.options.plugins.sauce.browsers = saucelabsPlatformsMobileIOS10;
     }
-
-
-    if (env === 'saucelabs:mobile') {
-      context.options.plugins.sauce.browsers = saucelabsPlatformsMobile;
-    } else if (env === 'saucelabs:desktop') {
-      context.options.plugins.sauce.browsers = saucelabsPlatformsDesktop;
-
+    if (env === 'saucelabs:mobile_ios12') {
+      context.options.plugins.sauce.browsers = saucelabsPlatformsMobileIOS12;
+    } else if (env === 'saucelabs:desktop_IE') {
+      context.options.plugins.sauce.browsers = saucelabsPlatformsDesktopIE;
+    } else if (env === 'saucelabs:desktop_edge') {
+      context.options.plugins.sauce.browsers = saucelabsPlatformsDesktopEdge;
+    } else if (env === 'saucelabs:desktop_safari') {
+      context.options.plugins.sauce.browsers = saucelabsPlatformsDesktopSafari;
     } else if (env === 'saucelabs') {
       context.options.plugins.sauce.browsers = [
-        ...saucelabsPlatformsMobile,
-        ...saucelabsPlatformsDesktop
+        ...saucelabsPlatformsMobileIOS10,
+        ...saucelabsPlatformsMobileIOS12,
+        ...saucelabsPlatformsDesktopEdge,
+        ...saucelabsPlatformsDesktopIE,
+        ...saucelabsPlatformsDesktopSafari
       ];
 
     } else if (env === 'saucelabs-cron') {
