@@ -20,7 +20,18 @@ module.exports = {
   registerHooks: function(context) {
 
     if (suite) {
-      context.options.suites = [suite];
+      // context.options.suites = [suite];
+      context.options.suites = [
+        'test/accessibility.html',
+        'test/all-imports.html',
+        'test/array-data-provider.html',
+        'test/basic.html',
+        'test/class-name-generator.html',
+        'test/column-auto-width.html',
+        'test/column-group.html',
+        'test/column-groups.html',
+        'test/column-reordering.html',
+      ];
     }
 
     const saucelabsPlatformsMobile = [
