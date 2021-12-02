@@ -21,8 +21,14 @@ jobs:
     - name: Install Bower
       run: bower -q i
 
-    - name: Run unit tests
+    - name: Run unit tests [Desktop / Batch 1]
       env:
         SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
         SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
       run: npm test -- --env saucelabs:desktop --suite 'test/index.batch1.html'
+
+    - name: Run unit tests [Desktop / Batch 2]
+      env:
+        SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
+        SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
+      run: npm test -- --env saucelabs:desktop --suite 'test/index.batch2.html'
