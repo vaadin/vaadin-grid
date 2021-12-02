@@ -1,5 +1,7 @@
 var envIndex = process.argv.indexOf('--env') + 1;
 var env = envIndex ? process.argv[envIndex] : undefined;
+var suiteIndex = process.argv.indexOf('--suite') + 1;
+var suite = suiteIndex ? process.argv[suiteIndex] : undefined;
 
 module.exports = {
   testTimeout: 180 * 1000,
@@ -16,6 +18,11 @@ module.exports = {
     }
   },
   registerHooks: function(context) {
+
+    if (suite) {
+      context.options.suites = [suite];
+    }
+
     const saucelabsPlatformsMobile = [
       'iOS Simulator/iphone@12.2',
       'iOS Simulator/iphone@10.3'

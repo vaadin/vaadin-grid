@@ -25,4 +25,4 @@ jobs:
       env:
         SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
         SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
-      run: npm test -- --env saucelabs:desktop
+      run: npm test -- --env saucelabs:desktop --suite 'test/index.batch1.html'
