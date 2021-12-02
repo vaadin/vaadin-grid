@@ -1,7 +1,5 @@
 const isPolymer2 = document.querySelector('script[src*="wct-browser-legacy"]') === null;
 
-window.VaadinGridSuites = [];
-
 const batch1 = [
   'million-dollar-scrolling.html',
   'accessibility.html',
