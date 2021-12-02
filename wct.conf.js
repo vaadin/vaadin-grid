@@ -1,7 +1,9 @@
+const suites = require('./test/test-suites');
+
 var envIndex = process.argv.indexOf('--env') + 1;
 var env = envIndex ? process.argv[envIndex] : undefined;
-var suiteIndex = process.argv.indexOf('--suite') + 1;
-var suite = suiteIndex ? process.argv[suiteIndex] : undefined;
+var suitesIndex = process.argv.indexOf('--suites') + 1;
+var suitesParam = suitesIndex ? process.argv[suitesIndex] : undefined;
 
 module.exports = {
   testTimeout: 360 * 1000,
@@ -19,19 +21,10 @@ module.exports = {
   },
   registerHooks: function(context) {
 
-    if (suite) {
-      // context.options.suites = [suite];
-      context.options.suites = [
-        'test/accessibility.html',
-        'test/all-imports.html',
-        'test/array-data-provider.html',
-        'test/basic.html',
-        'test/class-name-generator.html',
-        'test/column-auto-width.html',
-        'test/column-group.html',
-        'test/column-groups.html',
-        'test/column-reordering.html',
-      ];
+    if (suitesParam) {
+      context.options.suites = suites[suitesParam] || [];
+    } else {
+      context.options.suites = suites.all;
     }
 
     const saucelabsPlatformsMobile = [
