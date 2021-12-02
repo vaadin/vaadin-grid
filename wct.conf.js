@@ -4,7 +4,7 @@ var suiteIndex = process.argv.indexOf('--suite') + 1;
 var suite = suiteIndex ? process.argv[suiteIndex] : undefined;
 
 module.exports = {
-  testTimeout: 180 * 1000,
+  testTimeout: 360 * 1000,
   verbose: true,
   plugins: {
     local: {
