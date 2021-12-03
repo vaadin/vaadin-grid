@@ -1,7 +1,7 @@
 const batch1 = [
   'test/accessibility.html',
   'test/all-imports.html',
-  'test/app-localize-behavior.html',
+  // 'test/app-localize-behavior.html',
   'test/array-data-provider.html',
   'test/basic.html',
   'test/class-name-generator.html',
