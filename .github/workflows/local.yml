@@ -30,6 +30,9 @@ jobs:
     - name: Run unit tests
       run: xvfb-run -s '-screen 0 1024x768x24' npm test
 
+    - name: Run unit tests - Polymer2 specific
+      run: xvfb-run -s '-screen 0 1024x768x24' npm test --suite polymer2Only
+
   polymer-3:
     runs-on: ubuntu-latest
 

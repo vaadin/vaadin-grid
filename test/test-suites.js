@@ -1,7 +1,6 @@
 const batch1 = [
   'test/accessibility.html',
   'test/all-imports.html',
-  // 'test/app-localize-behavior.html',
   'test/array-data-provider.html',
   'test/basic.html',
   'test/class-name-generator.html',
@@ -32,7 +31,6 @@ const batch3 = [
   'test/physical-count.html',
   'test/resizing.html',
   'test/resizing-material.html',
-  'test/row-details.html',
 ];
 
 const batch4 = [
@@ -48,6 +46,11 @@ const batch4 = [
 
 const batch5 = [
   'test/million-dollar-scrolling.html',
+  'test/row-details.html',
+];
+
+const polymer2Only = [
+  'test/app-localize-behavior.html',
 ];
 
 const all = [
@@ -64,5 +67,6 @@ module.exports = {
   batch3,
   batch4,
   batch5,
+  polymer2Only,
   all,
 };
