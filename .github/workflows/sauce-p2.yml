@@ -45,6 +45,12 @@ jobs:
         SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
       run: npm test -- --env saucelabs:desktop --suites batch4
 
+    - name: Run unit tests [Desktop / Batch 5]
+      env:
+        SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
+        SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
+      run: npm test -- --env saucelabs:desktop --suites batch5
+
     - name: Run unit tests [Mobile / Batch 1]
       env:
         SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
@@ -68,3 +74,9 @@ jobs:
         SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
         SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
       run: npm test -- --env saucelabs:mobile --suites batch4
+
+    - name: Run unit tests [Mobile / Batch 5]
+      env:
+        SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
+        SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
+      run: npm test -- --env saucelabs:mobile --suites batch5

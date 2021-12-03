@@ -1,5 +1,4 @@
 const batch1 = [
-  'test/million-dollar-scrolling.html',
   'test/accessibility.html',
   'test/all-imports.html',
   'test/app-localize-behavior.html',
@@ -47,11 +46,16 @@ const batch4 = [
   'test/renderers.html'
 ];
 
+const batch5 = [
+  'test/million-dollar-scrolling.html',
+];
+
 const all = [
   ...batch1,
   ...batch2,
   ...batch3,
   ...batch4,
+  ...batch5,
 ];
 
 module.exports = {
@@ -59,5 +63,6 @@ module.exports = {
   batch2,
   batch3,
   batch4,
+  batch5,
   all,
 };
