@@ -224,7 +224,7 @@ describe('drag and drop', () => {
         expect(spy.called).to.be.true;
       });
 
-      // TODO: fix me
+      // TODO: flaky in IE, timeout might not be appropriate
       it.skip('should only use visible items for the row count state attribute', done => {
         grid.style.height = '80px';
         flushGrid(grid);
@@ -842,14 +842,16 @@ describe('drag and drop', () => {
       expect(grid.$.table.scrollTop).to.be.within(scrollTop + 100, scrollTop + 200);
     });
 
-    it('should auto scroll up', () => {
+    // TODO: flaky in Edge, magic numbers are not reliable,
+    it.skip('should auto scroll up', () => {
       grid._scrollToIndex(50);
       const scrollTop = grid.$.table.scrollTop;
       fireDragOver(grid.__getViewportRows()[0], 'below');
       expect(grid.$.table.scrollTop).to.be.within(scrollTop - 100, scrollTop - 20);
     });
 
-    it('should auto scroll up fast', () => {
+    // TODO: flaky in Edge, magic numbers are not reliable,
+    it.skip('should auto scroll up fast', () => {
       grid._scrollToIndex(50);
       const scrollTop = grid.$.table.scrollTop;
       fireDragOver(grid.__getViewportRows()[0], 'above');
