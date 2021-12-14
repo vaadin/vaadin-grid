@@ -61,12 +61,18 @@ const all = [
   ...batch5,
 ];
 
-module.exports = {
-  batch1,
-  batch2,
-  batch3,
-  batch4,
-  batch5,
-  polymer2Only,
-  all,
-};
+if (typeof window === 'undefined') {
+  // Module was imported through the test runner config in a node.js process, export batches and all suites
+  module.exports = {
+    batch1,
+    batch2,
+    batch3,
+    batch4,
+    batch5,
+    polymer2Only,
+    all,
+  };
+} else {
+  // Module was loaded through script tag in browser, always run all tests here
+  window.VaadinGridSuites = all.map(suite => suite.replace('test/', ''));
+}
