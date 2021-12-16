@@ -1,8 +1,12 @@
+const suites = require('./test/test-suites');
+
 var envIndex = process.argv.indexOf('--env') + 1;
 var env = envIndex ? process.argv[envIndex] : undefined;
+var suitesIndex = process.argv.indexOf('--suites') + 1;
+var suitesParam = suitesIndex ? process.argv[suitesIndex] : undefined;
 
 module.exports = {
-  testTimeout: 180 * 1000,
+  testTimeout: 360 * 1000,
   verbose: true,
   plugins: {
     local: {
@@ -16,6 +20,13 @@ module.exports = {
     }
   },
   registerHooks: function(context) {
+
+    if (suitesParam) {
+      context.options.suites = suites[suitesParam] || [];
+    } else {
+      context.options.suites = suites.all;
+    }
+
     const saucelabsPlatformsMobile = [
       'iOS Simulator/iphone@12.2',
       'iOS Simulator/iphone@10.3'
