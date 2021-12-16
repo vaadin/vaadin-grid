@@ -342,10 +342,10 @@
     });
 
     describe('in-memory filtering and hiding a column', () => {
-      it('should correctly display items after filter is cleared and column is visible', () => {
+      it('should correctly display items after filter is cleared and column is made visible', () => {
         const grid = fixture('grid-with-external-filter');
         const column = grid.querySelector('#last');
-        // this is the minimum amount of items that this bug happens
+        // this is the minimum amount of items that should be in data-provider in order to see the bug
         const itemCount = 56;
         const items = Array.apply(null, Array(itemCount)).map((_, i) => {
           return {
@@ -365,7 +365,8 @@
         column.hidden = false;
         grid.items = items;
         flushGrid(grid);
-    
+
+        // get cell content of 5th row and check if it is displayed correctly
         const bodyRows = getRows(grid.$.items);
         const rowCells = getRowCells(bodyRows[5]);
         const cellContent = getCellContent(rowCells[1]).textContent;
