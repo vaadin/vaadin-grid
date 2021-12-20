@@ -124,41 +124,18 @@ describe('drag and drop', () => {
     return event;
   };
 
-  before(done => {
-    grid = fixture('default');
-    grid.hidden = true;
-    requestAnimationFrame(() => {
-      // Wait for the appear animation to finish
-      listenOnce(grid, 'animationend', () => {
-        flush(() => done());
-      });
-      requestAnimationFrame(() => grid.hidden = false);
-    });
-  });
-
   beforeEach(done => {
-    dragData = {};
-    if (!grid.parentElement) {
-      document.body.appendChild(grid);
-    }
+    grid = fixture('default');
     grid.items = getTestItems();
+    dragData = {};
     flushGrid(grid);
-    if (grid._safari) {
-      setTimeout(() => done());
-    } else {
-      done();
-    }
-
-  });
-
-  afterEach(() => {
-    fireDragEnd(grid.$.table);
-    fireDrop(grid.$.table);
-    grid.rowsDraggable = false;
-    grid.dropMode = null;
-    grid.style.height = '';
-    grid.selectedItems = [];
-    grid.dataProvider = null;
+    requestAnimationFrame(() => {
+      if (grid._safari) {
+        setTimeout(() => done());
+      } else {
+        done();
+      }
+    });
   });
 
   it('should not be draggable by default', () => {
@@ -186,14 +163,11 @@ describe('drag and drop', () => {
       let dragStartSpy;
       let dropSpy;
 
-      before(() => {
+      beforeEach(() => {
         dragStartSpy = sinon.spy();
         dropSpy = sinon.spy();
         grid.addEventListener('grid-dragstart', dragStartSpy);
         grid.addEventListener('grid-drop', dropSpy);
-      });
-
-      beforeEach(() => {
         grid.rowsDraggable = true;
         grid.dropMode = 'on-top';
         dragStartSpy.reset();
@@ -227,8 +201,7 @@ describe('drag and drop', () => {
         expect(spy.called).to.be.true;
       });
 
-      // TODO: flaky in IE, timeout might not be appropriate
-      it.skip('should only use visible items for the row count state attribute', done => {
+      it('should only use visible items for the row count state attribute', done => {
         grid.style.height = '80px';
         flushGrid(grid);
         grid.notifyResize();
@@ -929,16 +902,14 @@ describe('drag and drop', () => {
       expect(grid.$.table.scrollTop).to.be.within(scrollTop + 100, scrollTop + 200);
     });
 
-    // TODO: flaky in Edge, magic numbers are not reliable,
-    it.skip('should auto scroll up', () => {
+    it('should auto scroll up', () => {
       grid._scrollToIndex(50);
       const scrollTop = grid.$.table.scrollTop;
       fireDragOver(grid.__getViewportRows()[0], 'below');
       expect(grid.$.table.scrollTop).to.be.within(scrollTop - 100, scrollTop - 20);
     });
 
-    // TODO: flaky in Edge, magic numbers are not reliable,
-    it.skip('should auto scroll up fast', () => {
+    it('should auto scroll up fast', () => {
       grid._scrollToIndex(50);
       const scrollTop = grid.$.table.scrollTop;
       fireDragOver(grid.__getViewportRows()[0], 'above');
