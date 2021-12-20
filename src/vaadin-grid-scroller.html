@@ -82,7 +82,13 @@ This program is available under Apache License Version 2.0, available at https:/
         this._scrollingToIndex = true;
         index = Math.min(Math.max(index, 0), this._effectiveSize - 1);
         this.$.table.scrollTop = index / this._effectiveSize * (this.$.table.scrollHeight - this.$.table.offsetHeight);
+
+        // We need to run the iron-list scroll handler here in order to recalculate the scaling from effective size to
+        // virtual size after changing the scroll position. However we don't want to trigger updates to the items / rows
+        // in this step, which could result in data provider requests for the previous viewport
+        this._preventItemUpdates = true;
         this._scrollHandler();
+        this._preventItemUpdates = false;
 
         if (this._accessIronListAPI(() => this._maxScrollTop) && this._virtualCount < this._effectiveSize) {
           this._adjustVirtualIndexOffset(1000000);
@@ -259,6 +265,10 @@ This program is available under Apache License Version 2.0, available at https:/
        * @protected
        */
       _assignModels(itemSet) {
+        // Skip here if internal flag for preventing item updates is set
+        if (this._preventItemUpdates) {
+          return;
+        }
         this._iterateItems((pidx, vidx) => {
           const el = this._physicalItems[pidx];
           this._toggleAttribute('hidden', vidx >= this._effectiveSize, el);

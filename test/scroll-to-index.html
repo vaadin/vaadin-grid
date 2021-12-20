@@ -207,6 +207,24 @@
           };
         });
 
+        it('should not request to load page for previous viewport when clearing items from cache', () => {
+          grid.dataProvider = sinon.spy(infiniteDataProvider);
+          // Clear initial data provider request from spy
+          grid.dataProvider.reset();
+          // Remove item from current viewport from cache
+          // This simulates Flow component behavior, which clears pages for the
+          // previous viewport after loading pages for the new viewport
+          delete grid._cache.items[0];
+
+          // Scroll to new viewport
+          grid.scrollToIndex(1000);
+
+          // Verify data provider was not called with page for previous viewport (page 0)
+          grid.dataProvider.args.forEach(args => {
+            expect(args[0].page).not.to.eql(0);
+          });
+        });
+
       });
 
       describe('Added item', () => {
