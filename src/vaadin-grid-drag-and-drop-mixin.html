@@ -303,6 +303,20 @@ This program is available under Apache License Version 2.0, available at https:/
 
       /** @private */
       __getViewportRows() {
+        // Workaround an IE11 bug where the `getBoundingClientRect` for header/footer
+        // might return incorrect values
+        if (this._ie) {
+          this.$.header.style.outline = '0px solid transparent';
+          const scrollerRect = this.$.scroller.getBoundingClientRect();
+          const headerBottom = Math.max(this.$.header.getBoundingClientRect().bottom, scrollerRect.top);
+          const footerTop = Math.min(this.$.footer.getBoundingClientRect().top, scrollerRect.bottom);
+
+          return Array.from(this.$.items.children).filter((row) => {
+            const rowRect = row.getBoundingClientRect();
+            return rowRect.bottom > headerBottom && rowRect.top < footerTop;
+          });
+        }
+
         const headerBottom = this.$.header.getBoundingClientRect().bottom;
         const footerTop = this.$.footer.getBoundingClientRect().top;
         return Array.from(this.$.items.children)
