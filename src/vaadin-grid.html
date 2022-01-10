@@ -266,7 +266,7 @@ This program is available under Apache License Version 2.0, available at https:/
      * `reorder-status` | Reflects the status of a cell while columns are being reordered | cell
      * `frozen` | Frozen cell | cell
      * `last-frozen` | Last frozen cell | cell
-   * * `first-column` | First visible cell on a row | cell
+     * `first-column` | First visible cell on a row | cell
      * `last-column` | Last visible cell on a row | cell
      * `selected` | Selected row | row
      * `expanded` | Expanded row | row
@@ -274,6 +274,7 @@ This program is available under Apache License Version 2.0, available at https:/
      * `loading` | Row that is waiting for data from data provider | row
      * `odd` | Odd row | row
      * `first` | The first body row | row
+     * `last` | The last body row | row
      * `dragstart` | Set for one frame when drag of a row is starting. The value is a number when multiple rows are dragged | row
      * `dragover` | Set when the row is dragged over | row
      * `drag-disabled` | Set to a row that isn't available for dragging | row
@@ -770,6 +771,7 @@ This program is available under Apache License Version 2.0, available at https:/
         }
 
         this._toggleAttribute('first', index === 0, row);
+        this._toggleAttribute('last', index === this._effectiveSize - 1, row);
         this._toggleAttribute('odd', index % 2, row);
         this._a11yUpdateRowRowindex(row, index);
         this._getItem(index, row);
