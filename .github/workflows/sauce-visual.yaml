@@ -4,25 +4,41 @@ on: [push]
 
 jobs:
   visual-tests:
+    name: Polymer 2 on SauceLabs
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - name: Set up Node 12.x
+        uses: actions/setup-node@v2
         with:
-          node-version: 12
+          node-version: 12.x
 
-      - name: Install CLI tools
-        run: npm install -g bower gemini gemini-sauce gemini-polyserve
+      - name: Check out the source code
+        uses: actions/checkout@v2
 
-      - name: Install dependencies
-        run: npm -q i
+      - name: Install latest npm
+        # magi-cli 1.0 requires npm 7 or higher
+        run: "npm install -g npm@8"
 
-      - name: Install Bower
-        run: bower -q i
+      - name: Install global npm dependencies
+        # bower is needed to run 'bower install'
+        # gemini is needed to run the visual tests step
+        run: "npm install --quiet --no-progress --global bower gemini@^4.0.0 gemini-sauce gemini-polyserve"
 
-      - name: Run visual tests
+      - name: Install project npm dependencies
+        run: "npm ci"
+
+      - name: Install project Bower dependencies
+        run: "bower install --quiet"
+
+      - name: Run visual tests on SauceLabs
+        run: "gemini test --reporter html --reporter flat test/visual"
         env:
           SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
           SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
-        run: gemini test test/visual
+
+      - name: Publish the Visual Tests failures report as an Artifact for this Workflow run
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: Visual tests failures report
+          path: gemini-report/
