@@ -411,4 +411,8 @@
     return event;
   };
 
+  window.nextFrame = () => {
+    return new Promise((resolve) => requestAnimationFrame(() => resolve()));
+  };
+
 </script>

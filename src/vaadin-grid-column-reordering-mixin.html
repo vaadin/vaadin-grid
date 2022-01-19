@@ -215,15 +215,24 @@ This program is available under Apache License Version 2.0, available at https:/
       if (!this._draggedColumn) {
         this._toggleAttribute('no-content-pointer-events', true, this.$.scroller);
       }
+      // Workaround a ShadyDOM bug
+      this._reorderGhost.hidden = true;
+
       let cell;
-      if (Polymer.Settings.useShadow) {
+      if (this.shadowRoot.elementFromPoint) {
         cell = this.shadowRoot.elementFromPoint(x, y);
       } else {
         cell = document.elementFromPoint(x, y);
+      }
 
-        // Workaround a FF58 bug
+      this._reorderGhost.hidden = false;
+
+      // Workaround FF58/ShadyDOM bugs
+      while (!cell._column && cell.parentElement) {
         if (cell.localName === 'vaadin-grid-cell-content') {
           cell = cell.assignedSlot.parentNode;
+        } else {
+          cell = cell.parentElement;
         }
 
       }

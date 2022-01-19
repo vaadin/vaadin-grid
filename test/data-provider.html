@@ -830,7 +830,7 @@
 
           // Test actual last visible item
           const rect = grid.getBoundingClientRect();
-          const scope = Polymer.Settings.useShadow ? grid.domHost.root : document;
+          const scope = grid.domHost.root.elementFromPoint ? grid.domHost.root : document;
           const lastVisibleItem = scope.elementFromPoint(rect.left + 15, rect.bottom - 15);
           expect(lastVisibleItem.innerText.trim()).to.equal('foo' + (grid.size - 1));
         });
