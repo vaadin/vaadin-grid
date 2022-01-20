@@ -2,6 +2,9 @@
   "env": {
     "es6": true
   },
+  "parserOptions": {
+    "ecmaVersion": 8
+  },
   "rules": {
     "no-unused-vars": 0
   },
@@ -61,6 +64,7 @@
     "getContainerCell": false,
     "footerTrap": false,
     "wheel": false,
-    "whenGridAppearAnimationEnd": false
+    "whenGridAppearAnimationEnd": false,
+    "nextFrame": false
   }
 }

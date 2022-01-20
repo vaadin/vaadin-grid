@@ -99,7 +99,7 @@
       });
 
       function getElementFromPoint(context, x, y) {
-        if (Polymer.Settings.useShadow) {
+        if (context.shadowRoot.elementFromPoint) {
           return context.shadowRoot.elementFromPoint(x, y);
         } else {
           return document.elementFromPoint(x, y);
@@ -176,20 +176,24 @@
         expect(grid.$.scroller.hasAttribute('resizing')).to.be.false;
       });
 
-      it('should not fix width for succeeding columns', () => {
+      it('should not fix width for succeeding columns', async() => {
         grid._columnTree[0][1].width = '50%';
         grid._columnTree[0][1].flexGrow = 1;
+        await nextFrame();
         fire('track', {state: 'start'}, {node: handle});
+        await nextFrame();
         expect(grid._columnTree[0][1].width).to.equal('50%');
         expect(grid._columnTree[0][1].flexGrow).to.equal(1);
       });
 
-      it('should fix width for preceding columns', () => {
+      it('should fix width for preceding columns', async() => {
         grid._columnTree[0][1].resizable = true;
 
         grid._columnTree[0][0].width = '50%';
         grid._columnTree[0][0].flexGrow = 1;
+        await nextFrame();
         fire('track', {state: 'start'}, {node: headerCells[1].querySelector('[part~="resize-handle"]')});
+        await nextFrame();
         expect(grid._columnTree[0][0].width.indexOf('px')).not.to.equal(-1);
         expect(grid._columnTree[0][0].flexGrow).to.equal(0);
       });
