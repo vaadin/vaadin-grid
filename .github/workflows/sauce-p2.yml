@@ -7,19 +7,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v1
+    - name: Set up Node 12.x
+      uses: actions/setup-node@v2
       with:
-        node-version: 12
+        node-version: 12.x
 
-    - name: Install CLI tools
-      run: npm install -g bower
+    - name: Check out the source code
+      uses: actions/checkout@v2
 
-    - name: Install dependencies
-      run: npm -q i
+    - name: Install latest npm
+      # magi-cli 1.0 requires npm 7 or higher
+      run: "npm install -g npm@8"
 
-    - name: Install Bower
-      run: bower -q i
+    - name: Install global npm dependencies
+      # bower is needed to run 'bower install'
+      run: "npm install --quiet --no-progress --global bower"
+
+    - name: Install project npm dependencies
+      run: "npm ci"
+
+    - name: Install project Bower dependencies
+      run: "bower install --quiet"
 
     - name: Run unit tests [Desktop / Batch 1]
       env:
