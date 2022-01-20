@@ -128,6 +128,15 @@ gemini.suite('vaadin-grid', (rootSuite) => {
             grid.$.items.children[1].removeAttribute('dragover');
             grid.$.items.children[1].setAttribute('dragstart', '123');
           });
+        })
+        .capture('dragstart-below-last-row-all-rows-visible', {}, (actions) => {
+          actions.executeJS(function(window) {
+            var grid = window.document.querySelector('vaadin-grid');
+            grid.allRowsVisible = true;
+            grid.items = grid.items.slice(0, 2);
+            grid.$.items.children[1].removeAttribute('dragstart');
+            grid.$.items.children[1].setAttribute('dragover', 'below');
+          });
         });
     });
   });
