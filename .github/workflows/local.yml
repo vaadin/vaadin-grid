@@ -59,7 +59,7 @@ jobs:
 
     - name: Install global npm dependencies
       # bower and polymer-modulizer are needed to run the Polymer 3 conversion step
-      run: "npm install --quiet --no-progress --global bower magi-cli@next polymer-modulizer"
+      run: "npm install --quiet --no-progress --global bower magi-cli polymer-modulizer"
 
     - name: Convert the source code to Polymer 3
       run: |
