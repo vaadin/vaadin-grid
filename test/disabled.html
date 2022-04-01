@@ -57,13 +57,10 @@
         expect(grid.hasAttribute('aria-disabled')).to.be.false;
       });
 
-      it('should set the tabindex to -1 on the host when disabled', () => {
+      it('should set the tabindex attribute to -1 when disabled', () => {
         grid.disabled = true;
         expect(grid.getAttribute('tabindex')).to.equal('-1');
-      });
 
-      it('should remove the tabindex from the host when re-enabled', () => {
-        grid.disabled = true;
         grid.disabled = false;
         expect(grid.hasAttribute('tabindex')).to.be.false;
       });
@@ -79,6 +76,8 @@
       it('should set pointer-events: none when disabled', () => {
         grid.disabled = true;
         expect(getComputedStyle(grid).pointerEvents).to.equal('none');
+        grid.disabled = false;
+        expect(getComputedStyle(grid).pointerEvents).to.equal('auto');
       });
     });
   </script>
