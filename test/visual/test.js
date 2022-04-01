@@ -77,6 +77,18 @@ gemini.suite('vaadin-grid', (rootSuite) => {
       });
     });
 
+    gemini.suite(`disabled-${theme}`, (suite) => {
+      suite
+        .setUrl(`disabled.html?theme=${theme}`)
+        .setCaptureElements('.capture-block')
+        .capture('disabled', {}, (actions, find) => {
+          actions.executeJS(function(window) {
+            var grid = window.document.querySelector('vaadin-grid');
+            grid.disabled = true;
+          });
+        });
+    });
+
     gemini.suite(`drag-and-drop-${theme}`, (suite) => {
       suite
         .setUrl(`drag-and-drop.html?theme=${theme}`)
