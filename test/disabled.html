@@ -77,7 +77,7 @@
         grid.disabled = true;
         expect(getComputedStyle(grid).pointerEvents).to.equal('none');
         grid.disabled = false;
-        expect(getComputedStyle(grid).pointerEvents).to.equal('auto');
+        expect(getComputedStyle(grid).pointerEvents).not.to.equal('none');
       });
     });
   </script>
