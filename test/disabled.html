@@ -1,0 +1,85 @@
+<!doctype html>
+
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>disabled tests</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <script src="settings.js"></script>
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../../web-component-tester/browser.js"></script>
+  <link rel="import" href="../../test-fixture/test-fixture.html">
+
+  <link rel="import" href="helpers.html">
+  <link rel="import" href="../vaadin-grid.html">
+</head>
+<body>
+  <test-fixture id="grid">
+    <template>
+      <vaadin-grid>
+        <vaadin-grid-column path="foo"></vaadin-grid-column>
+        <vaadin-grid-column path="bar"></vaadin-grid-column>
+      </vaadin-grid>
+    </template>
+  </text-fixture>
+
+  <script>
+    describe('disabled', () => {
+      let grid;
+
+      beforeEach(() => {
+        grid = fixture('grid');
+        grid.items = [
+          {foo: '1', bar: '1'},
+          {foo: '2', bar: '2'}
+        ];
+        flushGrid(grid);
+      });
+
+      it('should not set the disabled property by default', () => {
+        expect(grid.disabled).to.be.false;
+      });
+
+      it('should reflect the disabled property to the attribute', () => {
+        grid.disabled = true;
+        expect(grid.hasAttribute('disabled')).to.be.true;
+
+        grid.disabled = false;
+        expect(grid.hasAttribute('disabled')).to.be.false;
+      });
+
+      it('should set the aria-disabled attribute when disabled', () => {
+        grid.disabled = true;
+        expect(grid.getAttribute('aria-disabled')).to.equal('true');
+
+        grid.disabled = false;
+        expect(grid.hasAttribute('aria-disabled')).to.be.false;
+      });
+
+      it('should set the tabindex attribute to -1 when disabled', () => {
+        grid.disabled = true;
+        expect(grid.getAttribute('tabindex')).to.equal('-1');
+
+        grid.disabled = false;
+        expect(grid.hasAttribute('tabindex')).to.be.false;
+      });
+
+      it('should prevent firing click events when disabled', () => {
+        const spy = sinon.spy();
+        grid.addEventListener('click', spy);
+        grid.disabled = true;
+        grid.click();
+        expect(spy.called).to.be.false;
+      });
+
+      it('should set pointer-events: none when disabled', () => {
+        grid.disabled = true;
+        expect(getComputedStyle(grid).pointerEvents).to.equal('none');
+        grid.disabled = false;
+        expect(getComputedStyle(grid).pointerEvents).not.to.equal('none');
+      });
+    });
+  </script>
+</body>
+</html>

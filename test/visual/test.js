@@ -77,6 +77,13 @@ gemini.suite('vaadin-grid', (rootSuite) => {
       });
     });
 
+    gemini.suite(`disabled-${theme}`, (suite) => {
+      suite
+        .setUrl(`disabled.html?theme=${theme}`)
+        .setCaptureElements('.capture-block')
+        .capture('disabled');
+    });
+
     gemini.suite(`drag-and-drop-${theme}`, (suite) => {
       suite
         .setUrl(`drag-and-drop.html?theme=${theme}`)

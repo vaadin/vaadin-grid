@@ -47,6 +47,7 @@ const batch4 = [
 const batch5 = [
   'test/million-dollar-scrolling.html',
   'test/row-details.html',
+  'test/disabled.html',
 ];
 
 const polymer2Only = [

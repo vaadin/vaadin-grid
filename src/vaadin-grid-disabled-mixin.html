@@ -1,0 +1,49 @@
+<!--
+@license
+Copyright (c) 2017 Vaadin Ltd.
+This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
+-->
+
+<script>
+  window.Vaadin = window.Vaadin || {};
+  Vaadin.Grid = Vaadin.Grid || {};
+
+  /**
+   * @polymerMixin
+   */
+  Vaadin.Grid.DisabledMixin = superClass => class DisabledMixin extends superClass {
+    static get properties() {
+      return {
+        disabled: {
+          type: Boolean,
+          value: false,
+          observer: '_disabledChanged',
+          reflectToAttribute: true
+        }
+      };
+    }
+
+    /** @protected */
+    _disabledChanged(disabled) {
+      if (disabled) {
+        this.setAttribute('tabindex', '-1');
+        this.setAttribute('aria-disabled', 'true');
+      } else {
+        this.removeAttribute('tabindex');
+        this.removeAttribute('aria-disabled');
+      }
+    }
+
+    /**
+     * Overrides the default element `click` method in order to prevent
+     * firing the `click` event when the element is disabled.
+     * @protected
+     * @override
+     */
+    click() {
+      if (!this.disabled) {
+        super.click();
+      }
+    }
+  };
+</script>

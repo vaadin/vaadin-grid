@@ -29,6 +29,10 @@
         --_lumo-grid-selected-row-color: var(--lumo-primary-color-10pct);
       }
 
+      :host([disabled]) {
+        opacity: 0.7;
+      }
+
       /* No (outer) border */
 
       :host(:not([theme~="no-border"])) {

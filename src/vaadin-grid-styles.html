@@ -32,6 +32,11 @@ This program is available under Apache License Version 2.0, available at https:/
         display: none !important;
       }
 
+      :host([disabled]) {
+        pointer-events: none;
+        animation: none;
+      }
+
       #scroller {
         display: block;
         transform: translateY(0);
