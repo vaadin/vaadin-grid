@@ -343,6 +343,12 @@ This program is available under Apache License Version 2.0, available at https:/
       static get properties() {
         return {
           /** @private */
+          _chrome: {
+            type: Boolean,
+            value: /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor)
+          },
+
+          /** @private */
           _safari: {
             type: Boolean,
             value: /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
@@ -607,13 +613,16 @@ This program is available under Apache License Version 2.0, available at https:/
         // focusable slot wrapper, that is why cells are not focused with
         // mousedown. Workaround: listen for mousedown and focus manually.
         cellContent.addEventListener('mousedown', () => {
-          if (window.chrome) {
+          if (this._chrome) {
             // Chrome bug: focusing before mouseup prevents text selection, see http://crbug.com/771903
-            const mouseUpListener = () => {
-              if (!cellContent.contains(this.getRootNode().activeElement)) {
+            const mouseUpListener = (event) => {
+              // If focus is on element within the cell content — respect it, do not change
+              const contentContainsFocusedElement = cellContent.contains(this.getRootNode().activeElement);
+              // Only focus if mouse is released on cell content itself
+              const mouseUpWithinCell = event.composedPath().indexOf(cellContent) >= 0;
+              if (!contentContainsFocusedElement && mouseUpWithinCell) {
                 cell.focus();
               }
-              // If focus is in the cell content — respect it, do not change.
               document.removeEventListener('mouseup', mouseUpListener, true);
             };
             document.addEventListener('mouseup', mouseUpListener, true);
