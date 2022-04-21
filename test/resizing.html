@@ -108,14 +108,17 @@
           });
         });
 
-        it('should update footer height', () => {
+        it('should update footer height', (done) => {
           getContainerCellContent(grid.$.footer, 0, 0).style.fontSize = '100px';
           grid.notifyResize();
           scrollToEnd(grid);
 
-          const bodyRows = getRows(grid.$.items);
-          expect(bodyRows[bodyRows.length - 1].getBoundingClientRect().bottom)
-            .to.be.closeTo(grid.$.footer.getBoundingClientRect().top, 1);
+          animationFrameFlush(() => {
+            const bodyRows = getRows(grid.$.items);
+            expect(bodyRows[bodyRows.length - 1].getBoundingClientRect().bottom)
+              .to.be.closeTo(grid.$.footer.getBoundingClientRect().top, 1);
+            done();
+          });
         });
 
         it('should update details row height', () => {
