@@ -299,7 +299,7 @@
     const android = /android/i.test(navigator.userAgent);
 
     !ios && !android && describe('keyboard navigation', () => {
-      beforeEach(() => {
+      beforeEach((done) => {
         const fixtureElements = fixture('default');
         grid = fixtureElements[0];
         focusable = fixtureElements[1];
@@ -313,6 +313,7 @@
         grid.items = ['foo', 'bar'];
         grid._observer.flush();
         flushGrid(grid);
+        animationFrameFlush(done);
       });
 
       describe('navigation mode', () => {
