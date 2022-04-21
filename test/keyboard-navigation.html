@@ -1912,14 +1912,13 @@
           right();
 
           const spy = sinon.spy();
-          function callback(e) {
+
+          grid.addEventListener('cell-focus', (e) => {
             spy();
             const context = e.target.getEventContext(e);
             expect(context).to.deep.equal(expectedContext);
-            grid.removeEventListener('cell-focus', callback);
             done();
-          }
-          grid.addEventListener('cell-focus', callback);
+          });
 
           left();
 
