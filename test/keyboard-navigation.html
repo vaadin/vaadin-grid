@@ -299,48 +299,19 @@
     const android = /android/i.test(navigator.userAgent);
 
     !ios && !android && describe('keyboard navigation', () => {
-      before(done => {
+      beforeEach(() => {
         const fixtureElements = fixture('default');
         grid = fixtureElements[0];
         focusable = fixtureElements[1];
+        focusable.focus();
 
         scroller = grid.$.scroller;
         header = grid.$.header;
         body = grid.$.items;
         footer = grid.$.footer;
 
+        grid.items = ['foo', 'bar'];
         grid._observer.flush();
-
-        flushGrid(grid);
-
-        flush(done);
-      });
-
-      beforeEach(() => {
-        if (!grid.parentElement) {
-          document.body.appendChild(grid);
-          document.body.appendChild(focusable);
-        }
-
-        // Reset side effects from tests
-        grid.style.width = '';
-        grid.style.border = '';
-
-        if (grid.items[0] !== 'foo' || grid.items[1] !== 'bar') {
-          grid.size = undefined;
-          grid.dataProvider = undefined;
-          grid.items = ['foo', 'bar'];
-          flushGrid(grid);
-        }
-        grid.activeItem = null;
-        grid.detailsOpenedItems = [];
-        grid._columnTree[0].forEach(column => column.hidden = column.frozen = false);
-
-        grid._focusedItemIndex = 0;
-        grid._focusedColumnOrder = undefined;
-        grid._resetKeyboardNavigation();
-        grid.removeAttribute('navigating');
-        focusable.focus();
         flushGrid(grid);
       });
 
@@ -812,7 +783,7 @@
 
             expect(getFocusedCellIndex()).to.equal(1);
             const columnFocusedCell = grid.shadowRoot.activeElement._column;
-            expect(columnFocusedCell.hidden).to.be.false;
+            expect(columnFocusedCell.hidden).not.to.be.true;
           });
 
           it('should skip over hidden column with left arrow', () => {
@@ -835,7 +806,7 @@
 
             expect(getFocusedCellIndex()).to.equal(0);
             const columnFocusedCell = grid.shadowRoot.activeElement._column;
-            expect(columnFocusedCell.hidden).to.be.false;
+            expect(columnFocusedCell.hidden).not.to.be.true;
           });
 
           it('should not navigate to hidden column with right arrow', () => {
@@ -858,7 +829,7 @@
 
             expect(getFocusedCellIndex()).to.equal(0);
             const columnFocusedCell = grid.shadowRoot.activeElement._column;
-            expect(columnFocusedCell.hidden).to.be.false;
+            expect(columnFocusedCell.hidden).not.to.be.true;
           });
 
           it('should not navigate to hidden column with home', () => {
@@ -871,7 +842,7 @@
 
             expect(getFocusedCellIndex()).to.equal(1);
             const columnFocusedCell = grid.shadowRoot.activeElement._column;
-            expect(columnFocusedCell.hidden).to.be.false;
+            expect(columnFocusedCell.hidden).not.to.be.true;
 
           });
         });
