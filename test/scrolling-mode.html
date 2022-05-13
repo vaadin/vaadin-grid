@@ -196,7 +196,7 @@
         grid.$.table.dispatchEvent(new CustomEvent('scroll'));
       });
 
-      it('should have an item at the bottom of the viewport after scrolling up', async () => {
+      it('should have an item at the bottom of the viewport after scrolling up', async() => {
         const scrollTarget = grid.$.table;
         grid.size = 100000;
         await nextFrame();
@@ -209,7 +209,7 @@
         for (let i = 0; i < 20; i++) {
           await nextFrame();
           scrollTarget.scrollTop -= 1000;
-          
+
           // Sanity check for iron-list internal properties
           const firstItem = grid._physicalItems[grid._physicalStart];
           expect(firstItem.index).to.equal(grid._virtualStart);
@@ -222,7 +222,7 @@
         expect(lastVisibleElement.localName).to.equal('td');
       });
 
-      it('should have an item at the top of the viewport after scrolling down', async () => {
+      it('should have an item at the top of the viewport after scrolling down', async() => {
         const scrollTarget = grid.$.table;
         grid.size = 100000;
         await nextFrame();
@@ -235,7 +235,7 @@
         for (let i = 0; i < 20; i++) {
           await nextFrame();
           scrollTarget.scrollTop += 1000;
-          
+
           // Sanity check for iron-list internal properties
           const firstItem = grid._physicalItems[grid._physicalStart];
           expect(firstItem.index).to.equal(grid._virtualStart);
@@ -245,7 +245,7 @@
         flushGrid(grid);
         await nextFrame();
         const gridRect = scrollTarget.getBoundingClientRect();
-        let firstVisibleElement = getCellElementAt(grid, gridRect.left, gridRect.top + 30);
+        const firstVisibleElement = getCellElementAt(grid, gridRect.left, gridRect.top + 30);
         expect(firstVisibleElement.localName).to.equal('td');
       });
 
