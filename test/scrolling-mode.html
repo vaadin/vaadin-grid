@@ -40,6 +40,14 @@
         flushGrid(grid);
       });
 
+      function getCellElementAt(grid, x, y) {
+        let cell = grid.shadowRoot.elementFromPoint(x, y);
+        if (cell.assignedSlot) {
+          cell = cell.assignedSlot.parentElement;
+        }
+        return cell;
+      }
+
       function isFixed(element) {
         return window.getComputedStyle(element).position === 'fixed';
       }
@@ -210,7 +218,7 @@
         // There should be an item at the bottom of the viewport
         await nextFrame();
         const gridRect = scrollTarget.getBoundingClientRect();
-        const lastVisibleElement = grid.shadowRoot.elementFromPoint(gridRect.left, gridRect.bottom - 30);
+        const lastVisibleElement = getCellElementAt(grid, gridRect.left, gridRect.bottom - 30);
         expect(lastVisibleElement.localName).to.equal('td');
       });
 
@@ -237,7 +245,7 @@
         flushGrid(grid);
         await nextFrame();
         const gridRect = scrollTarget.getBoundingClientRect();
-        const firstVisibleElement = grid.shadowRoot.elementFromPoint(gridRect.left, gridRect.top + 30);
+        let firstVisibleElement = getCellElementAt(grid, gridRect.left, gridRect.top + 30);
         expect(firstVisibleElement.localName).to.equal('td');
       });
 

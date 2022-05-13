@@ -282,14 +282,23 @@ This program is available under Apache License Version 2.0, available at https:/
         this._accessIronListAPI(super._scrollHandler);
 
         if (this._physicalCount !== 0) {
-          // After running super._scrollHandler, fix _virtualStart to workaround an iron-list issue.
+          // After running super._scrollHandler, fix internal properties to workaround an iron-list issue.
           // See https://github.com/vaadin/web-components/issues/1691
-          const reusables = this._getReusables(true);
+
+          const isScrollingDown = delta >= 0;
+          const reusables = this._getReusables(!isScrollingDown);
           this._physicalTop = reusables.physicalTop;
-          this._virtualStart += reusables.indexes.length;
-          this._physicalStart += reusables.indexes.length;
+          
+          if (isScrollingDown) {
+            this._virtualStart -= reusables.indexes.length;
+            this._physicalStart -= reusables.indexes.length;
+          } else {
+            this._virtualStart += reusables.indexes.length;
+            this._physicalStart += reusables.indexes.length;
+          }
+          this._update(reusables.indexes, !isScrollingDown);
         }
-        
+
         const oldOffset = this._vidxOffset;
         if (this._accessIronListAPI(() => this._maxScrollTop) && this._virtualCount < this._effectiveSize) {
           this._adjustVirtualIndexOffset(delta);
