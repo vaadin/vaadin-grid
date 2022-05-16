@@ -188,6 +188,59 @@
         grid.$.table.dispatchEvent(new CustomEvent('scroll'));
       });
 
+      it('should have an item at the bottom of the viewport after scrolling up', async() => {
+        const scrollTarget = grid.$.table;
+        grid.size = 100000;
+        await nextFrame();
+
+        // Scroll to end
+        grid.scrollToIndex(100000);
+        await nextFrame();
+
+        // Scroll upwards in 1000px steps
+        for (let i = 0; i < 20; i++) {
+          await nextFrame();
+          scrollTarget.scrollTop -= 1000;
+
+          // Sanity check for iron-list internal properties
+          const firstItem = grid._physicalItems[grid._physicalStart];
+          expect(firstItem.index).to.equal(grid._virtualStart + grid._vidxOffset);
+        }
+
+        // There should be an item at the bottom of the viewport
+        await nextFrame();
+        const gridRect = scrollTarget.getBoundingClientRect();
+        const lastVisibleElement = grid._cellFromPoint(gridRect.left, gridRect.bottom - 30);
+        expect(lastVisibleElement.localName).to.equal('td');
+      });
+
+      it('should have an item at the top of the viewport after scrolling down', async() => {
+        const scrollTarget = grid.$.table;
+        grid.size = 100000;
+        await nextFrame();
+
+        // Scroll to start
+        grid.scrollToIndex(0);
+        await nextFrame();
+
+        // Scroll downwards in 1000px steps
+        for (let i = 0; i < 20; i++) {
+          await nextFrame();
+          scrollTarget.scrollTop += 1000;
+
+          // Sanity check for iron-list internal properties
+          const firstItem = grid._physicalItems[grid._physicalStart];
+          expect(firstItem.index).to.equal(grid._virtualStart + grid._vidxOffset);
+        }
+
+        // There should be an item at the top of the viewport
+        flushGrid(grid);
+        await nextFrame();
+        const gridRect = scrollTarget.getBoundingClientRect();
+        const firstVisibleElement = grid._cellFromPoint(gridRect.left, gridRect.top + 30);
+        expect(firstVisibleElement.localName).to.equal('td');
+      });
+
       describe('overflow attribute', () => {
 
         it('bottom right', () => {
