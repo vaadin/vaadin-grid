@@ -167,7 +167,7 @@ This program is available under Apache License Version 2.0, available at https:/
       const targetColumn = this._getTargetColumn(targetCell, this._draggedColumn);
       if (this._isSwapAllowed(this._draggedColumn, targetColumn) &&
         this._isSwappableByPosition(targetColumn, e.detail.x)) {
-        // Get the column header level of the target column (and the dragged column)
+        // Get the header level of the target column (and the dragged column)
         const columnTreeLevel = this.__getColumnTreeLevel(targetColumn);
         // Get the columns on that level in visual order
         const levelColumnsInOrder = this._getColumnsInOrder(columnTreeLevel);
