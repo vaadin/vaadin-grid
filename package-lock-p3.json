@@ -1,12 +1,12 @@
 {
   "name": "@vaadin/vaadin-grid",
-  "version": "5.9.7",
+  "version": "5.10.0",
   "lockfileVersion": 2,
   "requires": true,
   "packages": {
     "": {
       "name": "@vaadin/vaadin-grid",
-      "version": "5.9.7",
+      "version": "5.10.0",
       "license": "Apache-2.0",
       "dependencies": {
         "@polymer/iron-a11y-announcer": "^3.0.0",
