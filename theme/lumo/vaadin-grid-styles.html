@@ -61,6 +61,11 @@
         border-top: 0;
         min-height: calc(var(--lumo-size-m) - var(--_lumo-grid-border-width));
       }
+      
+      /* Show bottom line for the last body row*/
+      :host(:not([theme~="no-row-borders"])) [part="row"][last] [part~="cell"]:not([part~="details-cell"]) {
+        border-bottom: var(--_lumo-grid-border-width) solid var(--_lumo-grid-secondary-border-color);
+      }
 
       /* Focus-ring */
 
