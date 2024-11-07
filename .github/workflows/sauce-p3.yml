@@ -7,17 +7,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Set up Node 12.x
-      uses: actions/setup-node@v2
+    - name: Set up Node 16.x
+      uses: actions/setup-node@v4
       with:
-        node-version: 12.x
+        node-version: 16.x
 
     - name: Check out the (Polymer 2) source code
       uses: actions/checkout@v2
-
-    - name: Install latest npm
-      # magi-cli 1.0 requires npm 7 or higher
-      run: "npm install -g npm@8"
 
     - name: Install global npm dependencies
       # bower and polymer-modulizer are needed to run the Polymer 3 conversion step
@@ -28,6 +24,10 @@ jobs:
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
         magi p3-convert --out . --import-style=name
+
+    # workaround for running tests on Android on SauceLabs (see wct.conf.js)
+    - name: Add 'localhost-for-saucelabs' to /etc/hosts
+      run: echo "127.0.0.1 localhost-for-saucelabs" | sudo tee -a /etc/hosts
 
     - name: Run unit tests [Desktop / Batch 1]
       env:
