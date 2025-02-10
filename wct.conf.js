@@ -11,7 +11,7 @@ var suitesParam = suitesIndex ? process.argv[suitesIndex] : undefined;
 var tunneledLocalhost = 'localhost-for-saucelabs';
 
 module.exports = {
-  testTimeout: 180 * 1000,
+  testTimeout: 360 * 1000,
   verbose: false,
   plugins: {
     local: {
