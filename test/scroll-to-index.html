@@ -48,6 +48,7 @@
       </vaadin-grid>
     </template>
   </test-fixture>
+
   <script>
     describe('Scroll to index', () => {
 
@@ -316,6 +317,22 @@
 
         grid.expandedItems = [parents[parents.length - 1]];
         grid.scrollToIndex(14);
+      });
+    });
+
+    describe.only('before grid is fully initialized', () => {
+      let grid;
+
+      beforeEach((done) => {
+        grid = fixture('small');
+        grid.items = Array.from({length: 100}, (_, index) => `Item ${index}`);
+        grid.scrollToIndex(50);
+        flushGrid(grid);
+        animationFrameFlush(done);
+      });
+
+      it('should scroll to index after items are rendered', () => {
+        expect(grid._firstVisibleIndex).to.equal(50);
       });
     });
   </script>
