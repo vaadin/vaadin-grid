@@ -39,7 +39,14 @@ module.exports = {
         platformVersion: '11.0',
         browserName: 'Chrome',
       },
-      'iOS Simulator/iphone@12.2', // should be 9.x, but SauceLabs does not provide that
+      {
+        browserName: 'Safari',
+        deviceName: 'iPhone X Simulator',
+        platformVersion: '14.0', // should be 9.x, but SauceLabs does not provide that
+        platformName: 'iOS',
+        appiumVersion: '1.18.3',
+        deviceOrientation: 'portrait',
+      },
       'macOS 11/safari@latest',
       'Windows 10/microsoftedge@latest',
       'Windows 10/internet explorer@11',
