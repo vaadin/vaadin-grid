@@ -37,7 +37,7 @@
     "preversion": "magi update-version"
   },
   "devDependencies": {
-    "@vaadin/vaadin-component-dev-dependencies": "^3.2.0"
+    "@vaadin/vaadin-component-dev-dependencies": "^4.9.2"
   },
   "keywords": [
     "vaadin",
